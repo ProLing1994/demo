@@ -1,0 +1,10 @@
+# set core files
+file(GLOB MNN_CORE_FILES mobilenet_ssd_detector.h mobilenet_ssd_detector.cpp)
+
+# yh_mnn dll library
+add_library(yh_mnn SHARED ${MNN_CORE_FILES})
+target_link_libraries(yh_mnn ${OpenCV_LIBS} ${MNN_LIBRARY})
+
+# add test
+add_executable(test_mobilenet_ssd test_mobilenet_ssd.cpp)
+target_link_libraries(test_mobilenet_ssd yh_mnn ${OpenCV_LIBS})
