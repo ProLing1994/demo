@@ -78,4 +78,4 @@ file(COPY ${MNN_LIBRARIES} DESTINATION ${CMAKE_SOURCE_DIR}/lib/Dependency)
 enable_testing()
 
 # add submodules
-add_subdirectory(src)
+add_subdirectory(deploy)
