@@ -1,0 +1,5 @@
+set(COMMON_UTILITY_SOURCE_FILES file_system.cpp)
+
+set(COMMON_UTILITY_HEADER_FILES file_system.h)
+
+add_library(yh_common_utility STATIC ${COMMON_UTILITY_HEADER_FILES} ${COMMON_UTILITY_SOURCE_FILES})
