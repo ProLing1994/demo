@@ -47,10 +47,6 @@ endif()
 # find MNN libaray
 find_package(MNN REQUIRED)
 
-# add root directory in include path
-get_filename_component(PARENT_DIR ${CMAKE_SOURCE_DIR} DIRECTORY)
-include_directories(${PARENT_DIR})
-
 # set default debug and release output directory
 file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 
