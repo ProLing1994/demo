@@ -56,8 +56,8 @@ if __name__ == "__main__":
 		output_image_dir = "/home/huanyuan/code/MobileNet-SSD/images_result"
 
 		# ssd(default)
-		# ssd_model = "/home/huanyuan/code/MobileNet-SSD/mobilenet_iter_73000.caffemodel"
-		# ssd_prototxt = "/home/huanyuan/code/MobileNet-SSD/deploy.prototxt"
+		# ssd_model = "/home/huanyuan/code/models/mobilenet_iter_73000.caffemodel"
+		# ssd_prototxt = "/home/huanyuan/code/models/mobilenet_iter_73000.deploy.prototxt"
 		# ssd_param_CHW  = [3, 300, 300]
 		# ssd_mean  = [127.5, 127.5, 127.5]
 		# ssd_scale  = 0.007843
@@ -76,28 +76,30 @@ if __name__ == "__main__":
 		# ssd_scale  = 0.007843
 		# CLASSES = ('background', "face")
 
-		# # car
-		# ssd_model = "/home/huanyuan/code/models/Final_SSD_VGG_FPN_RFB_VOC_0710.caffemodel"
-		# ssd_prototxt = "/home/huanyuan/code/models/FPN_RFB_2class_prior.prototxt"
+		# car
+		# ssd_model = "/home/huanyuan/code/models/ssd_car_0710.caffemodel"
+		# ssd_prototxt = "/home/huanyuan/code/models/ssd_car_0710.prototxt"
 		# ssd_param_CHW  = [3, 300, 300]
 		# ssd_mean  = [104.0, 117.0, 123.0]
 		# conf_thresh = 0.5
 		# ssd_scale  = 1.0
 		# CLASSES = ('background', "car")
 
+		# License_plate
+		ssd_model = "/home/huanyuan/code/models/ssd_License_plate_mobilenetv2.caffemodel"
+		ssd_prototxt = "/home/huanyuan/code/models/ssd_License_plate_mobilenetv2_fpn_ncnn_concat.prototxt"
+		ssd_param_CHW  = [3, 300, 300]
+		ssd_mean  = [104.0, 117.0, 123.0]
+		ssd_scale  = 1.0
+		CLASSES = ('background', "License_plate")
+
+		# something wronge
 		# ssd_model = "/home/huanyuan/code/MNN/models/face.caffemodel"
 		# ssd_prototxt = "/home/huanyuan/code/MNN/models/face.prototxt"
 		# ssd_param_CHW  = [3, 300, 300]
 		# ssd_mean  = [104.0, 117.0, 123.0]
 		# ssd_scale  = 1.0
 		# CLASSES = ('background', "face", "phone")
-
-		# ssd_model = "/home/huanyuan/code/MNN/models/License_plate_ssd_mobilenetv2_0421.caffemodel"
-		# ssd_prototxt = "/home/huanyuan/code/MNN/models/License_plate_ssd_mobilenetv2_fpn_ncnn_concat_20200713.prototxt"
-		# ssd_param_CHW  = [3, 300, 300]
-		# ssd_mean  = [104.0, 117.0, 123.0]
-		# ssd_scale  = 1.0
-		# CLASSES = ('background', "License_plate")
 
 		ssd_param = [ssd_mean, ssd_scale]
 		ssd_net = ssd_init(ssd_prototxt, ssd_model, ssd_param_CHW)

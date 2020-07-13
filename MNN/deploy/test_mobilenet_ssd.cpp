@@ -10,7 +10,7 @@
 
 DEFINE_string(image_folder, "/home/huanyuan/code/MobileNet-SSD/images",
   "The folder containing the image data");
-DEFINE_string(model_path, "/home/huanyuan/code/models/mobilenet_iter_73000.caffe.mnn", 
+DEFINE_string(model_path, "/home/huanyuan/code/models/ssd_License_plate_mobilenetv2.mnn", 
   "The network model path");
 DEFINE_string(output_folder, "/home/huanyuan/code/MobileNet-SSD/images_result", 
   "The folder containing the output results");
