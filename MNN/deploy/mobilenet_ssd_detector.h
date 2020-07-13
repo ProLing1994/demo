@@ -34,20 +34,24 @@ namespace MNN{
             input_size_ = { 300, 300 };
             dims_ = { 1, 3, 300, 300 };
             output_name_ = "detection_out";
+            // class_names = {
+            //     "background", "aeroplane", "bicycle", "bird", "boat",
+            //     "bottle", "bus", "car", "cat", "chair",
+            //     "cow", "diningtable", "dog", "horse",
+            //     "motorbike", "person", "pottedplant",
+            //     "sheep", "sofa", "train", "tvmonitor"
+		    // };
             class_names = {
-                "background", "aeroplane", "bicycle", "bird", "boat",
-                "bottle", "bus", "car", "cat", "chair",
-                "cow", "diningtable", "dog", "horse",
-                "motorbike", "person", "pottedplant",
-                "sheep", "sofa", "train", "tvmonitor"
-		    };
+                "background", "License_plate"};
         }
 
         OptionsMMN options_mnn_;
         cv::Size input_size_;
         std::vector<int> dims_;
-        float mean_vals_[3] = { 127.5f, 127.5f, 127.5f };
-        float norm_vals_[3] = { 0.007843f, 0.007843f, 0.007843f };
+        // float mean_vals_[3] = { 127.5f, 127.5f, 127.5f };
+        // float norm_vals_[3] = { 0.007843f, 0.007843f, 0.007843f };
+        float mean_vals_[3] = { 104.0f, 117.0f, 123.0f };
+        float norm_vals_[3] = { 1.0f, 1.0f, 1.0f };
         std::string output_name_;
         std::vector<std::string> class_names;
     };
