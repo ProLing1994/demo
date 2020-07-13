@@ -69,12 +69,12 @@ if __name__ == "__main__":
 		#             'sheep', 'sofa', 'train', 'tvmonitor')
 
 		# face
-		ssd_model = "/home/huanyuan/code/models/ssd_face_mask.caffemodel"
-		ssd_prototxt = "/home/huanyuan/code/models/ssd_face_mask.prototxt"
-		ssd_param_CHW  = [3, 300, 300]
-		ssd_mean  = [127.5, 127.5, 127.5]
-		ssd_scale  = 0.007843
-		CLASSES = ('background', "face")
+		# ssd_model = "/home/huanyuan/code/models/ssd_face_mask.caffemodel"
+		# ssd_prototxt = "/home/huanyuan/code/models/ssd_face_mask.prototxt"
+		# ssd_param_CHW  = [3, 300, 300]
+		# ssd_mean  = [127.5, 127.5, 127.5]
+		# ssd_scale  = 0.007843
+		# CLASSES = ('background', "face")
 
 		# # car
 		# ssd_model = "/home/huanyuan/code/models/Final_SSD_VGG_FPN_RFB_VOC_0710.caffemodel"
@@ -93,7 +93,7 @@ if __name__ == "__main__":
 		# CLASSES = ('background', "face", "phone")
 
 		# ssd_model = "/home/huanyuan/code/MNN/models/License_plate_ssd_mobilenetv2_0421.caffemodel"
-		# ssd_prototxt = "/home/huanyuan/code/MNN/models/License_plate_ssd_mobilenetv2_fpn_ncnn_concat.prototxt"
+		# ssd_prototxt = "/home/huanyuan/code/MNN/models/License_plate_ssd_mobilenetv2_fpn_ncnn_concat_20200713.prototxt"
 		# ssd_param_CHW  = [3, 300, 300]
 		# ssd_mean  = [104.0, 117.0, 123.0]
 		# ssd_scale  = 1.0

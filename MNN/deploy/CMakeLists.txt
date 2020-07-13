@@ -8,3 +8,5 @@ target_link_libraries(yh_mnn ${OpenCV_LIBS} ${MNN_LIBRARY})
 # add test
 add_executable(test_mobilenet_ssd test_mobilenet_ssd.cpp)
 target_link_libraries(test_mobilenet_ssd yh_mnn ${OpenCV_LIBS})
+target_link_libraries(test_mobilenet_ssd debug ${YH_COMMON_UTILITY_LIBRARY_DEBUG} optimized ${YH_COMMON_UTILITY_LIBRARY_RELEASE})
+target_link_libraries(test_mobilenet_ssd -lglog -lgflags)
