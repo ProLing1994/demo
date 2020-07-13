@@ -3,7 +3,7 @@
 #include "file_system.h"
 
 #ifdef _WIN32
-#include "3rd_party/dirent.h"
+#include "common/3rd_party/dirent.h"
 #else
 #include "dirent.h"
 #endif
