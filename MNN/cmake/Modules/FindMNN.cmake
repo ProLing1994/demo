@@ -11,7 +11,7 @@
 
 include(FindPackageHandleStandardArgs)
 
-set(MNN_DIR "/home/huanyuan/code/MNN/build/")
+set(MNN_DIR "/home/huanyuan/code/MNN/build/" CACHE PATH "Folder contains package MNN")
 
 find_path(MNN_INCLUDE_DIR MNN/MNNDefine.h
   HINTS ${MNN_DIR}
