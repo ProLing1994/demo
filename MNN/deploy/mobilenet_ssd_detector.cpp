@@ -76,15 +76,15 @@ int MNN::MobilenetSSDDetector::detect(const cv::Mat& img_src, std::vector<Object
 
   auto output_ptr = output_host.host<float>();
   for (int i = 0; i < output_host.height(); ++i) {
-	int index = i * output_host.width();
-	ObjectInformation object;
-	object.name_ = options_mobilenet_ssd_.class_names[int(output_ptr[index + 0])];
-	object.score_ = output_ptr[index + 1];
-	object.location_.x = output_ptr[index + 2] * width;
-	object.location_.y = output_ptr[index + 3] * height;
-	object.location_.width = output_ptr[index + 4] * width - object.location_.x;
-	object.location_.height = output_ptr[index + 5] * height - object.location_.y;
-	objects->push_back(object);
+    int index = i * output_host.width();
+    ObjectInformation object;
+    object.name_ = options_mobilenet_ssd_.class_names[int(output_ptr[index + 0])];
+    object.score_ = output_ptr[index + 1];
+    object.location_.x = output_ptr[index + 2] * width;
+    object.location_.y = output_ptr[index + 3] * height;
+    object.location_.width = output_ptr[index + 4] * width - object.location_.x;
+    object.location_.height = output_ptr[index + 5] * height - object.location_.y;
+    objects->push_back(object);
   }
 
   LOG(INFO) << "end detect.";
