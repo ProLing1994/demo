@@ -56,6 +56,9 @@ endif()
 # find MNN libaray
 find_package(MNN REQUIRED)
 
+# set default build type
+set(CMAKE_BUILD_TYPE Release CACHE STRING "Set default build type to release")
+
 # set default debug and release output directory
 file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 
