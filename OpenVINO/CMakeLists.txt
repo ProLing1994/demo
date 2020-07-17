@@ -9,7 +9,11 @@ if (WIN32)
   set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 endif(WIN32)
 
-project(yh_common)
+# use customized find modules
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+    "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+
+project(yh_openvino)
 
 # 1) add c++ 11 support --std=c++11
 # 2) to fix compilation problem: relocation R_X86_64_32 against
@@ -31,6 +35,15 @@ if(NOT glog_FOUND)
  message(FATAL_ERROR "glog not found. Please build glog under md/3rd_party/glog and set glog_DIR")
 endif(NOT glog_FOUND)
 
+# find common library
+find_package(YH_COMMON REQUIRED)
+if (YH_COMMON_FOUND)
+  message(STATUS "Found YH_COMMON Library: " ${YH_COMMON_INCLUDE_DIR})
+  include_directories(${YH_COMMON_INCLUDE_DIR})
+else (YH_COMMON)
+  message(FATAL_ERROR "YH_COMMON not found.")
+endif()
+
 # find OpenCV library
 find_package(OpenCV REQUIRED)
 if (OpenCV_FOUND)
@@ -40,9 +53,8 @@ else (OpenCV_FOUND)
   message(FATAL_ERROR "OpenCV not found.")
 endif()
 
-# add root directory in include path
-get_filename_component(PARENT_DIR ${CMAKE_SOURCE_DIR} DIRECTORY)
-include_directories(${PARENT_DIR})
+# find OpenVINO libaray
+find_package(OpenVINO REQUIRED)
 
 # set default build type
 set(CMAKE_BUILD_TYPE Release CACHE STRING "Set default build type to release")
@@ -62,9 +74,16 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/lib/Debug)
 
 file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/lib/Dependency)
 
+# package dependency dll libraries into md_bone_age
+if(UNIX)
+  get_filename_component(MNN_DIR "${MNN_LIBRARY}" DIRECTORY)
+  file(GLOB MNN_LIBRARIES ${MNN_DIR}/*so*)
+endif(UNIX)
+
+file(COPY ${MNN_LIBRARIES} DESTINATION ${CMAKE_SOURCE_DIR}/lib/Dependency)
+
 # enable testing
 enable_testing()
 
 # add submodules
-add_subdirectory(utils)
-add_subdirectory(example)
+add_subdirectory(deploy)

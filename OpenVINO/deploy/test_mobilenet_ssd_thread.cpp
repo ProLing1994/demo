@@ -11,20 +11,45 @@
 #include "gflags/gflags.h"
 #include "glog/logging.h"
 
-DEFINE_string(image_folder, "/home/huanyuan/code/MobileNet-SSD/images/",
+DEFINE_string(image_folder, "/home/huanyuan/code/images",
   "The folder containing the image data");
-DEFINE_string(model_path, "/home/huanyuan/code/models/ssd_License_plate_mobilenetv2.mnn",
+DEFINE_string(model_path, "/home/huanyuan/code/models/ssd_License_plate_mobilenetv2.xml",
   "The network model path");
-DEFINE_string(output_folder, "/home/huanyuan/code/MobileNet-SSD/images_result/",
+DEFINE_string(output_folder, "/home/huanyuan/code/images_result",
   "The folder containing the output results");
+
+void gen_result(cv::Mat& img_src,
+                const std::vector<OPENVINO::ObjectInformation>& objects, 
+                const std::string output_image_path) {
+  int num_objects = static_cast<int>(objects.size());
+
+  for (int i = 0; i < num_objects; ++i) {
+    LOG(INFO) << "location: " << objects[i].location_;
+    LOG(INFO) << "label: " << objects[i].name_.c_str() << ", score: " << objects[i].score_ * 100;
+
+    cv::rectangle(img_src, objects[i].location_, cv::Scalar(0, 0, 255), 2);
+
+    char text[256];
+    sprintf(text, "%s %.1f%%", objects[i].name_.c_str(), objects[i].score_ * 100);
+
+    int baseLine = 0;
+    cv::Size label_size = cv::getTextSize(text, cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &baseLine);
+    cv::putText(img_src, text, cv::Point(objects[i].location_.x,
+        objects[i].location_.y + label_size.height),
+        cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 250, 0), 1);
+  }
+  cv::imwrite(output_image_path, img_src);
+  // cv::imshow("image", img_src);
+  // cv::waitKey(0);
+}
 
 void ssd_detect_thread(
     const std::vector<std::string>& image_names, 
     const int loop_times, 
     float* time_num) {
 	
-	std::shared_ptr<MNN::MobilenetSSDDetector> mobilenet_ssd_detector;
-	mobilenet_ssd_detector.reset(new MNN::MobilenetSSDDetector());
+	std::shared_ptr<OPENVINO::MobilenetSSDDetector> mobilenet_ssd_detector;
+	mobilenet_ssd_detector.reset(new OPENVINO::MobilenetSSDDetector());
 	int error_int = mobilenet_ssd_detector->init(FLAGS_model_path.c_str());
 
   for (int i = 0; i < loop_times; i++) {
@@ -33,7 +58,7 @@ void ssd_detect_thread(
 			std::string output_image_path = FLAGS_output_folder + "/" + image_names[idx];
 
 			cv::Mat img_src = cv::imread(image_path.c_str(), 1);
-			std::vector<MNN::ObjectInformation> objects;
+			std::vector<OPENVINO::ObjectInformation> objects;
 
 			clock_t begin, end;
 			begin = clock();
@@ -42,26 +67,7 @@ void ssd_detect_thread(
 			LOG(INFO) << "time= " << 1.0*(end - begin) / CLOCKS_PER_SEC * 1000.0 << "ms";
 			(*time_num) += 1.0*(end - begin) / CLOCKS_PER_SEC * 1000.0;
 
-			int num_objects = static_cast<int>(objects.size());
-			for (int i = 0; i < num_objects; ++i) {
-			LOG(INFO) << "location: " << objects[i].location_;
-			LOG(INFO) << "label: " << objects[i].name_.c_str() << ", score: " << objects[i].score_ * 100;
-
-			cv::rectangle(img_src, objects[i].location_, cv::Scalar(0, 0, 255), 2);
-
-			char text[256];
-			sprintf(text, "%s %.1f%%", objects[i].name_.c_str(), objects[i].score_ * 100);
-
-			int baseLine = 0;
-			cv::Size label_size = cv::getTextSize(text, cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &baseLine);
-
-			cv::putText(img_src, text, cv::Point(objects[i].location_.x,
-				objects[i].location_.y + label_size.height),
-				cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 250, 0), 1);
-			}
-			cv::imwrite(output_image_path, img_src);
-			// cv::imshow("image", img_src);
-			// cv::waitKey(0);
+      gen_result(img_src, objects, output_image_path);
 		}	// end for (int idx = 0; idx < image_names.size(); idx++)
   }	// end for (int i = 0; i < loop_times; i++)
 }  
