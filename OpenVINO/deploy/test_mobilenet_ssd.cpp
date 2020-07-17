@@ -9,15 +9,15 @@
 #include "gflags/gflags.h"
 #include "glog/logging.h"
 
-DEFINE_string(image_folder, "/home/huanyuan/code/MobileNet-SSD/images/",
+DEFINE_string(image_folder, "/home/huanyuan/code/images",
   "The folder containing the image data");
-DEFINE_string(model_path, "/home/huanyuan/code/models/ssd_License_plate_mobilenetv2.mnn",
+DEFINE_string(model_path, "/home/huanyuan/code/models/ssd_License_plate_mobilenetv2.xml",
   "The network model path");
-DEFINE_string(output_folder, "/home/huanyuan/code/MobileNet-SSD/images_result/",
+DEFINE_string(output_folder, "/home/huanyuan/code/images_result",
   "The folder containing the output results");
 
 void gen_result(cv::Mat& img_src,
-                const std::vector<MNN::ObjectInformation>& objects, 
+                const std::vector<OPENVINO::ObjectInformation>& objects, 
                 const std::string output_image_path) {
   int num_objects = static_cast<int>(objects.size());
 
@@ -45,35 +45,34 @@ int main(int argc, char* argv[]) {
   google::ParseCommandLineFlags(&argc, &argv, true);
   google::InitGoogleLogging(argv[0]);
 
-  std::shared_ptr<MNN::MobilenetSSDDetector> mobilenet_ssd_detector;
-  mobilenet_ssd_detector.reset(new MNN::MobilenetSSDDetector());
-  int error_int = mobilenet_ssd_detector->init(FLAGS_model_path.c_str());
+  std::shared_ptr<OPENVINO::MobilenetSSDDetector> mobilenet_ssd_detector;
+  mobilenet_ssd_detector.reset(new OPENVINO::MobilenetSSDDetector());
+  int error_int = mobilenet_ssd_detector->init(FLAGS_model_path);
 
   std::vector<std::string> image_subfolder;
   std::vector<std::string> image_names;
-
   yh_common::list_directory(FLAGS_image_folder.c_str(), image_subfolder, image_names);
 
   float time_num = 0.0;
   int loop_times = 100;
 
   for (int i = 0; i < loop_times; i++) {
-		for (int idx = 0; idx < image_names.size(); idx++) {
-			std::string image_path = FLAGS_image_folder + "/" + image_names[idx];
-			std::string output_image_path = FLAGS_output_folder + "/" + image_names[idx];
+    for (int idx = 0; idx < image_names.size(); idx++) {
+      std::string image_path = FLAGS_image_folder + "/" + image_names[idx];
+      std::string output_image_path = FLAGS_output_folder + "/" + image_names[idx];
 
-			cv::Mat img_src = cv::imread(image_path.c_str(), 1);
-			std::vector<MNN::ObjectInformation> objects;
+      cv::Mat img_src = cv::imread(image_path.c_str(), 1);
+      std::vector<OPENVINO::ObjectInformation> objects;
 
-			clock_t begin, end;
-			begin = clock();
-			mobilenet_ssd_detector->detect(img_src, &objects);
-			end = clock();
-			LOG(INFO) << "time= " << 1.0*(end - begin) / CLOCKS_PER_SEC * 1000.0 << "ms";
-			time_num += 1.0*(end - begin) / CLOCKS_PER_SEC * 1000.0;
-
-			gen_result(img_src, objects, output_image_path);
-		}	// end for (int idx = 0; idx < image_names.size(); idx++)
+      clock_t begin, end;
+      begin = clock();
+      mobilenet_ssd_detector->detect(img_src, &objects);
+      end = clock();
+      LOG(INFO) << "time= " << 1.0*(end - begin) / CLOCKS_PER_SEC * 1000.0 << "ms";
+      time_num += 1.0*(end - begin) / CLOCKS_PER_SEC * 1000.0;
+      
+      gen_result(img_src, objects, output_image_path);
+    }	// end for (int idx = 0; idx < image_names.size(); idx++)
   }	// end for (int i = 0; i < loop_times; i++)
 
   LOG(INFO) << "average time= " << time_num / loop_times / image_names.size() << "ms";
