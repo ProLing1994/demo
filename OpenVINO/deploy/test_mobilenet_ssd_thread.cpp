@@ -11,11 +11,11 @@
 #include "gflags/gflags.h"
 #include "glog/logging.h"
 
-DEFINE_string(image_folder, "/home/huanyuan/code/images",
+DEFINE_string(image_folder, "F:/test/images",
   "The folder containing the image data");
-DEFINE_string(model_path, "/home/huanyuan/code/models/ssd_License_plate_mobilenetv2.xml",
+DEFINE_string(model_path, "F:/test/models/ssd_License_plate_mobilenetv2.xml",
   "The network model path");
-DEFINE_string(output_folder, "/home/huanyuan/code/images_result",
+DEFINE_string(output_folder, "F:/test/images_result",
   "The folder containing the output results");
 
 void gen_result(cv::Mat& img_src,
@@ -83,24 +83,24 @@ int main(int argc, char* argv[]) {
 
   int loop_times = 100;
 
-	float time_num_t1 = 0.0;
-	float time_num_t2 = 0.0;
-	float time_num_t3 = 0.0;
-	float time_num_t4 = 0.0;
-	std::thread t1(ssd_detect_thread, image_names, loop_times, &time_num_t1);
-	std::thread t2(ssd_detect_thread, image_names, loop_times, &time_num_t2);
-	// std::thread t3(ssd_detect_thread, image_names, loop_times, &time_num_t3);
-	// std::thread t4(ssd_detect_thread, image_names, loop_times, &time_num_t4);
+  float time_num_t1 = 0.0;
+  float time_num_t2 = 0.0;
+  float time_num_t3 = 0.0;
+  float time_num_t4 = 0.0;
+  std::thread t1(ssd_detect_thread, image_names, loop_times, &time_num_t1);
+  std::thread t2(ssd_detect_thread, image_names, loop_times, &time_num_t2);
+  std::thread t3(ssd_detect_thread, image_names, loop_times, &time_num_t3);
+  std::thread t4(ssd_detect_thread, image_names, loop_times, &time_num_t4);
 	
-	t1.join();
-	t2.join();
-	// t3.join();
-	// t4.join();
+  t1.join();
+  t2.join();
+  t3.join();
+  t4.join();
 
   LOG(INFO) << "t1 average time= " << time_num_t1 / loop_times / image_names.size() << "ms";
   LOG(INFO) << "t2 average time= " << time_num_t2 / loop_times / image_names.size() << "ms";
-  // LOG(INFO) << "t3 average time= " << time_num_t3 / loop_times / image_names.size() << "ms";
-  // LOG(INFO) << "t4 average time= " << time_num_t4 / loop_times / image_names.size() << "ms";
+  LOG(INFO) << "t3 average time= " << time_num_t3 / loop_times / image_names.size() << "ms";
+  LOG(INFO) << "t4 average time= " << time_num_t4 / loop_times / image_names.size() << "ms";
 
   google::ShutdownGoogleLogging();
   return 0;
