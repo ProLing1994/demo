@@ -90,13 +90,6 @@ namespace OPENVINO {
 		cv::Mat img_resized(img_src);
 		cv::resize(img_src, img_resized, cv::Size(input_info_->getTensorDesc().getDims()[3], input_info_->getTensorDesc().getDims()[2]));
 
-		std::shared_ptr<unsigned char> img_resized_data;
-		int img_resized_size = img_resized.cols * img_resized.rows * img_resized.channels();
-		img_resized_data.reset(new unsigned char[img_resized_size], std::default_delete<unsigned char[]>());
-		for (int id = 0; id < img_resized_size; ++id) {
-				img_resized_data.get()[id] = img_resized.data[id];
-		}
-
 		// Creating input blob 
 		InferenceEngine::Blob::Ptr imageInput = infer_request_.GetBlob(input_name_);
 		// Filling input tensor with images. First b channel, then g and r channels 
@@ -117,7 +110,7 @@ namespace OPENVINO {
 				/** Iterate over all channels **/
 				for (size_t ch = 0; ch < num_channels; ++ch) {
 						/**          [images stride + channels stride + pixel id ] all in bytes            **/
-						data[ch * image_size + pid] = img_resized_data.get()[pid * num_channels + ch];
+						data[ch * image_size + pid] = img_resized.data[pid * num_channels + ch];
 				}
 		}
 
