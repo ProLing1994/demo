@@ -21,7 +21,7 @@ namespace OPENVINO {
 	struct OptionsOPENVINO {
 	OptionsOPENVINO() :
 	  device_name("CPU"),
-		nthreads(1) {}
+		nthreads(4) {}
 
 	// device_name, support for ["CPU"/"GPU"/"MULTI:CPU,GPU"]
 	std::string device_name;
