@@ -26,13 +26,13 @@ endif(UNIX OR APPLE)
 # add gflag
 find_package(gflags REQUIRED)
 if(NOT gflags_FOUND)
-message(FATAL_ERROR "gflags not found. Please build gflags under md/3rd_party/gflags and set gflags_DIR")
+message(FATAL_ERROR "gflags not found. Please build gflags under and set gflags_DIR")
 endif(NOT gflags_FOUND)
 
 # add glog
 find_package(glog REQUIRED)
 if(NOT glog_FOUND)
- message(FATAL_ERROR "glog not found. Please build glog under md/3rd_party/glog and set glog_DIR")
+ message(FATAL_ERROR "glog not found. Please build glog under and set glog_DIR")
 endif(NOT glog_FOUND)
 
 # find common library
