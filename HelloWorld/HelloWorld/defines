@@ -1,0 +1,5 @@
+export RELEASE_ROOT_DIR:=/home/workspace/RMAI/yuanhuan/streamax/HelloWorld/release
+export PRODUCT_TYPE:=ADkit_3516DV300
+export CROSS_COMPILER:=arm-himix200-linux-
+export COMPILER_NAME:=arm-himix200-linux
+export DEBUG_VERSION:=n
