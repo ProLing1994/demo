@@ -6,4 +6,6 @@
 
 #include <Eigen/Core>
 #include <Eigen/Dense>
+
+#include <fst/fstlib.h>
 #endif
