@@ -3,31 +3,31 @@
 
 using namespace fst;
 
-int main(int argc, char *argv[]) {
+int main() {
     std::string hello_world = "HELLO WORLD !!";
     std::cout << hello_world << std::endl;
 
     // student
-    student A = student();
-    A.id = 1;
-    A.age = 26;
-    A.name = "huanyuan";
+    student student_a = student();
+    student_a.id = 1;
+    student_a.age = 26;
+    student_a.name = "huanyuan";
 
-    student B = student();
-    B.id = 2;
-    B.age = 27;
-    B.name = "ling";
+    student student_b = student();
+    student_b.id = 2;
+    student_b.age = 27;
+    student_b.name = "ling";
 
-    max_id(&A, &B);
-    std::cout << "id: " << A.id << ", age: " << A.age << ", name: " << A.name << std::endl;
+    max_id(&student_a, &student_b);
+    std::cout << "id: " << student_a.id << ", age: " << student_a.age << ", name: " << student_a.name << std::endl;
 
     // Eigen
-    Eigen::Matrix2d a;
-    a << 1, 2, 3, 4;
-    Eigen::MatrixXd b(2, 2);
-    b << 2, 3, 1, 4;
-    std::cout << "a + b = \n"
-              << a + b << std::endl;
+    Eigen::Matrix2d matrix_a;
+    matrix_a << 1, 2, 3, 4;
+    Eigen::MatrixXd matrix_b(2, 2);
+    matrix_b << 2, 3, 1, 4;
+    std::cout << "matrix_a + matrix_b = \n"
+              << matrix_a + matrix_b << std::endl;
 
     // Openfst: fst
     StdVectorFst fst;
@@ -50,5 +50,60 @@ int main(int argc, char *argv[]) {
     fst.SetFinal(2, 3.5);  // 1st arg is state ID, 2nd arg weight
     
     fst.Write("binary.fst");
+
+    // openblas
+    double openblas_a[6] = {1.0,3.0,1.0,-3.0,4.0,-1.0};
+    double openblas_b[6] = {1.0,4.0,1.0,-3.0,4.0,-1.0};
+    double openblas_c[9] = {.5,.5,.5,1.5,.5,2.5,.5,.5,.5};
+
+    int openblas_m = 3; // row of A and C
+    int openblas_n = 3; // col of B and C
+    int openblas_k = 2; // col of A and row of B
+ 
+    double alpha = 1.0;
+    double beta = 0.0;
+ 
+    cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, openblas_m, openblas_n, openblas_k, 
+            alpha, openblas_a, openblas_k, openblas_b, openblas_n, beta, openblas_c, openblas_n);
+
+    std::cout << "OpenBlas result: " << std::endl;
+    for (int i = 0; i < 9; i++) {
+        std::cout << openblas_c[i] << " ";
+    }
+    std::cout << std::endl;
+
+    // alsa
+    printf("\nALSA library version: %s\n", SND_LIB_VERSION_STR);
+ 
+    printf("\nPCM stream types:\n");
+    for (int val = 0; val <= SND_PCM_STREAM_LAST; val++)
+        printf(" %s\n",snd_pcm_stream_name((snd_pcm_stream_t)val));
+ 
+    printf("\nPCM access types:\n");
+    for (int val = 0; val <= SND_PCM_ACCESS_LAST; val++) {
+        printf(" %s\n", snd_pcm_access_name((snd_pcm_access_t)val));
+    }
+ 
+    printf("\nPCM formats:\n");
+    for (int val = 0; val <= SND_PCM_FORMAT_LAST; val++) {
+        if (snd_pcm_format_name((snd_pcm_format_t)val)!= NULL) {
+            printf(" %s (%s)\n",
+                    snd_pcm_format_name((snd_pcm_format_t)val),
+                    snd_pcm_format_description((snd_pcm_format_t)val));
+        }
+    }
+ 
+    printf("\nPCM subformats:\n");
+    for (int val = 0; val <= SND_PCM_SUBFORMAT_LAST;val++) {
+        printf(" %s (%s)\n",
+                snd_pcm_subformat_name((snd_pcm_subformat_t)val),
+                snd_pcm_subformat_description((
+                    snd_pcm_subformat_t)val));
+    }
+ 
+    printf("\nPCM states:\n");
+    for (int val = 0; val <= SND_PCM_STATE_LAST; val++)
+        printf(" %s\n",snd_pcm_state_name((snd_pcm_state_t)val));
+
     return 1;
 }
