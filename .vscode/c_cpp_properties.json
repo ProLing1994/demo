@@ -4,7 +4,9 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/home/workspace/RMAI/yuanhuan/code/eigen-git-mirror/build/install/include/eigen3"
+                "/home/workspace/RMAI/yuanhuan/code/eigen-git-mirror/build/install/include/eigen3",
+                "/home/huanyuan/code/kaldi/kaldi/src",
+                "/home/huanyuan/code/kaldi/kaldi/tools/openfst-1.6.7/include"
             ],
             "defines": [],
             "compilerPath": "/usr/local/linaro-aarch64-2018.08-gcc8.2/bin/aarch64-linux-gnu-gcc",
