@@ -4,6 +4,38 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        {
+            "name": "(gdb) online2-wav-nnet3-latgen-faster",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/speech/lib/Debug/online2-wav-nnet3-latgen-faster",
+            "args": ["--do-endpointing=false", 
+                "--online=true",
+                "--config=/home/huanyuan/code/kaldi/demo/chain/online.conf", 
+                "--mfcc-config=/home/huanyuan/code/kaldi/demo/chain/mfcc.conf", 
+                "--max-active=7000", 
+                "--beam=15.0", 
+                "--lattice-beam=6.0", 
+                "--acoustic-scale=1.0", 
+                "--word-symbol-table=/home/huanyuan/code/kaldi/demo/chain/words.txt", 
+                "/home/huanyuan/code/kaldi/demo/chain/final.mdl", 
+                "/home/huanyuan/code/kaldi/demo/chain/HCLG.fst", 
+                "ark:/home/huanyuan/code/kaldi/demo/wav/spk2utt.ark",
+                "scp:/home/huanyuan/code/kaldi/demo/wav/wav.scp",
+                "ark,t:/home/huanyuan/code/kaldi/demo/wav/kws_out.txt"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/speech/lib/Debug/",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
         
         {
             "name": "Python: Current File",

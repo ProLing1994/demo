@@ -26,6 +26,11 @@ find_package(KALDI REQUIRED)
 # set default build type
 set(CMAKE_BUILD_TYPE Release CACHE STRING "Set default build type to release")
 
+# add 
+if (CMAKE_BUILD_TYPE STREQUAL Release)
+  add_definitions(-O3)
+endif()
+
 # set default debug and release output directory
 file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 
