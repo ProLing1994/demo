@@ -38,7 +38,7 @@
 	}while(0)
 #endif
 
-extern unsigned long long advance_chunk_time;
+// extern unsigned long long advance_chunk_time;
 // extern unsigned long long AcceptWaveform_ComputeFeatures_PushBack_time;
 
 namespace kaldi {
@@ -333,7 +333,7 @@ int main(int argc, char *argv[]) {
           }
         }
 
-        std::cout <<"\n\033[0;34mDo AdvanceChunk: " << advance_chunk_time << " ms. \033[0;39m" << std::endl;
+        // std::cout <<"\n\033[0;34mDo AdvanceChunk: " << advance_chunk_time << " ms. \033[0;39m" << std::endl;
         std::cout <<"\033[0;31mAcceptWaveform -> ComputeFeatures -> PushBack: [Total]push back time " << total_AcceptWaveform_ComputeFeatures_PushBack_time << " ms. \033[0;39m" << std::endl;
         std::cout <<"\033[0;31mTotal feature frames time " << total_frame_feature_time << " ms. \033[0;39m" << std::endl;
         std::cout <<"\033[0;31mTotal decode frames time " << total_frame_decoding_time << " ms. \033[0;39m" << std::endl;

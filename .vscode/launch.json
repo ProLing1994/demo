@@ -5,6 +5,103 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "(gdb) new-model-online2-wav-nnet3-latgen-faster",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/speech/lib/Debug/online2-wav-nnet3-latgen-faster",
+            "args": ["--do-endpointing=false", 
+                "--online=true",
+                "--ivector-extraction-config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/ivector_extractor.conf", 
+                "--online-pitch-config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/online_pitch.conf", 
+                "--mfcc-config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/mfcc_hires.conf",
+                "--max-active=7000", 
+                "--beam=15.0", 
+                "--lattice-beam=6.0", 
+                "--acoustic-scale=1.0", 
+                "--word-symbol-table=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/words.txt", 
+                "/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/final.mdl", 
+                "/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/HCLG.fst", 
+                "ark:/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/wav/spk2utt.ark",
+                "scp:/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/wav/wav.scp",
+                "ark,t:/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/wav/lat.1.gz"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/speech/lib/Debug/",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "(gdb) online-gmm-decode-faster",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/speech/lib/Debug/online-gmm-decode-faster",
+            "args": ["--rt-min=0.8",
+                "--rt-max=0.85", 
+                "--max-active=4000", 
+                "--beam=12.0", 
+                "--acoustic-scale=0.0769", 
+                "--left-context=4", 
+                "--right-context=4", 
+                "/home/huanyuan/code/kaldi/model/HMM_MDL/gmm-hmm/final.mdl", 
+                "/home/huanyuan/code/kaldi/model/HMM_MDL/gmm-hmm/HCLG.fst", 
+                "/home/huanyuan/code/kaldi/model/HMM_MDL/gmm-hmm/words.txt",
+                "1:2:3:4:5",
+                "/home/huanyuan/code/kaldi/model/HMM_MDL/gmm-hmm/final.mat"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "(gdb) online-wav-gmm-decode-faster",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/speech/lib/Debug/online-wav-gmm-decode-faster",
+            "args": ["--verbose=1", 
+                "--rt-min=0.8",
+                "--rt-max=0.85", 
+                "--max-active=4000", 
+                "--beam=12.0", 
+                "--acoustic-scale=0.0769", 
+                "--left-context=4", 
+                "--right-context=4", 
+                "scp:./wav.scp", 
+                "/home/huanyuan/code/kaldi/model/HMM_MDL/gmm-hmm/final.mdl", 
+                "/home/huanyuan/code/kaldi/model/HMM_MDL/gmm-hmm/HCLG.fst", 
+                "/home/huanyuan/code/kaldi/model/HMM_MDL/gmm-hmm/words.txt",
+                "1:2:3:4:5",
+                "ark,t:/home/huanyuan/code/kaldi/model/HMM_MDL/tmp/trans.txt",
+                "ark,t:/home/huanyuan/code/kaldi/model/HMM_MDL/tmp/ali.txt",
+                "/home/huanyuan/code/kaldi/model/HMM_MDL/gmm-hmm/final.mat"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/speech/lib/Debug",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
             "name": "(gdb) online2-wav-nnet3-latgen-faster",
             "type": "cppdbg",
             "request": "launch",
