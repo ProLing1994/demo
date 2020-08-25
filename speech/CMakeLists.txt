@@ -20,6 +20,9 @@ find_package(CUDA REQUIRED)
 # find OPENFST libaray
 find_package(OPENFST REQUIRED)
 
+# find PortAudio libaray
+find_package(PortAudio REQUIRED)
+
 # find KALDI libaray
 find_package(KALDI REQUIRED)
 
