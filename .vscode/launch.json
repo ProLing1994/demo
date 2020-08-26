@@ -5,6 +5,68 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "(gdb) online2-simulation-nnet3-decode-faster",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/speech/lib/Debug/online2-simulation-nnet3-decode-faster",
+            "args": [
+                "--config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/endpoint.conf", 
+                "--ivector-extraction-config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/ivector_extractor.conf", 
+                "--online-pitch-config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/online_pitch.conf", 
+                "--mfcc-config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/mfcc_hires.conf",
+                "--max-active=7000", 
+                "--beam=15.0", 
+                "--lattice-beam=6.0", 
+                "--acoustic-scale=1.0", 
+                "/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/final.mdl", 
+                "/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/HCLG.fst", 
+                "/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/words.txt",
+                "ark:/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/wav/spk2utt.ark",
+                "scp:/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/wav/wav.scp"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "(gdb) online2-tcp-nnet3-decode-faster",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/speech/lib/Debug/online2-tcp-nnet3-decode-faster",
+            "args": [
+                "--config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/endpoint.conf", 
+                "--ivector-extraction-config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/ivector_extractor.conf", 
+                "--online-pitch-config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/online_pitch.conf", 
+                "--mfcc-config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/mfcc_hires.conf",
+                "--max-active=7000", 
+                "--beam=15.0", 
+                "--lattice-beam=6.0", 
+                "--acoustic-scale=1.0", 
+                "/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/final.mdl", 
+                "/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/HCLG.fst", 
+                "/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/words.txt"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/speech/lib/Debug/",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
             "name": "(gdb) new-model-online2-wav-nnet3-latgen-faster",
             "type": "cppdbg",
             "request": "launch",
