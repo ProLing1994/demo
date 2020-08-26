@@ -101,8 +101,7 @@ int main(int argc, char *argv[]) {
     BaseFloat chunk_length_secs = 0.185;
     BaseFloat output_period = 1;
     BaseFloat samp_freq = 16000.0;
-    int read_timeout = 3;
-    bool produce_time = false;
+    bool produce_time = true;
 
     po.Register("samp-freq", &samp_freq,
                 "Sampling frequency of the input signal (coded as 16-bit slinear).");
@@ -110,10 +109,6 @@ int main(int argc, char *argv[]) {
                 "Length of chunk size in seconds, that we process.");
     po.Register("output-period", &output_period,
                 "How often in seconds, do we check for changes in output.");
-    po.Register("num-threads-startup", &g_num_threads,
-                "Number of threads used when initializing iVector extractor.");
-    po.Register("read-timeout", &read_timeout,
-                "Number of seconds of timeout for TCP audio data to appear on the stream. Use -1 for blocking.");
     po.Register("produce-time", &produce_time,
                 "Prepend begin/end times between endpoints (e.g. '5.46 6.81 <text_output>', in seconds)");
 
@@ -188,6 +183,7 @@ int main(int argc, char *argv[]) {
         std::cout << "File: " << utt << std::endl;
         const WaveData &wav_data = wav_reader.Value(utt);
         OnlineVectorSource au_src(wav_data.Data().Row(0));
+
         int32 samp_count = 0;// this is used for output refresh rate
         size_t chunk_len = static_cast<size_t>(chunk_length_secs * samp_freq);
         int32 check_period = static_cast<int32>(samp_freq * output_period);
@@ -211,7 +207,7 @@ int main(int argc, char *argv[]) {
           std::vector<std::pair<int32, BaseFloat>> delta_weights;
 
           while (true) {
-            Vector<BaseFloat> wave_part = Vector<BaseFloat>(chunk_len);
+            Vector<BaseFloat> wave_part(chunk_len);
             eos = !au_src.Read(&wave_part);
 
             if (eos) {
