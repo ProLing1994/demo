@@ -1,16 +1,16 @@
 ROOT_DIR:=$(shell pwd)
 TARGET:= demo_hello_world
-STUDENT:=/home/workspace/RMAI/yuanhuan/streamax/HelloWorld/Student_himix200/release/app
+STUDENT:=/home/huanyuan/code/demo/HelloWorld/Student_himix200/release/app
 
 CC		:= arm-himix200-linux-g++ 
 CFLAGS	:= -mcpu=cortex-a53 -mfloat-abi=softfp -mfpu=neon-vfpv4 -mno-unaligned-access -fno-aggressive-loop-optimizations \
 -W -Wall -O3 -std=c++11 -DNNIE -fpic -fno-strict-aliasing -traditional -Wno-reorder -Wno-char-subscripts
-INCLUDE	:= -I$(STUDENT)/include -I/home/workspace/RMAI/yuanhuan/code/eigen-git-mirror/build/install/include/eigen3
-# LIBS	:= -L$(STUDENT)/lib 
-# STATIC_LIB:=$(STUDENT)/lib/libstduent.a
-LIBS	:= -L$(STUDENT)/lib -lstduent
-STATIC_LIB:=
-LIBS	+= $(STATIC_LIB)
+INCLUDE	:= -I$(STUDENT)/include -I/home/huanyuan/code/eigen-git-mirror/build/install/include/eigen3 \
+-I/home/huanyuan/code/kaldi/hisi/kaldi/tools/openfst-1.6.7/include -I/home/huanyuan/code/kaldi/hisi/OpenBLAS/install/include \
+-I/home/huanyuan/code/kaldi/hisi/alsa-lib-1.1.7/install/include
+LIBS	:= -L$(STUDENT)/lib -lstduent -L/home/huanyuan/code/kaldi/hisi/alsa-lib-1.1.7/install/lib -lasound
+STATIC_LIB:= /home/huanyuan/code/kaldi/hisi/kaldi/tools/openfst-1.6.7/lib/libfst.a /home/huanyuan/code/kaldi/hisi/OpenBLAS/install/lib/libopenblas.a
+LIBS	+= $(STATIC_LIB) -ldl -lpthread 
 
 SRC_DIR	+=$(ROOT_DIR)/demo
 SRC_FILE_CPP+=$(foreach d, $(SRC_DIR), $(wildcard $(addprefix $(d)\/*, .cpp))) 
