@@ -17,13 +17,13 @@ def draw_gif(folder_dir, image_jpgs, gif_path, duration):
     for jpg in image_jpgs:
         fpath = os.path.join(folder_dir, jpg)
         im = Image.open(fpath)
-        # im = im.resize([im.size[0] // 2, im.size[1] // 2])
+        im = im.resize([im.size[0] * 2 // 3, im.size[1] * 2 // 3])
         images.append(np.array(im))
     imageio.mimsave(gif_path, images, duration=duration)
 
 if __name__ == '__main__':
-    input_path = r"C:\Users\39294\Desktop\yuanhuan\gif"
-    gif_name = './deepsort.gif'
+    input_path = '/home/huanyuan/temp/gif/'
+    gif_name = '/home/huanyuan/temp/deepsort.gif'
     duration = 0.05
 
     image_list = os.listdir(input_path)
