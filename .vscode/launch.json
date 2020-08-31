@@ -199,7 +199,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/speech/lib/Debug/online2-wav-nnet3-latgen-faster",
-            "args": ["--do-endpointing=true", 
+            "args": ["--do-endpointing=false", 
                 "--online=true",
                 "--config=/home/huanyuan/code/kaldi/demo/chain/online.conf", 
                 "--mfcc-config=/home/huanyuan/code/kaldi/demo/chain/mfcc.conf", 
