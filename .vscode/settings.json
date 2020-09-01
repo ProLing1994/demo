@@ -72,6 +72,7 @@
         "csignal": "cpp",
         "scoped_allocator": "cpp",
         "regex": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "string": "cpp"
     }
 }

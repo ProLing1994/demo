@@ -1,11 +1,11 @@
 ROOT_DIR:=$(shell pwd)
 TARGET:= demo_hello_world
-STUDENT:=/home/workspace/RMAI/yuanhuan/streamax/HelloWorld/Student_linux/release/app
+STUDENT:=/home/huanyuan/code/demo/HelloWorld/Student_linux/release/app/
 
 CC		:= g++ 
 AR		:= ar
 CFLAGS	:= -g -W -Wall -std=c++11 -DNNIE -fpic -fno-strict-aliasing -traditional -Wno-reorder -Wno-char-subscripts
-INCLUDE	:= -I$(STUDENT)/include
+INCLUDE	:= -I$(STUDENT)/include -I/home/huanyuan/code/eigen-git-mirror/build/install/include/eigen3/
 # LIBS	:= -L$(STUDENT)/lib 
 # STATIC_LIB:=$(STUDENT)/lib/libstduent.a
 LIBS	:= -L$(STUDENT)/lib -lstduent

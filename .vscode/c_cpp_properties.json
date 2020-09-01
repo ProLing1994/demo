@@ -4,7 +4,7 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/home/workspace/RMAI/yuanhuan/code/eigen-git-mirror/build/install/include/eigen3",
+                "/home/huanyuan/code/eigen-git-mirror/build/install/include/eigen3/",
                 "/home/huanyuan/code/kaldi/kaldi/src",
                 "/home/huanyuan/code/kaldi/kaldi/tools/openfst-1.6.7/include",
                 "/home/huanyuan/code/kaldi/kaldi/tools/portaudio/install/include"
