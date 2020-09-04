@@ -1,6 +1,14 @@
 #include "main.h"
 #include "student.h"
 
+#ifndef TEST_TIME
+#include <sys/time.h>
+#define TEST_TIME(times) do{\
+        struct timeval cur_time;\
+	    gettimeofday(&cur_time, NULL);\
+	    times = (cur_time.tv_sec * 1000000llu + cur_time.tv_usec) / 1000llu;\
+	}while(0)
+#endif
 using namespace fst;
 
 int main() {
@@ -104,6 +112,23 @@ int main() {
     printf("\nPCM states:\n");
     for (int val = 0; val <= SND_PCM_STATE_LAST; val++)
         printf(" %s\n",snd_pcm_state_name((snd_pcm_state_t)val));
+    
+    std::vector<TokenList> vec;
+    unsigned long long start_time = 0, end_time = 0;
+    unsigned long long read_size_time = 0, resize_time = 0;
+    for(int i = 0; i < 2000; i++) {
+        TEST_TIME(start_time);
+        int size = vec.size();
+        TEST_TIME(end_time);
+        read_size_time += end_time - start_time;
+
+        TEST_TIME(start_time);
+        vec.resize(size + 1);
+        TEST_TIME(end_time);
+        resize_time += end_time - start_time;
+    }
+    std::cout <<"\033[0;32mRead size time: " << read_size_time << " ms. \033[0;39m" << std::endl;
+    std::cout <<"\033[0;32mResize time: " << resize_time << " ms. \033[0;39m" << std::endl;
 
     return 1;
 }

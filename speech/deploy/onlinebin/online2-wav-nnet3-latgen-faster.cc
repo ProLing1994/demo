@@ -40,38 +40,71 @@
 
 // extern unsigned long long advance_chunk_time;
 // extern unsigned long long AcceptWaveform_ComputeFeatures_PushBack_time;
+extern unsigned long long get_next_cutoff_time;
+extern unsigned long long total_get_next_cutoff_time;
 
 namespace kaldi {
 
+// void GetDiagnosticsAndPrintOutput(const std::string &utt,
+//                                   const fst::SymbolTable *word_syms,
+//                                   const CompactLattice &clat,
+//                                   int64 *tot_num_frames,
+//                                   double *tot_like) {
+//   if (clat.NumStates() == 0) {
+//     KALDI_WARN << "Empty lattice.";
+//     return;
+//   }
+//   CompactLattice best_path_clat;
+//   CompactLatticeShortestPath(clat, &best_path_clat);
+
+//   Lattice best_path_lat;
+//   ConvertLattice(best_path_clat, &best_path_lat);
+
+//   double likelihood;
+//   LatticeWeight weight;
+//   int32 num_frames;
+//   std::vector<int32> alignment;
+//   std::vector<int32> words;
+//   GetLinearSymbolSequence(best_path_lat, &alignment, &words, &weight);
+//   num_frames = alignment.size();
+//   likelihood = -(weight.Value1() + weight.Value2());
+//   *tot_num_frames += num_frames;
+//   *tot_like += likelihood;
+//   KALDI_VLOG(2) << "Likelihood per frame for utterance " << utt << " is "
+//                 << (likelihood / num_frames) << " over " << num_frames
+//                 << " frames, = " << (-weight.Value1() / num_frames)
+//                 << ',' << (weight.Value2() / num_frames);
+
+//   if (word_syms != NULL) {
+//     std::cerr << utt << ' ';
+//     for (size_t i = 0; i < words.size(); i++) {
+//       std::string s = word_syms->Find(words[i]);
+//       if (s == "")
+//         KALDI_ERR << "Word-id " << words[i] << " not in symbol table.";
+//       std::cerr << s << ' ';
+//     }
+//     std::cerr << std::endl;
+//   }
+// }
+
+/// Change(YuanHuan)
 void GetDiagnosticsAndPrintOutput(const std::string &utt,
                                   const fst::SymbolTable *word_syms,
-                                  const CompactLattice &clat,
+                                  const Lattice &clat,
                                   int64 *tot_num_frames,
                                   double *tot_like) {
   if (clat.NumStates() == 0) {
     KALDI_WARN << "Empty lattice.";
     return;
   }
-  CompactLattice best_path_clat;
-  CompactLatticeShortestPath(clat, &best_path_clat);
+  fst::VectorFst<fst::StdArc> fst;
+  ConvertLattice(clat, &fst); // convert from lattice to normal FST.
+  fst::VectorFst<fst::StdArc> fst_shortest_path;
+  fst::ShortestPath(fst, &fst_shortest_path); // take shortest path of FST.
 
-  Lattice best_path_lat;
-  ConvertLattice(best_path_clat, &best_path_lat);
-
-  double likelihood;
-  LatticeWeight weight;
-  int32 num_frames;
-  std::vector<int32> alignment;
-  std::vector<int32> words;
-  GetLinearSymbolSequence(best_path_lat, &alignment, &words, &weight);
-  num_frames = alignment.size();
-  likelihood = -(weight.Value1() + weight.Value2());
-  *tot_num_frames += num_frames;
-  *tot_like += likelihood;
-  KALDI_VLOG(2) << "Likelihood per frame for utterance " << utt << " is "
-                << (likelihood / num_frames) << " over " << num_frames
-                << " frames, = " << (-weight.Value1() / num_frames)
-                << ',' << (weight.Value2() / num_frames);
+  std::vector<int32> alignment, words;
+  fst::TropicalWeight weight;
+  GetLinearSymbolSequence(fst_shortest_path, &alignment, &words, &weight);
 
   if (word_syms != NULL) {
     std::cerr << utt << ' ';
@@ -101,7 +134,7 @@ int main(int argc, char *argv[]) {
     unsigned long long get_frame_feature_time = 0, total_frame_feature_time = 0,get_frame_decoding_time = 0, total_frame_decoding_time = 0;
     unsigned long long get_final_decode_after_time = 0, get_final_decode_before_time = 0;
     unsigned long long after_decode_time = 0;
-    unsigned long long total_AcceptWaveform_ComputeFeatures_PushBack_time = 0;
+    // unsigned long long total_AcceptWaveform_ComputeFeatures_PushBack_time = 0;
     uint32 loop_time = 0;
     TEST_TIME(start_time);
 
@@ -229,7 +262,9 @@ int main(int argc, char *argv[]) {
 
     SequentialTokenVectorReader spk2utt_reader(spk2utt_rspecifier);
     RandomAccessTableReader<WaveHolder> wav_reader(wav_rspecifier);
-    CompactLatticeWriter clat_writer(clat_wspecifier);
+    // CompactLatticeWriter clat_writer(clat_wspecifier);
+    /// Change(YuanHuan)
+    LatticeWriter clat_writer(clat_wspecifier);
 
     TEST_TIME(read_spk2utt_wav_time); 
     std::cout <<"\033[0;31mLoad spk2utt wav time " << read_spk2utt_wav_time - read_fst_time << " ms. \033[0;39m\n" << std::endl;
@@ -325,7 +360,7 @@ int main(int argc, char *argv[]) {
 
           decoder.AdvanceDecoding();
           TEST_TIME(get_frame_decoding_time);
-          std::cout <<"\033[0;31mAccept decode per frame time " << get_frame_decoding_time - get_frame_feature_time << " ms. \033[0;39m\n" << std::endl;
+          std::cout <<"\033[0;31mAdvanceDecoding per frame time " << get_frame_decoding_time - get_frame_feature_time << " ms. \033[0;39m\n" << std::endl;
           total_frame_decoding_time += get_frame_decoding_time - get_frame_feature_time;
 
           if (do_endpointing && decoder.EndpointDetected(endpoint_opts)) {
@@ -334,7 +369,8 @@ int main(int argc, char *argv[]) {
         }
 
         // std::cout <<"\n\033[0;34mDo AdvanceChunk: " << advance_chunk_time << " ms. \033[0;39m" << std::endl;
-        std::cout <<"\033[0;31mAcceptWaveform -> ComputeFeatures -> PushBack: [Total]push back time " << total_AcceptWaveform_ComputeFeatures_PushBack_time << " ms. \033[0;39m" << std::endl;
+        // std::cout <<"\033[0;31mAcceptWaveform -> ComputeFeatures -> PushBack: [Total]push back time " << total_AcceptWaveform_ComputeFeatures_PushBack_time << " ms. \033[0;39m" << std::endl;
+        std::cout <<"\033[0;31mdecoder.AdvanceDecoding(): [Total]next_cutoff time " << total_get_next_cutoff_time << " ms. \033[0;39m" << std::endl;
         std::cout <<"\033[0;31mTotal feature frames time " << total_frame_feature_time << " ms. \033[0;39m" << std::endl;
         std::cout <<"\033[0;31mTotal decode frames time " << total_frame_decoding_time << " ms. \033[0;39m" << std::endl;
         std::cout <<"\033[0;31mTotal loop time " << loop_time << "\033[0;39m\n" << std::endl;
@@ -343,10 +379,16 @@ int main(int argc, char *argv[]) {
         TEST_TIME(get_final_decode_after_time);
         std::cout <<"\033[0;31mFinal Decode time " <<  get_final_decode_after_time - get_final_decode_before_time << " ms. \033[0;39m" << std::endl;
 
-        CompactLattice clat;
+        // CompactLattice clat;
+        // bool end_of_utterance = true;
+        // decoder.GetLattice(end_of_utterance, &clat);
+        // GetDiagnosticsAndPrintOutput(utt, word_syms, clat,
+        //                            &num_frames, &tot_like);
+
+        /// Change(YuanHuan)
+        Lattice clat;
         bool end_of_utterance = true;
         decoder.GetLattice(end_of_utterance, &clat);
-
         GetDiagnosticsAndPrintOutput(utt, word_syms, clat,
                                      &num_frames, &tot_like);
 
