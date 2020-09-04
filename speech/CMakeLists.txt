@@ -11,7 +11,7 @@ project(yh_speech)
 #    `.rodata' can not be used when making a shared object;
 #    recompile with -fPIC
 if (UNIX OR APPLE)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fPIC")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fPIC -Wl,--no-undefined")
 endif(UNIX OR APPLE)
 
 # CUDA
