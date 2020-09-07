@@ -7,7 +7,6 @@
 
 #include "opencv2/core.hpp"
 #include "opencv2/imgproc.hpp"
-
 #include "inference_engine.hpp"
 
 namespace OPENVINO {
@@ -20,8 +19,8 @@ namespace OPENVINO {
 
 	struct OptionsOPENVINO {
 	OptionsOPENVINO() :
-	  //device_name("CPU"),
-	  device_name("GPU"),
+	  device_name("CPU"),
+	  // device_name("GPU"),
 	  nthreads(4) {}
 
 	// device_name, support for ["CPU"/"GPU"/"MULTI:CPU,GPU"]
