@@ -73,6 +73,7 @@
         "scoped_allocator": "cpp",
         "regex": "cpp",
         "random": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "*.ipp": "cpp"
     }
 }

@@ -23,7 +23,7 @@ find_library(OpenVINO_LIBRARY inference_engine
 
 find_library(OpenVINO_legacy_LIBRARY inference_engine_legacy
   HINTS ${OpenVINO_DIR} 
-  PATH_SUFFIXES deployment_tools/inference_engine/lib/intel64/Release)
+  PATH_SUFFIXES deployment_tools/inference_engine/lib/intel64)
 
 find_package_handle_standard_args(
   OpenVINO DEFAULT_MSG OpenVINO_INCLUDE_DIR OpenVINO_LIBRARY OpenVINO_legacy_LIBRARY)
