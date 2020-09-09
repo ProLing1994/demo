@@ -12,20 +12,20 @@
 #include "glog/logging.h"
 
 // Windows
-// DEFINE_string(image_folder, "F:/test/images",
-//   "The folder containing the image data");
-// DEFINE_string(model_path, "F:/test/models/ssd_License_plate_mobilenetv2.xml",
-//   "The network model path");
-// DEFINE_string(output_folder, "F:/test/images_result",
-//   "The folder containing the output results");
+ DEFINE_string(image_folder, "F:/test/images",
+   "The folder containing the image data");
+ DEFINE_string(model_path, "F:/test/models/ssd_License_plate_mobilenetv2.xml",
+   "The network model path");
+ DEFINE_string(output_folder, "F:/test/images_result",
+   "The folder containing the output results");
 
 // Ubuntu 
-DEFINE_string(image_folder, "/home/huanyuan/code/images",
-  "The folder containing the image data");
-DEFINE_string(model_path, "/home/huanyuan/code/models/ssd_License_plate_mobilenetv2.xml",
-  "The network model path");
-DEFINE_string(output_folder, "/home/huanyuan/code/images_result",
-  "The folder containing the output results");
+//DEFINE_string(image_folder, "/home/huanyuan/code/images",
+//  "The folder containing the image data");
+//DEFINE_string(model_path, "/home/huanyuan/code/models/ssd_License_plate_mobilenetv2.xml",
+//  "The network model path");
+//DEFINE_string(output_folder, "/home/huanyuan/code/images_result",
+//  "The folder containing the output results");
 
 void gen_result(cv::Mat& img_src,
                 const std::vector<OPENVINO::ObjectInformation>& objects, 
@@ -55,7 +55,7 @@ void gen_result(cv::Mat& img_src,
 void ssd_detect_thread(
     const std::vector<std::string>& image_names, 
     const int loop_times, 
-    float* time_num) {
+    double* time_num) {
 	
 	std::shared_ptr<OPENVINO::MobilenetSSDDetector> mobilenet_ssd_detector;
 	mobilenet_ssd_detector.reset(new OPENVINO::MobilenetSSDDetector());
@@ -92,10 +92,10 @@ int main(int argc, char* argv[]) {
 
   int loop_times = 100;
 
-  float time_num_t1 = 0.0;
-  float time_num_t2 = 0.0;
-  float time_num_t3 = 0.0;
-  float time_num_t4 = 0.0;
+  double time_num_t1 = 0.0;
+  double time_num_t2 = 0.0;
+  double time_num_t3 = 0.0;
+  double time_num_t4 = 0.0;
   std::thread t1(ssd_detect_thread, image_names, loop_times, &time_num_t1);
   std::thread t2(ssd_detect_thread, image_names, loop_times, &time_num_t2);
   std::thread t3(ssd_detect_thread, image_names, loop_times, &time_num_t3);
