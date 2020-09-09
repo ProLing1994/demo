@@ -5,6 +5,31 @@
     "version": "0.2.0",
     "configurations": [
     {
+        "name": "(gdb) test_mobilenet_ssd_yuv",
+        "type": "cppdbg",
+        "request": "launch",
+        // "program": "${workspaceFolder}/OpenVINO/lib/Debug/test_mobilenet_ssd_yuv",
+        "program": "${workspaceFolder}/OpenVINO/lib/Release/test_mobilenet_ssd_yuv",
+        "args": [
+            "--device=CPU",
+            "--nthreads=4",
+            "--show_image=true",
+            "--logtostderr",],
+        "stopAtEntry": false,
+        // "cwd": "${workspaceFolder}/OpenVINO/lib/Debug/",
+        "cwd": "${workspaceFolder}/OpenVINO/lib/Release/",
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "setupCommands": [
+            {
+                "description": "Enable pretty-printing for gdb",
+                "text": "-enable-pretty-printing",
+                "ignoreFailures": true
+            }
+        ]
+    },
+    {
         "name": "(gdb) test_mobilenet_ssd_opencv",
         "type": "cppdbg",
         "request": "launch",

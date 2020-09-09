@@ -6,7 +6,11 @@
 namespace OPENVINO {
 
 	MobilenetSSDDetector::MobilenetSSDDetector() {
-			options_mobilenet_ssd_ = OptionsMobilenetSSD();
+		options_mobilenet_ssd_ = OptionsMobilenetSSD();
+	}
+
+	MobilenetSSDDetector::MobilenetSSDDetector(double threshold, std::vector<std::string>& class_names, std::string device_name, int nthreads){
+		options_mobilenet_ssd_ = OptionsMobilenetSSD(threshold, class_names, device_name, nthreads);
 	}
 
 	MobilenetSSDDetector::~MobilenetSSDDetector() {

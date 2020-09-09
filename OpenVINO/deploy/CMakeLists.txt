@@ -20,3 +20,8 @@ add_executable(test_mobilenet_ssd_opencv test_mobilenet_ssd_opencv.cpp)
 target_link_libraries(test_mobilenet_ssd_opencv ${OpenCV_LIBS})
 target_link_libraries(test_mobilenet_ssd_opencv debug ${YH_COMMON_UTILITY_LIBRARY_DEBUG} optimized ${YH_COMMON_UTILITY_LIBRARY_RELEASE})
 target_link_libraries(test_mobilenet_ssd_opencv glog::glog)
+
+add_executable(test_mobilenet_ssd_yuv test_mobilenet_ssd_yuv.cpp)
+target_link_libraries(test_mobilenet_ssd_yuv yh_openvino ${OpenCV_LIBS})
+target_link_libraries(test_mobilenet_ssd_yuv debug ${YH_COMMON_UTILITY_LIBRARY_DEBUG} optimized ${YH_COMMON_UTILITY_LIBRARY_RELEASE})
+target_link_libraries(test_mobilenet_ssd_yuv glog::glog)
