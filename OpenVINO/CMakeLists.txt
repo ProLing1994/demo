@@ -19,7 +19,9 @@ project(yh_openvino)
 # 2) to fix compilation problem: relocation R_X86_64_32 against
 #    `.rodata' can not be used when making a shared object;
 #    recompile with -fPIC
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fPIC -Wl,--no-undefined")
+if (UNIX OR APPLE)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fPIC -Wl,--no-undefined")
+endif(UNIX OR APPLE)
 
 # add gflag
 find_package(gflags REQUIRED)
