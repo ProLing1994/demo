@@ -179,7 +179,7 @@ int main(int argc, char* argv[]) {
 	  gen_result(yuv_img, objects);
 	  fout.write(reinterpret_cast<char*>(yuv_img.data), framesize);
 	}
-	LOG(INFO) << "\033[0;31mFrame: " << i << ", Read time: " << read_time << "ms, Cvt color time: " << cvt_color_time << "ms, Detect time: " << detect_time << " ms. \033[0;39m";
+	LOG(INFO) << "\033[0;31mFrame: " << i << ", Read time: " << read_time << "ms, Cvt color time: " << cvt_color_time << "ms, Detect time: " << detect_time << " ms. \033[;39m";
   }
 
   LOG(INFO) << "\033[0;31mRead average time = " << read_average_time / FrameCount << "ms, Cvt color average time = " << cvt_color_average_time / FrameCount << "ms, Detect average time = " << detect_average_time / FrameCount << "ms. \033[0;39m";
