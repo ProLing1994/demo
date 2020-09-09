@@ -62,7 +62,7 @@ int main(int argc, char* argv[]) {
   std::vector<std::string> image_names;
   yh_common::list_directory(FLAGS_image_folder.c_str(), image_subfolder, image_names);
 
-  float time_num = 0.0;
+  double time_num = 0.0;
   int loop_times = 10;
 
   for (int i = 0; i < loop_times; i++) {

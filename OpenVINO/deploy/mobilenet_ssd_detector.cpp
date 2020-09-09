@@ -61,7 +61,7 @@ namespace OPENVINO {
 		CHECK_NOTNULL(output_info_);
 
 		const InferenceEngine::SizeVector outputDims = output_info_->getTensorDesc().getDims();
-		const int objectSize = outputDims[3];
+		const size_t objectSize = outputDims[3];
 
 		if (objectSize != 7) {
 			throw std::logic_error("Output item should have 7 as a last dimension");
@@ -94,7 +94,7 @@ namespace OPENVINO {
 
 		// resize image
 		cv::Mat img_resized(img_src);
-		cv::resize(img_src, img_resized, cv::Size(input_info_->getTensorDesc().getDims()[3], input_info_->getTensorDesc().getDims()[2]));
+		cv::resize(img_src, img_resized, cv::Size(static_cast<int>(input_info_->getTensorDesc().getDims()[3]), static_cast<int>(input_info_->getTensorDesc().getDims()[2])));
 
 		// Creating input blob 
 		InferenceEngine::Blob::Ptr imageInput = infer_request_.GetBlob(input_name_);
@@ -141,8 +141,8 @@ namespace OPENVINO {
 		std::vector<std::vector<int> > classes(network_.getBatchSize());
 
 		const InferenceEngine::SizeVector outputDims = output_info_->getTensorDesc().getDims();	
-		const int maxProposalCount = outputDims[2];
-		const int objectSize = outputDims[3];
+		const size_t maxProposalCount = outputDims[2];
+		const size_t objectSize = outputDims[3];
 
 		/* Each detection has image_id that denotes processed image */
 		for (int curProposal = 0; curProposal < maxProposalCount; curProposal++) {
