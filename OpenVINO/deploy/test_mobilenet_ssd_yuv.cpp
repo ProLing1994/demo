@@ -4,7 +4,7 @@
 
 #include "opencv2/opencv.hpp"
 
-#include "mobilenet_ssd_detector.h"
+#include "inference_detection_openvino.hpp"
 #include "gflags/gflags.h"
 #include "glog/logging.h"
 
@@ -60,23 +60,23 @@ DEFINE_bool(show_image, true,
 DEFINE_bool(output_image, true,
  "output image");
 
-void gen_result(cv::Mat& img_src,
-	const std::vector<OPENVINO::ObjectInformation>& objects) {
-  int num_objects = static_cast<int>(objects.size());
+void DrawRectangle(cv::Mat& cvMatImageSrc,
+	const std::vector<inference_openvino::OBJECT_INFO_S>& nObject) {
+  int s32ObjectNum = static_cast<int>(nObject.size());
 
-  for (int i = 0; i < num_objects; ++i) {
-	LOG(INFO) << "location: " << objects[i].location_;
-	LOG(INFO) << "label: " << objects[i].name_.c_str() << ", score: " << objects[i].score_ * 100;
+  for (int i = 0; i < s32ObjectNum; ++i) {
+	LOG(INFO) << "location: " << nObject[i].cvRectLocation;
+	LOG(INFO) << "label: " << nObject[i].strClassName.c_str() << ", score: " << nObject[i].f32Score * 100;
 
-	cv::rectangle(img_src, objects[i].location_, cv::Scalar(0, 0, 255), 2);
+	cv::rectangle(cvMatImageSrc, nObject[i].cvRectLocation, cv::Scalar(0, 0, 255), 2);
 
-	char text[256];
-	sprintf(text, "%s %.1f%%", objects[i].name_.c_str(), objects[i].score_ * 100);
+	char scText[256];
+	sprintf(scText, "%s %.1f%%", nObject[i].strClassName.c_str(), nObject[i].f32Score * 100);
 
-	int baseLine = 0;
-	cv::Size label_size = cv::getTextSize(text, cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &baseLine);
-	cv::putText(img_src, text, cv::Point(objects[i].location_.x,
-	  objects[i].location_.y + label_size.height),
+	int s32BaseLine = 0;
+	cv::Size label_size = cv::getTextSize(scText, cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &s32BaseLine);
+	cv::putText(cvMatImageSrc, scText, cv::Point(nObject[i].cvRectLocation.x,
+	  nObject[i].cvRectLocation.y + label_size.height),
 	  cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 250, 0), 1);
   }
 }
@@ -86,89 +86,91 @@ int main(int argc, char* argv[]) {
   google::InitGoogleLogging(argv[0]);
 
   // model init
-  double threshold = 0.5;
-  std::vector<std::string> class_names;
-  class_names.push_back("background");
-  class_names.push_back("License_plate");
-  std::shared_ptr<OPENVINO::MobilenetSSDDetector> mobilenet_ssd_detector;
-  // mobilenet_ssd_detector.reset(new OPENVINO::MobilenetSSDDetector());
-  mobilenet_ssd_detector.reset(new OPENVINO::MobilenetSSDDetector(threshold, class_names, FLAGS_device, FLAGS_nthreads));
-  int error_int = mobilenet_ssd_detector->init(FLAGS_model_path);
+	inference_openvino::INFERENCE_OPTIONS_S InferenceOptions;
+	InferenceOptions.f64Threshold = 0.5;
+  std::vector<std::string> nClassName;
+  nClassName.push_back("background");
+  nClassName.push_back("License_plate");
+	InferenceOptions.nClassName = nClassName;
+	InferenceOptions.OpenvinoOptions.u32ThreadNum = FLAGS_nthreads;
+	InferenceOptions.OpenvinoOptions.strDeviceName = FLAGS_device;
+  std::shared_ptr<inference_openvino::rmInferenceDetectionOpenvino> InferenceDetectionOpenvino;
+  InferenceDetectionOpenvino.reset(new inference_openvino::rmInferenceDetectionOpenvino(FLAGS_model_path, InferenceOptions));
+  int error_int = InferenceDetectionOpenvino->Init();
+	if (error_int < 0) {
+		LOG(ERROR) << "ERROR, func: " << __FUNCTION__ << ", line: " << __LINE__ << ", Init failed";
+		return -1;
+	}
 
   // data init
-  int image_width = 2592;
-  int image_height = 1920;
-  const int framesize = image_width * image_height * 3 / 2;
-  char* yuv_buf = new char[framesize];
+  const int s32ImageWidth = 2592;
+  const int s32ImageHeight = 1920;
+  const int s32FrameSize = s32ImageWidth * s32ImageHeight * 3 / 2;
+  char* pstscYuvBuf = new char[s32FrameSize];
 
-  std::ifstream fin;
-  fin.open(FLAGS_yuv_path, std::ios_base::in | std::ios_base::binary);
-  if (fin.fail()) {
+  std::ifstream Fin;
+  Fin.open(FLAGS_yuv_path, std::ios_base::in | std::ios_base::binary);
+  if (Fin.fail()) {
 	LOG(ERROR) << "ERROR, func: " << __FUNCTION__ << ", line: " << __LINE__ << ", open " << FLAGS_yuv_path << " failed";
 	return -1;
   }
-  fin.seekg(0, std::ios::end);
-  std::streampos ps = fin.tellg();
-  int FrameCount = static_cast<int>(ps / framesize);
-  LOG(INFO) << "[Total] Frame number: " << FrameCount;
+  Fin.seekg(0, std::ios::end);
+  std::streampos StreamPos = Fin.tellg();
+  int s32FrameCount = static_cast<int>(StreamPos / s32FrameSize);
+  LOG(INFO) << "[Total] Frame number: " << s32FrameCount;
 
-  fin.clear();
-  fin.seekg(0, std::ios_base::beg);
-  unsigned long long start_time = 0, end_time = 0;
-  unsigned long long read_time = 0, cvt_color_time = 0, detect_time = 0;
-  unsigned long long read_average_time = 0, cvt_color_average_time = 0, detect_average_time = 0;
+  Fin.clear();
+  Fin.seekg(0, std::ios_base::beg);
+  unsigned long long u64StartTime = 0, u64EndTime = 0;
+  unsigned long long u64ReadTime = 0, u64CvtColorTime = 0, u64DetectTime = 0;
+  unsigned long long u64ReadAverageTime = 0, u64CvtColorAverageTime = 0, u64DetectAverageTime = 0;
 
   // output init
-  //cv::VideoWriter writer;
-  std::ofstream fout;
+  std::ofstream Fout;
   if (FLAGS_output_image) {
-	std::string input_path = FLAGS_yuv_path;
+	std::string strInputPath = FLAGS_yuv_path;
 	#ifdef WIN32
-	std::string input_name = input_path.substr(input_path.find_last_of("\\") + 1);
-	//input_name.replace(input_name.find(".yuv"), 4, ".avi");
-	std::string output_path = FLAGS_output_folder + "\\result_" + input_name;
+	std::string strInputName = strInputPath.substr(strInputPath.find_last_of("\\") + 1);
+	std::string strOutputPath = FLAGS_output_folder + "\\result_" + strInputName;
 	#else
-	std::string input_name = input_path.substr(input_path.find_last_of("/") + 1);
-	//input_name.replace(input_name.find(".yuv"), 4, ".avi");
-	std::string output_path = FLAGS_output_folder + "/result_" + input_name;
+	std::string strInputName = strInputPath.substr(strInputPath.find_last_of("/") + 1);
+	std::string strOutputPath = FLAGS_output_folder + "/result_" + strInputName;
 	#endif
-	LOG(INFO) << output_path;
-	fout.open(output_path, std::ios_base::out | std::ios_base::binary);
-	//writer.open(output_path, writer.fourcc('F', 'L', 'V', '1'), 25, cv::Size(image_width, image_height), true);
+	LOG(INFO) << strOutputPath;
+	Fout.open(strOutputPath, std::ios_base::out | std::ios_base::binary);
   }
 
-  for (int i = 0; i < FrameCount; ++i)
-  {
-	TEST_TIME(start_time);
+  for (int i = 0; i < s32FrameCount; ++i) {
+	TEST_TIME(u64StartTime);
 
-	fin.read(yuv_buf, framesize);
+	Fin.read(pstscYuvBuf, s32FrameSize);
 
-	TEST_TIME(end_time);
-	read_time = end_time - start_time;
-	read_average_time += read_time;
-	TEST_TIME(start_time);
+	TEST_TIME(u64EndTime);
+	u64ReadTime = u64EndTime - u64StartTime;
+	u64ReadAverageTime += u64ReadTime;
+	TEST_TIME(u64StartTime);
 
-	cv::Mat yuv_img(image_height * 3 / 2, image_width, CV_8UC1, static_cast<void*>(yuv_buf));
-	cv::Mat rgb_img;
-	cv::cvtColor(yuv_img, rgb_img, cv::COLOR_YUV420sp2RGB);
+	cv::Mat cvMatYuvImage(s32ImageHeight * 3 / 2, s32ImageWidth, CV_8UC1, static_cast<void*>(pstscYuvBuf));
+	cv::Mat cvMatRgbImage;
+	cv::cvtColor(cvMatYuvImage, cvMatRgbImage, cv::COLOR_YUV420sp2RGB);
 	// cv::cvtColor(yuv_img, rgb_img, cv::COLOR_YUV420sp2BGR);
 
-	TEST_TIME(end_time);
-	cvt_color_time = end_time - start_time;
-	cvt_color_average_time += cvt_color_time;
-	TEST_TIME(start_time);
+	TEST_TIME(u64EndTime);
+	u64CvtColorTime = u64EndTime - u64StartTime;
+	u64CvtColorAverageTime += u64CvtColorTime;
+	TEST_TIME(u64StartTime);
 
-	std::vector<OPENVINO::ObjectInformation> objects;
-	mobilenet_ssd_detector->detect(rgb_img, &objects);
+	std::vector<inference_openvino::OBJECT_INFO_S> nObject;
+	InferenceDetectionOpenvino->Detect(cvMatRgbImage, &nObject);
 
-	TEST_TIME(end_time);
-	detect_time = end_time - start_time;
-	detect_average_time += detect_time;
+	TEST_TIME(u64EndTime);
+	u64DetectTime = u64EndTime - u64StartTime;
+	u64DetectAverageTime += u64DetectTime;
 
 	if (FLAGS_show_image) {
-	  gen_result(rgb_img, objects);
-	  cv::resize(rgb_img, rgb_img, cv::Size(640, 480));
-	  cv::imshow("image", rgb_img);
+	  DrawRectangle(cvMatRgbImage, nObject);
+	  cv::resize(cvMatRgbImage, cvMatRgbImage, cv::Size(640, 480));
+	  cv::imshow("image", cvMatRgbImage);
 	  cv::waitKey(1);
 	}
 
@@ -176,15 +178,15 @@ int main(int argc, char* argv[]) {
 	  //gen_result(rgb_img, objects);
 	  //writer.write(rgb_img);
 	  //writer << rgb_img;
-	  gen_result(yuv_img, objects);
-	  fout.write(reinterpret_cast<char*>(yuv_img.data), framesize);
+	  DrawRectangle(cvMatYuvImage, nObject);
+	  Fout.write(reinterpret_cast<char*>(cvMatYuvImage.data), s32FrameSize);
 	}
-	LOG(INFO) << "\033[0;31mFrame: " << i << ", Read time: " << read_time << "ms, Cvt color time: " << cvt_color_time << "ms, Detect time: " << detect_time << " ms. \033[;39m";
+	LOG(INFO) << "\033[0;31mFrame: " << i << ", Read time: " << u64ReadTime << "ms, Cvt color time: " << u64CvtColorTime << "ms, Detect time: " << u64DetectTime << " ms. \033[;39m";
   }
 
-  LOG(INFO) << "\033[0;31mRead average time = " << read_average_time / FrameCount << "ms, Cvt color average time = " << cvt_color_average_time / FrameCount << "ms, Detect average time = " << detect_average_time / FrameCount << "ms. \033[0;39m";
-  fin.close();
-  fout.close();
+  LOG(INFO) << "\033[0;31mRead average time = " << u64ReadAverageTime / s32FrameCount << "ms, Cvt color average time = " << u64CvtColorAverageTime / s32FrameCount << "ms, Detect average time = " << u64DetectAverageTime / s32FrameCount << "ms. \033[0;39m";
+  Fin.close();
+  Fout.close();
   //writer.release();
   google::ShutdownGoogleLogging();
   return 0;

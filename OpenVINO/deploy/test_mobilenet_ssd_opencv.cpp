@@ -6,7 +6,7 @@
 #include "opencv2/dnn.hpp"
 
 #include "common/utils/csrc/file_system.h"
-#include "mobilenet_ssd_detector.h"
+#include "inference_detection_openvino.hpp"
 #include "gflags/gflags.h"
 #include "glog/logging.h"
 
@@ -25,23 +25,23 @@ DEFINE_string(output_folder, "/home/huanyuan/code/images_result",
   "The folder containing the output results");
 
 void gen_result(cv::Mat& img_src,
-                const std::vector<OPENVINO::ObjectInformation>& objects, 
+                const std::vector<inference_openvino::OBJECT_INFO_S>& objects, 
                 const std::string output_image_path) {
   int num_objects = static_cast<int>(objects.size());
 
   for (int i = 0; i < num_objects; ++i) {
-    LOG(INFO) << "location: " << objects[i].location_;
-    LOG(INFO) << "label: " << objects[i].name_.c_str() << ", score: " << objects[i].score_ * 100;
+    LOG(INFO) << "location: " << objects[i].cvRectLocation;
+    LOG(INFO) << "label: " << objects[i].strClassName.c_str() << ", score: " << objects[i].f32Score * 100;
 
-    cv::rectangle(img_src, objects[i].location_, cv::Scalar(0, 0, 255), 2);
+    cv::rectangle(img_src, objects[i].cvRectLocation, cv::Scalar(0, 0, 255), 2);
 
     char text[256];
-    sprintf(text, "%s %.1f%%", objects[i].name_.c_str(), objects[i].score_ * 100);
+    sprintf(text, "%s %.1f%%", objects[i].strClassName.c_str(), objects[i].f32Score * 100);
 
     int baseLine = 0;
     cv::Size label_size = cv::getTextSize(text, cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &baseLine);
-    cv::putText(img_src, text, cv::Point(objects[i].location_.x,
-        objects[i].location_.y + label_size.height),
+    cv::putText(img_src, text, cv::Point(objects[i].cvRectLocation.x,
+        objects[i].cvRectLocation.y + label_size.height),
         cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 250, 0), 1);
   }
   cv::imwrite(output_image_path, img_src);
@@ -66,7 +66,7 @@ int main(int argc, char* argv[]) {
   // net.setPreferableBackend(cv::dnn::DNN_BACKEND_OPENCV);
   net.setPreferableTarget(cv::dnn::DNN_TARGET_CPU);
 
-  OPENVINO::OptionsMobilenetSSD ssd;
+  inference_openvino::INFERENCE_OPTIONS_S ssd;
 
   std::vector<std::string> image_subfolder;
   std::vector<std::string> image_names;
@@ -81,7 +81,7 @@ int main(int argc, char* argv[]) {
       std::string output_image_path = FLAGS_output_folder + "/" + image_names[idx];
       
       cv::Mat img_src = cv::imread(image_path.c_str(), 1);
-      std::vector<OPENVINO::ObjectInformation> objects;
+      std::vector<inference_openvino::OBJECT_INFO_S> objects;
 
       int width = img_src.cols;
 		  int height = img_src.rows;
@@ -106,15 +106,15 @@ int main(int argc, char* argv[]) {
         int ymax = static_cast<int>(detectionMat.at<float>(i, 6) * height);
 
 
-        if (confidence > ssd.threshold) {
+        if (confidence > ssd.f64Threshold) {
           /** Drawing only objects with >50% probability **/
-          OPENVINO::ObjectInformation object;
-          object.name_ = ssd.class_names[label];
-          object.score_ = confidence;
-          object.location_.x = xmin;
-          object.location_.y = ymin;
-          object.location_.width = xmax - xmin;
-          object.location_.height = ymax - ymin;
+          inference_openvino::OBJECT_INFO_S object;
+          object.strClassName = ssd.nClassName[label];
+          object.f32Score = confidence;
+          object.cvRectLocation.x = xmin;
+          object.cvRectLocation.y = ymin;
+          object.cvRectLocation.width = xmax - xmin;
+          object.cvRectLocation.height = ymax - ymin;
           objects.push_back(object);
         }
       }
