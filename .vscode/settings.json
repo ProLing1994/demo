@@ -74,6 +74,7 @@
         "regex": "cpp",
         "random": "cpp",
         "string": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "*.inc": "cpp"
     }
 }
