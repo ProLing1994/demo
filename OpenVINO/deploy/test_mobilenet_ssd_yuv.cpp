@@ -29,36 +29,36 @@
 #endif
 
 // Windows
-DEFINE_string(yuv_path, "F:\\test\\DataSets\\test_001.yuv",
-  "The yuv data path");
-DEFINE_string(model_path, "F:\\test\\models\\ssd_License_plate_mobilenetv2.xml",
-  "The network model path");
-DEFINE_string(output_folder, "F:\\test\\images_result",
-  "The folder containing the output results");
-DEFINE_string(device, "CPU",
-  "device name, support for ['CPU'/'GPU']");
-DEFINE_int32(nthreads, 4,
-  "CPU nthreads");
-DEFINE_bool(show_image, true,
-  "show image");
-DEFINE_bool(output_image, true,
-  "output image");
+// DEFINE_string(yuv_path, "F:\\test\\DataSets\\test_001.yuv",
+//   "The yuv data path");
+// DEFINE_string(model_path, "F:\\test\\models\\ssd_License_plate_mobilenetv2.xml",
+//   "The network model path");
+// DEFINE_string(output_folder, "F:\\test\\images_result",
+//   "The folder containing the output results");
+// DEFINE_string(device, "CPU",
+//   "device name, support for ['CPU'/'GPU']");
+// DEFINE_int32(nthreads, 4,
+//   "CPU nthreads");
+// DEFINE_bool(show_image, true,
+//   "show image");
+// DEFINE_bool(output_image, true,
+//   "output image");
 
 // Ubuntu 
-//DEFINE_string(yuv_path, "/home/huanyuan/code/yuv/output.yuv",
-//  "The yuv data path");
-//DEFINE_string(model_path, "/home/huanyuan/code/models/ssd_License_plate_mobilenetv2.xml",
-//  "The network model path");
-//DEFINE_string(output_folder, "/home/huanyuan/code/images_result",
-//  "The folder containing the output results");
-//DEFINE_string(device, "CPU",
-//  "device name, support for ['CPU'/'GPU']");
-//DEFINE_int32(nthreads, 4,
-//  "CPU nthreads");
-//DEFINE_bool(show_image, true,
-//  "show image");
-//DEFINE_bool(output_image, true,
-//  "output image");
+DEFINE_string(yuv_path, "/home/huanyuan/code/yuv/output.yuv",
+ "The yuv data path");
+DEFINE_string(model_path, "/home/huanyuan/code/models/ssd_License_plate_mobilenetv2.xml",
+ "The network model path");
+DEFINE_string(output_folder, "/home/huanyuan/code/images_result",
+ "The folder containing the output results");
+DEFINE_string(device, "CPU",
+ "device name, support for ['CPU'/'GPU']");
+DEFINE_int32(nthreads, 4,
+ "CPU nthreads");
+DEFINE_bool(show_image, true,
+ "show image");
+DEFINE_bool(output_image, true,
+ "output image");
 
 void gen_result(cv::Mat& img_src,
 	const std::vector<OPENVINO::ObjectInformation>& objects) {
