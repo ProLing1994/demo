@@ -24,15 +24,15 @@ namespace inference_openvino {
 
 	struct OPENVINO_OPTIONS_S {
 	OPENVINO_OPTIONS_S() :
-	  strDeviceName("CPU"),
+	  strDeviceType("CPU"),
 	  // strDeviceName("GPU"),
 	  u32ThreadNum(4) {}
 		
 	OPENVINO_OPTIONS_S(const OPENVINO_OPTIONS_S& OpenvinoOptions) :
-		strDeviceName(OpenvinoOptions.strDeviceName),
+		strDeviceType(OpenvinoOptions.strDeviceType),
 	  u32ThreadNum(OpenvinoOptions.u32ThreadNum) {}
 
-	std::string strDeviceName;// ["CPU"/"GPU"/"MULTI:CPU,GPU"]
+	std::string strDeviceType;// ["CPU"/"GPU"/"MULTI:CPU,GPU"]
 	unsigned int u32ThreadNum;
   };
 
@@ -43,12 +43,7 @@ namespace inference_openvino {
 			nClassName = {
 				"background", "License_plate" };
 			// nClassName = {
-			//     "background", "aeroplane", "bicycle", "bird", "boat",
-			//     "bottle", "bus", "car", "cat", "chair",
-			//     "cow", "diningtable", "dog", "horse",
-			//     "motorbike", "person", "pottedplant",
-			//     "sheep", "sofa", "train", "tvmonitor"
-			// };
+			// 	"background", "Face" };
 		}
 
 		INFERENCE_OPTIONS_S(const INFERENCE_OPTIONS_S& InferenceOptions) :

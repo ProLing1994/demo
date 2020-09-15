@@ -57,7 +57,7 @@ void ssd_detect_thread(
     const int loop_times, 
     double* time_num) {
 	
-	std::shared_ptr<inference_openvino::rmInferenceDetectionOpenvino> mobilenet_ssd_detector;
+	std::unique_ptr<inference_openvino::rmInferenceDetectionOpenvino> mobilenet_ssd_detector;
 	mobilenet_ssd_detector.reset(new inference_openvino::rmInferenceDetectionOpenvino(FLAGS_model_path));
 	int error_int = mobilenet_ssd_detector->Init();
 

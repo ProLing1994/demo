@@ -20,7 +20,7 @@
 // Ubuntu 
 DEFINE_string(image_folder, "/home/huanyuan/code/images",
  "The folder containing the image data");
-DEFINE_string(model_path, "/home/huanyuan/code/models/ssd_License_plate_mobilenetv2.xml",
+DEFINE_string(model_path, "/home/huanyuan/code/models/ssd_face_mask.xml",
  "The network model path");
 DEFINE_string(output_folder, "/home/huanyuan/code/images_result",
  "The folder containing the output results");
@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
   google::ParseCommandLineFlags(&argc, &argv, true);
   google::InitGoogleLogging(argv[0]);
 
-  std::shared_ptr<inference_openvino::rmInferenceDetectionOpenvino> mobilenet_ssd_detector;
+  std::unique_ptr<inference_openvino::rmInferenceDetectionOpenvino> mobilenet_ssd_detector;
   mobilenet_ssd_detector.reset(new inference_openvino::rmInferenceDetectionOpenvino(FLAGS_model_path));
   int error_int = mobilenet_ssd_detector->Init();
 
