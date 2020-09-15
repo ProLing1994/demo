@@ -104,7 +104,7 @@ int main(int argc, char* argv[]) {
     ConfigInfo.s32GPU = -1;
     ConfigInfo.s32ThreadNum = 0;
   }
-  void* pstModel;
+  void* pstModel = nullptr;
   int error_int = Init(&ConfigFile, &ConfigInfo, &pstModel);
 	if (error_int != 0) {
 		LOG(ERROR) << "ERROR, func: " << __FUNCTION__ << ", line: " << __LINE__ << ", Init failed";
