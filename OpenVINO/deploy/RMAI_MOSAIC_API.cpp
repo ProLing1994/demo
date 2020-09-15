@@ -33,6 +33,9 @@ int Init(CONFIG_FILE_S* pstFile, CONFIG_INFO_S* pstInfo, void** Handle){
   // init
   *Handle = new inference_openvino::rmInferenceDetectionModel();
   inference_openvino::rmInferenceDetectionModel* pstInferenceModels = static_cast<inference_openvino::rmInferenceDetectionModel*>(*Handle);
+  // static std::unique_ptr<inference_openvino::rmInferenceDetectionModel> pstInferenceModels;
+  // pstInferenceModels.reset(new inference_openvino::rmInferenceDetectionModel());
+  // *Handle = static_cast<void*>(&pstInferenceModels);
 
   inference_openvino::INFERENCE_OPTIONS_S InferenceOptions;
   std::vector<std::string> nClassName;
@@ -101,6 +104,8 @@ int Run(void* Handle, IMAG_INFO_S* pstImage, INPUT_INFO_S* pstInput, std::vector
   
   inference_openvino::rmInferenceDetectionModel *pstInferenceModels = static_cast<inference_openvino::rmInferenceDetectionModel* >(Handle);
   int s32ErrorCode = pstInferenceModels->CheckModel();
+  // std::unique_ptr<inference_openvino::rmInferenceDetectionModel> *pstInferenceModels = static_cast<std::unique_ptr<inference_openvino::rmInferenceDetectionModel>* >(Handle);
+  // int s32ErrorCode = (*pstInferenceModels)->CheckModel();
   if (s32ErrorCode !=0) {
     LOG(ERROR) << "ERROR, func: " << __FUNCTION__ << ", line: " << __LINE__ 
       << ", Do not find License Plate Model or Face Model, please init License Plate Model or Face Model first";
@@ -121,6 +126,8 @@ int Run(void* Handle, IMAG_INFO_S* pstImage, INPUT_INFO_S* pstInput, std::vector
   std::vector<inference_openvino::OBJECT_INFO_S> nObject;
   pstInferenceModels->DetectLicensePlateModel(cvMatRgbImage, &nObject);
   pstInferenceModels->DetectFaceModel(cvMatRgbImage, &nObject);
+  // (*pstInferenceModels)->DetectLicensePlateModel(cvMatRgbImage, &nObject);
+  // (*pstInferenceModels)->DetectFaceModel(cvMatRgbImage, &nObject);
   
   // gen nResult
   for (int s32IdObject = 0; s32IdObject < nObject.size(); s32IdObject++) {
@@ -151,5 +158,7 @@ int UnInit(void* Handle) {
   CHECK_NOTNULL(Handle);
   inference_openvino::rmInferenceDetectionModel *pstInferenceModels = static_cast<inference_openvino::rmInferenceDetectionModel* >(Handle);
   pstInferenceModels->~rmInferenceDetectionModel();
+  // std::unique_ptr<inference_openvino::rmInferenceDetectionModel> *pstInferenceModels = static_cast<std::unique_ptr<inference_openvino::rmInferenceDetectionModel>* >(Handle);
+  // (*pstInferenceModels)->~rmInferenceDetectionModel();
   return 0;
 }
