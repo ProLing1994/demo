@@ -5,10 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(gdb) test_struct_size",
+            "name": "(gdb) test_unique_ptr",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/common/common/lib/Debug/test_struct_size",
+            "program": "${workspaceFolder}/common/common/lib/Debug/test_unique_ptr",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
