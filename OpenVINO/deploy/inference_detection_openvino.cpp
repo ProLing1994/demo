@@ -23,38 +23,41 @@ namespace inference_openvino {
 		LOG(INFO) << "Start init.";
 
 		// 0. Check input
-		if (m_InferenceOptions.OpenvinoOptions.strDeviceName != "CPU" &&
-		 		m_InferenceOptions.OpenvinoOptions.strDeviceName != "GPU" &&
-				m_InferenceOptions.OpenvinoOptions.strDeviceName != "MULTI:CPU,GPU") {
+		if (m_InferenceOptions.OpenvinoOptions.strDeviceType != "CPU" &&
+		 		m_InferenceOptions.OpenvinoOptions.strDeviceType != "GPU" &&
+				m_InferenceOptions.OpenvinoOptions.strDeviceType != "MULTI:CPU,GPU") {
 			LOG(ERROR) << "ERROR, func: " << __FUNCTION__ << ", line: " << __LINE__ 
-				<< ", strDeviceName only support for ['CPU'/'GPU'/'MULTI:CPU,GPU'], can not be " 
-				<< m_InferenceOptions.OpenvinoOptions.strDeviceName;
+				<< ", DeviceName only support for ['CPU'/'GPU'/'MULTI:CPU,GPU'], can not be " 
+				<< m_InferenceOptions.OpenvinoOptions.strDeviceType;
 			return -1;
 		}
 
-		if (m_InferenceOptions.OpenvinoOptions.u32ThreadNum <= 0 ||
-		 		m_InferenceOptions.OpenvinoOptions.u32ThreadNum > 32) {
+		if (m_InferenceOptions.OpenvinoOptions.strDeviceType == "CPU" &&
+				(m_InferenceOptions.OpenvinoOptions.u32ThreadNum <= 0 ||
+		 		m_InferenceOptions.OpenvinoOptions.u32ThreadNum > 32)) {
 			LOG(ERROR) << "ERROR, func: " << __FUNCTION__ << ", line: " << __LINE__ 
-				<< ", u32ThreadNum only support for 1 ~ 32, can not be " << m_InferenceOptions.OpenvinoOptions.u32ThreadNum;
+				<< ", ThreadNum only support for 1 ~ 32, can not be " << m_InferenceOptions.OpenvinoOptions.u32ThreadNum;
 			return -1;
 		}
 
 		if (m_strModelPath.find(".xml") == m_strModelPath.npos) {
 			LOG(ERROR) << "ERROR, func: " << __FUNCTION__ << ", line: " << __LINE__ 
-				<< ", m_strModelPath type must be .xml.";
+				<< ", ModelPath type must be .xml";
 			return -1;
 		}
 
 		// 1. Load inference engine
 		LOG(INFO) << "Loading inference engine";
 		InferenceEngine::Core Ie;
-		Ie.GetVersions(m_InferenceOptions.OpenvinoOptions.strDeviceName);
-		 
-		if (m_InferenceOptions.OpenvinoOptions.strDeviceName == "CPU") {
+		Ie.GetVersions(m_InferenceOptions.OpenvinoOptions.strDeviceType);
+		LOG(INFO) << "Device Type: \n\t" << m_InferenceOptions.OpenvinoOptions.strDeviceType;
+
+		if (m_InferenceOptions.OpenvinoOptions.strDeviceType == "CPU") {
 		  std::map<std::string, std::map<std::string, std::string>> nConfig;
-		  nConfig[m_InferenceOptions.OpenvinoOptions.strDeviceName] = {};
-		  std::map<std::string, std::string>& nDeviceConfig = nConfig.at(m_InferenceOptions.OpenvinoOptions.strDeviceName);
+		  nConfig[m_InferenceOptions.OpenvinoOptions.strDeviceType] = {};
+		  std::map<std::string, std::string>& nDeviceConfig = nConfig.at(m_InferenceOptions.OpenvinoOptions.strDeviceType);
 		  nDeviceConfig[CONFIG_KEY(CPU_THREADS_NUM)] = std::to_string(m_InferenceOptions.OpenvinoOptions.u32ThreadNum);
+			LOG(INFO) << "CPU Thread Number: \n\t" << m_InferenceOptions.OpenvinoOptions.u32ThreadNum;
 
 		  for (auto&& item : nConfig) {
 			Ie.SetConfig(item.second, item.first);
@@ -103,7 +106,7 @@ namespace inference_openvino {
 		LOG(INFO) << "Loading model to the device";
 		InferenceEngine::ExecutableNetwork ExecutableNetwork = Ie.LoadNetwork(
 				m_Network, 
-				m_InferenceOptions.OpenvinoOptions.strDeviceName);
+				m_InferenceOptions.OpenvinoOptions.strDeviceType);
 		
 		// 6. Create infer request 
 		LOG(INFO) << "Create infer request";
@@ -114,6 +117,8 @@ namespace inference_openvino {
 	}
 
 	int rmInferenceDetectionOpenvino::Detect(const cv::Mat& cvMatImage, std::vector<OBJECT_INFO_S>* pstnObject) {
+		CHECK_NOTNULL(pstnObject);
+
 		LOG(INFO) << "Start detect.";
 
 		// 1. Prepare input
@@ -130,9 +135,9 @@ namespace inference_openvino {
 		// Filling input tensor with images. First b channel, then g and r channels 
 		InferenceEngine::MemoryBlob::Ptr pstMemortImage = InferenceEngine::as<InferenceEngine::MemoryBlob>(pstImageInput);
 		if (!pstMemortImage) {
-				LOG(ERROR) << "We expect image blob to be inherited from MemoryBlob, but by fact we were not able "
-						"to cast imageInput to MemoryBlob";
-				return -1;
+			LOG(ERROR) << "We expect image blob to be inherited from MemoryBlob, but by fact we were not able "
+				"to cast imageInput to MemoryBlob";
+			return -1;
 		}
 		// locked memory holder should be alive all time while access to its buffer happens
 		auto InputHolder = pstMemortImage->wmap();
@@ -142,11 +147,11 @@ namespace inference_openvino {
 
 		/** Iterate over all pixel in image (b,g,r) **/
 		for (size_t u32Pid = 0; u32Pid < u32ImageSize; u32Pid++) {
-				/** Iterate over all channels **/
-				for (size_t u32Ch = 0; u32Ch < u32ChannelsNum; ++u32Ch) {
-						/**          [images stride + channels stride + pixel id ] all in bytes            **/
-						pstucData[u32Ch * u32ImageSize + u32Pid] = cvMatImageResized.data[u32Pid * u32ChannelsNum + u32Ch];
-				}
+			/** Iterate over all channels **/
+			for (size_t u32Ch = 0; u32Ch < u32ChannelsNum; ++u32Ch) {
+				/**          [images stride + channels stride + pixel id ] all in bytes            **/
+				pstucData[u32Ch * u32ImageSize + u32Pid] = cvMatImageResized.data[u32Pid * u32ChannelsNum + u32Ch];
+			}
 		}
 
 		// 2. Do inference 	
@@ -186,14 +191,14 @@ namespace inference_openvino {
 
 			if (f32Confidence > m_InferenceOptions.f64Threshold) {
 				/** Drawing only objects with >50% probability **/
-				OBJECT_INFO_S object;
-				object.strClassName = m_InferenceOptions.nClassName[label];
-				object.f32Score = f32Confidence;
-				object.cvRectLocation.x = xmin;
-				object.cvRectLocation.y = ymin;
-				object.cvRectLocation.width = xmax - xmin;
-				object.cvRectLocation.height = ymax - ymin;
-    		pstnObject->push_back(object);
+				OBJECT_INFO_S Object;
+				Object.strClassName = m_InferenceOptions.nClassName[label];
+				Object.f32Score = f32Confidence;
+				Object.cvRectLocation.x = xmin;
+				Object.cvRectLocation.y = ymin;
+				Object.cvRectLocation.width = xmax - xmin;
+				Object.cvRectLocation.height = ymax - ymin;
+    		pstnObject->push_back(Object);
 			}
 		}
 

@@ -93,8 +93,8 @@ int main(int argc, char* argv[]) {
   nClassName.push_back("License_plate");
 	InferenceOptions.nClassName = nClassName;
 	InferenceOptions.OpenvinoOptions.u32ThreadNum = FLAGS_nthreads;
-	InferenceOptions.OpenvinoOptions.strDeviceName = FLAGS_device;
-  std::shared_ptr<inference_openvino::rmInferenceDetectionOpenvino> InferenceDetectionOpenvino;
+	InferenceOptions.OpenvinoOptions.strDeviceType = FLAGS_device;
+  std::unique_ptr<inference_openvino::rmInferenceDetectionOpenvino> InferenceDetectionOpenvino;
   InferenceDetectionOpenvino.reset(new inference_openvino::rmInferenceDetectionOpenvino(FLAGS_model_path, InferenceOptions));
   int error_int = InferenceDetectionOpenvino->Init();
 	if (error_int < 0) {
@@ -116,8 +116,8 @@ int main(int argc, char* argv[]) {
   }
   Fin.seekg(0, std::ios::end);
   std::streampos StreamPos = Fin.tellg();
-  int s32FrameCount = static_cast<int>(StreamPos / s32FrameSize);
-  LOG(INFO) << "[Total] Frame number: " << s32FrameCount;
+  int s32FrameNum = static_cast<int>(StreamPos / s32FrameSize);
+  LOG(INFO) << "[Total] Frame number: " << s32FrameNum;
 
   Fin.clear();
   Fin.seekg(0, std::ios_base::beg);
@@ -140,51 +140,52 @@ int main(int argc, char* argv[]) {
 	Fout.open(strOutputPath, std::ios_base::out | std::ios_base::binary);
   }
 
-  for (int i = 0; i < s32FrameCount; ++i) {
-	TEST_TIME(u64StartTime);
+  for (int i = 0; i < s32FrameNum; ++i) {
+		TEST_TIME(u64StartTime);
 
-	Fin.read(pstscYuvBuf, s32FrameSize);
+		Fin.read(pstscYuvBuf, s32FrameSize);
 
-	TEST_TIME(u64EndTime);
-	u64ReadTime = u64EndTime - u64StartTime;
-	u64ReadAverageTime += u64ReadTime;
-	TEST_TIME(u64StartTime);
+		TEST_TIME(u64EndTime);
+		u64ReadTime = u64EndTime - u64StartTime;
+		u64ReadAverageTime += u64ReadTime;
+		TEST_TIME(u64StartTime);
 
-	cv::Mat cvMatYuvImage(s32ImageHeight * 3 / 2, s32ImageWidth, CV_8UC1, static_cast<void*>(pstscYuvBuf));
-	cv::Mat cvMatRgbImage;
-	cv::cvtColor(cvMatYuvImage, cvMatRgbImage, cv::COLOR_YUV420sp2RGB);
-	// cv::cvtColor(yuv_img, rgb_img, cv::COLOR_YUV420sp2BGR);
+		cv::Mat cvMatYuvImage(s32ImageHeight * 3 / 2, s32ImageWidth, CV_8UC1, static_cast<void*>(pstscYuvBuf));
+		cv::Mat cvMatRgbImage;
+		cv::cvtColor(cvMatYuvImage, cvMatRgbImage, cv::COLOR_YUV420sp2RGB);
+		// cv::cvtColor(yuv_img, rgb_img, cv::COLOR_YUV420sp2BGR);
 
-	TEST_TIME(u64EndTime);
-	u64CvtColorTime = u64EndTime - u64StartTime;
-	u64CvtColorAverageTime += u64CvtColorTime;
-	TEST_TIME(u64StartTime);
+		TEST_TIME(u64EndTime);
+		u64CvtColorTime = u64EndTime - u64StartTime;
+		u64CvtColorAverageTime += u64CvtColorTime;
+		TEST_TIME(u64StartTime);
 
-	std::vector<inference_openvino::OBJECT_INFO_S> nObject;
-	InferenceDetectionOpenvino->Detect(cvMatRgbImage, &nObject);
+		std::vector<inference_openvino::OBJECT_INFO_S> nObject;
+		InferenceDetectionOpenvino->Detect(cvMatRgbImage, &nObject);
 
-	TEST_TIME(u64EndTime);
-	u64DetectTime = u64EndTime - u64StartTime;
-	u64DetectAverageTime += u64DetectTime;
+		TEST_TIME(u64EndTime);
+		u64DetectTime = u64EndTime - u64StartTime;
+		u64DetectAverageTime += u64DetectTime;
 
-	if (FLAGS_show_image) {
-	  DrawRectangle(cvMatRgbImage, nObject);
-	  cv::resize(cvMatRgbImage, cvMatRgbImage, cv::Size(640, 480));
-	  cv::imshow("image", cvMatRgbImage);
-	  cv::waitKey(1);
-	}
+		if (FLAGS_show_image) {
+			DrawRectangle(cvMatRgbImage, nObject);
+			cv::resize(cvMatRgbImage, cvMatRgbImage, cv::Size(640, 480));
+			cv::imshow("image", cvMatRgbImage);
+			cv::waitKey(1);
+		}
 
-	if (FLAGS_output_image) {
-	  //gen_result(rgb_img, objects);
-	  //writer.write(rgb_img);
-	  //writer << rgb_img;
-	  DrawRectangle(cvMatYuvImage, nObject);
-	  Fout.write(reinterpret_cast<char*>(cvMatYuvImage.data), s32FrameSize);
-	}
-	LOG(INFO) << "\033[0;31mFrame: " << i << ", Read time: " << u64ReadTime << "ms, Cvt color time: " << u64CvtColorTime << "ms, Detect time: " << u64DetectTime << " ms. \033[;39m";
+		if (FLAGS_output_image) {
+			//gen_result(rgb_img, objects);
+			//writer.write(rgb_img);
+			//writer << rgb_img;
+			DrawRectangle(cvMatYuvImage, nObject);
+			Fout.write(reinterpret_cast<char*>(cvMatYuvImage.data), s32FrameSize);
+		}
+		LOG(INFO) << "\033[0;31mFrame: " << i << ", Read time: " << u64ReadTime << "ms, Cvt color time: " << u64CvtColorTime << "ms, Detect time: " << u64DetectTime << " ms. \033[;39m";
   }
 
-  LOG(INFO) << "\033[0;31mRead average time = " << u64ReadAverageTime / s32FrameCount << "ms, Cvt color average time = " << u64CvtColorAverageTime / s32FrameCount << "ms, Detect average time = " << u64DetectAverageTime / s32FrameCount << "ms. \033[0;39m";
+  LOG(INFO) << "\033[0;31mRead average time = " << u64ReadAverageTime / s32FrameNum << "ms, Cvt color average time = " << u64CvtColorAverageTime / s32FrameNum << "ms, Detect average time = " << u64DetectAverageTime / s32FrameNum << "ms. \033[0;39m";
+	delete [] pstscYuvBuf;
   Fin.close();
   Fout.close();
   //writer.release();

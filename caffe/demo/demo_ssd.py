@@ -70,12 +70,12 @@ if __name__ == "__main__":
 	#             'sheep', 'sofa', 'train', 'tvmonitor')
 
 	# face
-	# ssd_model = "/home/huanyuan/code/models/ssd_face_mask.caffemodel"
-	# ssd_prototxt = "/home/huanyuan/code/models/ssd_face_mask.prototxt"
-	# ssd_param_CHW  = [3, 300, 300]
-	# ssd_mean  = [127.5, 127.5, 127.5]
-	# ssd_scale  = 0.007843
-	# CLASSES = ('background', "face")
+	ssd_model = "/home/huanyuan/code/models/ssd_face_mask.caffemodel"
+	ssd_prototxt = "/home/huanyuan/code/models/ssd_face_mask.prototxt"
+	ssd_param_CHW  = [3, 300, 300]
+	ssd_mean  = [127.5, 127.5, 127.5]
+	ssd_scale  = 0.007843
+	CLASSES = ('background', "face")
 
 	# car
 	# ssd_model = "/home/huanyuan/code/models/ssd_car_0710.caffemodel"
@@ -87,12 +87,12 @@ if __name__ == "__main__":
 	# CLASSES = ('background', "car")
 
 	# License_plate
-	ssd_model = "/home/huanyuan/code/models/ssd_License_plate_mobilenetv2.caffemodel"
-	ssd_prototxt = "/home/huanyuan/code/models/ssd_License_plate_mobilenetv2_fpn_ncnn_concat.prototxt"
-	ssd_param_CHW  = [3, 300, 300]
-	ssd_mean  = [104.0, 117.0, 123.0]
-	ssd_scale  = 1.0
-	CLASSES = ('background', "License_plate")
+	# ssd_model = "/home/huanyuan/code/models/ssd_License_plate_mobilenetv2.caffemodel"
+	# ssd_prototxt = "/home/huanyuan/code/models/ssd_License_plate_mobilenetv2_fpn_ncnn_concat.prototxt"
+	# ssd_param_CHW  = [3, 300, 300]
+	# ssd_mean  = [104.0, 117.0, 123.0]
+	# ssd_scale  = 1.0
+	# CLASSES = ('background', "License_plate")
 
 	# something wronge
 	# ssd_model = "/home/huanyuan/code/MNN/models/face.caffemodel"

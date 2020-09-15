@@ -23,7 +23,7 @@ void ssd_detect_thread(
     const int loop_times, 
     float* time_num) {
 	
-	std::shared_ptr<MNN::MobilenetSSDDetector> mobilenet_ssd_detector;
+	std::unique_ptr<MNN::MobilenetSSDDetector> mobilenet_ssd_detector;
 	mobilenet_ssd_detector.reset(new MNN::MobilenetSSDDetector());
 	int error_int = mobilenet_ssd_detector->init(FLAGS_model_path.c_str());
 
