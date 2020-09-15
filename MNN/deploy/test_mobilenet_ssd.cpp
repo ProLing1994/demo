@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
   google::ParseCommandLineFlags(&argc, &argv, true);
   google::InitGoogleLogging(argv[0]);
 
-  std::shared_ptr<MNN::MobilenetSSDDetector> mobilenet_ssd_detector;
+  std::unique_ptr<MNN::MobilenetSSDDetector> mobilenet_ssd_detector;
   mobilenet_ssd_detector.reset(new MNN::MobilenetSSDDetector());
   int error_int = mobilenet_ssd_detector->init(FLAGS_model_path.c_str());
 
