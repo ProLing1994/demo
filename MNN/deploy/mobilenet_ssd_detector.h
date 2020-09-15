@@ -74,7 +74,7 @@ namespace MNN {
   private:
 	OptionsMobilenetSSD options_mobilenet_ssd_;
 	std::unique_ptr<MNN::Interpreter> mobilenetssd_interpreter_;
-	std::shared_ptr<MNN::CV::ImageProcess> image_process = nullptr;
+	std::unique_ptr<MNN::CV::ImageProcess> image_process = nullptr;
 	MNN::Session* mobilenetssd_session_ = nullptr;
 	MNN::Tensor * input_tensor_ = nullptr;
   };

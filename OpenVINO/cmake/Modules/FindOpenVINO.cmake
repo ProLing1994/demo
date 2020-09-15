@@ -33,3 +33,28 @@ if(OpenVINO_FOUND)
   set(OpenVINO_LIBRARY_DIRS ${OpenVINO_LIBRARY} ${OpenVINO_legacy_LIBRARY} )
   include_directories(${OpenVINO_INCLUDE_DIRS})
 endif()
+
+# include(FindPackageHandleStandardArgs)
+
+# set(OpenVINO_DIR "/home/huanyuan/code/openvino" CACHE PATH "Folder contains package OpenVINO")
+
+# find_path(OpenVINO_INCLUDE_DIR inference_engine.hpp
+#   HINTS ${OpenVINO_DIR}
+#   PATH_SUFFIXES build/install/deployment_tools/inference_engine/include)
+
+# find_library(OpenVINO_LIBRARY inference_engine
+#   HINTS ${OpenVINO_DIR} 
+#   PATH_SUFFIXES bin/intel64/Release/lib)
+
+# find_library(OpenVINO_legacy_LIBRARY inference_engine_legacy
+#   HINTS ${OpenVINO_DIR} 
+#   PATH_SUFFIXES bin/intel64/Release/lib)
+
+# find_package_handle_standard_args(
+#   OpenVINO DEFAULT_MSG OpenVINO_INCLUDE_DIR OpenVINO_LIBRARY OpenVINO_legacy_LIBRARY)
+
+# if(OpenVINO_FOUND)
+#   set(OpenVINO_INCLUDE_DIRS ${OpenVINO_INCLUDE_DIR} )
+#   set(OpenVINO_LIBRARY_DIRS ${OpenVINO_LIBRARY} ${OpenVINO_legacy_LIBRARY} )
+#   include_directories(${OpenVINO_INCLUDE_DIRS})
+# endif()

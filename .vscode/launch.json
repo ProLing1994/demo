@@ -4,6 +4,46 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        {
+            "name": "(gdb) test_unique_ptr",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/common/common/lib/Debug/test_unique_ptr",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+    {
+        "name": "(gdb) test_mosaic_api",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/OpenVINO/lib/Debug/test_mosaic_api",
+        "args": [
+            "--model_type=2",
+            "--logtostderr"],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}/OpenVINO/lib/Debug",
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "setupCommands": [
+            {
+                "description": "Enable pretty-printing for gdb",
+                "text": "-enable-pretty-printing",
+                "ignoreFailures": true
+            }
+        ]
+    },
     {
         "name": "(gdb) test_mobilenet_ssd_yuv",
         "type": "cppdbg",
@@ -14,7 +54,7 @@
             "--device=CPU",
             "--nthreads=4",
             "--show_image=true",
-            "--logtostderr",],
+            "--logtostderr"],
         "stopAtEntry": false,
         // "cwd": "${workspaceFolder}/OpenVINO/lib/Debug/",
         "cwd": "${workspaceFolder}/OpenVINO/lib/Release/",
@@ -52,10 +92,12 @@
             "name": "(gdb) test_mobilenet_ssd",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/OpenVINO/lib/Debug/test_mobilenet_ssd",
+            // "program": "${workspaceFolder}/OpenVINO/lib/Debug/test_mobilenet_ssd",
+            "program": "${workspaceFolder}/OpenVINO/lib/Release/test_mobilenet_ssd",
             "args": ["--logtostderr"],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/OpenVINO/lib/Debug",
+            // "cwd": "${workspaceFolder}/OpenVINO/lib/Debug",
+            "cwd": "${workspaceFolder}/OpenVINO/lib/Release",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
