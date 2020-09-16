@@ -24,7 +24,7 @@ DEFINE_string(prototxt_path, "/home/huanyuan/code/models/ssd_License_plate_mobil
 DEFINE_string(output_folder, "/home/huanyuan/code/images_result",
   "The folder containing the output results");
 
-void gen_result(cv::Mat& img_src,
+static void gen_result(cv::Mat& img_src,
                 const std::vector<inference_openvino::OBJECT_INFO_S>& objects, 
                 const std::string output_image_path) {
   int num_objects = static_cast<int>(objects.size());

@@ -76,7 +76,7 @@ DEFINE_bool(show_image, true,
 DEFINE_bool(output_image, true,
   "output image");
 
- void DrawRectangle(cv::Mat& cvMatImageSrc,
+ static void DrawRectangle(cv::Mat& cvMatImageSrc,
 	const std::vector<RESULT_INFO_S>& nResult) {
   int s32ObjectNum = static_cast<int>(nResult.size());
 
