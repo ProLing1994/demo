@@ -3,23 +3,24 @@
 #include "glog/logging.h"
 #include "gflags/gflags.h"
 
+#define AIP_API __attribute__((visibility("default")))
 namespace inference_openvino {
 
-	rmInferenceDetectionOpenvino::rmInferenceDetectionOpenvino(const std::string strModelPath) {
+	AIP_API rmInferenceDetectionOpenvino::rmInferenceDetectionOpenvino(const std::string strModelPath) {
 		m_InferenceOptions = INFERENCE_OPTIONS_S();
 		m_strModelPath = strModelPath;
 	}
 
-	rmInferenceDetectionOpenvino::rmInferenceDetectionOpenvino(const std::string strModelPath, 
+	AIP_API rmInferenceDetectionOpenvino::rmInferenceDetectionOpenvino(const std::string strModelPath, 
 																														const INFERENCE_OPTIONS_S& InferenceOptions){
 		m_InferenceOptions = INFERENCE_OPTIONS_S(InferenceOptions);
 		m_strModelPath = strModelPath;
 	}
 
-	rmInferenceDetectionOpenvino::~rmInferenceDetectionOpenvino() {
+	AIP_API rmInferenceDetectionOpenvino::~rmInferenceDetectionOpenvino() {
 	}
 
-	int rmInferenceDetectionOpenvino::Init() {
+	AIP_API int rmInferenceDetectionOpenvino::Init() {
 		LOG(INFO) << "Start init.";
 
 		// 0. Check input
@@ -116,7 +117,7 @@ namespace inference_openvino {
 		return 0;
 	}
 
-	int rmInferenceDetectionOpenvino::Detect(const cv::Mat& cvMatImage, std::vector<OBJECT_INFO_S>* pstnObject) {
+	AIP_API int rmInferenceDetectionOpenvino::Detect(const cv::Mat& cvMatImage, std::vector<OBJECT_INFO_S>* pstnObject) {
 		CHECK_NOTNULL(pstnObject);
 
 		LOG(INFO) << "Start detect.";

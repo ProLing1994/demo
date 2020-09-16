@@ -6,10 +6,12 @@
 #include "gflags/gflags.h"
 #include "glog/logging.h"
 
+#define AIP_API __attribute__((visibility("default")))
+
 /*
 *初始化
 */
-int Init(CONFIG_FILE_S* pstFile, CONFIG_INFO_S* pstInfo, void** Handle){
+AIP_API int Init(CONFIG_FILE_S* pstFile, CONFIG_INFO_S* pstInfo, void** Handle){
   CHECK_NOTNULL(pstFile);
   CHECK_NOTNULL(pstInfo);
 
@@ -79,7 +81,7 @@ int Init(CONFIG_FILE_S* pstFile, CONFIG_INFO_S* pstInfo, void** Handle){
 /*
 *检测
 */
-int Run(void* Handle, IMAG_INFO_S* pstImage, INPUT_INFO_S* pstInput, std::vector<RESULT_INFO_S>& nResult){
+AIP_API int Run(void* Handle, IMAG_INFO_S* pstImage, INPUT_INFO_S* pstInput, std::vector<RESULT_INFO_S>& nResult){
   CHECK_NOTNULL(Handle);
   CHECK_NOTNULL(pstImage);
   CHECK_NOTNULL(pstInput);
@@ -154,7 +156,7 @@ int Run(void* Handle, IMAG_INFO_S* pstImage, INPUT_INFO_S* pstInput, std::vector
 /*
 *去初始化
 */
-int UnInit(void* Handle) {
+AIP_API int UnInit(void* Handle) {
   CHECK_NOTNULL(Handle);
   inference_openvino::rmInferenceDetectionModel *pstInferenceModels = static_cast<inference_openvino::rmInferenceDetectionModel* >(Handle);
   pstInferenceModels->~rmInferenceDetectionModel();
