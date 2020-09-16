@@ -20,8 +20,9 @@ project(yh_openvino)
 #    `.rodata' can not be used when making a shared object;
 #    recompile with -fPIC
 if (UNIX OR APPLE)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fPIC -Wl,--no-undefined")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fPIC")
 endif(UNIX OR APPLE)
+set(CMAKE_CXX_FLAGS "-Wl,--no-undefined -fvisibility=hidden")
 
 # add gflag
 find_package(gflags REQUIRED)
