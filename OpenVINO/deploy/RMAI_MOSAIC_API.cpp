@@ -6,7 +6,15 @@
 #include "gflags/gflags.h"
 #include "glog/logging.h"
 
+#ifdef WIN32
+#ifndef AIP_API
+#define AIP_API 
+#endif // AIP_API
+#else
+#ifndef AIP_API
 #define AIP_API __attribute__((visibility("default")))
+#endif // AIP_API
+#endif
 
 /*
 *初始化
