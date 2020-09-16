@@ -29,6 +29,9 @@
         "request": "launch",
         "program": "${workspaceFolder}/OpenVINO/lib/Debug/test_mosaic_api",
         "args": [
+            "--yuv_path=/home/huanyuan/code/images_result/taxiface.yuv",
+            "--yuv_imwidth=1280",
+            "--yuv_imheight=720",
             "--model_type=2",
             "--logtostderr"],
         "stopAtEntry": false,

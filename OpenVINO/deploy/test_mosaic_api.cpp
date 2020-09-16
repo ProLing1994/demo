@@ -28,66 +28,78 @@
 #endif
 #endif
 
-//// Ubuntu 
-//DEFINE_string(yuv_path, "/home/huanyuan/code/yuv/output.yuv",
-// "The yuv data path");
-//DEFINE_int32(yuv_imwidth, 2592,
-// "The yuv data width");
-//DEFINE_int32(yuv_imheight, 1920,
-// "The yuv data height");
-//DEFINE_int32(model_type, 2,
-// "model type, 0: License_plate, 1: face, 2: License_plate&face");
-//DEFINE_string(license_plate_model_path, "/home/huanyuan/code/models/ssd_License_plate_mobilenetv2.xml",
-// "The network model path");
-//DEFINE_string(face_model_path, "/home/huanyuan/code/models/ssd_face_mask.xml",
-// "The network model path");
-//DEFINE_string(output_folder, "/home/huanyuan/code/images_result",
-// "The folder containing the output results");
-//DEFINE_string(device, "CPU",
-// "device name, support for ['CPU'/'GPU']");
-//DEFINE_int32(nthreads, 4,
-// "CPU nthreads");
-//DEFINE_bool(show_image, true,
-// "show image");
-//DEFINE_bool(output_image, true,
-// "output image");
-
-// Win 
-DEFINE_string(yuv_path, "F:\\test\\DataSets\\test_001.yuv",
-  "The yuv data path");
+// Ubuntu 
+DEFINE_string(yuv_path, "/home/huanyuan/code/yuv/output.yuv",
+"The yuv data path");
 DEFINE_int32(yuv_imwidth, 2592,
-  "The yuv data width");
+"The yuv data width");
 DEFINE_int32(yuv_imheight, 1920,
-  "The yuv data height");
+"The yuv data height");
 DEFINE_int32(model_type, 2,
-  "model type, 0: License_plate, 1: face, 2: License_plate&face");
-DEFINE_string(license_plate_model_path, "F:\\test\\models\\ssd_License_plate_mobilenetv2.xml",
-  "The network model path");
-DEFINE_string(face_model_path, "F:\\test\\models\\ssd_face_mask.xml",
-  "The network model path");
-DEFINE_string(output_folder, "F:\\test\\images_result",
-  "The folder containing the output results");
+"model type, 0: License_plate, 1: face, 2: License_plate&face");
+DEFINE_string(license_plate_model_path, "/home/huanyuan/code/models/ssd_License_plate_mobilenetv2.xml",
+"The network model path");
+DEFINE_string(face_model_path, "/home/huanyuan/code/models/ssd_face_mask.xml",
+"The network model path");
+DEFINE_string(output_folder, "/home/huanyuan/code/images_result",
+"The folder containing the output results");
 DEFINE_string(device, "CPU",
-  "device name, support for ['CPU'/'GPU']");
+"device name, support for ['CPU'/'GPU']");
 DEFINE_int32(nthreads, 4,
-  "CPU nthreads");
+"CPU nthreads");
 DEFINE_bool(show_image, true,
-  "show image");
+"show image");
 DEFINE_bool(output_image, true,
-  "output image");
+"output image");
 
- static void DrawRectangle(cv::Mat& cvMatImageSrc,
-	const std::vector<RESULT_INFO_S>& nResult) {
+// // Win 
+// DEFINE_string(yuv_path, "F:\\test\\DataSets\\test_001.yuv",
+//   "The yuv data path");
+// DEFINE_int32(yuv_imwidth, 2592,
+//   "The yuv data width");
+// DEFINE_int32(yuv_imheight, 1920,
+//   "The yuv data height");
+// DEFINE_int32(model_type, 2,
+//   "model type, 0: License_plate, 1: face, 2: License_plate&face");
+// DEFINE_string(license_plate_model_path, "F:\\test\\models\\ssd_License_plate_mobilenetv2.xml",
+//   "The network model path");
+// DEFINE_string(face_model_path, "F:\\test\\models\\ssd_face_mask.xml",
+//   "The network model path");
+// DEFINE_string(output_folder, "F:\\test\\images_result",
+//   "The folder containing the output results");
+// DEFINE_string(device, "CPU",
+//   "device name, support for ['CPU'/'GPU']");
+// DEFINE_int32(nthreads, 4,
+//   "CPU nthreads");
+// DEFINE_bool(show_image, true,
+//   "show image");
+// DEFINE_bool(output_image, true,
+//   "output image");
+
+static void DrawRectangle(cv::Mat& cvMatImageSrc,
+	  const std::vector<RESULT_INFO_S>& nResult,
+    const int s32OriImagewWidth,
+    const int s32OriImageHeight) {
   int s32ObjectNum = static_cast<int>(nResult.size());
+  int s32SrcWidth = 0;
+  int s32SrcHeight = 0;
+  if (cvMatImageSrc.type() != CV_8UC3) {
+    s32SrcWidth = cvMatImageSrc.cols;
+    s32SrcHeight = cvMatImageSrc.rows * 2 / 3;
+  }
+  else {
+    s32SrcWidth = cvMatImageSrc.cols;
+    s32SrcHeight = cvMatImageSrc.rows;
+  }
 
   for (int i = 0; i < s32ObjectNum; ++i) {
     cv::Rect cvRectLocation;
-    cvRectLocation.x = nResult[i].as32Rect[0];
-    cvRectLocation.y = nResult[i].as32Rect[1];
-    cvRectLocation.width = nResult[i].as32Rect[2];
-    cvRectLocation.height = nResult[i].as32Rect[3];
+    cvRectLocation.x = static_cast<double>(nResult[i].as32Rect[0]) * s32SrcWidth / s32OriImagewWidth;
+    cvRectLocation.y = static_cast<double>(nResult[i].as32Rect[1]) * s32SrcHeight / s32OriImageHeight;
+    cvRectLocation.width = static_cast<double>(nResult[i].as32Rect[2]) * s32SrcWidth / s32OriImagewWidth;
+    cvRectLocation.height = static_cast<double>(nResult[i].as32Rect[3]) * s32SrcHeight / s32OriImageHeight;
     
-    std::string label = nResult[i].s32Type == 0 ?  "License_plate" : "License_plate";
+    std::string label = nResult[i].s32Type == 0 ?  "License_plate" : "Face";
     LOG(INFO) << "location: " << cvRectLocation;
     LOG(INFO) << "label: " << label;
 
@@ -101,6 +113,53 @@ DEFINE_bool(output_image, true,
     cv::putText(cvMatImageSrc, scText, cv::Point(cvRectLocation.x,
       cvRectLocation.y + label_size.height),
       cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 250, 0), 1);
+  }
+}
+
+static void CreateMosaicImage(cv::Mat& cvMatImageSrc,
+	  const std::vector<RESULT_INFO_S>& nResult,
+    const int s32OriImagewWidth,
+    const int s32OriImageHeight,
+    int s32MosaicSize = 10) {
+  int s32ObjectNum = static_cast<int>(nResult.size());
+  int s32SrcWidth = 0;
+  int s32SrcHeight = 0;
+  if (cvMatImageSrc.type() != CV_8UC3) {
+    s32SrcWidth = cvMatImageSrc.cols;
+    s32SrcHeight = cvMatImageSrc.rows * 2 / 3;
+  }
+  else {
+    s32SrcWidth = cvMatImageSrc.cols;
+    s32SrcHeight = cvMatImageSrc.rows;
+  }
+
+  for (int Objectidx = 0; Objectidx < s32ObjectNum; ++Objectidx) {
+    cv::Rect cvRectLocation;
+    cvRectLocation.x = static_cast<double>(nResult[Objectidx].as32Rect[0]) * s32SrcWidth / s32OriImagewWidth;
+    cvRectLocation.y = static_cast<double>(nResult[Objectidx].as32Rect[1]) * s32SrcHeight / s32OriImageHeight;
+    cvRectLocation.width = static_cast<double>(nResult[Objectidx].as32Rect[2]) * s32SrcWidth / s32OriImagewWidth;
+    cvRectLocation.height = static_cast<double>(nResult[Objectidx].as32Rect[3]) * s32SrcHeight / s32OriImageHeight;
+    
+    for (int i = cvRectLocation.x; i < cvRectLocation.x + cvRectLocation.width ; i += s32MosaicSize) {
+      for (int j = cvRectLocation.y; j < cvRectLocation.y + cvRectLocation.height; j += s32MosaicSize) {
+        int s32MosaicWidth = 
+            i + s32MosaicSize < cvRectLocation.x + cvRectLocation.width ? s32MosaicSize : cvRectLocation.x + cvRectLocation.width - i;
+        int s32MosaicHeight = 
+            j + s32MosaicSize < cvRectLocation.y + cvRectLocation.height ? s32MosaicSize : cvRectLocation.y + cvRectLocation.height - j;
+        cv::Rect cvRectMosaicRoi = cv::Rect(i, j, s32MosaicWidth, s32MosaicHeight);
+        cv::Mat cvMatMosaicRoi = cvMatImageSrc(cvRectMosaicRoi);
+        if (cvMatImageSrc.type() != CV_8UC3) {
+          cv::Scalar scScalarColor = cv::Scalar(cvMatImageSrc.at<uchar>(j, i));
+          cvMatMosaicRoi.setTo(scScalarColor);
+        }
+        else {
+          cv::Scalar scScalarColor = cv::Scalar(cvMatImageSrc.at<cv::Vec3b>(j, i)[0], \
+                                      cvMatImageSrc.at<cv::Vec3b>(j, i)[1], \
+                                      cvMatImageSrc.at<cv::Vec3b>(j, i)[2]);
+          cvMatMosaicRoi.setTo(scScalarColor);
+        }
+      }
+    }
   }
 }
 
@@ -209,10 +268,11 @@ int main(int argc, char* argv[]) {
 
     if (FLAGS_show_image) {
       cv::Mat cvMatYuvImage(s32ImageHeight * 3 / 2, s32ImageWidth, CV_8UC1, static_cast<void*>(pstscYuvBuf));
-      cv::Mat cvMatRgbImage;
+      cv::Mat cvMatRgbImage(s32ImageHeight, s32ImageWidth, CV_8UC3);
       cv::cvtColor(cvMatYuvImage, cvMatRgbImage, cv::COLOR_YUV420sp2RGB);
-      DrawRectangle(cvMatRgbImage, nResult);
       cv::resize(cvMatRgbImage, cvMatRgbImage, cv::Size(640, 480));
+      CreateMosaicImage(cvMatRgbImage, nResult, s32ImageWidth, s32ImageHeight);
+      DrawRectangle(cvMatRgbImage, nResult, s32ImageWidth, s32ImageHeight);
       cv::imshow("image", cvMatRgbImage);
       cv::waitKey(1);
     }
@@ -222,7 +282,8 @@ int main(int argc, char* argv[]) {
       //writer.write(rgb_img);
       //writer << rgb_img;
       cv::Mat cvMatYuvImage(s32ImageHeight * 3 / 2, s32ImageWidth, CV_8UC1, static_cast<void*>(pstscYuvBuf));
-      DrawRectangle(cvMatYuvImage, nResult);
+      CreateMosaicImage(cvMatYuvImage, nResult, s32ImageWidth, s32ImageHeight);
+      DrawRectangle(cvMatYuvImage, nResult, s32ImageWidth, s32ImageHeight);
       Fout.write(reinterpret_cast<char*>(cvMatYuvImage.data), s32FrameSize);
     }
     LOG(INFO) << "\033[0;31mFrame: " << i << ", Read time: " << u64ReadTime << "ms, Detect time: " << u64DetectTime << " ms. \033[;39m";
