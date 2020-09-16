@@ -6,7 +6,7 @@ file(GLOB MOSAIC_API_CORE_FILES RMAI_MOSAIC_API.hpp RMAI_MOSAIC_API.cpp)
 # yh_mnn dll library
 add_library(rmai_mosaic SHARED ${OPENVINO_CORE_FILES} ${MOSAIC_API_CORE_FILES} ${MODEL_CORE_FILES})
 target_link_libraries(rmai_mosaic ${OpenCV_LIBS} ${OpenVINO_LIBRARY_DIRS} glog::glog)
-target_link_libraries(rmai_mosaic -fvisibility=hidden)
+target_link_libraries(rmai_mosaic)
 
 # add test
 add_executable(test_mobilenet_ssd test_mobilenet_ssd.cpp)
