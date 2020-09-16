@@ -194,9 +194,17 @@ namespace inference_openvino {
 	  float f32Confidence = pstf32Detection[s32CurProposal * u32ObjectSize + 2];
 	  auto label = static_cast<int>(pstf32Detection[s32CurProposal * u32ObjectSize + 1]);
 	  auto xmin = static_cast<int>(pstf32Detection[s32CurProposal * u32ObjectSize + 3] * s32ImageWidth);
+		xmin = std::max(0, xmin);
+		xmin = std::min(xmin, s32ImageWidth - 1);
 	  auto ymin = static_cast<int>(pstf32Detection[s32CurProposal * u32ObjectSize + 4] * s32ImageHeight);
+		ymin = std::max(0, ymin);	
+		ymin = std::min(ymin, s32ImageHeight - 1);
 	  auto xmax = static_cast<int>(pstf32Detection[s32CurProposal * u32ObjectSize + 5] * s32ImageWidth);
+		xmax = std::max(0, xmax);
+		xmax = std::min(xmax, s32ImageWidth - 1);
 	  auto ymax = static_cast<int>(pstf32Detection[s32CurProposal * u32ObjectSize + 6] * s32ImageHeight);
+		ymax = std::max(0, ymax);	
+		ymax = std::min(ymax, s32ImageHeight - 1);
 
 	  if (f32Confidence > m_InferenceOptions.f64Threshold) {
 		/** Drawing only objects with >50% probability **/
