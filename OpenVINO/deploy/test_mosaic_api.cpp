@@ -28,29 +28,53 @@
 #endif
 #endif
 
-// Ubuntu 
-DEFINE_string(yuv_path, "/home/huanyuan/code/yuv/output.yuv",
- "The yuv data path");
+//// Ubuntu 
+//DEFINE_string(yuv_path, "/home/huanyuan/code/yuv/output.yuv",
+// "The yuv data path");
+//DEFINE_int32(yuv_imwidth, 2592,
+// "The yuv data width");
+//DEFINE_int32(yuv_imheight, 1920,
+// "The yuv data height");
+//DEFINE_int32(model_type, 2,
+// "model type, 0: License_plate, 1: face, 2: License_plate&face");
+//DEFINE_string(license_plate_model_path, "/home/huanyuan/code/models/ssd_License_plate_mobilenetv2.xml",
+// "The network model path");
+//DEFINE_string(face_model_path, "/home/huanyuan/code/models/ssd_face_mask.xml",
+// "The network model path");
+//DEFINE_string(output_folder, "/home/huanyuan/code/images_result",
+// "The folder containing the output results");
+//DEFINE_string(device, "CPU",
+// "device name, support for ['CPU'/'GPU']");
+//DEFINE_int32(nthreads, 4,
+// "CPU nthreads");
+//DEFINE_bool(show_image, true,
+// "show image");
+//DEFINE_bool(output_image, true,
+// "output image");
+
+// Win 
+DEFINE_string(yuv_path, "F:\\test\\DataSets\\test_001.yuv",
+  "The yuv data path");
 DEFINE_int32(yuv_imwidth, 2592,
- "The yuv data width");
+  "The yuv data width");
 DEFINE_int32(yuv_imheight, 1920,
- "The yuv data height");
+  "The yuv data height");
 DEFINE_int32(model_type, 2,
- "model type, 0: License_plate, 1: face, 2: License_plate&face");
-DEFINE_string(license_plate_model_path, "/home/huanyuan/code/models/ssd_License_plate_mobilenetv2.xml",
- "The network model path");
-DEFINE_string(face_model_path, "/home/huanyuan/code/models/ssd_face_mask.xml",
- "The network model path");
-DEFINE_string(output_folder, "/home/huanyuan/code/images_result",
- "The folder containing the output results");
+  "model type, 0: License_plate, 1: face, 2: License_plate&face");
+DEFINE_string(license_plate_model_path, "F:\\test\\models\\ssd_License_plate_mobilenetv2.xml",
+  "The network model path");
+DEFINE_string(face_model_path, "F:\\test\\models\\ssd_face_mask.xml",
+  "The network model path");
+DEFINE_string(output_folder, "F:\\test\\images_result",
+  "The folder containing the output results");
 DEFINE_string(device, "CPU",
- "device name, support for ['CPU'/'GPU']");
+  "device name, support for ['CPU'/'GPU']");
 DEFINE_int32(nthreads, 4,
- "CPU nthreads");
+  "CPU nthreads");
 DEFINE_bool(show_image, true,
- "show image");
+  "show image");
 DEFINE_bool(output_image, true,
- "output image");
+  "output image");
 
  void DrawRectangle(cv::Mat& cvMatImageSrc,
 	const std::vector<RESULT_INFO_S>& nResult) {
@@ -131,8 +155,8 @@ int main(int argc, char* argv[]) {
   Fin.clear();
   Fin.seekg(0, std::ios_base::beg);
   unsigned long long u64StartTime = 0, u64EndTime = 0;
-  unsigned long long u64ReadTime = 0, u64CvtColorTime = 0, u64DetectTime = 0;
-  unsigned long long u64ReadAverageTime = 0, u64CvtColorAverageTime = 0, u64DetectAverageTime = 0;
+  unsigned long long u64ReadTime = 0, u64DetectTime = 0;
+  unsigned long long u64ReadAverageTime = 0, u64DetectAverageTime = 0;
 
   // output init
   std::ofstream Fout;
@@ -201,11 +225,11 @@ int main(int argc, char* argv[]) {
       DrawRectangle(cvMatYuvImage, nResult);
       Fout.write(reinterpret_cast<char*>(cvMatYuvImage.data), s32FrameSize);
     }
-    LOG(INFO) << "\033[0;31mFrame: " << i << ", Read time: " << u64ReadTime << "ms, Cvt color time: " << u64CvtColorTime << "ms, Detect time: " << u64DetectTime << " ms. \033[;39m";
+    LOG(INFO) << "\033[0;31mFrame: " << i << ", Read time: " << u64ReadTime << "ms, Detect time: " << u64DetectTime << " ms. \033[;39m";
     delete [] ImageInfo.scViraddr;
   }
 
-  LOG(INFO) << "\033[0;31mRead average time = " << u64ReadAverageTime / s32FrameNum << "ms, Cvt color average time = " << u64CvtColorAverageTime / s32FrameNum << "ms, Detect average time = " << u64DetectAverageTime / s32FrameNum << "ms. \033[0;39m";
+  LOG(INFO) << "\033[0;31mRead average time = " << u64ReadAverageTime / s32FrameNum << "ms, Detect average time = " << u64DetectAverageTime / s32FrameNum << "ms. \033[0;39m";
   delete [] pstscYuvBuf;
   error_int = UnInit(pstModel);
   if (error_int != 0) {
