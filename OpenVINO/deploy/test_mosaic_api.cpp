@@ -28,53 +28,53 @@
 #endif
 #endif
 
-// Ubuntu 
-DEFINE_string(data_path, "/home/huanyuan/code/yuv/test_license_plate.yuv",
-"The yuv data path");
-DEFINE_int32(imwidth, 2592,
-"The yuv data width");
-DEFINE_int32(imheight, 1920,
-"The yuv data height");
-DEFINE_int32(model_type, 2,
-"model type, 0: License_plate, 1: face, 2: License_plate&face");
-DEFINE_string(license_plate_model_path, "/home/huanyuan/code/models/ssd_License_plate_mobilenetv2.xml",
-"The network model path");
-DEFINE_string(face_model_path, "/home/huanyuan/code/models/ssd_face_mask.xml",
-"The network model path");
-DEFINE_string(output_folder, "/home/huanyuan/code/images_result",
-"The folder containing the output results");
-DEFINE_string(device, "CPU",
-"device name, support for ['CPU'/'GPU']");
-DEFINE_int32(nthreads, 4,
-"CPU nthreads");
-DEFINE_bool(show_image, true,
-"show image");
-DEFINE_bool(output_image, true,
-"output image");
+//// Ubuntu 
+//DEFINE_string(data_path, "/home/huanyuan/code/yuv/test_license_plate.yuv",
+//"The yuv data path");
+//DEFINE_int32(imwidth, 2592,
+//"The yuv data width");
+//DEFINE_int32(imheight, 1920,
+//"The yuv data height");
+//DEFINE_int32(model_type, 2,
+//"model type, 0: License_plate, 1: face, 2: License_plate&face");
+//DEFINE_string(license_plate_model_path, "/home/huanyuan/code/models/ssd_License_plate_mobilenetv2.xml",
+//"The network model path");
+//DEFINE_string(face_model_path, "/home/huanyuan/code/models/ssd_face_mask.xml",
+//"The network model path");
+//DEFINE_string(output_folder, "/home/huanyuan/code/images_result",
+//"The folder containing the output results");
+//DEFINE_string(device, "CPU",
+//"device name, support for ['CPU'/'GPU']");
+//DEFINE_int32(nthreads, 4,
+//"CPU nthreads");
+//DEFINE_bool(show_image, true,
+//"show image");
+//DEFINE_bool(output_image, true,
+//"output image");
 
-// // Win 
-// DEFINE_string(data_path, "F:\\test\\DataSets\\test_001.yuv",
-//   "The yuv data path");
-// DEFINE_int32(imwidth, 2592,
-//   "The yuv data width");
-// DEFINE_int32(imheight, 1920,
-//   "The yuv data height");
-// DEFINE_int32(model_type, 2,
-//   "model type, 0: License_plate, 1: face, 2: License_plate&face");
-// DEFINE_string(license_plate_model_path, "F:\\test\\models\\ssd_License_plate_mobilenetv2.xml",
-//   "The network model path");
-// DEFINE_string(face_model_path, "F:\\test\\models\\ssd_face_mask.xml",
-//   "The network model path");
-// DEFINE_string(output_folder, "F:\\test\\images_result",
-//   "The folder containing the output results");
-// DEFINE_string(device, "CPU",
-//   "device name, support for ['CPU'/'GPU']");
-// DEFINE_int32(nthreads, 4,
-//   "CPU nthreads");
-// DEFINE_bool(show_image, true,
-//   "show image");
-// DEFINE_bool(output_image, true,
-//   "output image");
+// Win 
+DEFINE_string(data_path, "F:\\test\\yuv\\test_taxi_face.avi",
+  "The yuv data path");
+DEFINE_int32(imwidth, 1280,
+  "The yuv data width");
+DEFINE_int32(imheight, 720,
+  "The yuv data height");
+DEFINE_int32(model_type, 2,
+  "model type, 0: License_plate, 1: face, 2: License_plate&face");
+DEFINE_string(license_plate_model_path, "F:\\test\\models\\ssd_License_plate_mobilenetv2.xml",
+  "The network model path");
+DEFINE_string(face_model_path, "F:\\test\\models\\ssd_face_mask.xml",
+  "The network model path");
+DEFINE_string(output_folder, "F:\\test\\images_result",
+  "The folder containing the output results");
+DEFINE_string(device, "CPU",
+  "device name, support for ['CPU'/'GPU']");
+DEFINE_int32(nthreads, 4,
+  "CPU nthreads");
+DEFINE_bool(show_image, true,
+  "show image");
+DEFINE_bool(output_image, true,
+  "output image");
 
 static void DrawRectangle(cv::Mat& cvMatImageSrc,
     const MOSAIC_RESULT_INFO_S* nResult,
@@ -137,7 +137,7 @@ static void CreateMosaicImage(cv::Mat& cvMatImageSrc,
     cv::Rect cvRectLocation;
     cvRectLocation.x = static_cast<double>(nResult[Objectidx].as32Rect[0]) * s32SrcWidth / s32OriImagewWidth;
     cvRectLocation.y = static_cast<double>(nResult[Objectidx].as32Rect[1]) * s32SrcHeight / s32OriImageHeight;
-    cvRectLocation.width = static_cast<double>(nResult[Objectidx].as32Rect[2]) * s32SrcWidth / s32OriImagewWidth;
+    cvRectLocation.width =static_cast<double>(nResult[Objectidx].as32Rect[2]) * s32SrcWidth / s32OriImagewWidth;
     cvRectLocation.height = static_cast<double>(nResult[Objectidx].as32Rect[3]) * s32SrcHeight / s32OriImageHeight;
     
     for (int i = cvRectLocation.x; i < cvRectLocation.x + cvRectLocation.width ; i += s32MosaicSize) {
@@ -205,7 +205,6 @@ int main(int argc, char* argv[]) {
 
   std::ifstream Fin;
   int s32FrameSize;
-  int s32FrameNum;
   char* pstscYuvBuf;
 
   if (strInputPath.find(".avi") != strInputPath.npos||
@@ -242,7 +241,7 @@ int main(int argc, char* argv[]) {
     #endif
 
     if (s32DataType) 
-      writer.open(strOutputPath, writer.fourcc('M', 'J', 'P', 'G'), 25, cv::Size(s32ImageWidth, s32ImageHeight), true);
+      writer.open(strOutputPath, writer.fourcc('M', 'J', 'P', 'G'), 20, cv::Size(s32ImageWidth, s32ImageHeight), true);
     else 
       Fout.open(strOutputPath, std::ios_base::out | std::ios_base::binary);
       
@@ -306,6 +305,7 @@ int main(int argc, char* argv[]) {
     MOSAIC_RESULT_INFO_S* nResult = nullptr;
     int s32ResultNum = 0;
     error_int = RMAPI_AI_MOSAIC_RUN(pstModel, &ImageInfo, &InputInfo, &nResult, &s32ResultNum);
+	LOG(INFO) << s32ResultNum << s32DataType;
     if (error_int != 0) {
       LOG(ERROR) << "ERROR, func: " << __FUNCTION__ << ", line: " << __LINE__ << ", Run failed";
       return -1;
@@ -350,8 +350,11 @@ int main(int argc, char* argv[]) {
     delete [] ImageInfo.scViraddr;
   }
 
-  LOG(INFO) << "\033[0;31m[Total] frame number = " << s32FrameId << ", Read average time = " << u64ReadAverageTime / s32FrameId << "ms, Detect average time = " << u64DetectAverageTime / s32FrameId << "ms. \033[0;39m";
-  delete [] pstscYuvBuf;
+  LOG(INFO) << "\033[0;31m[Total] Frame number = " << s32FrameId << ", Read average time = " << u64ReadAverageTime / s32FrameId 
+	<< "ms, Detect average time = " << u64DetectAverageTime / s32FrameId << "ms. \033[0;39m";
+  if (!s32DataType) {
+	delete [] pstscYuvBuf;
+  }
   error_int = RMAPI_AI_MOSAIC_UNINIT(&pstModel);
   if (error_int != 0) {
     LOG(ERROR) << "ERROR, func: " << __FUNCTION__ << ", line: " << __LINE__ << ", Run failed";
