@@ -5,6 +5,25 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "(gdb) test_detection_avi",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/OpenVINO/lib/Debug/test_detection_avi",
+            "args": ["--logtostderr"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/OpenVINO/lib/Debug",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
             "name": "(gdb) test_unique_ptr",
             "type": "cppdbg",
             "request": "launch",
@@ -48,11 +67,11 @@
         ]
     },
     {
-        "name": "(gdb) test_mobilenet_ssd_yuv",
+        "name": "(gdb) test_detection_yuv",
         "type": "cppdbg",
         "request": "launch",
-        // "program": "${workspaceFolder}/OpenVINO/lib/Debug/test_mobilenet_ssd_yuv",
-        "program": "${workspaceFolder}/OpenVINO/lib/Release/test_mobilenet_ssd_yuv",
+        // "program": "${workspaceFolder}/OpenVINO/lib/Debug/test_detection_yuv",
+        "program": "${workspaceFolder}/OpenVINO/lib/Release/test_detection_yuv",
         "args": [
             "--device=CPU",
             "--nthreads=4",
@@ -73,10 +92,10 @@
         ]
     },
     {
-        "name": "(gdb) test_mobilenet_ssd_opencv",
+        "name": "(gdb) test_detection_picture_opencvlap",
         "type": "cppdbg",
         "request": "launch",
-        "program": "${workspaceFolder}/OpenVINO/lib/Debug/test_mobilenet_ssd_opencv",
+        "program": "${workspaceFolder}/OpenVINO/lib/Debug/test_detection_picture_opencvlap",
         "args": ["--logtostderr"],
         "stopAtEntry": false,
         "cwd": "${workspaceFolder}/OpenVINO/lib/Debug/",
@@ -92,11 +111,11 @@
         ]
     },
         {
-            "name": "(gdb) test_mobilenet_ssd",
+            "name": "(gdb) test_detection_picture",
             "type": "cppdbg",
             "request": "launch",
-            // "program": "${workspaceFolder}/OpenVINO/lib/Debug/test_mobilenet_ssd",
-            "program": "${workspaceFolder}/OpenVINO/lib/Release/test_mobilenet_ssd",
+            // "program": "${workspaceFolder}/OpenVINO/lib/Debug/test_detection_picture",
+            "program": "${workspaceFolder}/OpenVINO/lib/Release/test_detection_picture",
             "args": ["--logtostderr"],
             "stopAtEntry": false,
             // "cwd": "${workspaceFolder}/OpenVINO/lib/Debug",
