@@ -220,16 +220,16 @@ int main(int argc, char* argv[]) {
   // output init
   std::ofstream Fout;
   if (FLAGS_output_image) {
-	std::string strInputPath = FLAGS_yuv_path;
-	#ifdef WIN32
-	std::string strInputName = strInputPath.substr(strInputPath.find_last_of("\\") + 1);
-	std::string strOutputPath = FLAGS_output_folder + "\\result_" + strInputName;
-	#else
-	std::string strInputName = strInputPath.substr(strInputPath.find_last_of("/") + 1);
-	std::string strOutputPath = FLAGS_output_folder + "/result_" + strInputName;
-	#endif
-	LOG(INFO) << "Output path: "<< strOutputPath;
-	Fout.open(strOutputPath, std::ios_base::out | std::ios_base::binary);
+    std::string strInputPath = FLAGS_yuv_path;
+    #ifdef WIN32
+    std::string strInputName = strInputPath.substr(strInputPath.find_last_of("\\") + 1);
+    std::string strOutputPath = FLAGS_output_folder + "\\result_" + strInputName;
+    #else
+    std::string strInputName = strInputPath.substr(strInputPath.find_last_of("/") + 1);
+    std::string strOutputPath = FLAGS_output_folder + "/result_" + strInputName;
+    #endif
+    LOG(INFO) << "Output path: "<< strOutputPath;
+    Fout.open(strOutputPath, std::ios_base::out | std::ios_base::binary);
   }
 
   // Run
