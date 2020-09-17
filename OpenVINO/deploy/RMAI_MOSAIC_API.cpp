@@ -89,7 +89,11 @@ AIP_API int RMAPI_AI_MOSAIC_INIT(MOSAIC_CONFIG_FILE_S* pstFile, MOSAIC_CONFIG_IN
 /*
 *检测
 */
-AIP_API int RMAPI_AI_MOSAIC_RUN(void* Handle, MOSAIC_IMAGE_INFO_S* pstImage, MOSAIC_INPUT_INFO_S* pstInput, std::vector<MOSAIC_RESULT_INFO_S>& nResult){
+AIP_API int RMAPI_AI_MOSAIC_RUN(void* Handle,
+                                MOSAIC_IMAGE_INFO_S* pstImage, 
+                                MOSAIC_INPUT_INFO_S* pstInput, 
+                                MOSAIC_RESULT_INFO_S** nResult, 
+                                int* s32ResultNum){
   CHECK_NOTNULL(Handle);
   CHECK_NOTNULL(pstImage);
   CHECK_NOTNULL(pstInput);
@@ -131,7 +135,7 @@ AIP_API int RMAPI_AI_MOSAIC_RUN(void* Handle, MOSAIC_IMAGE_INFO_S* pstImage, MOS
   else {
     cvMatRgbImage.data = static_cast<uchar*>(static_cast<void*>(pstImage->scViraddr));
   }
-
+  LOG(INFO) << int(cvMatRgbImage.at<cv::Vec3b>(0,0)[0]) << " " << int(cvMatRgbImage.at<cv::Vec3b>(0,0)[1]) << " " << int(cvMatRgbImage.at<cv::Vec3b>(0,0)[2]);
   // model detect
   std::vector<inference_openvino::OBJECT_INFO_S> nObject;
   pstInferenceModels->DetectLicensePlateModel(cvMatRgbImage, &nObject);
@@ -140,24 +144,33 @@ AIP_API int RMAPI_AI_MOSAIC_RUN(void* Handle, MOSAIC_IMAGE_INFO_S* pstImage, MOS
   // (*pstInferenceModels)->DetectFaceModel(cvMatRgbImage, &nObject);
   
   // gen nResult
-  for (int s32IdObject = 0; s32IdObject < nObject.size(); s32IdObject++) {
+  pstInferenceModels->UpdateResultNum(nObject.size());
+  pstInferenceModels->ExpandCapacity();
+  for (int s32ObjectId = 0; s32ObjectId < nObject.size(); s32ObjectId++) {
     MOSAIC_RESULT_INFO_S Result_Info;
 
-    if (nObject[s32IdObject].strClassName == "License_plate") Result_Info.s32Type = 0;
-    else if (nObject[s32IdObject].strClassName == "Face") Result_Info.s32Type = 1;
+    if (nObject[s32ObjectId].strClassName == "License_plate") Result_Info.s32Type = 0;
+    else if (nObject[s32ObjectId].strClassName == "Face") Result_Info.s32Type = 1;
     else {
       LOG(ERROR) << "ERROR, func: " << __FUNCTION__ << ", line: " << __LINE__ 
-        << ", Object Type Error, only support for ['License_plate', 'Face'], can not be " << nObject[s32IdObject].strClassName;
+        << ", Object Type Error, only support for ['License_plate', 'Face'], can not be " << nObject[s32ObjectId].strClassName;
       return -1;
     } 
 
-    Result_Info.as32Rect[0] = nObject[s32IdObject].cvRectLocation.x;
-    Result_Info.as32Rect[1] = nObject[s32IdObject].cvRectLocation.y;
-    Result_Info.as32Rect[2] = nObject[s32IdObject].cvRectLocation.width;
-    Result_Info.as32Rect[3] = nObject[s32IdObject].cvRectLocation.height;
+    Result_Info.as32Rect[0] = nObject[s32ObjectId].cvRectLocation.x;
+    Result_Info.as32Rect[1] = nObject[s32ObjectId].cvRectLocation.y;
+    Result_Info.as32Rect[2] = nObject[s32ObjectId].cvRectLocation.width;
+    Result_Info.as32Rect[3] = nObject[s32ObjectId].cvRectLocation.height;
 
-    nResult.push_back(Result_Info);
+    s32ErrorCode = pstInferenceModels->PushResult(Result_Info, s32ObjectId);
+    if (s32ErrorCode !=0) {
+      LOG(ERROR) << "ERROR, func: " << __FUNCTION__ << ", line: " << __LINE__ 
+        << ", Can not add MOSAIC_RESULT_INFO_S in m_nResult";
+    }
   }
+  
+  pstInferenceModels->GetResult(nResult);
+  pstInferenceModels->GetResultNum(s32ResultNum);
   return 0;
 }
 
@@ -167,7 +180,7 @@ AIP_API int RMAPI_AI_MOSAIC_RUN(void* Handle, MOSAIC_IMAGE_INFO_S* pstImage, MOS
 AIP_API int RMAPI_AI_MOSAIC_UNINIT(void** Handle) {
   CHECK_NOTNULL(Handle);
   inference_openvino::rmInferenceDetectionModel *pstInferenceModels = static_cast<inference_openvino::rmInferenceDetectionModel* >(*Handle);
-  pstInferenceModels->~rmInferenceDetectionModel();
+  delete pstInferenceModels;
   *Handle = nullptr;
   // std::unique_ptr<inference_openvino::rmInferenceDetectionModel> *pstInferenceModels = static_cast<std::unique_ptr<inference_openvino::rmInferenceDetectionModel>* >(Handle);
   // (*pstInferenceModels)->~rmInferenceDetectionModel();
