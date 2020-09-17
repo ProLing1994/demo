@@ -29,40 +29,44 @@
 #endif
 
 // Windows
-// DEFINE_string(yuv_path, "F:\\test\\DataSets\\test_001.yuv",
-//   "The yuv data path");
-// DEFINE_string(model_path, "F:\\test\\models\\ssd_License_plate_mobilenetv2.xml",
-//   "The network model path");
-// DEFINE_string(output_folder, "F:\\test\\images_result",
-//   "The folder containing the output results");
-// DEFINE_string(device, "CPU",
-//   "device name, support for ['CPU'/'GPU']");
-// DEFINE_int32(nthreads, 4,
-//   "CPU nthreads");
-// DEFINE_bool(show_image, true,
-//   "show image");
-// DEFINE_bool(output_image, true,
-//   "output image");
-
-// Ubuntu 
-DEFINE_string(avi_path, "/home/huanyuan/code/yuv/test_taxi_face.avi",
- "The yuv data path");
+DEFINE_string(avi_path, "F:\\test\\yuv\\test_taxi_face.avi",
+  "The yuv data path");
 DEFINE_int32(avi_imwidth, 1280,
-"The yuv data width");
+  "The yuv data width");
 DEFINE_int32(avi_imheight, 720,
-"The yuv data height");
-DEFINE_string(model_path, "/home/huanyuan/code/models/ssd_face_mask.xml",
- "The network model path");
-DEFINE_string(output_folder, "/home/huanyuan/code/yuv",
- "The folder containing the output results");
+  "The yuv data height");
+DEFINE_string(model_path, "F:\\test\\models\\ssd_face_mask.xml",
+  "The network model path");
+DEFINE_string(output_folder, "F:\\test\\images_result",
+  "The folder containing the output results");
 DEFINE_string(device, "CPU",
- "device name, support for ['CPU'/'GPU']");
+  "device name, support for ['CPU'/'GPU']");
 DEFINE_int32(nthreads, 4,
- "CPU nthreads");
+  "CPU nthreads");
 DEFINE_bool(show_image, true,
- "show image");
+  "show image");
 DEFINE_bool(output_image, true,
- "output image");
+  "output image");
+
+//// Ubuntu 
+//DEFINE_string(avi_path, "/home/huanyuan/code/yuv/test_taxi_face.avi",
+// "The yuv data path");
+//DEFINE_int32(avi_imwidth, 1280,
+//"The yuv data width");
+//DEFINE_int32(avi_imheight, 720,
+//"The yuv data height");
+//DEFINE_string(model_path, "/home/huanyuan/code/models/ssd_face_mask.xml",
+// "The network model path");
+//DEFINE_string(output_folder, "/home/huanyuan/code/yuv",
+// "The folder containing the output results");
+//DEFINE_string(device, "CPU",
+// "device name, support for ['CPU'/'GPU']");
+//DEFINE_int32(nthreads, 4,
+// "CPU nthreads");
+//DEFINE_bool(show_image, true,
+// "show image");
+//DEFINE_bool(output_image, true,
+// "output image");
 
 static void DrawRectangle(cv::Mat& cvMatImageSrc,
     const std::vector<inference_openvino::OBJECT_INFO_S>& nObject,
@@ -186,11 +190,13 @@ int main(int argc, char* argv[]) {
     #ifdef WIN32
     std::string strInputName = strInputPath.substr(strInputPath.find_last_of("\\") + 1);
     strOutputPath = FLAGS_output_folder + "\\result_" + strInputName;
+	strOutputPath.replace(strOutputPath.find(".avi"), 4, "_0.avi");
     #else
     std::string strInputName = strInputPath.substr(strInputPath.find_last_of("/") + 1);
     strOutputPath = FLAGS_output_folder + "/result_" + strInputName;
     #endif
-    writer.open(strOutputPath, cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 25, cv::Size(FLAGS_avi_imwidth, FLAGS_avi_imheight), true);
+	writer.open(strOutputPath, writer.fourcc('M', 'J', 'P', 'G'), 25, cv::Size(FLAGS_avi_imwidth, FLAGS_avi_imheight), true);
+	LOG(INFO) << "Output file is stored to " << strOutputPath;
   }
 
   cv::Mat cvMatFrame;
@@ -198,48 +204,48 @@ int main(int argc, char* argv[]) {
 
   while (1) {
 
-		TEST_TIME(u64StartTime);
+	TEST_TIME(u64StartTime);
 
-		cap >> cvMatFrame;
-    s32FrameNum += 1;
+	cap >> cvMatFrame;
+	s32FrameNum += 1;
 
-		// Stop the program if reached end of video
-		if (cvMatFrame.empty())
-		{
-			std::cout << "Done processing !!!" <<  std::endl;
-			std::cout << "Output file is stored to " << strOutputPath <<  std::endl;
-			// cv::waitKey(3000);
-			break;
-		}
+	// Stop the program if reached end of video
+	if (cvMatFrame.empty())
+	{
+	  LOG(INFO) << "Done processing !!!";
+	  LOG(INFO) << "Output file is stored to " << strOutputPath;
+	  // cv::waitKey(3000);
+	  break;
+	}
 
-		TEST_TIME(u64EndTime);
-		u64ReadTime = u64EndTime - u64StartTime;
-		u64ReadAverageTime += u64ReadTime;
-		TEST_TIME(u64StartTime);
+	TEST_TIME(u64EndTime);
+	u64ReadTime = u64EndTime - u64StartTime;
+	u64ReadAverageTime += u64ReadTime;
+	TEST_TIME(u64StartTime);
 
-		std::vector<inference_openvino::OBJECT_INFO_S> nObject;
-		InferenceDetectionOpenvino->Detect(cvMatFrame, &nObject);
+	std::vector<inference_openvino::OBJECT_INFO_S> nObject;
+	InferenceDetectionOpenvino->Detect(cvMatFrame, &nObject);
 
-		TEST_TIME(u64EndTime);
-		u64DetectTime = u64EndTime - u64StartTime;
-		u64DetectAverageTime += u64DetectTime;
+	TEST_TIME(u64EndTime);
+	u64DetectTime = u64EndTime - u64StartTime;
+	u64DetectAverageTime += u64DetectTime;
 
-		if (FLAGS_show_image) {
-      cv::Mat cvMatResizeImage;
-			cv::resize(cvMatFrame, cvMatResizeImage, cv::Size(640, 480));
-      CreateMosaicImage(cvMatResizeImage, nObject, FLAGS_avi_imwidth, FLAGS_avi_imheight, 15);
-      DrawRectangle(cvMatResizeImage, nObject, FLAGS_avi_imwidth, FLAGS_avi_imheight);
-			cv::imshow("image", cvMatResizeImage);
-			cv::waitKey(1);
-		}
+	if (FLAGS_show_image) {
+	  cv::Mat cvMatResizeImage;
+	  cv::resize(cvMatFrame, cvMatResizeImage, cv::Size(640, 480));
+	  CreateMosaicImage(cvMatResizeImage, nObject, FLAGS_avi_imwidth, FLAGS_avi_imheight, 15);
+	  DrawRectangle(cvMatResizeImage, nObject, FLAGS_avi_imwidth, FLAGS_avi_imheight);
+	  cv::imshow("image", cvMatResizeImage);
+	  cv::waitKey(1);
+	}
 
-		if (FLAGS_output_image) {
-      CreateMosaicImage(cvMatFrame, nObject, FLAGS_avi_imwidth, FLAGS_avi_imheight, 15);
-      DrawRectangle(cvMatFrame, nObject, FLAGS_avi_imwidth, FLAGS_avi_imheight);
-			writer.write(cvMatFrame);
-			// writer << cvMatFrame;
-		}
-		LOG(INFO) << "\033[0;31mFrame: " << s32FrameNum << ", Read time: " << u64ReadTime << "ms, Cvt color time: " << u64CvtColorTime << "ms, Detect time: " << u64DetectTime << " ms. \033[;39m";
+	if (FLAGS_output_image) {
+	  CreateMosaicImage(cvMatFrame, nObject, FLAGS_avi_imwidth, FLAGS_avi_imheight, 15);
+	  DrawRectangle(cvMatFrame, nObject, FLAGS_avi_imwidth, FLAGS_avi_imheight);
+	  writer.write(cvMatFrame);
+	  // writer << cvMatFrame;
+	}
+	LOG(INFO) << "\033[0;31mFrame: " << s32FrameNum << ", Read time: " << u64ReadTime << "ms, Cvt color time: " << u64CvtColorTime << "ms, Detect time: " << u64DetectTime << " ms. \033[;39m";
   }
 
   LOG(INFO) << "\033[0;31mRead average time = " << u64ReadAverageTime / s32FrameNum << "ms, Cvt color average time = " << u64CvtColorAverageTime / s32FrameNum << "ms, Detect average time = " << u64DetectAverageTime / s32FrameNum << "ms. \033[0;39m";
