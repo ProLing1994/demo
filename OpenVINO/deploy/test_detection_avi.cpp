@@ -28,45 +28,45 @@
 #endif
 #endif
 
-// Windows
-DEFINE_string(avi_path, "F:\\test\\yuv\\test_taxi_face.avi",
-  "The yuv data path");
-DEFINE_int32(avi_imwidth, 1280,
-  "The yuv data width");
-DEFINE_int32(avi_imheight, 720,
-  "The yuv data height");
-DEFINE_string(model_path, "F:\\test\\models\\ssd_face_mask.xml",
-  "The network model path");
-DEFINE_string(output_folder, "F:\\test\\images_result",
-  "The folder containing the output results");
-DEFINE_string(device, "CPU",
-  "device name, support for ['CPU'/'GPU']");
-DEFINE_int32(nthreads, 4,
-  "CPU nthreads");
-DEFINE_bool(show_image, true,
-  "show image");
-DEFINE_bool(output_image, true,
-  "output image");
+// // Windows
+// DEFINE_string(avi_path, "F:\\test\\yuv\\test_taxi_face.avi",
+//   "The yuv data path");
+// DEFINE_int32(avi_imwidth, 1280,
+//   "The yuv data width");
+// DEFINE_int32(avi_imheight, 720,
+//   "The yuv data height");
+// DEFINE_string(model_path, "F:\\test\\models\\ssd_face_mask.xml",
+//   "The network model path");
+// DEFINE_string(output_folder, "F:\\test\\images_result",
+//   "The folder containing the output results");
+// DEFINE_string(device, "CPU",
+//   "device name, support for ['CPU'/'GPU']");
+// DEFINE_int32(nthreads, 4,
+//   "CPU nthreads");
+// DEFINE_bool(show_image, true,
+//   "show image");
+// DEFINE_bool(output_image, true,
+//   "output image");
 
-//// Ubuntu 
-//DEFINE_string(avi_path, "/home/huanyuan/code/yuv/test_taxi_face.avi",
-// "The yuv data path");
-//DEFINE_int32(avi_imwidth, 1280,
-//"The yuv data width");
-//DEFINE_int32(avi_imheight, 720,
-//"The yuv data height");
-//DEFINE_string(model_path, "/home/huanyuan/code/models/ssd_face_mask.xml",
-// "The network model path");
-//DEFINE_string(output_folder, "/home/huanyuan/code/yuv",
-// "The folder containing the output results");
-//DEFINE_string(device, "CPU",
-// "device name, support for ['CPU'/'GPU']");
-//DEFINE_int32(nthreads, 4,
-// "CPU nthreads");
-//DEFINE_bool(show_image, true,
-// "show image");
-//DEFINE_bool(output_image, true,
-// "output image");
+// Ubuntu 
+DEFINE_string(avi_path, "/home/huanyuan/code/yuv/test_taxi_face.avi",
+"The yuv data path");
+DEFINE_int32(avi_imwidth, 1280,
+"The yuv data width");
+DEFINE_int32(avi_imheight, 720,
+"The yuv data height");
+DEFINE_string(model_path, "/home/huanyuan/code/models/ssd_face_mask.xml",
+"The network model path");
+DEFINE_string(output_folder, "/home/huanyuan/code/yuv",
+"The folder containing the output results");
+DEFINE_string(device, "CPU",
+"device name, support for ['CPU'/'GPU']");
+DEFINE_int32(nthreads, 4,
+"CPU nthreads");
+DEFINE_bool(show_image, true,
+"show image");
+DEFINE_bool(output_image, true,
+"output image");
 
 static void DrawRectangle(cv::Mat& cvMatImageSrc,
     const std::vector<inference_openvino::OBJECT_INFO_S>& nObject,
@@ -178,29 +178,32 @@ int main(int argc, char* argv[]) {
   // data init
   cv::VideoCapture cap;
   cap.open(FLAGS_avi_path);
-  unsigned long long u64StartTime = 0, u64EndTime = 0;
-  unsigned long long u64ReadTime = 0, u64CvtColorTime = 0, u64DetectTime = 0;
-  unsigned long long u64ReadAverageTime = 0, u64CvtColorAverageTime = 0, u64DetectAverageTime = 0;
 
   // output init
   cv::VideoWriter writer;
   std::string strOutputPath;
   if (FLAGS_output_image) {
     std::string strInputPath = FLAGS_avi_path;
+
     #ifdef WIN32
-    std::string strInputName = strInputPath.substr(strInputPath.find_last_of("\\") + 1);
-    strOutputPath = FLAGS_output_folder + "\\result_" + strInputName;
-	strOutputPath.replace(strOutputPath.find(".avi"), 4, "_0.avi");
+      std::string strInputName = strInputPath.substr(strInputPath.find_last_of("\\") + 1);
+      strOutputPath = FLAGS_output_folder + "\\result_" + strInputName;
+      strOutputPath.replace(strOutputPath.find(".avi"), 4, "_0.avi");
     #else
-    std::string strInputName = strInputPath.substr(strInputPath.find_last_of("/") + 1);
-    strOutputPath = FLAGS_output_folder + "/result_" + strInputName;
+      std::string strInputName = strInputPath.substr(strInputPath.find_last_of("/") + 1);
+      strOutputPath = FLAGS_output_folder + "/result_" + strInputName;
     #endif
+    
 	writer.open(strOutputPath, writer.fourcc('M', 'J', 'P', 'G'), 25, cv::Size(FLAGS_avi_imwidth, FLAGS_avi_imheight), true);
 	LOG(INFO) << "Output file is stored to " << strOutputPath;
   }
 
+  // Run
   cv::Mat cvMatFrame;
 	int s32FrameNum = 0;
+  unsigned long long u64StartTime = 0, u64EndTime = 0;
+  unsigned long long u64ReadTime = 0, u64CvtColorTime = 0, u64DetectTime = 0;
+  unsigned long long u64ReadAverageTime = 0, u64CvtColorAverageTime = 0, u64DetectAverageTime = 0;
 
   while (1) {
 
