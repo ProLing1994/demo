@@ -28,45 +28,45 @@
 #endif
 #endif
 
-// // Windows
-// DEFINE_string(avi_path, "F:\\test\\yuv\\test_taxi_face.avi",
-//   "The yuv data path");
-// DEFINE_int32(avi_imwidth, 1280,
-//   "The yuv data width");
-// DEFINE_int32(avi_imheight, 720,
-//   "The yuv data height");
-// DEFINE_string(model_path, "F:\\test\\models\\ssd_face_mask.xml",
-//   "The network model path");
-// DEFINE_string(output_folder, "F:\\test\\images_result",
-//   "The folder containing the output results");
-// DEFINE_string(device, "CPU",
-//   "device name, support for ['CPU'/'GPU']");
-// DEFINE_int32(nthreads, 4,
-//   "CPU nthreads");
-// DEFINE_bool(show_image, true,
-//   "show image");
-// DEFINE_bool(output_image, true,
-//   "output image");
-
-// Ubuntu 
-DEFINE_string(avi_path, "/home/huanyuan/code/yuv/test_taxi_face.avi",
-"The yuv data path");
+// Windows
+DEFINE_string(avi_path, "F:\\test\\yuv\\test_taxi_face.avi",
+  "The yuv data path");
 DEFINE_int32(avi_imwidth, 1280,
-"The yuv data width");
+  "The yuv data width");
 DEFINE_int32(avi_imheight, 720,
-"The yuv data height");
-DEFINE_string(model_path, "/home/huanyuan/code/models/ssd_face_mask.xml",
-"The network model path");
-DEFINE_string(output_folder, "/home/huanyuan/code/yuv",
-"The folder containing the output results");
+  "The yuv data height");
+DEFINE_string(model_path, "F:\\test\\models\\ssd_face_mask.xml",
+  "The network model path");
+DEFINE_string(output_folder, "F:\\test\\images_result",
+  "The folder containing the output results");
 DEFINE_string(device, "CPU",
-"device name, support for ['CPU'/'GPU']");
+  "device name, support for ['CPU'/'GPU']");
 DEFINE_int32(nthreads, 4,
-"CPU nthreads");
+  "CPU nthreads");
 DEFINE_bool(show_image, true,
-"show image");
+  "show image");
 DEFINE_bool(output_image, true,
-"output image");
+  "output image");
+
+//// Ubuntu 
+//DEFINE_string(avi_path, "/home/huanyuan/code/yuv/test_taxi_face.avi",
+//"The yuv data path");
+//DEFINE_int32(avi_imwidth, 1280,
+//"The yuv data width");
+//DEFINE_int32(avi_imheight, 720,
+//"The yuv data height");
+//DEFINE_string(model_path, "/home/huanyuan/code/models/ssd_face_mask.xml",
+//"The network model path");
+//DEFINE_string(output_folder, "/home/huanyuan/code/yuv",
+//"The folder containing the output results");
+//DEFINE_string(device, "CPU",
+//"device name, support for ['CPU'/'GPU']");
+//DEFINE_int32(nthreads, 4,
+//"CPU nthreads");
+//DEFINE_bool(show_image, true,
+//"show image");
+//DEFINE_bool(output_image, true,
+//"output image");
 
 static void DrawRectangle(cv::Mat& cvMatImageSrc,
     const std::vector<inference_openvino::OBJECT_INFO_S>& nObject,
@@ -89,10 +89,10 @@ static void DrawRectangle(cv::Mat& cvMatImageSrc,
     LOG(INFO) << "label: " << nObject[i].strClassName.c_str() << ", score: " << nObject[i].f32Score * 100;
     
     cv::Rect cvRectLocation;  
-    cvRectLocation.x = static_cast<double>(nObject[i].cvRectLocation.x) * s32SrcWidth / s32OriImagewWidth;
-    cvRectLocation.y = static_cast<double>(nObject[i].cvRectLocation.y) * s32SrcHeight / s32OriImageHeight;
-    cvRectLocation.width = static_cast<double>(nObject[i].cvRectLocation.width) * s32SrcWidth / s32OriImagewWidth;
-    cvRectLocation.height = static_cast<double>(nObject[i].cvRectLocation.height) * s32SrcHeight / s32OriImageHeight;
+    cvRectLocation.x = static_cast<int>(static_cast<double>(nObject[i].cvRectLocation.x) * s32SrcWidth / s32OriImagewWidth);
+    cvRectLocation.y = static_cast<int>(static_cast<double>(nObject[i].cvRectLocation.y) * s32SrcHeight / s32OriImageHeight);
+    cvRectLocation.width = static_cast<int>(static_cast<double>(nObject[i].cvRectLocation.width) * s32SrcWidth / s32OriImagewWidth);
+    cvRectLocation.height = static_cast<int>(static_cast<double>(nObject[i].cvRectLocation.height) * s32SrcHeight / s32OriImageHeight);
 
     cv::rectangle(cvMatImageSrc, cvRectLocation, cv::Scalar(0, 0, 255), 2);
 
@@ -126,10 +126,10 @@ static void CreateMosaicImage(cv::Mat& cvMatImageSrc,
 
   for (int i = 0; i < s32ObjectNum; ++i) {
     cv::Rect cvRectLocation;
-    cvRectLocation.x = static_cast<double>(nObject[i].cvRectLocation.x) * s32SrcWidth / s32OriImagewWidth;
-    cvRectLocation.y = static_cast<double>(nObject[i].cvRectLocation.y) * s32SrcHeight / s32OriImageHeight;
-    cvRectLocation.width = static_cast<double>(nObject[i].cvRectLocation.width) * s32SrcWidth / s32OriImagewWidth;
-    cvRectLocation.height = static_cast<double>(nObject[i].cvRectLocation.height) * s32SrcHeight / s32OriImageHeight;
+    cvRectLocation.x = static_cast<int>(static_cast<double>(nObject[i].cvRectLocation.x) * s32SrcWidth / s32OriImagewWidth);
+    cvRectLocation.y = static_cast<int>(static_cast<double>(nObject[i].cvRectLocation.y) * s32SrcHeight / s32OriImageHeight);
+    cvRectLocation.width = static_cast<int>(static_cast<double>(nObject[i].cvRectLocation.width) * s32SrcWidth / s32OriImagewWidth);
+    cvRectLocation.height = static_cast<int>(static_cast<double>(nObject[i].cvRectLocation.height) * s32SrcHeight / s32OriImageHeight);
     
     for (int s32PixelIdx = cvRectLocation.x; s32PixelIdx < cvRectLocation.x + cvRectLocation.width ; s32PixelIdx += s32MosaicSize) {
       for (int s32PixelIdy = cvRectLocation.y; s32PixelIdy < cvRectLocation.y + cvRectLocation.height; s32PixelIdy += s32MosaicSize) {
@@ -228,6 +228,8 @@ int main(int argc, char* argv[]) {
 
 	std::vector<inference_openvino::OBJECT_INFO_S> nObject;
 	InferenceDetectionOpenvino->Detect(cvMatFrame, &nObject);
+	LOG(INFO) << int(cvMatFrame.at<cv::Vec3b>(0, 0)[0]) << " " << int(cvMatFrame.at<cv::Vec3b>(0, 0)[1]) << " " << int(cvMatFrame.at<cv::Vec3b>(0, 0)[2]);
+	LOG(INFO) << nObject.size();
 
 	TEST_TIME(u64EndTime);
 	u64DetectTime = u64EndTime - u64StartTime;
