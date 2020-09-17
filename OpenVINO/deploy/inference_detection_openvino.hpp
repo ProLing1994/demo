@@ -1,7 +1,6 @@
 #ifndef __AI_INFERENCE_DETECTION_OPENVINO_H__
 #define __AI_INFERENCE_DETECTION_OPENVINO_H__
 
-#include <memory>
 #include <vector>
 #include <string>
 

@@ -1,7 +1,7 @@
 #include <string>
 
 #include "inference_detection_model.hpp"
-#include "RMAI_MOSAIC_API.hpp"
+#include "RMAI_MOSAIC_API.h"
 
 #include "gflags/gflags.h"
 #include "glog/logging.h"
@@ -19,7 +19,7 @@
 /*
 *初始化
 */
-AIP_API int Init(CONFIG_FILE_S* pstFile, CONFIG_INFO_S* pstInfo, void** Handle){
+AIP_API int RMAPI_AI_MOSAIC_INIT(MOSAIC_CONFIG_FILE_S* pstFile, MOSAIC_CONFIG_INFO_S* pstInfo, void** Handle){
   CHECK_NOTNULL(pstFile);
   CHECK_NOTNULL(pstInfo);
 
@@ -89,7 +89,7 @@ AIP_API int Init(CONFIG_FILE_S* pstFile, CONFIG_INFO_S* pstInfo, void** Handle){
 /*
 *检测
 */
-AIP_API int Run(void* Handle, IMAG_INFO_S* pstImage, INPUT_INFO_S* pstInput, std::vector<RESULT_INFO_S>& nResult){
+AIP_API int RMAPI_AI_MOSAIC_RUN(void* Handle, MOSAIC_IMAGE_INFO_S* pstImage, MOSAIC_INPUT_INFO_S* pstInput, std::vector<MOSAIC_RESULT_INFO_S>& nResult){
   CHECK_NOTNULL(Handle);
   CHECK_NOTNULL(pstImage);
   CHECK_NOTNULL(pstInput);
@@ -141,7 +141,7 @@ AIP_API int Run(void* Handle, IMAG_INFO_S* pstImage, INPUT_INFO_S* pstInput, std
   
   // gen nResult
   for (int s32IdObject = 0; s32IdObject < nObject.size(); s32IdObject++) {
-    RESULT_INFO_S Result_Info;
+    MOSAIC_RESULT_INFO_S Result_Info;
 
     if (nObject[s32IdObject].strClassName == "License_plate") Result_Info.s32Type = 0;
     else if (nObject[s32IdObject].strClassName == "Face") Result_Info.s32Type = 1;
@@ -164,10 +164,11 @@ AIP_API int Run(void* Handle, IMAG_INFO_S* pstImage, INPUT_INFO_S* pstInput, std
 /*
 *去初始化
 */
-AIP_API int UnInit(void* Handle) {
+AIP_API int RMAPI_AI_MOSAIC_UNINIT(void** Handle) {
   CHECK_NOTNULL(Handle);
-  inference_openvino::rmInferenceDetectionModel *pstInferenceModels = static_cast<inference_openvino::rmInferenceDetectionModel* >(Handle);
+  inference_openvino::rmInferenceDetectionModel *pstInferenceModels = static_cast<inference_openvino::rmInferenceDetectionModel* >(*Handle);
   pstInferenceModels->~rmInferenceDetectionModel();
+  *Handle = nullptr;
   // std::unique_ptr<inference_openvino::rmInferenceDetectionModel> *pstInferenceModels = static_cast<std::unique_ptr<inference_openvino::rmInferenceDetectionModel>* >(Handle);
   // (*pstInferenceModels)->~rmInferenceDetectionModel();
   return 0;
