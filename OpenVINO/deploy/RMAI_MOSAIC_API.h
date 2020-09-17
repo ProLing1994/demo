@@ -83,7 +83,9 @@ extern "C" {
   *  \param[out] Handle:         初始化模型指针的指针
   *  \return     0 表示成功，其他表示失败
   */
-  int RMAPI_AI_MOSAIC_INIT(MOSAIC_CONFIG_FILE_S* pstFile, MOSAIC_CONFIG_INFO_S* pstInfo, void** Handle);
+  int RMAPI_AI_MOSAIC_INIT(MOSAIC_CONFIG_FILE_S* pstFile,
+                           MOSAIC_CONFIG_INFO_S* pstInfo, 
+                           void** Handle);
 
   /*! \brief 运行检测算法，返回结果
   *  \param[in]  Handle:        模型指针
@@ -93,7 +95,11 @@ extern "C" {
   *  \param[out] s32ResultNum:  输出检测结果结构体的个数
   *  \return     0 表示成功，其他表示失败
   */
-  int RMAPI_AI_MOSAIC_RUN(void* Handle, MOSAIC_IMAGE_INFO_S* pstImage, MOSAIC_INPUT_INFO_S* pstInput, MOSAIC_RESULT_INFO_S** nResult, int* s32ResultNum);
+  int RMAPI_AI_MOSAIC_RUN(void* Handle,
+                          MOSAIC_IMAGE_INFO_S* pstImage, 
+                          MOSAIC_INPUT_INFO_S* pstInput, 
+                          MOSAIC_RESULT_INFO_S** nResult, 
+                          int* s32ResultNum);
 
   /*! \brief 算法析构
   *  \param[in]  Handle:        模型指针
