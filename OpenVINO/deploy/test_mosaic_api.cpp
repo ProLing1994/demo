@@ -4,7 +4,7 @@
 
 #include "opencv2/opencv.hpp"
 
-#include "RMAI_MOSAIC_API.hpp"
+#include "RMAI_MOSAIC_API.h"
 #include "gflags/gflags.h"
 #include "glog/logging.h"
 
@@ -77,7 +77,7 @@ DEFINE_bool(output_image, true,
 //   "output image");
 
 static void DrawRectangle(cv::Mat& cvMatImageSrc,
-	  const std::vector<RESULT_INFO_S>& nResult,
+	  const std::vector<MOSAIC_RESULT_INFO_S>& nResult,
     const int s32OriImagewWidth,
     const int s32OriImageHeight) {
   int s32ObjectNum = static_cast<int>(nResult.size());
@@ -117,7 +117,7 @@ static void DrawRectangle(cv::Mat& cvMatImageSrc,
 }
 
 static void CreateMosaicImage(cv::Mat& cvMatImageSrc,
-	  const std::vector<RESULT_INFO_S>& nResult,
+	  const std::vector<MOSAIC_RESULT_INFO_S>& nResult,
     const int s32OriImagewWidth,
     const int s32OriImageHeight,
     int s32MosaicSize = 10) {
@@ -168,13 +168,13 @@ int main(int argc, char* argv[]) {
   google::InitGoogleLogging(argv[0]);
 
   // Init
-  CONFIG_FILE_S ConfigFile;
+  MOSAIC_CONFIG_FILE_S ConfigFile;
   ConfigFile.s32ModelType = FLAGS_model_type;
   strcpy(ConfigFile.scLicensePlate, FLAGS_license_plate_model_path.c_str());
   strcpy(ConfigFile.scFace, FLAGS_face_model_path.c_str());
   strcpy(ConfigFile.scReserve, "");
 
-  CONFIG_INFO_S ConfigInfo;
+  MOSAIC_CONFIG_INFO_S ConfigInfo;
   if (FLAGS_device == "CPU") {
     ConfigInfo.s32GPU = 0;
     ConfigInfo.s32ThreadNum = FLAGS_nthreads;
@@ -188,7 +188,7 @@ int main(int argc, char* argv[]) {
     ConfigInfo.s32ThreadNum = 0;
   }
   void* pstModel = nullptr;
-  int error_int = Init(&ConfigFile, &ConfigInfo, &pstModel);
+  int error_int = RMAPI_AI_MOSAIC_INIT(&ConfigFile, &ConfigInfo, &pstModel);
 	if (error_int != 0) {
 		LOG(ERROR) << "ERROR, func: " << __FUNCTION__ << ", line: " << __LINE__ << ", Init failed";
 		return -1;
@@ -243,7 +243,7 @@ int main(int argc, char* argv[]) {
     u64ReadAverageTime += u64ReadTime;
     TEST_TIME(u64StartTime);
 
-    IMAG_INFO_S ImageInfo;
+    MOSAIC_IMAGE_INFO_S ImageInfo;
     ImageInfo.u64PTS = 0;// TODO
     ImageInfo.s32Format = 0;
     ImageInfo.s32Width = s32ImageWidth;
@@ -252,10 +252,10 @@ int main(int argc, char* argv[]) {
     ImageInfo.scViraddr = new char[s32FrameSize];
     strcpy(ImageInfo.scViraddr, pstscYuvBuf);
 
-    INPUT_INFO_S InputInfo;
+    MOSAIC_INPUT_INFO_S InputInfo;
     strcpy(InputInfo.scReserve, "");
 
-    std::vector<RESULT_INFO_S> nResult;
+    std::vector<MOSAIC_RESULT_INFO_S> nResult;
     error_int = Run(pstModel, &ImageInfo, &InputInfo, nResult);
     if (error_int != 0) {
       LOG(ERROR) << "ERROR, func: " << __FUNCTION__ << ", line: " << __LINE__ << ", Run failed";
@@ -292,7 +292,7 @@ int main(int argc, char* argv[]) {
 
   LOG(INFO) << "\033[0;31mRead average time = " << u64ReadAverageTime / s32FrameNum << "ms, Detect average time = " << u64DetectAverageTime / s32FrameNum << "ms. \033[0;39m";
   delete [] pstscYuvBuf;
-  error_int = UnInit(pstModel);
+  error_int = RMAPI_AI_MOSAIC_UNINIT(&pstModel);
   if (error_int != 0) {
     LOG(ERROR) << "ERROR, func: " << __FUNCTION__ << ", line: " << __LINE__ << ", Run failed";
     return -1;
