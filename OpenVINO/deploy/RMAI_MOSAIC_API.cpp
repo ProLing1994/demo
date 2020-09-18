@@ -134,8 +134,9 @@ AIP_API int RMAPI_AI_MOSAIC_RUN(void* Handle,
   }
   else {
     cvMatRgbImage.data = static_cast<uchar*>(static_cast<void*>(pstImage->scViraddr));
+	//memcpy(cvMatRgbImage.data, static_cast<uchar*>(static_cast<void*>(pstImage->scViraddr)), s32ImageHeight * s32ImageWidth * 3);
   }
-  LOG(INFO) << int(cvMatRgbImage.at<cv::Vec3b>(0,0)[0]) << " " << int(cvMatRgbImage.at<cv::Vec3b>(0,0)[1]) << " " << int(cvMatRgbImage.at<cv::Vec3b>(0,0)[2]);
+
   // model detect
   std::vector<inference_openvino::OBJECT_INFO_S> nObject;
   pstInferenceModels->DetectLicensePlateModel(cvMatRgbImage, &nObject);
