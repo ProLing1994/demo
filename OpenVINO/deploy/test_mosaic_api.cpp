@@ -201,7 +201,7 @@ int main(int argc, char* argv[]) {
   std::string strOutputPath;
   int s32DataType = 0;
 
-  cv::VideoCapture cap;
+  cv::VideoCapture cap(strInputPath, cv::CAP_ANY);
 
   std::ifstream Fin;
   int s32FrameSize;
@@ -209,7 +209,7 @@ int main(int argc, char* argv[]) {
 
   if (strInputPath.find(".avi") != strInputPath.npos||
       strInputPath.find(".mp4") != strInputPath.npos) {
-    cap.open(strInputPath);
+    //cap.open(strInputPath);
     s32DataType = 1;
   }
   else if (strInputPath.find(".yuv") != strInputPath.npos) {
@@ -260,7 +260,7 @@ int main(int argc, char* argv[]) {
   unsigned long long u64ReadAverageTime = 0, u64DetectAverageTime = 0;
 
   cv::Mat cvMatFrame;
-	int s32FrameId = 0;
+  int s32FrameId = 0;
 
   while (1)  {
     TEST_TIME(u64StartTime);
@@ -311,7 +311,6 @@ int main(int argc, char* argv[]) {
     MOSAIC_RESULT_INFO_S* nResult = nullptr;
     int s32ResultNum = 0;
     error_int = RMAPI_AI_MOSAIC_RUN(pstModel, &ImageInfo, &InputInfo, &nResult, &s32ResultNum);
-	LOG(INFO) << s32ResultNum << s32DataType;
     if (error_int != 0) {
       LOG(ERROR) << "ERROR, func: " << __FUNCTION__ << ", line: " << __LINE__ << ", Run failed";
       return -1;
@@ -355,9 +354,14 @@ int main(int argc, char* argv[]) {
     s32FrameId += 1;
     delete [] ImageInfo.scViraddr;
   }
-
-  LOG(INFO) << "\033[0;31m[Total] Frame number = " << s32FrameId << ", Read average time = " << u64ReadAverageTime / s32FrameId 
-	<< "ms, Detect average time = " << u64DetectAverageTime / s32FrameId << "ms. \033[0;39m";
+  if (s32FrameId) {
+	LOG(INFO) << "\033[0;31m[Total] Frame number = " << s32FrameId << ", Read average time = " << u64ReadAverageTime / s32FrameId
+	  << "ms, Detect average time = " << u64DetectAverageTime / s32FrameId << "ms. \033[0;39m";
+  }
+  else {
+	LOG(ERROR) << "ERROR, func: " << __FUNCTION__ << ", line: " << __LINE__ << ", Can not load data";
+	return -1;
+  }
   if (!s32DataType) {
 	delete [] pstscYuvBuf;
   }
