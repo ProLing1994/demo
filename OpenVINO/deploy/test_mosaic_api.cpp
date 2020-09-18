@@ -59,7 +59,7 @@ DEFINE_int32(imwidth, 1280,
   "The yuv data width");
 DEFINE_int32(imheight, 720,
   "The yuv data height");
-DEFINE_int32(model_type, 2,
+DEFINE_int32(model_type, 1,
   "model type, 0: License_plate, 1: face, 2: License_plate&face");
 DEFINE_string(license_plate_model_path, "F:\\test\\models\\ssd_License_plate_mobilenetv2.xml",
   "The network model path");
@@ -94,10 +94,10 @@ static void DrawRectangle(cv::Mat& cvMatImageSrc,
 
   for (int i = 0; i < s32ResultNum; ++i) {
     cv::Rect cvRectLocation;
-    cvRectLocation.x = static_cast<double>(nResult[i].as32Rect[0]) * s32SrcWidth / s32OriImagewWidth;
-    cvRectLocation.y = static_cast<double>(nResult[i].as32Rect[1]) * s32SrcHeight / s32OriImageHeight;
-    cvRectLocation.width = static_cast<double>(nResult[i].as32Rect[2]) * s32SrcWidth / s32OriImagewWidth;
-    cvRectLocation.height = static_cast<double>(nResult[i].as32Rect[3]) * s32SrcHeight / s32OriImageHeight;
+    cvRectLocation.x = static_cast<int>(static_cast<double>(nResult[i].as32Rect[0]) * s32SrcWidth / s32OriImagewWidth);
+    cvRectLocation.y = static_cast<int>(static_cast<double>(nResult[i].as32Rect[1]) * s32SrcHeight / s32OriImageHeight);
+    cvRectLocation.width = static_cast<int>(static_cast<double>(nResult[i].as32Rect[2]) * s32SrcWidth / s32OriImagewWidth);
+    cvRectLocation.height = static_cast<int>(static_cast<double>(nResult[i].as32Rect[3]) * s32SrcHeight / s32OriImageHeight);
     
     std::string label = nResult[i].s32Type == 0 ?  "License_plate" : "Face";
     LOG(INFO) << "location: " << cvRectLocation;
@@ -135,10 +135,10 @@ static void CreateMosaicImage(cv::Mat& cvMatImageSrc,
 
   for (int Objectidx = 0; Objectidx < s32ResultNum; ++Objectidx) {
     cv::Rect cvRectLocation;
-    cvRectLocation.x = static_cast<double>(nResult[Objectidx].as32Rect[0]) * s32SrcWidth / s32OriImagewWidth;
-    cvRectLocation.y = static_cast<double>(nResult[Objectidx].as32Rect[1]) * s32SrcHeight / s32OriImageHeight;
-    cvRectLocation.width =static_cast<double>(nResult[Objectidx].as32Rect[2]) * s32SrcWidth / s32OriImagewWidth;
-    cvRectLocation.height = static_cast<double>(nResult[Objectidx].as32Rect[3]) * s32SrcHeight / s32OriImageHeight;
+    cvRectLocation.x = static_cast<int>(static_cast<double>(nResult[Objectidx].as32Rect[0]) * s32SrcWidth / s32OriImagewWidth);
+    cvRectLocation.y = static_cast<int>(static_cast<double>(nResult[Objectidx].as32Rect[1]) * s32SrcHeight / s32OriImageHeight);
+    cvRectLocation.width = static_cast<int>(static_cast<double>(nResult[Objectidx].as32Rect[2]) * s32SrcWidth / s32OriImagewWidth);
+    cvRectLocation.height = static_cast<int>(static_cast<double>(nResult[Objectidx].as32Rect[3]) * s32SrcHeight / s32OriImageHeight);
     
     for (int i = cvRectLocation.x; i < cvRectLocation.x + cvRectLocation.width ; i += s32MosaicSize) {
       for (int j = cvRectLocation.y; j < cvRectLocation.y + cvRectLocation.height; j += s32MosaicSize) {
@@ -232,8 +232,14 @@ int main(int argc, char* argv[]) {
   cv::VideoWriter writer;
   if (FLAGS_output_image) {
     #ifdef WIN32
-      std::string strInputName = strInputPath.substr(strInputPath.find_last_of("\\") + 1);
-      strOutputPath = FLAGS_output_folder + "\\result_" + strInputName;
+	  if (strInputPath.find("\\") != strInputPath.npos) {
+		  std::string strInputName = strInputPath.substr(strInputPath.find_last_of("\\") + 1);
+		  strOutputPath = FLAGS_output_folder + "\\result_" + strInputName;
+	  }
+	  else if(strInputPath.find("/") != strInputPath.npos) {
+		std::string strInputName = strInputPath.substr(strInputPath.find_last_of("/") + 1);
+		strOutputPath = FLAGS_output_folder + "/result_" + strInputName;
+	  }
       if (s32DataType) strOutputPath.replace(strOutputPath.find(".avi"), 4, "_0.avi");
     #else
       std::string strInputName = strInputPath.substr(strInputPath.find_last_of("/") + 1);
@@ -292,7 +298,7 @@ int main(int argc, char* argv[]) {
     
     if (s32DataType) {
       ImageInfo.scViraddr = new char[s32ImageWidth * s32ImageHeight * 3];
-      strcpy(ImageInfo.scViraddr, static_cast<char*>(static_cast<void*>(cvMatFrame.data)));
+	  memcpy(ImageInfo.scViraddr, static_cast<char*>(static_cast<void*>(cvMatFrame.data)), s32ImageHeight * s32ImageWidth * 3);
     }
     else {
       ImageInfo.scViraddr = new char[s32FrameSize];
