@@ -228,8 +228,6 @@ int main(int argc, char* argv[]) {
 
 	std::vector<inference_openvino::OBJECT_INFO_S> nObject;
 	InferenceDetectionOpenvino->Detect(cvMatFrame, &nObject);
-	LOG(INFO) << int(cvMatFrame.at<cv::Vec3b>(0, 0)[0]) << " " << int(cvMatFrame.at<cv::Vec3b>(0, 0)[1]) << " " << int(cvMatFrame.at<cv::Vec3b>(0, 0)[2]);
-	LOG(INFO) << nObject.size();
 
 	TEST_TIME(u64EndTime);
 	u64DetectTime = u64EndTime - u64StartTime;
