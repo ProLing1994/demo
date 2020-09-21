@@ -45,11 +45,11 @@
 //   "output image");
 
 // Ubuntu 
-DEFINE_string(yuv_path, "/home/huanyuan/code/yuv/output.yuv",
+DEFINE_string(yuv_path, "/home/huanyuan/data/yuv/test_license_plate.yuv",
  "The yuv data path");
 DEFINE_string(model_path, "/home/huanyuan/code/models/ssd_License_plate_mobilenetv2.xml",
  "The network model path");
-DEFINE_string(output_folder, "/home/huanyuan/code/images_result",
+DEFINE_string(output_folder, "/home/huanyuan/data/images_result",
  "The folder containing the output results");
 DEFINE_string(device, "CPU",
  "device name, support for ['CPU'/'GPU']");
