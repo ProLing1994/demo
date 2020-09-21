@@ -28,53 +28,53 @@
 #endif
 #endif
 
-//// Ubuntu 
-//DEFINE_string(data_path, "/home/huanyuan/code/yuv/test_license_plate.yuv",
-//"The yuv data path");
-//DEFINE_int32(imwidth, 2592,
-//"The yuv data width");
-//DEFINE_int32(imheight, 1920,
-//"The yuv data height");
-//DEFINE_int32(model_type, 2,
-//"model type, 0: License_plate, 1: face, 2: License_plate&face");
-//DEFINE_string(license_plate_model_path, "/home/huanyuan/code/models/ssd_License_plate_mobilenetv2.xml",
-//"The network model path");
-//DEFINE_string(face_model_path, "/home/huanyuan/code/models/ssd_face_mask.xml",
-//"The network model path");
-//DEFINE_string(output_folder, "/home/huanyuan/code/images_result",
-//"The folder containing the output results");
-//DEFINE_string(device, "CPU",
-//"device name, support for ['CPU'/'GPU']");
-//DEFINE_int32(nthreads, 4,
-//"CPU nthreads");
-//DEFINE_bool(show_image, true,
-//"show image");
-//DEFINE_bool(output_image, true,
-//"output image");
-
-// Win 
-DEFINE_string(data_path, "F:\\test\\yuv\\test_taxi_face.avi",
-  "The yuv data path");
-DEFINE_int32(imwidth, 1280,
-  "The yuv data width");
-DEFINE_int32(imheight, 720,
-  "The yuv data height");
-DEFINE_int32(model_type, 1,
-  "model type, 0: License_plate, 1: face, 2: License_plate&face");
-DEFINE_string(license_plate_model_path, "F:\\test\\models\\ssd_License_plate_mobilenetv2.xml",
-  "The network model path");
-DEFINE_string(face_model_path, "F:\\test\\models\\ssd_face_mask.xml",
-  "The network model path");
-DEFINE_string(output_folder, "F:\\test\\images_result",
-  "The folder containing the output results");
+// Ubuntu 
+DEFINE_string(data_path, "/home/huanyuan/data/yuv/test_license_plate.yuv",
+"The yuv data path");
+DEFINE_int32(imwidth, 2592,
+"The yuv data width");
+DEFINE_int32(imheight, 1920,
+"The yuv data height");
+DEFINE_int32(model_type, 2,
+"model type, 0: License_plate, 1: face, 2: License_plate&face");
+DEFINE_string(license_plate_model_path, "/home/huanyuan/code/models/ssd_License_plate_mobilenetv2.xml",
+"The network model path");
+DEFINE_string(face_model_path, "/home/huanyuan/code/models/ssd_face_mask.xml",
+"The network model path");
+DEFINE_string(output_folder, "/home/huanyuan/data/images_result",
+"The folder containing the output results");
 DEFINE_string(device, "CPU",
-  "device name, support for ['CPU'/'GPU']");
+"device name, support for ['CPU'/'GPU']");
 DEFINE_int32(nthreads, 4,
-  "CPU nthreads");
+"CPU nthreads");
 DEFINE_bool(show_image, true,
-  "show image");
+"show image");
 DEFINE_bool(output_image, true,
-  "output image");
+"output image");
+
+// // Win 
+// DEFINE_string(data_path, "F:\\test\\yuv\\test_taxi_face.avi",
+//   "The yuv data path");
+// DEFINE_int32(imwidth, 1280,
+//   "The yuv data width");
+// DEFINE_int32(imheight, 720,
+//   "The yuv data height");
+// DEFINE_int32(model_type, 1,
+//   "model type, 0: License_plate, 1: face, 2: License_plate&face");
+// DEFINE_string(license_plate_model_path, "F:\\test\\models\\ssd_License_plate_mobilenetv2.xml",
+//   "The network model path");
+// DEFINE_string(face_model_path, "F:\\test\\models\\ssd_face_mask.xml",
+//   "The network model path");
+// DEFINE_string(output_folder, "F:\\test\\images_result",
+//   "The folder containing the output results");
+// DEFINE_string(device, "CPU",
+//   "device name, support for ['CPU'/'GPU']");
+// DEFINE_int32(nthreads, 4,
+//   "CPU nthreads");
+// DEFINE_bool(show_image, true,
+//   "show image");
+// DEFINE_bool(output_image, true,
+//   "output image");
 
 static void DrawRectangle(cv::Mat& cvMatImageSrc,
     const MOSAIC_RESULT_INFO_S* nResult,
@@ -201,7 +201,8 @@ int main(int argc, char* argv[]) {
   std::string strOutputPath;
   int s32DataType = 0;
 
-  cv::VideoCapture cap(strInputPath, cv::CAP_ANY);
+  // cv::VideoCapture cap(strInputPath, cv::CAP_ANY);
+  cv::VideoCapture cap;
 
   std::ifstream Fin;
   int s32FrameSize;
@@ -209,7 +210,7 @@ int main(int argc, char* argv[]) {
 
   if (strInputPath.find(".avi") != strInputPath.npos||
       strInputPath.find(".mp4") != strInputPath.npos) {
-    //cap.open(strInputPath);
+    cap.open(strInputPath);
     s32DataType = 1;
   }
   else if (strInputPath.find(".yuv") != strInputPath.npos) {
