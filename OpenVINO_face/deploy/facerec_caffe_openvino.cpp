@@ -83,7 +83,7 @@ AIP_API int rmInferenceFaceRecOpenvino::build(){
         std::cout<<"ERROR, FaceRecOpenvino output dim should be 2 but got "<<m_OutputDims.size()<<std::endl;
         return -1;
     }
-    if (mParams.featureDim!=m_OutputDims[1]){
+    if (mParams.featureDim!=static_cast<int>(m_OutputDims[1])){
         std::cout<<"ERROR, FaceRecOpenvino output feature-dim is "<<m_OutputDims[1]\
             <<", not equal to "<<mParams.featureDim<<std::endl;
         return -1;

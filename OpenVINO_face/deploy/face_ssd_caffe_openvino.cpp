@@ -65,12 +65,12 @@ AIP_API int rmInferenceFaceSsdOpenvino::build(){
   //!< 4.制作输出流, prepare output blobs
 	InferenceEngine::OutputsDataMap OutputInfo(m_Network.getOutputsInfo());
 	if (OutputInfo.size() != 1){
-    std::cout<< "ERROR, FaceSsdOpenvino has only one output but got "<< OutputInfo.size() << std::endl;
+    std::cout << "ERROR, FaceSsdOpenvino has only one output but got " << OutputInfo.size() << std::endl;
     return -1;
   }
   m_OutputInfo = OutputInfo.begin()->second;
   if (m_OutputInfo == nullptr){
-    std::cout<< "ERROR, FaceSsdOpenvino do not have a output" << std::endl;
+    std::cout << "ERROR, FaceSsdOpenvino do not have a output" << std::endl;
     return -1;
   }
   m_OutputInfo->setPrecision(InferenceEngine::Precision::FP32);
@@ -103,7 +103,7 @@ AIP_API bool rmInferenceFaceSsdOpenvino::infer(const cv::Mat& cvMatImage, std::v
   const unsigned int inputC = m_InputDims[1];
   const unsigned int inputH = m_InputDims[2];
   const unsigned int inputW = m_InputDims[3];
-  const int batchSize = m_InputDims[0];
+  // const int batchSize = m_InputDims[0];
 
   //!< 1.输入尺寸归一化
   int s32ImageWidth = cvMatImage.cols;
@@ -155,7 +155,7 @@ AIP_API bool rmInferenceFaceSsdOpenvino::infer(const cv::Mat& cvMatImage, std::v
 	const size_t u32ObjectSize = nOutputDim[3];
 
 	/* Each detection has image_id that denotes processed image */
-	for (int s32CurProposal = 0; s32CurProposal < u32MaxProposalCount; s32CurProposal++) {
+	for (size_t s32CurProposal = 0; s32CurProposal < u32MaxProposalCount; s32CurProposal++) {
 
 	  float f32Confidence = pstFeatures[s32CurProposal * u32ObjectSize + 2];
 	  auto label = static_cast<int>(pstFeatures[s32CurProposal * u32ObjectSize + 1]);
