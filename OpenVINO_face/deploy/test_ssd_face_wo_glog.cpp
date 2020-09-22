@@ -25,8 +25,8 @@ static void DrawRectangle(cv::Mat& cvMatImageSrc,
 }
 
 int main(int argc, char* argv[]) {
-  std::string strInputPath = "/home/huanyuan/data/images/face_id.jpg";
-  std::string strModelPath = "/home/huanyuan/code/models/face/ssd_face_model/RFB-VGG-FaceV3-20191230-45.xml";
+  std::string strInputPath = argv[1];
+  std::string strModelPath = argv[2];
   std::string strOutputFolder = "./";
   
   // model init
