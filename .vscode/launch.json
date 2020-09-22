@@ -10,6 +10,7 @@
         "request": "launch",
         "program": "${workspaceFolder}/OpenVINO_face/lib/Debug/test_ssd_face",
         "args": [
+            // "--model_path=/home/huanyuan/code/models/face/landmark_model/multiScale_2.xml",
             // "--face_path=/home/huanyuan/data/images/face_id_1.jpg"
             // "--face_path=/home/huanyuan/data/images/face_id_2.jpg"
             "--face_path=/home/huanyuan/data/images/face_id_3.jpg"

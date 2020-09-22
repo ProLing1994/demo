@@ -65,12 +65,12 @@ AIP_API int rmInferenceFaceSsdOpenvino::build(){
   //!< 4.制作输出流, prepare output blobs
 	InferenceEngine::OutputsDataMap OutputInfo(m_Network.getOutputsInfo());
 	if (OutputInfo.size() != 1){
-    std::cout<< "ERROR, FaceSsdOpenvino has only one output but got "<< OutputInfo.size() << std::endl;
+    std::cout << "ERROR, FaceSsdOpenvino has only one output but got " << OutputInfo.size() << std::endl;
     return -1;
   }
   m_OutputInfo = OutputInfo.begin()->second;
   if (m_OutputInfo == nullptr){
-    std::cout<< "ERROR, FaceSsdOpenvino do not have a output" << std::endl;
+    std::cout << "ERROR, FaceSsdOpenvino do not have a output" << std::endl;
     return -1;
   }
   m_OutputInfo->setPrecision(InferenceEngine::Precision::FP32);
