@@ -4,6 +4,29 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+    {
+        "name": "(gdb) test_ssd_face",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/OpenVINO_face/lib/Debug/test_ssd_face",
+        "args": [
+            // "--face_path=/home/huanyuan/data/images/face_id_1.jpg"
+            // "--face_path=/home/huanyuan/data/images/face_id_2.jpg"
+            "--face_path=/home/huanyuan/data/images/face_id_3.jpg"
+        ],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}/OpenVINO_face/lib/Debug",
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "setupCommands": [
+            {
+                "description": "Enable pretty-printing for gdb",
+                "text": "-enable-pretty-printing",
+                "ignoreFailures": true
+            }
+        ]
+    },
         {
             "name": "(gdb) test_detection_avi",
             "type": "cppdbg",
