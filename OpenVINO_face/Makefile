@@ -91,10 +91,9 @@ INCPATHS += -I"$(OPENVINO_PATH)/include"
 #--------
 
 #--库路径
-LIBPATHS += -L./demo/opencv/lib
+LIBPATHS += -L./demo/opencv/libs
 # LIBPATHS += -L"/usr/lib/$(DLSW_TRIPLE)/stubs" -L"/usr/lib/$(DLSW_TRIPLE)"
-# LIBPATHS += -L"$(TENSORRT_PATH)/lib"
-LIBPATHS += -L"$(OPENVINO_PATH)/lib/intel64"
+LIBPATHS += -L"$(OPENVINO_PATH)/libs/intel64"
 # LIBPATHS += -L"$(OPENVINO_PATH)/deployment_tools/inference_engine/lib/intel64"
 # LIBPATHS += -L"$(CUDAS_PATH)/lib64"
 #--------
