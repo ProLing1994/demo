@@ -46,7 +46,7 @@ COMMON_LIBS += -lopencv_imgproc -lopencv_highgui -lopencv_imgcodecs -lopencv_cor
 COMMON_LIBS += -lrt -ldl -lpthread
 # tensorrt相关lib
 # COMMON_LIBS += -lmyelin -lnvrtc
-COMMON_LIBS += -linference_engine -linference_engine_legacy
+COMMON_LIBS += -linference_engine -linference_engine_legacy -lngraph -ltbb -linference_engine_transformations -linference_engine_ir_reader -linference_engine_lp_transformations
 
 # LIBS = -lnvinfer -lnvparsers -lnvinfer_plugin -lnvonnxparser $(COMMON_LIBS)
 LIBS = $(COMMON_LIBS)
@@ -94,6 +94,8 @@ INCPATHS += -I"$(OPENVINO_PATH)/include"
 LIBPATHS += -L./demo/opencv/libs
 # LIBPATHS += -L"/usr/lib/$(DLSW_TRIPLE)/stubs" -L"/usr/lib/$(DLSW_TRIPLE)"
 LIBPATHS += -L"$(OPENVINO_PATH)/libs/intel64"
+LIBPATHS += -L"$(OPENVINO_PATH)/ngraph/libs"
+LIBPATHS += -L"$(OPENVINO_PATH)/tbb/libs"
 # LIBPATHS += -L"$(OPENVINO_PATH)/deployment_tools/inference_engine/lib/intel64"
 # LIBPATHS += -L"$(CUDAS_PATH)/lib64"
 #--------
