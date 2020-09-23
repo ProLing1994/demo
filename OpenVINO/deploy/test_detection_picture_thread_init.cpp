@@ -53,13 +53,13 @@ static void gen_result(cv::Mat& img_src,
 }
 
 void ssd_detect_thread(
+    void* ptrDetector,
     const std::vector<std::string>& image_names, 
     const int loop_times, 
     double* time_num) {
-	
-	std::unique_ptr<inference_openvino::rmInferenceDetectionOpenvino> mobilenet_ssd_detector;
-	mobilenet_ssd_detector.reset(new inference_openvino::rmInferenceDetectionOpenvino(FLAGS_model_path));
-	int error_int = mobilenet_ssd_detector->Init();
+  
+  std::unique_ptr<inference_openvino::rmInferenceDetectionOpenvino> *mobilenet_ssd_detector = 
+      static_cast<std::unique_ptr<inference_openvino::rmInferenceDetectionOpenvino>*>(ptrDetector);
 
   for (int i = 0; i < loop_times; i++) {
 		for (int idx = 0; idx < image_names.size(); idx++) {
@@ -71,7 +71,7 @@ void ssd_detect_thread(
 
 			clock_t begin, end;
 			begin = clock();
-			mobilenet_ssd_detector->Detect(img_src, &objects);
+			(*mobilenet_ssd_detector)->Detect(img_src, &objects);
 			end = clock();
 			LOG(INFO) << "time= " << 1.0*(end - begin) / CLOCKS_PER_SEC * 1000.0 << "ms";
 			(*time_num) += 1.0*(end - begin) / CLOCKS_PER_SEC * 1000.0;
@@ -90,16 +90,22 @@ int main(int argc, char* argv[]) {
 
   yh_common::list_directory(FLAGS_image_folder.c_str(), image_subfolder, image_names);
 
+  // init
+  std::unique_ptr<inference_openvino::rmInferenceDetectionOpenvino> mobilenet_ssd_detector;
+	mobilenet_ssd_detector.reset(new inference_openvino::rmInferenceDetectionOpenvino(FLAGS_model_path));
+	int error_int = mobilenet_ssd_detector->Init();
+  void* ptrDetector = static_cast<void*>(&mobilenet_ssd_detector);
+
   int loop_times = 100;
 
   double time_num_t1 = 0.0;
   double time_num_t2 = 0.0;
   double time_num_t3 = 0.0;
   double time_num_t4 = 0.0;
-  std::thread t1(ssd_detect_thread, image_names, loop_times, &time_num_t1);
-  std::thread t2(ssd_detect_thread, image_names, loop_times, &time_num_t2);
-  std::thread t3(ssd_detect_thread, image_names, loop_times, &time_num_t3);
-  std::thread t4(ssd_detect_thread, image_names, loop_times, &time_num_t4);
+  std::thread t1(ssd_detect_thread, ptrDetector, image_names, loop_times, &time_num_t1);
+  std::thread t2(ssd_detect_thread, ptrDetector, image_names, loop_times, &time_num_t2);
+  std::thread t3(ssd_detect_thread, ptrDetector, image_names, loop_times, &time_num_t3);
+  std::thread t4(ssd_detect_thread, ptrDetector, image_names, loop_times, &time_num_t4);
 	
   t1.join();
   t2.join();
