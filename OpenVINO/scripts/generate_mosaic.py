@@ -3,7 +3,7 @@ import os
 from tqdm import tqdm
 import xml.etree.ElementTree as ET
 
-def gen_mosaic(image, bboxes_list, mosaic_size = 10):
+def gen_mosaic(image, bboxes_list, mosaic_size = 5):
   for box_id in range(len(bboxes_list)):  
     x1 = bboxes_list[box_id]["bbox"][0]
     y1 = bboxes_list[box_id]["bbox"][1]
@@ -31,8 +31,10 @@ def gen_mosaic(image, bboxes_list, mosaic_size = 10):
 
 
 if __name__ == "__main__":
-  input_dir = "/home/huanyuan/data/ceiba_mosaic/bus/20200918/check/"
-  output_dir = "/home/huanyuan/data/ceiba_mosaic/bus/20200918/"
+  # input_dir = "/home/huanyuan/data/ceiba_mosaic/bus/20200918/check/"
+  # output_dir = "/home/huanyuan/data/ceiba_mosaic/bus/20200918/"
+  input_dir = "/home/huanyuan/data/ceiba_mosaic/bus_002/"
+  output_dir = "/home/huanyuan/data/ceiba_mosaic/bus_002/"
 
   data_list = os.listdir(input_dir)
   image_list = [data for data in data_list if data.endswith(".jpg")]
@@ -40,7 +42,8 @@ if __name__ == "__main__":
   image_list.sort()
 
   fourcc = cv2.VideoWriter_fourcc('M', 'J', 'P', 'G')
-  video_writer = cv2.VideoWriter(os.path.join(output_dir, "bus_mosaic.avi"), fourcc, 15, (1280, 720))
+  # video_writer = cv2.VideoWriter(os.path.join(output_dir, "bus_mosaic.avi"), fourcc, 15, (1280, 720))
+  video_writer = cv2.VideoWriter(os.path.join(output_dir, "bus_002_mosaic.avi"), fourcc, 14, (704, 576))
 
   for idx in tqdm(range(len(image_list))):
     image_path = os.path.join(input_dir, image_list[idx])
@@ -87,8 +90,8 @@ if __name__ == "__main__":
         cv2.rectangle(image, (x1,y1), (x2,y2), (0, 0, 255), 2) 
 
     video_writer.write(image)
-      # cv2.imshow("image", image)
-      # cv2.waitKey(1)
-      # print()
+    # cv2.imshow("image", image)
+    # cv2.waitKey(1)
+    # print()
   video_writer.release()
   print("Done")
