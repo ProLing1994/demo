@@ -75,6 +75,7 @@
         "random": "cpp",
         "string": "cpp",
         "*.ipp": "cpp",
-        "*.inc": "cpp"
+        "*.inc": "cpp",
+        "*.so": "cpp"
     }
 }
