@@ -68,6 +68,7 @@ namespace inference_openvino {
 	INFERENCE_OPTIONS_S m_InferenceOptions;
 	InferenceEngine::CNNNetwork m_Network;
 	InferenceEngine::InferRequest m_InferRrequest;
+	// InferenceEngine::ExecutableNetwork ExecutableNetwork;
 	InferenceEngine::InputInfo::Ptr m_InputInfo;
 	InferenceEngine::DataPtr m_OutputInfo;
 	std::string m_strInputName;

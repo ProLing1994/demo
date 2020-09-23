@@ -19,6 +19,11 @@ target_link_libraries(test_detection_picture_thread rmai_mosaic ${OpenCV_LIBS})
 target_link_libraries(test_detection_picture_thread debug ${YH_COMMON_UTILITY_LIBRARY_DEBUG} optimized ${YH_COMMON_UTILITY_LIBRARY_RELEASE})
 target_link_libraries(test_detection_picture_thread glog::glog)
 
+add_executable(test_detection_picture_thread_init test_detection_picture_thread_init.cpp)
+target_link_libraries(test_detection_picture_thread_init rmai_mosaic ${OpenCV_LIBS})
+target_link_libraries(test_detection_picture_thread_init debug ${YH_COMMON_UTILITY_LIBRARY_DEBUG} optimized ${YH_COMMON_UTILITY_LIBRARY_RELEASE})
+target_link_libraries(test_detection_picture_thread_init glog::glog)
+
 add_executable(test_detection_picture_opencvlap test_detection_picture_opencvlap.cpp)
 target_link_libraries(test_detection_picture_opencvlap ${OpenCV_LIBS})
 target_link_libraries(test_detection_picture_opencvlap debug ${YH_COMMON_UTILITY_LIBRARY_DEBUG} optimized ${YH_COMMON_UTILITY_LIBRARY_RELEASE})
