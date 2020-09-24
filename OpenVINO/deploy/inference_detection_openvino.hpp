@@ -65,14 +65,25 @@ namespace inference_openvino {
 	int Detect(const cv::Mat& cvMatImage, std::vector<OBJECT_INFO_S>* pstnObject);
 
   private:
+	// options
 	INFERENCE_OPTIONS_S m_InferenceOptions;
+
+	// network
 	InferenceEngine::CNNNetwork m_Network;
 	//InferenceEngine::InferRequest m_InferRrequest;
 	InferenceEngine::ExecutableNetwork m_ExecutableNetwork;
+	
+	// input
 	InferenceEngine::InputInfo::Ptr m_InputInfo;
-	InferenceEngine::DataPtr m_OutputInfo;
 	std::string m_strInputName;
+	InferenceEngine::SizeVector m_InputDims;	
+
+	// output
+	InferenceEngine::DataPtr m_OutputInfo;
 	std::string m_strOutputName;
+	InferenceEngine::SizeVector m_OutputDims;
+
+	// model path
 	std::string m_strModelPath;
   };
 }
