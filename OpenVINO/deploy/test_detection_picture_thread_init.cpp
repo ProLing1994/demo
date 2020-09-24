@@ -12,20 +12,20 @@
 #include "glog/logging.h"
 
 // Windows
-//  DEFINE_string(image_folder, "F:/test/images",
-//    "The folder containing the image data");
-//  DEFINE_string(model_path, "F:/test/models/ssd_License_plate_mobilenetv2.xml",
-//    "The network model path");
-//  DEFINE_string(output_folder, "F:/test/images_result",
-//    "The folder containing the output results");
+DEFINE_string(image_folder, "F:/test/images",
+  "The folder containing the image data");
+DEFINE_string(model_path, "F:/test/models/ssd_License_plate_mobilenetv2.xml",
+  "The network model path");
+DEFINE_string(output_folder, "F:/test/images_result",
+  "The folder containing the output results");
 
 // Ubuntu 
-DEFINE_string(image_folder, "/home/huanyuan/data/images",
- "The folder containing the image data");
-DEFINE_string(model_path, "/home/huanyuan/code/models/ssd_License_plate_mobilenetv2.xml",
- "The network model path");
-DEFINE_string(output_folder, "/home/huanyuan/data/images_result",
- "The folder containing the output results");
+//DEFINE_string(image_folder, "/home/huanyuan/data/images",
+// "The folder containing the image data");
+//DEFINE_string(model_path, "/home/huanyuan/code/models/ssd_License_plate_mobilenetv2.xml",
+// "The network model path");
+//DEFINE_string(output_folder, "/home/huanyuan/data/images_result",
+// "The folder containing the output results");
 
 static void gen_result(cv::Mat& img_src,
                 const std::vector<inference_openvino::OBJECT_INFO_S>& objects, 
@@ -113,9 +113,9 @@ int main(int argc, char* argv[]) {
   t4.join();
 
   LOG(INFO) << "t1 average time= " << time_num_t1 / loop_times / image_names.size() << "ms";
-  LOG(INFO) << "t2 average time= " << time_num_t2 / loop_times / image_names.size() << "ms";
-  LOG(INFO) << "t3 average time= " << time_num_t3 / loop_times / image_names.size() << "ms";
-  LOG(INFO) << "t4 average time= " << time_num_t4 / loop_times / image_names.size() << "ms";
+  //LOG(INFO) << "t2 average time= " << time_num_t2 / loop_times / image_names.size() << "ms";
+  //LOG(INFO) << "t3 average time= " << time_num_t3 / loop_times / image_names.size() << "ms";
+  //LOG(INFO) << "t4 average time= " << time_num_t4 / loop_times / image_names.size() << "ms";
 
   google::ShutdownGoogleLogging();
   return 0;
