@@ -126,14 +126,14 @@ AIP_API int rmInferenceDetectionOpenvino::Init()
 
 	// 5. Loading model to the device
 	LOG(INFO) << "Loading model to the device";
-	InferenceEngine::ExecutableNetwork ExecutableNetwork = Ie.LoadNetwork(
-	// ExecutableNetwork = Ie.LoadNetwork(
+	//InferenceEngine::ExecutableNetwork ExecutableNetwork = Ie.LoadNetwork(
+	m_ExecutableNetwork = Ie.LoadNetwork(
 			m_Network,
 			m_InferenceOptions.OpenvinoOptions.strDeviceType);
 
-	// 6. Create infer request
-	LOG(INFO) << "Create infer request";
-	m_InferRrequest = ExecutableNetwork.CreateInferRequest();
+	//// 6. Create infer request
+	//LOG(INFO) << "Create infer request";
+	//m_InferRrequest = ExecutableNetwork.CreateInferRequest();
 
 	LOG(INFO) << "End init.";
 	return 0;
@@ -153,9 +153,9 @@ AIP_API int rmInferenceDetectionOpenvino::Detect(const cv::Mat &cvMatImage, std:
 	cv::Mat cvMatImageResized(cvMatImage);
 	cv::resize(cvMatImage, cvMatImageResized, cv::Size(static_cast<int>(m_InputInfo->getTensorDesc().getDims()[3]), static_cast<int>(m_InputInfo->getTensorDesc().getDims()[2])));
 
-	// // 6. Create infer request
-	// LOG(INFO) << "Create infer request";
-	// InferenceEngine::InferRequest m_InferRrequest = ExecutableNetwork.CreateInferRequest();
+	// 6. Create infer request
+	LOG(INFO) << "Create infer request";
+	InferenceEngine::InferRequest m_InferRrequest = m_ExecutableNetwork.CreateInferRequest();
 
 	// Creating input blob
 	InferenceEngine::Blob::Ptr pstImageInput = m_InferRrequest.GetBlob(m_strInputName);

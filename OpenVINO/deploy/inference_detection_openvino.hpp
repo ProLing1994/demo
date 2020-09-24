@@ -23,8 +23,8 @@ namespace inference_openvino {
 
   struct OPENVINO_OPTIONS_S {
 	OPENVINO_OPTIONS_S() :
-	  strDeviceType("CPU"),
-	  // strDeviceName("GPU"),
+	  //strDeviceType("CPU"),
+	  strDeviceType("GPU"),
 	  u32ThreadNum(4) {}
 
 	OPENVINO_OPTIONS_S(const OPENVINO_OPTIONS_S& OpenvinoOptions) :
@@ -67,8 +67,8 @@ namespace inference_openvino {
   private:
 	INFERENCE_OPTIONS_S m_InferenceOptions;
 	InferenceEngine::CNNNetwork m_Network;
-	InferenceEngine::InferRequest m_InferRrequest;
-	// InferenceEngine::ExecutableNetwork ExecutableNetwork;
+	//InferenceEngine::InferRequest m_InferRrequest;
+	InferenceEngine::ExecutableNetwork m_ExecutableNetwork;
 	InferenceEngine::InputInfo::Ptr m_InputInfo;
 	InferenceEngine::DataPtr m_OutputInfo;
 	std::string m_strInputName;
