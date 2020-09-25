@@ -113,9 +113,9 @@ int main(int argc, char* argv[]) {
   t4.join();
 
   LOG(INFO) << "t1 average time= " << time_num_t1 / loop_times / image_names.size() << "ms";
-  //LOG(INFO) << "t2 average time= " << time_num_t2 / loop_times / image_names.size() << "ms";
-  //LOG(INFO) << "t3 average time= " << time_num_t3 / loop_times / image_names.size() << "ms";
-  //LOG(INFO) << "t4 average time= " << time_num_t4 / loop_times / image_names.size() << "ms";
+  LOG(INFO) << "t2 average time= " << time_num_t2 / loop_times / image_names.size() << "ms";
+  LOG(INFO) << "t3 average time= " << time_num_t3 / loop_times / image_names.size() << "ms";
+  LOG(INFO) << "t4 average time= " << time_num_t4 / loop_times / image_names.size() << "ms";
 
   google::ShutdownGoogleLogging();
   return 0;
