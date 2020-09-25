@@ -201,7 +201,8 @@ int main(int argc, char* argv[]) {
   std::string strOutputPath;
   int s32DataType = 0;
 
-  cv::VideoCapture cap(strInputPath, cv::CAP_ANY);
+  //cv::VideoCapture cap(strInputPath, cv::CAP_ANY);
+  cv::VideoCapture cap;
 
   std::ifstream Fin;
   int s32FrameSize;
@@ -209,7 +210,7 @@ int main(int argc, char* argv[]) {
 
   if (strInputPath.find(".avi") != strInputPath.npos ||
 	strInputPath.find(".mp4") != strInputPath.npos) {
-	//cap.open(strInputPath);
+	cap.open(strInputPath);
 	s32DataType = 1;
   }
   else if (strInputPath.find(".yuv") != strInputPath.npos) {

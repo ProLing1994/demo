@@ -209,36 +209,36 @@ namespace inference_openvino
 	InferenceEngine::InferRequest m_InferRrequest = m_ExecutableNetwork.CreateInferRequest();
 
 	// 2. Prepare input
-	cv::Mat cvMatImageResized;
-	cv::resize(cvMatImage, cvMatImageResized, cv::Size(static_cast<int>(m_InputInfo->getTensorDesc().getDims()[3]), static_cast<int>(m_InputInfo->getTensorDesc().getDims()[2])));
-
-	InferenceEngine::Blob::Ptr pstImageInput = wrapMat2Blob(cvMatImageResized);
-	m_InferRrequest.SetBlob(m_strInputName, pstImageInput);
-
-	//// resize image
-	//cv::Mat cvMatImageResized(cvMatImage);
+	//cv::Mat cvMatImageResized;
 	//cv::resize(cvMatImage, cvMatImageResized, cv::Size(static_cast<int>(m_InputInfo->getTensorDesc().getDims()[3]), static_cast<int>(m_InputInfo->getTensorDesc().getDims()[2])));
 
-	//InferenceEngine::Blob::Ptr pstImageInput = m_InferRrequest.GetBlob(m_strInputName);
-	//// Filling input tensor with images. First b channel, then g and r channels
-	//InferenceEngine::MemoryBlob::Ptr pstMemortImage = InferenceEngine::as<InferenceEngine::MemoryBlob>(pstImageInput);
-	//if (!pstMemortImage) {
-	//	LOG(ERROR) << "We expect image blob to be inherited from MemoryBlob, but by fact we were not able "
-	//								"to cast imageInput to MemoryBlob";
-	//	return -1;
-	//}
-	//// locked memory holder should be alive all time while access to its buffer happens
-	//auto InputHolder = pstMemortImage->wmap();
-	//unsigned char *pstucData = InputHolder.as<unsigned char *>();
+	//InferenceEngine::Blob::Ptr pstImageInput = wrapMat2Blob(cvMatImageResized);
+	//m_InferRrequest.SetBlob(m_strInputName, pstImageInput);
 
-	///** Iterate over all pixel in image (b,g,r) **/
-	//for (size_t u32Pid = 0; u32Pid < u32InputH * u32InputW; u32Pid++) {
-	//	/** Iterate over all channels **/
-	//	for (size_t u32Ch = 0; u32Ch < u32InputC; ++u32Ch) {
-	//		/**          [images stride + channels stride + pixel id ] all in bytes            **/
-	//		pstucData[u32Ch * u32InputH * u32InputW + u32Pid] = cvMatImageResized.data[u32Pid * u32InputC + u32Ch];
-	//	}
-	//}
+	// resize image
+	cv::Mat cvMatImageResized(cvMatImage);
+	cv::resize(cvMatImage, cvMatImageResized, cv::Size(static_cast<int>(m_InputInfo->getTensorDesc().getDims()[3]), static_cast<int>(m_InputInfo->getTensorDesc().getDims()[2])));
+
+	InferenceEngine::Blob::Ptr pstImageInput = m_InferRrequest.GetBlob(m_strInputName);
+	// Filling input tensor with images. First b channel, then g and r channels
+	InferenceEngine::MemoryBlob::Ptr pstMemortImage = InferenceEngine::as<InferenceEngine::MemoryBlob>(pstImageInput);
+	if (!pstMemortImage) {
+		LOG(ERROR) << "We expect image blob to be inherited from MemoryBlob, but by fact we were not able "
+									"to cast imageInput to MemoryBlob";
+		return -1;
+	}
+	// locked memory holder should be alive all time while access to its buffer happens
+	auto InputHolder = pstMemortImage->wmap();
+	unsigned char *pstucData = InputHolder.as<unsigned char *>();
+
+	/** Iterate over all pixel in image (b,g,r) **/
+	for (size_t u32Pid = 0; u32Pid < u32InputH * u32InputW; u32Pid++) {
+		/** Iterate over all channels **/
+		for (size_t u32Ch = 0; u32Ch < u32InputC; ++u32Ch) {
+			/**          [images stride + channels stride + pixel id ] all in bytes            **/
+			pstucData[u32Ch * u32InputH * u32InputW + u32Pid] = cvMatImageResized.data[u32Pid * u32InputC + u32Ch];
+		}
+	}
 
    // 3. Do inference
 	LOG(INFO) << "Start inference";
