@@ -31,12 +31,20 @@ target_link_libraries(test_detection_picture_opencvlap glog::glog)
 
 add_executable(test_detection_yuv test_detection_yuv.cpp)
 target_link_libraries(test_detection_yuv rmai_mosaic ${OpenCV_LIBS})
+target_link_libraries(test_detection_picture_opencvlap debug ${YH_COMMON_UTILITY_LIBRARY_DEBUG} optimized ${YH_COMMON_UTILITY_LIBRARY_RELEASE})
 target_link_libraries(test_detection_yuv glog::glog)
 
 add_executable(test_detection_avi test_detection_avi.cpp)
 target_link_libraries(test_detection_avi rmai_mosaic ${OpenCV_LIBS})
+target_link_libraries(test_detection_picture_opencvlap debug ${YH_COMMON_UTILITY_LIBRARY_DEBUG} optimized ${YH_COMMON_UTILITY_LIBRARY_RELEASE})
 target_link_libraries(test_detection_avi glog::glog)
 
 add_executable(test_mosaic_api test_mosaic_api.cpp)
 target_link_libraries(test_mosaic_api rmai_mosaic ${OpenCV_LIBS})
+target_link_libraries(test_detection_picture_opencvlap debug ${YH_COMMON_UTILITY_LIBRARY_DEBUG} optimized ${YH_COMMON_UTILITY_LIBRARY_RELEASE})
 target_link_libraries(test_mosaic_api glog::glog)
+
+add_executable(test_mosaic_api_thread test_mosaic_api_thread.cpp)
+target_link_libraries(test_mosaic_api_thread rmai_mosaic ${OpenCV_LIBS})
+target_link_libraries(test_detection_picture_opencvlap debug ${YH_COMMON_UTILITY_LIBRARY_DEBUG} optimized ${YH_COMMON_UTILITY_LIBRARY_RELEASE})
+target_link_libraries(test_mosaic_api_thread glog::glog)
