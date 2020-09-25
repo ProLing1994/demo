@@ -95,21 +95,21 @@ int main(int argc, char* argv[]) {
   double time_num_t1 = 0.0;
   double time_num_t2 = 0.0;
   double time_num_t3 = 0.0;
-  //double time_num_t4 = 0.0;
+  double time_num_t4 = 0.0;
   std::thread t1(ssd_detect_thread, image_names, loop_times, &time_num_t1);
   std::thread t2(ssd_detect_thread, image_names, loop_times, &time_num_t2);
   std::thread t3(ssd_detect_thread, image_names, loop_times, &time_num_t3);
-  //std::thread t4(ssd_detect_thread, image_names, loop_times, &time_num_t4);
+  std::thread t4(ssd_detect_thread, image_names, loop_times, &time_num_t4);
 	
   t1.join();
   t2.join();
   t3.join();
-  //t4.join();
+  t4.join();
 
   LOG(INFO) << "t1 average time= " << time_num_t1 / loop_times / image_names.size() << "ms";
   LOG(INFO) << "t2 average time= " << time_num_t2 / loop_times / image_names.size() << "ms";
   LOG(INFO) << "t3 average time= " << time_num_t3 / loop_times / image_names.size() << "ms";
-  //LOG(INFO) << "t4 average time= " << time_num_t4 / loop_times / image_names.size() << "ms";
+  LOG(INFO) << "t4 average time= " << time_num_t4 / loop_times / image_names.size() << "ms";
 
   google::ShutdownGoogleLogging();
   return 0;
