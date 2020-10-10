@@ -77,5 +77,6 @@
         "*.ipp": "cpp",
         "*.inc": "cpp",
         "*.so": "cpp"
-    }
+    },
+    "python.pythonPath": "/home/huanyuan/anaconda3/bin/python"
 }
