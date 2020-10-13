@@ -1,0 +1,1 @@
+audio_split.exe --audio_path=E:\\project\\data\\weiboyulu\\1012\\0000000000000000-201012-131847-141242-000001089960.wav --output_dir=E:\\project\\data\\weiboyulu\\1012\\ --speaker=2 --sex=1 --idx=15000
