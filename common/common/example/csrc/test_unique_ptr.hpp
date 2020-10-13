@@ -12,6 +12,7 @@ class ClassA{
 
     int Add() { 
       c = a + b;
+	  return 0;
     };
     
     int printc() {
