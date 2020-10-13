@@ -1,0 +1,206 @@
+ROOT_DIR:=$(shell pwd)
+
+#$(warning cross:${CROSS_COMPILER})
+#$(warning name:${COMPILER_NAME})
+#$(warning type:${PRODUCT_TYPE})
+#$(warning version:${DEBUG_VERSION})
+#$(warning prefix:${PREFIX})
+#$(warning release name:${RELEASE_NAME})
+
+ifndef PREFIX
+RELEASE_DIR=${ROOT_DIR}/release
+else
+RELEASE_DIR=${PREFIX}/${RELEASE_NAME}
+endif
+
+ifndef CROSS_COMPILER
+DEFINE_FILE=${ROOT_DIR}/../defines
+ifeq (${DEFINE_FILE}, $(wildcard ${DEFINE_FILE}))
+include ${DEFINE_FILE}
+endif
+endif
+
+ifndef STREAMAX_CBB
+STREAMAX_CBB=${RELEASE_DIR}/..
+endif
+
+ifndef PUBLIC_INCLUDE
+PUBLIC_INCLUDE=${RELEASE_DIR}/../include
+endif
+
+CC=${CROSS_COMPILER}gcc
+CXX=${CROSS_COMPILER}g++
+STRIP=${CROSS_COMPILER}strip
+AR=${CROSS_COMPILER}ar
+
+include ${ROOT_DIR}/src.mk
+
+ifndef AIM_NAME
+	$(error "AIM_NAME IS NO DEFINE!")
+	exit 1
+endif
+
+CFLAGS+=-fpic
+
+ifeq (${DEBUG_VERSION}, y)
+CFLAGS+=-g
+endif
+
+ifeq (${USE_GCC}, y)
+BUILD_TOOL=${CC} ${CFLAGS}
+else
+CXX_CFLAGS+=-fno-strict-aliasing -traditional -Wno-reorder -Wno-char-subscripts
+BUILD_TOOL=${CXX} ${CFLAGS} ${CXX_CFLAGS}
+endif
+
+ifeq ($(suffix ${AIM_NAME}), .so)
+CFLAGS+=-fpic
+endif
+
+LDFLAGS+=${LIB_DIR}
+LDFLAGS+=${STATIC_LIB}
+LDFLAGS+=${DYN_LIB}
+
+SRC_FILE_C+=$(foreach d,$(SRC_DIR),$(wildcard $(addprefix $(d)/*, .c)))
+SRC_FILE_CPP+=$(foreach d,$(SRC_DIR),$(wildcard $(addprefix $(d)/*, .cpp)))
+SRC_FILE+=${SRC_FILE_C} ${SRC_FILE_CPP}
+
+OBJ_DIR:=$(ROOT_DIR)/.obj
+OBJ_FILE:=$(addprefix $(OBJ_DIR)/, $(addsuffix .o, $(basename $(notdir $(SRC_FILE)))))
+
+RELY_FILE:=${OBJ_DIR}/relyfile
+
+ifeq ($(suffix ${AIM_NAME}), .a)
+IS_LIB=TURE
+endif
+
+ifeq ($(suffix ${AIM_NAME}), .so)
+IS_LIB=TURE
+endif
+
+ifeq ($(suffix ${AIM_NAME_EX}), .a)
+IS_LIB_EX=TURE
+endif
+
+ifeq ($(suffix ${AIM_NAME_EX}), .so)
+IS_LIB_EX=TURE
+endif
+
+
+.PHONY:all
+ifdef AIM_NAME_EX
+all: $(RELY_FILE) $(AIM_NAME) ${AIM_NAME_EX}
+else
+all: $(RELY_FILE) $(AIM_NAME)
+endif
+
+.PHONY:CREATE_RELY_FILE
+CREATE_RELY_FILE:
+	@echo "------------create rely file-------------"
+	@-mkdir -p $(OBJ_DIR)
+	@-rm -vf ${RELY_FILE}
+	@echo "RELEASE_DIR: ", ${RELEASE_DIR}
+	@echo "CROSS_COMPILER: ",${CROSS_COMPILER}
+	@echo "DEFINE_FILE: ", ${DEFINE_FILE}
+	@echo "PRODUCT_TYPE: ", ${PRODUCT_TYPE}
+	@echo "PROJECT_DIR: ", ${PROJECT_DIR}
+	@echo "src.mk: ",${ROOT_DIR}/src.mk
+	@echo "SRC_DIR: ", $(SRC_DIR)
+	@echo "SRC_SRC_FILE_CDIR: ", $(SRC_FILE_C)
+	@for f in $(SRC_FILE_C); do \
+		OBJ=$(OBJ_DIR)/`basename $$f|sed -e 's/\.cpp/\.o/' -e 's/\.c/\.o/'`; \
+		echo $$OBJ: $$f; \
+		echo $$OBJ: $$f>> ${RELY_FILE}; \
+		echo '	${BUILD_TOOL} $${INCLUDE_DIR} -c -o $$@ $$^'>> $(RELY_FILE); \
+	done
+	@for f in $(SRC_FILE_CPP); do \
+		OBJ=$(OBJ_DIR)/`basename $$f|sed -e 's/\.cpp/\.o/' -e 's/\.c/\.o/'`; \
+		echo $$OBJ: $$f>> ${RELY_FILE}; \
+		echo '	${BUILD_TOOL} $${INCLUDE_DIR} -c -o $$@ $$^'>> $(RELY_FILE); \
+	done
+
+-include $(RELY_FILE)
+
+${AIM_NAME}:${OBJ_FILE}
+ifeq ($(suffix ${AIM_NAME}), .a)
+	$(AR) -rc $@ ${OBJ_FILE} ${STATIC_LIB}
+else
+ifeq ($(suffix ${AIM_NAME}), .so)
+	$(BUILD_TOOL) -shared -fpic -o "$@" ${OBJ_FILE} ${LDFLAGS}
+else
+	$(BUILD_TOOL) -o "$@" ${OBJ_FILE} ${LDFLAGS}
+endif
+ifneq ($(findstring -g, $(CFLAGS)), -g)
+	$(STRIP) ${AIM_NAME}
+endif
+endif
+	@-mkdir -p ${RELEASE_DIR}
+ifeq (${IS_LIB}, TURE)
+ifdef RELEASE_INCLUDE_FILE
+	$(call RELEASE_INCLUDE_FILE)
+else
+	@-mkdir -p ${RELEASE_DIR}/include
+	@for f in ${RELEASE_FILE}; do\
+		cp -vf $$f ${RELEASE_DIR}/include; \
+	done
+endif
+	@-mkdir -p ${RELEASE_DIR}/lib
+	@-cp -vf ${AIM_NAME} ${RELEASE_DIR}/lib
+else
+	@-mkdir -p ${RELEASE_DIR}/bin
+	@-cp -vf ${AIM_NAME} ${RELEASE_DIR}/bin
+endif
+ifdef BIN_OUTPUT_DIR
+	@-mkdir -p ${BIN_OUTPUT_DIR}
+	@-cp -vf ${AIM_NAME} ${BIN_OUTPUT_DIR}
+endif
+
+ifdef AIM_NAME_EX
+${AIM_NAME_EX}:${OBJ_FILE}
+ifeq ($(suffix ${AIM_NAME_EX}), .a)
+	$(AR) -rc $@ ${OBJ_FILE} ${STATIC_LIB}
+else
+ifeq ($(suffix ${AIM_NAME_EX}), .so)
+	$(BUILD_TOOL) -shared -fpic -o "$@" ${OBJ_FILE} ${LDFLAGS}
+else
+	$(BUILD_TOOL) -o "$@" ${OBJ_FILE} ${LDFLAGS}
+endif
+ifneq ($(findstring -g, $(CFLAGS)), -g)
+	$(STRIP) ${AIM_NAME_EX}
+endif
+endif
+	@-mkdir -p ${RELEASE_DIR}
+ifeq (${IS_LIB_EX}, TURE)
+ifdef RELEASE_INCLUDE_FILE
+	$(call RELEASE_INCLUDE_FILE)
+else
+	@-mkdir -p ${RELEASE_DIR}/include
+	@for f in ${RELEASE_FILE}; do\
+		cp -vf $$f ${RELEASE_DIR}/include; \
+	done
+endif
+	@-mkdir -p ${RELEASE_DIR}/lib
+	@-cp -vf ${AIM_NAME_EX} ${RELEASE_DIR}/lib
+else
+	@-mkdir -p ${RELEASE_DIR}/bin
+	@-cp -vf ${AIM_NAME_EX} ${RELEASE_DIR}/bin
+endif
+ifdef BIN_OUTPUT_DIR
+	@-mkdir -p ${BIN_OUTPUT_DIR}
+	@-cp -vf ${AIM_NAME_EX} ${BIN_OUTPUT_DIR}
+endif
+endif
+
+.PHONY:clean
+clean:
+ifdef RELEASE_DIR
+	rm -rvf ${RELEASE_DIR}/*
+endif
+	rm -vf $(AIM_NAME) ${AIM_NAME_EX}
+	rm -rvf ${OBJ_DIR}/
+ifdef BIN_OUTPUT_DIR
+	rm -vf ${BIN_OUTPUT_DIR}/${AIM_NAME}
+ifdef AIM_NAME_EX	
+	rm -vf ${BIN_OUTPUT_DIR}/${AIM_NAME_EX}
+endif
+endif
