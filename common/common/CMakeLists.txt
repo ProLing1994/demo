@@ -67,4 +67,4 @@ enable_testing()
 
 # add submodules
 add_subdirectory(utils)
-add_subdirectory(example)
+add_subdirectory(test)
