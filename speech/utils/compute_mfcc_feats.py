@@ -4,12 +4,13 @@ from scipy.fftpack import dct
 import matplotlib.pyplot as plt
 
 # 绘制时域图
-def plot_time(signal, sample_rate):
+def plot_time(signal, sample_rate, title='Audio Image'):
   time = np.arange(0, len(signal)) * (1.0 / sample_rate)
-  plt.figure(figsize=(20, 5))
+  plt.figure(figsize=(10, 4))
   plt.plot(time, signal)
   plt.xlabel('Time(s)')
   plt.ylabel('Amplitude')
+  plt.title(title)
   plt.grid()
   plt.show()
 
@@ -20,7 +21,7 @@ def plot_freq(signal, sample_rate, fft_size=512):
   xf = np.fft.rfft(signal, fft_size) / fft_size
   freqs = np.linspace(0, int(sample_rate/2), int(fft_size/2 + 1)) 
   xfp = 20 * np.log10(np.clip(np.abs(xf), 1e-20, 1e100))
-  plt.figure(figsize=(20, 5))
+  plt.figure(figsize=(10, 4))
   plt.plot(freqs, xfp)
   plt.xlabel('Freq(hz)')
   plt.ylabel('dB')
@@ -29,8 +30,8 @@ def plot_freq(signal, sample_rate, fft_size=512):
 
 # 绘制频谱图
 def plot_spectrogram(spec, note):
-  fig = plt.figure(figsize=(20, 5))
-  heatmap = plt.pcolor(spec)
+  fig = plt.figure(figsize=(10, 4))
+  heatmap = plt.pcolor(spec) 
   fig.colorbar(mappable=heatmap)
   plt.xlabel('Time(s)')
   plt.ylabel(note)
@@ -38,28 +39,33 @@ def plot_spectrogram(spec, note):
   plt.show()
 
 if __name__ == "__main__":
-  wav_file = "/home/huanyuan/code/demo/speech/feats/OSR_us_000_0010_8k.wav"
+  wav_file = "/home/huanyuan/data/speech/canting.wav"
+
+  # options
+  pre_emphasis = 0.97
+  frame_size, frame_stride = 0.025, 0.01
+
+  # 1. 读取音频数据
   sample_rate, signal = wavfile.read(wav_file)
-  signal = signal[0: int(3.5 * sample_rate)]    # 保留前3.5s数据
   print('sample rate:', sample_rate, ', frame length:', len(signal))
   
-  # 绘制时域图
-  plot_time(signal, sample_rate) 
-  # 绘制频域图
-  plot_freq(signal, sample_rate)
+  # 绘制原始音频时域图
+  plot_time(signal, sample_rate, 'Original Audio Image') 
+  # # 绘制频域图
+  # plot_freq(signal, sample_rate)
   
-  # 预加重（Pre-Emphasis）
-  pre_emphasis = 0.97
+  # 2. 预加重(Pre-Emphasis)
   emphasized_signal = np.append(signal[0], signal[1:] - pre_emphasis * signal[:-1])
 
-  plot_time(emphasized_signal, sample_rate)
-  plot_freq(emphasized_signal, sample_rate)
+  # 绘制预加重音频时域图
+  plot_time(emphasized_signal, sample_rate, 'Pre-Emphasis Audio Image')
+  # plot_freq(emphasized_signal, sample_rate)
 
-  # 分帧
-  frame_size, frame_stride = 0.025, 0.01
+  # 3. 分帧
   frame_length, frame_step = int(round(frame_size * sample_rate)), int(round(frame_stride * sample_rate))
   signal_length = len(emphasized_signal)
   num_frames = int(np.ceil(np.abs(signal_length - frame_length) / frame_step)) + 1    # 帧数
+  num_frames_per_second = int(np.ceil(np.abs(sample_rate - frame_length) / frame_step)) + 1
 
   pad_signal_length = (num_frames - 1) * frame_step + frame_length
   z = np.zeros((pad_signal_length - signal_length))
@@ -67,45 +73,46 @@ if __name__ == "__main__":
 
   indices = np.arange(0, frame_length).reshape(1, -1) + np.arange(0, num_frames * frame_step, frame_step).reshape(-1, 1)
   frames = pad_signal[indices]
-  print(frames.shape)
+  print('frames shape:', frames.shape)
 
-  # 加窗
+  # 4. 加窗(汉宁窗)
   hamming = np.hamming(frame_length)
   # hamming = 0.54 - 0.46 * np.cos(2 * np.pi * np.arange(0, frame_length) / (frame_length - 1))
 
-  plt.figure(figsize=(20, 5))
-  plt.plot(hamming)
-  plt.grid()
-  plt.xlim(0, 200)
-  plt.ylim(0, 1)
-  plt.xlabel('Samples')
-  plt.ylabel('Amplitude')
-  plt.show()
+  # plt.figure(figsize=(20, 5))
+  # plt.plot(hamming)
+  # plt.grid()
+  # plt.xlim(0, 200)
+  # plt.ylim(0, 1)
+  # plt.xlabel('Samples')
+  # plt.ylabel('Amplitude')
+  # plt.show()
 
   frames *= hamming
-  plot_time(frames[1], sample_rate)
-  plot_freq(frames[1], sample_rate)
+  # 绘制加窗后第一帧音频时域图
+  # plot_time(frames[0], sample_rate, 'Frame 0: Hamming Audio Image')
+  # plot_freq(frames[1], sample_rate)
 
-  # 快速傅里叶变换（FFT）
+  # 5. 快速傅里叶变换（FFT）
   NFFT = 512
   mag_frames = np.absolute(np.fft.rfft(frames, NFFT))
   pow_frames = ((1.0 / NFFT) * (mag_frames ** 2))
   print(pow_frames.shape)
-  plt.figure(figsize=(20, 5))
-  plt.plot(pow_frames[1])
-  plt.grid()
+  # plt.figure(figsize=(10, 4))
+  # plt.plot(pow_frames[1])
+  # plt.grid()
 
-  # Mel 滤波器组
+  # 6. Mel 滤波器组
   low_freq_mel = 0
   high_freq_mel = 2595 * np.log10(1 + (sample_rate / 2) / 700)
   print(low_freq_mel, high_freq_mel)
 
   nfilt = 40
-  mel_points = np.linspace(low_freq_mel, high_freq_mel, nfilt + 2)  # 所有的mel中心点，为了方便后面计算mel滤波器组，左右两边各补一个中心点
+  mel_points = np.linspace(low_freq_mel, high_freq_mel, nfilt + 2)  # 所有的 mel 中心点，为了方便后面计算 mel 滤波器组，左右两边各补一个中心点
   hz_points = 700 * (10 ** (mel_points / 2595) - 1)
 
-  fbank = np.zeros((nfilt, int(NFFT / 2 + 1)))  # 各个mel滤波器在能量谱对应点的取值
-  bin = (hz_points / (sample_rate / 2)) * (NFFT / 2)  # 各个mel滤波器中心点对应FFT的区域编码，找到有值的位置
+  fbank = np.zeros((nfilt, int(NFFT / 2 + 1)))  # 各个 mel 滤波器在能量谱对应点的取值
+  bin = (hz_points / (sample_rate / 2)) * (NFFT / 2)  # 各个 mel 滤波器中心点对应 FFT 的区域编码，找到有值的位置
   for i in range(1, nfilt + 1):
       left = int(bin[i-1])
       center = int(bin[i])
@@ -122,7 +129,7 @@ if __name__ == "__main__":
   print(filter_banks.shape)
   plot_spectrogram(filter_banks.T, 'Filter Banks')
 
-  # 离散余弦变换 dct 
+  # 7. 离散余弦变换 dct 
   num_ceps = 12
   mfcc = dct(filter_banks, type=2, axis=1, norm='ortho')[:, 1:(num_ceps+1)]
   print(mfcc.shape)
