@@ -53,28 +53,28 @@
 //"output image");
 
 // Win 
-DEFINE_string(data_path, "F:\\test\\yuv\\test_taxi_face.avi",
-  "The yuv data path");
+DEFINE_string(data_path, "E:\\project\\data\\test_yuv\\test_taxi_face.avi",
+	"The yuv data path");
 DEFINE_int32(imwidth, 1280,
-  "The yuv data width");
+	"The yuv data width");
 DEFINE_int32(imheight, 720,
-  "The yuv data height");
+	"The yuv data height");
 DEFINE_int32(model_type, 1,
-  "model type, 0: License_plate, 1: face, 2: License_plate&face");
-DEFINE_string(license_plate_model_path, "F:\\test\\models\\ssd_License_plate_mobilenetv2.xml",
-  "The network model path");
-DEFINE_string(face_model_path, "F:\\test\\models\\ssd_face_mask.xml",
-  "The network model path");
-DEFINE_string(output_folder, "F:\\test\\images_result",
-  "The folder containing the output results");
+	"model type, 0: License_plate, 1: face, 2: License_plate&face");
+DEFINE_string(license_plate_model_path, "E:\\project\\data\\models\\ssd\\ssd_License_plate_mobilenetv2.xml",
+	"The network model path");
+DEFINE_string(face_model_path, "E:\\project\\data\\models\\ssd\\ssd_face_mask.xml",
+	"The network model path");
+DEFINE_string(output_folder, "E:\\project\\data\\test_result",
+	"The folder containing the output results");
 DEFINE_string(device, "CPU",
-  "device name, support for ['CPU'/'GPU']");
+	"device name, support for ['CPU'/'GPU']");
 DEFINE_int32(nthreads, 4,
-  "CPU nthreads");
+	"CPU nthreads");
 DEFINE_bool(show_image, true,
-  "show image");
+	"show image");
 DEFINE_bool(output_image, true,
-  "output image");
+	"output image");
 
 static void DrawRectangle(cv::Mat& cvMatImageSrc,
   const MOSAIC_RESULT_INFO_S* nResult,
