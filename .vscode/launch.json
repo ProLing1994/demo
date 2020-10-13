@@ -5,11 +5,20 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: 当前文件",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
+        },
+        {
             "name": "(gdb) test_mosaic_api_thread",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/OpenVINO/lib/Debug/test_mosaic_api_thread",
-            "args": ["--logtostderr"],
+            "args": [
+                "--logtostderr"
+            ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/OpenVINO/lib/Debug/",
             "environment": [],
@@ -28,7 +37,9 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/OpenVINO/lib/Debug/test_detection_picture_thread_init",
-            "args": ["--logtostderr"],
+            "args": [
+                "--logtostderr"
+            ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/OpenVINO/lib/Debug",
             "environment": [],
@@ -42,55 +53,59 @@
                 }
             ]
         },
-    {
-        "name": "(gdb) test_detection_picture_thread",
-        "type": "cppdbg",
-        "request": "launch",
-        "program": "${workspaceFolder}/OpenVINO/lib/Debug/test_detection_picture_thread",
-        "args": ["--logtostderr"],
-        "stopAtEntry": false,
-        "cwd": "${workspaceFolder}/OpenVINO/lib/Debug",
-        "environment": [],
-        "externalConsole": false,
-        "MIMode": "gdb",
-        "setupCommands": [
-            {
-                "description": "Enable pretty-printing for gdb",
-                "text": "-enable-pretty-printing",
-                "ignoreFailures": true
-            }
-        ]
-    },
-    {
-        "name": "(gdb) test_ssd_face",
-        "type": "cppdbg",
-        "request": "launch",
-        "program": "${workspaceFolder}/OpenVINO_face/lib/Debug/test_ssd_face",
-        "args": [
-            // "--model_path=/home/huanyuan/code/models/face/landmark_model/multiScale_2.xml",
-            // "--face_path=/home/huanyuan/data/images/face_id_1.jpg"
-            // "--face_path=/home/huanyuan/data/images/face_id_2.jpg"
-            "--face_path=/home/huanyuan/data/images/face_id_3.jpg"
-        ],
-        "stopAtEntry": false,
-        "cwd": "${workspaceFolder}/OpenVINO_face/lib/Debug",
-        "environment": [],
-        "externalConsole": false,
-        "MIMode": "gdb",
-        "setupCommands": [
-            {
-                "description": "Enable pretty-printing for gdb",
-                "text": "-enable-pretty-printing",
-                "ignoreFailures": true
-            }
-        ]
-    },
+        {
+            "name": "(gdb) test_detection_picture_thread",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/OpenVINO/lib/Debug/test_detection_picture_thread",
+            "args": [
+                "--logtostderr"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/OpenVINO/lib/Debug",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "(gdb) test_ssd_face",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/OpenVINO_face/lib/Debug/test_ssd_face",
+            "args": [
+                // "--model_path=/home/huanyuan/code/models/face/landmark_model/multiScale_2.xml",
+                // "--face_path=/home/huanyuan/data/images/face_id_1.jpg"
+                // "--face_path=/home/huanyuan/data/images/face_id_2.jpg"
+                "--face_path=/home/huanyuan/data/images/face_id_3.jpg"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/OpenVINO_face/lib/Debug",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
         {
             "name": "(gdb) test_detection_avi",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/OpenVINO/lib/Debug/test_detection_avi",
-            "args": ["--logtostderr"],
+            "args": [
+                "--logtostderr"
+            ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/OpenVINO/lib/Debug",
             "environment": [],
@@ -123,86 +138,92 @@
                 }
             ]
         },
-    {
-        "name": "(gdb) test_mosaic_api",
-        "type": "cppdbg",
-        "request": "launch",
-        "program": "${workspaceFolder}/OpenVINO/lib/Debug/test_mosaic_api",
-        // "program": "${workspaceFolder}/OpenVINO/lib/Release/test_mosaic_api",
-        "args": [
-            "--data_path=/home/huanyuan/data/yuv/test_taxi_face.avi",
-            // "--data_path=/home/huanyuan/data/yuv/test_taxi_face.yuv",
-            "--imwidth=1280",
-            "--imheight=720",
-            // "--data_path=/home/huanyuan/data/yuv/test_license_plate.yuv",
-            // "--imwidth=2592",
-            // "--imheight=1920",
-            "--model_type=2",
-            "--logtostderr"],
-        "stopAtEntry": false,
-        "cwd": "${workspaceFolder}/OpenVINO/lib/Debug",
-        "environment": [],
-        "externalConsole": false,
-        "MIMode": "gdb",
-        "setupCommands": [
-            {
-                "description": "Enable pretty-printing for gdb",
-                "text": "-enable-pretty-printing",
-                "ignoreFailures": true
-            }
-        ]
-    },
-    {
-        "name": "(gdb) test_detection_yuv",
-        "type": "cppdbg",
-        "request": "launch",
-        // "program": "${workspaceFolder}/OpenVINO/lib/Debug/test_detection_yuv",
-        "program": "${workspaceFolder}/OpenVINO/lib/Release/test_detection_yuv",
-        "args": [
-            "--device=CPU",
-            "--nthreads=4",
-            "--show_image=true",
-            "--logtostderr"],
-        "stopAtEntry": false,
-        // "cwd": "${workspaceFolder}/OpenVINO/lib/Debug/",
-        "cwd": "${workspaceFolder}/OpenVINO/lib/Release/",
-        "environment": [],
-        "externalConsole": false,
-        "MIMode": "gdb",
-        "setupCommands": [
-            {
-                "description": "Enable pretty-printing for gdb",
-                "text": "-enable-pretty-printing",
-                "ignoreFailures": true
-            }
-        ]
-    },
-    {
-        "name": "(gdb) test_detection_picture_opencvlap",
-        "type": "cppdbg",
-        "request": "launch",
-        "program": "${workspaceFolder}/OpenVINO/lib/Debug/test_detection_picture_opencvlap",
-        "args": ["--logtostderr"],
-        "stopAtEntry": false,
-        "cwd": "${workspaceFolder}/OpenVINO/lib/Debug/",
-        "environment": [],
-        "externalConsole": false,
-        "MIMode": "gdb",
-        "setupCommands": [
-            {
-                "description": "Enable pretty-printing for gdb",
-                "text": "-enable-pretty-printing",
-                "ignoreFailures": true
-            }
-        ]
-    },
+        {
+            "name": "(gdb) test_mosaic_api",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/OpenVINO/lib/Debug/test_mosaic_api",
+            // "program": "${workspaceFolder}/OpenVINO/lib/Release/test_mosaic_api",
+            "args": [
+                "--data_path=/home/huanyuan/data/yuv/test_taxi_face.avi",
+                // "--data_path=/home/huanyuan/data/yuv/test_taxi_face.yuv",
+                "--imwidth=1280",
+                "--imheight=720",
+                // "--data_path=/home/huanyuan/data/yuv/test_license_plate.yuv",
+                // "--imwidth=2592",
+                // "--imheight=1920",
+                "--model_type=2",
+                "--logtostderr"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/OpenVINO/lib/Debug",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "(gdb) test_detection_yuv",
+            "type": "cppdbg",
+            "request": "launch",
+            // "program": "${workspaceFolder}/OpenVINO/lib/Debug/test_detection_yuv",
+            "program": "${workspaceFolder}/OpenVINO/lib/Release/test_detection_yuv",
+            "args": [
+                "--device=CPU",
+                "--nthreads=4",
+                "--show_image=true",
+                "--logtostderr"
+            ],
+            "stopAtEntry": false,
+            // "cwd": "${workspaceFolder}/OpenVINO/lib/Debug/",
+            "cwd": "${workspaceFolder}/OpenVINO/lib/Release/",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "(gdb) test_detection_picture_opencvlap",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/OpenVINO/lib/Debug/test_detection_picture_opencvlap",
+            "args": [
+                "--logtostderr"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/OpenVINO/lib/Debug/",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
         {
             "name": "(gdb) test_detection_picture",
             "type": "cppdbg",
             "request": "launch",
             // "program": "${workspaceFolder}/OpenVINO/lib/Debug/test_detection_picture",
             "program": "${workspaceFolder}/OpenVINO/lib/Release/test_detection_picture",
-            "args": ["--logtostderr"],
+            "args": [
+                "--logtostderr"
+            ],
             "stopAtEntry": false,
             // "cwd": "${workspaceFolder}/OpenVINO/lib/Debug",
             "cwd": "${workspaceFolder}/OpenVINO/lib/Release",
@@ -223,17 +244,18 @@
             "request": "launch",
             "program": "${workspaceFolder}/speech/lib/Debug/online2-nnet3-decode-faster",
             "args": [
-                "--config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/endpoint.conf", 
-                "--ivector-extraction-config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/ivector_extractor.conf", 
-                "--online-pitch-config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/online_pitch.conf", 
+                "--config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/endpoint.conf",
+                "--ivector-extraction-config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/ivector_extractor.conf",
+                "--online-pitch-config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/online_pitch.conf",
                 "--mfcc-config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/mfcc_hires.conf",
-                "--max-active=7000", 
-                "--beam=15.0", 
-                "--lattice-beam=6.0", 
-                "--acoustic-scale=1.0", 
-                "/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/final.mdl", 
-                "/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/HCLG.fst", 
-                "/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/words.txt"],
+                "--max-active=7000",
+                "--beam=15.0",
+                "--lattice-beam=6.0",
+                "--acoustic-scale=1.0",
+                "/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/final.mdl",
+                "/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/HCLG.fst",
+                "/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/words.txt"
+            ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
@@ -253,19 +275,20 @@
             "request": "launch",
             "program": "${workspaceFolder}/speech/lib/Debug/online2-simulation-nnet3-decode-faster",
             "args": [
-                "--config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/endpoint.conf", 
-                "--ivector-extraction-config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/ivector_extractor.conf", 
-                "--online-pitch-config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/online_pitch.conf", 
+                "--config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/endpoint.conf",
+                "--ivector-extraction-config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/ivector_extractor.conf",
+                "--online-pitch-config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/online_pitch.conf",
                 "--mfcc-config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/mfcc_hires.conf",
-                "--max-active=7000", 
-                "--beam=15.0", 
-                "--lattice-beam=6.0", 
-                "--acoustic-scale=1.0", 
-                "/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/final.mdl", 
-                "/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/HCLG.fst", 
+                "--max-active=7000",
+                "--beam=15.0",
+                "--lattice-beam=6.0",
+                "--acoustic-scale=1.0",
+                "/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/final.mdl",
+                "/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/HCLG.fst",
                 "/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/words.txt",
                 "ark:/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/wav/spk2utt.ark",
-                "scp:/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/wav/wav.scp"],
+                "scp:/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/wav/wav.scp"
+            ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
@@ -285,17 +308,18 @@
             "request": "launch",
             "program": "${workspaceFolder}/speech/lib/Debug/online2-tcp-nnet3-decode-faster",
             "args": [
-                "--config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/endpoint.conf", 
-                "--ivector-extraction-config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/ivector_extractor.conf", 
-                "--online-pitch-config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/online_pitch.conf", 
+                "--config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/endpoint.conf",
+                "--ivector-extraction-config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/ivector_extractor.conf",
+                "--online-pitch-config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/online_pitch.conf",
                 "--mfcc-config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/mfcc_hires.conf",
-                "--max-active=7000", 
-                "--beam=15.0", 
-                "--lattice-beam=6.0", 
-                "--acoustic-scale=1.0", 
-                "/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/final.mdl", 
-                "/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/HCLG.fst", 
-                "/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/words.txt"],
+                "--max-active=7000",
+                "--beam=15.0",
+                "--lattice-beam=6.0",
+                "--acoustic-scale=1.0",
+                "/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/final.mdl",
+                "/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/HCLG.fst",
+                "/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/words.txt"
+            ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/speech/lib/Debug/",
             "environment": [],
@@ -314,22 +338,24 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/speech/lib/Debug/online2-wav-nnet3-latgen-faster",
-            "args": ["--do-endpointing=false", 
+            "args": [
+                "--do-endpointing=false",
                 "--online=true",
-                "--config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/endpoint.conf", 
-                "--ivector-extraction-config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/ivector_extractor.conf", 
-                "--online-pitch-config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/online_pitch.conf", 
+                "--config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/endpoint.conf",
+                "--ivector-extraction-config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/ivector_extractor.conf",
+                "--online-pitch-config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/online_pitch.conf",
                 "--mfcc-config=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/conf/mfcc_hires.conf",
-                "--max-active=3000", 
-                "--beam=10.0", 
-                "--lattice-beam=6.0", 
-                "--acoustic-scale=1.0", 
-                "--word-symbol-table=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/words.txt", 
-                "/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/final.mdl", 
-                "/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/HCLG.fst", 
+                "--max-active=3000",
+                "--beam=10.0",
+                "--lattice-beam=6.0",
+                "--acoustic-scale=1.0",
+                "--word-symbol-table=/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/words.txt",
+                "/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/final.mdl",
+                "/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/model/HCLG.fst",
                 "ark:/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/wav/spk2utt.ark",
                 "scp:/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/wav/wav.scp",
-                "ark,t:/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/wav/lat.1.gz"],
+                "ark,t:/home/huanyuan/code/kaldi/model/multi_cn_chainmodel/wav/lat.1.gz"
+            ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/speech/lib/Debug/",
             "environment": [],
@@ -348,18 +374,20 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/speech/lib/Debug/online-gmm-decode-faster",
-            "args": ["--rt-min=0.8",
-                "--rt-max=0.85", 
-                "--max-active=4000", 
-                "--beam=12.0", 
-                "--acoustic-scale=0.0769", 
-                "--left-context=4", 
-                "--right-context=4", 
-                "/home/huanyuan/code/kaldi/model/HMM_MDL/gmm-hmm/final.mdl", 
-                "/home/huanyuan/code/kaldi/model/HMM_MDL/gmm-hmm/HCLG.fst", 
+            "args": [
+                "--rt-min=0.8",
+                "--rt-max=0.85",
+                "--max-active=4000",
+                "--beam=12.0",
+                "--acoustic-scale=0.0769",
+                "--left-context=4",
+                "--right-context=4",
+                "/home/huanyuan/code/kaldi/model/HMM_MDL/gmm-hmm/final.mdl",
+                "/home/huanyuan/code/kaldi/model/HMM_MDL/gmm-hmm/HCLG.fst",
                 "/home/huanyuan/code/kaldi/model/HMM_MDL/gmm-hmm/words.txt",
                 "1:2:3:4:5",
-                "/home/huanyuan/code/kaldi/model/HMM_MDL/gmm-hmm/final.mat"],
+                "/home/huanyuan/code/kaldi/model/HMM_MDL/gmm-hmm/final.mat"
+            ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
@@ -378,22 +406,24 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/speech/lib/Debug/online-wav-gmm-decode-faster",
-            "args": ["--verbose=1", 
+            "args": [
+                "--verbose=1",
                 "--rt-min=0.8",
-                "--rt-max=0.85", 
-                "--max-active=7000", 
-                "--beam=15.0", 
-                "--acoustic-scale=0.0769", 
-                "--left-context=4", 
-                "--right-context=4", 
-                "scp:/home/huanyuan/code/kaldi/demo/wav/wav_16k.scp", 
-                "/home/huanyuan/code/kaldi/model/HMM_MDL/gmm-hmm/final.mdl", 
-                "/home/huanyuan/code/kaldi/model/HMM_MDL/gmm-hmm/HCLG.fst", 
+                "--rt-max=0.85",
+                "--max-active=7000",
+                "--beam=15.0",
+                "--acoustic-scale=0.0769",
+                "--left-context=4",
+                "--right-context=4",
+                "scp:/home/huanyuan/code/kaldi/demo/wav/wav_16k.scp",
+                "/home/huanyuan/code/kaldi/model/HMM_MDL/gmm-hmm/final.mdl",
+                "/home/huanyuan/code/kaldi/model/HMM_MDL/gmm-hmm/HCLG.fst",
                 "/home/huanyuan/code/kaldi/model/HMM_MDL/gmm-hmm/words.txt",
                 "1:2:3:4:5",
                 "ark,t:/home/huanyuan/code/kaldi/model/HMM_MDL/tmp/trans.txt",
                 "ark,t:/home/huanyuan/code/kaldi/model/HMM_MDL/tmp/ali.txt",
-                "/home/huanyuan/code/kaldi/model/HMM_MDL/gmm-hmm/final.mat"],
+                "/home/huanyuan/code/kaldi/model/HMM_MDL/gmm-hmm/final.mat"
+            ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/speech/lib/Debug",
             "environment": [],
@@ -412,20 +442,22 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/speech/lib/Debug/online2-wav-nnet3-latgen-faster",
-            "args": ["--do-endpointing=false", 
+            "args": [
+                "--do-endpointing=false",
                 "--online=true",
-                "--config=/home/huanyuan/code/kaldi/demo/chain/online.conf", 
-                "--mfcc-config=/home/huanyuan/code/kaldi/demo/chain/mfcc.conf", 
-                "--max-active=7000", 
-                "--beam=15.0", 
-                "--lattice-beam=6.0", 
-                "--acoustic-scale=1.0", 
-                "--word-symbol-table=/home/huanyuan/code/kaldi/demo/chain/words.txt", 
-                "/home/huanyuan/code/kaldi/demo/chain/final.mdl", 
-                "/home/huanyuan/code/kaldi/demo/chain/HCLG.fst", 
+                "--config=/home/huanyuan/code/kaldi/demo/chain/online.conf",
+                "--mfcc-config=/home/huanyuan/code/kaldi/demo/chain/mfcc.conf",
+                "--max-active=7000",
+                "--beam=15.0",
+                "--lattice-beam=6.0",
+                "--acoustic-scale=1.0",
+                "--word-symbol-table=/home/huanyuan/code/kaldi/demo/chain/words.txt",
+                "/home/huanyuan/code/kaldi/demo/chain/final.mdl",
+                "/home/huanyuan/code/kaldi/demo/chain/HCLG.fst",
                 "ark:/home/huanyuan/code/kaldi/demo/wav/spk2utt.ark",
                 "scp:/home/huanyuan/code/kaldi/demo/wav/wav.scp",
-                "ark,t:/home/huanyuan/code/kaldi/demo/wav/kws_out.txt"],
+                "ark,t:/home/huanyuan/code/kaldi/demo/wav/kws_out.txt"
+            ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/speech/lib/Debug/",
             "environment": [],
@@ -438,17 +470,6 @@
                     "ignoreFailures": true
                 }
             ]
-        },
-        
-        {
-            "name": "Python: Current File",
-            "type": "python",
-            "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal",
-            "env": {
-                "PYTHONPATH": "$PYTHONPATH:/home/workspace/RMAI/yuanhuan/code/demo/common"
-            }
         },
         {
             "name": "(gdb) HelloWorld_linux",

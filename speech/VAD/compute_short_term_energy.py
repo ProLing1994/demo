@@ -15,7 +15,7 @@ def plot_time(signal, sample_rate, title='Audio Image'):
   plt.show()
 
 if __name__ == "__main__":
-  audio_path = "/home/huanyuan/data/speech/canting.wav"
+  audio_path = "E:\\project\\data\\weiboyulu\\1012\\0000000000000000-201012-170017-171407-000001100420.wav"
   
   # options
   pre_emphasis = 0.97
