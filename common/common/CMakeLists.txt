@@ -9,7 +9,7 @@ if (WIN32)
   set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 endif(WIN32)
 
-project(yh_common)
+project(common)
 
 # 1) add c++ 11 support --std=c++11
 # 2) to fix compilation problem: relocation R_X86_64_32 against
