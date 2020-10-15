@@ -256,7 +256,7 @@ tempora==4.0.0
 tensorboard==2.0.2
 tensorboard-plugin-wit==1.7.0
 tensorflow-estimator==2.0.1
-tensorflow-gpu==2.0.0
+tensorflow-gpu==2.0.3
 termcolor==1.1.0
 terminado==0.8.3
 test-generator==0.1.1
