@@ -1,5 +1,5 @@
-#ifndef MD_UTILITY_FILE_SYSTEM_H
-#define MD_UTILITY_FILE_SYSTEM_H
+#ifndef _UTILITY_FILE_SYSTEM_H
+#define _UTILITY_FILE_SYSTEM_H
 
 #include <vector>
 #include <string>

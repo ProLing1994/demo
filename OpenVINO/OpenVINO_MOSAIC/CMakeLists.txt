@@ -13,7 +13,7 @@ endif(WIN32)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
-project(yh_openvino)
+project(rmai_mosaic_openvino)
 
 # 1) add c++ 11 support --std=c++11
 # 2) to fix compilation problem: relocation R_X86_64_32 against
@@ -36,12 +36,12 @@ if(NOT glog_FOUND)
 endif(NOT glog_FOUND)
 
 # find common library
-find_package(YH_COMMON REQUIRED)
-if (YH_COMMON_FOUND)
-  message(STATUS "Found YH_COMMON Library: " ${YH_COMMON_INCLUDE_DIR})
-  include_directories(${YH_COMMON_INCLUDE_DIR})
-else (YH_COMMON)
-  message(FATAL_ERROR "YH_COMMON not found.")
+find_package(COMMON REQUIRED)
+if (COMMON_FOUND)
+  message(STATUS "Found COMMON Library: " ${COMMON_INCLUDE_DIR})
+  include_directories(${COMMON_INCLUDE_DIR})
+else (COMMON)
+  message(FATAL_ERROR "COMMON not found.")
 endif()
 
 # find OpenCV library
