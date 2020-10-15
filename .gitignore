@@ -1,0 +1,24 @@
+# cscode
+.vscode
+
+# Cmake
+CMakeFiles
+CMakeCache.txt
+
+# build folders
+bin/
+*build/
+
+# lib folders
+*lib/
+
+# release folders
+*release/
+
+# exe
+*.exe
+
+# python
+*__pycache__/
+*.spec
+*.pyc
