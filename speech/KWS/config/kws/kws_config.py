@@ -12,7 +12,16 @@ __C.general = {}
 # the label
 __C.general.positive_label = ["yes", "no", "up", "down", "left", "right", "on", "off", "stop", "go"]
 __C.general.negative_label = ["__silence__", "__unknown__"]
+__C.general.negative_label_silence = __C.general.negative_label[0]
+__C.general.negative_label_unknown = __C.general.negative_label[1]
 __C.general.num_classes = len(__C.general.positive_label) + len(__C.general.negative_label)
+
+# data folder
+__C.general.data_dir = '/home/huanyuan/data/speech/kws/tf_speech_commands/speech_commands/'
+
+# trian/validation/test percentage
+__C.general.validation_percentage = 10  # 10%
+__C.general.testing_percentage = 10     # 10%
 
 # test after save pytorch model
 __C.general.is_test = False

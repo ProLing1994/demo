@@ -14,7 +14,6 @@ def train(config_file):
   """
   # load configuration file
   cfg = load_cfg_file(config_file)
-  print()
 
   # clean the existing folder if the user want to train from scratch
   setup_workshop(cfg)
