@@ -1,6 +1,7 @@
 import argparse
 import glob
 import hashlib
+import math
 import os
 import random
 import re
@@ -76,14 +77,18 @@ def data_split(config_file):
   random.seed(RANDOM_SEED)
 
   # init
-  positive_label = cfg.general.positive_label
-  validation_percentage = cfg.general.validation_percentage
-  testing_percentage = cfg.general.testing_percentage
+  positive_label = cfg.label.positive_label
+  silence_percentage = cfg.label.silence_percentage
+  unknown_percentage = cfg.label.unknown_percentage
+  validation_percentage = cfg.label.validation_percentage
+  testing_percentage = cfg.label.testing_percentage
 
   all_labels_set = set()
-  data_files = {'validation': [], 'testing': [], 'training': []}
-  unknown_files = {'validation': [], 'testing': [], 'training': []}
-  background_noise_files = []
+  positive_data_files = []    # {'label': [], 'file': [], 'set_index': []}
+  unknown_files = []          # {'label': [], 'file': [], 'set_index': []}
+  silence_files = []          # {'label': [], 'file': [], 'set_index': []}
+  background_noise_files = [] # {'label': [], 'file': []}
+  total_data_files = []       # {'label': [], 'file': [], 'set_index': []}
 
   # Look through all the subfolders to find audio samples
   search_path = os.path.join(cfg.general.data_dir, '*', '*.wav')
@@ -103,9 +108,9 @@ def data_split(config_file):
     # If it's a known class, store its detail, otherwise add it to the list
     # we'll use to train the unknown label. 
     if word in positive_label:
-      data_files[set_index].append({'label': word, 'file': wav_path})
+      positive_data_files.append({'label': word, 'file': wav_path, 'set_index':set_index})
     else:
-      unknown_files[set_index].append({'label': word, 'file': wav_path})
+      unknown_files.append({'label': word, 'file': wav_path, 'set_index':set_index})
 
   if not all_labels_set:
     raise Exception('No .wavs found at ' + search_path)
@@ -115,6 +120,27 @@ def data_split(config_file):
       raise Exception('Expected to find ' + wanted_word +
                       ' in labels but only found ' +
                       ', '.join(positive_label.keys()))
+  
+  total_data_files.extend(positive_data_files)
+  # silence and unknowns samples
+  silence_wav_path = ''
+  random.shuffle(unknown_files)
+  for set_index in ['validation', 'testing', 'training']:
+    # silence samples
+    set_size = np.array([x['set_index'] == set_index for x in positive_data_files]).astype(np.int).sum()
+    silence_size = int(math.ceil(set_size * silence_percentage / 100))
+    for _ in range(silence_size):
+      silence_wav = {'label': SILENCE_LABEL, 'file': silence_wav_path, 'set_index':set_index}
+      silence_files.append(silence_wav)
+      total_data_files.append(silence_wav)
+
+    # unknowns samples
+    unknown_size = int(math.ceil(set_size * unknown_percentage / 100))
+    unknown_files_set = [x for x in unknown_files if x['set_index'] == set_index]
+    unknown_files_set = unknown_files_set[:unknown_size]
+    total_data_files.extend(unknown_files_set)
+
+  print()
 
 def main():
   parser = argparse.ArgumentParser(description='Streamax KWS Data Split Engine')

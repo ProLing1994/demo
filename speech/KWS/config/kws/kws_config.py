@@ -9,19 +9,8 @@ cfg = __C
 
 __C.general = {}
 
-# the label
-__C.general.positive_label = ["yes", "no", "up", "down", "left", "right", "on", "off", "stop", "go"]
-__C.general.negative_label = ["__silence__", "__unknown__"]
-__C.general.negative_label_silence = __C.general.negative_label[0]
-__C.general.negative_label_unknown = __C.general.negative_label[1]
-__C.general.num_classes = len(__C.general.positive_label) + len(__C.general.negative_label)
-
 # data folder
 __C.general.data_dir = '/home/huanyuan/data/speech/kws/tf_speech_commands/speech_commands/'
-
-# trian/validation/test percentage
-__C.general.validation_percentage = 10  # 10%
-__C.general.testing_percentage = 10     # 10%
 
 # test after save pytorch model
 __C.general.is_test = False
@@ -35,6 +24,7 @@ __C.general.resume_epoch = -1
 # the number of GPUs used in training
 __C.general.num_gpus = 1
 
+
 ##################################
 # data set parameters
 ##################################
@@ -47,6 +37,28 @@ __C.dataset.input_channel = 1
 # input size of training data (w, h), unit: voxel
 __C.dataset.data_size = [40, 98]
 
+
+##################################
+# label parameters
+##################################
+
+__C.label = {}
+
+# label
+__C.label.positive_label = ["yes", "no", "up", "down", "left", "right", "on", "off", "stop", "go"]
+__C.label.negative_label = ["__silence__", "__unknown__"]
+__C.label.negative_label_silence = __C.label.negative_label[0]
+__C.label.negative_label_unknown = __C.label.negative_label[1]
+__C.label.num_classes = len(__C.label.positive_label) + len(__C.label.negative_label)
+
+# label percentage
+__C.label.silence_percentage = 10     # 10%
+__C.label.unknown_percentage = 10    # 10%
+
+# trian/validation/test percentage
+__C.label.validation_percentage = 10  # 10%
+__C.label.testing_percentage = 10     # 10%
+
 ####################################
 # training loss
 ####################################
@@ -56,6 +68,7 @@ __C.loss = {}
 # the loss name, support 'softmax'
 __C.loss.name = 'softmax'
 
+
 #####################################
 # net
 #####################################
@@ -64,6 +77,7 @@ __C.net = {}
 
 # the network name
 __C.net.name = 'cnn-trad-pool2'
+
 
 ######################################
 # training parameters
@@ -116,6 +130,7 @@ __C.train.weight_decay = 0.0
 
 # the beta in Adam optimizer
 __C.train.betas = (0.9, 0.999)
+
 
 ######################################
 # debug parameters
