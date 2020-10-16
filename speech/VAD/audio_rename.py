@@ -17,6 +17,7 @@ if __name__ == "__main__":
     csv_pd = pd.read_csv(csv_path)
 
     # Check 
+    # Check Input
     for idx, row in csv_pd.iterrows():
         if str(row.state) == 'N':
             continue
@@ -26,10 +27,31 @@ if __name__ == "__main__":
             if re.match(r'^S\d{3}M\d{1}P\d{5}', str(row.state).strip().split('_')[-1]):
                 continue
             else:
-                raise ValueError("[ERROR:] Invalid input: audio_region: {}, state: {}".format(row.audio_region, row.state))
+                raise Exception("[ERROR:] Invalid input: audio_region: {}, state: {}".format(row.audio_region, row.state))
         else:
-            raise ValueError("[ERROR:] Invalid input: audio_region: {}, state: {}".format(row.audio_region, row.state))
+            raise Exception("[ERROR:] Invalid input: audio_region: {}, state: {}".format(row.audio_region, row.state))
     
+    # Check Duplicate file 
+    remainder_files_list = []
+    for idx, row in csv_pd.iterrows():
+        if str(row.state) == 'N':
+            remainder_files_list.append(row.audio_region)
+        elif str(row.state) == 'D':
+            continue
+        elif len(str(row.state).strip().split('_')) == 4:
+            remainder_files_list.append(row.state)
+        else:
+            raise Exception("[ERROR:] Invalid input: audio_region: {}, state: {}".format(row.audio_region, row.state))
+
+    remainder_files_set = list(set(remainder_files_list))
+    if len(remainder_files_list) != len(remainder_files_set):
+        for idx in range(len(remainder_files_set)):
+            remainder_files_list.remove(remainder_files_set[idx])
+        for idx in range(len(remainder_files_list)):
+            print("[ERROR:] Invalid input: audio {} is Repetied, Please check again!".format(remainder_files_list[idx]))
+        raise Exception("[ERROR:] Invalid input: audio is Repetied, Please check again!")
+        
+
     print("Delete: ")
     # Delete
     for idx, row in csv_pd.iterrows():
@@ -52,14 +74,11 @@ if __name__ == "__main__":
                     os.rename(os.path.join(args.dir, row.audio_region + '.wav'), os.path.join(args.dir, 'tmp_' + row.state + '.wav'))
                 else:
                     raise Exception("[ERROR:] Audio: {} do not exist, please check!".format(row.audio_region + '.wav'))
-
-    for idx, row in tmp_rename_files.iterrows():
-        if os.path.exists(os.path.join(args.dir, 'tmp_' + row.state + '.wav')):
-            os.rename(os.path.join(args.dir, 'tmp_' + row.state + '.wav'), os.path.join(args.dir, row.state + '.wav'))
-            print("Audio region rename: {} -> {}".format(row.audio_region + '.wav', row.state + '.wav'))
-        else:
-            raise Exception("[ERROR:] Audio: {} do not exist, please check!".format(row.audio_region + '.wav'))
-
+    
+    tmp_rename_files_pd = pd.DataFrame(tmp_rename_files)
+    for idx, row in tmp_rename_files_pd.iterrows():
+        os.rename(os.path.join(args.dir, 'tmp_' + row.state + '.wav'), os.path.join(args.dir, row.state + '.wav'))
+        print("Audio region rename: {} -> {}".format(row.audio_region + '.wav', row.state + '.wav'))
 
     print("Rename Done")
     print()
