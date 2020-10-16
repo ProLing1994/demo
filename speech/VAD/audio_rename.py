@@ -40,19 +40,31 @@ if __name__ == "__main__":
 
     print("Delete Done")
     print()
+
     print("Rename")
     # rename 
+    tmp_rename_files = []
     for idx, row in csv_pd.iterrows():
         if len(str(row.state).strip().split('_')) == 4:
             if re.match(r'^S\d{3}M\d{1}P\d{5}', str(row.state).strip().split('_')[-1]):
                 if os.path.exists(os.path.join(args.dir, row.audio_region + '.wav')):
-                    os.rename(os.path.join(args.dir, row.audio_region + '.wav'), os.path.join(args.dir, row.state + '.wav'))
-                    print("Audio region rename: {} -> {}".format(row.audio_region + '.wav', row.state + '.wav'))
+                    tmp_rename_files.append({'audio_region':row.audio_region, 'state':row.state, 'tmp':'tmp_' + row.state + '.wav'})
+                    os.rename(os.path.join(args.dir, row.audio_region + '.wav'), os.path.join(args.dir, 'tmp_' + row.state + '.wav'))
+                else:
+                    raise Exception("[ERROR:] Audio: {} do not exist, please check!".format(row.audio_region + '.wav'))
+
+    for idx, row in tmp_rename_files.iterrows():
+        if os.path.exists(os.path.join(args.dir, 'tmp_' + row.state + '.wav')):
+            os.rename(os.path.join(args.dir, 'tmp_' + row.state + '.wav'), os.path.join(args.dir, row.state + '.wav'))
+            print("Audio region rename: {} -> {}".format(row.audio_region + '.wav', row.state + '.wav'))
+        else:
+            raise Exception("[ERROR:] Audio: {} do not exist, please check!".format(row.audio_region + '.wav'))
+
 
     print("Rename Done")
     print()
-    print("Rename csv file")
 
+    print("Rename csv file")
     # update 
     audio_region_list = []
     for idx, row in csv_pd.iterrows():
