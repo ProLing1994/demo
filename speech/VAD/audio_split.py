@@ -16,7 +16,7 @@ if __name__ == "__main__":
   assert audio_path.endswith('.wav'), "[ERROR:] Only support wav data"
 
   output_path = os.path.join(args.output_dir, os.path.basename(audio_path).split('.')[0])
-  assert not os.path.exists(output_path), "[ERROR:] Please remove directory, firstly"
+  assert not os.path.exists(output_path), "[ERROR:] Please remove directory: {}, firstly".format(output_path)
 
   if not os.path.exists(output_path):
     os.makedirs(output_path)
