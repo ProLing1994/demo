@@ -78,5 +78,5 @@
         "*.inc": "cpp",
         "*.so": "cpp"
     },
-    "python.pythonPath": "/home/engineers/yh_rmai/anaconda3/bin/python",
+    "python.pythonPath": "/home/huanyuan/anaconda3/bin/python",
 }
