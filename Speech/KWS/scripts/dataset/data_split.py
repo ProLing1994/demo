@@ -1,8 +1,10 @@
 import argparse
+import copy
 import glob
 import hashlib
 import math
 import os
+import pandas as pd
 import random
 import re
 import sys 
@@ -65,7 +67,7 @@ def which_set(filename, validation_percentage, testing_percentage):
     result = 'training'
   return result
 
-def data_split(config_file):
+def data_split(config_file, version, date):
   """ data split engine
   :param config_file:   the input configuration file
   :return:              None
@@ -77,18 +79,18 @@ def data_split(config_file):
   random.seed(RANDOM_SEED)
 
   # init
-  positive_label = cfg.label.positive_label
-  silence_percentage = cfg.label.silence_percentage
-  unknown_percentage = cfg.label.unknown_percentage
-  validation_percentage = cfg.label.validation_percentage
-  testing_percentage = cfg.label.testing_percentage
+  positive_label = cfg.dataset.label.positive_label
+  silence_percentage = cfg.dataset.label.silence_percentage
+  unknown_percentage = cfg.dataset.label.unknown_percentage
+  validation_percentage = cfg.dataset.label.validation_percentage
+  testing_percentage = cfg.dataset.label.testing_percentage
 
   all_labels_set = set()
-  positive_data_files = []    # {'label': [], 'file': [], 'set_index': []}
-  unknown_files = []          # {'label': [], 'file': [], 'set_index': []}
-  silence_files = []          # {'label': [], 'file': [], 'set_index': []}
+  positive_data_files = []    # {'label': [], 'file': [], 'mode': []}
+  unknown_files = []          # {'label': [], 'file': [], 'mode': []}
+  silence_files = []          # {'label': [], 'file': [], 'mode': []}
   background_noise_files = [] # {'label': [], 'file': []}
-  total_data_files = []       # {'label': [], 'file': [], 'set_index': []}
+  total_data_files = []       # {'label': [], 'file': [], 'mode': []}
 
   # Look through all the subfolders to find audio samples
   search_path = os.path.join(cfg.general.data_dir, '*', '*.wav')
@@ -108,9 +110,9 @@ def data_split(config_file):
     # If it's a known class, store its detail, otherwise add it to the list
     # we'll use to train the unknown label. 
     if word in positive_label:
-      positive_data_files.append({'label': word, 'file': wav_path, 'set_index':set_index})
+      positive_data_files.append({'label': word, 'file': wav_path, 'mode':set_index})
     else:
-      unknown_files.append({'label': word, 'file': wav_path, 'set_index':set_index})
+      unknown_files.append({'label': word, 'file': wav_path, 'mode':set_index})
 
   if not all_labels_set:
     raise Exception('No .wavs found at ' + search_path)
@@ -127,26 +129,49 @@ def data_split(config_file):
   random.shuffle(unknown_files)
   for set_index in ['validation', 'testing', 'training']:
     # silence samples
-    set_size = np.array([x['set_index'] == set_index for x in positive_data_files]).astype(np.int).sum()
+    set_size = np.array([x['mode'] == set_index for x in positive_data_files]).astype(np.int).sum()
     silence_size = int(math.ceil(set_size * silence_percentage / 100))
     for _ in range(silence_size):
-      silence_wav = {'label': SILENCE_LABEL, 'file': silence_wav_path, 'set_index':set_index}
+      silence_wav = {'label': SILENCE_LABEL, 'file': silence_wav_path, 'mode':set_index}
       silence_files.append(silence_wav)
       total_data_files.append(silence_wav)
 
     # unknowns samples
     unknown_size = int(math.ceil(set_size * unknown_percentage / 100))
-    unknown_files_set = [x for x in unknown_files if x['set_index'] == set_index]
+    unknown_files_set = [x for x in unknown_files if x['mode'] == set_index]
+    unknown_files_set = copy.deepcopy(unknown_files_set)
     unknown_files_set = unknown_files_set[:unknown_size]
+    for idx in range(len(unknown_files_set)):
+      unknown_files_set[idx]['label'] = UNKNOWN_WORD_LABEL
     total_data_files.extend(unknown_files_set)
 
-  print()
+  # random
+  random.shuffle(total_data_files)
+
+  # output
+  output_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(version, date))
+  if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
+
+  positive_data_pd = pd.DataFrame(positive_data_files)
+  unknown_pd = pd.DataFrame(unknown_files)
+  silence_pd = pd.DataFrame(silence_files)
+  background_noise_pd = pd.DataFrame(background_noise_files)
+  total_data_pd = pd.DataFrame(total_data_files)
+
+  positive_data_pd.to_csv(os.path.join(output_dir, 'positive_data_files.csv'), index=False)
+  unknown_pd.to_csv(os.path.join(output_dir, 'unknown_files.csv'), index=False)
+  silence_pd.to_csv(os.path.join(output_dir, 'silence_files.csv'), index=False)
+  background_noise_pd.to_csv(os.path.join(output_dir, 'background_noise_files.csv'), index=False)
+  total_data_pd.to_csv(os.path.join(output_dir, 'total_data_files.csv'), index=False)
 
 def main():
   parser = argparse.ArgumentParser(description='Streamax KWS Data Split Engine')
-  parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/speech/KWS/config/kws/kws_config.py", nargs='?', help='config file')
+  parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/speech/KWS/config/kws/kws_config.py", help='config file')
+  parser.add_argument('-v', '--versions', type=str, default="1.0")
+  parser.add_argument('-d', '--date', type=str, default="10162020")
   args = parser.parse_args()
-  data_split(args.input)
+  data_split(args.input, args.versions, args.date)
 
 if __name__ == "__main__":
   main()

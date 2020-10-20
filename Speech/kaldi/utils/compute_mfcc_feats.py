@@ -39,7 +39,7 @@ def plot_spectrogram(spec, note):
   plt.show()
 
 if __name__ == "__main__":
-  wav_file = "/home/huanyuan/data/speech/canting.wav"
+  wav_file = "/home/huanyuan/data/speech/kws/tf_speech_commands/speech_commands/up/bde0f20a_nohash_4.wav"
 
   # options
   pre_emphasis = 0.97
@@ -130,7 +130,7 @@ if __name__ == "__main__":
   plot_spectrogram(filter_banks.T, 'Filter Banks')
 
   # 7. 离散余弦变换 dct 
-  num_ceps = 12
+  num_ceps = 40
   mfcc = dct(filter_banks, type=2, axis=1, norm='ortho')[:, 1:(num_ceps+1)]
   print(mfcc.shape)
   plot_spectrogram(mfcc.T, 'MFCC Coefficients')
