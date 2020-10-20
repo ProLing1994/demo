@@ -1,26 +1,30 @@
 # demo
 
-./common
-1ã€3rdâ€”partyï¼šgflags/glog
-2ã€utilsï¼šfile_system
+./common£¬»ù´¡´úÂë
+1¡¢3rd¡ªparty£ºgflags/glog
+2¡¢utils/csrc£ºfile_system
+3¡¢utils/python£ºpytorch ÑµÁ·½Å±¾»ù´¡
 
-./HelloWorldï¼Œhisi 3516D æ¿ç«¯ä»£ç 
-1ã€HelloWorld_himix200ã€Student_himix200 åŒ…å«æ¿ç«¯ makefile æ–‡ä»¶
-2ã€HelloWorld_linuxã€Student_linux åŒ…å« Linux makfile æ–‡ä»¶
+./CrossCompilation£¬½»²æ±àÒë´úÂë
+1¡¢CrossCompilation/HelloWorld£¬hisi 3516D °å¶Ë´úÂë
+	1¡¢HelloWorld_himix200¡¢Student_himix200 °üº¬°å¶Ë makefile ÎÄ¼ş
+	2¡¢HelloWorld_linux¡¢Student_linux °üº¬ Linux makfile ÎÄ¼ş
+2¡¢CrossCompilation/json_cpp£¬git clone https://github.com/ProLing1994/jsoncpp
+¸Ã demo ÓÃÓÚÑİÊ¾½»²æ±àÒë¡£
+	1¡¢±àĞ´ makeflie ÎÄ¼ş£¬make/make clean¡£
+	2¡¢Õë¶Ô CmakeList.txt£¬±àĞ´ toolChain.cmake
 
-./MNNï¼Œé˜¿é‡Œ MNN æ¡†æ¶
-1ã€test_mobilenet_ssd æµ‹è¯• ssd è¿è¡Œæ—¶é—´
-2ã€test_mobilenet_ssd_thread æµ‹è¯•å¤šçº¿ç¨‹ ssd è¿åŠ¨æ—¶é—´
+./MNN£¬°¢Àï MNN ¿ò¼Ü
+1¡¢test_mobilenet_ssd ²âÊÔ ssd ÔËĞĞÊ±¼ä
+2¡¢test_mobilenet_ssd_thread ²âÊÔ¶àÏß³Ì ssd ÔË¶¯Ê±¼ä
 
-./OpenVINOï¼Œintel æ¡†æ¶
-1ã€test_mobilenet_ssd æµ‹è¯• ssd è¿è¡Œæ—¶é—´
-2ã€test_mobilenet_ssd_thread æµ‹è¯•å¤šçº¿ç¨‹ ssd è¿åŠ¨æ—¶é—´
-3ã€test_mobilenet_ssd_yuv è¾“å…¥ yuv è§†é¢‘ï¼Œè¿›è¡Œè½¦ç‰Œæ£€æµ‹
+./OpenVINO£¬intel ¿ò¼Ü
+1¡¢test_mobilenet_ssd ²âÊÔ ssd ÔËĞĞÊ±¼ä
+2¡¢test_mobilenet_ssd_thread ²âÊÔ¶àÏß³Ì ssd ÔË¶¯Ê±¼ä
+3¡¢test_mobilenet_ssd_yuv ÊäÈë yuv ÊÓÆµ£¬½øĞĞ³µÅÆ¼ì²â
 
-./json_cppï¼Œgit clone https://github.com/ProLing1994/jsoncpp
-è¯¥ demo ç”¨äºæ¼”ç¤ºäº¤å‰ç¼–è¯‘ã€‚
-1ã€ç¼–å†™ makeflie æ–‡ä»¶ï¼Œmake/make cleanã€‚
-2ã€é’ˆå¯¹ CmakeList.txtï¼Œç¼–å†™ toolChain.cmake
-
-./speechï¼Œkaldi è¯­éŸ³è¯†åˆ«æ¡†æ¶
-1ã€online2-wav-nnet3-latgen-fasterï¼Œå¯¹ç¦»çº¿è¯­éŸ³è¯†åˆ«ç®—æ³• chain model è¿›è¡Œæ—¶è€—æµ‹è¯•
+./Speech£¬ÓïÒô½Å±¾
+1¡¢Speech/kaldi ÓïÒôÊ¶±ğ¿ò¼Ü
+	1¡¢online2-wav-nnet3-latgen-faster£¬¶ÔÀëÏßÓïÒôÊ¶±ğËã·¨ chain model ½øĞĞÊ±ºÄ²âÊÔ
+2¡¢Speech/VAD ÓïÒô»îÌå¼ì²â½Å±¾£¬Ä¿Ç°Ê¹ÓÃÏÖÓĞ¹¤¾ßÖÆ×÷½Å±¾
+3¡¢Speech/KWS ÓïÒô¹Ø¼ü´Ê¼ìË÷½Å±¾£¬pytorchÑµÁ·½Å±¾
