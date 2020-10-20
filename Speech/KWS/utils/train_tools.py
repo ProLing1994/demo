@@ -12,11 +12,13 @@ import torch.nn as nn
 
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/engineers/yh_rmai/code/demo')
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo')
+sys.path.insert(0, '/home/huanyuan/code/demo')
 from common.common.utils.python.file_tools import load_module_from_disk
 from common.common.utils.python.train_tools  import EpochConcateSampler
 
-sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/KWS')
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/KWS')
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from dataset.kws.kws_dataset import SpeechDataset
 
 def load_cfg_file(config_file):
@@ -147,12 +149,6 @@ def generate_dataset(cfg, mode):
                                             pin_memory=True,
                                             num_workers=cfg.train.num_threads,
                                             worker_init_fn=worker_init)
-  # data_loader = torch.utils.data.DataLoader(data_set,
-  #                                           batch_size=cfg.train.batch_size,
-  #                                           shuffle=True,
-  #                                           pin_memory=True,
-  #                                           num_workers=cfg.train.num_threads,
-  #                                           worker_init_fn=worker_init)
   return data_loader, len(data_set)
 
 def generate_test_dataset(cfg, mode = 'validation'):

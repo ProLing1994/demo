@@ -3,6 +3,7 @@ import numpy as np
 import os
 import pandas as pd 
 import pcen
+import time
 import torch 
 
 from torch.utils.data import Dataset
@@ -12,6 +13,20 @@ SILENCE_INDEX = 0
 UNKNOWN_WORD_LABEL = '_unknown_'
 UNKNOWN_WORD_INDEX = 1
 BACKGROUND_NOISE_DIR_NAME = '_background_noise_'
+
+class SimpleCache(dict):
+  def __init__(self, limit):
+    super().__init__()
+    self.limit = limit
+    self.n_keys = 0
+
+  def __setitem__(self, key, value):
+    if key in self.keys():
+      super().__setitem__(key, value)
+    elif self.n_keys < self.limit:
+      self.n_keys += 1
+      super().__setitem__(key, value)
+    return value
 
 class AudioPreprocessor(object):
   def __init__(self, sr=16000, n_dct_filters=40, n_mels=40, f_max=4000, f_min=20, n_fft=480, hop_length=160):
@@ -68,6 +83,10 @@ class SpeechDataset(Dataset):
 
     self.mode_type = mode
     self.data_mode_pd = data_mode_pd
+    self.data_mode_pd_file = self.data_mode_pd['file'].tolist()
+    self.data_mode_pd_mode = self.data_mode_pd['mode'].tolist()
+    self.data_mode_pd_label = self.data_mode_pd['label'].tolist()
+
     self.sample_rate = cfg.dataset.sample_rate
     self.clip_duration_ms = cfg.dataset.clip_duration_ms
     self.window_size_ms = cfg.dataset.window_size_ms
@@ -94,9 +113,12 @@ class SpeechDataset(Dataset):
                                             n_fft=self.window_size_samples, 
                                             hop_length=self.window_stride_samples)
 
+    # init cache, using cache to reduce IO
+    self.file_cache = SimpleCache(len(self.data_mode_pd_file))
+
   def __len__(self):
     """ get the number of images in this dataset """
-    return len(self.data_mode_pd['file'].tolist())
+    return len(self.data_mode_pd_file)
 
   def audio_preprocess(self, data):
     # check 
@@ -152,18 +174,25 @@ class SpeechDataset(Dataset):
 
   def __getitem__(self, index):
     """ get the item """
+    # record time
+    # begin_t = time.time() 
 
-    audio_file = self.data_mode_pd['file'].tolist()[index]
-    audio_mode = self.data_mode_pd['mode'].tolist()[index]
-    audio_label = self.data_mode_pd['label'].tolist()[index]
+    audio_file = self.data_mode_pd_file[index]
+    audio_mode = self.data_mode_pd_mode[index]
+    audio_label = self.data_mode_pd_label[index]
     assert audio_mode == self.mode_type, "[ERROR:] Something wronge about mode, please check"
 
     # load data
     if audio_label == SILENCE_LABEL:
       data = np.zeros(self.desired_samples, dtype=np.float32)
     else:
-      data = librosa.core.load(audio_file, sr=self.sample_rate)[0]
-      
+      data_file = self.file_cache.get(audio_file)
+      data = librosa.core.load(audio_file, sr=self.sample_rate)[0] if data_file is None else data_file
+      self.file_cache[audio_file] = data
+
+    # print('Load data Time: {}'.format((time.time() - begin_t) * 1.0))
+    # begin_t = time.time()
+
     # alignment data
     data = np.pad(data, (0, max(0, self.desired_samples - len(data))), "constant")
     assert len(data) == self.desired_samples, "[ERROR:] Something wronge about audio length, please check"
@@ -174,8 +203,12 @@ class SpeechDataset(Dataset):
     elif self.mode_type == 'training' and self.augmentation_on:
       data = self.dataset_augmentation(data)
 
+    # print('Data augmentation Time: {}'.format((time.time() - begin_t) * 1.0))
+    # begin_t = time.time()
+
     # audio preprocess, get mfcc data
     data = self.audio_preprocess(data)
+    # print('Audio preprocess Time: {}'.format((time.time() - begin_t) * 1.0))
 
     # To tensor
     data_tensor = torch.from_numpy(data.reshape(1, -1, 40))
