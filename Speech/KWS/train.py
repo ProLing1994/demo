@@ -3,10 +3,10 @@ import sys
 import time
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo/speech/KWS')
+sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/KWS')
 from utils.train_tools import *
 
-sys.path.insert(0, '/home/huanyuan/code/demo')
+sys.path.insert(0, '/home/engineers/yh_rmai/code/demo')
 from common.common.utils.python.logging_helpers import setup_logger
 from common.common.utils.python.plotly_tools import plot_loss, plot_loss2d
 
@@ -142,7 +142,7 @@ def train(config_file):
 
 def main():
   parser = argparse.ArgumentParser(description='Streamax KWS Training Engine')
-  parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/speech/KWS/config/kws/kws_config.py", nargs='?', help='config file')
+  parser.add_argument('-i', '--input', type=str, default="/home/engineers/yh_rmai/code/demo/Speech/KWS/config/kws/kws_config.py", nargs='?', help='config file')
   args = parser.parse_args()
   train(args.input)
 
