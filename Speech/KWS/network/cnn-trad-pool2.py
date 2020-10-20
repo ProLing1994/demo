@@ -1,6 +1,7 @@
 import sys
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 from torch.autograd import Variable
 
@@ -34,13 +35,13 @@ class SpeechResModel(nn.Module):
     self.dropout = nn.Dropout(0.5)
 
   def forward(self, x):
-    x = F.relu(self.conv1(x.unsqueeze(1))) # shape: (batch, channels, i1, o1)
+    x = F.relu(self.conv1(x)) # shape: (batch, 1, 101, 40) ->  shape: (batch, 64, 82, 33)
     x = self.dropout(x)
-    x = self.pool1(x)
+    x = self.pool1(x)         # shape: (batch, 64, 82, 33) ->  shape: (batch, 64, 41, 16)
 
-    x = F.relu(self.conv2(x)) # shape: (batch, o1, i2, o2)
+    x = F.relu(self.conv2(x)) # shape: (batch, 64, 41, 16) ->  shape: (batch, 64, 32, 13)
     x = self.dropout(x)
     x = self.pool2(x)
   
-    x = x.view(x.size(0), -1) # shape: (batch, o3)
-    return self.output(x)
+    x = x.view(x.size(0), -1) 
+    return self.output(x)     # shape: (batch, 12)
