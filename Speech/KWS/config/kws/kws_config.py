@@ -14,7 +14,8 @@ __C.general.data_dir = "/home/engineers/yh_rmai/data/speech/kws/tf_speech_comman
 
 # data path
 # __C.general.data_path = "/home/engineers/yh_rmai/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/total_data_files.csv"
-__C.general.data_path = "/home/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/test.csv"
+# __C.general.data_path = "/home/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/test.csv"
+__C.general.data_path = "/home/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/total_data_files.csv"
 
 # background noise path
 # __C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/background_noise_files.csv"
@@ -139,10 +140,10 @@ __C.train = {}
 __C.train.num_epochs = 500
 
 # the number of samples in a batch
-__C.train.batch_size = 16
+__C.train.batch_size = 256
 
 # the number of threads for IO
-__C.train.num_threads = 8
+__C.train.num_threads = 16
 
 # the number of batches to update loss curve
 __C.train.plot_snapshot = 5
@@ -189,10 +190,10 @@ __C.train.betas = (0.9, 0.999)
 __C.debug = {}
 
 # whether to save input images
-__C.debug.save_inputs = True
+__C.debug.save_inputs = False
 
 # the number of processing for save input images
-__C.debug.num_processing = 8
+__C.debug.num_processing = 16
 
 # random seed used in training
 __C.debug.seed = 0

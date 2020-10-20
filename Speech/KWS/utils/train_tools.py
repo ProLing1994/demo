@@ -140,12 +140,19 @@ def generate_dataset(cfg, mode):
   assert mode in ['training', 'testing', 'validation'], "[ERROR:] Unknow mode: {}".format(mode)
 
   data_set = SpeechDataset(cfg=cfg, mode=mode)
+  sampler = EpochConcateSampler(data_set, cfg.train.num_epochs - (cfg.general.resume_epoch if cfg.general.resume_epoch != -1 else 0))
   data_loader = torch.utils.data.DataLoader(data_set,
+                                            sampler=sampler,
                                             batch_size=cfg.train.batch_size,
-                                            shuffle=True,
                                             pin_memory=True,
                                             num_workers=cfg.train.num_threads,
                                             worker_init_fn=worker_init)
+  # data_loader = torch.utils.data.DataLoader(data_set,
+  #                                           batch_size=cfg.train.batch_size,
+  #                                           shuffle=True,
+  #                                           pin_memory=True,
+  #                                           num_workers=cfg.train.num_threads,
+  #                                           worker_init_fn=worker_init)
   return data_loader, len(data_set)
 
 def generate_test_dataset(cfg, mode = 'validation'):
@@ -246,7 +253,7 @@ def save_intermediate_results(cfg, mode, epoch, images, labels, indexs):
 
 
 def multiprocessing_save(args):
-  """ save intermediate results to training folder with multiprocessin
+  """ save intermediate results to training folder with multi process
   """
   labels = args[0]
   images = args[1]
