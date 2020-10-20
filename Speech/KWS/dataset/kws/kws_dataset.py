@@ -5,7 +5,6 @@ import pandas as pd
 import pcen
 import torch 
 
-
 from torch.utils.data import Dataset
 
 SILENCE_LABEL = '_silence_'
@@ -148,7 +147,7 @@ class SpeechDataset(Dataset):
     data = data[:len(data) - time_shift_left] if time_shift_left else data[time_shift_right:]
 
     # add noise
-    data = dataset_add_noise(data)
+    data = self.dataset_add_noise(data)
     return data 
 
   def __getitem__(self, index):
