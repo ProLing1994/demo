@@ -9,11 +9,11 @@ import shutil
 import torch
 import torch.nn as nn
 
-sys.path.insert(0, '/home/huanyuan/code/demo')
+sys.path.insert(0, '/home/engineers/yh_rmai/code/demo')
 from common.common.utils.python.file_tools import load_module_from_disk
 from common.common.utils.python.train_tools  import EpochConcateSampler
 
-sys.path.insert(0, '/home/huanyuan/code/demo/speech/KWS')
+sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/KWS')
 from dataset.kws.kws_dataset import SpeechDataset
 
 def load_cfg_file(config_file):
@@ -50,6 +50,7 @@ def init_torch_and_numpy(cfg):
   :param cfg:  configuration file
   :return:     None
   """
+  os.environ['CUDA_VISIBLE_DEVICES'] = cfg.general.gpu_ids
   assert torch.cuda.is_available(), \
     'CUDA is not available! Please check nvidia driver!'
   torch.backends.cudnn.benchmark = True
@@ -193,7 +194,7 @@ def save_checkpoint(net, epoch_idx, batch_idx, cfg, config_file):
                             'checkpoints', 'chk_{}'.format(epoch_idx))
   if not os.path.isdir(chk_folder):
       os.makedirs(chk_folder)
-  filename = os.path.join(chk_folder, 'parameter.pkl'.format(epoch_idx))
+  filename = os.path.join(chk_folder, 'parameter.pkl')
 
   state = {'epoch': epoch_idx,
             'batch': batch_idx,
