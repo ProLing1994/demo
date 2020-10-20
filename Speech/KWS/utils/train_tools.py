@@ -1,6 +1,7 @@
 import builtins
 import importlib
 import matplotlib.pyplot as plt
+import multiprocessing 
 import numpy as np
 import os
 import pandas as pd
@@ -9,11 +10,13 @@ import shutil
 import torch
 import torch.nn as nn
 
-sys.path.insert(0, '/home/engineers/yh_rmai/code/demo')
+from tqdm import tqdm
+
+sys.path.insert(0, '/home/huanyuan/code/demo')
 from common.common.utils.python.file_tools import load_module_from_disk
 from common.common.utils.python.train_tools  import EpochConcateSampler
 
-sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/KWS')
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from dataset.kws.kws_dataset import SpeechDataset
 
 def load_cfg_file(config_file):
@@ -218,6 +221,8 @@ def save_intermediate_results(cfg, mode, epoch, images, labels, indexs):
   if epoch != 0:
     return 
 
+  print("Save Intermediate Results")
+
   out_folder = os.path.join(cfg.general.save_dir, mode)
   if not os.path.isdir(out_folder):
       os.makedirs(out_folder)
@@ -227,24 +232,46 @@ def save_intermediate_results(cfg, mode, epoch, images, labels, indexs):
   data_pd = pd.read_csv(data_path)
   data_mode_pd = data_pd[data_pd['mode'] == mode]
 
+  in_params = []
   batch_size = images.shape[0]
-  for bth_idx in range(batch_size):
-    label_idx = str(labels[bth_idx].numpy())
-    image_idx = images[bth_idx].numpy().reshape((-1, 40))
-    index_idx = int(indexs[bth_idx])
+  for bth_idx in tqdm(range(batch_size)):
+    in_args = [labels, images, indexs, data_mode_pd, out_folder, bth_idx]
+    in_params.append(in_args)
 
-    name_idx = str(data_mode_pd['file'].tolist()[index_idx])
-    label_name_idx = str(data_mode_pd['label'].tolist()[index_idx])
-    case_out_folder = os.path.join(out_folder, label_idx)
-    if not os.path.isdir(case_out_folder):
-        os.makedirs(case_out_folder)
+  p = multiprocessing.Pool(cfg.debug.num_processing)
+  out = p.map(multiprocessing_save, in_params)
+  p.close()
+  p.join()
+  print("Save Intermediate Results: Done")
 
-    # plot spectrogram
-    fig = plt.figure(figsize=(10, 4))
-    heatmap = plt.pcolor(image_idx.T) 
-    fig.colorbar(mappable=heatmap)
-    plt.xlabel("Time(s)")
-    plt.ylabel("MFCC Coefficients")
-    plt.tight_layout()
-    plt.savefig(os.path.join(case_out_folder, label_name_idx + '_' + os.path.basename(name_idx).split('.')[0] + '.jpg'), dpi=300)
-    plt.close() 
+
+def multiprocessing_save(args):
+  """ save intermediate results to training folder with multiprocessin
+  """
+  labels = args[0]
+  images = args[1]
+  indexs = args[2] 
+  data_mode_pd = args[3]
+  out_folder = args[4]
+  bth_idx = args[5]
+
+  label_idx = str(labels[bth_idx].numpy())
+  image_idx = images[bth_idx].numpy().reshape((-1, 40))
+  index_idx = int(indexs[bth_idx])
+
+  name_idx = str(data_mode_pd['file'].tolist()[index_idx])
+  label_name_idx = str(data_mode_pd['label'].tolist()[index_idx])
+  case_out_folder = os.path.join(out_folder, label_idx)
+  if not os.path.isdir(case_out_folder):
+      os.makedirs(case_out_folder)
+
+  # plot spectrogram
+  fig = plt.figure(figsize=(10, 4))
+  heatmap = plt.pcolor(image_idx.T) 
+  fig.colorbar(mappable=heatmap)
+  plt.xlabel("Time(s)")
+  plt.ylabel("MFCC Coefficients")
+  plt.tight_layout()
+  plt.savefig(os.path.join(case_out_folder, label_name_idx + '_' + os.path.basename(name_idx).split('.')[0] + '.jpg'), dpi=300)
+  plt.close() 
+  print("Save Intermediate Results: {}".format(label_name_idx + '_' + os.path.basename(name_idx).split('.')[0] + '.jpg'))
