@@ -47,6 +47,9 @@ def train(config_file):
   :param config_file:   the input configuration file
   :return:              None
   """
+  # record time
+  begin_t = time.time() 
+
   # load configuration file
   cfg = load_cfg_file(config_file)
 
@@ -83,62 +86,74 @@ def train(config_file):
     eval_validation_dataloader = generate_test_dataset(cfg, 'validation')
     # eval_train_dataloader = generate_test_dataset(cfg, 'training')
 
+  msg = 'Training dataset number: {}'.format(len_dataset)
+  logger.info(msg)
+
+  msg = 'Init Time: {}'.format((time.time() - begin_t) * 1.0)
+  logger.info(msg)
+
+  batch_number = len(train_dataloader)
+  data_iter = iter(train_dataloader)
+  batch_num = start_batch
+
   # loop over batches
-  for epoch_idx in range(cfg.train.num_epochs - (cfg.general.resume_epoch if cfg.general.resume_epoch != -1 else 0)):
-    for batch_idx, (inputs, labels, indexs) in enumerate(train_dataloader):
+  for i in range(batch_number):
 
-      net.train()
-      begin_t = time.time() 
-      optimizer.zero_grad()
+    net.train()
+    begin_t = time.time() 
+    optimizer.zero_grad()
 
-      # save training images for visualization
-      if cfg.debug.save_inputs:
-          save_intermediate_results(cfg, "training", epoch_idx, inputs, labels, indexs)
+    epoch_num = start_epoch + i * cfg.train.batch_size // len_dataset
+    batch_num += 1
 
-      inputs, labels = inputs.cuda(), labels.cuda()
-      scores = net(inputs)
-      loss = loss_func(scores, labels)
-      loss.backward()
-      optimizer.step()
+    inputs, labels, indexs = data_iter.next()
 
-      # caltulate accuracy
-      pred_y = torch.max(scores, 1)[1].cpu().data.numpy()
-      accuracy = float((pred_y == labels.cpu().data.numpy()).astype(int).sum()) / float(labels.size(0))
+    # save training images for visualization
+    if cfg.debug.save_inputs:
+        save_intermediate_results(cfg, "training", epoch_num, inputs, labels, indexs)
 
-      # print training information
-      sample_duration = (time.time() - begin_t) * 1.0 / cfg.train.batch_size
-      epoch_num = start_epoch + epoch_idx
-      batch_num = epoch_num * len_dataset // cfg.train.batch_size + batch_idx
-      msg = 'epoch: {}, batch: {}, train_accuracy: {:.4f}, train_loss: {:.4f}, time: {:.4f} s/vol' \
-          .format(epoch_num, batch_num, accuracy, loss.item(), sample_duration)
-      logger.info(msg)
+    inputs, labels = inputs.cuda(), labels.cuda()
+    scores = net(inputs)
+    loss = loss_func(scores, labels)
+    loss.backward()
+    optimizer.step()
 
-      if (batch_num % cfg.train.plot_snapshot) == 0:
+    # caltulate accuracy
+    pred_y = torch.max(scores, 1)[1].cpu().data.numpy()
+    accuracy = float((pred_y == labels.cpu().data.numpy()).astype(int).sum()) / float(labels.size(0))
+
+    # print training information
+    sample_duration = (time.time() - begin_t) * 1.0 / cfg.train.batch_size
+    msg = 'epoch: {}, batch: {}, train_accuracy: {:.4f}, train_loss: {:.4f}, time: {:.4f} s/vol' \
+        .format(epoch_num, batch_num, accuracy, loss.item(), sample_duration)
+    logger.info(msg)
+
+    if (batch_num % cfg.train.plot_snapshot) == 0:
+      if cfg.general.is_test:
+        train_loss_file = os.path.join(cfg.general.save_dir, 'train_loss.html')
+        plot_loss2d(log_file, train_loss_file, name=['train_loss', 'eval_loss'],
+                  display='Training/Validation Loss ({})'.format(cfg.loss.name)) 
+        train_accuracy_file = os.path.join(cfg.general.save_dir, 'train_accuracy.html')
+        plot_loss2d(log_file, train_accuracy_file, name=['train_accuracy', 'eval_accuracy'],
+                  display='Training/Validation Accuracy ({})'.format(cfg.loss.name)) 
+      else:
+        train_loss_file = os.path.join(cfg.general.save_dir, 'train_loss.html')
+        plot_loss(log_file, train_loss_file, name='train_loss',
+                  display='Training Loss ({})'.format(cfg.loss.name))
+        train_accuracy_file = os.path.join(cfg.general.save_dir, 'train_accuracy.html')
+        plot_loss(log_file, train_accuracy_file, name='train_accuracy',
+                  display='Training Accuracy ({})'.format(cfg.loss.name))
+
+    if epoch_num % cfg.train.save_epochs == 0 or epoch_num == cfg.train.num_epochs - 1:
+      if last_save_epoch != epoch_num:
+        last_save_epoch = epoch_num
+
+        # save training model
+        save_checkpoint(net, epoch_num, batch_num, cfg, config_file)
+
         if cfg.general.is_test:
-          train_loss_file = os.path.join(cfg.general.save_dir, 'train_loss.html')
-          plot_loss2d(log_file, train_loss_file, name=['train_loss', 'eval_loss'],
-                    display='Training/Validation Loss ({})'.format(cfg.loss.name)) 
-          train_accuracy_file = os.path.join(cfg.general.save_dir, 'train_accuracy.html')
-          plot_loss2d(log_file, train_accuracy_file, name=['train_accuracy', 'eval_accuracy'],
-                    display='Training/Validation Accuracy ({})'.format(cfg.loss.name)) 
-        else:
-          train_loss_file = os.path.join(cfg.general.save_dir, 'train_loss.html')
-          plot_loss(log_file, train_loss_file, name='train_loss',
-                    display='Training Loss ({})'.format(cfg.loss.name))
-          train_accuracy_file = os.path.join(cfg.general.save_dir, 'train_accuracy.html')
-          plot_loss(log_file, train_accuracy_file, name='train_accuracy',
-                    display='Training Accuracy ({})'.format(cfg.loss.name))
-
-      if epoch_num % cfg.train.save_epochs == 0 or epoch_num == cfg.train.num_epochs - 1:
-        if last_save_epoch != epoch_num:
-          last_save_epoch = epoch_num
-
-          # save training model
-          save_checkpoint(net, epoch_num, batch_num, cfg, config_file)
-
-          if cfg.general.is_test:
-            test(cfg, net, loss_func, epoch_num, batch_num, logger, eval_validation_dataloader, mode='eval')
-            # test(cfg, net, loss_func, epoch_num, batch_num, logger, eval_train_dataloader, mode='eval')
+          test(cfg, net, loss_func, epoch_num, batch_num, logger, eval_validation_dataloader, mode='eval')
+          # test(cfg, net, loss_func, epoch_num, batch_num, logger, eval_train_dataloader, mode='eval')
 
 def main():
   parser = argparse.ArgumentParser(description='Streamax KWS Training Engine')
