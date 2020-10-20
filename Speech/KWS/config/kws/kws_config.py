@@ -13,19 +13,20 @@ __C.general = {}
 __C.general.data_dir = "/home/engineers/yh_rmai/data/speech/kws/tf_speech_commands/speech_commands"
 
 # data path
-# __C.general.data_path = "/home/engineers/yh_rmai/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/total_data_files.csv"
+__C.general.data_path = "/home/engineers/yh_rmai/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/total_data_files.csv"
+# __C.general.data_path = "/home/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/total_data_files.csv"
 # __C.general.data_path = "/home/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/test.csv"
-__C.general.data_path = "/home/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/total_data_files.csv"
 
 # background noise path
-# __C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/background_noise_files.csv"
-__C.general.background_data_path = "/home/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/background_noise_files.csv"
+__C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/background_noise_files.csv"
+# __C.general.background_data_path = "/home/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # the output of training models and logging files
-__C.general.save_dir = "/home/huanyuan/model/kws_without_augmentation_10202020"
+__C.general.save_dir = "/home/engineers/yh_rmai/kws_without_augmentation_10202020"
+# __C.general.save_dir = "/home/huanyuan/model/kws_without_augmentation_10202020"
 
 # set certain epoch to continue training, set -1 to train from scratch
 __C.general.resume_epoch = -1
@@ -34,7 +35,7 @@ __C.general.resume_epoch = -1
 __C.general.num_gpus = 1
 
 # the GPUs' id used in training
-__C.general.gpu_ids = '0'
+__C.general.gpu_ids = '6'
 
 
 ##################################
@@ -137,13 +138,13 @@ __C.net.name = 'cnn-trad-pool2'
 __C.train = {}
 
 # the number of training epochs
-__C.train.num_epochs = 500
+__C.train.num_epochs = 2000
 
 # the number of samples in a batch
-__C.train.batch_size = 256
+__C.train.batch_size = 2048
 
 # the number of threads for IO
-__C.train.num_threads = 16
+__C.train.num_threads = 64
 
 # the number of batches to update loss curve
 __C.train.plot_snapshot = 5
@@ -193,7 +194,7 @@ __C.debug = {}
 __C.debug.save_inputs = False
 
 # the number of processing for save input images
-__C.debug.num_processing = 16
+__C.debug.num_processing = 64
 
 # random seed used in training
 __C.debug.seed = 0

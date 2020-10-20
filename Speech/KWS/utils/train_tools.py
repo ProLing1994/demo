@@ -12,11 +12,11 @@ import torch.nn as nn
 
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo')
+sys.path.insert(0, '/home/engineers/yh_rmai/code/demo')
 from common.common.utils.python.file_tools import load_module_from_disk
 from common.common.utils.python.train_tools  import EpochConcateSampler
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
+sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/KWS')
 from dataset.kws.kws_dataset import SpeechDataset
 
 def load_cfg_file(config_file):
