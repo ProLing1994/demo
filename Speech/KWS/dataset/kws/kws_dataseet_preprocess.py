@@ -20,24 +20,22 @@ class SpeechDataset(Dataset):
   def __init__(self, cfg, mode, augmentation_on=True):
     # init
     super().__init__()
-    data_path = cfg.general.data_path
-    self.input_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset', mode)
 
     # data index
-    self.positive_words_index = {}
+    self.label_index = {}
     for index, positive_word in enumerate(cfg.dataset.label.positive_label):
-      self.positive_words_index[positive_word] = index + 2
-    self.positive_words_index.update({SILENCE_LABEL:SILENCE_INDEX, UNKNOWN_WORD_LABEL:UNKNOWN_WORD_INDEX})
+      self.label_index[positive_word] = index + 2
+    self.label_index.update({SILENCE_LABEL:SILENCE_INDEX, UNKNOWN_WORD_LABEL:UNKNOWN_WORD_INDEX})
 
     # load data 
-    data_pd = pd.read_csv(data_path)
-    data_mode_pd = data_pd[data_pd['mode'] == mode]
+    data_pd = pd.read_csv(cfg.general.data_csv_path)
 
     self.mode_type = mode
-    self.data_mode_pd = data_mode_pd
-    self.data_mode_pd_file = self.data_mode_pd['file'].tolist()
-    self.data_mode_pd_mode = self.data_mode_pd['mode'].tolist()
-    self.data_mode_pd_label = self.data_mode_pd['label'].tolist()
+    self.data_pd = data_pd[data_pd['mode'] == mode]
+    self.input_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset', mode)
+    self.data_file_list = self.data_pd['file'].tolist()
+    self.data_mode_list = self.data_pd['mode'].tolist()
+    self.data_label_list = self.data_pd['label'].tolist()
 
     self.input_channel = cfg.dataset.input_channel
     self.data_size_h = cfg.dataset.data_size[1]
@@ -45,32 +43,29 @@ class SpeechDataset(Dataset):
 
   def __len__(self):
     """ get the number of images in this dataset """
-    return len(self.data_mode_pd_file)
+    return len(self.data_file_list)
 
   def __getitem__(self, index):
     """ get the item """
     # record time
     # begin_t = time.time() 
 
-    audio_file = self.data_mode_pd_file[index]
-    audio_mode = self.data_mode_pd_mode[index]
-    audio_label = self.data_mode_pd_label[index]
+    audio_file = self.data_file_list[index]
+    audio_mode = self.data_mode_list[index]
+    audio_label = self.data_label_list[index]
     assert audio_mode == self.mode_type, "[ERROR:] Something wronge about mode, please check"
 
-    # print('Init Time: {}'.format((time.time() - begin_t) * 1.0))
-    # begin_t = time.time() 
-
     # gen label
-    label = self.positive_words_index[audio_label]
+    label = self.label_index[audio_label]
 
     # load data
-    case_input_dir = os.path.join(self.input_dir, audio_label)
+    input_dir = os.path.join(self.input_dir, audio_label)
     if audio_label == SILENCE_LABEL:
       filename = str(label) + '_' + audio_label + '_' + str(index) + '.txt'
     else:
       filename = str(label) + '_' + os.path.basename(os.path.dirname(audio_file)) + '_' + os.path.basename(audio_file).split('.')[0] + '.txt'
     
-    f = open(os.path.join(case_input_dir, filename), 'rb')
+    f = open(os.path.join(input_dir, filename), 'rb')
     data = pickle.load(f)
     f.close()
     

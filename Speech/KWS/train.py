@@ -96,7 +96,7 @@ def train(config_file):
 
   batch_number = len(train_dataloader)
   data_iter = iter(train_dataloader)
-  batch_num = start_batch
+  batch_idx = start_batch
 
   # loop over batches
   for i in range(batch_number):
@@ -105,14 +105,14 @@ def train(config_file):
     begin_t = time.time() 
     optimizer.zero_grad()
 
-    epoch_num = start_epoch + i * cfg.train.batch_size // len_dataset
-    batch_num += 1
+    epoch_idx = start_epoch + i * cfg.train.batch_size // len_dataset
+    batch_idx += 1
 
     inputs, labels, indexs = data_iter.next()
 
     # save training images for visualization
     if cfg.debug.save_inputs:
-        save_intermediate_results(cfg, "training", epoch_num, inputs, labels, indexs)
+        save_intermediate_results(cfg, "training", epoch_idx, inputs, labels, indexs)
 
     inputs, labels = inputs.cuda(), labels.cuda()
     scores = net(inputs)
@@ -127,10 +127,10 @@ def train(config_file):
     # print training information
     sample_duration = (time.time() - begin_t) * 1.0 / cfg.train.batch_size
     msg = 'epoch: {}, batch: {}, train_accuracy: {:.4f}, train_loss: {:.4f}, time: {:.4f} s/vol' \
-        .format(epoch_num, batch_num, accuracy, loss.item(), sample_duration)
+        .format(epoch_idx, batch_idx, accuracy, loss.item(), sample_duration)
     logger.info(msg)
 
-    if (batch_num % cfg.train.plot_snapshot) == 0:
+    if (batch_idx % cfg.train.plot_snapshot) == 0:
       if cfg.general.is_test:
         train_loss_file = os.path.join(cfg.general.save_dir, 'train_loss.html')
         plot_loss2d(log_file, train_loss_file, name=['train_loss', 'eval_loss'],
@@ -146,16 +146,16 @@ def train(config_file):
         plot_loss(log_file, train_accuracy_file, name='train_accuracy',
                   display='Training Accuracy ({})'.format(cfg.loss.name))
 
-    if epoch_num % cfg.train.save_epochs == 0 or epoch_num == cfg.train.num_epochs - 1:
-      if last_save_epoch != epoch_num:
-        last_save_epoch = epoch_num
+    if epoch_idx % cfg.train.save_epochs == 0 or epoch_idx == cfg.train.num_epochs - 1:
+      if last_save_epoch != epoch_idx:
+        last_save_epoch = epoch_idx
 
         # save training model
-        save_checkpoint(net, epoch_num, batch_num, cfg, config_file)
+        save_checkpoint(net, epoch_idx, batch_idx, cfg, config_file)
 
         if cfg.general.is_test:
-          test(cfg, net, loss_func, epoch_num, batch_num, logger, eval_validation_dataloader, mode='eval')
-          # test(cfg, net, loss_func, epoch_num, batch_num, logger, eval_train_dataloader, mode='eval')
+          test(cfg, net, loss_func, epoch_idx, batch_idx, logger, eval_validation_dataloader, mode='eval')
+          # test(cfg, net, loss_func, epoch_idx, batch_idx, logger, eval_train_dataloader, mode='eval')
 
 def main():
   parser = argparse.ArgumentParser(description='Streamax KWS Training Engine')
