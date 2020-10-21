@@ -33,6 +33,7 @@ __C.general.is_test = True
 
 # the output of training models and logging files
 # __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_without_augmentation_10202020"
+# __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_without_augmentation_preload_audio_10212020"
 # __C.general.save_dir = "/home/huanyuan/model/kws_without_augmentation_10202020"
 __C.general.save_dir = "/home/huanyuan/model/kws_without_augmentation_preload_audio_10212020"
 # __C.general.save_dir = "/home/huanyuan/model/kws_test"
@@ -206,6 +207,7 @@ __C.train.betas = (0.9, 0.999)
 __C.debug = {}
 
 # whether to save input images
+# __C.debug.save_inputs = True
 __C.debug.save_inputs = False
 
 # the number of processing for save input images
