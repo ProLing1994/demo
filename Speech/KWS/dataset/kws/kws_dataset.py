@@ -111,9 +111,11 @@ class SpeechDataset(Dataset):
                                             n_fft=self.window_size_samples, 
                                             hop_length=self.window_stride_samples)
 
-    # init cache, first load data into the cache to reduce IO operations
-    self.file_cache = SimpleCache()
-    self.read_data_to_cache(cfg)
+    # # init cache, first load data into the cache to reduce IO operations
+    # print('Load Data: ')
+    # self.file_cache = SimpleCache()
+    # self.read_data_to_cache(cfg)
+    # print('Load Data Done')
 
   def __len__(self):
     """ get the number of images in this dataset """
@@ -123,7 +125,7 @@ class SpeechDataset(Dataset):
     audio_file = data_list[0]
     data = data_list[1]
     self.file_cache[audio_file] = data
-    # print(data)
+    print('Load Data: ', len(self.file_cache.keys()), '/ ', len(self.data_mode_pd_file))
 
   def read_data_multiprocessing(self, audio_file):
     data = librosa.core.load(audio_file, sr=self.sample_rate)[0]
@@ -207,9 +209,10 @@ class SpeechDataset(Dataset):
     if audio_label == SILENCE_LABEL:
       data = np.zeros(self.desired_samples, dtype=np.float32)
     else:
-      data_file = self.file_cache.get(audio_file)
-      data = librosa.core.load(audio_file, sr=self.sample_rate)[0] if data_file is None else data_file
-      self.file_cache[audio_file] = data
+      # data_file = self.file_cache.get(audio_file)
+      # data = librosa.core.load(audio_file, sr=self.sample_rate)[0] if data_file is None else data_file
+      # self.file_cache[audio_file] = data
+      data = librosa.core.load(audio_file, sr=self.sample_rate)[0]
 
     # begin_t = time.time()
     # print('Load data Time: {}'.format((time.time() - begin_t) * 1.0))
