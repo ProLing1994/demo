@@ -17,24 +17,24 @@ def write_image(image, output_path):
   f.close()
 
 def multiprocessing_data_preprocess(args):
-  cfg, data_set, data_mode_pd, idx = args[0], args[1], args[2], args[3]
+  cfg, data_set, data_pd, idx = args[0], args[1], args[2], args[3]
 
   inputs, labels, indexs = data_set[idx]
 
   image_idx = inputs.numpy().reshape((-1, 40))
   label_idx = str(labels.numpy())
-  image_name_idx = str(data_mode_pd['file'].tolist()[indexs])
-  label_name_idx = str(data_mode_pd['label'].tolist()[indexs])
-  mode_name_idx = str(data_mode_pd['mode'].tolist()[indexs])
+  image_name_idx = str(data_pd['file'].tolist()[indexs])
+  label_name_idx = str(data_pd['label'].tolist()[indexs])
+  mode_name_idx = str(data_pd['mode'].tolist()[indexs])
 
   # output
   output_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset', mode_name_idx)
   if not os.path.exists(output_dir):
     os.makedirs(output_dir)
   
-  case_output_dir = os.path.join(output_dir, label_name_idx)
-  if not os.path.exists(case_output_dir):
-    os.makedirs(case_output_dir)
+  output_dir_idx = os.path.join(output_dir, label_name_idx)
+  if not os.path.exists(output_dir_idx):
+    os.makedirs(output_dir_idx)
 
   # plot spectrogram
   if label_idx == '0':
@@ -42,7 +42,7 @@ def multiprocessing_data_preprocess(args):
   else:
     filename = label_idx + '_' + os.path.basename(os.path.dirname(image_name_idx)) + '_' + os.path.basename(image_name_idx).split('.')[0] + '.txt'
 
-  write_image(image_idx, os.path.join(case_output_dir, filename))
+  write_image(image_idx, os.path.join(output_dir_idx, filename))
   print("Save Results: {}".format(filename))
 
 def data_preprocess(config_file, mode):
@@ -59,14 +59,13 @@ def data_preprocess(config_file, mode):
   data_set = SpeechDataset(cfg=cfg, mode=mode, augmentation_on=False)
 
   # load csv
-  data_path = cfg.general.data_path
-  data_pd = pd.read_csv(data_path)
-  data_mode_pd = data_pd[data_pd['mode'] == mode]
+  data_pd = pd.read_csv(cfg.general.data_csv_path)
+  data_pd = data_pd[data_pd['mode'] == mode]
 
   # data_preprocess
   in_params = []
   for idx in tqdm(range(len(data_set))):
-    in_args = [cfg, data_set, data_mode_pd, idx]
+    in_args = [cfg, data_set, data_pd, idx]
     in_params.append(in_args)
   
   p = multiprocessing.Pool(cfg.debug.num_processing)

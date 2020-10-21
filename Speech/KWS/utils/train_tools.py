@@ -94,7 +94,6 @@ def define_loss_function(cfg):
     loss_func = nn.CrossEntropyLoss()
   else:
     raise ValueError('Unsupported loss function.')
-
   return loss_func
 
 
@@ -183,7 +182,6 @@ def load_checkpoint(epoch_idx, net, save_dir):
 
   state = torch.load(chk_file)
   net.load_state_dict(state['state_dict'])
-
   return state['epoch'], state['batch']
 
 
@@ -232,14 +230,13 @@ def save_intermediate_results(cfg, mode, epoch, images, labels, indexs):
       os.makedirs(out_folder)
 
   # load csv
-  data_path = cfg.general.data_path
-  data_pd = pd.read_csv(data_path)
-  data_mode_pd = data_pd[data_pd['mode'] == mode]
+  data_pd = pd.read_csv(cfg.general.data_csv_path)
+  data_pd = data_pd[data_pd['mode'] == mode]
 
   in_params = []
   batch_size = images.shape[0]
   for bth_idx in tqdm(range(batch_size)):
-    in_args = [labels, images, indexs, data_mode_pd, out_folder, bth_idx]
+    in_args = [labels, images, indexs, data_pd, out_folder, bth_idx]
     in_params.append(in_args)
 
   p = multiprocessing.Pool(cfg.debug.num_processing)
@@ -255,26 +252,26 @@ def multiprocessing_save(args):
   labels = args[0]
   images = args[1]
   indexs = args[2] 
-  data_mode_pd = args[3]
+  data_pd = args[3]
   out_folder = args[4]
   bth_idx = args[5]
 
-  label_idx = str(labels[bth_idx].numpy())
   image_idx = images[bth_idx].numpy().reshape((-1, 40))
+  label_idx = str(labels[bth_idx].numpy())
   index_idx = int(indexs[bth_idx])
 
-  name_idx = str(data_mode_pd['file'].tolist()[index_idx])
-  label_name_idx = str(data_mode_pd['label'].tolist()[index_idx])
-  case_output_dir = os.path.join(out_folder, label_name_idx)
-  if not os.path.isdir(case_output_dir):
-      os.makedirs(case_output_dir)
+  image_name_idx = str(data_pd['file'].tolist()[index_idx])
+  label_name_idx = str(data_pd['label'].tolist()[index_idx])
+  output_dir = os.path.join(out_folder, label_name_idx)
+  if not os.path.isdir(output_dir):
+      os.makedirs(output_dir)
 
   # plot spectrogram
   if label_idx == '0':
     filename = label_idx + '_' + label_name_idx + '_' + str(index_idx) + '.jpg'
   else:
-    filename = label_idx + '_' + os.path.basename(os.path.dirname(name_idx)) + '_' + os.path.basename(name_idx).split('.')[0] + '.jpg'
-  plot_spectrogram(image_idx.T, os.path.join(case_output_dir, filename))
+    filename = label_idx + '_' + os.path.basename(os.path.dirname(image_name_idx)) + '_' + os.path.basename(image_name_idx).split('.')[0] + '.jpg'
+  plot_spectrogram(image_idx.T, os.path.join(output_dir, filename))
   print("Save Intermediate Results: {}".format(filename))
 
 def plot_spectrogram(image, output_path):

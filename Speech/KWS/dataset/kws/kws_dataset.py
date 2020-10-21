@@ -54,31 +54,29 @@ class SpeechDataset(Dataset):
   def __init__(self, cfg, mode, augmentation_on=True):
     # init
     super().__init__()
-    data_path = cfg.general.data_path
-    background_data_path = cfg.general.background_data_path
 
     # data index
-    self.positive_words_index = {}
+    self.label_index = {}
     for index, positive_word in enumerate(cfg.dataset.label.positive_label):
-      self.positive_words_index[positive_word] = index + 2
-    self.positive_words_index.update({SILENCE_LABEL:SILENCE_INDEX, UNKNOWN_WORD_LABEL:UNKNOWN_WORD_INDEX})
+      self.label_index[positive_word] = index + 2
+    self.label_index.update({SILENCE_LABEL:SILENCE_INDEX, UNKNOWN_WORD_LABEL:UNKNOWN_WORD_INDEX})
 
     # load data 
-    data_pd = pd.read_csv(data_path)
-    data_mode_pd = data_pd[data_pd['mode'] == mode]
-    background_data_pd = pd.read_csv(background_data_path)
-
+    data_pd = pd.read_csv(cfg.general.data_csv_path)
+    background_data_pd = pd.read_csv(cfg.general.background_data_path)
+  
     self.mode_type = mode
-    self.data_mode_pd = data_mode_pd
-    self.data_mode_pd_file = self.data_mode_pd['file'].tolist()
-    self.data_mode_pd_mode = self.data_mode_pd['mode'].tolist()
-    self.data_mode_pd_label = self.data_mode_pd['label'].tolist()
+    self.data_pd = data_pd[data_pd['mode'] == mode]
+    self.data_file_list = self.data_pd['file'].tolist()
+    self.data_mode_list = self.data_pd['mode'].tolist()
+    self.data_label_list = self.data_pd['label'].tolist()
 
     self.sample_rate = cfg.dataset.sample_rate
     self.clip_duration_ms = cfg.dataset.clip_duration_ms
     self.window_size_ms = cfg.dataset.window_size_ms
     self.window_stride_ms = cfg.dataset.window_stride_ms
     self.feature_bin_count = cfg.dataset.feature_bin_count
+
     self.input_channel = cfg.dataset.input_channel
     self.data_size_h = cfg.dataset.data_size[1]
     self.data_size_w = cfg.dataset.data_size[0]
@@ -102,7 +100,7 @@ class SpeechDataset(Dataset):
 
   def __len__(self):
     """ get the number of images in this dataset """
-    return len(self.data_mode_pd_file)
+    return len(self.data_file_list)
 
   def audio_preprocess(self, data):
     # check 
@@ -114,7 +112,6 @@ class SpeechDataset(Dataset):
     elif self.audio_preprocess_type == "pcen":
       audio_data = self.audio_processor.compute_pcen(data)
     return audio_data 
-
 
   def dataset_add_noise(self, data, bool_silence_label=False):
     # add noise
@@ -139,7 +136,6 @@ class SpeechDataset(Dataset):
     data = np.clip(data, -1.0, 1.0) 
     return data 
 
-
   def dataset_augmentation(self, data):
     # add time_shift
     time_shift_amount = 0
@@ -161,11 +157,10 @@ class SpeechDataset(Dataset):
     # record time
     # begin_t = time.time() 
 
-    audio_file = self.data_mode_pd_file[index]
-    audio_mode = self.data_mode_pd_mode[index]
-    audio_label = self.data_mode_pd_label[index]
+    audio_file = self.data_file_list[index]
+    audio_mode = self.data_mode_list[index]
+    audio_label = self.data_label_list[index]
     assert audio_mode == self.mode_type, "[ERROR:] Something wronge about mode, please check"
-    
     # print('Init Time: {}'.format((time.time() - begin_t) * 1.0))
     # begin_t = time.time() 
 
@@ -174,7 +169,6 @@ class SpeechDataset(Dataset):
       data = np.zeros(self.desired_samples, dtype=np.float32)
     else:
       data = librosa.core.load(audio_file, sr=self.sample_rate)[0]
-
     # print('Load data Time: {}'.format((time.time() - begin_t) * 1.0))
     # begin_t = time.time()
 
@@ -187,7 +181,6 @@ class SpeechDataset(Dataset):
       data = self.dataset_add_noise(data, bool_silence_label=True)
     elif self.mode_type == 'training' and self.augmentation_on:
       data = self.dataset_augmentation(data)
-
     # print('Data augmentation Time: {}'.format((time.time() - begin_t) * 1.0))
     # begin_t = time.time()
 
@@ -198,7 +191,7 @@ class SpeechDataset(Dataset):
     # To tensor
     data_tensor = torch.from_numpy(data.reshape(1, -1, 40))
     data_tensor = data_tensor.float()
-    label = self.positive_words_index[audio_label]
+    label = self.label_index[audio_label]
     label_tensor = torch.tensor(label)
 
     # check tensor
