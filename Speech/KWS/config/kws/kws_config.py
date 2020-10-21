@@ -150,8 +150,8 @@ __C.train.batch_size = 256
 # __C.train.batch_size = 16
 
 # the number of processing for load data
-# __C.debug.num_processing = 64
-__C.train.num_processing = 16
+# __C.train.num_processing = 128
+# __C.train.num_processing = 32
 
 # the number of threads for IO
 # __C.train.num_threads = 64
