@@ -15,17 +15,6 @@ UNKNOWN_WORD_LABEL = '_unknown_'
 UNKNOWN_WORD_INDEX = 1
 BACKGROUND_NOISE_DIR_NAME = '_background_noise_'
 
-class SimpleCache(dict):
-  def __init__(self):
-    super().__init__()
-
-  def __setitem__(self, key, value):
-    if key in self.keys():
-      super().__setitem__(key, value)
-    else:
-      super().__setitem__(key, value)
-    return value
-
 class AudioPreprocessor(object):
   def __init__(self, sr=16000, n_dct_filters=40, n_mels=40, f_max=4000, f_min=20, n_fft=480, hop_length=160):
     super().__init__()
@@ -111,34 +100,9 @@ class SpeechDataset(Dataset):
                                             n_fft=self.window_size_samples, 
                                             hop_length=self.window_stride_samples)
 
-    # # init cache, first load data into the cache to reduce IO operations
-    # print('Load Data: ')
-    # self.file_cache = SimpleCache()
-    # self.read_data_to_cache(cfg)
-    # print('Load Data Done')
-
   def __len__(self):
     """ get the number of images in this dataset """
     return len(self.data_mode_pd_file)
-
-  def store_in_cache(self, data_list):
-    audio_file = data_list[0]
-    data = data_list[1]
-    self.file_cache[audio_file] = data
-    print('Load Data: ', len(self.file_cache.keys()), '/ ', len(self.data_mode_pd_file))
-
-  def read_data_multiprocessing(self, audio_file):
-    data = librosa.core.load(audio_file, sr=self.sample_rate)[0]
-    return [audio_file, data]
-
-  def read_data_to_cache(self, cfg):
-    p = multiprocessing.Pool(cfg.train.num_processing)
-    for idx in range(len(self.data_mode_pd_file)):
-        p.apply_async(self.read_data_multiprocessing, 
-                          [self.data_mode_pd_file[idx],], 
-                          callback=self.store_in_cache)
-    p.close()
-    p.join()
 
   def audio_preprocess(self, data):
     # check 
@@ -209,13 +173,10 @@ class SpeechDataset(Dataset):
     if audio_label == SILENCE_LABEL:
       data = np.zeros(self.desired_samples, dtype=np.float32)
     else:
-      # data_file = self.file_cache.get(audio_file)
-      # data = librosa.core.load(audio_file, sr=self.sample_rate)[0] if data_file is None else data_file
-      # self.file_cache[audio_file] = data
       data = librosa.core.load(audio_file, sr=self.sample_rate)[0]
 
-    # begin_t = time.time()
     # print('Load data Time: {}'.format((time.time() - begin_t) * 1.0))
+    # begin_t = time.time()
 
     # alignment data
     data = np.pad(data, (0, max(0, self.desired_samples - len(data))), "constant")

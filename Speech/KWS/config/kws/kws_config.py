@@ -13,6 +13,12 @@ __C.general = {}
 # __C.general.data_dir = "/home/engineers/yh_rmai/data/speech/kws/tf_speech_commands/speech_commands"
 __C.general.data_dir = "/home/huanyuan/data/speech/kws/tf_speech_commands/speech_commands"
 
+# data version
+__C.general.version = "1.0"
+
+# data date
+__C.general.date = "10162020"
+
 # data path
 # __C.general.data_path = "/home/engineers/yh_rmai/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/total_data_files.csv"
 __C.general.data_path = "/home/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/total_data_files.csv"
@@ -27,8 +33,8 @@ __C.general.is_test = True
 
 # the output of training models and logging files
 # __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_without_augmentation_10202020"
-# __C.general.save_dir = "/home/huanyuan/model/kws_without_augmentation_10202020"
-__C.general.save_dir = "/home/huanyuan/model/kws_test"
+__C.general.save_dir = "/home/huanyuan/model/kws_without_augmentation_10202020"
+# __C.general.save_dir = "/home/huanyuan/model/kws_test"
 
 # set certain epoch to continue training, set -1 to train from scratch
 __C.general.resume_epoch = -1
@@ -149,13 +155,10 @@ __C.train.num_epochs = 500
 __C.train.batch_size = 256
 # __C.train.batch_size = 16
 
-# the number of processing for load data
-# __C.train.num_processing = 128
-# __C.train.num_processing = 32
-
 # the number of threads for IO
 # __C.train.num_threads = 64
 __C.train.num_threads = 16
+# __C.train.num_threads = 1
 
 # the number of batches to update loss curve
 __C.train.plot_snapshot = 5

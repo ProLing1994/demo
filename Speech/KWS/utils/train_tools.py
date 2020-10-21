@@ -19,7 +19,8 @@ from common.common.utils.python.train_tools  import EpochConcateSampler
 
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/KWS')
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
-from dataset.kws.kws_dataset import SpeechDataset
+# from dataset.kws.kws_dataset import SpeechDataset
+from dataset.kws.kws_dataseet_preprocess import SpeechDataset
 
 def load_cfg_file(config_file):
   """
@@ -264,17 +265,24 @@ def multiprocessing_save(args):
 
   name_idx = str(data_mode_pd['file'].tolist()[index_idx])
   label_name_idx = str(data_mode_pd['label'].tolist()[index_idx])
-  case_out_folder = os.path.join(out_folder, label_idx)
-  if not os.path.isdir(case_out_folder):
-      os.makedirs(case_out_folder)
+  case_output_dir = os.path.join(out_folder, label_name_idx)
+  if not os.path.isdir(case_output_dir):
+      os.makedirs(case_output_dir)
 
   # plot spectrogram
+  if label_idx == '0':
+    filename = label_idx + '_' + label_name_idx + '_' + str(index_idx) + '.jpg'
+  else:
+    filename = label_idx + '_' + os.path.basename(os.path.dirname(name_idx)) + '_' + os.path.basename(name_idx).split('.')[0] + '.jpg'
+  plot_spectrogram(image_idx.T, os.path.join(case_output_dir, filename))
+  print("Save Intermediate Results: {}".format(filename))
+
+def plot_spectrogram(image, output_path):
   fig = plt.figure(figsize=(10, 4))
-  heatmap = plt.pcolor(image_idx.T) 
+  heatmap = plt.pcolor(image) 
   fig.colorbar(mappable=heatmap)
   plt.xlabel("Time(s)")
   plt.ylabel("MFCC Coefficients")
   plt.tight_layout()
-  plt.savefig(os.path.join(case_out_folder, label_name_idx + '_' + os.path.basename(name_idx).split('.')[0] + '.jpg'), dpi=300)
+  plt.savefig(output_path, dpi=300)
   plt.close() 
-  print("Save Intermediate Results: {}".format(label_name_idx + '_' + os.path.basename(name_idx).split('.')[0] + '.jpg'))
