@@ -34,6 +34,7 @@ __C.general.is_test = True
 # the output of training models and logging files
 # __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_without_augmentation_10202020"
 # __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_without_augmentation_preload_audio_10212020"
+# __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_with_augmentation_preload_audio_10212020"
 # __C.general.save_dir = "/home/huanyuan/model/kws_without_augmentation_10202020"
 __C.general.save_dir = "/home/huanyuan/model/kws_without_augmentation_preload_audio_10212020"
 # __C.general.save_dir = "/home/huanyuan/model/kws_test"
@@ -45,6 +46,7 @@ __C.general.resume_epoch = -1
 __C.general.num_gpus = 1
 
 # the GPUs' id used in training
+# __C.general.gpu_ids = '7'
 # __C.general.gpu_ids = '6'
 __C.general.gpu_ids = '0'
 
