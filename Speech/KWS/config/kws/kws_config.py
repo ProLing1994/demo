@@ -21,8 +21,8 @@ __C.general.date = "10162020"
 
 # data path
 # __C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/total_data_files.csv"
-# __C.general.data_csv_path = "/home/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/total_data_files.csv"
-__C.general.data_csv_path = "/home/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/test.csv"
+__C.general.data_csv_path = "/home/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/total_data_files.csv"
+# __C.general.data_csv_path = "/home/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/test.csv"
 
 # background noise path
 # __C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/background_noise_files.csv"
@@ -34,7 +34,8 @@ __C.general.is_test = True
 # the output of training models and logging files
 # __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_without_augmentation_10202020"
 # __C.general.save_dir = "/home/huanyuan/model/kws_without_augmentation_10202020"
-__C.general.save_dir = "/home/huanyuan/model/kws_test"
+__C.general.save_dir = "/home/huanyuan/model/kws_without_augmentation_preload_audio_10212020"
+# __C.general.save_dir = "/home/huanyuan/model/kws_test"
 
 # set certain epoch to continue training, set -1 to train from scratch
 __C.general.resume_epoch = -1
@@ -152,8 +153,8 @@ __C.train.num_epochs = 500
 
 # the number of samples in a batch
 # __C.train.batch_size = 2048
-# __C.train.batch_size = 256
-__C.train.batch_size = 16
+__C.train.batch_size = 256
+# __C.train.batch_size = 16
 
 # the number of threads for IO
 # __C.train.num_threads = 64
@@ -205,7 +206,7 @@ __C.train.betas = (0.9, 0.999)
 __C.debug = {}
 
 # whether to save input images
-__C.debug.save_inputs = True
+__C.debug.save_inputs = False
 
 # the number of processing for save input images
 # __C.debug.num_processing = 64

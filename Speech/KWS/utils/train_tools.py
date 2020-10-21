@@ -20,7 +20,8 @@ from common.common.utils.python.train_tools  import EpochConcateSampler
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/KWS')
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 # from dataset.kws.kws_dataset import SpeechDataset
-from dataset.kws.kws_dataseet_preprocess import SpeechDataset
+# from dataset.kws.kws_dataset_preprocess import SpeechDataset
+from dataset.kws.kws_dataset_preload_audio import SpeechDataset
 
 def load_cfg_file(config_file):
   """
@@ -264,7 +265,10 @@ def multiprocessing_save(args):
   label_name_idx = str(data_pd['label'].tolist()[index_idx])
   output_dir = os.path.join(out_folder, label_name_idx)
   if not os.path.isdir(output_dir):
-      os.makedirs(output_dir)
+      try:
+        os.makedirs(output_dir)
+      except:
+        pass
 
   # plot spectrogram
   if label_idx == '0':
