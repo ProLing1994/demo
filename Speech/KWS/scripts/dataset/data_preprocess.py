@@ -19,6 +19,7 @@ def write_image(image, output_path):
 def multiprocessing_data_preprocess(args):
   cfg, data_set, data_pd, idx = args[0], args[1], args[2], args[3]
 
+  # gen model inputs
   inputs, labels, indexs = data_set[idx]
 
   image_idx = inputs.numpy().reshape((-1, 40))
@@ -36,7 +37,6 @@ def multiprocessing_data_preprocess(args):
   if not os.path.exists(output_dir_idx):
     os.makedirs(output_dir_idx)
 
-  # plot spectrogram
   if label_idx == '0':
     filename = label_idx + '_' + label_name_idx + '_' + str(indexs) + '.txt'
   else:
