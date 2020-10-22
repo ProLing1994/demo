@@ -21,8 +21,8 @@ __C.general.date = "10162020"
 
 # data path
 # __C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/total_data_files.csv"
-__C.general.data_csv_path = "/home/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/total_data_files.csv"
-# __C.general.data_csv_path = "/home/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/test.csv"
+# __C.general.data_csv_path = "/home/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/total_data_files.csv"
+__C.general.data_csv_path = "/home/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/test.csv"
 
 # background noise path
 # __C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/background_noise_files.csv"
@@ -36,8 +36,8 @@ __C.general.is_test = True
 # __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_without_augmentation_preload_audio_10212020"
 # __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_with_augmentation_preload_audio_10212020"
 # __C.general.save_dir = "/home/huanyuan/model/kws_without_augmentation_10202020"
-__C.general.save_dir = "/home/huanyuan/model/kws_without_augmentation_preload_audio_10212020"
-# __C.general.save_dir = "/home/huanyuan/model/kws_test"
+# __C.general.save_dir = "/home/huanyuan/model/kws_without_augmentation_preload_audio_10212020"
+__C.general.save_dir = "/home/huanyuan/model/kws_test"
 
 # set certain epoch to continue training, set -1 to train from scratch
 __C.general.resume_epoch = -1
@@ -112,8 +112,8 @@ __C.dataset.label.testing_percentage = 10.0     # 10%
 __C.dataset.augmentation = {}
 
 # on
-# __C.dataset.augmentation.on = True
-__C.dataset.augmentation.on = False
+__C.dataset.augmentation.on = True
+# __C.dataset.augmentation.on = False
 
 # How many of the training samples have background noise mixed in.
 __C.dataset.augmentation.background_frequency = 0.8
@@ -121,7 +121,7 @@ __C.dataset.augmentation.background_frequency = 0.8
 # How loud the background noise should be, between 0 and 1.
 __C.dataset.augmentation.background_volume = 0.1
 
-# Range to randomly shift the training audio by in time.
+# Range to randomly shift the training audio by in time(ms).
 __C.dataset.augmentation.time_shift_ms = 100.0
 
 ####################################
@@ -141,7 +141,8 @@ __C.loss.name = 'softmax'
 __C.net = {}
 
 # the network name
-__C.net.name = 'cnn-trad-pool2'
+# __C.net.name = 'cnn-trad-pool2'
+__C.net.name = 'cnn-one-fstride1'
 
 
 ######################################
@@ -151,24 +152,26 @@ __C.net.name = 'cnn-trad-pool2'
 __C.train = {}
 
 # the number of training epochs
+# __C.train.num_epochs = 4000
 # __C.train.num_epochs = 2000
 __C.train.num_epochs = 500
 
 # the number of samples in a batch
 # __C.train.batch_size = 2048
-__C.train.batch_size = 256
-# __C.train.batch_size = 16
+# __C.train.batch_size = 256
+__C.train.batch_size = 16
 
 # the number of threads for IO
 # __C.train.num_threads = 64
-__C.train.num_threads = 16
-# __C.train.num_threads = 1
+# __C.train.num_threads = 16
+__C.train.num_threads = 1
 
 # the number of batches to update loss curve
 __C.train.plot_snapshot = 5
 
 # the number of epochs to save model
-__C.train.save_epochs = 25
+# __C.train.save_epochs = 25
+__C.train.save_epochs = 1
 
 
 ######################################
@@ -176,7 +179,8 @@ __C.train.save_epochs = 25
 ######################################
 
 # learning rate = lr*gamma**(epoch//step_size)
-__C.train.lr = 1e-3
+# __C.train.lr = 1e-3
+__C.train.lr = 1e-4
 
 # step size for step learning rate
 __C.train.lr_step_size = 0
