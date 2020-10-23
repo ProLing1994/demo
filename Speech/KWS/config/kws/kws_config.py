@@ -144,7 +144,10 @@ __C.net = {}
 # __C.net.name = 'cnn-trad-pool2'
 # __C.net.name = 'cnn-one-fstride1'
 # __C.net.name = 'cnn-tpool2'
-__C.net.name = 'res15'
+# __C.net.name = 'res15'
+# __C.net.name = 'res15-narrow'
+# __C.net.name = 'res8'
+__C.net.name = 'res8-narrow'
 
 
 ######################################
@@ -172,8 +175,8 @@ __C.train.num_threads = 1
 __C.train.plot_snapshot = 5
 
 # the number of epochs to save model
-# __C.train.save_epochs = 25
-__C.train.save_epochs = 1
+__C.train.save_epochs = 25
+# __C.train.save_epochs = 1
 
 
 ######################################
