@@ -40,7 +40,7 @@ class SpeechResModel(nn.Module):
   def forward(self, x):
     x = F.relu(self.conv1(x)) # shape: (batch, 1, 101, 40) ->  shape: (batch, 94, 81, 33)
     x = self.dropout(x)
-    x = self.pool1(x)         # shape: (batch, 94, 81, 33) ->  shape: (batch, 94, 40, 11)
+    x = self.pool1(x)         # shape: (batch, 94, 81, 33) ->  shape: (batch, 94,d 40, 11)
 
     x = F.relu(self.conv2(x)) # shape: (batch, 94, 40, 11) ->  shape: (batch, 94, 35, 8)
     x = self.dropout(x)

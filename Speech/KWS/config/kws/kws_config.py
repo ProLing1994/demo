@@ -143,7 +143,8 @@ __C.net = {}
 # the network name
 # __C.net.name = 'cnn-trad-pool2'
 # __C.net.name = 'cnn-one-fstride1'
-__C.net.name = 'cnn-tpool2'
+# __C.net.name = 'cnn-tpool2'
+__C.net.name = 'res15'
 
 
 ######################################
