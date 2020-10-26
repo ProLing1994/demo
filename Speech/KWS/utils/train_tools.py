@@ -152,7 +152,7 @@ def generate_dataset(cfg, mode):
                                             worker_init_fn=worker_init)
   return data_loader, len(data_set)
 
-def generate_test_dataset(cfg, mode = 'validation'):
+def generate_test_dataset(cfg, mode = 'validation', augmentation_on=False):
   """
   :param cfg:            config contain data set information
   :param mode:           Which partition to use, must be 'training', 'validation', or 'testing'.
@@ -160,7 +160,7 @@ def generate_test_dataset(cfg, mode = 'validation'):
   """
   assert mode in ['training', 'testing', 'validation'], "[ERROR:] Unknow mode: {}".format(mode)
 
-  data_set = SpeechDataset(cfg=cfg, mode=mode, augmentation_on=False)
+  data_set = SpeechDataset(cfg=cfg, mode=mode, augmentation_on=augmentation_on)
   data_loader = torch.utils.data.DataLoader(data_set,
                                             batch_size=1,
                                             pin_memory=False,
