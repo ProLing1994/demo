@@ -4,6 +4,7 @@ import numpy as np
 import os
 import pandas as pd 
 import pcen
+import pickle
 import time
 import torch 
 
@@ -67,6 +68,7 @@ class SpeechDataset(Dataset):
   
     self.mode_type = mode
     self.data_pd = data_pd[data_pd['mode'] == mode]
+    self.input_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset_audio', mode)
     self.data_file_list = self.data_pd['file'].tolist()
     self.data_mode_list = self.data_pd['mode'].tolist()
     self.data_label_list = self.data_pd['label'].tolist()
@@ -164,11 +166,20 @@ class SpeechDataset(Dataset):
     # print('Init Time: {}'.format((time.time() - begin_t) * 1.0))
     # begin_t = time.time() 
 
+    # gen label
+    label = self.label_index[audio_label]
+
     # load data
+    input_dir = os.path.join(self.input_dir, audio_label)
     if audio_label == SILENCE_LABEL:
-      data = np.zeros(self.desired_samples, dtype=np.float32)
+      filename = str(label) + '_' + audio_label + '_' + str(index) + '.txt'
     else:
-      data = librosa.core.load(audio_file, sr=self.sample_rate)[0]
+      filename = str(label) + '_' + os.path.basename(os.path.dirname(audio_file)) + '_' + os.path.basename(audio_file).split('.')[0] + '.txt'
+
+    f = open(os.path.join(input_dir, filename), 'rb')
+    data = pickle.load(f)
+    f.close()
+
     # print('Load data Time: {}'.format((time.time() - begin_t) * 1.0))
     # begin_t = time.time()
 
@@ -191,7 +202,6 @@ class SpeechDataset(Dataset):
     # To tensor
     data_tensor = torch.from_numpy(data.reshape(1, -1, 40))
     data_tensor = data_tensor.float()
-    label = self.label_index[audio_label]
     label_tensor = torch.tensor(label)
 
     # check tensor

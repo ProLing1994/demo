@@ -9,7 +9,7 @@ import random
 import re
 import sys 
 
-sys.path.insert(0, '/home/huanyuan/code/demo/speech/KWS')
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from utils.train_tools import *
 
 MAX_NUM_WAVS_PER_CLASS = 2**27 - 1  # ~134M
@@ -70,6 +70,8 @@ def which_set(filename, validation_percentage, testing_percentage):
 def data_split(config_file, version, date):
   """ data split engine
   :param config_file:   the input configuration file
+  :param version:   
+  :param date:  
   :return:              None
   """
   # load configuration file
@@ -167,7 +169,7 @@ def data_split(config_file, version, date):
 
 def main():
   parser = argparse.ArgumentParser(description='Streamax KWS Data Split Engine')
-  parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/speech/KWS/config/kws/kws_config.py", help='config file')
+  parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config.py", help='config file')
   parser.add_argument('-v', '--versions', type=str, default="1.0")
   parser.add_argument('-d', '--date', type=str, default="10162020")
   args = parser.parse_args()
