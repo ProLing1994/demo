@@ -10,6 +10,7 @@ cfg = __C
 __C.general = {}
 
 # data folder
+# __C.general.data_dir = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_03022018/XiaoYuDataset_10272020/"
 __C.general.data_dir = "/home/huanyuan/data/speech/kws/xiaoyu_dataset_03022018/XiaoYuDataset_10272020/"
 
 # data version
@@ -19,27 +20,30 @@ __C.general.version = "1.0"
 __C.general.date = "10272020"
 
 # data path
+# __C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_03022018/dataset_1.0_10272020/total_data_files.csv"
 __C.general.data_csv_path = "/home/huanyuan/data/speech/kws/xiaoyu_dataset_03022018/dataset_1.0_10272020/total_data_files.csv"
 
 # background noise path
+# __C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_03022018/dataset_1.0_10272020/background_noise_files.csv"
 __C.general.background_data_path = "/home/huanyuan/data/speech/kws/xiaoyu_dataset_03022018/dataset_1.0_10272020/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # the output of training models and logging files
+# __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_xiaoyu_res15_10272020"
 __C.general.save_dir = "/home/huanyuan/model/kws_xiaoyu_test"
 
 # set certain epoch to continue training, set -1 to train from scratch
 __C.general.resume_epoch = -1
 
 # the number of GPUs used in training
-__C.general.num_gpus = 1
+__C.general.num_gpus = 2
+# __C.general.num_gpus = 1
 
 # the GPUs' id used in training
-# __C.general.gpu_ids = '7'
-# __C.general.gpu_ids = '6'
-__C.general.gpu_ids = '0'
+__C.general.gpu_ids = '6, 7'
+# __C.general.gpu_ids = '0'
 
 
 ##################################
@@ -103,8 +107,8 @@ __C.dataset.label.testing_percentage = 10.0     # 10%
 __C.dataset.augmentation = {}
 
 # on
-# __C.dataset.augmentation.on = True
-__C.dataset.augmentation.on = False
+__C.dataset.augmentation.on = True
+# __C.dataset.augmentation.on = False
 
 # How many of the training samples have background noise mixed in.
 __C.dataset.augmentation.background_frequency = 0.8
@@ -154,6 +158,7 @@ __C.train.num_epochs = 500
 
 # the number of samples in a batch
 # __C.train.batch_size = 2048
+# __C.train.batch_size = 1024
 # __C.train.batch_size = 256
 __C.train.batch_size = 16
 
