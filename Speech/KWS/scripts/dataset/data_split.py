@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import argparse
 import copy
 import glob
@@ -47,7 +48,8 @@ def which_set(filename, validation_percentage, testing_percentage):
   # We want to ignore anything after '_nohash_' in the file name when
   # deciding which set to put a wav in, so the data set creator has a way of
   # grouping wavs that are close variations of each other.
-  hash_name = re.sub(r'_nohash_.*$', '', base_name)
+  # hash_name = re.sub(r'_nohash_.*$', '', base_name)
+  hash_name = base_name.split('_')[0]
   # This looks a bit magical, but we need to decide whether this file should
   # go into the training, testing, or validation sets, and we want to keep
   # existing files in the same set even if more files are subsequently
@@ -67,11 +69,9 @@ def which_set(filename, validation_percentage, testing_percentage):
     result = 'training'
   return result
 
-def data_split(config_file, version, date):
+def data_split(config_file):
   """ data split engine
   :param config_file:   the input configuration file
-  :param version:   
-  :param date:  
   :return:              None
   """
   # load configuration file
@@ -151,7 +151,7 @@ def data_split(config_file, version, date):
   random.shuffle(total_data_files)
 
   # output
-  output_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(version, date))
+  output_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date))
   if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
@@ -161,19 +161,18 @@ def data_split(config_file, version, date):
   background_noise_pd = pd.DataFrame(background_noise_files)
   total_data_pd = pd.DataFrame(total_data_files)
 
-  positive_data_pd.to_csv(os.path.join(output_dir, 'positive_data_files.csv'), index=False)
-  unknown_pd.to_csv(os.path.join(output_dir, 'unknown_files.csv'), index=False)
-  silence_pd.to_csv(os.path.join(output_dir, 'silence_files.csv'), index=False)
-  background_noise_pd.to_csv(os.path.join(output_dir, 'background_noise_files.csv'), index=False)
-  total_data_pd.to_csv(os.path.join(output_dir, 'total_data_files.csv'), index=False)
+  positive_data_pd.to_csv(os.path.join(output_dir, 'positive_data_files.csv'), index=False, encoding="utf_8_sig")
+  unknown_pd.to_csv(os.path.join(output_dir, 'unknown_files.csv'), index=False, encoding="utf_8_sig")
+  silence_pd.to_csv(os.path.join(output_dir, 'silence_files.csv'), index=False, encoding="utf_8_sig")
+  background_noise_pd.to_csv(os.path.join(output_dir, 'background_noise_files.csv'), index=False, encoding="utf_8_sig")
+  total_data_pd.to_csv(os.path.join(output_dir, 'total_data_files.csv'), index=False, encoding="utf_8_sig")
 
 def main():
   parser = argparse.ArgumentParser(description='Streamax KWS Data Split Engine')
-  parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config.py", help='config file')
-  parser.add_argument('-v', '--versions', type=str, default="1.0")
-  parser.add_argument('-d', '--date', type=str, default="10162020")
+  # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config.py", help='config file')
+  parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
   args = parser.parse_args()
-  data_split(args.input, args.versions, args.date)
+  data_split(args.input)
 
 if __name__ == "__main__":
   main()

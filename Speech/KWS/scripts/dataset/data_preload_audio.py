@@ -92,7 +92,8 @@ def data_preload_audio(config_file, mode):
   
 def main():
   parser = argparse.ArgumentParser(description='Streamax KWS Data Split Engine')
-  parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config.py", help='config file')
+  # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config.py", help='config file')
+  parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
   # parser.add_argument('-m', '--mode', type=str, default="training")
   # parser.add_argument('-m', '--mode', type=str, default="validation")
   parser.add_argument('-m', '--mode', type=str, default="testing")

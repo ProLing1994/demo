@@ -185,6 +185,10 @@ class SpeechDataset(Dataset):
 
     # alignment data
     data = np.pad(data, (0, max(0, self.desired_samples - len(data))), "constant")
+    if len(data) > self.desired_samples:
+      data_offset = np.random.randint(0, len(data) - self.desired_samples - 1)
+      data = data[data_offset:(data_offset + self.desired_samples)]
+
     assert len(data) == self.desired_samples, "[ERROR:] Something wronge about audio length, please check"
 
     # data augmentation
