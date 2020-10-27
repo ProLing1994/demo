@@ -72,9 +72,9 @@ def predict(config_file, epoch, mode, augmentation_on):
 
 
 def main():
-    default_model_epoch = -1
     # default_mode = "testing,validation,training"
     default_mode = "testing,validation"
+    default_model_epoch = -1
     default_augmentation_on = False
 
     parser = argparse.ArgumentParser(description='Streamax KWS Infering Engine')
