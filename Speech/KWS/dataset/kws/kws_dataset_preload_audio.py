@@ -190,7 +190,8 @@ class SpeechDataset(Dataset):
     # data augmentation
     if audio_label == SILENCE_LABEL:
       data = self.dataset_add_noise(data, bool_silence_label=True)
-    elif self.mode_type == 'training' and self.augmentation_on:
+    # elif self.mode_type == 'training' and self.augmentation_on:
+    elif self.augmentation_on:
       data = self.dataset_augmentation(data)
     # print('Data augmentation Time: {}'.format((time.time() - begin_t) * 1.0))
     # begin_t = time.time()
