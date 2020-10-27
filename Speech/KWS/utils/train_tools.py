@@ -205,11 +205,14 @@ def save_checkpoint(net, epoch_idx, batch_idx, cfg, config_file):
   state = {'epoch': epoch_idx,
             'batch': batch_idx,
             'net': cfg.net.name,
+            'num_classes': cfg.dataset.label.num_classes,
+            'image_height': cfg.dataset.data_size[1],
+            'image_weidth': cfg.dataset.data_size[0],
             'state_dict': net.state_dict(),
             }
   torch.save(state, filename)
   shutil.copy(config_file, os.path.join(chk_folder, 'config.py'))
-
+  
 
 def save_intermediate_results(cfg, mode, epoch, images, labels, indexs):
   """ save intermediate results to training folder

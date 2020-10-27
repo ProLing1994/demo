@@ -21,8 +21,8 @@ __C.general.date = "10162020"
 
 # data path
 # __C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/total_data_files.csv"
-# __C.general.data_csv_path = "/home/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/total_data_files.csv"
-__C.general.data_csv_path = "/home/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/test.csv"
+__C.general.data_csv_path = "/home/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/total_data_files.csv"
+# __C.general.data_csv_path = "/home/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/test.csv"
 
 # background noise path
 # __C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/tf_speech_commands/dataset_1.0_10162020/background_noise_files.csv"
@@ -32,12 +32,14 @@ __C.general.background_data_path = "/home/huanyuan/data/speech/kws/tf_speech_com
 __C.general.is_test = True
 
 # the output of training models and logging files
-# __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_without_augmentation_10202020"
-# __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_without_augmentation_preload_audio_10212020"
-# __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_with_augmentation_preload_audio_10212020"
-# __C.general.save_dir = "/home/huanyuan/model/kws_without_augmentation_10202020"
-# __C.general.save_dir = "/home/huanyuan/model/kws_without_augmentation_preload_audio_10212020"
 __C.general.save_dir = "/home/huanyuan/model/kws_test"
+# __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_10212020_le-4/"
+# __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_cnn-tpool2_10222020/"
+# __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_cnn-one-fstride1_10222020/"
+# __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_res15_10232020/"
+# __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_res15-narrow_10232020/"
+# __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_res8_10232020/"
+# __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_res8-narrow_10232020/"
 
 # set certain epoch to continue training, set -1 to train from scratch
 __C.general.resume_epoch = -1
@@ -141,13 +143,13 @@ __C.loss.name = 'softmax'
 __C.net = {}
 
 # the network name
-# __C.net.name = 'cnn-trad-pool2'
+__C.net.name = 'cnn-trad-pool2'
 # __C.net.name = 'cnn-one-fstride1'
 # __C.net.name = 'cnn-tpool2'
 # __C.net.name = 'res15'
 # __C.net.name = 'res15-narrow'
 # __C.net.name = 'res8'
-__C.net.name = 'res8-narrow'
+# __C.net.name = 'res8-narrow'
 
 
 ######################################
