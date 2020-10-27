@@ -24,7 +24,7 @@ if __name__ == "__main__":
         elif str(row.state) == 'D':
             continue 
         elif len(str(row.state).strip().split('_')) == 4:
-            if re.match(r'^S\d{3}[MT]\d{1}P\d{5}', str(row.state).strip().split('_')[-1]):
+            if re.match(r'^S\d*[MT]\d*P\d*', str(row.state).strip().split('_')[-1]):
                 continue
             else:
                 raise Exception("[ERROR:] Invalid input: audio_region: {}, state: {}".format(row.audio_region, row.state))
@@ -68,7 +68,7 @@ if __name__ == "__main__":
     tmp_rename_files = []
     for idx, row in csv_pd.iterrows():
         if len(str(row.state).strip().split('_')) == 4:
-            if re.match(r'^S\d{3}[MT]\d{1}P\d{5}', str(row.state).strip().split('_')[-1]):
+            if re.match(r'^S\d*[MT]\d*P\d*', str(row.state).strip().split('_')[-1]):
                 if os.path.exists(os.path.join(args.dir, row.audio_region + '.wav')):
                     tmp_rename_files.append({'audio_region':row.audio_region, 'state':row.state, 'tmp':'tmp_' + row.state + '.wav'})
                     os.rename(os.path.join(args.dir, row.audio_region + '.wav'), os.path.join(args.dir, 'tmp_' + row.state + '.wav'))
