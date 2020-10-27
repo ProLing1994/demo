@@ -32,18 +32,19 @@ __C.general.is_test = True
 
 # the output of training models and logging files
 # __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_xiaoyu_res15_10272020"
-__C.general.save_dir = "/home/huanyuan/model/kws_xiaoyu_test"
+# __C.general.save_dir = "/home/huanyuan/model/kws_xiaoyu_test"
+__C.general.save_dir = "/home/huanyuan/model/kws_xiaoyu_save_intermediate_results_10272020"
 
 # set certain epoch to continue training, set -1 to train from scratch
 __C.general.resume_epoch = -1
 
 # the number of GPUs used in training
-__C.general.num_gpus = 2
-# __C.general.num_gpus = 1
+# __C.general.num_gpus = 2
+__C.general.num_gpus = 1
 
 # the GPUs' id used in training
-__C.general.gpu_ids = '6, 7'
-# __C.general.gpu_ids = '0'
+# __C.general.gpu_ids = '6, 7'
+__C.general.gpu_ids = '0'
 
 
 ##################################
@@ -154,7 +155,8 @@ __C.train = {}
 # the number of training epochs
 # __C.train.num_epochs = 4000
 # __C.train.num_epochs = 2000
-__C.train.num_epochs = 500
+# __C.train.num_epochs = 500
+__C.train.num_epochs = 1
 
 # the number of samples in a batch
 # __C.train.batch_size = 2048
@@ -214,8 +216,8 @@ __C.train.betas = (0.9, 0.999)
 __C.debug = {}
 
 # whether to save input images
-# __C.debug.save_inputs = True
-__C.debug.save_inputs = False
+__C.debug.save_inputs = True
+# __C.debug.save_inputs = False
 
 # the number of processing for save input images
 # __C.debug.num_processing = 64

@@ -100,9 +100,21 @@ class SpeechDataset(Dataset):
                                             n_fft=self.window_size_samples, 
                                             hop_length=self.window_stride_samples)
 
+    self.save_audio_inputs_bool = cfg.debug.save_inputs
+    self.save_audio_inputs_dir = cfg.general.save_dir
+
   def __len__(self):
     """ get the number of images in this dataset """
     return len(self.data_file_list)
+
+  def save_audio(self, data, audio_label, filename):
+    out_folder = os.path.join(self.save_audio_inputs_dir, self.mode_type, 'audio', audio_label)
+
+    if not os.path.isdir(out_folder):
+      os.makedirs(out_folder)
+
+    filename = filename.split('.')[0] + '.wav'
+    librosa.output.write_wav(os.path.join(out_folder, filename), data, sr=self.sample_rate)
 
   def audio_preprocess(self, data):
     # check 
@@ -190,6 +202,9 @@ class SpeechDataset(Dataset):
       data = data[data_offset:(data_offset + self.desired_samples)]
 
     assert len(data) == self.desired_samples, "[ERROR:] Something wronge about audio length, please check"
+
+    if self.save_audio_inputs_bool:
+      self.save_audio(data, audio_label, filename)
 
     # data augmentation
     if audio_label == SILENCE_LABEL:
