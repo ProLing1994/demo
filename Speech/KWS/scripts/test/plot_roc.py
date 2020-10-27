@@ -11,7 +11,7 @@ sys.path.insert(0, '/home/huanyuan/code/demo/common')
 from common.utils.python.cal_roc_auc import get_fpr_tpr
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
-from dataset.kws.daataset_helper import SILENCE_INDEX, UNKNOWN_WORD_INDEX
+from dataset.kws.dataset_helper import SILENCE_INDEX, UNKNOWN_WORD_INDEX
 
 
 def plot_roc(fpr, tpr, color, linestyle, label):

@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from impl.pred_pyimpl import kws_load_model
-from dataset.kws.daataset_helper import load_label_index
+from dataset.kws.dataset_helper import load_label_index
 from utils.train_tools import *
 
 
