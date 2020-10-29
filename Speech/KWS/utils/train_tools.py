@@ -281,6 +281,7 @@ def multiprocessing_save(args):
   plot_spectrogram(image_idx.T, os.path.join(output_dir, filename))
   print("Save Intermediate Results: {}".format(filename))
 
+
 def plot_spectrogram(image, output_path):
   fig = plt.figure(figsize=(10, 4))
   heatmap = plt.pcolor(image) 
