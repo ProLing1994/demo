@@ -32,7 +32,7 @@ def predict(config_file, epoch, mode, augmentation_on):
     # test_data_loader = generate_test_dataset(cfg, mode, augmentation_on=True)
 
     results_list = []
-    scores = []
+    preds = []
     labels = []
     for _, (x, label, index) in tqdm(enumerate(test_data_loader)):
         results_dict = {}
@@ -50,11 +50,11 @@ def predict(config_file, epoch, mode, augmentation_on):
         score = net(x)
         score = F.softmax(score, dim=1)
         
-        result = torch.max(score, 1)[1].cpu().data.numpy()
-        scores.append(result)
+        pred = torch.max(score, 1)[1].cpu().data.numpy()
+        preds.append(pred)
         labels.append(label.cpu().data.numpy())
 
-        results_dict['result_idx'] = result[0]
+        results_dict['result_idx'] = pred[0]
         score = score.cpu().data.numpy()
         for label_idx in range(score.shape[1]):
             results_dict['prob_{}'.format(label_idx)] = score[0][label_idx]
@@ -62,26 +62,31 @@ def predict(config_file, epoch, mode, augmentation_on):
         results_list.append(results_dict)
 
     # caltulate accuracy
-    accuracy = float((np.array(scores) == np.array(labels)).astype(int).sum()) / float(len(labels))
+    accuracy = float((np.array(preds) == np.array(labels)).astype(int).sum()) / float(len(labels))
     msg = 'epoch: {}, batch: {}, {}_accuracy: {:.4f}'.format(model['prediction']['epoch'], model['prediction']['batch'], mode, accuracy)
     print(msg)
 
     # out csv
     csv_data_pd = pd.DataFrame(results_list)
-    csv_data_pd.to_csv(os.path.join(cfg.general.save_dir, 'infer_{}_augmentation_{}.csv'.format(mode, augmentation_on)), index=False)
+    csv_data_pd.to_csv(os.path.join(cfg.general.save_dir, 'infer_{}_augmentation_{}.csv'.format(mode, augmentation_on)), index=False, encoding="utf_8_sig")
 
 
 def main():
+    """
+    使用模型对音频文件进行测试，配置为 --input 中的 config 文件，当存在音频文件长度大于模型送入的音频文件长度时(1s\2s), 该脚本会随机截取一段音频进行测试，将测试结果作为整段音频的测试结果，
+    在训练过程中，随机截取可以作为一种数据增强手段(需要考虑是否出现问题)，在测试过程中，随机截取存在误差，同时每次结果不同
+    """
     # default_mode = "testing,validation,training"
     default_mode = "testing,validation"
     default_model_epoch = -1
     default_augmentation_on = False
 
     parser = argparse.ArgumentParser(description='Streamax KWS Infering Engine')
-    parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config.py", help='config file')
-    parser.add_argument('-m', '--mode', type=str, default=default_mode)
-    parser.add_argument('-e', '--epoch', type=str, default=default_model_epoch)
-    parser.add_argument('-a', '--augmentation_on', type=bool, default=default_augmentation_on)
+    # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config.py", help='config file')
+    parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
+    parser.add_argument('--mode', type=str, default=default_mode)
+    parser.add_argument('--epoch', type=str, default=default_model_epoch)
+    parser.add_argument('--augmentation_on', type=bool, default=default_augmentation_on)
     args = parser.parse_args()
 
     mode_list = args.mode.strip().split(',')

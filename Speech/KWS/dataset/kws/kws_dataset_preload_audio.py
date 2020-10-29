@@ -2,6 +2,7 @@ import librosa
 import multiprocessing 
 import numpy as np
 import os
+import sys
 import pandas as pd 
 import pcen
 import pickle
@@ -10,43 +11,8 @@ import torch
 
 from torch.utils.data import Dataset
 
-SILENCE_LABEL = '_silence_'
-SILENCE_INDEX = 0
-UNKNOWN_WORD_LABEL = '_unknown_'
-UNKNOWN_WORD_INDEX = 1
-BACKGROUND_NOISE_DIR_NAME = '_background_noise_'
-
-class AudioPreprocessor(object):
-  def __init__(self, sr=16000, n_dct_filters=40, n_mels=40, f_max=4000, f_min=20, n_fft=480, hop_length=160):
-    super().__init__()
-    self.n_mels = n_mels
-    self.sr = sr
-    self.f_max = f_max if f_max is not None else sr // 2
-    self.f_min = f_min
-    self.n_fft = n_fft
-    self.hop_length = hop_length
-
-    self.dct_filters = librosa.filters.dct(n_dct_filters, n_mels)
-    self.pcen_transform = pcen.StreamingPCENTransform(n_mels=n_mels, n_fft=n_fft, hop_length=hop_length, trainable=True)
-
-  def compute_mfccs(self, data):
-    data = librosa.feature.melspectrogram(
-        data,
-        sr=self.sr,
-        n_mels=self.n_mels,
-        hop_length=self.hop_length,
-        n_fft=self.n_fft,
-        fmin=self.f_min,
-        fmax=self.f_max)
-    data[data > 0] = np.log(data[data > 0])
-    data = [np.matmul(self.dct_filters, x) for x in np.split(data, data.shape[1], axis=1)]
-    data = np.array(data, order="F").astype(np.float32)
-    return data
-
-  def compute_pcen(self, data):
-    data = self.pcen_transform(data)
-    self.pcen_transform.reset()
-    return data
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
+from dataset.kws.dataset_helper import *
 
 class SpeechDataset(Dataset):
   """
@@ -57,10 +23,7 @@ class SpeechDataset(Dataset):
     super().__init__()
 
     # data index
-    self.label_index = {}
-    for index, positive_word in enumerate(cfg.dataset.label.positive_label):
-      self.label_index[positive_word] = index + 2
-    self.label_index.update({SILENCE_LABEL:SILENCE_INDEX, UNKNOWN_WORD_LABEL:UNKNOWN_WORD_INDEX})
+    self.label_index = load_label_index(cfg.dataset.label.positive_label)
 
     # load data 
     data_pd = pd.read_csv(cfg.general.data_csv_path)
@@ -92,7 +55,7 @@ class SpeechDataset(Dataset):
     self.window_size_samples = int(self.sample_rate * self.window_size_ms / 1000)
     self.window_stride_samples = int(self.sample_rate * self.window_stride_ms / 1000)
     self.time_shift_samples =int(self.sample_rate * self.time_shift_ms / 1000)
-    self.backgound_data = [librosa.core.load(row.file, sr=self.sample_rate)[0] for idx, row in background_data_pd.iterrows()]
+    self.background_data = [librosa.core.load(row.file, sr=self.sample_rate)[0] for idx, row in background_data_pd.iterrows()]
 
     self.audio_preprocess_type = cfg.dataset.preprocess
     self.audio_processor = AudioPreprocessor(sr=self.sample_rate, 
@@ -100,9 +63,21 @@ class SpeechDataset(Dataset):
                                             n_fft=self.window_size_samples, 
                                             hop_length=self.window_stride_samples)
 
+    self.save_audio_inputs_bool = cfg.debug.save_inputs
+    self.save_audio_inputs_dir = cfg.general.save_dir
+
   def __len__(self):
     """ get the number of images in this dataset """
     return len(self.data_file_list)
+
+  def save_audio(self, data, audio_label, filename):
+    out_folder = os.path.join(self.save_audio_inputs_dir, self.mode_type, 'audio', audio_label)
+
+    if not os.path.isdir(out_folder):
+      os.makedirs(out_folder)
+
+    filename = filename.split('.')[0] + '.wav'
+    librosa.output.write_wav(os.path.join(out_folder, filename), data, sr=self.sample_rate)
 
   def audio_preprocess(self, data):
     # check 
@@ -120,9 +95,9 @@ class SpeechDataset(Dataset):
     background_clipped = np.zeros(self.desired_samples)
     background_volume = 0
 
-    if len(self.backgound_data) > 0 and self.background_frequency > 0:
-      background_index = np.random.randint(len(self.backgound_data))
-      background_samples = self.backgound_data[background_index]
+    if len(self.background_data) > 0 and self.background_frequency > 0:
+      background_index = np.random.randint(len(self.background_data))
+      background_samples = self.background_data[background_index]
       assert len(background_samples) >= self.desired_samples, "[ERROR:] Background sample is too short! Need more than {} samples but only {} were found".format(self.desired_samples, len(background_samples))
       background_offset = np.random.randint(
           0, len(background_samples) - self.desired_samples - 1)
@@ -166,31 +141,30 @@ class SpeechDataset(Dataset):
     # print('Init Time: {}'.format((time.time() - begin_t) * 1.0))
     # begin_t = time.time() 
 
-    # gen label
-    label = self.label_index[audio_label]
+    # load label idx
+    audio_label_idx = self.label_index[audio_label]
 
     # load data
     input_dir = os.path.join(self.input_dir, audio_label)
-    if audio_label == SILENCE_LABEL:
-      filename = str(label) + '_' + audio_label + '_' + str(index) + '.txt'
-    else:
-      filename = str(label) + '_' + os.path.basename(os.path.dirname(audio_file)) + '_' + os.path.basename(audio_file).split('.')[0] + '.txt'
-
-    f = open(os.path.join(input_dir, filename), 'rb')
-    data = pickle.load(f)
-    f.close()
+    data = load_preload_audio(audio_file, index, audio_label, audio_label_idx, input_dir)
 
     # print('Load data Time: {}'.format((time.time() - begin_t) * 1.0))
     # begin_t = time.time()
 
     # alignment data
     data = np.pad(data, (0, max(0, self.desired_samples - len(data))), "constant")
+    if len(data) > self.desired_samples:
+      data_offset = np.random.randint(0, len(data) - self.desired_samples - 1)
+      data = data[data_offset:(data_offset + self.desired_samples)]
+
     assert len(data) == self.desired_samples, "[ERROR:] Something wronge about audio length, please check"
+
+    if self.save_audio_inputs_bool:
+      self.save_audio(data, audio_label, filename)
 
     # data augmentation
     if audio_label == SILENCE_LABEL:
       data = self.dataset_add_noise(data, bool_silence_label=True)
-    # elif self.mode_type == 'training' and self.augmentation_on:
     elif self.augmentation_on:
       data = self.dataset_augmentation(data)
     # print('Data augmentation Time: {}'.format((time.time() - begin_t) * 1.0))
@@ -203,7 +177,7 @@ class SpeechDataset(Dataset):
     # To tensor
     data_tensor = torch.from_numpy(data.reshape(1, -1, 40))
     data_tensor = data_tensor.float()
-    label_tensor = torch.tensor(label)
+    label_tensor = torch.tensor(audio_label_idx)
 
     # check tensor
     assert data_tensor.shape[0] == self.input_channel
