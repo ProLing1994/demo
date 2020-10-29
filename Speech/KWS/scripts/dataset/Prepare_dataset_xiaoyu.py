@@ -6,10 +6,10 @@ import re
 
 
 def dataset_generator(directory, lables, names):
-    input_dir = os.path.join(directory, "小鱼在家-数据交付2018-03-02")
-    assert os.path.exists(input_dir), "[ERROR:] 不存在数据集‘小鱼在家-数据交付2018-03-02’，请检查！"
+    input_dir = os.path.join(directory, "小鱼在家-数据交付2020-10-29")
+    assert os.path.exists(input_dir), "[ERROR:] 不存在数据集‘小鱼在家-数据交付2020-10-29’，请检查！"
 
-    output_dir = os.path.join(directory, "XiaoYuDataset_10272020")
+    output_dir = os.path.join(directory, "XiaoYuDataset_10292020")
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
