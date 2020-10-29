@@ -4,48 +4,15 @@ import numpy as np
 import os
 import pandas as pd 
 import pcen
+import sys
 import time
 import torch 
 
 from torch.utils.data import Dataset
 
-SILENCE_LABEL = '_silence_'
-SILENCE_INDEX = 0
-UNKNOWN_WORD_LABEL = '_unknown_'
-UNKNOWN_WORD_INDEX = 1
-BACKGROUND_NOISE_DIR_NAME = '_background_noise_'
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
+from dataset.kws.dataset_helper import *
 
-class AudioPreprocessor(object):
-  def __init__(self, sr=16000, n_dct_filters=40, n_mels=40, f_max=4000, f_min=20, n_fft=480, hop_length=160):
-    super().__init__()
-    self.n_mels = n_mels
-    self.sr = sr
-    self.f_max = f_max if f_max is not None else sr // 2
-    self.f_min = f_min
-    self.n_fft = n_fft
-    self.hop_length = hop_length
-
-    self.dct_filters = librosa.filters.dct(n_dct_filters, n_mels)
-    self.pcen_transform = pcen.StreamingPCENTransform(n_mels=n_mels, n_fft=n_fft, hop_length=hop_length, trainable=True)
-
-  def compute_mfccs(self, data):
-    data = librosa.feature.melspectrogram(
-        data,
-        sr=self.sr,
-        n_mels=self.n_mels,
-        hop_length=self.hop_length,
-        n_fft=self.n_fft,
-        fmin=self.f_min,
-        fmax=self.f_max)
-    data[data > 0] = np.log(data[data > 0])
-    data = [np.matmul(self.dct_filters, x) for x in np.split(data, data.shape[1], axis=1)]
-    data = np.array(data, order="F").astype(np.float32)
-    return data
-
-  def compute_pcen(self, data):
-    data = self.pcen_transform(data)
-    self.pcen_transform.reset()
-    return data
 
 class SpeechDataset(Dataset):
   """
@@ -56,10 +23,7 @@ class SpeechDataset(Dataset):
     super().__init__()
 
     # data index
-    self.label_index = {}
-    for index, positive_word in enumerate(cfg.dataset.label.positive_label):
-      self.label_index[positive_word] = index + 2
-    self.label_index.update({SILENCE_LABEL:SILENCE_INDEX, UNKNOWN_WORD_LABEL:UNKNOWN_WORD_INDEX})
+    self.label_index = load_label_index(cfg.dataset.label.positive_label)
 
     # load data 
     data_pd = pd.read_csv(cfg.general.data_csv_path)
@@ -90,7 +54,7 @@ class SpeechDataset(Dataset):
     self.window_size_samples = int(self.sample_rate * self.window_size_ms / 1000)
     self.window_stride_samples = int(self.sample_rate * self.window_stride_ms / 1000)
     self.time_shift_samples =int(self.sample_rate * self.time_shift_ms / 1000)
-    self.backgound_data = [librosa.core.load(row.file, sr=self.sample_rate)[0] for idx, row in background_data_pd.iterrows()]
+    self.background_data = [librosa.core.load(row.file, sr=self.sample_rate)[0] for idx, row in background_data_pd.iterrows()]
 
     self.audio_preprocess_type = cfg.dataset.preprocess
     self.audio_processor = AudioPreprocessor(sr=self.sample_rate, 
@@ -118,9 +82,9 @@ class SpeechDataset(Dataset):
     background_clipped = np.zeros(self.desired_samples)
     background_volume = 0
 
-    if len(self.backgound_data) > 0 and self.background_frequency > 0:
-      background_index = np.random.randint(len(self.backgound_data))
-      background_samples = self.backgound_data[background_index]
+    if len(self.background_data) > 0 and self.background_frequency > 0:
+      background_index = np.random.randint(len(self.background_data))
+      background_samples = self.background_data[background_index]
       assert len(background_samples) >= self.desired_samples, "[ERROR:] Background sample is too short! Need more than {} samples but only {} were found".format(self.desired_samples, len(background_samples))
       background_offset = np.random.randint(
           0, len(background_samples) - self.desired_samples - 1)

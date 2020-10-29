@@ -17,8 +17,8 @@ from dataset.kws.dataset_helper import SILENCE_INDEX, UNKNOWN_WORD_INDEX
 def plot_roc(fpr, tpr, color, linestyle, label):
     plt.plot(fpr, tpr, color = color,  linewidth=1.0, linestyle=linestyle, marker = 'o', label = label)
     plt.legend(loc=4)
-    plt.xlim([0, 0.1])
-    plt.ylim([0.7, 1])
+    plt.xlim([-0.01, 0.1])
+    plt.ylim([0.8, 1.01])
     plt.xlabel('Flase Positive Rate')
     plt.ylabel('True Positive Rate')
     plt.title('Receiver Operating Characteristic')
@@ -34,6 +34,7 @@ def show_roc_per_class(csv_list, color_list, linestyle_list, num_classes):
         
         # support for positive label
         if class_idx == SILENCE_INDEX or class_idx == UNKNOWN_WORD_INDEX:
+        # if class_idx == SILENCE_INDEX:
             continue
 
         # load labels/scores
@@ -47,9 +48,10 @@ def show_roc_per_class(csv_list, color_list, linestyle_list, num_classes):
         fpr, tpr, thresholds = get_fpr_tpr(labels, scores)
         plot_roc(mean_fpr, np.interp(mean_fpr, fpr, tpr), color_list[class_idx], linestyle_list[class_idx], class_idx)
         mean_tpr += np.interp(mean_fpr, fpr, tpr)
-        mean_tpr[0] = 0.0  # 初始处为0
+        # mean_tpr[0] = 0.0  # 初始处为0
     
     mean_tpr /= (num_classes - 2)
+    # mean_tpr /= (num_classes - 1)
     mean_tpr[-1] = 1.0
     
     plot_roc(mean_fpr, mean_tpr, "c", "--", "mean")
@@ -93,10 +95,16 @@ def show_roc(csv_list, color_list, linestyle_list, name_list, num_classes):
 
 
 def main():
-    csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_res15_10232020/infer_validation_augmentation_False.csv"]
-    color_list =  ["r", "r", "r", "g", "g", "g", "b", "b", "b", "y", "y", "y"]
-    linestyle_list =  ["-", "--", ":", "-", "--", ":", "-", "--", ":", "-", "--", ":"]
-    num_classes = 12
+    # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_res15_10232020/infer_validation_augmentation_False.csv"]
+    # color_list =  ["r", "r", "r", "g", "g", "g", "b", "b", "b", "y", "y", "y"]
+    # linestyle_list =  ["-", "--", ":", "-", "--", ":", "-", "--", ":", "-", "--", ":"]
+    # num_classes = 12
+    # show_roc_per_class(csv_list, color_list, linestyle_list, num_classes)
+
+    csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu_res15_10272020/infer_longterm_average_validation_augmentation_False.csv"]
+    color_list =  ["r", "g", "b"]
+    linestyle_list =  ["-", "-", "-"]
+    num_classes = 3
     show_roc_per_class(csv_list, color_list, linestyle_list, num_classes)
 
     # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_10212020_le-4/infer_validation_augmentation_False.csv",

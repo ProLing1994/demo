@@ -1,4 +1,5 @@
 import argparse
+import librosa
 import multiprocessing 
 import pandas as pd
 import pickle
@@ -10,11 +11,14 @@ from tqdm import tqdm
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from utils.train_tools import load_cfg_file
 from dataset.kws.kws_dataset import *
+from dataset.kws.dataset_helper import *
+
 
 def write_audio(data, output_path):
   f = open(output_path, 'wb')
   pickle.dump(data, f)
   f.close()
+
 
 def multiprocessing_preload_audio(args):
   cfg, data_pd, label_index, idx = args[0], args[1], args[2], args[3]
@@ -47,7 +51,8 @@ def multiprocessing_preload_audio(args):
   write_audio(data, os.path.join(output_dir_idx, filename))
   print("Save Results: {}".format(filename))
 
-def data_preload_audio(config_file, mode):
+
+def preload_audio(config_file, mode):
   """ data preprocess engine
   :param config_file:   the input configuration file
   :param mode:  
@@ -58,10 +63,7 @@ def data_preload_audio(config_file, mode):
   cfg = load_cfg_file(config_file)
 
   # data index
-  label_index = {}
-  for index, positive_word in enumerate(cfg.dataset.label.positive_label):
-    label_index[positive_word] = index + 2
-  label_index.update({SILENCE_LABEL:SILENCE_INDEX, UNKNOWN_WORD_LABEL:UNKNOWN_WORD_INDEX})
+  label_index = load_label_index(cfg.dataset.label.positive_label)
 
   # mkdir
   output_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset_audio', mode)
@@ -90,6 +92,33 @@ def data_preload_audio(config_file, mode):
   p.join()
   print("Preload audio Done!")
   
+
+def preload_background_audio(config_file):
+  print("Start preload background audio: ")
+
+  # load configuration file
+  cfg = load_cfg_file(config_file)
+
+  # init 
+  sample_rate = cfg.dataset.sample_rate
+
+  # load csv
+  background_data_pd = pd.read_csv(cfg.general.background_data_path)
+
+  # output
+  output_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset_audio', BACKGROUND_NOISE_DIR_NAME)
+  if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
+
+  for idx, row in background_data_pd.iterrows():
+    background_data = librosa.core.load(row.file, sr=sample_rate)[0]
+    filename = os.path.basename(row.file).split('.')[0] + '.txt'
+    write_audio(background_data, os.path.join(output_dir, filename))
+    print("Save Results: {}".format(filename))
+
+  print("Preload background audio Done!")
+
+
 def main():
   parser = argparse.ArgumentParser(description='Streamax KWS Data Split Engine')
   # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config.py", help='config file')
@@ -98,7 +127,9 @@ def main():
   # parser.add_argument('-m', '--mode', type=str, default="validation")
   parser.add_argument('-m', '--mode', type=str, default="testing")
   args = parser.parse_args()
-  data_preload_audio(args.input, args.mode)
+  preload_audio(args.input, args.mode)
+  preload_background_audio(args.input)
+
 
 if __name__ == "__main__":
   main()
