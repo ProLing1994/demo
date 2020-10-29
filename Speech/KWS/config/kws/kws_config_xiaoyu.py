@@ -33,7 +33,8 @@ __C.general.is_test = True
 # the output of training models and logging files
 # __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_xiaoyu_res15_10272020"
 # __C.general.save_dir = "/home/huanyuan/model/kws_xiaoyu_test"
-__C.general.save_dir = "/home/huanyuan/model/kws_xiaoyu_save_intermediate_results_10272020"
+# __C.general.save_dir = "/home/huanyuan/model/kws_xiaoyu_save_intermediate_results_10272020"
+__C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu_res15_10272020"
 
 # set certain epoch to continue training, set -1 to train from scratch
 __C.general.resume_epoch = -1
@@ -216,8 +217,8 @@ __C.train.betas = (0.9, 0.999)
 __C.debug = {}
 
 # whether to save input images
-__C.debug.save_inputs = True
-# __C.debug.save_inputs = False
+# __C.debug.save_inputs = True
+__C.debug.save_inputs = False
 
 # the number of processing for save input images
 # __C.debug.num_processing = 64

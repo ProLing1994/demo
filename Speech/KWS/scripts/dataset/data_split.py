@@ -12,13 +12,9 @@ import sys
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from utils.train_tools import *
+from dataset.kws.dataset_helper import *
 
 MAX_NUM_WAVS_PER_CLASS = 2**27 - 1  # ~134M
-SILENCE_LABEL = '_silence_'
-SILENCE_INDEX = 0
-UNKNOWN_WORD_LABEL = '_unknown_'
-UNKNOWN_WORD_INDEX = 1
-BACKGROUND_NOISE_DIR_NAME = '_background_noise_'
 RANDOM_SEED = 59185
 
 def which_set(filename, validation_percentage, testing_percentage):

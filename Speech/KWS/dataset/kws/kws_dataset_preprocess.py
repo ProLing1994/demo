@@ -2,16 +2,14 @@ import numpy as np
 import os
 import pandas as pd 
 import pickle
+import sys
 import time
 import torch 
 
 from torch.utils.data import Dataset
 
-SILENCE_LABEL = '_silence_'
-SILENCE_INDEX = 0
-UNKNOWN_WORD_LABEL = '_unknown_'
-UNKNOWN_WORD_INDEX = 1
-BACKGROUND_NOISE_DIR_NAME = '_background_noise_'
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
+from dataset.kws.dataset_helper import *
 
 class SpeechDataset(Dataset):
   """
@@ -22,10 +20,7 @@ class SpeechDataset(Dataset):
     super().__init__()
 
     # data index
-    self.label_index = {}
-    for index, positive_word in enumerate(cfg.dataset.label.positive_label):
-      self.label_index[positive_word] = index + 2
-    self.label_index.update({SILENCE_LABEL:SILENCE_INDEX, UNKNOWN_WORD_LABEL:UNKNOWN_WORD_INDEX})
+    self.label_index = load_label_index(cfg.dataset.label.positive_label)
 
     # load data 
     data_pd = pd.read_csv(cfg.general.data_csv_path)
@@ -55,26 +50,19 @@ class SpeechDataset(Dataset):
     audio_label = self.data_label_list[index]
     assert audio_mode == self.mode_type, "[ERROR:] Something wronge about mode, please check"
 
-    # gen label
-    label = self.label_index[audio_label]
+    # load label idx
+    audio_label_idx = self.label_index[audio_label]
 
     # load data
     input_dir = os.path.join(self.input_dir, audio_label)
-    if audio_label == SILENCE_LABEL:
-      filename = str(label) + '_' + audio_label + '_' + str(index) + '.txt'
-    else:
-      filename = str(label) + '_' + os.path.basename(os.path.dirname(audio_file)) + '_' + os.path.basename(audio_file).split('.')[0] + '.txt'
-    
-    f = open(os.path.join(input_dir, filename), 'rb')
-    data = pickle.load(f)
-    f.close()
+    data = load_preload_audio(audio_file, index, audio_label, audio_label_idx, input_dir)
     
     # print('Load data Time: {}'.format((time.time() - begin_t) * 1.0))
 
     # To tensor
     data_tensor = torch.from_numpy(data.reshape(1, -1, 40))
     data_tensor = data_tensor.float()
-    label_tensor = torch.tensor(label)
+    label_tensor = torch.tensor(audio_label_idx)
 
     # check tensor
     assert data_tensor.shape[0] == self.input_channel

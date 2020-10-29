@@ -32,11 +32,11 @@ __C.general.background_data_path = "/home/huanyuan/data/speech/kws/tf_speech_com
 __C.general.is_test = True
 
 # the output of training models and logging files
-__C.general.save_dir = "/home/huanyuan/model/kws_test"
+# __C.general.save_dir = "/home/huanyuan/model/kws_test"
 # __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_10212020_le-4/"
 # __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_cnn-tpool2_10222020/"
 # __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_cnn-one-fstride1_10222020/"
-# __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_res15_10232020/"
+__C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_res15_10232020/"
 # __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_res15-narrow_10232020/"
 # __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_res8_10232020/"
 # __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_res8-narrow_10232020/"
