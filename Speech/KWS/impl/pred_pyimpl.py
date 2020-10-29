@@ -86,7 +86,6 @@ def dataset_add_noise(cfg, data, bool_silence_label=False):
     sample_rate = cfg.dataset.sample_rate
     clip_duration_ms = cfg.dataset.clip_duration_ms
     desired_samples = int(sample_rate * clip_duration_ms / 1000)
-    
     background_frequency = cfg.dataset.augmentation.background_frequency
     background_volume = cfg.dataset.augmentation.background_volume
 
@@ -94,12 +93,11 @@ def dataset_add_noise(cfg, data, bool_silence_label=False):
     background_data_pd = pd.read_csv(cfg.general.background_data_path)
     input_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset_audio', BACKGROUND_NOISE_DIR_NAME)
     background_data = []
-    for idx, row in background_data_pd.iterrows():
+    for _, row in background_data_pd.iterrows():
         filename = os.path.basename(row.file).split('.')[0] + '.txt'
         f = open(os.path.join(input_dir, filename), 'rb')
         background_data.append(pickle.load(f))
         f.close()
-        
 
     # add noise
     background_clipped = np.zeros(desired_samples)
@@ -133,7 +131,6 @@ def audio_preprocess(cfg, data):
     window_size_ms = cfg.dataset.window_size_ms
     window_stride_ms = cfg.dataset.window_stride_ms
     feature_bin_count = cfg.dataset.feature_bin_count
-
     desired_samples = int(sample_rate * clip_duration_ms / 1000)
     window_size_samples = int(sample_rate * window_size_ms / 1000)
     window_stride_samples = int(sample_rate * window_stride_ms / 1000)
@@ -161,9 +158,10 @@ def model_predict(cfg, model, data):
     data_size_h = cfg.dataset.data_size[1]
     data_size_w = cfg.dataset.data_size[0]
 
-    # audio preprocess, get mfcc data
+    # audio preprocess, laod mfcc data
     data = audio_preprocess(cfg, data)
 
+    # to tensor
     data_tensor = torch.from_numpy(data.reshape(1, -1, 40))
     data_tensor = data_tensor.float()
 
@@ -172,6 +170,7 @@ def model_predict(cfg, model, data):
     assert data_tensor.shape[1] == data_size_h
     assert data_tensor.shape[2] == data_size_w
     
+    # infer
     data_tensor = data_tensor.cuda()
     score = model(data_tensor.unsqueeze(0))
     score = F.softmax(score, dim=1)

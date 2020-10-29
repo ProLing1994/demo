@@ -87,9 +87,10 @@ __C.dataset.label = {}
 
 # label
 __C.dataset.label.positive_label = ["xiaoyu"]
-__C.dataset.label.negative_label = ["__silence__", "__unknown__"]
+__C.dataset.label.negative_label = ["_silence_", "_unknown_"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
 __C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[1]
+__C.dataset.label.label_list = __C.dataset.label.negative_label + __C.dataset.label.positive_label
 __C.dataset.label.num_classes = len(__C.dataset.label.positive_label) + len(__C.dataset.label.negative_label)
 
 # label percentage
