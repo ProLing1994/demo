@@ -39,7 +39,7 @@ def mix_in_audio_sample(track_data, track_offset, sample_data, sample_offset,
         track_data[track_offset + i] += sample_input * envelope_scale * sample_volume
 
 
-def straming_dataset_generator(input_dir, output_path, config_file, add_noise_on, mode, test_duration_seconds, word_gap_ms):
+def straming_dataset_generator(input_dir, output_path, config_file, add_noise_on, mode, audio_mode, test_duration_seconds, word_gap_ms):
     # load configuration file
     cfg = load_cfg_file(config_file)
     # init
@@ -57,8 +57,7 @@ def straming_dataset_generator(input_dir, output_path, config_file, add_noise_on
     if mode == 0:
         print("Generator Straming Dataset From Config File")
         data_pd = pd.read_csv(cfg.general.data_csv_path)
-        data_pd = data_pd[data_pd['mode'] == 'testing']
-        # data_pd = data_pd[data_pd['mode'] == 'training']
+        data_pd = data_pd[data_pd['mode'] == audio_mode]
         for _, row in data_pd.iterrows():
             audio_dict = {}
             audio_dict['file'] = row['file']
@@ -86,6 +85,8 @@ def straming_dataset_generator(input_dir, output_path, config_file, add_noise_on
         output_offset += word_gap_samples + np.random.randint(word_gap_samples)
         output_offset_ms = (output_offset * 1000) / sample_rate
 
+        if output_offset >= output_audio_sample_count :
+            break
         if mode == 0:
             data_index = np.random.randint(len(audio_list))
             found_data = audio_list[data_index]['file']
@@ -121,25 +122,28 @@ def straming_dataset_generator(input_dir, output_path, config_file, add_noise_on
 
 def main():
     # mode: [0,1,2]
-    # 0: from config file, 'testing' mode audio
+    # 0: from config file
     # 1: from folder 
-    default_mode = 0
-    # default_mode = 1
+    # default_mode = 0
+    default_mode = 1
+
+    # only for mode==0, support for ['training','validation','testing']
+    default_audio_mode = 'testing'
     default_add_noise_on = False
 
     parser = argparse.ArgumentParser(description="Prepare XiaoYu Dataset")
-    # parser.add_argument('--input_dir', type=str, default='/home/huanyuan/data/speech/kws/weiboyulu/dataset')
-    # parser.add_argument('--output_path', type=str, default='/home/huanyuan/data/speech/kws/weiboyulu/straming_dataset/test_unknow_001.wav')
-    parser.add_argument('--input_dir', type=str, default="/home/huanyuan/data/speech/kws/xiaoyu_dataset_03022018/XiaoYuDataset_10272020/")
-    # parser.add_argument('--output_path', type=str, default="/home/huanyuan/data/speech/kws/xiaoyu_dataset_03022018/straming_dataset/test_unknow_001.wav")
-    parser.add_argument('--output_path', type=str, default="/home/huanyuan/data/speech/kws/xiaoyu_dataset_03022018/straming_dataset/test_unknow_002.wav")
+    parser.add_argument('--input_dir', type=str, default='/home/huanyuan/data/speech/kws/weiboyulu/dataset')
+    parser.add_argument('--output_path', type=str, default='/home/huanyuan/data/speech/kws/weiboyulu/straming_dataset/test_001.wav')
+    # parser.add_argument('--input_dir', type=str, default="/home/huanyuan/data/speech/kws/xiaoyu_dataset_03022018/XiaoYuDataset_10272020/")
+    # parser.add_argument('--output_path', type=str, default="/home/huanyuan/data/speech/kws/xiaoyu_dataset_03022018/straming_dataset/testing_001.wav")
     parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
     parser.add_argument('--add_noise_on', type=bool, default=default_add_noise_on)
     parser.add_argument('--mode', type=int, default=default_mode)
+    parser.add_argument('--audio_mode', type=str, default=default_audio_mode)
     parser.add_argument('--test_duration_seconds', type=int, default=60)
     parser.add_argument('--word_gap_ms', type=int, default=2000)
     args = parser.parse_args()
-    straming_dataset_generator(args.input_dir, args.output_path, args.config_file, args.add_noise_on, args.mode, args.test_duration_seconds, args.word_gap_ms)
+    straming_dataset_generator(args.input_dir, args.output_path, args.config_file, args.add_noise_on, args.mode, args.audio_mode, args.test_duration_seconds, args.word_gap_ms)
 
 
 if __name__ == "__main__":

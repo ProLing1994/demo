@@ -16,16 +16,13 @@ def longterm_audio_predict(cfg, net, audio_idx, audio_file, audio_mode, audio_la
     # init 
     input_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset_audio', audio_mode)
     input_dir = os.path.join(input_dir, audio_label)
-    positive_label = cfg.dataset.label.positive_label
     num_classes = cfg.dataset.label.num_classes
-    label_index = load_label_index(cfg.dataset.label.positive_label)
-    assert len(positive_label) == 1, "[ERROR]: We want to sort a wake-up word, but the number of wake-up words is more than 1, please check!"
     sample_rate = cfg.dataset.sample_rate
     clip_duration_ms = cfg.dataset.clip_duration_ms
     desired_samples = int(sample_rate * clip_duration_ms / 1000)
 
     # load data
-    data = load_preload_audio(audio_file, audio_idx, audio_label, audio_label_idx, input_dir)
+    data, filename = load_preload_audio(audio_file, audio_idx, audio_label, audio_label_idx, input_dir)
 
     # # debug
     # librosa.output.write_wav(os.path.join("/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu_res15_10272020/testing/", filename.split('.')[0] + '.wav'), data, sr=sample_rate)
@@ -68,7 +65,7 @@ def longterm_audio_predict(cfg, net, audio_idx, audio_file, audio_mode, audio_la
                     average_scores[idx] += score[idx] / len(score_list_window)
             average_scores_list.append(average_scores)
         # Sort the averaged results.
-        average_scores_list = sorted(average_scores_list, key=lambda p: p[label_index[positive_label[0]]], reverse=True)
+        average_scores_list = sorted(average_scores_list, key=lambda p: p[audio_label_idx])
         average_scores = average_scores_list[0]
     else:
         average_scores = np.zeros(num_classes)
@@ -142,7 +139,7 @@ def predict(config_file, epoch, mode, augmentation_on, timeshift_ms, average_win
 def main():
     """
     使用模型对音频文件进行测试，配置为 --input 中的 config 文件，当存在音频文件长度大于模型送入的音频文件长度时(1s\2s), 该脚本会通过滑窗的方式测试每一小段音频数据，计算连续 500ms(17帧) 音频的平均值结果，
-    在得到的平均结果中取 posotovie lable 最大的一组数据 (由于 softmax 函数，平均结果之和为 1，故以 posotovie lable 的最大值为准)作为最终结果
+    在得到的平均结果中对应label最小值作为最终结果
     该过程近似测试流程，可以作为参考
     """
 

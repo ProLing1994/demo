@@ -22,7 +22,7 @@ def longterm_audio_predict(cfg, net, audio_idx, audio_file, audio_mode, audio_la
     desired_samples = int(sample_rate * clip_duration_ms / 1000)
 
     # load data
-    data = load_preload_audio(audio_file, audio_idx, audio_label, audio_label_idx, input_dir)
+    data, filename = load_preload_audio(audio_file, audio_idx, audio_label, audio_label_idx, input_dir)
 
     # # debug
     # librosa.output.write_wav(os.path.join("/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu_res15_10272020/testing/", filename.split('.')[0] + '.wav'), data, sr=sample_rate)
@@ -57,13 +57,9 @@ def longterm_audio_predict(cfg, net, audio_idx, audio_file, audio_mode, audio_la
         for score in score_list:
             for idx in range(num_classes):
                 average_scores[idx] += score[idx] / len(score_list)
-    elif result_mode == 'max':
+    elif result_mode == 'min':
         # init 
-        positive_label = cfg.dataset.label.positive_label
-        label_index = load_label_index(cfg.dataset.label.positive_label)
-        assert len(positive_label) == 1, "[ERROR]: We want to sort a wake-up word, but the number of wake-up words is more than 1, please check!"
-
-        score_list = sorted(score_list, key=lambda p: p[label_index[positive_label[0]]], reverse=True)
+        score_list = sorted(score_list, key=lambda p: p[audio_label_idx], reverse=False)
         average_scores = score_list[0]
     else:
         raise Exception("[ERROR:] Unknow result mode, please check!")
@@ -132,7 +128,7 @@ def predict(config_file, epoch, mode, augmentation_on, timeshift_ms, result_mode
 
 def main():
     """
-    使用模型对音频文件进行测试，配置为 --input 中的 config 文件，当存在音频文件长度大于模型送入的音频文件长度时(1s\2s), 该脚本会通过滑窗的方式测试每一小段音频数据，将每段结果的平均结果(或者最大值)作为最终测试结果，
+    使用模型对音频文件进行测试，配置为 --input 中的 config 文件，当存在音频文件长度大于模型送入的音频文件长度时(1s\2s), 该脚本会通过滑窗的方式测试每一小段音频数据，将每段结果的平均结果(或者对应label最小值)作为最终测试结果，
     该过程有悖于测试流程，存在误差
     """
 
@@ -143,8 +139,8 @@ def main():
     default_model_epoch = -1
     default_augmentation_on = False
     default_timeshift_ms = 30
-    default_result_mode = 'mean'
-    # default_result_mode = 'max'
+    # default_result_mode = 'mean'
+    default_result_mode = 'min'
 
     parser = argparse.ArgumentParser(description='Streamax KWS Infering Engine')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config.py", help='config file')
