@@ -101,6 +101,7 @@ def main():
     # num_classes = 12
     # show_roc_per_class(csv_list, color_list, linestyle_list, num_classes)
 
+    # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu_res15_10272020/infer_longterm_validation_augmentation_False_min.csv"]
     csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu_res15_10272020/infer_longterm_average_validation_augmentation_False.csv"]
     color_list =  ["r", "g", "b"]
     linestyle_list =  ["-", "-", "-"]

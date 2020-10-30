@@ -55,7 +55,7 @@ __C.dataset.input_channel = 1
 __C.dataset.sample_rate = 16000
 
 # Length of each audio clip to be analyzed
-__C.dataset.clip_duration_ms = 2000
+__C.dataset.clip_duration_ms = 3000
 
 # Duration of frequency analysis window
 __C.dataset.window_size_ms = 30.0
@@ -70,7 +70,7 @@ __C.dataset.preprocess = "mfcc"
 __C.dataset.feature_bin_count = 40
 
 # input size of training data (w, h), unit: voxel
-__C.dataset.data_size = [40, 201]
+__C.dataset.data_size = [40, 301]
 
 
 ##################################
@@ -88,8 +88,8 @@ __C.dataset.label.label_list = __C.dataset.label.negative_label + __C.dataset.la
 __C.dataset.label.num_classes = len(__C.dataset.label.positive_label) + len(__C.dataset.label.negative_label)
 
 # label percentage
-__C.dataset.label.silence_percentage = 10.0      # 10%
-__C.dataset.label.unknown_percentage = 100.0     # 100%
+__C.dataset.label.silence_percentage = 50.0      # 10%
+__C.dataset.label.unknown_percentage = 200.0     # 100%
 
 # trian/validation/test percentage
 __C.dataset.label.validation_percentage = 10.0  # 10%
@@ -212,8 +212,8 @@ __C.train.betas = (0.9, 0.999)
 __C.debug = {}
 
 # whether to save input images
-# __C.debug.save_inputs = True
-__C.debug.save_inputs = False
+__C.debug.save_inputs = True
+# __C.debug.save_inputs = False
 
 # the number of processing for save input images
 # __C.debug.num_processing = 64

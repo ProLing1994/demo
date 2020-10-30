@@ -55,7 +55,7 @@ class SpeechDataset(Dataset):
 
     # load data
     input_dir = os.path.join(self.input_dir, audio_label)
-    data = load_preload_audio(audio_file, index, audio_label, audio_label_idx, input_dir)
+    data, _ = load_preload_audio(audio_file, index, audio_label, audio_label_idx, input_dir)
     
     # print('Load data Time: {}'.format((time.time() - begin_t) * 1.0))
 

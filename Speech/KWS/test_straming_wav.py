@@ -11,6 +11,7 @@ sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from utils.train_tools import *
 from dataset.kws.dataset_helper import *
 from impl.pred_pyimpl import kws_load_model, dataset_add_noise, model_predict
+from script.analysis_result.plot_score_line import show_score_line
 
 class RecognizeResult(object):
     """Save recognition result temporarily.
@@ -25,7 +26,7 @@ class RecognizeResult(object):
     """
 
     def __init__(self):
-        self._founded_command = "_silence_"
+        self._founded_command = SILENCE_LABEL
         self._score = 0
         self._is_new_command = False
         self._start_time = 0
@@ -96,11 +97,12 @@ class RecognizeCommands(object):
       _previous_top_time: The timestamp of _previous results. Default is -np.inf.
     """
 
-    def __init__(self, labels, average_window_duration_ms, detection_threshold,
+    def __init__(self, labels, positove_lable_index,average_window_duration_ms, detection_threshold,
                  suppression_ms, minimum_count):
         """Init the RecognizeCommands with parameters used for smoothing."""
         # Configuration
         self._labels = labels
+        self._positove_lable_index = positove_lable_index
         self._average_window_duration_ms = average_window_duration_ms
         self._detection_threshold = detection_threshold
         self._suppression_ms = suppression_ms
@@ -108,7 +110,6 @@ class RecognizeCommands(object):
         # Working Variable
         self._previous_results = collections.deque()
         self._label_count = len(labels)
-        self._previous_top_label = SILENCE_LABEL
         self._previous_top_time = 0
 
     def process_latest_result(self, latest_results, current_time_ms,
@@ -133,7 +134,7 @@ class RecognizeCommands(object):
         if latest_results[0].shape[0] != self._label_count:
             raise ValueError("The results for recognition should contain {} "
                              "elements, but there are {} produced".format(
-                                 self._label_count, latest_results.shape[0]))
+                                 self._label_count, latest_results[0].shape[0]))
         if (self._previous_results.__len__() != 0 and
                 current_time_ms < self._previous_results[0][0]):
             raise ValueError("Results must be fed in increasing time order, "
@@ -155,9 +156,9 @@ class RecognizeCommands(object):
         sample_duration = current_time_ms - earliest_time
         if (how_many_results < self._minimum_count or
                 sample_duration < self._average_window_duration_ms / 4):
-            recognize_element.founded_command = self._previous_top_label
             recognize_element.score = 0.0
             recognize_element.is_new_command = False
+            recognize_element.founded_command = SILENCE_LABEL
             return
 
         # Calculate the average score across all the results in the window.
@@ -166,38 +167,22 @@ class RecognizeCommands(object):
             score = item[1]
             for i in range(score.size):
                 average_scores[i] += score[i] / how_many_results
-
-        # Sort the averaged results in descending score order.
-        sorted_averaged_index_score = []
-        for i in range(self._label_count):
-            sorted_averaged_index_score.append([i, average_scores[i]])
-        sorted_averaged_index_score = sorted(sorted_averaged_index_score, key=lambda p: p[1], reverse=True)
-
-        # Use the information of previous result to get current result
-        current_top_index = sorted_averaged_index_score[0][0]
-        current_top_label = self._labels[current_top_index]
-        current_top_score = sorted_averaged_index_score[0][1]
-        time_since_last_top = 0
-
-        if self._previous_top_label != UNKNOWN_WORD_LABEL and self._previous_top_label != SILENCE_LABEL:
-            self._previous_top_label = UNKNOWN_WORD_LABEL
+        recognize_element.score = average_scores[self._positove_lable_index]
 
         time_since_last_top = current_time_ms - self._previous_top_time
         if self._previous_top_time == 0:
             time_since_last_top = np.inf
 
-        if (current_top_score > self._detection_threshold and
-            current_top_label != self._previous_top_label and
+        if (recognize_element.score > self._detection_threshold and
                 time_since_last_top > self._suppression_ms):
-            self._previous_top_label = current_top_label
             self._previous_top_time = current_time_ms
             recognize_element.is_new_command = True
             recognize_element.start_time = self._previous_results[0][0]
             recognize_element.end_time = self._previous_results[-1][0]
+            recognize_element.founded_command = self._labels[self._positove_lable_index]
         else:
-            recognize_element.is_new_command = False
-        recognize_element.founded_command = current_top_label
-        recognize_element.score = current_top_score
+            recognize_element.is_new_command = False        
+            recognize_element.founded_command = SILENCE_LABEL
 
 
 def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_duration_ms, detection_threshold):
@@ -210,17 +195,22 @@ def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_durat
     desired_samples = int(sample_rate * clip_duration_ms / 1000)
     timeshift_samples = int(sample_rate * timeshift_ms / 1000)
     label_list = cfg.dataset.label.label_list
+    positive_label = cfg.dataset.label.positive_label
+
+    # load label index 
+    label_index = load_label_index(cfg.dataset.label.positive_label)
 
     recognize_element = RecognizeResult()
     recognize_commands = RecognizeCommands(
         labels=label_list,
+        positove_lable_index = label_index[positive_label[0]],
         average_window_duration_ms=average_window_duration_ms,
         detection_threshold=detection_threshold,
         suppression_ms=3000,
         minimum_count=15)
-
+    
     # mkdir 
-    output_dir = os.path.join(os.path.dirname(input_wav), 'test_{}_threshold_{}'.format(os.path.basename(input_wav), detection_threshold))
+    output_dir = os.path.join(os.path.dirname(input_wav), os.path.basename(input_wav).split('.')[0])
     if not os.path.exists(output_dir):    
         os.makedirs(output_dir)
     
@@ -236,6 +226,8 @@ def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_durat
         desired_samples, len(audio_data))
 
     audio_data_offset = 0
+    original_scores = [] 
+    mean_scores = [] 
     all_found_words = []
     while(audio_data_offset < len(audio_data)):
         # input data
@@ -254,9 +246,9 @@ def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_durat
         current_time_ms = int(input_start * 1000 / sample_rate)
         recognize_commands.process_latest_result(output_score, current_time_ms, recognize_element)
 
-        if recognize_element.is_new_command and recognize_element.founded_command not in [SILENCE_LABEL, UNKNOWN_WORD_LABEL]:
+        if recognize_element.is_new_command:
             all_found_words_dict = {}
-            all_found_words_dict['label'] = recognize_element.founded_command
+            all_found_words_dict['label'] = positive_label[0]
             all_found_words_dict['start_time'] = recognize_element.start_time
             all_found_words_dict['end_time'] = recognize_element.end_time + clip_duration_ms
             all_found_words.append(all_found_words_dict)
@@ -269,12 +261,23 @@ def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_durat
                 output_wav = audio_data[start_time: end_time]
                 librosa.output.write_wav(output_path, output_wav, sr=sample_rate)
 
+        original_scores.append({'start_time':current_time_ms, 'score':output_score[0][label_index[positive_label[0]]]})
+        mean_scores.append({'start_time':current_time_ms, 'score':recognize_element.score})
+
     found_words_pd = pd.DataFrame(all_found_words)
     found_words_pd.to_csv(os.path.join(output_dir, 'found_words.csv'), index=False)
-
+    original_scores_pd = pd.DataFrame(original_scores)
+    original_scores_pd.to_csv(os.path.join(output_dir, 'original_scores.csv'), index=False)
+    mean_scores_pd = pd.DataFrame(mean_scores)
+    mean_scores_pd.to_csv(os.path.join(output_dir, 'mean_scores.csv'), index=False)
+    
+    # show result
+    show_score_line(input_wav.split('.')[0] + '.csv', os.path.join(output_dir, 'original_scores.csv'), positive_label[0])
+    show_score_line(input_wav.split('.')[0] + '.csv', os.path.join(output_dir, 'mean_scores.csv'), positive_label[0])
+    
 def main():
     """
-    使用模型对音频文件进行测试，模拟真实音频输入情况，配置为 --input 中的 config 文件，该脚本会通过滑窗的方式测试每一小段音频数据，计算连续 800ms(26帧) 音频的平均值结果，
+    使用模型对音频文件进行测试，模拟真实音频输入情况，配置为 --input 中的 config 文件，该脚本会通过滑窗的方式测试每一小段音频数据，计算连续 800ms(27帧) 音频的平均值结果，
     如果超过预设门限，则认为检测到关键词，否则认定未检测到关键词，最后分别计算假阳性和召回率
     """
 
@@ -285,10 +288,10 @@ def main():
     default_detection_threshold = 0.95
 
     parser = argparse.ArgumentParser(description='Streamax KWS Testing Engine')
-    # parser.add_argument('--input_wav', type=str,
-    #                     default="/home/huanyuan/data/speech/kws/weiboyulu/straming_dataset/test_unknow_001.wav")
     parser.add_argument('--input_wav', type=str,
-                        default="/home/huanyuan/data/speech/kws/xiaoyu_dataset_03022018/straming_dataset/test_unknow_002.wav")
+                        default="/home/huanyuan/data/speech/kws/weiboyulu/straming_dataset/test_001.wav")
+    # parser.add_argument('--input_wav', type=str,
+    #                     default="/home/huanyuan/data/speech/kws/xiaoyu_dataset_03022018/straming_dataset/testing_001.wav")
     parser.add_argument('--config_file', type=str,
                         default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py")
     parser.add_argument('--model_epoch', type=str, default=default_model_epoch)
