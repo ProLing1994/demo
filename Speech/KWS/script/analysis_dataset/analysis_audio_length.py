@@ -51,10 +51,10 @@ def analysis_audio_length(config_file):
     
 def main():
     parser = argparse.ArgumentParser()
-    # parser.add_argument('--config_file', type=str,
-    #                     default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py")
     parser.add_argument('--config_file', type=str,
-                        default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py")
+                        default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py")
+    # parser.add_argument('--config_file', type=str,
+    #                     default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py")
     args = parser.parse_args()
 
     analysis_audio_length(args.config_file)

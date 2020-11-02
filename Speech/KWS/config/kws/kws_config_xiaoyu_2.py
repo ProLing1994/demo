@@ -10,6 +10,7 @@ cfg = __C
 __C.general = {}
 
 # data folder
+# __C.general.data_dir = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_10292020/XiaoYuDataset_10292020/"
 __C.general.data_dir = "/home/huanyuan/data/speech/kws/xiaoyu_dataset_10292020/XiaoYuDataset_10292020/"
 
 # data version
@@ -19,16 +20,20 @@ __C.general.version = "1.0"
 __C.general.date = "10292020"
 
 # data path
+# __C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_10292020/dataset_1.0_10292020/total_data_files.csv"
 __C.general.data_csv_path = "/home/huanyuan/data/speech/kws/xiaoyu_dataset_10292020/dataset_1.0_10292020/total_data_files.csv"
 
 # background noise path
+# __C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_10292020/dataset_1.0_10292020/background_noise_files.csv"
 __C.general.background_data_path = "/home/huanyuan/data/speech/kws/xiaoyu_dataset_10292020/dataset_1.0_10292020/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # the output of training models and logging files
-__C.general.save_dir = "/home/huanyuan/model/kws_xiaoyu_10292020_test"
+# __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_xiaoyu2_0_res15_10292020/"
+# __C.general.save_dir = "/home/huanyuan/model/kws_xiaoyu_10292020_test"
+__C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu2_0_res15_10292020/"
 
 # set certain epoch to continue training, set -1 to train from scratch
 __C.general.resume_epoch = -1
@@ -212,8 +217,8 @@ __C.train.betas = (0.9, 0.999)
 __C.debug = {}
 
 # whether to save input images
-__C.debug.save_inputs = True
-# __C.debug.save_inputs = False
+# __C.debug.save_inputs = True
+__C.debug.save_inputs = False
 
 # the number of processing for save input images
 # __C.debug.num_processing = 64

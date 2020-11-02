@@ -42,6 +42,7 @@ def mix_in_audio_sample(track_data, track_offset, sample_data, sample_offset,
 def straming_dataset_generator(input_dir, output_path, config_file, add_noise_on, mode, audio_mode, test_duration_seconds, word_gap_ms):
     # load configuration file
     cfg = load_cfg_file(config_file)
+
     # init
     sample_rate = cfg.dataset.sample_rate
     clip_duration_ms = cfg.dataset.clip_duration_ms
@@ -53,7 +54,7 @@ def straming_dataset_generator(input_dir, output_path, config_file, add_noise_on
         os.makedirs(os.path.dirname(output_path))
 
     # mode
-    audio_list = [] # {'file': ..., 'lable': ...}
+    audio_list = [] # {'file': ..., 'label': ...}
     if mode == 0:
         print("Generator Straming Dataset From Config File")
         data_pd = pd.read_csv(cfg.general.data_csv_path)
@@ -61,7 +62,7 @@ def straming_dataset_generator(input_dir, output_path, config_file, add_noise_on
         for _, row in data_pd.iterrows():
             audio_dict = {}
             audio_dict['file'] = row['file']
-            audio_dict['lable'] = row['label']
+            audio_dict['label'] = row['label']
             audio_list.append(audio_dict)
     elif mode == 1:
         print("Generator Straming Dataset From Folder")
@@ -69,7 +70,7 @@ def straming_dataset_generator(input_dir, output_path, config_file, add_noise_on
         for file in file_list:
             audio_dict = {}
             audio_dict['file'] = os.path.join(input_dir, file)
-            audio_dict['lable'] = UNKNOWN_WORD_LABEL
+            audio_dict['label'] = UNKNOWN_WORD_LABEL
             audio_list.append(audio_dict)
     else:
         pass
@@ -79,9 +80,11 @@ def straming_dataset_generator(input_dir, output_path, config_file, add_noise_on
         pass
 
     # Mix the audio into the main track, noting their labels and positions.
-    output_file_list = [] # {'file': ..., 'lable': ..., 'start_time': ..., 'end_time': ...}
+    output_file_list = [] # {'file': ..., 'label': ..., 'start_time': ..., 'end_time': ...}
     output_offset = 0
     while(output_offset < output_audio_sample_count):
+        print('Done : [{}/{}]'.format(output_offset, output_audio_sample_count),end='\r')
+
         output_offset += word_gap_samples + np.random.randint(word_gap_samples)
         output_offset_ms = (output_offset * 1000) / sample_rate
 
@@ -90,11 +93,11 @@ def straming_dataset_generator(input_dir, output_path, config_file, add_noise_on
         if mode == 0:
             data_index = np.random.randint(len(audio_list))
             found_data = audio_list[data_index]['file']
-            found_label = audio_list[data_index]['lable']
+            found_label = audio_list[data_index]['label']
         elif mode == 1:
             data_index = np.random.randint(len(audio_list))
             found_data = audio_list[data_index]['file']
-            found_label = audio_list[data_index]['lable']
+            found_label = audio_list[data_index]['label']
         else:
             pass 
         
@@ -110,7 +113,7 @@ def straming_dataset_generator(input_dir, output_path, config_file, add_noise_on
 
         output_file_dict = {}
         output_file_dict['file'] = found_data
-        output_file_dict['lable'] = found_label
+        output_file_dict['label'] = found_label
         output_file_dict['start_time'] = output_offset_ms
         output_file_dict['end_time'] = (output_offset * 1000) / sample_rate
         output_file_list.append(output_file_dict)
@@ -124,24 +127,27 @@ def main():
     # mode: [0,1,2]
     # 0: from config file
     # 1: from folder 
-    # default_mode = 0
-    default_mode = 1
+    default_mode = 0
+    # default_mode = 1
 
     # only for mode==0, support for ['training','validation','testing']
     default_audio_mode = 'testing'
     default_add_noise_on = False
 
     parser = argparse.ArgumentParser(description="Prepare XiaoYu Dataset")
-    parser.add_argument('--input_dir', type=str, default='/home/huanyuan/data/speech/kws/weiboyulu/dataset')
-    parser.add_argument('--output_path', type=str, default='/home/huanyuan/data/speech/kws/weiboyulu/straming_dataset/test_001.wav')
+    # parser.add_argument('--input_dir', type=str, default='/home/huanyuan/data/speech/kws/weiboyulu/dataset')
+    # parser.add_argument('--output_path', type=str, default='/home/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav')
     # parser.add_argument('--input_dir', type=str, default="/home/huanyuan/data/speech/kws/xiaoyu_dataset_03022018/XiaoYuDataset_10272020/")
-    # parser.add_argument('--output_path', type=str, default="/home/huanyuan/data/speech/kws/xiaoyu_dataset_03022018/straming_dataset/testing_001.wav")
-    parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
+    # parser.add_argument('--output_path', type=str, default="/home/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_3600_001.wav")
+    parser.add_argument('--input_dir', type=str, default="/home/huanyuan/data/speech/kws/xiaoyu_dataset_10292020/XiaoYuDataset_10292020/")
+    parser.add_argument('--output_path', type=str, default="/home/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.wav")
+    # parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
+    parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py", help='config file')
     parser.add_argument('--add_noise_on', type=bool, default=default_add_noise_on)
     parser.add_argument('--mode', type=int, default=default_mode)
     parser.add_argument('--audio_mode', type=str, default=default_audio_mode)
-    parser.add_argument('--test_duration_seconds', type=int, default=60)
-    parser.add_argument('--word_gap_ms', type=int, default=2000)
+    parser.add_argument('--test_duration_seconds', type=int, default=3600)
+    parser.add_argument('--word_gap_ms', type=int, default=3000)
     args = parser.parse_args()
     straming_dataset_generator(args.input_dir, args.output_path, args.config_file, args.add_noise_on, args.mode, args.audio_mode, args.test_duration_seconds, args.word_gap_ms)
 
