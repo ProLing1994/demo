@@ -71,7 +71,7 @@ class SpeechDataset(Dataset):
     return len(self.data_file_list)
 
   def save_audio(self, data, audio_label, filename):
-    out_folder = os.path.join(self.save_audio_inputs_dir, self.mode_type, 'audio', audio_label)
+    out_folder = os.path.join(self.save_audio_inputs_dir, self.mode_type + '_audio', audio_label)
 
     if not os.path.isdir(out_folder):
       os.makedirs(out_folder)
@@ -146,7 +146,7 @@ class SpeechDataset(Dataset):
 
     # load data
     input_dir = os.path.join(self.input_dir, audio_label)
-    data = load_preload_audio(audio_file, index, audio_label, audio_label_idx, input_dir)
+    data, filename = load_preload_audio(audio_file, index, audio_label, audio_label_idx, input_dir)
 
     # print('Load data Time: {}'.format((time.time() - begin_t) * 1.0))
     # begin_t = time.time()

@@ -42,19 +42,19 @@ def analysis_audio_length(config_file):
         audio_data = librosa.core.load(file_path, sr=sample_rate)[0]
         audio_length = int(len(audio_data) * 1000 / sample_rate)
         audio_length_list.append(audio_length)
-        if audio_length > 4000:
-            print(file_path)
+        # if audio_length > 4000:
+        #     print(file_path)
 
-    plot_bins = (int((np.array(audio_length_list).max() - np.array(audio_length_list).min()) / 1000.0) + 1) * 2
-    plot_hist(np.array(audio_length_list), plot_bins)
-
-    
+    plot_bins = (int((np.array(audio_length_list).max() - np.array(audio_length_list).min()) // 1000.0) + 1) * 2
+    plot_hist(np.array(audio_length_list), plot_bins, 'Audio Length', 'frequency', 'Hist For Audio Length')   
 
     
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--config_file', type=str,
-                        default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py")
+                        default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py")
+    # parser.add_argument('--config_file', type=str,
+    #                     default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py")
     args = parser.parse_args()
 
     analysis_audio_length(args.config_file)

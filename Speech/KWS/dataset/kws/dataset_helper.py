@@ -1,4 +1,3 @@
-  
 import librosa
 import numpy as np
 import os
@@ -31,7 +30,7 @@ def load_preload_audio(audio_file, audio_idx, audio_label, audio_label_idx, inpu
   f = open(os.path.join(input_dir, filename), 'rb')
   data = pickle.load(f)
   f.close()
-  return data
+  return data, filename
   
 
 class AudioPreprocessor(object):

@@ -8,7 +8,7 @@ import sys
 from scipy import interp
 
 sys.path.insert(0, '/home/huanyuan/code/demo/common')
-from common.utils.python.cal_roc_auc import get_fpr_tpr
+from common.utils.python.metrics_tools import get_fpr_tpr
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from dataset.kws.dataset_helper import SILENCE_INDEX, UNKNOWN_WORD_INDEX
@@ -101,7 +101,10 @@ def main():
     # num_classes = 12
     # show_roc_per_class(csv_list, color_list, linestyle_list, num_classes)
 
-    csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu_res15_10272020/infer_longterm_average_validation_augmentation_False.csv"]
+    # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu_res15_10272020/infer_longterm_validation_augmentation_False_min.csv"]
+    # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu_res15_10272020/infer_longterm_average_validation_augmentation_False.csv"]
+    # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu2_0_res15_10292020/infer_longterm_validation_augmentation_False_min.csv"]
+    csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu2_0_res15_10292020/infer_longterm_average_validation_augmentation_False.csv"]
     color_list =  ["r", "g", "b"]
     linestyle_list =  ["-", "-", "-"]
     num_classes = 3

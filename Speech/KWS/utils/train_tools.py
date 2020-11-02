@@ -229,7 +229,7 @@ def save_intermediate_results(cfg, mode, epoch, images, labels, indexs):
 
   print("Save Intermediate Results")
 
-  out_folder = os.path.join(cfg.general.save_dir, mode)
+  out_folder = os.path.join(cfg.general.save_dir, mode + '_jpg')
   if not os.path.isdir(out_folder):
       os.makedirs(out_folder)
 

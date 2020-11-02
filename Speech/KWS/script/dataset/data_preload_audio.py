@@ -122,13 +122,14 @@ def preload_background_audio(config_file):
 def main():
   parser = argparse.ArgumentParser(description='Streamax KWS Data Split Engine')
   # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config.py", help='config file')
-  parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
+  # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
+  parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py", help='config file')
   # parser.add_argument('-m', '--mode', type=str, default="training")
   # parser.add_argument('-m', '--mode', type=str, default="validation")
   parser.add_argument('-m', '--mode', type=str, default="testing")
   args = parser.parse_args()
   preload_audio(args.input, args.mode)
-  preload_background_audio(args.input)
+  # preload_background_audio(args.input)
 
 
 if __name__ == "__main__":
