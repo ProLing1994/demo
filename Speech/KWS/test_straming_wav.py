@@ -3,6 +3,7 @@ import collections
 import pandas as pd
 import pickle
 import sys
+import time 
 import torch.nn.functional as F
 
 from tqdm import tqdm
@@ -12,6 +13,7 @@ from utils.train_tools import *
 from dataset.kws.dataset_helper import *
 from impl.pred_pyimpl import kws_load_model, dataset_add_noise, model_predict
 from script.analysis_result.plot_score_line import show_score_line
+from script.analysis_result.cal_fpr_tpr import cal_fpr_tpr
 
 class RecognizeResult(object):
     """Save recognition result temporarily.
@@ -210,7 +212,8 @@ def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_durat
         minimum_count=15)
     
     # mkdir 
-    output_dir = os.path.join(os.path.dirname(input_wav), os.path.basename(input_wav).split('.')[0])
+    # output_dir = os.path.join(os.path.dirname(input_wav), os.path.basename(input_wav).split('.')[0])
+    output_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', os.path.basename(input_wav).split('.')[0])
     if not os.path.exists(output_dir):    
         os.makedirs(output_dir)
     
@@ -229,7 +232,13 @@ def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_durat
     original_scores = [] 
     mean_scores = [] 
     all_found_words = []
+
+    # record tiem
+    start = time.perf_counter()
+
     while(audio_data_offset < len(audio_data)):
+        print('Done : [{}/{}]'.format(audio_data_offset, len(audio_data)),end='\r')
+
         # input data
         input_start = audio_data_offset
         input_end = audio_data_offset + desired_samples
@@ -264,6 +273,10 @@ def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_durat
         original_scores.append({'start_time':current_time_ms, 'score':output_score[0][label_index[positive_label[0]]]})
         mean_scores.append({'start_time':current_time_ms, 'score':recognize_element.score})
 
+    # record time
+    end = time.perf_counter()
+    print('Running time: %s Seconds'%(end - start))
+
     found_words_pd = pd.DataFrame(all_found_words)
     found_words_pd.to_csv(os.path.join(output_dir, 'found_words.csv'), index=False)
     original_scores_pd = pd.DataFrame(original_scores)
@@ -274,26 +287,33 @@ def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_durat
     # show result
     show_score_line(input_wav.split('.')[0] + '.csv', os.path.join(output_dir, 'original_scores.csv'), positive_label[0])
     show_score_line(input_wav.split('.')[0] + '.csv', os.path.join(output_dir, 'mean_scores.csv'), positive_label[0])
-    
+
+    cal_fpr_tpr(input_wav.split('.')[0] + '.csv', os.path.join(output_dir, 'found_words.csv'),  positive_label[0], bool_write_audio)
+
 def main():
     """
-    使用模型对音频文件进行测试，模拟真实音频输入情况，配置为 --input 中的 config 文件，该脚本会通过滑窗的方式测试每一小段音频数据，计算连续 800ms(27帧) 音频的平均值结果，
+    使用模型对音频文件进行测试，模拟真实音频输入情况，配置为 --input 中的 config 文件，该脚本会通过滑窗的方式测试每一小段音频数据，计算连续 2000ms(41帧) 音频的平均值结果，
     如果超过预设门限，则认为检测到关键词，否则认定未检测到关键词，最后分别计算假阳性和召回率
     """
 
     default_model_epoch = -1
-    default_timeshift_ms = 30
-    default_average_window_duration_ms = 800
-    # default_detection_threshold = 0.75
+    # default_timeshift_ms = 30
+    # default_average_window_duration_ms = 800
+    default_timeshift_ms = 50
+    default_average_window_duration_ms = 2000
     default_detection_threshold = 0.95
 
     parser = argparse.ArgumentParser(description='Streamax KWS Testing Engine')
-    parser.add_argument('--input_wav', type=str,
-                        default="/home/huanyuan/data/speech/kws/weiboyulu/straming_dataset/test_001.wav")
     # parser.add_argument('--input_wav', type=str,
-    #                     default="/home/huanyuan/data/speech/kws/xiaoyu_dataset_03022018/straming_dataset/testing_001.wav")
+    #                     default="/home/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav")
+    # parser.add_argument('--input_wav', type=str,
+    #                     default="/home/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_3600_001.wav")
+    parser.add_argument('--input_wav', type=str,
+                        default="/home/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.wav")
+    # parser.add_argument('--config_file', type=str,
+    #                     default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py")
     parser.add_argument('--config_file', type=str,
-                        default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py")
+                        default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py")
     parser.add_argument('--model_epoch', type=str, default=default_model_epoch)
     parser.add_argument('--timeshift_ms', type=int,
                         default=default_timeshift_ms)

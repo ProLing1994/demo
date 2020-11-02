@@ -13,10 +13,10 @@ def main():
     net_module = importlib.import_module('network.' + net_name)
 
     net = net_module.SpeechResModel(num_classes=3, 
-                                    image_height=201, 
+                                    image_height=301, 
                                     image_weidth=40)
 
-    input = torch.randn(1, 1, 201, 40)
+    input = torch.randn(1, 1, 301, 40)
     flops, params = profile(net, inputs=(input, ))
     flops, params = clever_format([flops, params], "%.3f")
     print("par.: ", params)
