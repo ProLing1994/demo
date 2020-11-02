@@ -32,8 +32,8 @@ __C.general.is_test = True
 
 # the output of training models and logging files
 # __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_xiaoyu2_0_res15_10292020/"
-# __C.general.save_dir = "/home/huanyuan/model/kws_xiaoyu_10292020_test"
-__C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu2_0_res15_10292020/"
+__C.general.save_dir = "/home/huanyuan/model/kws_xiaoyu_10292020_test"
+# __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu2_0_res15_10292020/"
 
 # set certain epoch to continue training, set -1 to train from scratch
 __C.general.resume_epoch = -1
@@ -120,6 +120,9 @@ __C.dataset.augmentation.background_volume = 0.1
 
 # Range to randomly shift the training audio by in time(ms).
 __C.dataset.augmentation.time_shift_ms = 100.0
+
+# Time shift enhancement multiple of negative samples
+__C.dataset.augmentation.time_shift_multiple = 20
 
 ####################################
 # training loss
