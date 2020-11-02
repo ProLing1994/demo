@@ -50,6 +50,7 @@ class SpeechDataset(Dataset):
     self.background_frequency = cfg.dataset.augmentation.background_frequency
     self.background_volume = cfg.dataset.augmentation.background_volume
     self.time_shift_ms = cfg.dataset.augmentation.time_shift_ms
+    self.time_shift_multiple = cfg.dataset.augmentation.time_shift_multiple
 
     self.desired_samples = int(self.sample_rate * self.clip_duration_ms / 1000)
     self.window_size_samples = int(self.sample_rate * self.window_size_ms / 1000)
@@ -113,12 +114,17 @@ class SpeechDataset(Dataset):
     data = np.clip(data, -1.0, 1.0) 
     return data 
 
-  def dataset_augmentation(self, data):
+  def dataset_augmentation(self, data, audio_label_idx):
     # add time_shift
     time_shift_amount = 0
 
-    if self.time_shift_samples > 0:
-      time_shift_amount = np.random.randint(-self.time_shift_samples, self.time_shift_samples)
+    # Time shift enhancement multiple of negative samples
+    time_shift_samples = self.time_shift_samples
+    if audio_label_idx == SILENCE_INDEX or audio_label_idx == UNKNOWN_WORD_INDEX:
+      time_shift_samples *= self.time_shift_multiple
+
+    if time_shift_samples > 0:
+      time_shift_amount = np.random.randint(-time_shift_samples, time_shift_samples)
     
     time_shift_left = - min(0, time_shift_amount)
     time_shift_right = max(0, time_shift_amount)
@@ -166,7 +172,7 @@ class SpeechDataset(Dataset):
     if audio_label == SILENCE_LABEL:
       data = self.dataset_add_noise(data, bool_silence_label=True)
     elif self.augmentation_on:
-      data = self.dataset_augmentation(data)
+      data = self.dataset_augmentation(data, audio_label_idx)
     # print('Data augmentation Time: {}'.format((time.time() - begin_t) * 1.0))
     # begin_t = time.time()
 
