@@ -21,8 +21,14 @@ def augmentation_test(config_file, output_dir):
     # init 
     input_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset_audio')
     sample_rate = cfg.dataset.sample_rate
+    window_size_ms = cfg.dataset.window_size_ms
+    window_stride_ms = cfg.dataset.window_stride_ms
     clip_duration_ms = cfg.dataset.clip_duration_ms
+    feature_bin_count = cfg.dataset.feature_bin_count
+
     desired_samples = int(sample_rate * clip_duration_ms / 1000)
+    window_size_samples = int(sample_rate * window_size_ms / 1000)
+    window_stride_samples = int(sample_rate * window_stride_ms / 1000)
 
     # data index
     label_index = load_label_index(cfg.dataset.label.positive_label)
@@ -34,6 +40,12 @@ def augmentation_test(config_file, output_dir):
     data_mode_list = data_pd['mode'].tolist()
     data_label_list = data_pd['label'].tolist()
 
+    # init AudioPreprocessor
+    audio_processor = AudioPreprocessor(sr=sample_rate, 
+                            n_dct_filters=feature_bin_count, 
+                            n_fft=window_size_samples, 
+                            hop_length=window_stride_samples)
+
     for audio_index in tqdm(range(len(data_file_list))):
         if audio_index > 10:
             continue
@@ -44,26 +56,37 @@ def augmentation_test(config_file, output_dir):
 
         # load data
         input_dir_index = os.path.join(input_dir, audio_mode, audio_label)
-        data, filename = load_preload_audio(audio_file, audio_index, audio_label, audio_label_idx, input_dir_index)
+        audio_data, filename = load_preload_audio(audio_file, audio_index, audio_label, audio_label_idx, input_dir_index)
 
         # alignment data
-        data = np.pad(data, (0, max(0, desired_samples - len(data))), "constant")
-        if len(data) > desired_samples:
-            data_offset = np.random.randint(0, len(data) - desired_samples - 1)
-            data = data[data_offset:(data_offset + desired_samples)]
+        audio_data = np.pad(audio_data, (max(0, (desired_samples - len(audio_data)//2)), 0), "constant")
+        audio_data = np.pad(audio_data, (0, max(0, (desired_samples - len(audio_data)//2))), "constant")
+        if len(audio_data) > desired_samples:
+            data_offset = np.random.randint(0, len(audio_data) - desired_samples - 1)
+            audio_data = audio_data[data_offset:(data_offset + desired_samples)]
 
         # add augmentation
         for time_shift_amount in time_shift_amount_list:
             time_shift_samples = int(sample_rate * time_shift_amount / 1000)
             time_shift_left = - min(0, time_shift_samples)
             time_shift_right = max(0, time_shift_samples)
-            data = np.pad(data, (time_shift_left, time_shift_right), "constant")
+            data = np.pad(audio_data, (time_shift_left, time_shift_right), "constant")
             data = data[:len(data) - time_shift_left] if time_shift_left else data[time_shift_right:]
             data = dataset_add_noise(cfg, data)
 
             # output wav 
             output_path = os.path.join(output_dir, filename.split('.')[0] + '_timeshift_{}.wav'.format(str(time_shift_amount)))
             librosa.output.write_wav(output_path, data, sr=sample_rate)
+
+            # # output spectrogram 
+            # # audio_data = audio_processor.compute_mfccs(data)
+            # audio_data = audio_processor.compute_fbanks(data)
+
+            # # add SpecAugment 
+            # audio_data = add_frequence_mask(audio_data, F=5, replace_with_zero=True)
+            # audio_data = add_time_mask(audio_data, T=30, replace_with_zero=True)
+            # audio_data = audio_data.reshape((-1, 40))
+            # plot_spectrogram(audio_data.T, output_path.split('.')[0] + '.jpg')
 
 
 def main():
@@ -75,5 +98,5 @@ def main():
 
 if __name__ == "__main__":
     mode = 'training'
-    time_shift_amount_list = [-1000, 1000]
+    time_shift_amount_list = [-500, 0, 500]
     main()
