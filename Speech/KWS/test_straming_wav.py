@@ -295,25 +295,28 @@ def main():
     使用模型对音频文件进行测试，模拟真实音频输入情况，配置为 --input 中的 config 文件，该脚本会通过滑窗的方式测试每一小段音频数据，计算连续 2000ms(41帧) 音频的平均值结果，
     如果超过预设门限，则认为检测到关键词，否则认定未检测到关键词，最后分别计算假阳性和召回率
     """
+    # default_input_wav = "/home/huanyuan/model/test_straming_wav/xiaoyu_03022018_training_60_001.wav"
+    # default_input_wav = "/home/huanyuan/model/test_straming_wav/xiaoyu_03022018_validation_60_001.wav"
+    # default_input_wav = "/home/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_60_001.wav"
+    # default_input_wav = "/home/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"
+    # default_input_wav = "/home/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_3600_001.wav"
+    default_input_wav = "/home/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.wav"
 
+    # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
+    defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py"
     default_model_epoch = -1
-    # default_timeshift_ms = 30
-    # default_average_window_duration_ms = 800
-    default_timeshift_ms = 50
-    default_average_window_duration_ms = 2000
-    default_detection_threshold = 0.95
+    default_timeshift_ms = 30
+    default_average_window_duration_ms = 800
+    # default_timeshift_ms = 50
+    # default_average_window_duration_ms = 2000
+    default_detection_threshold = 0.8
+    # default_detection_threshold = 0.95
 
     parser = argparse.ArgumentParser(description='Streamax KWS Testing Engine')
-    # parser.add_argument('--input_wav', type=str,
-    #                     default="/home/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav")
-    # parser.add_argument('--input_wav', type=str,
-    #                     default="/home/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_3600_001.wav")
     parser.add_argument('--input_wav', type=str,
-                        default="/home/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.wav")
-    # parser.add_argument('--config_file', type=str,
-    #                     default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py")
+                        default=default_input_wav)
     parser.add_argument('--config_file', type=str,
-                        default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py")
+                        default=defaule_config_file)
     parser.add_argument('--model_epoch', type=str, default=default_model_epoch)
     parser.add_argument('--timeshift_ms', type=int,
                         default=default_timeshift_ms)

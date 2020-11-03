@@ -52,6 +52,11 @@ class SpeechDataset(Dataset):
     self.time_shift_ms = cfg.dataset.augmentation.time_shift_ms
     self.time_shift_multiple = cfg.dataset.augmentation.time_shift_multiple
 
+    self.augmentation_spec_on = cfg.dataset.augmentation.spec_on
+    self.F = cfg.dataset.augmentation.F
+    self.T = cfg.dataset.augmentation.T
+    self.num_masks = cfg.dataset.augmentation.num_masks
+
     self.desired_samples = int(self.sample_rate * self.clip_duration_ms / 1000)
     self.window_size_samples = int(self.sample_rate * self.window_size_ms / 1000)
     self.window_stride_samples = int(self.sample_rate * self.window_stride_ms / 1000)
@@ -82,13 +87,15 @@ class SpeechDataset(Dataset):
 
   def audio_preprocess(self, data):
     # check 
-    assert self.audio_preprocess_type in ["mfcc", "pcen"], "[ERROR:] Audio preprocess type is wronge, please check"
+    assert self.audio_preprocess_type in ["mfcc", "pcen", "fbank"], "[ERROR:] Audio preprocess type is wronge, please check"
 
     # preprocess
     if self.audio_preprocess_type == "mfcc":
       audio_data = self.audio_processor.compute_mfccs(data)
     elif self.audio_preprocess_type == "pcen":
       audio_data = self.audio_processor.compute_pcen(data)
+    elif self.audio_preprocess_type == "fbank":
+      audio_data = self.audio_processor.compute_fbanks(data)
     return audio_data 
 
   def dataset_add_noise(self, data, bool_silence_label=False):
@@ -114,7 +121,7 @@ class SpeechDataset(Dataset):
     data = np.clip(data, -1.0, 1.0) 
     return data 
 
-  def dataset_augmentation(self, data, audio_label_idx):
+  def dataset_augmentation_waveform(self, data, audio_label_idx):
     # add time_shift
     time_shift_amount = 0
 
@@ -134,6 +141,12 @@ class SpeechDataset(Dataset):
     # add noise
     data = self.dataset_add_noise(data)
     return data 
+
+  def dataset_augmentation_spectrum(self, audio_data):
+    # add SpecAugment 
+    audio_data = add_frequence_mask(audio_data, F=self.F, num_masks=self.num_masks, replace_with_zero=True)
+    audio_data = add_time_mask(audio_data, T=self.T, num_masks=self.num_masks, replace_with_zero=True)
+    return audio_data
 
   def __getitem__(self, index):
     """ get the item """
@@ -172,7 +185,7 @@ class SpeechDataset(Dataset):
     if audio_label == SILENCE_LABEL:
       data = self.dataset_add_noise(data, bool_silence_label=True)
     elif self.augmentation_on:
-      data = self.dataset_augmentation(data, audio_label_idx)
+      data = self.dataset_augmentation_waveform(data, audio_label_idx)
     # print('Data augmentation Time: {}'.format((time.time() - begin_t) * 1.0))
     # begin_t = time.time()
 
@@ -180,6 +193,10 @@ class SpeechDataset(Dataset):
     data = self.audio_preprocess(data)
     # print('Audio preprocess Time: {}'.format((time.time() - begin_t) * 1.0))
 
+    # data augmentation
+    if self.augmentation_spec_on:
+      data = self.dataset_augmentation_spectrum(data)
+    
     # To tensor
     data_tensor = torch.from_numpy(data.reshape(1, -1, 40))
     data_tensor = data_tensor.float()

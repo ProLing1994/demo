@@ -34,6 +34,7 @@ __C.general.is_test = True
 # __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_xiaoyu2_0_res15_10292020/"
 __C.general.save_dir = "/home/huanyuan/model/kws_xiaoyu_10292020_test"
 # __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu2_0_res15_10292020/"
+# __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu2_1_timeshift_enhancement_multiple_res15_10292020/"
 
 # set certain epoch to continue training, set -1 to train from scratch
 __C.general.resume_epoch = -1
@@ -68,7 +69,8 @@ __C.dataset.window_size_ms = 30.0
 # How far to move in time between frequency windows
 __C.dataset.window_stride_ms = 10.0
 
-# How the spectrogram is processed to produce features, support ["mfcc", "pcen"]
+# How the spectrogram is processed to produce features, support ["mfcc", "pcen", "fbank"]
+# __C.dataset.preprocess = "fbank"
 __C.dataset.preprocess = "mfcc"
 
 # How many bins to use for the MFCC fingerprint
@@ -108,7 +110,7 @@ __C.dataset.label.testing_percentage = 10.0     # 10%
 # data augmentation parameters
 __C.dataset.augmentation = {}
 
-# on
+# based on audio waveform: on
 __C.dataset.augmentation.on = True
 # __C.dataset.augmentation.on = False
 
@@ -121,8 +123,14 @@ __C.dataset.augmentation.background_volume = 0.1
 # Range to randomly shift the training audio by in time(ms).
 __C.dataset.augmentation.time_shift_ms = 100.0
 
-# Time shift enhancement multiple of negative samples
-__C.dataset.augmentation.time_shift_multiple = 20
+# Time shift enhancement multiple of negative samples, which is effective for advanced prediction and lag prediction
+__C.dataset.augmentation.time_shift_multiple = 10
+
+# based on audio spectrum: on
+__C.dataset.augmentation.spec_on = True
+__C.dataset.augmentation.F = 5
+__C.dataset.augmentation.T = 30
+__C.dataset.augmentation.num_masks = 1
 
 ####################################
 # training loss
@@ -157,9 +165,9 @@ __C.net.name = 'res15'
 __C.train = {}
 
 # the number of training epochs
+# __C.train.num_epochs = 16000
+# __C.train.num_epochs = 8000
 # __C.train.num_epochs = 4000
-# __C.train.num_epochs = 2000
-# __C.train.num_epochs = 500
 __C.train.num_epochs = 1
 
 # the number of samples in a batch
@@ -220,8 +228,8 @@ __C.train.betas = (0.9, 0.999)
 __C.debug = {}
 
 # whether to save input images
-# __C.debug.save_inputs = True
-__C.debug.save_inputs = False
+__C.debug.save_inputs = True
+# __C.debug.save_inputs = False
 
 # the number of processing for save input images
 # __C.debug.num_processing = 64
