@@ -23,14 +23,10 @@ __C.general.version = "1.0"
 __C.general.date = "11032020"
 
 # data path
-# __C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_10292020/dataset_1.0_10292020/total_data_files.csv"
-# __C.general.data_csv_path = "/home/huanyuan/data/speech/kws/xiaoyu_dataset_10292020/dataset_1.0_10292020/total_data_files.csv"
 __C.general.data_csv_path = "/home/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_1.0_11032020/total_data_files.csv"
 # __C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_1.0_11032020/total_data_files.csv"
 
 # background noise path
-# __C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_10292020/dataset_1.0_10292020/background_noise_files.csv"
-# __C.general.background_data_path = "/home/huanyuan/data/speech/kws/xiaoyu_dataset_10292020/dataset_1.0_10292020/background_noise_files.csv"
 __C.general.background_data_path = "/home/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_1.0_11032020/background_noise_files.csv"
 # __C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_1.0_11032020/background_noise_files.csv"
 
@@ -39,6 +35,7 @@ __C.general.is_test = True
 
 # the output of training models and logging files
 # __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_xiaoyu3_0_timeshift_enhancement_multiple_res15_11032020/"
+# __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_xiaoyu3_1_timeshift_spec_on_res15_11032020/"
 # __C.general.save_dir = "/home/huanyuan/model/kws_xiaoyu_11032020_test"
 # __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu2_0_res15_10292020/"
 __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_0_timeshift_enhancement_multiple_res15_11032020/"
@@ -135,7 +132,7 @@ __C.dataset.augmentation.time_shift_ms = 100.0
 __C.dataset.augmentation.time_shift_multiple = 10
 
 # based on audio spectrum: on
-__C.dataset.augmentation.spec_on = False
+__C.dataset.augmentation.spec_on = True
 __C.dataset.augmentation.F = 5
 __C.dataset.augmentation.T = 30
 __C.dataset.augmentation.num_masks = 1
@@ -147,11 +144,11 @@ __C.dataset.augmentation.num_masks = 1
 __C.loss = {}
 
 # the loss name, support ['softmax','focal']
-__C.loss.name = 'softmax'
-# __C.loss.name = 'focal'
+# __C.loss.name = 'softmax'
+__C.loss.name = 'focal'
 
 # the weight matrix for each class in focal loss, including background class
-__C.loss.obj_weight = np.array([[1/3, 0, 0], [0, 1/3, 0], [0, 0, 1/3]])
+__C.loss.obj_weight = np.array([[1/6, 0, 0], [0, 1/6, 0], [0, 0, 4/6]])
 
 # the gamma parameter in focal loss
 __C.loss.focal_gamma = 2
