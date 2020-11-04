@@ -11,28 +11,32 @@ __C.general = {}
 
 # data folder
 # __C.general.data_dir = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_10292020/XiaoYuDataset_10292020/"
-__C.general.data_dir = "/home/huanyuan/data/speech/kws/xiaoyu_dataset_10292020/XiaoYuDataset_10292020/"
+# __C.general.data_dir = "/home/huanyuan/data/speech/kws/xiaoyu_dataset_10292020/XiaoYuDataset_10292020/"
+__C.general.data_dir = "/home/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/XiaoYuDataset_11032020/"
 
 # data version
 __C.general.version = "1.0"
 
 # data date
-__C.general.date = "10292020"
+__C.general.date = "11032020"
 
 # data path
 # __C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_10292020/dataset_1.0_10292020/total_data_files.csv"
-__C.general.data_csv_path = "/home/huanyuan/data/speech/kws/xiaoyu_dataset_10292020/dataset_1.0_10292020/total_data_files.csv"
+# __C.general.data_csv_path = "/home/huanyuan/data/speech/kws/xiaoyu_dataset_10292020/dataset_1.0_10292020/total_data_files.csv"
+__C.general.data_csv_path = "/home/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_1.0_11032020/total_data_files.csv"
 
 # background noise path
 # __C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_10292020/dataset_1.0_10292020/background_noise_files.csv"
-__C.general.background_data_path = "/home/huanyuan/data/speech/kws/xiaoyu_dataset_10292020/dataset_1.0_10292020/background_noise_files.csv"
+# __C.general.background_data_path = "/home/huanyuan/data/speech/kws/xiaoyu_dataset_10292020/dataset_1.0_10292020/background_noise_files.csv"
+__C.general.background_data_path = "/home/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_1.0_11032020/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # the output of training models and logging files
 # __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_xiaoyu2_0_res15_10292020/"
-__C.general.save_dir = "/home/huanyuan/model/kws_xiaoyu_10292020_test"
+# __C.general.save_dir = "/home/huanyuan/model/kws_xiaoyu_10292020_test"
+__C.general.save_dir = "/home/huanyuan/model/kws_xiaoyu_11032020_test"
 # __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu2_0_res15_10292020/"
 # __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu2_1_timeshift_enhancement_multiple_res15_10292020/"
 
@@ -127,7 +131,7 @@ __C.dataset.augmentation.time_shift_ms = 100.0
 __C.dataset.augmentation.time_shift_multiple = 10
 
 # based on audio spectrum: on
-__C.dataset.augmentation.spec_on = True
+__C.dataset.augmentation.spec_on = False
 __C.dataset.augmentation.F = 5
 __C.dataset.augmentation.T = 30
 __C.dataset.augmentation.num_masks = 1

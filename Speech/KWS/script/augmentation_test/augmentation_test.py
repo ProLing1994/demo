@@ -47,23 +47,29 @@ def augmentation_test(config_file, output_dir):
                             hop_length=window_stride_samples)
 
     for audio_index in tqdm(range(len(data_file_list))):
-        if audio_index > 10:
-            continue
+        # if audio_index > 10:
+        #     continue
         audio_file = data_file_list[audio_index]
         audio_mode = data_mode_list[audio_index]
         audio_label = data_label_list[audio_index]
         audio_label_idx = label_index[audio_label]
+
+        if audio_label != data_label:
+            continue
 
         # load data
         input_dir_index = os.path.join(input_dir, audio_mode, audio_label)
         audio_data, filename = load_preload_audio(audio_file, audio_index, audio_label, audio_label_idx, input_dir_index)
 
         # alignment data
-        audio_data = np.pad(audio_data, (max(0, (desired_samples - len(audio_data)//2)), 0), "constant")
-        audio_data = np.pad(audio_data, (0, max(0, (desired_samples - len(audio_data)//2))), "constant")
+        audio_data_length = len(audio_data)
+        audio_data = np.pad(audio_data, (max(0, (desired_samples - audio_data_length)//2), 0), "constant")
+        audio_data = np.pad(audio_data, (0, max(0, (desired_samples - audio_data_length + 1)//2)), "constant")
         if len(audio_data) > desired_samples:
             data_offset = np.random.randint(0, len(audio_data) - desired_samples - 1)
             audio_data = audio_data[data_offset:(data_offset + desired_samples)]
+
+        assert len(audio_data) == desired_samples, "[ERROR:] Something wronge about audio length, please check"
 
         # add augmentation
         for time_shift_amount in time_shift_amount_list:
@@ -72,6 +78,7 @@ def augmentation_test(config_file, output_dir):
             time_shift_right = max(0, time_shift_samples)
             data = np.pad(audio_data, (time_shift_left, time_shift_right), "constant")
             data = data[:len(data) - time_shift_left] if time_shift_left else data[time_shift_right:]
+
             data = dataset_add_noise(cfg, data)
 
             # output wav 
@@ -98,5 +105,6 @@ def main():
 
 if __name__ == "__main__":
     mode = 'training'
-    time_shift_amount_list = [-500, 0, 500]
+    data_label = UNKNOWN_WORD_LABEL
+    time_shift_amount_list = [1000]
     main()
