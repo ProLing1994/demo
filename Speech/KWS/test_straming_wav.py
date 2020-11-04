@@ -298,9 +298,9 @@ def main():
     # default_input_wav = "/home/huanyuan/model/test_straming_wav/xiaoyu_03022018_training_60_001.wav"
     # default_input_wav = "/home/huanyuan/model/test_straming_wav/xiaoyu_03022018_validation_60_001.wav"
     # default_input_wav = "/home/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_60_001.wav"
-    # default_input_wav = "/home/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"
+    default_input_wav = "/home/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"
     # default_input_wav = "/home/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_3600_001.wav"
-    default_input_wav = "/home/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.wav"
+    # default_input_wav = "/home/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.wav"
 
     # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
     defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py"
@@ -309,8 +309,8 @@ def main():
     default_average_window_duration_ms = 800
     # default_timeshift_ms = 50
     # default_average_window_duration_ms = 2000
-    default_detection_threshold = 0.8
-    # default_detection_threshold = 0.95
+    # default_detection_threshold = 0.8
+    default_detection_threshold = 0.95
 
     parser = argparse.ArgumentParser(description='Streamax KWS Testing Engine')
     parser.add_argument('--input_wav', type=str,
