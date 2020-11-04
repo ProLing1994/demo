@@ -106,5 +106,5 @@ def main():
 if __name__ == "__main__":
     mode = 'training'
     data_label = UNKNOWN_WORD_LABEL
-    time_shift_amount_list = [1000]
+    time_shift_amount_list = [-1000]
     main()
