@@ -7,12 +7,12 @@ import torch.nn.functional as F
 from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
-from impl.pred_pyimpl import kws_load_model, dataset_add_noise, model_predict
+from impl.pred_pyimpl import kws_load_model, load_background_noise, dataset_add_noise, model_predict
 from dataset.kws.dataset_helper import *
 from utils.train_tools import *
 
 
-def longterm_audio_predict(cfg, net, audio_idx, audio_file, audio_mode, audio_label, audio_label_idx, timeshift_ms, average_window_duration_ms):
+def longterm_audio_predict(cfg, net, audio_idx, audio_file, audio_mode, audio_label, audio_label_idx, background_data, add_noise_on, timeshift_ms, average_window_duration_ms):
     # init 
     input_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset_audio', audio_mode)
     input_dir = os.path.join(input_dir, audio_label)
@@ -30,9 +30,9 @@ def longterm_audio_predict(cfg, net, audio_idx, audio_file, audio_mode, audio_la
     # alignment data
     data = np.pad(data, (0, max(0, desired_samples - len(data))), "constant")
 
-    # add noise for _silence_ label 
-    if audio_label == SILENCE_LABEL:
-        data = dataset_add_noise(cfg, data, bool_silence_label=True)
+    # add noise 
+    if audio_label == SILENCE_LABEL or add_noise_on:
+        data = dataset_add_noise(cfg, data, background_data, bool_silence_label=True)
 
     # calculate the average score across all the results
     data_list = []
@@ -77,7 +77,7 @@ def longterm_audio_predict(cfg, net, audio_idx, audio_file, audio_mode, audio_la
     return pred, average_scores
 
 
-def predict(config_file, epoch, mode, augmentation_on, timeshift_ms, average_window_duration_ms):
+def predict(config_file, epoch, mode, add_noise_on, timeshift_ms, average_window_duration_ms):
     # load configuration file
     cfg = load_cfg_file(config_file)
 
@@ -99,6 +99,9 @@ def predict(config_file, epoch, mode, augmentation_on, timeshift_ms, average_win
     data_mode_list = data_pd_mode['mode'].tolist()
     data_label_list = data_pd_mode['label'].tolist()
 
+    # load background noise
+    background_data = load_background_noise(cfg)
+
     results_list = []
     preds = []
     labels = []
@@ -114,7 +117,8 @@ def predict(config_file, epoch, mode, augmentation_on, timeshift_ms, average_win
         # if results_dict['file'] != "/home/huanyuan/data/speech/kws/xiaoyu_dataset_03022018/XiaoYuDataset_10272020/xiaoyu/7276078M1_唤醒词_小鱼小鱼_女_中青年_是_0192.wav":
         #     continue
 
-        pred, score = longterm_audio_predict(cfg, net, audio_idx, results_dict['file'], results_dict['mode'], results_dict['label'], results_dict['label_idx'], timeshift_ms, average_window_duration_ms)
+        pred, score = longterm_audio_predict(cfg, net, audio_idx, results_dict['file'], results_dict['mode'], results_dict['label'], results_dict['label_idx'], 
+                                            background_data, add_noise_on, timeshift_ms, average_window_duration_ms)
 
         preds.append(pred)
         labels.append(results_dict['label_idx'])
@@ -132,7 +136,7 @@ def predict(config_file, epoch, mode, augmentation_on, timeshift_ms, average_win
 
     # out csv
     csv_data_pd = pd.DataFrame(results_list)
-    csv_data_pd.to_csv(os.path.join(cfg.general.save_dir, 'infer_longterm_average_{}_augmentation_{}.csv'.format(mode, augmentation_on)), index=False, encoding="utf_8_sig")
+    csv_data_pd.to_csv(os.path.join(cfg.general.save_dir, 'infer_longterm_average_{}_augmentation_{}.csv'.format(mode, add_noise_on)), index=False, encoding="utf_8_sig")
     return accuracy
 
 
@@ -148,7 +152,8 @@ def main():
     # default_mode = "testing,validation"
     default_mode = "validation"
     default_model_epoch = -1
-    default_augmentation_on = False
+    default_add_noise_on = True
+    # default_add_noise_on = False
     default_timeshift_ms = 30
     default_average_window_duration_ms = 500
 
@@ -158,14 +163,14 @@ def main():
     parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py", help='config file')
     parser.add_argument('--mode', type=str, default=default_mode)
     parser.add_argument('--epoch', type=str, default=default_model_epoch)
-    parser.add_argument('--augmentation_on', type=bool, default=default_augmentation_on)
+    parser.add_argument('--add_noise_on', type=bool, default=default_add_noise_on)
     parser.add_argument('--timeshift_ms', type=int, default=default_timeshift_ms)
     parser.add_argument('--average_window_duration_ms', type=int, default=default_average_window_duration_ms)
     args = parser.parse_args()
 
     mode_list = args.mode.strip().split(',')
     for mode_type in mode_list:
-        predict(args.input, args.epoch, mode_type, args.augmentation_on, args.timeshift_ms, args.average_window_duration_ms)
+        predict(args.input, args.epoch, mode_type, args.add_noise_on, args.timeshift_ms, args.average_window_duration_ms)
 
 
 if __name__ == "__main__":
