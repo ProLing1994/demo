@@ -282,7 +282,7 @@ def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_durat
     original_scores_pd = pd.DataFrame(original_scores)
     original_scores_pd.to_csv(os.path.join(output_dir, 'original_scores.csv'), index=False)
     mean_scores_pd = pd.DataFrame(mean_scores)
-    mean_scores_pd.to_csv(os.path.join(output_dir, 'mean_scores.csv'), index=False)
+    # mean_scores_pd.to_csv(os.path.join(output_dir, 'mean_scores.csv'), index=False)
     
     # show result
     show_score_line(input_wav.split('.')[0] + '.csv', os.path.join(output_dir, 'original_scores.csv'), positive_label[0])
@@ -298,17 +298,17 @@ def main():
     # default_input_wav = "/home/huanyuan/model/test_straming_wav/xiaoyu_03022018_training_60_001.wav"
     # default_input_wav = "/home/huanyuan/model/test_straming_wav/xiaoyu_03022018_validation_60_001.wav"
     # default_input_wav = "/home/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_60_001.wav"
-    # default_input_wav = "/home/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"
+    default_input_wav = "/home/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"
     # default_input_wav = "/home/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_3600_001.wav"
-    default_input_wav = "/home/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.wav"
+    # default_input_wav = "/home/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.wav"
 
     # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
     defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py"
     default_model_epoch = -1
-    # default_timeshift_ms = 30
-    # default_average_window_duration_ms = 800
-    default_timeshift_ms = 50
-    default_average_window_duration_ms = 2000
+    default_timeshift_ms = 30
+    default_average_window_duration_ms = 800
+    # default_timeshift_ms = 50
+    # default_average_window_duration_ms = 2000
     # default_detection_threshold = 0.8
     default_detection_threshold = 0.95
 
