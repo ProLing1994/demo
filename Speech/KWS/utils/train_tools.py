@@ -22,6 +22,7 @@ sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 # from dataset.kws.kws_dataset import SpeechDataset
 # from dataset.kws.kws_dataset_preprocess import SpeechDataset
 from dataset.kws.kws_dataset_preload_audio import SpeechDataset
+from utils.loss import FocalLoss
 
 def load_cfg_file(config_file):
   """
@@ -93,6 +94,10 @@ def define_loss_function(cfg):
   """
   if cfg.loss.name == 'softmax':
     loss_func = nn.CrossEntropyLoss()
+  elif cfg.loss.name == 'focal':
+    loss_func = FocalLoss(class_num=cfg.dataset.label.num_classes,
+                          alpha=cfg.loss.obj_weight,
+                          gamma=cfg.loss.focal_gamma)
   else:
     raise ValueError('Unsupported loss function.')
   return loss_func

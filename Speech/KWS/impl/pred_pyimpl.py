@@ -81,14 +81,7 @@ def kws_load_model(model_folder, gpu_id, epoch):
     return model
 
 
-def dataset_add_noise(cfg, data, bool_silence_label=False):
-    # init 
-    sample_rate = cfg.dataset.sample_rate
-    clip_duration_ms = cfg.dataset.clip_duration_ms
-    desired_samples = int(sample_rate * clip_duration_ms / 1000)
-    background_frequency = cfg.dataset.augmentation.background_frequency
-    background_volume = cfg.dataset.augmentation.background_volume
-
+def load_background_noise(cfg):
     # load noise data
     background_data_pd = pd.read_csv(cfg.general.background_data_path)
     input_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset_audio', BACKGROUND_NOISE_DIR_NAME)
@@ -98,20 +91,27 @@ def dataset_add_noise(cfg, data, bool_silence_label=False):
         f = open(os.path.join(input_dir, filename), 'rb')
         background_data.append(pickle.load(f))
         f.close()
+    return background_data
+
+
+def dataset_add_noise(cfg, data, background_data, bool_silence_label=False):
+    # init 
+    background_frequency = cfg.dataset.augmentation.background_frequency
+    background_volume = cfg.dataset.augmentation.background_volume
 
     # add noise
-    background_clipped = np.zeros(desired_samples)
+    background_clipped = np.zeros(len(data))
     background_volume_clipped = 0
 
     if len(background_data) > 0 and background_frequency > 0:
         background_index = np.random.randint(len(background_data))
         background_samples = background_data[background_index]
-        assert len(background_samples) >= desired_samples, \
-            "[ERROR:] Background sample is too short! Need more than {} samples but only {} were found".format(desired_samples, len(background_samples))
+        assert len(background_samples) >= len(data), \
+            "[ERROR:] Background sample is too short! Need more than {} samples but only {} were found".format(len(data), len(background_samples))
         background_offset = np.random.randint(
-            0, len(background_samples) - desired_samples - 1)
+            0, len(background_samples) - len(data) - 1)
         background_clipped = background_samples[background_offset:(
-            background_offset + desired_samples)]
+            background_offset + len(data))]
             
         if np.random.uniform(0, 1) < background_frequency or bool_silence_label:
             background_volume_clipped = np.random.uniform(0, background_volume)
