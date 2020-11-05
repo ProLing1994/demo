@@ -8,7 +8,7 @@ from tqdm import tqdm
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from utils.train_tools import *
 from dataset.kws.dataset_helper import *
-from impl.pred_pyimpl import dataset_add_noise
+from impl.pred_pyimpl import load_background_noise, dataset_add_noise
 
 def augmentation_test(config_file, output_dir):
     # mkdirs 
@@ -46,6 +46,8 @@ def augmentation_test(config_file, output_dir):
                             n_fft=window_size_samples, 
                             hop_length=window_stride_samples)
 
+    background_data = load_background_noise(cfg)
+
     for audio_index in tqdm(range(len(data_file_list))):
         # if audio_index > 10:
         #     continue
@@ -79,7 +81,7 @@ def augmentation_test(config_file, output_dir):
             data = np.pad(audio_data, (time_shift_left, time_shift_right), "constant")
             data = data[:len(data) - time_shift_left] if time_shift_left else data[time_shift_right:]
 
-            data = dataset_add_noise(cfg, data)
+            data = dataset_add_noise(cfg, data, background_data)
 
             # output wav 
             output_path = os.path.join(output_dir, filename.split('.')[0] + '_timeshift_{}.wav'.format(str(time_shift_amount)))

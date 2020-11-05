@@ -112,7 +112,11 @@ def main():
     # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_1_timeshift_spec_on_res15_11032020/infer_longterm_validation_augmentation_False_min.csv"]
     # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_1_timeshift_spec_on_res15_11032020/infer_longterm_average_validation_augmentation_False.csv"]
     # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_2_timeshift_spec_off_focal_res15_11032020/infer_longterm_validation_augmentation_False_min.csv"]
-    csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_2_timeshift_spec_off_focal_res15_11032020/infer_longterm_average_validation_augmentation_False.csv"]
+    # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_2_timeshift_spec_off_focal_res15_11032020/infer_longterm_average_validation_augmentation_False.csv"]
+    # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_3_timeshift_spec_on_focal_res15_11032020/infer_longterm_validation_augmentation_False_min.csv"]
+    # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_3_timeshift_spec_on_focal_res15_11032020/infer_longterm_average_validation_augmentation_False.csv"]
+    # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_4_timeshift_spec_on_focal_balanceweight_res15_11032020/infer_longterm_average_validation_augmentation_False.csv"]
+    csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_4_timeshift_spec_on_focal_balanceweight_res15_11032020/infer_longterm_validation_augmentation_False_min.csv"]
     color_list =  ["r", "g", "b"]
     linestyle_list =  ["-", "-", "-"]
     num_classes = 3

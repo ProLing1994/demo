@@ -11,7 +11,7 @@ from tqdm import tqdm
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from utils.train_tools import *
 from dataset.kws.dataset_helper import *
-from impl.pred_pyimpl import kws_load_model, dataset_add_noise, model_predict
+from impl.pred_pyimpl import kws_load_model, model_predict
 from script.analysis_result.plot_score_line import show_score_line
 from script.analysis_result.cal_fpr_tpr import cal_fpr_tpr
 
@@ -33,6 +33,7 @@ class RecognizeResult(object):
         self._is_new_command = False
         self._start_time = 0
         self._end_time = 0
+        self._response_time = 0
 
     @property
     def founded_command(self):
@@ -73,6 +74,14 @@ class RecognizeResult(object):
     @end_time.setter
     def end_time(self, value):
         self._end_time = value
+
+    @property
+    def response_time(self):
+        return self._response_time
+
+    @response_time.setter
+    def response_time(self, value):
+        self._response_time = value
 
 
 class RecognizeCommands(object):
@@ -145,7 +154,7 @@ class RecognizeCommands(object):
                                  current_time_ms, self._previous_results[0][0]))
 
         # Add the latest result to the head of the deque.
-        self._previous_results.append([current_time_ms, latest_results[0]])
+        self._previous_results.append([current_time_ms, latest_results[0], time.perf_counter()])
 
         # Prune any earlier results that are too old for the averaging window.
         time_limit = current_time_ms - self._average_window_duration_ms
@@ -182,6 +191,7 @@ class RecognizeCommands(object):
             recognize_element.start_time = self._previous_results[0][0]
             recognize_element.end_time = self._previous_results[-1][0]
             recognize_element.founded_command = self._labels[self._positove_lable_index]
+            recognize_element.response_time = self._previous_results[-1][2] - self._previous_results[0][2]
         else:
             recognize_element.is_new_command = False        
             recognize_element.founded_command = SILENCE_LABEL
@@ -213,7 +223,7 @@ def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_durat
     
     # mkdir 
     # output_dir = os.path.join(os.path.dirname(input_wav), os.path.basename(input_wav).split('.')[0])
-    output_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', os.path.basename(input_wav).split('.')[0])
+    output_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', os.path.basename(input_wav).split('.')[0] + '_threshold_{:.2f}'.format(detection_threshold))
     if not os.path.exists(output_dir):    
         os.makedirs(output_dir)
     
@@ -233,8 +243,9 @@ def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_durat
     mean_scores = [] 
     all_found_words = []
 
-    # record tiem
+    # record time
     start = time.perf_counter()
+    model_predict_time_list = []
 
     while(audio_data_offset < len(audio_data)):
         print('Done : [{}/{}]'.format(audio_data_offset, len(audio_data)),end='\r')
@@ -249,7 +260,10 @@ def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_durat
         audio_data_offset += timeshift_samples
 
         # model infer
+        model_predict_start_time = time.perf_counter()
         output_score = model_predict(cfg, net, input_data)
+        model_predict_end_time = time.perf_counter()
+        model_predict_time_list.append(model_predict_end_time - model_predict_start_time)
 
         # process result
         current_time_ms = int(input_start * 1000 / sample_rate)
@@ -261,7 +275,8 @@ def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_durat
             all_found_words_dict['start_time'] = recognize_element.start_time
             all_found_words_dict['end_time'] = recognize_element.end_time + clip_duration_ms
             all_found_words.append(all_found_words_dict)
-            print('Find words: label:{}, start time:{}, end time:{}'.format(all_found_words_dict['label'], all_found_words_dict['start_time'], all_found_words_dict['end_time']))
+            print('Find words: label:{}, start time:{}, end time:{}, response time: {:.2f}s'.format(
+                all_found_words_dict['label'], all_found_words_dict['start_time'], all_found_words_dict['end_time'], recognize_element.response_time))
 
             if bool_write_audio:
                 output_path = os.path.join(output_dir, 'label_{}_starttime_{}.wav'.format(all_found_words_dict['label'], all_found_words_dict['start_time']))
@@ -275,14 +290,15 @@ def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_durat
 
     # record time
     end = time.perf_counter()
-    print('Running time: %s Seconds'%(end - start))
+    print('Running time: {:.2f} Seconds'.format(end - start))
+    print('Model predict numbers: {}, average time: {:.3f}s'.format(len(model_predict_time_list), np.array(model_predict_time_list).sum() / len(model_predict_time_list)))
 
     found_words_pd = pd.DataFrame(all_found_words)
     found_words_pd.to_csv(os.path.join(output_dir, 'found_words.csv'), index=False)
     original_scores_pd = pd.DataFrame(original_scores)
     original_scores_pd.to_csv(os.path.join(output_dir, 'original_scores.csv'), index=False)
     mean_scores_pd = pd.DataFrame(mean_scores)
-    # mean_scores_pd.to_csv(os.path.join(output_dir, 'mean_scores.csv'), index=False)
+    mean_scores_pd.to_csv(os.path.join(output_dir, 'mean_scores.csv'), index=False)
     
     # show result
     show_score_line(input_wav.split('.')[0] + '.csv', os.path.join(output_dir, 'original_scores.csv'), positive_label[0])
@@ -292,7 +308,7 @@ def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_durat
 
 def main():
     """
-    使用模型对音频文件进行测试，模拟真实音频输入情况，配置为 --input 中的 config 文件，该脚本会通过滑窗的方式测试每一小段音频数据，计算连续 2000ms(41帧) 音频的平均值结果，
+    使用模型对音频文件进行测试，模拟真实音频输入情况，配置为 --input 中的 config 文件，该脚本会通过滑窗的方式测试每一小段音频数据，计算连续 800ms(27帧)/2000ms(41帧) 音频的平均值结果，
     如果超过预设门限，则认为检测到关键词，否则认定未检测到关键词，最后分别计算假阳性和召回率
     """
     # default_input_wav = "/home/huanyuan/model/test_straming_wav/xiaoyu_03022018_training_60_001.wav"
@@ -309,8 +325,8 @@ def main():
     default_average_window_duration_ms = 800
     # default_timeshift_ms = 50
     # default_average_window_duration_ms = 2000
-    # default_detection_threshold = 0.8
-    default_detection_threshold = 0.95
+    default_detection_threshold = 0.8
+    # default_detection_threshold = 0.95
 
     parser = argparse.ArgumentParser(description='Streamax KWS Testing Engine')
     parser.add_argument('--input_wav', type=str,
