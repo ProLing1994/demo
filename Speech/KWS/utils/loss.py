@@ -60,7 +60,8 @@ class FocalLoss(nn.Module):
             batch_loss = -alpha * log_probs
 
         if self.size_average:
-            loss = batch_loss.mean()
+            # loss = batch_loss.mean()
+            loss = batch_loss.sum()/mask.sum()
         else:
             loss = batch_loss.sum()
         return loss
