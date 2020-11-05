@@ -8,6 +8,7 @@ import sys
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from utils.train_tools import load_cfg_file
 from dataset.kws.dataset_helper import *
+from impl.pred_pyimpl import load_background_noise, dataset_add_noise
 
 
 def mix_in_audio_sample(track_data, track_offset, sample_data, sample_offset,
@@ -77,13 +78,29 @@ def straming_dataset_generator(input_dir, output_path, config_file, add_noise_on
 
     # Mix the background audio into the main track.
     if add_noise_on:
-        pass
+
+        background_data = load_background_noise(cfg)
+        output_offset = 0
+        while(output_offset < output_audio_sample_count):
+            print('Mix background audio, Done : [{}/{}]'.format(output_offset, output_audio_sample_count), end='\r')
+
+            if output_offset >= output_audio_sample_count:
+                break
+        
+            # load data
+            audio_data = np.zeros(desired_samples, dtype=np.float32)
+            audio_data = dataset_add_noise(cfg, audio_data, background_data)
+
+            audio_length = len(audio_data)
+            mix_in_audio_sample(output_audio, output_offset, audio_data, 0, audio_length, 1.0, 500, 500)
+            output_offset += audio_length
 
     # Mix the audio into the main track, noting their labels and positions.
+    print()
     output_file_list = [] # {'file': ..., 'label': ..., 'start_time': ..., 'end_time': ...}
     output_offset = 0
     while(output_offset < output_audio_sample_count):
-        print('Done : [{}/{}]'.format(output_offset, output_audio_sample_count),end='\r')
+        print('Mix audio, Done : [{}/{}]'.format(output_offset, output_audio_sample_count), end='\r')
 
         output_offset += word_gap_samples + np.random.randint(word_gap_samples)
         output_offset_ms = (output_offset * 1000) / sample_rate
@@ -127,22 +144,27 @@ def main():
     # mode: [0,1,2]
     # 0: from config file
     # 1: from folder 
-    default_mode = 0
-    # default_mode = 1
+    # default_mode = 0
+    default_mode = 1
 
     # only for mode==0, support for ['training','validation','testing']
     default_audio_mode = 'testing'
-    default_add_noise_on = False
+    default_add_noise_on = True
+
+    default_input_dir = '/home/huanyuan/data/speech/kws/weiboyulu/dataset'
+    default_output_path = '/home/huanyuan/model/test_straming_wav/weiboyulu_test_add_noise_3600_002.wav'
+    # default_input_dir = "/home/huanyuan/data/speech/kws/xiaoyu_dataset_03022018/XiaoYuDataset_10272020/"
+    # default_output_path = "/home/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_3600_001.wav"
+    # default_input_dir = "/home/huanyuan/data/speech/kws/xiaoyu_dataset_10292020/XiaoYuDataset_10292020/"
+    # default_output_path = "/home/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.wav"
+
+    # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
+    default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py"
 
     parser = argparse.ArgumentParser(description="Prepare XiaoYu Dataset")
-    # parser.add_argument('--input_dir', type=str, default='/home/huanyuan/data/speech/kws/weiboyulu/dataset')
-    # parser.add_argument('--output_path', type=str, default='/home/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav')
-    # parser.add_argument('--input_dir', type=str, default="/home/huanyuan/data/speech/kws/xiaoyu_dataset_03022018/XiaoYuDataset_10272020/")
-    # parser.add_argument('--output_path', type=str, default="/home/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_3600_001.wav")
-    parser.add_argument('--input_dir', type=str, default="/home/huanyuan/data/speech/kws/xiaoyu_dataset_10292020/XiaoYuDataset_10292020/")
-    parser.add_argument('--output_path', type=str, default="/home/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.wav")
-    # parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
-    parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py", help='config file')
+    parser.add_argument('--input_dir', type=str, default=default_input_dir)
+    parser.add_argument('--output_path', type=str, default=default_output_path)
+    parser.add_argument('--config_file', type=str, default=default_config_file, help='config file')
     parser.add_argument('--add_noise_on', type=bool, default=default_add_noise_on)
     parser.add_argument('--mode', type=int, default=default_mode)
     parser.add_argument('--audio_mode', type=str, default=default_audio_mode)

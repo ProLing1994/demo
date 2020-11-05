@@ -127,7 +127,7 @@ class SpeechDataset(Dataset):
 
     # Time shift enhancement multiple of negative samples
     time_shift_samples = self.time_shift_samples
-    if audio_label_idx == SILENCE_INDEX or audio_label_idx == UNKNOWN_WORD_INDEX:
+    if audio_label_idx == UNKNOWN_WORD_INDEX:
       time_shift_samples *= self.time_shift_multiple
 
     if time_shift_samples > 0:
@@ -171,7 +171,10 @@ class SpeechDataset(Dataset):
     # begin_t = time.time()
 
     # alignment data
-    data = np.pad(data, (0, max(0, self.desired_samples - len(data))), "constant")
+    data_length = len(data)
+    data = np.pad(data, (max(0, (self.desired_samples - data_length)//2), 0), "constant")
+    data = np.pad(data, (0, max(0, (self.desired_samples - data_length + 1)//2)), "constant")
+
     if len(data) > self.desired_samples:
       data_offset = np.random.randint(0, len(data) - self.desired_samples - 1)
       data = data[data_offset:(data_offset + self.desired_samples)]
