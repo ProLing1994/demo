@@ -149,10 +149,12 @@ def main():
 
     # only for mode==0, support for ['training','validation','testing']
     default_audio_mode = 'testing'
+    # default_add_noise_on = False
     default_add_noise_on = True
 
     default_input_dir = '/home/huanyuan/data/speech/kws/weiboyulu/dataset'
-    default_output_path = '/home/huanyuan/model/test_straming_wav/weiboyulu_test_add_noise_3600_002.wav'
+    # default_output_path = '/home/huanyuan/model/test_straming_wav/weiboyulu_test_43200_003.wav'
+    default_output_path = '/home/huanyuan/model/test_straming_wav/weiboyulu_test_add_noise_43200_004.wav'
     # default_input_dir = "/home/huanyuan/data/speech/kws/xiaoyu_dataset_03022018/XiaoYuDataset_10272020/"
     # default_output_path = "/home/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_3600_001.wav"
     # default_input_dir = "/home/huanyuan/data/speech/kws/xiaoyu_dataset_10292020/XiaoYuDataset_10292020/"
@@ -168,7 +170,7 @@ def main():
     parser.add_argument('--add_noise_on', type=bool, default=default_add_noise_on)
     parser.add_argument('--mode', type=int, default=default_mode)
     parser.add_argument('--audio_mode', type=str, default=default_audio_mode)
-    parser.add_argument('--test_duration_seconds', type=int, default=3600)
+    parser.add_argument('--test_duration_seconds', type=int, default=43200) # 12 hours
     parser.add_argument('--word_gap_ms', type=int, default=3000)
     args = parser.parse_args()
     straming_dataset_generator(args.input_dir, args.output_path, args.config_file, args.add_noise_on, args.mode, args.audio_mode, args.test_duration_seconds, args.word_gap_ms)

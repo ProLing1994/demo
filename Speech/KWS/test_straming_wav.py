@@ -314,9 +314,12 @@ def main():
     # default_input_wav = "/home/huanyuan/model/test_straming_wav/xiaoyu_03022018_training_60_001.wav"
     # default_input_wav = "/home/huanyuan/model/test_straming_wav/xiaoyu_03022018_validation_60_001.wav"
     # default_input_wav = "/home/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_60_001.wav"
-    default_input_wav = "/home/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"
     # default_input_wav = "/home/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_3600_001.wav"
     # default_input_wav = "/home/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.wav"
+    # default_input_wav = "/home/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"
+    # default_input_wav = "/home/huanyuan/model/test_straming_wav/weiboyulu_test_add_noise_3600_002.wav"
+    default_input_wav_list = ["/home/huanyuan/model/test_straming_wav/weiboyulu_test_43200_003.wav",
+                            "/home/huanyuan/model/test_straming_wav/weiboyulu_test_add_noise_43200_004.wav"]
 
     # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
     defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py"
@@ -325,12 +328,12 @@ def main():
     default_average_window_duration_ms = 800
     # default_timeshift_ms = 50
     # default_average_window_duration_ms = 2000
-    default_detection_threshold = 0.8
-    # default_detection_threshold = 0.95
+    # default_detection_threshold = 0.8
+    default_detection_threshold = 0.95
 
     parser = argparse.ArgumentParser(description='Streamax KWS Testing Engine')
-    parser.add_argument('--input_wav', type=str,
-                        default=default_input_wav)
+    parser.add_argument('--input_wav_list', type=str,
+                        default=default_input_wav_list)
     parser.add_argument('--config_file', type=str,
                         default=defaule_config_file)
     parser.add_argument('--model_epoch', type=str, default=default_model_epoch)
@@ -342,8 +345,11 @@ def main():
                         type=int, default=default_detection_threshold)
     args = parser.parse_args()
 
-    test(args.input_wav, args.config_file, args.model_epoch,
-         args.timeshift_ms, args.average_window_duration_ms, args.detection_threshold)
+    for input_wav in args.input_wav_list:
+        print("Do wave:{}, begin!!!".format(input_wav))
+        test(input_wav, args.config_file, args.model_epoch,
+            args.timeshift_ms, args.average_window_duration_ms, args.detection_threshold)
+        print("Do wave:{}, Done!!!".format(input_wav))
 
 
 if __name__ == "__main__":
