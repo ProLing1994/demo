@@ -10,7 +10,11 @@ from common.utils.python.metrics_tools import *
 def cal_fpr_tpr(src_csv, pst_csv, positive_label, bool_write_audio):
     # laod csv
     src_pd = pd.read_csv(src_csv)
-    pst_pd = pd.read_csv(pst_csv)
+    try:
+        pst_pd = pd.read_csv(pst_csv)
+    except BaseException:
+        print("Empty csv: {}".format(pst_csv))
+        return 
 
     src_list = []
     for _, row in src_pd.iterrows():
