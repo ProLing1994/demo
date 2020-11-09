@@ -135,7 +135,7 @@ def cal_fpr_tpr(src_csv, pst_csv, positive_label, bool_write_audio):
 
 if __name__ == "__main__":
     bool_write_audio = True
-    cal_fpr_tpr("/home/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.csv", 
-                "/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu2_0_res15_10292020/test_straming_wav/xiaoyu_10292020_testing_3600_001/found_words.csv",
+    cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.csv",
+                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_6_timeshift_spec_on_mask_2_focal_res15_11032020/test_straming_wav/xiaoyu_10292020_testing_3600_001_threshold_0_95/found_words.csv",
                 "xiaoyu",
                 bool_write_audio)
