@@ -158,7 +158,7 @@ def model_predict(cfg, model, data):
     data_size_h = cfg.dataset.data_size[1]
     data_size_w = cfg.dataset.data_size[0]
 
-    # audio preprocess, laod mfcc data
+    # audio preprocess, load mfcc data
     data = audio_preprocess(cfg, data)
 
     # to tensor

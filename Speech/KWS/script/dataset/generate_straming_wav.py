@@ -149,31 +149,67 @@ def main():
 
     # only for mode==0, support for ['training','validation','testing']
     default_audio_mode = 'testing'
-    # default_add_noise_on = False
-    default_add_noise_on = True
+    default_add_noise_on = False
+    # default_add_noise_on = True
 
-    default_input_dir = '/home/huanyuan/data/speech/kws/weiboyulu/dataset'
-    # default_output_path = '/home/huanyuan/model/test_straming_wav/weiboyulu_test_43200_003.wav'
-    default_output_path = '/home/huanyuan/model/test_straming_wav/weiboyulu_test_add_noise_43200_004.wav'
-    # default_input_dir = "/home/huanyuan/data/speech/kws/xiaoyu_dataset_03022018/XiaoYuDataset_10272020/"
-    # default_output_path = "/home/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_3600_001.wav"
-    # default_input_dir = "/home/huanyuan/data/speech/kws/xiaoyu_dataset_10292020/XiaoYuDataset_10292020/"
-    # default_output_path = "/home/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.wav"
+    # default_input_dir = '/mnt/huanyuan/data/speech/kws/weiboyulu/dataset'
+    # default_output_path_list = ['/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_43200_003.wav']
+    # default_output_path_list = ['/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_add_noise_43200_004.wav']
+    # default_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_03022018/XiaoYuDataset_10272020/"
+    # default_output_path_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_3600_001.wav"]
+    # default_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_10292020/XiaoYuDataset_10292020/"
+    # default_output_path_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.wav"]
+
+    # default_input_dir = '/mnt/huanyuan/data/speech/Negative_sample/QingTingFM/history/baijiajiangtan'
+    # default_output_path_list = ['/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_baijiajiangtan_21600_001.wav']
+    # default_input_dir =  "/mnt/huanyuan/data/speech/Negative_sample/QingTingFM/history/jinpingmei/"
+    # default_output_path_list = ['/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_jinpingmei_7200_001.wav']
+    # default_input_dir =  "/mnt/huanyuan/data/speech/Negative_sample/QingTingFM/history/yeshimiwen/"
+    # default_output_path_list = ['/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_yeshimiwen_43200_001.wav',
+    #                             '/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_yeshimiwen_43200_002.wav',
+    #                             '/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_yeshimiwen_43200_003.wav',
+    #                             '/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_yeshimiwen_43200_004.wav',
+    #                             '/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_yeshimiwen_43200_005.wav']
+    # default_input_dir =  "/mnt/huanyuan/data/speech/Negative_sample/QingTingFM/history/zhongdongwangshi/"
+    # default_output_path_list = ['/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_zhongdongwangshi_7200_001.wav']
+    # default_input_dir =  "/mnt/huanyuan/data/speech/Negative_sample/QingTingFM/news/cishicike/"
+    # default_output_path_list = ['/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_news_cishicike_43200_001.wav',
+    #                             '/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_news_cishicike_43200_002.wav',
+    #                             '/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_news_cishicike_43200_003.wav']
+    # default_input_dir =  "/mnt/huanyuan/data/speech/Negative_sample/QingTingFM/music_station/qingtingkongzhongyinyuebang/"
+    # default_output_path_list = ['/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_43200_008.wav',
+    #                             '/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_43200_009.wav',
+    #                             '/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_43200_010.wav',]
+    # default_input_dir =  "/mnt/huanyuan/data/speech/Negative_sample/QingTingFM/novel/douluodalu/"
+    # default_output_path_list = ['/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_novel_douluodalu_43200_006.wav',
+    #                             '/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_novel_douluodalu_43200_007.wav',
+    #                             '/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_novel_douluodalu_43200_008.wav',
+    #                             '/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_novel_douluodalu_43200_009.wav',
+    #                             '/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_novel_douluodalu_43200_010.wav',]
+    default_input_dir =  "/mnt/huanyuan/data/speech/Negative_sample/QingTingFM/music/xingetuijian/"
+    default_output_path_list = ['/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_xingetuijian_21600_001.wav']
 
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
     default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py"
 
     parser = argparse.ArgumentParser(description="Prepare XiaoYu Dataset")
     parser.add_argument('--input_dir', type=str, default=default_input_dir)
-    parser.add_argument('--output_path', type=str, default=default_output_path)
+    parser.add_argument('--output_path_list', type=str, default=default_output_path_list)
     parser.add_argument('--config_file', type=str, default=default_config_file, help='config file')
     parser.add_argument('--add_noise_on', type=bool, default=default_add_noise_on)
     parser.add_argument('--mode', type=int, default=default_mode)
     parser.add_argument('--audio_mode', type=str, default=default_audio_mode)
-    parser.add_argument('--test_duration_seconds', type=int, default=43200) # 12 hours
-    parser.add_argument('--word_gap_ms', type=int, default=3000)
+    # parser.add_argument('--test_duration_seconds', type=int, default=43200) # 12 hours
+    parser.add_argument('--test_duration_seconds', type=int, default=21600) # 6 hours
+    # parser.add_argument('--test_duration_seconds', type=int, default=7200) # 2 hours
+    # parser.add_argument('--word_gap_ms', type=int, default=3000)
+    parser.add_argument('--word_gap_ms', type=int, default=1000)
     args = parser.parse_args()
-    straming_dataset_generator(args.input_dir, args.output_path, args.config_file, args.add_noise_on, args.mode, args.audio_mode, args.test_duration_seconds, args.word_gap_ms)
+    
+    for output_path in args.output_path_list:
+        print("Do wave:{}, begin!!!".format(output_path))
+        straming_dataset_generator(args.input_dir, output_path, args.config_file, args.add_noise_on, args.mode, args.audio_mode, args.test_duration_seconds, args.word_gap_ms)
+        print("Do wave:{}, done!!!".format(output_path))
 
 
 if __name__ == "__main__":
