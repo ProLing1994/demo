@@ -142,13 +142,15 @@ def audio_preprocess(cfg, data):
                                         hop_length=window_stride_samples)
 
     # check 
-    assert audio_preprocess_type in ["mfcc", "pcen"], "[ERROR:] Audio preprocess type is wronge, please check"
+    assert audio_preprocess_type in ["mfcc", "pcen", "fbank"], "[ERROR:] Audio preprocess type is wronge, please check"
 
     # preprocess
     if audio_preprocess_type == "mfcc":
       audio_data = audio_processor.compute_mfccs(data)
     elif audio_preprocess_type == "pcen":
       audio_data = audio_processor.compute_pcen(data)
+    elif audio_preprocess_type == "fbank":
+      audio_data = audio_processor.compute_fbanks(data)
     return audio_data 
 
 
