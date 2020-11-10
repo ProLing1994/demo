@@ -114,8 +114,8 @@ def main():
     parser.add_argument('--config_file', type=str, default=default_config_file, nargs='?', help='config file')
     parser.add_argument('--input_wav_list', type=str, default=default_input_wav_list)
     args = parser.parse_args()
-    put_together(args.config_file, args.input_wav_list)
-    cal_features(args.config_file)
+    # put_together(args.config_file, args.input_wav_list)
+    # cal_features(args.config_file)
     plot_score(args.config_file, args.input_wav_list)
 
 if __name__ == '__main__':

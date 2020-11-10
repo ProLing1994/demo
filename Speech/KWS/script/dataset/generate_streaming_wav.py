@@ -40,7 +40,7 @@ def mix_in_audio_sample(track_data, track_offset, sample_data, sample_offset,
         track_data[track_offset + i] += sample_input * envelope_scale * sample_volume
 
 
-def straming_dataset_generator(input_dir, output_path, config_file, add_noise_on, mode, audio_mode, test_duration_seconds, word_gap_ms):
+def straming_dataset_generator(input_dir, output_path, nosed_csv, config_file, add_noise_on, mode, audio_mode, test_duration_seconds, word_gap_ms):
     # load configuration file
     cfg = load_cfg_file(config_file)
 
@@ -51,6 +51,8 @@ def straming_dataset_generator(input_dir, output_path, config_file, add_noise_on
     output_audio_sample_count = sample_rate * test_duration_seconds
     output_audio = np.zeros((output_audio_sample_count,), dtype=np.float32)
     word_gap_samples = int((word_gap_ms * sample_rate) / 1000)
+
+    # mkdir
     if not os.path.exists(os.path.dirname(output_path)):
         os.makedirs(os.path.dirname(output_path))
 
@@ -71,6 +73,18 @@ def straming_dataset_generator(input_dir, output_path, config_file, add_noise_on
         for file in file_list:
             audio_dict = {}
             audio_dict['file'] = os.path.join(input_dir, file)
+            audio_dict['label'] = UNKNOWN_WORD_LABEL
+            audio_list.append(audio_dict)
+    elif mode == 2:
+        print("Generator Straming Dataset From No used csv")
+        # init 
+        start_idx = 0
+
+        data_pd = pd.read_csv(nosed_csv)
+        data_pd.sort_values(by='file', inplace=True)
+        for _, row in data_pd.iterrows():
+            audio_dict = {}
+            audio_dict['file'] = row['file']
             audio_dict['label'] = UNKNOWN_WORD_LABEL
             audio_list.append(audio_dict)
     else:
@@ -115,6 +129,14 @@ def straming_dataset_generator(input_dir, output_path, config_file, add_noise_on
             data_index = np.random.randint(len(audio_list))
             found_data = audio_list[data_index]['file']
             found_label = audio_list[data_index]['label']
+        elif mode == 2:
+            data_index = start_idx
+            if data_index >= len(audio_list):
+                break
+
+            found_data = audio_list[data_index]['file']
+            found_label = audio_list[data_index]['label']
+            start_idx += 1
         else:
             pass 
         
@@ -144,14 +166,18 @@ def main():
     # mode: [0,1,2]
     # 0: from config file
     # 1: from folder 
+    # 2: from no used csv 
     # default_mode = 0
-    default_mode = 1
+    # default_mode = 1 
+    default_mode = 2
 
-    # only for mode==0, support for ['training','validation','testing']
-    default_audio_mode = 'testing'
     default_add_noise_on = False
     # default_add_noise_on = True
 
+    # only for mode==0, support for ['training','validation','testing']
+    default_audio_mode = 'testing'
+
+    # only for mode==1, from folder
     # default_input_dir = '/mnt/huanyuan/data/speech/kws/weiboyulu/dataset'
     # default_output_path_list = ['/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_43200_003.wav']
     # default_output_path_list = ['/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_add_noise_43200_004.wav']
@@ -186,15 +212,21 @@ def main():
     #                             '/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_novel_douluodalu_43200_008.wav',
     #                             '/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_novel_douluodalu_43200_009.wav',
     #                             '/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_novel_douluodalu_43200_010.wav',]
+    # default_input_dir =  "/mnt/huanyuan/data/speech/Negative_sample/QingTingFM/music/xingetuijian/"
+    # default_output_path_list = ['/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_xingetuijian_21600_001.wav']
+    
+    # only for mode==2, from no used csv 
     default_input_dir =  "/mnt/huanyuan/data/speech/Negative_sample/QingTingFM/music/xingetuijian/"
-    default_output_path_list = ['/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_xingetuijian_21600_001.wav']
-
+    default_output_path_list = ['/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_music_xingetuijian_21600_noused_001.wav']
+    default_nosed_csv = "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/QingTingFM_music_xingetuijian_21600_noused.csv"
+    
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
     default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py"
 
     parser = argparse.ArgumentParser(description="Prepare XiaoYu Dataset")
     parser.add_argument('--input_dir', type=str, default=default_input_dir)
     parser.add_argument('--output_path_list', type=str, default=default_output_path_list)
+    parser.add_argument('--nosed_csv', type=str, default=default_nosed_csv)
     parser.add_argument('--config_file', type=str, default=default_config_file, help='config file')
     parser.add_argument('--add_noise_on', type=bool, default=default_add_noise_on)
     parser.add_argument('--mode', type=int, default=default_mode)
@@ -208,7 +240,7 @@ def main():
     
     for output_path in args.output_path_list:
         print("Do wave:{}, begin!!!".format(output_path))
-        straming_dataset_generator(args.input_dir, output_path, args.config_file, args.add_noise_on, args.mode, args.audio_mode, args.test_duration_seconds, args.word_gap_ms)
+        straming_dataset_generator(args.input_dir, output_path, args.nosed_csv, args.config_file, args.add_noise_on, args.mode, args.audio_mode, args.test_duration_seconds, args.word_gap_ms)
         print("Do wave:{}, done!!!".format(output_path))
 
 

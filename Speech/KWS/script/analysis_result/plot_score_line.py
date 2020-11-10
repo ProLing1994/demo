@@ -115,11 +115,11 @@ def show_score_line_find_words(src_csv, pst_csv, find_words_csv, output_dir, pos
         plot_y_pst = np.zeros(plot_x.shape)
         for x_idx in range(plot_x.shape[0]):
             for src_idx in range(len(src_list)):
-                if plot_x[x_idx] > src_list[src_idx]['start_time'] and plot_x[x_idx] < src_list[src_idx]['end_time'] and src_list[idx]['label'] == positive_label:
+                if plot_x[x_idx] > src_list[src_idx]['start_time'] and plot_x[x_idx] < src_list[src_idx]['end_time'] and src_list[src_idx]['label'] == positive_label:
                     plot_y_src_positive[x_idx] = 1
                     break
 
-                if plot_x[x_idx] > src_list[src_idx]['start_time'] and plot_x[x_idx] < src_list[src_idx]['end_time'] and src_list[idx]['label'] != positive_label:
+                if plot_x[x_idx] > src_list[src_idx]['start_time'] and plot_x[x_idx] < src_list[src_idx]['end_time'] and src_list[src_idx]['label'] != positive_label:
                     plot_y_src_negative[x_idx] = 1
                     break
 
@@ -137,11 +137,11 @@ def show_score_line_find_words(src_csv, pst_csv, find_words_csv, output_dir, pos
     return
 
 if __name__ == "__main__":
-    # show_score_line("/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_training_60_001.csv", 
-    #                 "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_3_timeshift_spec_on_focal_res15_11032020/test_straming_wav/xiaoyu_03022018_training_60_001_threshold_0_95/mean_scores.csv",
-    #                 "xiaoyu")
-    show_score_line_find_words("/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_training_60_001.csv", 
-                                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_3_timeshift_spec_on_focal_res15_11032020/test_straming_wav/xiaoyu_03022018_training_60_001_threshold_0_95/mean_scores.csv",
-                                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_3_timeshift_spec_on_focal_res15_11032020/test_straming_wav/xiaoyu_03022018_training_60_001_threshold_0_95/found_words.csv",
-                                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_3_timeshift_spec_on_focal_res15_11032020/test_straming_wav/error_results/",
-                                "xiaoyu")
+    show_score_line("/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_training_60_001.csv", 
+                    "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_0_fbank_timeshift_spec_on_focal_res15_11032020/test_straming_wav/xiaoyu_03022018_training_60_001_threshold_0_95/original_scores.csv",
+                    "xiaoyu")
+    # show_score_line_find_words("/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_training_60_001.csv", 
+    #                             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_3_timeshift_spec_on_focal_res15_11032020/test_straming_wav/xiaoyu_03022018_training_60_001_threshold_0_95/mean_scores.csv",
+    #                             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_3_timeshift_spec_on_focal_res15_11032020/test_straming_wav/xiaoyu_03022018_training_60_001_threshold_0_95/found_words.csv",
+    #                             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_3_timeshift_spec_on_focal_res15_11032020/test_straming_wav/error_results/",
+    #                             "xiaoyu")
