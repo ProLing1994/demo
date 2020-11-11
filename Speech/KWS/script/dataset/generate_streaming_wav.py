@@ -76,7 +76,7 @@ def straming_dataset_generator(input_dir, output_path, nosed_csv, config_file, a
             audio_dict['label'] = UNKNOWN_WORD_LABEL
             audio_list.append(audio_dict)
     elif mode == 2:
-        print("Generator Straming Dataset From No used csv")
+        print("Generator Straming Dataset From Unused Csv")
         # init 
         start_idx = 0
 
@@ -166,7 +166,7 @@ def main():
     # mode: [0,1,2]
     # 0: from config file
     # 1: from folder 
-    # 2: from no used csv 
+    # 2: from unused csv 
     # default_mode = 0
     # default_mode = 1 
     default_mode = 2
@@ -215,7 +215,7 @@ def main():
     # default_input_dir =  "/mnt/huanyuan/data/speech/Negative_sample/QingTingFM/music/xingetuijian/"
     # default_output_path_list = ['/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_xingetuijian_21600_001.wav']
     
-    # only for mode==2, from no used csv 
+    # only for mode==2, from unused csv 
     default_input_dir =  "/mnt/huanyuan/data/speech/Negative_sample/QingTingFM/music/xingetuijian/"
     default_output_path_list = ['/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_music_xingetuijian_21600_noused_001.wav']
     default_nosed_csv = "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/QingTingFM_music_xingetuijian_21600_noused.csv"

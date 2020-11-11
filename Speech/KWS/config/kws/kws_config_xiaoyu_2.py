@@ -43,7 +43,8 @@ __C.general.is_test = True
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_4_timeshift_spec_on_focal_balanceweight_res15_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_5_timeshift_spec_on_focal_res15_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_6_timeshift_spec_on_mask_2_focal_res15_11032020/"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_0_fbank_timeshift_spec_on_focal_res15_11032020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_0_fbank_timeshift_spec_on_focal_res15_11032020/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_1_fbank_timeshift_up_spec_on_focal_res15_11032020/"
 
 # set certain epoch to continue training, set -1 to train from scratch
 __C.general.resume_epoch = -1

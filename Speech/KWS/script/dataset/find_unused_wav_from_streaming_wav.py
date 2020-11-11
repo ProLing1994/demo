@@ -2,7 +2,7 @@ import argparse
 import os 
 import pandas as pd
 
-def find_no_use_wav(input_dir, input_csv_list):
+def find_unuse_wav(input_dir, input_csv_list):
     file_list = os.listdir(input_dir)
 
     # load used file
@@ -77,7 +77,7 @@ def main():
     parser.add_argument('--input_csv_list', type=str, default=default_input_csv_list)
     args = parser.parse_args()
     
-    find_no_use_wav(args.input_dir, args.input_csv_list)
+    find_unuse_wav(args.input_dir, args.input_csv_list)
 
 if __name__ == "__main__":
     main()
