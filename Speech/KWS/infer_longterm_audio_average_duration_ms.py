@@ -151,7 +151,7 @@ def main():
     # default_mode = "testing,validation,training"
     # default_mode = "testing,validation"
     default_mode = "validation"
-    default_model_epoch = 7950
+    default_model_epoch = -1
     # default_add_noise_on = True
     default_add_noise_on = False
     default_timeshift_ms = 30

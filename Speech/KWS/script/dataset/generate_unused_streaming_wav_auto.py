@@ -32,7 +32,7 @@ def straming_dataset_generator(input_dir, output_format, nosed_csv, config_file,
     # mode
     audio_list = [] # {'file': ..., 'label': ...}
     if mode == 2:
-        print("Generator Straming Dataset From No Used Csv: {}".format(nosed_csv))
+        print("Generator Straming Dataset From Unused Csv: {}".format(nosed_csv))
         data_pd = pd.read_csv(nosed_csv)
         data_pd.sort_values(by='file', inplace=True)
         for _, row in data_pd.iterrows():
@@ -101,12 +101,12 @@ def main():
     # mode: [0,1,2]
     # 0: from config file
     # 1: from folder 
-    # 2: from no used csv 
+    # 2: from unused csv 
     # default_mode = 0
     # default_mode = 1 
     default_mode = 2
     
-    # only for mode==2, from no used csv 
+    # only for mode==2, from unused csv 
     # default_input_dir = '/mnt/huanyuan/data/speech/Negative_sample/QingTingFM/history/baijiajiangtan'
     # default_output_format = '/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_history_baijiajiangtan_21600_noused_'
     # default_nosed_csv = "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/QingTingFM_history_baijiajiangtan_21600_noused.csv"
