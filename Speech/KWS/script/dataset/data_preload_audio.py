@@ -119,6 +119,32 @@ def preload_background_audio(config_file):
   print("Preload background audio Done!")
 
 
+def preload_audio_folder(config_file, input_dir, output_dir):
+    print("Start preload folder audio: ")
+
+    # load configuration file
+    cfg = load_cfg_file(config_file)
+
+    # init 
+    sample_rate = cfg.dataset.sample_rate
+
+    # load data list
+    data_list = os.listdir(input_dir)
+
+    # output
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    for data_idx in range(len(data_list)):
+        data_path = os.path.join(input_dir, data_list[data_idx])
+        audio_data = librosa.core.load(data_path, sr=sample_rate)[0]
+        filename = os.path.basename(data_list[data_idx]).split('.')[0] + '.txt'
+        write_audio(audio_data, os.path.join(output_dir, filename))
+        print("Save Results: {}".format(filename))
+
+    print("Preload background audio Done!")
+
+
 def main():
   parser = argparse.ArgumentParser(description='Streamax KWS Data Split Engine')
   # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config.py", help='config file')
@@ -130,6 +156,11 @@ def main():
   args = parser.parse_args()
   preload_audio(args.input, args.mode)
   # preload_background_audio(args.input)
+
+  # preload audio from folder
+#   input_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/difficult_sample_mining_11122020/audio/"
+#   output_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/difficult_sample_mining_11122020/preload_data/"
+#   preload_audio_folder(args.input, input_dir, output_dir)
 
 
 if __name__ == "__main__":

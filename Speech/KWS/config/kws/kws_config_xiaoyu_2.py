@@ -15,20 +15,22 @@ __C.general.data_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/Xi
 # __C.general.data_dir = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/XiaoYuDataset_11032020"
 
 # data version
-__C.general.version = "2.0"
+__C.general.version = "2.2"
 
 # data date
-__C.general.date = "11112020"
+__C.general.date = "11122020"
 
 # data path
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_1.0_11032020/total_data_files.csv"
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.0_11112020/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.2_11122020/total_data_files.csv"
 # __C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_1.0_11032020/total_data_files.csv"
+# __C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.0_11112020/total_data_files.csv"
 
 # background noise path
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_1.0_11032020/background_noise_files.csv"
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.0_11112020/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.2_11122020/background_noise_files.csv"
 # __C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_1.0_11032020/background_noise_files.csv"
+# __C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.0_11112020/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -41,12 +43,20 @@ __C.general.is_test = True
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_0_timeshift_enhancement_multiple_res15_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_1_timeshift_spec_on_res15_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_2_timeshift_spec_off_focal_res15_11032020/"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_3_timeshift_spec_on_focal_res15_11032020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_3_timeshift_spec_on_focal_res15_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_4_timeshift_spec_on_focal_balanceweight_res15_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_5_timeshift_spec_on_focal_res15_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_6_timeshift_spec_on_mask_2_focal_res15_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_0_fbank_timeshift_spec_on_focal_res15_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_1_fbank_timeshift_up_spec_on_focal_res15_11032020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_0_timeshift_spec_on_res15_11032020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_1_fbank_timeshift_spec_on_res15_11032020/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu_mining_difficult_sample_11122020/"
+
+# finrtune model
+__C.general.finetune_on = False
+__C.general.finetune_model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_3_timeshift_spec_on_focal_res15_11032020/"
+__C.general.finetune_epoch = 7999
 
 # set certain epoch to continue training, set -1 to train from scratch
 __C.general.resume_epoch = -1
@@ -158,7 +168,7 @@ __C.loss = {}
 __C.loss.name = 'focal'
 
 # the weight matrix for each class in focal loss, including background class
-__C.loss.obj_weight = np.array([[1/9, 0, 0], [0, 1/9, 0], [0, 0, 6/9]])
+__C.loss.obj_weight = np.array([[1/9, 0, 0], [0, 1/9, 0], [0, 0, 7/9]])
 
 # the gamma parameter in focal loss
 __C.loss.focal_gamma = 2
@@ -189,18 +199,18 @@ __C.train = {}
 # __C.train.num_epochs = 16000
 # __C.train.num_epochs = 8000
 # __C.train.num_epochs = 4000
-__C.train.num_epochs = 1
+__C.train.num_epochs = 10
 
 # the number of samples in a batch
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 1024
-# __C.train.batch_size = 256
-__C.train.batch_size = 16
+__C.train.batch_size = 64
+# __C.train.batch_size = 16
 
 # the number of threads for IO
 # __C.train.num_threads = 64
-# __C.train.num_threads = 16
-__C.train.num_threads = 1
+__C.train.num_threads = 16
+# __C.train.num_threads = 1
 
 # the number of batches to update loss curve
 __C.train.plot_snapshot = 5
@@ -216,7 +226,8 @@ __C.train.save_epochs = 25
 
 # learning rate = lr*gamma**(epoch//step_size)
 # __C.train.lr = 1e-3
-__C.train.lr = 1e-4
+# __C.train.lr = 1e-4
+__C.train.lr = 1e-5
 
 # step size for step learning rate
 __C.train.lr_step_size = 0

@@ -48,7 +48,7 @@ def prepare_dataset_csv(config_file, original_dataset_dir):
     difficult_sample_files = []          # {'label': [], 'file': [], 'mode': []}
 
     # Look through difficult sample to find audio samples
-    search_path = os.path.join(os.path.dirname(cfg.general.data_dir), 'difficult_sample_mining_{}/*'.format(cfg.general.date), '*.wav')
+    search_path = os.path.join(os.path.dirname(cfg.general.data_dir), 'difficult_sample_mining_{}/clean_audio/'.format(cfg.general.date), '*.wav')
     for wav_path in glob.glob(search_path):
         # Divide training, test and verification set
         set_index = random_index(validation_percentage, testing_percentage)

@@ -1,27 +1,20 @@
 import glob
 import os
+import pandas as pd
 import shutil
-from tqdm import tqdm 
 
 if __name__ == '__main__':
-  input_dir = "/home/huanyuan/data/images/Face/busface/"
-  output_dir = "/home/huanyuan/data/images/Face/busface_total"
+    input_csv = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu_mining_difficult_sample_11122020/infer_difficult_sample_mining_11112020.csv"
+    input_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/difficult_sample_mining_11122020/audio/"
+    output_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/difficult_sample_mining_11122020/clean_audio/"
 
-  if not os.path.exists(output_dir):
-    os.mkdir(output_dir)
-  
-  image_list = glob.glob(os.path.join(input_dir, '*/*/' +'*.jpg'))
-  total_image_list = []
-  total_image_path_list = []
-  for idx in tqdm(range(len(image_list))):
-    print(image_list[idx])
-    image_name = os.path.basename(image_list[idx])
-    folder_name = os.path.basename(os.path.dirname(image_list[idx]))
-    mask_name = os.path.basename(os.path.dirname(os.path.dirname(image_list[idx])))
-    image_name = mask_name + '_' + folder_name + '_' + image_name
-    assert image_name not in total_image_list, "{}".format(image_list[idx])
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
 
-    total_image_list.append(image_name)
-    total_image_path_list.append(image_list[idx])
-    shutil.copy(image_list[idx], os.path.join(output_dir, image_name))
-  print()
+    files_pd = pd.read_csv(input_csv)
+    for _, row in files_pd.iterrows():
+        if row['prob_1'] <= 0.9:
+            input_path = os.path.join(input_dir, os.path.basename(row['file']).split('.')[0] + '.wav')
+            output_path = os.path.join(output_dir, os.path.basename(row['file']).split('.')[0] + '.wav')
+            print(input_path, '->', output_path)
+            shutil.copy(input_path, output_path)
