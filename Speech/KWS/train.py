@@ -71,8 +71,12 @@ def train(config_file):
   # define loss function
   loss_func = define_loss_function(cfg)
 
-  # load checkpoint if resume epoch > 0
-  if cfg.general.resume_epoch >= 0:
+  # load checkpoint if finetune_on == True or resume epoch > 0
+  if cfg.general.finetune_on == True:
+    last_save_epoch, start_batch = load_checkpoint(cfg.general.finetune_epoch, net,  
+                                                  cfg.general.finetune_model_dir)
+    start_epoch, last_save_epoch, start_batch = 0, 0, 0
+  elif cfg.general.resume_epoch >= 0:
     last_save_epoch, start_batch= load_checkpoint(cfg.general.resume_epoch, net,
                                                   cfg.general.save_dir)
     start_epoch = last_save_epoch

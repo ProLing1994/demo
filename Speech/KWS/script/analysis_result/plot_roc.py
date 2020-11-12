@@ -120,7 +120,10 @@ def main():
     # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_0_fbank_timeshift_spec_on_focal_res15_11032020/infer_longterm_validation_augmentation_False_min.csv"]
     # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_0_fbank_timeshift_spec_on_focal_res15_11032020/infer_longterm_average_validation_augmentation_False.csv"]
     # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_1_fbank_timeshift_up_spec_on_focal_res15_11032020/infer_longterm_validation_augmentation_False_min.csv"]
-    csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_0_fbank_timeshift_spec_on_focal_res15_11032020/infer_longterm_average_validation_augmentation_False.csv"]
+    # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_0_fbank_timeshift_spec_on_focal_res15_11032020/infer_longterm_average_validation_augmentation_False.csv"]
+    # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_0_timeshift_spec_on_res15_11032020/infer_longterm_validation_augmentation_False_min.csv"]
+    # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_0_timeshift_spec_on_res15_11032020/infer_longterm_average_validation_augmentation_False.csv"]
+    csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_0_timeshift_spec_on_res15_11032020/infer_longterm_average_validation_augmentation_True.csv"]
     color_list =  ["r", "g", "b"]
     linestyle_list =  ["-", "-", "-"]
     num_classes = 3

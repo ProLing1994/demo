@@ -135,11 +135,23 @@ def cal_fpr_tpr(src_csv, pst_csv, positive_label, bool_write_audio):
 
 if __name__ == "__main__":
     bool_write_audio = True
+    # cal_fpr_tpr("/mnt/huanyuan/data/speech/kws/test_straming_wav/xiaoyu_03022018_training_60_001.csv",
+    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_1_fbank_timeshift_spec_on_res15_11032020/test_straming_wav/xiaoyu_03022018_training_60_001_threshold_0_95/found_words.csv",
+    #             "xiaoyu",
+    #             bool_write_audio)
+    # cal_fpr_tpr("/mnt/huanyuan/data/speech/kws/test_straming_wav/xiaoyu_03022018_validation_60_001.csv",
+    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_1_fbank_timeshift_spec_on_res15_11032020/test_straming_wav/xiaoyu_03022018_validation_60_001_threshold_0_95/found_words.csv",
+    #             "xiaoyu",
+    #             bool_write_audio)
+    # cal_fpr_tpr("/mnt/huanyuan/data/speech/kws/test_straming_wav/xiaoyu_03022018_testing_60_001.csv",
+    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_1_fbank_timeshift_spec_on_res15_11032020/test_straming_wav/xiaoyu_03022018_testing_60_001_threshold_0_95/found_words.csv",
+    #             "xiaoyu",
+    #             bool_write_audio)
     cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.csv",
-                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_1_fbank_timeshift_up_spec_on_focal_res15_11032020/test_straming_wav/xiaoyu_10292020_testing_3600_001_threshold_0_95/found_words.csv",
+                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_1_fbank_timeshift_spec_on_res15_11032020/test_straming_wav/xiaoyu_10292020_testing_3600_001_threshold_0_95/found_words.csv",
                 "xiaoyu",
                 bool_write_audio)
     # cal_fpr_tpr("/mnt/huanyuan/data/speech/kws/test_straming_wav/weiboyulu_test_3600_001.csv",
-    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_1_fbank_timeshift_up_spec_on_focal_res15_11032020/test_straming_wav/weiboyulu_test_3600_001_threshold_0_95/found_words.csv",
+    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_0_timeshift_spec_on_res15_11032020/test_straming_wav/weiboyulu_test_3600_001_threshold_0_95/found_words.csv",
     #             "xiaoyu",
     #             bool_write_audio)
