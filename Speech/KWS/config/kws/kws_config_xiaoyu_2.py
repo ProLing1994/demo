@@ -40,7 +40,7 @@ __C.general.is_test = True
 # the output of training models and logging files
 # __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_xiaoyu3_0_timeshift_enhancement_multiple_res15_11032020/"
 # __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_xiaoyu3_1_timeshift_spec_on_res15_11032020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoyu_11032020_focal_loss_test"
+__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoyu_11112020_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu2_0_res15_10292020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_0_timeshift_enhancement_multiple_res15_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_1_timeshift_spec_on_res15_11032020/"
@@ -54,11 +54,11 @@ __C.general.is_test = True
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_0_timeshift_spec_on_res15_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_1_fbank_timeshift_spec_on_res15_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_2_timeshift_spec_on_res15_finetune_11032020/"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_3_fbank_timeshift_spec_on_res15_finetune_11032020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_3_fbank_timeshift_spec_on_res15_finetune_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu_mining_difficult_sample_11122020/"
 
 # finrtune model
-__C.general.finetune_on = True
+__C.general.finetune_on = False
 __C.general.finetune_model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_1_fbank_timeshift_up_spec_on_focal_res15_11032020/"
 __C.general.finetune_epoch = 7999
 
@@ -97,7 +97,8 @@ __C.dataset.window_size_ms = 30.0
 __C.dataset.window_stride_ms = 10.0
 
 # How the spectrogram is processed to produce features, support ["mfcc", "pcen", "fbank"]
-__C.dataset.preprocess = "fbank"
+# __C.dataset.preprocess = "fbank"
+__C.dataset.preprocess = "pcen"
 # __C.dataset.preprocess = "mfcc"
 
 # How many bins to use for the MFCC fingerprint
@@ -203,13 +204,13 @@ __C.train = {}
 # __C.train.num_epochs = 16000
 # __C.train.num_epochs = 8000
 # __C.train.num_epochs = 4000
-__C.train.num_epochs = 100
+__C.train.num_epochs = 1
 
 # the number of samples in a batch
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 1024
-__C.train.batch_size = 64
-# __C.train.batch_size = 16
+# __C.train.batch_size = 64
+__C.train.batch_size = 1
 
 # the number of threads for IO
 # __C.train.num_threads = 64
