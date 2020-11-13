@@ -4,6 +4,7 @@ import os
 import pcen
 import pickle
 import random
+import torch
 
 SILENCE_LABEL = '_silence_'
 SILENCE_INDEX = 0
@@ -127,6 +128,9 @@ class AudioPreprocessor(object):
         return data
 
     def compute_pcen(self, data):
+        data = torch.from_numpy(np.expand_dims(data, axis=0))
         data = self.pcen_transform(data)
         self.pcen_transform.reset()
+        data = data.detach().numpy()
+        data = data.reshape(-1, 40)
         return data
