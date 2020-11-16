@@ -142,13 +142,15 @@ def audio_preprocess(cfg, data):
                                         hop_length=window_stride_samples)
 
     # check 
-    assert audio_preprocess_type in ["mfcc", "pcen"], "[ERROR:] Audio preprocess type is wronge, please check"
+    assert audio_preprocess_type in ["mfcc", "pcen", "fbank"], "[ERROR:] Audio preprocess type is wronge, please check"
 
     # preprocess
     if audio_preprocess_type == "mfcc":
       audio_data = audio_processor.compute_mfccs(data)
     elif audio_preprocess_type == "pcen":
       audio_data = audio_processor.compute_pcen(data)
+    elif audio_preprocess_type == "fbank":
+      audio_data = audio_processor.compute_fbanks(data)
     return audio_data 
 
 
@@ -158,7 +160,7 @@ def model_predict(cfg, model, data):
     data_size_h = cfg.dataset.data_size[1]
     data_size_w = cfg.dataset.data_size[0]
 
-    # audio preprocess, laod mfcc data
+    # audio preprocess, load mfcc data
     data = audio_preprocess(cfg, data)
 
     # to tensor

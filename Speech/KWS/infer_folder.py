@@ -12,26 +12,24 @@ from dataset.kws.dataset_helper import *
 from utils.train_tools import *
 
 
-def longterm_audio_predict(cfg, net, audio_idx, audio_file, audio_mode, audio_label, audio_label_idx, background_data, add_noise_on, timeshift_ms, result_mode):
+def longterm_audio_predict(cfg, net, audio_file, background_data, add_noise_on, timeshift_ms, result_mode):
     # init 
-    input_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset_audio', audio_mode)
-    input_dir = os.path.join(input_dir, audio_label)
     num_classes = cfg.dataset.label.num_classes
     sample_rate = cfg.dataset.sample_rate
     clip_duration_ms = cfg.dataset.clip_duration_ms
     desired_samples = int(sample_rate * clip_duration_ms / 1000)
 
     # load data
-    data, filename = load_preload_audio(audio_file, audio_idx, audio_label, audio_label_idx, input_dir)
-
-    # # debug
-    # librosa.output.write_wav(os.path.join("/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu_res15_10272020/testing/", filename.split('.')[0] + '.wav'), data, sr=sample_rate)
+    # data = librosa.core.load("/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_3_timeshift_spec_on_focal_res15_11032020/test_straming_wav/weiboyulu_test_3600_001_threshold_0_95/label_xiaoyu_starttime_1823970.wav", sr=sample_rate)[0]
+    f = open(os.path.join(audio_file), 'rb')
+    data = pickle.load(f)
+    f.close()
 
     # alignment data
     data = np.pad(data, (0, max(0, desired_samples - len(data))), "constant")
 
     # add noise 
-    if audio_label == SILENCE_LABEL or add_noise_on:
+    if add_noise_on:
         data = dataset_add_noise(cfg, data, background_data, bool_silence_label=True)
 
     # calculate the average score across all the results
@@ -59,7 +57,7 @@ def longterm_audio_predict(cfg, net, audio_idx, audio_file, audio_mode, audio_la
                 average_scores[idx] += score[idx] / len(score_list)
     elif result_mode == 'min':
         # init 
-        score_list = sorted(score_list, key=lambda p: p[audio_label_idx], reverse=False)
+        score_list = sorted(score_list, key=lambda p: p[1])
         average_scores = score_list[0]
     else:
         raise Exception("[ERROR:] Unknow result mode, please check!")
@@ -68,7 +66,7 @@ def longterm_audio_predict(cfg, net, audio_idx, audio_file, audio_mode, audio_la
     return pred, average_scores
 
 
-def predict(config_file, epoch, mode, add_noise_on, timeshift_ms, result_mode):
+def predict(config_file, epoch, input_folder, add_noise_on, timeshift_ms, result_mode):
     # load configuration file
     cfg = load_cfg_file(config_file)
 
@@ -80,15 +78,8 @@ def predict(config_file, epoch, mode, add_noise_on, timeshift_ms, result_mode):
     net = model['prediction']['net']
     net.eval()
 
-    # load label index 
-    label_index = load_label_index(cfg.dataset.label.positive_label)
-
     # load data 
-    data_pd = pd.read_csv(cfg.general.data_csv_path)
-    data_pd_mode = data_pd[data_pd['mode'] == mode]
-    data_file_list = data_pd_mode['file'].tolist()
-    data_mode_list = data_pd_mode['mode'].tolist()
-    data_label_list = data_pd_mode['label'].tolist()
+    data_file_list = os.listdir(input_folder)
 
     # load background noise
     background_data = load_background_noise(cfg)
@@ -98,18 +89,11 @@ def predict(config_file, epoch, mode, add_noise_on, timeshift_ms, result_mode):
     labels = []
     for audio_idx in tqdm(range(len(data_file_list))):
         results_dict = {}
-        results_dict['file'] = data_file_list[audio_idx]
-        results_dict['mode'] = data_mode_list[audio_idx]
-        results_dict['label'] = data_label_list[audio_idx]
-        results_dict['label_idx'] = label_index[results_dict['label']]
-        assert results_dict['mode']  == mode, "[ERROR:] Something wronge about mode, please check"
-
-        # # debug
-        # if results_dict['file'] != "/home/huanyuan/data/speech/kws/xiaoyu_dataset_03022018/XiaoYuDataset_10272020/xiaoyu/7276078M1_唤醒词_小鱼小鱼_女_中青年_是_0192.wav":
-        #     continue
-
-        pred, score = longterm_audio_predict(cfg, net, audio_idx, results_dict['file'], results_dict['mode'], results_dict['label'], results_dict['label_idx'], 
-                                            background_data, add_noise_on, timeshift_ms, result_mode)
+        results_dict['file'] = os.path.join(input_folder, data_file_list[audio_idx])
+        results_dict['label'] = UNKNOWN_WORD_LABEL
+        results_dict['label_idx'] = UNKNOWN_WORD_INDEX
+        
+        pred, score = longterm_audio_predict(cfg, net, results_dict['file'], background_data, add_noise_on, timeshift_ms, result_mode)
         
         preds.append(pred)
         labels.append(results_dict['label_idx'])
@@ -122,12 +106,12 @@ def predict(config_file, epoch, mode, add_noise_on, timeshift_ms, result_mode):
 
     # caltulate accuracy
     accuracy = float((np.array(preds) == np.array(labels)).astype(int).sum()) / float(len(labels))
-    msg = 'epoch: {}, batch: {}, {}_accuracy: {:.4f}'.format(model['prediction']['epoch'], model['prediction']['batch'], mode, accuracy)
+    msg = 'epoch: {}, batch: {}, accuracy: {:.4f}'.format(model['prediction']['epoch'], model['prediction']['batch'], accuracy)
     print(msg)
 
     # out csv
     csv_data_pd = pd.DataFrame(results_list)
-    csv_data_pd.to_csv(os.path.join(cfg.general.save_dir, 'infer_longterm_{}_augmentation_{}_{}.csv'.format(mode, add_noise_on, result_mode)), index=False, encoding="utf_8_sig")
+    csv_data_pd.to_csv(os.path.join(cfg.general.save_dir, 'infer_difficult_sample_mining_11112020.csv'), index=False, encoding="utf_8_sig")
 
 
 def main():
@@ -135,11 +119,7 @@ def main():
     使用模型对音频文件进行测试，配置为 --input 中的 config 文件，当存在音频文件长度大于模型送入的音频文件长度时(1s\2s\3s), 该脚本会通过滑窗的方式测试每一小段音频数据，将每段结果的平均结果(或者对应label最小值)作为最终测试结果，
     该过程有悖于测试流程，存在误差
     """
-
-    # default_mode = "training"
-    # default_mode = "testing,validation,training"
-    # default_mode = "testing,validation"
-    default_mode = "validation"
+    default_input_folder = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/difficult_sample_mining_11112020/preload_data/"
     default_model_epoch = -1
     # default_add_noise_on = True
     default_add_noise_on = False
@@ -150,17 +130,15 @@ def main():
     parser = argparse.ArgumentParser(description='Streamax KWS Infering Engine')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config.py", help='config file')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
-    parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py", help='config file')
-    parser.add_argument('--mode', type=str, default=default_mode)
+    parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py", help='config file')
+    parser.add_argument('--input_folder', type=str, default=default_input_folder)
     parser.add_argument('--epoch', type=str, default=default_model_epoch)
     parser.add_argument('--add_noise_on', type=bool, default=default_add_noise_on)
     parser.add_argument('--timeshift_ms', type=int, default=default_timeshift_ms)
     parser.add_argument('--result_mode', type=str, default=default_result_mode)
     args = parser.parse_args()
 
-    mode_list = args.mode.strip().split(',')
-    for mode_type in mode_list:
-        predict(args.input, args.epoch, mode_type, args.add_noise_on, args.timeshift_ms, args.result_mode)
+    predict(args.config_file, args.epoch, args.input_folder, args.add_noise_on, args.timeshift_ms, args.result_mode)
 
 
 if __name__ == "__main__":

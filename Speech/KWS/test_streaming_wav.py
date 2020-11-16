@@ -1,5 +1,6 @@
 import argparse
 import collections
+import multiprocessing 
 import pandas as pd
 import pickle
 import sys
@@ -197,7 +198,18 @@ class RecognizeCommands(object):
             recognize_element.founded_command = SILENCE_LABEL
 
 
-def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_duration_ms, detection_threshold):
+# def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_duration_ms, detection_threshold):
+def test(args):
+
+    input_wav = args[0]
+    config_file = args[1]
+    model_epoch = args[2]
+    timeshift_ms = args[3]
+    average_window_duration_ms = args[4]
+    detection_threshold = args[5]
+
+    print("Do wave:{}, begin!!!".format(input_wav))
+
     # load configuration file
     cfg = load_cfg_file(config_file)
 
@@ -223,7 +235,7 @@ def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_durat
     
     # mkdir 
     # output_dir = os.path.join(os.path.dirname(input_wav), os.path.basename(input_wav).split('.')[0])
-    output_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', os.path.basename(input_wav).split('.')[0] + '_threshold_{:.2f}'.format(detection_threshold))
+    output_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', os.path.basename(input_wav).split('.')[0] + '_threshold_{}'.format('_'.join(str(detection_threshold).split('.'))))
     if not os.path.exists(output_dir):    
         os.makedirs(output_dir)
     
@@ -256,8 +268,6 @@ def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_durat
         input_data = audio_data[input_start: input_end]
         if len(input_data) != desired_samples:
             break
-        
-        audio_data_offset += timeshift_samples
 
         # model infer
         model_predict_start_time = time.perf_counter()
@@ -288,6 +298,9 @@ def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_durat
         original_scores.append({'start_time':current_time_ms, 'score':output_score[0][label_index[positive_label[0]]]})
         mean_scores.append({'start_time':current_time_ms, 'score':recognize_element.score})
 
+        # time ++ 
+        audio_data_offset += timeshift_samples
+
     # record time
     end = time.perf_counter()
     print('Running time: {:.2f} Seconds'.format(end - start))
@@ -301,25 +314,73 @@ def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_durat
     mean_scores_pd.to_csv(os.path.join(output_dir, 'mean_scores.csv'), index=False)
     
     # show result
-    show_score_line(input_wav.split('.')[0] + '.csv', os.path.join(output_dir, 'original_scores.csv'), positive_label[0])
-    show_score_line(input_wav.split('.')[0] + '.csv', os.path.join(output_dir, 'mean_scores.csv'), positive_label[0])
+    # show_score_line(input_wav.split('.')[0] + '.csv', os.path.join(output_dir, 'original_scores.csv'), positive_label[0])
+    # show_score_line(input_wav.split('.')[0] + '.csv', os.path.join(output_dir, 'mean_scores.csv'), positive_label[0])
 
-    cal_fpr_tpr(input_wav.split('.')[0] + '.csv', os.path.join(output_dir, 'found_words.csv'),  positive_label[0], bool_write_audio)
+    # cal_fpr_tpr(input_wav.split('.')[0] + '.csv', os.path.join(output_dir, 'found_words.csv'),  positive_label[0], bool_write_audio)
+
+    print("Do wave:{}, Done!!!".format(input_wav))
+
 
 def main():
     """
     使用模型对音频文件进行测试，模拟真实音频输入情况，配置为 --input 中的 config 文件，该脚本会通过滑窗的方式测试每一小段音频数据，计算连续 800ms(27帧)/2000ms(41帧) 音频的平均值结果，
     如果超过预设门限，则认为检测到关键词，否则认定未检测到关键词，最后分别计算假阳性和召回率
     """
-    # default_input_wav = "/home/huanyuan/model/test_straming_wav/xiaoyu_03022018_training_60_001.wav"
-    # default_input_wav = "/home/huanyuan/model/test_straming_wav/xiaoyu_03022018_validation_60_001.wav"
-    # default_input_wav = "/home/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_60_001.wav"
-    # default_input_wav = "/home/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_3600_001.wav"
-    # default_input_wav = "/home/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.wav"
-    # default_input_wav = "/home/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"
-    # default_input_wav = "/home/huanyuan/model/test_straming_wav/weiboyulu_test_add_noise_3600_002.wav"
-    default_input_wav_list = ["/home/huanyuan/model/test_straming_wav/weiboyulu_test_43200_003.wav",
-                            "/home/huanyuan/model/test_straming_wav/weiboyulu_test_add_noise_43200_004.wav"]
+    # test
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_3600_001.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_training_60_001.wav",
+    #                         "/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_validation_60_001.wav",
+    #                         "/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_60_001.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.wav",
+    #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
+    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_43200_003.wav",
+                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_news_cishicike_43200_001.wav",
+                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_novel_douluodalu_43200_001.wav",
+                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_43200_001.wav",
+                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_yeshimiwen_43200_001.wav",
+                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_zhongdongwangshi_7200_001.wav",
+                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_xingetuijian_21600_001.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_jinpingmei_7200_001.wav",
+    #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_baijiajiangtan_21600_001.wav"]
+
+    # difficult sample mining
+    # default_input_wav_list = ["/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_history_baijiajiangtan_21600_noused_001.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_history_jinpingmei_21600_noused_001.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_history_yeshimiwen_21600_noused_001.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_history_yeshimiwen_21600_noused_002.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_history_yeshimiwen_21600_noused_003.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_history_zhongdongwangshi_21600_noused_001.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_21600_noused_001.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_21600_noused_002.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_21600_noused_003.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_music_xingetuijian_21600_noused_001.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_music_xingetuijian_21600_noused_002.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_news_cishicike_21600_noused_001.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_news_cishicike_21600_noused_002.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_news_cishicike_21600_noused_003.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_001.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_002.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_003.wav"]
+
+    # default_input_wav_list = ["/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_history_yeshimiwen_21600_noused_004.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_history_yeshimiwen_21600_noused_005.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_history_yeshimiwen_21600_noused_006.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_history_yeshimiwen_21600_noused_007.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_history_yeshimiwen_21600_noused_008.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_history_yeshimiwen_21600_noused_009.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_21600_noused_004.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_21600_noused_005.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_21600_noused_006.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_21600_noused_007.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_21600_noused_008.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_21600_noused_009.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_004.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_005.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_006.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_007.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_008.wav",
+    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_009.wav"]
 
     # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
     defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py"
@@ -330,6 +391,7 @@ def main():
     # default_average_window_duration_ms = 2000
     # default_detection_threshold = 0.8
     default_detection_threshold = 0.95
+    # default_detection_threshold = 0.5
 
     parser = argparse.ArgumentParser(description='Streamax KWS Testing Engine')
     parser.add_argument('--input_wav_list', type=str,
@@ -345,11 +407,20 @@ def main():
                         type=int, default=default_detection_threshold)
     args = parser.parse_args()
 
+    in_params = []
     for input_wav in args.input_wav_list:
-        print("Do wave:{}, begin!!!".format(input_wav))
-        test(input_wav, args.config_file, args.model_epoch,
-            args.timeshift_ms, args.average_window_duration_ms, args.detection_threshold)
-        print("Do wave:{}, Done!!!".format(input_wav))
+        in_args = [input_wav, args.config_file, args.model_epoch,
+                    args.timeshift_ms, args.average_window_duration_ms, args.detection_threshold]
+        in_params.append(in_args)
+
+    p = multiprocessing.Pool(3)
+    out = p.map(test, in_params)
+    p.close()
+    p.join()
+
+    # for input_wav in args.input_wav_list:
+    #     test(input_wav, args.config_file, args.model_epoch,
+    #         args.timeshift_ms, args.average_window_duration_ms, args.detection_threshold)
 
 
 if __name__ == "__main__":
