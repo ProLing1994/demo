@@ -147,11 +147,7 @@ if __name__ == "__main__":
     #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_3_fbank_timeshift_spec_on_res15_finetune_11032020/test_straming_wav/xiaoyu_03022018_testing_60_001_threshold_0_95/found_words.csv",
     #             "xiaoyu",
     #             bool_write_audio)
-    # cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.csv",
-    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_3_fbank_timeshift_spec_on_res15_finetune_11032020/test_straming_wav/xiaoyu_10292020_testing_3600_001_threshold_0_95/found_words.csv",
-    #             "xiaoyu",
-    #             bool_write_audio)
-    # cal_fpr_tpr("/mnt/huanyuan/data/speech/kws/test_straming_wav/weiboyulu_test_3600_001.csv",
-    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_3_fbank_timeshift_spec_on_res15_finetune_11032020/test_straming_wav/weiboyulu_test_3600_001_threshold_0_95/found_words.csv",
-    #             "xiaoyu",
-    #             bool_write_audio)
+    cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.csv",
+                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_0_timeshift_spec_on_res15_11032020/test_straming_wav/xiaoyu_10292020_testing_3600_001_thresholds/threshold_0_95/found_words.csv",
+                "xiaoyu",
+                bool_write_audio)

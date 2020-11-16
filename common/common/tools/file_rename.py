@@ -16,8 +16,18 @@ if __name__ == '__main__':
     # file_format = 'qingtingkongzhongyinyuebang_'
     # input_dir = "/mnt/huanyuan/data/speech/Negative_sample/QingTingFM/novel/douluodalu/"
     # file_format = 'douluodalu_'
-    input_dir = "/mnt/huanyuan/data/speech/Negative_sample/QingTingFM/music/xingetuijian/"
-    file_format = 'xingetuijian_'
+    # input_dir = "/mnt/huanyuan/data/speech/Negative_sample/QingTingFM/music/xingetuijian/"
+    # file_format = 'xingetuijian_'
+    # input_dir = "/mnt/huanyuan/data/speech/Negative_sample/QingTingFM/music_station/naxienainzhuiguodege/"
+    # file_format = 'naxienainzhuiguodege_'
+    # input_dir = "/mnt/huanyuan/data/speech/Negative_sample/QingTingFM/music_station/quanqiuliuxingyinyuebang/"
+    # file_format = 'quanqiuliuxingyinyuebang_'
+    # input_dir = "/mnt/huanyuan/data/speech/Negative_sample/QingTingFM/music_station/shanggantingting/"
+    # file_format = 'shanggantingting_'
+    # input_dir = "/mnt/huanyuan/data/speech/Negative_sample/QingTingFM/music_station/suiyueruge/"
+    # file_format = 'suiyueruge_'
+    input_dir = "/mnt/huanyuan/data/speech/Negative_sample/QingTingFM/news/jiaodianshike/"
+    file_format = 'jiaodianshike_'
     file_type = ".m4a"
     start_id = 1
 
