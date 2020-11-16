@@ -40,7 +40,7 @@ __C.general.is_test = True
 # the output of training models and logging files
 # __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_xiaoyu3_0_timeshift_enhancement_multiple_res15_11032020/"
 # __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_xiaoyu3_1_timeshift_spec_on_res15_11032020/"
-__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoyu_11112020_test"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoyu_11112020_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu2_0_res15_10292020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_0_timeshift_enhancement_multiple_res15_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_1_timeshift_spec_on_res15_11032020/"
@@ -51,7 +51,7 @@ __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoyu_11112020_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_6_timeshift_spec_on_mask_2_focal_res15_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_0_fbank_timeshift_spec_on_focal_res15_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_1_fbank_timeshift_up_spec_on_focal_res15_11032020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_0_timeshift_spec_on_res15_11032020/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_0_timeshift_spec_on_res15_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_1_fbank_timeshift_spec_on_res15_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_2_timeshift_spec_on_res15_finetune_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_3_fbank_timeshift_spec_on_res15_finetune_11032020/"
@@ -209,8 +209,8 @@ __C.train.num_epochs = 1
 # the number of samples in a batch
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 1024
-# __C.train.batch_size = 64
-__C.train.batch_size = 1
+__C.train.batch_size = 64
+# __C.train.batch_size = 1
 
 # the number of threads for IO
 # __C.train.num_threads = 64
@@ -231,8 +231,8 @@ __C.train.save_epochs = 25
 
 # learning rate = lr*gamma**(epoch//step_size)
 # __C.train.lr = 1e-3
-# __C.train.lr = 1e-4
-__C.train.lr = 1e-5
+__C.train.lr = 1e-4
+# __C.train.lr = 1e-5
 
 # step size for step learning rate
 __C.train.lr_step_size = 0
@@ -265,8 +265,8 @@ __C.train.betas = (0.9, 0.999)
 __C.debug = {}
 
 # whether to save input images
-# __C.debug.save_inputs = True
-__C.debug.save_inputs = False
+__C.debug.save_inputs = True
+# __C.debug.save_inputs = False
 
 # the number of processing for save input images
 # __C.debug.num_processing = 64

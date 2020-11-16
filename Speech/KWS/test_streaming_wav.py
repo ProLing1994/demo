@@ -268,8 +268,6 @@ def test(args):
         input_data = audio_data[input_start: input_end]
         if len(input_data) != desired_samples:
             break
-        
-        audio_data_offset += timeshift_samples
 
         # model infer
         model_predict_start_time = time.perf_counter()
@@ -299,6 +297,9 @@ def test(args):
 
         original_scores.append({'start_time':current_time_ms, 'score':output_score[0][label_index[positive_label[0]]]})
         mean_scores.append({'start_time':current_time_ms, 'score':recognize_element.score})
+
+        # time ++ 
+        audio_data_offset += timeshift_samples
 
     # record time
     end = time.perf_counter()
