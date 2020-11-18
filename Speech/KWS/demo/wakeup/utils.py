@@ -1,32 +1,8 @@
-import codecs
 import importlib
 import os
-import re
 import sys
 
 from imp import reload
-
-
-def readlines(file):
-    """
-    read lines by removing '\n' in the end of line
-    :param file: a text file
-    :return: a list of line strings
-    """
-    fp = codecs.open(file, 'r', encoding='utf-8')
-    linelist = fp.readlines()
-    fp.close()
-    for i in range(len(linelist)):
-        linelist[i] = linelist[i].rstrip('\n')
-    return linelist
-
-
-def read_str_array(file, sep='\t'):
-    lines = readlines(file)
-    content = []
-    for line in lines:
-        content.append(re.split(sep, line))
-    return content
 
 
 def load_module_from_disk(pyfile):
@@ -49,3 +25,16 @@ def load_module_from_disk(pyfile):
     os.sys.path.pop(0)
 
     return lib
+
+
+def load_cfg_file(config_file):
+    """
+    :param config_file:  configure file path
+    :return: cfg:        configuration file module
+    """
+    assert os.path.isfile(
+        config_file), 'Config not found: {}'.format(config_file)
+    cfg = load_module_from_disk(config_file)
+    cfg = cfg.cfg
+
+    return cfg

@@ -4,7 +4,6 @@ import os
 import pyaudio
 import signal
 import sys
-import time
 import wave
 
 from matplotlib import animation
@@ -15,6 +14,7 @@ from utils.train_tools import *
 from dataset.kws.dataset_helper import *
 from impl.pred_pyimpl import kws_load_model, model_predict
 from impl.recognizer_pyimpl import RecognizeResult, RecognizeCommands
+
 
 def term(sig_num, addtion):
     """
@@ -27,13 +27,12 @@ def term(sig_num, addtion):
     # kill group pid
     os.killpg(pgid, signal.SIGKILL)
 
-
 class OnlineAudio:
     """
     在线音频识别
     """
-    audio_queue = Queue()
-    audio_queue1 = Queue()
+    audio_queue_play = Queue()
+    audio_queue_wakeup = Queue()
     event = Event() 
     
     def __init__(self, chunk=1600, format=pyaudio.paInt16, channels=1, rate=16000):
@@ -44,7 +43,7 @@ class OnlineAudio:
 
     def listen(self, event, queue):
         """
-        进程：录音
+        进程：监听录音
         """
         print("[Init:] Listen")
         pyaudio_listen = pyaudio.PyAudio()
@@ -60,6 +59,9 @@ class OnlineAudio:
             event.set()
 
     def listen_file(self, event, queue):
+        """
+        进程：监听本地音乐
+        """
         print("[Init:] Listen")
         # wave_path = "/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_60_001.wav"
         wave_path = "/mnt/huanyuan/model/test_straming_wav/test.wav"
@@ -86,7 +88,7 @@ class OnlineAudio:
         """
         print("[Init:] Play")
         pyaudio_play = pyaudio.PyAudio()
-        # 打开音频流， output=True表示音频输出
+        # 打开音频流， output=True 表示音频输出
         stream = pyaudio_play.open(format=self._format,
                                     channels=self._channels,
                                     rate=self._rate,
@@ -95,12 +97,10 @@ class OnlineAudio:
         
         while True:
             if queue.empty():
-                # print("等待数据中..........")
                 event.wait()
             else:
                 # play
                 data = queue.get()
-                # 创建播放器
                 stream.write(data)
 
 
@@ -202,7 +202,8 @@ class OnlineAudio:
         model_epoch = -1
         
         # init parameter 
-        detection_threshold = 0.95
+        # detection_threshold = 0.95
+        detection_threshold = 0.5
         timeshift_ms = 30
         average_window_duration_ms = 800
         audio_data_length = 0
@@ -233,21 +234,17 @@ class OnlineAudio:
                     event.wait()
                 else:
                     data = queue.get()
-                    # print("获取的数据data", data)
-                    # data_np = np.frombuffer(data, dtype = np.float32)
+                    # 数据转化，注意除以 2^15 进行归一化
                     data_np = np.frombuffer(data, np.int16).astype(np.float32) / 32768
                     
-                    # print(len(data_np)) 
                     if audio_data_length == 0:
                         audio_data = data_np
                         audio_data_length = len(audio_data)
                     else:
-                        # print("before concatenate", audio_data_length)
                         audio_data = np.concatenate((audio_data, data_np), axis=0)
                         audio_data_length = len(audio_data)
-                        # print("after concatenate", audio_data_length)`
             else:
-                # print("before", audio_data_length)
+                # prepare data
                 input_data = audio_data[0: desired_samples]
                 assert len(input_data) == desired_samples
 
@@ -270,44 +267,46 @@ class OnlineAudio:
                 audio_data_offset += timeshift_samples
                 audio_data = audio_data[timeshift_samples:]
                 audio_data_length = len(audio_data)
-                # print("after", audio_data_length, audio_data_offset)
 
-    # 实时性多进程处理
+
     def start(self):
+        """
+        实时多进程语音处理
+        """
         signal.signal(signal.SIGTERM, term)
         print("[Information:] Current main-process pid is: {}".format(os.getpid()))
         print("[Information:] If you want to kill the main process and sub-process, type: kill {}".format(os.getpid()))
 
         # # 监听
-        # audio_process = Process(target=self.listen, args=(self.event, self.audio_queue))
-        # audio_process.start()
-
-        # 监听
-        audio_process1 = Process(target=self.listen, args=(self.event, self.audio_queue1))
-        audio_process1.start()
+        # listen_process_play = Process(target=self.listen, args=(self.event, self.audio_queue_play))
+        # listen_process_play.start()
 
         # # 播放
-        # play_process = Process(target=self.play, args=(self.event, self.audio_queue))
+        # play_process = Process(target=self.play, args=(self.event, self.audio_queue_play))
         # play_process.start()
 
+        # 监听
+        listen_process_wakeeup = Process(target=self.listen, args=(self.event, self.audio_queue_wakeup))
+        listen_process_wakeeup.start()
+
+        # 唤醒
+        wakeup_process = Process(target=self.wake_up, args=(self.event, self.audio_queue_wakeup))
+        wakeup_process.start()
+
         # # 绘图
-        # display_process = Process(target=self.display, args=(self.event, self.audio_queue1))
+        # display_process = Process(target=self.display, args=(self.event, self.audio_queue_wakeup))
         # display_process.start()
 
         # # Judge and alarm
-        # judge_alarm_process = Process(target=self.fit,args=(self.event, self.audio_queue))
+        # judge_alarm_process = Process(target=self.fit,args=(self.event, self.audio_queue_play))
         # judge_alarm_process.start()
 
-        # 唤醒
-        wakeup_process = Process(target=self.wake_up, args=(self.event, self.audio_queue1))
-        wakeup_process.start()
-
-        # audio_process.join()
-        audio_process1.join()
+        # listen_process_play.join()
         # play_process.join()
+        listen_process_wakeeup.join()
+        wakeup_process.join()
         # display_process.join()
         # judge_alarm_process.join()
-        wakeup_process.join()
 
 
 if __name__ == '__main__':

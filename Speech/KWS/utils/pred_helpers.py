@@ -1,5 +1,5 @@
-import os
 import glob
+import os
 
 def last_checkpoint(chk_root):
     """
