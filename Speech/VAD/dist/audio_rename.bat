@@ -1,1 +1,1 @@
-audio_rename.exe --dir=E:\\project\\data\\weiboyulu\\1012\\0000000000000000-201012-131847-141242-000001089960
+audio_rename.exe --dir=E:\\project\\data\\speech\\kws\\xiaorui\\0000000000000000-201116-160132-163229-000001000410
