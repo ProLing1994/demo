@@ -1,5 +1,4 @@
 import argparse
-import collections
 import multiprocessing 
 import pandas as pd
 import pickle
@@ -13,200 +12,20 @@ sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from utils.train_tools import *
 from dataset.kws.dataset_helper import *
 from impl.pred_pyimpl import kws_load_model, model_predict
+from impl.recognizer_pyimpl import RecognizeResult, RecognizeCommands
 from script.analysis_result.plot_score_line import show_score_line
 from script.analysis_result.cal_fpr_tpr import cal_fpr_tpr
 
-class RecognizeResult(object):
-    """Save recognition result temporarily.
 
-    Attributes:
-      founded_command: A string indicating the word just founded. Default value
-        is '_silence_'
-      score: An float representing the confidence of founded word. Default
-        value is zero.
-      is_new_command: A boolean indicating if the founded command is a new one
-        against the last one. Default value is False.
-    """
+def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_duration_ms, detection_threshold):
+# def test(args):
 
-    def __init__(self):
-        self._founded_command = SILENCE_LABEL
-        self._score = 0
-        self._is_new_command = False
-        self._start_time = 0
-        self._end_time = 0
-        self._response_time = 0
-
-    @property
-    def founded_command(self):
-        return self._founded_command
-
-    @founded_command.setter
-    def founded_command(self, value):
-        self._founded_command = value
-
-    @property
-    def score(self):
-        return self._score
-
-    @score.setter
-    def score(self, value):
-        self._score = value
-
-    @property
-    def is_new_command(self):
-        return self._is_new_command
-
-    @is_new_command.setter
-    def is_new_command(self, value):
-        self._is_new_command = value
-
-    @property
-    def start_time(self):
-        return self._start_time
-
-    @start_time.setter
-    def start_time(self, value):
-        self._start_time = value
-
-    @property
-    def end_time(self):
-        return self._end_time
-
-    @end_time.setter
-    def end_time(self, value):
-        self._end_time = value
-
-    @property
-    def response_time(self):
-        return self._response_time
-
-    @response_time.setter
-    def response_time(self, value):
-        self._response_time = value
-
-
-class RecognizeCommands(object):
-    """Smooth the inference results by using average window.
-
-    Maintain a slide window over the audio stream, which adds new result(a pair of
-    the 1.confidences of all classes and 2.the start timestamp of input audio
-    clip) directly the inference produces one and removes the most previous one
-    and other abnormal values. Then it smooth the results in the window to get
-    the most reliable command in this period.
-
-    Attributes:
-      _label: A list containing commands at corresponding lines.
-      _average_window_duration: The length of average window.
-      _detection_threshold: A confidence threshold for filtering out unreliable
-        command.
-      _suppression_ms: Milliseconds every two reliable founded commands should
-        apart.
-      _minimum_count: An integer count indicating the minimum results the average
-        window should cover.
-      _previous_results: A deque to store previous results.
-      _label_count: The length of label list.
-      _previous_top_label: Last founded command. Initial value is '_silence_'.
-      _previous_top_time: The timestamp of _previous results. Default is -np.inf.
-    """
-
-    def __init__(self, labels, positove_lable_index,average_window_duration_ms, detection_threshold,
-                 suppression_ms, minimum_count):
-        """Init the RecognizeCommands with parameters used for smoothing."""
-        # Configuration
-        self._labels = labels
-        self._positove_lable_index = positove_lable_index
-        self._average_window_duration_ms = average_window_duration_ms
-        self._detection_threshold = detection_threshold
-        self._suppression_ms = suppression_ms
-        self._minimum_count = minimum_count
-        # Working Variable
-        self._previous_results = collections.deque()
-        self._label_count = len(labels)
-        self._previous_top_time = 0
-
-    def process_latest_result(self, latest_results, current_time_ms,
-                              recognize_element):
-        """Smoothing the results in average window when a new result is added in.
-
-        Receive a new result from inference and put the founded command into
-        a RecognizeResult instance after the smoothing procedure.
-
-        Args:
-          latest_results: A list containing the confidences of all labels.
-          current_time_ms: The start timestamp of the input audio clip.
-          recognize_element: An instance of RecognizeResult to store founded
-            command, its scores and if it is a new command.
-
-        Raises:
-          ValueError: The length of this result from inference doesn't match
-            label count.
-          ValueError: The timestamp of this result is earlier than the most
-            previous one in the average window
-        """
-        if latest_results[0].shape[0] != self._label_count:
-            raise ValueError("The results for recognition should contain {} "
-                             "elements, but there are {} produced".format(
-                                 self._label_count, latest_results[0].shape[0]))
-        if (self._previous_results.__len__() != 0 and
-                current_time_ms < self._previous_results[0][0]):
-            raise ValueError("Results must be fed in increasing time order, "
-                             "but receive a timestamp of {}, which was earlier "
-                             "than the previous one of {}".format(
-                                 current_time_ms, self._previous_results[0][0]))
-
-        # Add the latest result to the head of the deque.
-        self._previous_results.append([current_time_ms, latest_results[0], time.perf_counter()])
-
-        # Prune any earlier results that are too old for the averaging window.
-        time_limit = current_time_ms - self._average_window_duration_ms
-        while time_limit > self._previous_results[0][0]:
-            self._previous_results.popleft()
-
-        # If there are too few results, the result will be unreliable and bail.
-        how_many_results = self._previous_results.__len__()
-        earliest_time = self._previous_results[0][0]
-        sample_duration = current_time_ms - earliest_time
-        if (how_many_results < self._minimum_count or
-                sample_duration < self._average_window_duration_ms / 4):
-            recognize_element.score = 0.0
-            recognize_element.is_new_command = False
-            recognize_element.founded_command = SILENCE_LABEL
-            return
-
-        # Calculate the average score across all the results in the window.
-        average_scores = np.zeros(self._label_count)
-        for item in self._previous_results:
-            score = item[1]
-            for i in range(score.size):
-                average_scores[i] += score[i] / how_many_results
-        recognize_element.score = average_scores[self._positove_lable_index]
-
-        time_since_last_top = current_time_ms - self._previous_top_time
-        if self._previous_top_time == 0:
-            time_since_last_top = np.inf
-
-        if (recognize_element.score > self._detection_threshold and
-                time_since_last_top > self._suppression_ms):
-            self._previous_top_time = current_time_ms
-            recognize_element.is_new_command = True
-            recognize_element.start_time = self._previous_results[0][0]
-            recognize_element.end_time = self._previous_results[-1][0]
-            recognize_element.founded_command = self._labels[self._positove_lable_index]
-            recognize_element.response_time = self._previous_results[-1][2] - self._previous_results[0][2]
-        else:
-            recognize_element.is_new_command = False        
-            recognize_element.founded_command = SILENCE_LABEL
-
-
-# def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_duration_ms, detection_threshold):
-def test(args):
-
-    input_wav = args[0]
-    config_file = args[1]
-    model_epoch = args[2]
-    timeshift_ms = args[3]
-    average_window_duration_ms = args[4]
-    detection_threshold = args[5]
+    # input_wav = args[0]
+    # config_file = args[1]
+    # model_epoch = args[2]
+    # timeshift_ms = args[3]
+    # average_window_duration_ms = args[4]
+    # detection_threshold = args[5]
 
     print("Do wave:{}, begin!!!".format(input_wav))
 
@@ -240,8 +59,7 @@ def test(args):
         os.makedirs(output_dir)
     
     # load model
-    model = kws_load_model(cfg.general.save_dir, int(
-        cfg.general.gpu_ids), model_epoch)
+    model = kws_load_model(cfg.general.save_dir, int(cfg.general.gpu_ids), model_epoch)
     net = model['prediction']['net']
     net.eval()
 
@@ -328,19 +146,21 @@ def main():
     如果超过预设门限，则认为检测到关键词，否则认定未检测到关键词，最后分别计算假阳性和召回率
     """
     # test
+    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/test.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_60_001.wav"]
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_3600_001.wav"]
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_training_60_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_validation_60_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_60_001.wav"]
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
-    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_43200_003.wav",
-                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_news_cishicike_43200_001.wav",
-                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_novel_douluodalu_43200_001.wav",
-                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_43200_001.wav",
-                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_yeshimiwen_43200_001.wav",
-                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_zhongdongwangshi_7200_001.wav",
-                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_xingetuijian_21600_001.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_43200_003.wav",
+    #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_news_cishicike_43200_001.wav",
+    #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_novel_douluodalu_43200_001.wav",
+    #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_43200_001.wav",
+    #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_yeshimiwen_43200_001.wav",
+    #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_zhongdongwangshi_7200_001.wav",
+    #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_xingetuijian_21600_001.wav"]
     # default_input_wav_list = ["/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_jinpingmei_7200_001.wav",
     #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_baijiajiangtan_21600_001.wav"]
 
@@ -383,7 +203,8 @@ def main():
     #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_009.wav"]
 
     # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
-    defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py"
+    # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py"
+    defaule_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_3_timeshift_spec_on_focal_res15_11032020/test_straming_wav/kws_config_xiaoyu_2.py"
     default_model_epoch = -1
     default_timeshift_ms = 30
     default_average_window_duration_ms = 800
@@ -407,20 +228,20 @@ def main():
                         type=int, default=default_detection_threshold)
     args = parser.parse_args()
 
-    in_params = []
-    for input_wav in args.input_wav_list:
-        in_args = [input_wav, args.config_file, args.model_epoch,
-                    args.timeshift_ms, args.average_window_duration_ms, args.detection_threshold]
-        in_params.append(in_args)
-
-    p = multiprocessing.Pool(3)
-    out = p.map(test, in_params)
-    p.close()
-    p.join()
-
+    # in_params = []
     # for input_wav in args.input_wav_list:
-    #     test(input_wav, args.config_file, args.model_epoch,
-    #         args.timeshift_ms, args.average_window_duration_ms, args.detection_threshold)
+    #     in_args = [input_wav, args.config_file, args.model_epoch,
+    #                 args.timeshift_ms, args.average_window_duration_ms, args.detection_threshold]
+    #     in_params.append(in_args)
+
+    # p = multiprocessing.Pool(3)
+    # out = p.map(test, in_params)
+    # p.close()
+    # p.join()
+
+    for input_wav in args.input_wav_list:
+        test(input_wav, args.config_file, args.model_epoch,
+            args.timeshift_ms, args.average_window_duration_ms, args.detection_threshold)
 
 
 if __name__ == "__main__":
