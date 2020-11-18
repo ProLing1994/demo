@@ -5,7 +5,8 @@ import shutil
 import re
 
 parser = argparse.ArgumentParser(description="Audio Rename")
-parser.add_argument('--dir', type=str, default='E:\\project\\data\\weiboyulu\\1012\\0000000000000000-201012-103547-114012-000001089960')
+parser.add_argument('--dir', type=str, default='E:\\project\\data\\speech\\kws\\xiaorui\\11172020\\0000000000000000-201117-135408-135541-000001002770')
+parser.add_argument('--state_format', type=str, default=r'^S\d*[MT]\d*P\d*T\d*')
 args = parser.parse_args()
 
 if __name__ == "__main__":
@@ -23,8 +24,9 @@ if __name__ == "__main__":
             continue
         elif str(row.state) == 'D':
             continue 
-        elif len(str(row.state).strip().split('_')) == 4:
-            if re.match(r'^S\d*[MT]\d*P\d*', str(row.state).strip().split('_')[-1]):
+        # elif len(str(row.state).strip().split('_')) == 4:
+        elif len(str(row.state).strip().split('_')) == 5:
+            if re.match(args.state_format, str(row.state).strip().split('_')[-1]):
                 continue
             else:
                 raise Exception("[ERROR:] Invalid input: audio_region: {}, state: {}".format(row.audio_region, row.state))
@@ -38,7 +40,8 @@ if __name__ == "__main__":
             remainder_files_list.append(row.audio_region)
         elif str(row.state) == 'D':
             continue
-        elif len(str(row.state).strip().split('_')) == 4:
+        # elif len(str(row.state).strip().split('_')) == 4:
+        elif len(str(row.state).strip().split('_')) == 5:   
             remainder_files_list.append(row.state)
         else:
             raise Exception("[ERROR:] Invalid input: audio_region: {}, state: {}".format(row.audio_region, row.state))
@@ -67,8 +70,9 @@ if __name__ == "__main__":
     # rename 
     tmp_rename_files = []
     for idx, row in csv_pd.iterrows():
-        if len(str(row.state).strip().split('_')) == 4:
-            if re.match(r'^S\d*[MT]\d*P\d*', str(row.state).strip().split('_')[-1]):
+        # if len(str(row.state).strip().split('_')) == 4:
+        if len(str(row.state).strip().split('_')) == 5:
+            if re.match(args.state_format, str(row.state).strip().split('_')[-1]):
                 if os.path.exists(os.path.join(args.dir, row.audio_region + '.wav')):
                     tmp_rename_files.append({'audio_region':row.audio_region, 'state':row.state, 'tmp':'tmp_' + row.state + '.wav'})
                     os.rename(os.path.join(args.dir, row.audio_region + '.wav'), os.path.join(args.dir, 'tmp_' + row.state + '.wav'))
@@ -91,7 +95,8 @@ if __name__ == "__main__":
         if str(row.state) == 'N':
             audio_region_dict['audio_region'] = row.audio_region
             audio_region_dict['state'] = 'N'
-        elif len(str(row.state).strip().split('_')) == 4:
+        # elif len(str(row.state).strip().split('_')) == 4:
+        elif len(str(row.state).strip().split('_')) == 5:
             audio_region_dict['audio_region'] = row.state
             audio_region_dict['state'] = 'N'
         else:
