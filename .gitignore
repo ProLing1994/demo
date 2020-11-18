@@ -18,6 +18,9 @@ bin/
 # exe
 *.exe
 
+# model
+*.pkl
+
 # python
 *__pycache__/
 *.spec

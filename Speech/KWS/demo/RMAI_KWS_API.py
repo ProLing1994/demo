@@ -1,6 +1,13 @@
+import numpy as np
 import os
+import pyaudio
+import signal
+import wave
 
 from multiprocessing import Process, Event, Queue, freeze_support
+
+from wakeup.wake_up import WakeUp
+
 
 def term(sig_num, addtion):
     """
@@ -29,7 +36,7 @@ class OnlineAudio:
 
     def listen(self, event, queue):
         """
-        进程：录音
+        进程：监听录音
         """
         print("[Init:] Listen")
         pyaudio_listen = pyaudio.PyAudio()
@@ -45,6 +52,9 @@ class OnlineAudio:
             event.set()
 
     def listen_file(self, event, queue):
+        """
+        进程：监听本地音乐
+        """
         print("[Init:] Listen")
         # wave_path = "/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_60_001.wav"
         wave_path = "/mnt/huanyuan/model/test_straming_wav/test.wav"
@@ -64,14 +74,13 @@ class OnlineAudio:
             queue.put(data)
             event.set()
             
-
     def play(self, event, queue):
         """
         进程：播放音乐
         """
         print("[Init:] Play")
         pyaudio_play = pyaudio.PyAudio()
-        # 打开音频流， output=True表示音频输出
+        # 打开音频流， output=True 表示音频输出
         stream = pyaudio_play.open(format=self._format,
                                     channels=self._channels,
                                     rate=self._rate,
@@ -80,106 +89,54 @@ class OnlineAudio:
         
         while True:
             if queue.empty():
-                # print("等待数据中..........")
                 event.wait()
             else:
                 # play
                 data = queue.get()
-                # 创建播放器
                 stream.write(data)
 
-
     def wake_up(self, event, queue):
-        print('[Init:] wake up')
-
-        # config
-        config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_1_fbank_timeshift_spec_on_res15_11032020/test_straming_wav/kws_config_xiaoyu_2.py"
-        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_3_timeshift_spec_on_focal_res15_11032020/test_straming_wav/kws_config_xiaoyu_2.py"
-        cfg = load_cfg_file(config_file)
-        label_index = load_label_index(cfg.dataset.label.positive_label)
-        label_list = cfg.dataset.label.label_list
-        positive_label = cfg.dataset.label.positive_label
-        sample_rate = cfg.dataset.sample_rate
-        clip_duration_ms = cfg.dataset.clip_duration_ms
-
-        # inin model parameter
-        model_path = cfg.general.save_dir
-        gpu_ids = int(cfg.general.gpu_ids)
-        model_epoch = -1
-        
-        # init parameter 
-        detection_threshold = 0.95
-        timeshift_ms = 30
-        average_window_duration_ms = 800
-        audio_data_length = 0
-        audio_data_offset = 0
-
-        desired_samples = int(sample_rate * clip_duration_ms / 1000)
-        timeshift_samples = int(sample_rate * timeshift_ms / 1000)
-
-        # init recognizer
-        recognize_element = RecognizeResult()
-        recognize_commands = RecognizeCommands(
-            labels=label_list,
-            positove_lable_index = label_index[positive_label[0]],
-            average_window_duration_ms=average_window_duration_ms,
-            detection_threshold=detection_threshold,
-            suppression_ms=3000,
-            minimum_count=15)
-
-        # init model
-        model = kws_load_model(model_path, gpu_ids, model_epoch)
-        net = model['prediction']['net']
-        net.eval()
+        """
+        进程：语音唤醒
+        """
+        print("[Init:] wake up")
+        wake_up = WakeUp()
 
         while True:
-            if audio_data_length < desired_samples:
+            if wake_up.audio_data_length < wake_up.desired_samples:
                 if queue.empty(): 
                     # print("等待数据中..........")
                     event.wait()
                 else:
                     data = queue.get()
-                    # print("获取的数据data", data)
-                    # data_np = np.frombuffer(data, dtype = np.float32)
+                    # 数据转化，注意除以 2^15 进行归一化
                     data_np = np.frombuffer(data, np.int16).astype(np.float32) / 32768
                     
-                    # print(len(data_np)) 
-                    if audio_data_length == 0:
-                        audio_data = data_np
-                        audio_data_length = len(audio_data)
+                    if wake_up.audio_data_length == 0:
+                        wake_up.audio_data = data_np
+                        wake_up.audio_data_length = len(wake_up.audio_data)
                     else:
-                        # print("before concatenate", audio_data_length)
-                        audio_data = np.concatenate((audio_data, data_np), axis=0)
-                        audio_data_length = len(audio_data)
-                        # print("after concatenate", audio_data_length)`
+                        wake_up.audio_data = np.concatenate((wake_up.audio_data, data_np), axis=0)
+                        wake_up.audio_data_length = len(wake_up.audio_data)
             else:
-                # print("before", audio_data_length)
-                input_data = audio_data[0: desired_samples]
-                assert len(input_data) == desired_samples
+                # prepare data
+                input_data = wake_up.audio_data[0: wake_up.desired_samples]
+                assert len(input_data) == wake_up.desired_samples
 
                 # model infer
-                output_score = model_predict(cfg, net, input_data)
+                find_word_bool = wake_up.predict(input_data)
 
-                # process result
-                current_time_ms = int(audio_data_offset * 1000 / sample_rate)
-                recognize_commands.process_latest_result(output_score, current_time_ms, recognize_element)
+                if find_word_bool:
+                    print("[Information:] Waked up! Wake up word: {}, Time: {}".format(wake_up.positive_label_list[0], wake_up.audio_data_offset/wake_up.sample_rate))
 
-                # print(output_score[0])
-                if recognize_element.is_new_command:
-                    all_found_words_dict = {}
-                    all_found_words_dict['label'] = positive_label[0]
-                    all_found_words_dict['start_time'] = recognize_element.start_time
-                    all_found_words_dict['end_time'] = recognize_element.end_time + clip_duration_ms
-                    print('Find words: label:{}, start time:{}, end time:{}, response time: {:.2f}s'.format(
-                        all_found_words_dict['label'], all_found_words_dict['start_time'], all_found_words_dict['end_time'], recognize_element.response_time))
+                wake_up.audio_data_offset += wake_up.timeshift_samples
+                wake_up.audio_data = wake_up.audio_data[wake_up.timeshift_samples:]
+                wake_up.audio_data_length = len(wake_up.audio_data)
 
-                audio_data_offset += timeshift_samples
-                audio_data = audio_data[timeshift_samples:]
-                audio_data_length = len(audio_data)
-                # print("after", audio_data_length, audio_data_offset)
-
-    # 实时性多进程处理
     def start(self):
+        """
+        实时多进程语音处理
+        """
         signal.signal(signal.SIGTERM, term)
         print("[Information:] Current main-process pid is: {}".format(os.getpid()))
         print("[Information:] If you want to kill the main-process and sub-process, type: kill {}".format(os.getpid()))
@@ -194,6 +151,7 @@ class OnlineAudio:
 
         # 监听
         listen_process_wakeeup = Process(target=self.listen, args=(self.event, self.audio_queue_wakeup))
+        # listen_process_wakeeup = Process(target=self.listen_file, args=(self.event, self.audio_queue_wakeup))
         listen_process_wakeeup.start()
 
         # 唤醒

@@ -1,17 +1,33 @@
+import glob
 import importlib
-import librosa
 import os
-import pandas as pd
-import pickle
-import sys
 import torch
 import torch.nn.functional as F
 
-from torchstat import stat
+from wakeup.dataset_helper import AudioPreprocessor
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
-from utils.pred_helpers import last_checkpoint
-from dataset.kws.dataset_helper import *
+
+def last_checkpoint(chk_root):
+    """
+    find the directory of last check point
+    :param chk_root: the check point root directory, which may contain multiple
+     checkpoints
+    :return: the last check point directory
+    """
+
+    last_epoch = -1
+    chk_folders = os.path.join(chk_root, 'chk_*')
+    for folder in glob.glob(chk_folders):
+        folder_name = os.path.basename(folder)
+        tokens = folder_name.split('_')
+        epoch = int(tokens[-1])
+        if epoch > last_epoch:
+            last_epoch = epoch
+
+    if last_epoch == -1:
+        raise OSError('No checkpoint folder found!')
+
+    return os.path.join(chk_root, 'chk_{}'.format(last_epoch))
 
 
 def load_model(model_folder, epoch):
@@ -38,11 +54,8 @@ def load_model(model_folder, epoch):
 
     # load network structure
     net_name = state['net']
-    net_module = importlib.import_module('network.' + net_name)
+    net_module = importlib.import_module('wakeup.network.' + net_name)
 
-    # net = net_module.SpeechResModel(num_classes=12, 
-    #                                 image_height=101, 
-    #                                 image_weidth=40)
     net = net_module.SpeechResModel(num_classes=state['num_classes'], 
                                   image_height=state['image_height'], 
                                   image_weidth=state['image_weidth'])
@@ -79,48 +92,6 @@ def kws_load_model(model_folder, gpu_id, epoch):
     del os.environ['CUDA_VISIBLE_DEVICES']
 
     return model
-
-
-def load_background_noise(cfg):
-    # load noise data
-    background_data_pd = pd.read_csv(cfg.general.background_data_path)
-    input_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset_audio', BACKGROUND_NOISE_DIR_NAME)
-    background_data = []
-    for _, row in background_data_pd.iterrows():
-        filename = os.path.basename(row.file).split('.')[0] + '.txt'
-        f = open(os.path.join(input_dir, filename), 'rb')
-        background_data.append(pickle.load(f))
-        f.close()
-    return background_data
-
-
-def dataset_add_noise(cfg, data, background_data, bool_silence_label=False):
-    # init 
-    background_frequency = cfg.dataset.augmentation.background_frequency
-    background_volume = cfg.dataset.augmentation.background_volume
-
-    # add noise
-    background_clipped = np.zeros(len(data))
-    background_volume_clipped = 0
-
-    if len(background_data) > 0 and background_frequency > 0:
-        background_index = np.random.randint(len(background_data))
-        background_samples = background_data[background_index]
-        assert len(background_samples) >= len(data), \
-            "[ERROR:] Background sample is too short! Need more than {} samples but only {} were found".format(len(data), len(background_samples))
-        background_offset = np.random.randint(
-            0, len(background_samples) - len(data) - 1)
-        background_clipped = background_samples[background_offset:(
-            background_offset + len(data))]
-            
-        if np.random.uniform(0, 1) < background_frequency or bool_silence_label:
-            background_volume_clipped = np.random.uniform(0, background_volume)
-
-    data = background_volume_clipped * background_clipped + data 
-
-    # data clip 
-    data = np.clip(data, -1.0, 1.0) 
-    return data 
 
 
 def audio_preprocess(cfg, data):
