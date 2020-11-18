@@ -51,8 +51,8 @@ __C.general.is_test = True
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_6_timeshift_spec_on_mask_2_focal_res15_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_0_fbank_timeshift_spec_on_focal_res15_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_1_fbank_timeshift_up_spec_on_focal_res15_11032020/"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_0_timeshift_spec_on_res15_11032020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_1_fbank_timeshift_spec_on_res15_11032020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_0_timeshift_spec_on_res15_11032020/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_1_fbank_timeshift_spec_on_res15_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_2_timeshift_spec_on_res15_finetune_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_3_fbank_timeshift_spec_on_res15_finetune_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu_mining_difficult_sample_11122020/"
@@ -97,8 +97,8 @@ __C.dataset.window_size_ms = 30.0
 __C.dataset.window_stride_ms = 10.0
 
 # How the spectrogram is processed to produce features, support ["mfcc", "pcen", "fbank"]
-# __C.dataset.preprocess = "fbank"
-__C.dataset.preprocess = "pcen"
+__C.dataset.preprocess = "fbank"
+# __C.dataset.preprocess = "pcen"
 # __C.dataset.preprocess = "mfcc"
 
 # How many bins to use for the MFCC fingerprint
