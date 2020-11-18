@@ -11,8 +11,8 @@ cfg = __C
 __C.general = {}
 
 # data folder
-__C.general.data_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/XiaoYuDataset_11032020"
-# __C.general.data_dir = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/XiaoYuDataset_11032020"
+# __C.general.data_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/XiaoYuDataset_11032020"
+__C.general.data_dir = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/XiaoYuDataset_11032020"
 
 # data version
 __C.general.version = "2.2"
@@ -22,17 +22,17 @@ __C.general.date = "11122020"
 
 # data path
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_1.0_11032020/total_data_files.csv"
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.2_11122020/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.2_11122020/total_data_files.csv"
 # __C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_1.0_11032020/total_data_files.csv"
 # __C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.0_11112020/total_data_files.csv"
-# __C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.2_11122020/total_data_files.csv"
+__C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.2_11122020/total_data_files.csv"
 
 # background noise path
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_1.0_11032020/background_noise_files.csv"
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.2_11122020/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.2_11122020/background_noise_files.csv"
 # __C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_1.0_11032020/background_noise_files.csv"
 # __C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.0_11112020/background_noise_files.csv"
-# __C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.2_11122020/background_noise_files.csv"
+__C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.2_11122020/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -40,7 +40,9 @@ __C.general.is_test = True
 # the output of training models and logging files
 # __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_xiaoyu3_0_timeshift_enhancement_multiple_res15_11032020/"
 # __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_xiaoyu3_1_timeshift_spec_on_res15_11032020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoyu_11112020_test"
+# __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_xiaoyu5_0_timeshift_spec_on_res15_11032020/"
+__C.general.save_dir = "/home/engineers/yh_rmai/model/kws_xiaoyu5_1_fbank_timeshift_spec_on_res15_11032020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoyu_11032020_focal_loss_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu2_0_res15_10292020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_0_timeshift_enhancement_multiple_res15_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_1_timeshift_spec_on_res15_11032020/"
@@ -52,27 +54,26 @@ __C.general.is_test = True
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_0_fbank_timeshift_spec_on_focal_res15_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_1_fbank_timeshift_up_spec_on_focal_res15_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_0_timeshift_spec_on_res15_11032020/"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_1_fbank_timeshift_spec_on_res15_11032020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_2_timeshift_spec_on_res15_finetune_11032020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_3_fbank_timeshift_spec_on_res15_finetune_11032020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_1_fbank_timeshift_spec_on_res15_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu_mining_difficult_sample_11122020/"
 
 # finrtune model
 __C.general.finetune_on = False
-__C.general.finetune_model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_1_fbank_timeshift_up_spec_on_focal_res15_11032020/"
+__C.general.finetune_model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_3_timeshift_spec_on_focal_res15_11032020/"
 __C.general.finetune_epoch = 7999
 
 # set certain epoch to continue training, set -1 to train from scratch
 __C.general.resume_epoch = -1
 
 # the number of GPUs used in training
-# __C.general.num_gpus = 4
-__C.general.num_gpus = 1
+__C.general.num_gpus = 4
+# __C.general.num_gpus = 1
 
 # the GPUs' id used in training
+__C.general.gpu_ids = '0, 1, 2, 3'
 # __C.general.gpu_ids = '4, 5, 6, 7'
 # __C.general.gpu_ids = '6, 7'
-__C.general.gpu_ids = '0'
+# __C.general.gpu_ids = '0'
 
 
 ##################################
@@ -98,7 +99,6 @@ __C.dataset.window_stride_ms = 10.0
 
 # How the spectrogram is processed to produce features, support ["mfcc", "pcen", "fbank"]
 __C.dataset.preprocess = "fbank"
-# __C.dataset.preprocess = "pcen"
 # __C.dataset.preprocess = "mfcc"
 
 # How many bins to use for the MFCC fingerprint
@@ -202,19 +202,19 @@ __C.train = {}
 
 # the number of training epochs
 # __C.train.num_epochs = 16000
-# __C.train.num_epochs = 8000
+__C.train.num_epochs = 8000
 # __C.train.num_epochs = 4000
-__C.train.num_epochs = 1
+# __C.train.num_epochs = 10
 
 # the number of samples in a batch
 # __C.train.batch_size = 2048
-# __C.train.batch_size = 1024
-__C.train.batch_size = 64
-# __C.train.batch_size = 1
+__C.train.batch_size = 1024
+# __C.train.batch_size = 64
+# __C.train.batch_size = 16
 
 # the number of threads for IO
-# __C.train.num_threads = 64
-__C.train.num_threads = 16
+__C.train.num_threads = 64
+# __C.train.num_threads = 16
 # __C.train.num_threads = 1
 
 # the number of batches to update loss curve
@@ -265,8 +265,8 @@ __C.train.betas = (0.9, 0.999)
 __C.debug = {}
 
 # whether to save input images
-__C.debug.save_inputs = True
-# __C.debug.save_inputs = False
+# __C.debug.save_inputs = True
+__C.debug.save_inputs = False
 
 # the number of processing for save input images
 # __C.debug.num_processing = 64
