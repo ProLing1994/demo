@@ -172,7 +172,10 @@ class SpeechDataset(Dataset):
     audio_label_idx = self.label_index[audio_label]
 
     # data augmentation
-    possitive_speed, possitive_volume = self.dataset_augmentation_volume_speed()
+    possitive_speed = '1.0'
+    possitive_volume = '1.0'
+    if self.augmentation_on:
+      possitive_speed, possitive_volume = self.dataset_augmentation_volume_speed()
 
     # load data
     if audio_label != self.positive_label or (possitive_speed == '1.0' and possitive_volume == '1.0'):
