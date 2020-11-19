@@ -156,9 +156,9 @@ def main():
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
     parser.add_argument('-i', '--input', type=str,
                         default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py", help='config file')
-    parser.add_argument('-m', '--mode', type=str, default="training")
+    # parser.add_argument('-m', '--mode', type=str, default="training")
     # parser.add_argument('-m', '--mode', type=str, default="validation")
-    # parser.add_argument('-m', '--mode', type=str, default="testing")
+    parser.add_argument('-m', '--mode', type=str, default="testing")
     args = parser.parse_args()
     # preload_audio(args.input, args.mode)
     # preload_background_audio(args.input)
@@ -168,11 +168,15 @@ def main():
     # output_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/difficult_sample_mining_11122020/preload_data/"
     # input_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/XiaoYuDataset_11032020/xiaoyu_speed_0_9_volume_1_0/"
     # output_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.2_11122020/dataset_audio/training/xiaoyu_speed_0_9_volume_1_0"
-    # input_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/XiaoYuDataset_11032020/xiaoyu_speed_1_1_volume_1_0/"
-    # output_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.2_11122020/dataset_audio/training/xiaoyu_speed_1_1_volume_1_0"
-    input_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/XiaoYuDataset_11032020/xiaoyu_speed_1_0_volume_1_6/"
-    output_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.2_11122020/dataset_audio/training/xiaoyu_speed_1_0_volume_1_6"
-    preload_audio_folder(args.input, input_dir, output_dir)
+    input_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/XiaoYuDataset_11032020/"
+    output_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_3.0_11192020/dataset_audio/training/"
+    dir_list = ['xiaoyu_speed_0_9_volume_0_4', 'xiaoyu_speed_0_9_volume_0_7', 'xiaoyu_speed_0_9_volume_1_0', 'xiaoyu_speed_0_9_volume_1_3', 'xiaoyu_speed_0_9_volume_1_6',
+                'xiaoyu_speed_1_0_volume_0_4', 'xiaoyu_speed_1_0_volume_0_7', 'xiaoyu_speed_1_0_volume_1_0', 'xiaoyu_speed_1_0_volume_1_3', 'xiaoyu_speed_1_0_volume_1_6',
+                'xiaoyu_speed_1_1_volume_0_4', 'xiaoyu_speed_1_1_volume_0_7', 'xiaoyu_speed_1_1_volume_1_0', 'xiaoyu_speed_1_1_volume_1_3', 'xiaoyu_speed_1_1_volume_1_6']
+    for dir in dir_list:
+        input_dir_idx = os.path.join(input_dir, dir)
+        output_dir_idx = os.path.join(output_dir, dir)
+        preload_audio_folder(args.input, input_dir_idx, output_dir_idx)
 
 
 if __name__ == "__main__":
