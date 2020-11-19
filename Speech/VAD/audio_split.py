@@ -5,18 +5,20 @@ import pandas as pd
 
 parser = argparse.ArgumentParser(description="Audio Split Using Auditok")
 parser.add_argument('--audio_path', type=str,
-                    default='E:\\project\\data\\speech\\kws\\xiaorui\\11172020\\0000000000000000-201117-135408-135541-000001002770.wav')
+                    default='E:\\project\\data\\speech\\kws\\XiaoYuNew\\11192020_0006.wav')
 parser.add_argument('--output_dir', type=str,
-                    default='E:\\project\\data\\speech\\kws\\xiaorui\\11172020')
+                    default='E:\\project\\data\\speech\\kws\\XiaoYuNew')
 # parser.add_argument('--output_format', type=str, default="RM_ROOM_Mandarin_S{:0>3d}M{}P{:0>5d}.wav")
-parser.add_argument('--output_format', type=str,
-                    default="RM_KWS_XIAORUI_{}_S{:0>3d}M{}P{}T{}.wav")
-parser.add_argument('--text', type=str, default="xiaorui,streamax,random")
-parser.add_argument('--speaker', type=int, default=1)
+# parser.add_argument('--output_format', type=str, default="RM_KWS_XIAORUI_{}_S{:0>3d}M{}P{}T{}.wav")
+parser.add_argument('--output_format', type=str, default="RM_KWS_XIAOYU_{}_S{:0>3d}M{}P{}T{}.wav")
+# parser.add_argument('--text', type=str, default="xiaorui,streamax,random")
+parser.add_argument('--text', type=str, default="xiaoyu")
+parser.add_argument('--speaker', type=int, default=7)
 parser.add_argument('--sex', type=int, default=0, choices=[0, 1])
 parser.add_argument('--language', type=int, default=0, choices=[0, 1])
 parser.add_argument('--idx', type=int, default=1)
-parser.add_argument('--max_idx', type=int, default=10)
+# parser.add_argument('--max_idx', type=int, default=10)
+parser.add_argument('--max_idx', type=int, default=50)
 args = parser.parse_args()
 
 if __name__ == "__main__":
