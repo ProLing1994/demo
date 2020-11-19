@@ -23,14 +23,17 @@ def load_label_index(positive_label):
     return label_index
 
 
-def load_preload_audio(audio_file, audio_idx, audio_label, audio_label_idx, input_dir):
+def load_preload_audio(audio_file, audio_idx, audio_label, audio_label_idx, input_dir, refilename=True):
     # load data
-    if audio_label == SILENCE_LABEL:
-        filename = str(audio_label_idx) + '_' + audio_label + \
-            '_' + str(audio_idx) + '.txt'
+    if refilename:
+        if audio_label == SILENCE_LABEL:
+            filename = str(audio_label_idx) + '_' + audio_label + \
+                '_' + str(audio_idx) + '.txt'
+        else:
+            filename = str(audio_label_idx) + '_' + os.path.basename(os.path.dirname(
+                audio_file)) + '_' + os.path.basename(audio_file).split('.')[0] + '.txt'
     else:
-        filename = str(audio_label_idx) + '_' + os.path.basename(os.path.dirname(
-            audio_file)) + '_' + os.path.basename(audio_file).split('.')[0] + '.txt'
+        filename =  os.path.basename(audio_file).split('.')[0] + '.txt'
 
     f = open(os.path.join(input_dir, filename), 'rb')
     data = pickle.load(f)
