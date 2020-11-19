@@ -36,6 +36,7 @@ class SpeechDataset(Dataset):
     self.data_mode_list = self.data_pd['mode'].tolist()
     self.data_label_list = self.data_pd['label'].tolist()
 
+    self.positive_label = cfg.dataset.label.positive_label[0]
     self.sample_rate = cfg.dataset.sample_rate
     self.clip_duration_ms = cfg.dataset.clip_duration_ms
     self.window_size_ms = cfg.dataset.window_size_ms
@@ -51,6 +52,8 @@ class SpeechDataset(Dataset):
     self.background_volume = cfg.dataset.augmentation.background_volume
     self.time_shift_ms = cfg.dataset.augmentation.time_shift_ms
     self.time_shift_multiple = cfg.dataset.augmentation.time_shift_multiple
+    self.possitive_speed_list = cfg.dataset.augmentation.possitive_speed.split(',')
+    self.possitive_volume_list = cfg.dataset.augmentation.possitive_volume.split(',')
 
     self.augmentation_spec_on = cfg.dataset.augmentation.spec_on
     self.F = cfg.dataset.augmentation.F
@@ -121,6 +124,11 @@ class SpeechDataset(Dataset):
     data = np.clip(data, -1.0, 1.0) 
     return data 
 
+  def dataset_augmentation_volume_speed(self):
+    possitive_speed = random.choice(self.possitive_speed_list)
+    possitive_volume = random.choice(self.possitive_volume_list)
+    return possitive_speed, possitive_volume
+
   def dataset_augmentation_waveform(self, data, audio_label_idx):
     # add time_shift
     time_shift_amount = 0
@@ -163,9 +171,16 @@ class SpeechDataset(Dataset):
     # load label idx
     audio_label_idx = self.label_index[audio_label]
 
+    # data augmentation
+    possitive_speed, possitive_volume = self.dataset_augmentation_volume_speed()
+
     # load data
-    input_dir = os.path.join(self.input_dir, audio_label)
-    data, filename = load_preload_audio(audio_file, index, audio_label, audio_label_idx, input_dir)
+    if audio_label != self.positive_label or (possitive_speed == '1.0' and possitive_volume == '1.0'):
+      input_dir = os.path.join(self.input_dir, audio_label)
+      data, filename = load_preload_audio(audio_file, index, audio_label, audio_label_idx, input_dir)
+    else:
+      input_dir = os.path.join(self.input_dir, audio_label + '_speed_{}_volume_{}'.format("_".join(possitive_speed.split('.')), "_".join(possitive_volume.split('.'))))
+      data, filename = load_preload_audio(audio_file, index, audio_label, audio_label_idx, input_dir, refilename=False)
 
     # print('Load data Time: {}'.format((time.time() - begin_t) * 1.0))
     # begin_t = time.time()
