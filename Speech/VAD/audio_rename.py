@@ -5,7 +5,7 @@ import shutil
 import re
 
 parser = argparse.ArgumentParser(description="Audio Rename")
-parser.add_argument('--dir', type=str, default='E:\\project\\data\\speech\\kws\\xiaorui\\11172020\\0000000000000000-201117-135408-135541-000001002770')
+parser.add_argument('--dir', type=str, default='E:\\project\\data\\speech\\kws\\XiaoYuNew\\11192020_0006')
 parser.add_argument('--state_format', type=str, default=r'^S\d*[MT]\d*P\d*T\d*')
 args = parser.parse_args()
 
