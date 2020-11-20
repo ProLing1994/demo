@@ -37,7 +37,7 @@ def multiprocessing_data_preprocess(args):
   if not os.path.exists(output_dir_idx):
     os.makedirs(output_dir_idx)
 
-  if label_idx == '0':
+  if label_name_idx == SILENCE_LABEL:
     filename = label_idx + '_' + label_name_idx + '_' + str(indexs) + '.txt'
   else:
     filename = label_idx + '_' + os.path.basename(os.path.dirname(image_name_idx)) + '_' + os.path.basename(image_name_idx).split('.')[0] + '.txt'

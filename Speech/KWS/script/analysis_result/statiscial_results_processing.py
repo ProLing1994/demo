@@ -18,7 +18,7 @@ from script.analysis_result.cal_fpr_tpr import cal_fpr_tpr
 from test_streaming_wav import RecognizeResult, RecognizeCommands
 
 
-def statiscial_results_threshold(input_wav, config_file, timeshift_ms, average_window_duration_ms, detection_threshold):
+def statiscial_results_processing(input_wav, config_file, timeshift_ms, average_window_duration_ms, detection_threshold):
     print("Do wave:{}, begin!!!".format(input_wav))
 
     # load configuration file
@@ -59,7 +59,7 @@ def statiscial_results_threshold(input_wav, config_file, timeshift_ms, average_w
 
     # load data
     audio_data = librosa.core.load(input_wav, sr=sample_rate)[0]
-    assert len(audio_data) > desired_samples, "[ERROR:] Wav is too short! Need more than {} samples but only {} were found".format(
+    assert len(audio_data) > desired_samples, "[ERROR:] Wav is too short! Need more than {} samples but only {} were found".format  (
         desired_samples, len(audio_data))
 
     audio_data_offset = 0
@@ -101,27 +101,18 @@ def statiscial_results_threshold(input_wav, config_file, timeshift_ms, average_w
 
 def main():
     """
-    使用模型对音频文件进行测试，模拟真实音频输入情况，配置为 --input 中的 config 文件，该脚本会通过滑窗的方式测试每一小段音频数据，计算连续 800ms(27帧)/2000ms(41帧) 音频的平均值结果，
-    如果超过预设门限，则认为检测到关键词，否则认定未检测到关键词，最后分别计算假阳性和召回率
-    由于测试脚本 test_streaming_wav.py 已经对音频文件进行测试，获得测试结果，这里改变预设门限 threshold，计算不同门限下网络的假阳性和召回率
+    使用模型对音频文件进行测试，模拟真实音频输入情况，配置为 --input 中的 config 文件，该脚本会通过滑窗的方式测试每一小段音频数据，计算连续 800ms(27帧)/2000ms(41帧) 音频结果，
+    这里尝试不同的后处理方法，统计滑窗中大于门限值的个数，若达到一定数目，则视为唤醒
     """
     # test
-    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.wav",
-    #                             "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
-
-    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_43200_003.wav",
-                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_news_cishicike_43200_001.wav",
-                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_novel_douluodalu_43200_001.wav",
-                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_43200_001.wav",
-                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_yeshimiwen_43200_001.wav",
-                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_zhongdongwangshi_7200_001.wav",
-                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_xingetuijian_21600_001.wav"]
+    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.wav"]
 
     defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py"
     default_timeshift_ms = 30
     default_average_window_duration_ms = 800
     # default_detection_threshold_list = [0.8, 0.85, 0.9, 0.95]
-    default_detection_threshold_list = [0.5, 0.6, 0.7]
+    # default_detection_threshold_list = [0.5, 0.6, 0.7]
+    default_detection_threshold_list = [0.5]
 
     parser = argparse.ArgumentParser(description='Streamax KWS Testing Engine')
     parser.add_argument('--input_wav_list', type=str,
@@ -138,7 +129,7 @@ def main():
 
     for input_wav in args.input_wav_list:
         for detection_threshold in args.detection_threshold_list:
-            statiscial_results_threshold(input_wav, args.config_file, args.timeshift_ms, args.average_window_duration_ms, detection_threshold)
+            statiscial_results_processing(input_wav, args.config_file, args.timeshift_ms, args.average_window_duration_ms, detection_threshold)
 
 if __name__ == "__main__":
     bool_write_audio = True

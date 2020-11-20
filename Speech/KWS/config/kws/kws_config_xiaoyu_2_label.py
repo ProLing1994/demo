@@ -16,16 +16,17 @@ __C.general.data_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/Xi
 
 # data version
 # __C.general.version = "2.2"
-__C.general.version = "3.0"
+__C.general.version = "4.2"
 
 # data date
 # __C.general.date = "11122020"
-__C.general.date = "11192020"
+__C.general.date = "11202020"
 
 # data path
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_1.0_11032020/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.2_11122020/total_data_files.csv"
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_3.0_11192020/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_3.0_11192020/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_4.2_11202020/total_data_files.csv"
 # __C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_1.0_11032020/total_data_files.csv"
 # __C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.0_11112020/total_data_files.csv"
 # __C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.2_11122020/total_data_files.csv"
@@ -34,7 +35,8 @@ __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_110320
 # background noise path
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_1.0_11032020/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.2_11122020/background_noise_files.csv"
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_3.0_11192020/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_3.0_11192020/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_4.2_11202020/background_noise_files.csv"
 # __C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_1.0_11032020/background_noise_files.csv"
 # __C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.0_11112020/background_noise_files.csv"
 # __C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.2_11122020/background_noise_files.csv"
@@ -124,14 +126,13 @@ __C.dataset.label = {}
 
 # label
 __C.dataset.label.positive_label = ["xiaoyu"]
-__C.dataset.label.negative_label = ["_silence_", "_unknown_"]
-__C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
-__C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[1]
+__C.dataset.label.negative_label = ["_unknown_"]
+__C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[0]
 __C.dataset.label.label_list = __C.dataset.label.negative_label + __C.dataset.label.positive_label
 __C.dataset.label.num_classes = len(__C.dataset.label.positive_label) + len(__C.dataset.label.negative_label)
 
 # label percentage
-__C.dataset.label.silence_percentage = 50.0      # 50%
+__C.dataset.label.silence_percentage = 0.0      # 0%
 __C.dataset.label.unknown_percentage = 200.0     # 200%
 __C.dataset.label.difficult_sample_mining = True
 __C.dataset.label.difficult_sample_percentage = 200.0     # 200%
@@ -187,7 +188,7 @@ __C.loss = {}
 __C.loss.name = 'focal'
 
 # the weight matrix for each class in focal loss, including background class
-__C.loss.obj_weight = np.array([[1/9, 0, 0], [0, 1/9, 0], [0, 0, 7/9]])
+__C.loss.obj_weight = np.array([[1/4, 0], [0, 3/4]]) 
 
 # the gamma parameter in focal loss
 __C.loss.focal_gamma = 2

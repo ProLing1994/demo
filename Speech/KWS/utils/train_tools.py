@@ -279,7 +279,7 @@ def multiprocessing_save(args):
         pass
 
   # plot spectrogram
-  if label_idx == '0':
+  if label_name_idx == SILENCE_LABEL:
     filename = label_idx + '_' + label_name_idx + '_' + str(index_idx) + '.jpg'
   else:
     filename = label_idx + '_' + os.path.basename(os.path.dirname(image_name_idx)) + '_' + os.path.basename(image_name_idx).split('.')[0] + '.jpg'

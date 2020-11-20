@@ -28,7 +28,7 @@ def speed_volume_disturbution(config_file, speed_list, volume_list):
     assert os.path.exists(input_dir)
     for speed_idx in tqdm(range(len(speed_list))):
         for volume_idx in tqdm(range(len(volume_list))):
-            output_dir = os.path.join(cfg.general.data_dir, positive_label + "_speed_{}_volume_{}".format("_".join(speed_list[speed_idx].split('.')), "_".join(volume_list[volume_idx].split('.'))))
+            output_dir = os.path.join(cfg.general.data_dir, '../XiaoYuDataset_11032020_augumentation', positive_label + "_speed_{}_volume_{}".format("_".join(speed_list[speed_idx].split('.')), "_".join(volume_list[volume_idx].split('.'))))
             
             # mkdirs 
             if not os.path.exists(output_dir):

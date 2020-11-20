@@ -10,13 +10,16 @@ UNKNOWN_WORD_INDEX = 1
 BACKGROUND_NOISE_DIR_NAME = '_background_noise_'
 
 
-def load_label_index(positive_label):
+def load_label_index(positive_label, negative_label):
     # data index
     label_index = {}
-    for index, positive_word in enumerate(positive_label):
-        label_index[positive_word] = index + 2
-    label_index.update({SILENCE_LABEL: SILENCE_INDEX,
-                        UNKNOWN_WORD_LABEL: UNKNOWN_WORD_INDEX})
+    index = 0 
+    for _, negative_word in enumerate(negative_label):
+        label_index[negative_word] = index
+        index += 1
+    for _, positive_word in enumerate(positive_label):
+        label_index[positive_word] = index
+        index += 1
     return label_index
 
 

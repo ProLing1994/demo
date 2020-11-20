@@ -44,7 +44,7 @@ def multiprocessing_preload_audio(args):
         cfg.general.version, cfg.general.date), 'dataset_audio', mode_name_idx)
     output_dir_idx = os.path.join(output_dir, label_name_idx)
 
-    if label_idx == '0':
+    if label_name_idx == SILENCE_LABEL:
         filename = label_idx + '_' + label_name_idx + '_' + str(idx) + '.txt'
     else:
         filename = label_idx + '_' + os.path.basename(os.path.dirname(
@@ -65,7 +65,7 @@ def preload_audio(config_file, mode):
     cfg = load_cfg_file(config_file)
 
     # data index
-    label_index = load_label_index(cfg.dataset.label.positive_label)
+    label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
 
     # mkdir
     output_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(
@@ -154,8 +154,8 @@ def main():
         description='Streamax KWS Data Split Engine')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config.py", help='config file')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
-    parser.add_argument('-i', '--input', type=str,
-                        default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py", help='config file')
+    # parser.add_argument('-i', '--input', type=str,  default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py", help='config file')
+    parser.add_argument('-i', '--input', type=str,  default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2_label.py", help='config file')
     # parser.add_argument('-m', '--mode', type=str, default="training")
     # parser.add_argument('-m', '--mode', type=str, default="validation")
     parser.add_argument('-m', '--mode', type=str, default="testing")
@@ -164,12 +164,8 @@ def main():
     # preload_background_audio(args.input)
 
     # preload audio from folder
-    # input_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/difficult_sample_mining_11122020/audio/"
-    # output_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/difficult_sample_mining_11122020/preload_data/"
-    # input_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/XiaoYuDataset_11032020/xiaoyu_speed_0_9_volume_1_0/"
-    # output_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.2_11122020/dataset_audio/training/xiaoyu_speed_0_9_volume_1_0"
-    input_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/XiaoYuDataset_11032020/"
-    output_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_3.0_11192020/dataset_audio/training/"
+    input_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/XiaoYuDataset_11032020_augumentation/"
+    output_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_4.2_11202020/dataset_audio/training"
     dir_list = ['xiaoyu_speed_0_9_volume_0_4', 'xiaoyu_speed_0_9_volume_0_7', 'xiaoyu_speed_0_9_volume_1_0', 'xiaoyu_speed_0_9_volume_1_3', 'xiaoyu_speed_0_9_volume_1_6',
                 'xiaoyu_speed_1_0_volume_0_4', 'xiaoyu_speed_1_0_volume_0_7', 'xiaoyu_speed_1_0_volume_1_0', 'xiaoyu_speed_1_0_volume_1_3', 'xiaoyu_speed_1_0_volume_1_6',
                 'xiaoyu_speed_1_1_volume_0_4', 'xiaoyu_speed_1_1_volume_0_7', 'xiaoyu_speed_1_1_volume_1_0', 'xiaoyu_speed_1_1_volume_1_3', 'xiaoyu_speed_1_1_volume_1_6']

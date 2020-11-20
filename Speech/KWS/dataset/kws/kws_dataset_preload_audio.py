@@ -23,7 +23,7 @@ class SpeechDataset(Dataset):
     super().__init__()
 
     # data index
-    self.label_index = load_label_index(cfg.dataset.label.positive_label)
+    self.label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
 
     # load data 
     data_pd = pd.read_csv(cfg.general.data_csv_path)
