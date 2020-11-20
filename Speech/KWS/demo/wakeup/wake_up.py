@@ -30,7 +30,7 @@ class WakeUp:
         average_window_duration_ms = self._cfg.test.average_window_duration_ms
 
         # load label index 
-        label_index = load_label_index(self._positive_label_list)
+        label_index = load_label_index(self._cfg.dataset.label.positive_label, self._cfg.dataset.label.negative_label)
 
         # init parameter
         self._audio_data = None

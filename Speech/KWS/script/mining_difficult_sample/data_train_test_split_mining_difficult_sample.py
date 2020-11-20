@@ -48,7 +48,7 @@ def prepare_dataset_csv(config_file, original_dataset_dir):
     difficult_sample_files = []          # {'label': [], 'file': [], 'mode': []}
 
     # Look through difficult sample to find audio samples
-    search_path = os.path.join(os.path.dirname(cfg.general.data_dir), 'difficult_sample_mining_{}/clean_audio/'.format(cfg.general.date), '*.wav')
+    search_path = os.path.join(os.path.dirname(cfg.general.data_dir), 'difficult_sample_mining_11122020/clean_audio/', '*.wav')
     for wav_path in glob.glob(search_path):
         # Divide training, test and verification set
         set_index = random_index(validation_percentage, testing_percentage)
@@ -106,10 +106,9 @@ def main():
     # We only add hard mining difficult negative samples, we do not change the distribution of the original data set, only add additional negative sample data
     parser = argparse.ArgumentParser(
         description='Streamax KWS Data Split Engine')
-    parser.add_argument('--config_file', type=str,
-                        default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py", help='config file')
-    parser.add_argument('--original_dataset_dir', type=str,
-                        default="/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_1.0_11032020")
+    # parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py", help='config file')
+    parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2_label.py", help='config file')
+    parser.add_argument('--original_dataset_dir', type=str, default="/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_4.0_11202020/")
     args = parser.parse_args()
     prepare_dataset_csv(args.config_file, args.original_dataset_dir)
 
