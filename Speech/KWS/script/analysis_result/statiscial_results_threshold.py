@@ -15,10 +15,9 @@ from dataset.kws.dataset_helper import *
 from impl.pred_pyimpl import kws_load_model, model_predict
 from script.analysis_result.plot_score_line import show_score_line
 from script.analysis_result.cal_fpr_tpr import cal_fpr_tpr
-from test_streaming_wav import RecognizeResult, RecognizeCommands
+from impl.recognizer_pyimpl import RecognizeResult, RecognizeCommands, RecognizeCommandsCountNumber
 
-
-def statiscial_results_threshold(input_wav, config_file, timeshift_ms, average_window_duration_ms, detection_threshold):
+def statiscial_results_threshold(input_wav, config_file, timeshift_ms, average_window_duration_ms, detection_threshold, detection_number_threshold):
     print("Do wave:{}, begin!!!".format(input_wav))
 
     # load configuration file
@@ -37,11 +36,19 @@ def statiscial_results_threshold(input_wav, config_file, timeshift_ms, average_w
     label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
 
     recognize_element = RecognizeResult()
-    recognize_commands = RecognizeCommands(
+    # recognize_commands = RecognizeCommands(
+    #     labels=label_list,
+    #     positove_lable_index = label_index[positive_label[0]],
+    #     average_window_duration_ms=average_window_duration_ms,
+    #     detection_threshold=detection_threshold,
+    #     suppression_ms=3000,
+    #     minimum_count=15)
+    recognize_commands = RecognizeCommandsCountNumber(
         labels=label_list,
         positove_lable_index = label_index[positive_label[0]],
         average_window_duration_ms=average_window_duration_ms,
         detection_threshold=detection_threshold,
+        detection_number_threshold=detection_number_threshold,
         suppression_ms=3000,
         minimum_count=15)
     
@@ -50,7 +57,7 @@ def statiscial_results_threshold(input_wav, config_file, timeshift_ms, average_w
     assert os.path.exists(input_dir)
 
     # mkdir 
-    output_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', os.path.basename(input_wav).split('.')[0] + '_thresholds', 'threshold_{}'.format('_'.join(str(detection_threshold).split('.'))))
+    output_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', os.path.basename(input_wav).split('.')[0] + '_thresholds', 'threshold_{}_{}'.format('_'.join(str(detection_threshold).split('.')), '_'.join(str(detection_number_threshold).split('.'))))
     if not os.path.exists(output_dir):    
         os.makedirs(output_dir)
 
@@ -111,17 +118,22 @@ def main():
 
     default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_43200_003.wav",
                                 "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_news_cishicike_43200_001.wav",
-                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_novel_douluodalu_43200_001.wav",
-                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_43200_001.wav",
-                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_yeshimiwen_43200_001.wav",
-                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_zhongdongwangshi_7200_001.wav",
-                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_xingetuijian_21600_001.wav"]
+                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_novel_douluodalu_43200_001.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_43200_003.wav",
+    #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_news_cishicike_43200_001.wav",
+    #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_novel_douluodalu_43200_001.wav",
+    #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_43200_001.wav",
+    #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_yeshimiwen_43200_001.wav",
+    #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_zhongdongwangshi_7200_001.wav",
+    #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_xingetuijian_21600_001.wav"]
 
-    defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py"
+    # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py"
+    # defaule_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_1_fbank_timeshift_spec_on_res15_11032020/test_straming_wav/kws_config_xiaoyu_2.py"
+    defaule_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_1_timeshift_spec_on_res15_11192020/kws_config_xiaoyu_2.py"
     default_timeshift_ms = 30
     default_average_window_duration_ms = 800
-    # default_detection_threshold_list = [0.8, 0.85, 0.9, 0.95]
-    default_detection_threshold_list = [0.5, 0.6, 0.7]
+    default_detection_threshold_list = [0.8, 0.85, 0.9, 0.95]
+    default_detection_number_threshold_list = [0.5, 0.75, 0.9]
 
     parser = argparse.ArgumentParser(description='Streamax KWS Testing Engine')
     parser.add_argument('--input_wav_list', type=str,
@@ -134,11 +146,14 @@ def main():
                         type=int, default=default_average_window_duration_ms)
     parser.add_argument('--detection_threshold_list',
                         type=int, default=default_detection_threshold_list)
+    parser.add_argument('--detection_number_threshold_list',
+                        type=int, default=default_detection_number_threshold_list)
     args = parser.parse_args()
 
     for input_wav in args.input_wav_list:
         for detection_threshold in args.detection_threshold_list:
-            statiscial_results_threshold(input_wav, args.config_file, args.timeshift_ms, args.average_window_duration_ms, detection_threshold)
+            for detection_number_threshold in args.detection_number_threshold_list:
+                statiscial_results_threshold(input_wav, args.config_file, args.timeshift_ms, args.average_window_duration_ms, detection_threshold, detection_number_threshold)
 
 if __name__ == "__main__":
     bool_write_audio = True
