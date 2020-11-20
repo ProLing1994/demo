@@ -148,6 +148,6 @@ if __name__ == "__main__":
     #             "xiaoyu",
     #             bool_write_audio)
     cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.csv",
-                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_1_timeshift_spec_on_res15_11192020/test_straming_wav/xiaoyu_10292020_testing_3600_001_threshold_0_95/found_words.csv",
+                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_1_timeshift_spec_on_res15_11192020/test_straming_wav/xiaoyu_10292020_testing_3600_001_thresholds/threshold_0_95_0_9/found_words.csv",
                 "xiaoyu",
                 bool_write_audio)

@@ -13,7 +13,7 @@ sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from utils.train_tools import *
 from dataset.kws.dataset_helper import *
 from impl.pred_pyimpl import kws_load_model, model_predict
-from impl.recognizer_pyimpl import RecognizeResult, RecognizeCommands
+from impl.recognizer_pyimpl import RecognizeResult, RecognizeCommands, RecognizeCommandsCountNumber
 
 
 def term(sig_num, addtion):
@@ -204,7 +204,8 @@ class OnlineAudio:
         
         # init parameter 
         # detection_threshold = 0.95
-        detection_threshold = 0.5
+        detection_threshold = 0.8
+        detection_number_threshold = 0.5
         timeshift_ms = 30
         average_window_duration_ms = 800
         audio_data_length = 0
@@ -215,11 +216,19 @@ class OnlineAudio:
 
         # init recognizer
         recognize_element = RecognizeResult()
-        recognize_commands = RecognizeCommands(
+        # recognize_commands = RecognizeCommands(
+        #     labels=label_list,
+        #     positove_lable_index = label_index[positive_label[0]],
+        #     average_window_duration_ms=average_window_duration_ms,
+        #     detection_threshold=detection_threshold,
+        #     suppression_ms=3000,
+        #     minimum_count=15)
+        recognize_commands = RecognizeCommandsCountNumber(
             labels=label_list,
             positove_lable_index = label_index[positive_label[0]],
             average_window_duration_ms=average_window_duration_ms,
             detection_threshold=detection_threshold,
+            detection_number_threshold=detection_number_threshold,
             suppression_ms=3000,
             minimum_count=15)
 

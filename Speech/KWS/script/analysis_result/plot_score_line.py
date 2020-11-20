@@ -137,9 +137,9 @@ def show_score_line_find_words(src_csv, pst_csv, find_words_csv, output_dir, pos
     return
 
 if __name__ == "__main__":
-    show_score_line("/mnt/huanyuan/data/speech/kws/test_straming_wav/xiaoyu_03022018_training_60_001.csv",
-                    "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_1_timeshift_spec_on_res15_11192020/test_straming_wav/xiaoyu_03022018_training_60_001_threshold_0_95/mean_scores.csv",
-                    "xiaoyu")
+    # show_score_line("/mnt/huanyuan/data/speech/kws/test_straming_wav/xiaoyu_03022018_training_60_001.csv",
+    #                 "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_1_timeshift_spec_on_res15_11192020/test_straming_wav/xiaoyu_03022018_training_60_001_threshold_0_95/mean_scores.csv",
+    #                 "xiaoyu")
     # show_score_line("/mnt/huanyuan/data/speech/kws/test_straming_wav/xiaoyu_03022018_validation_60_001.csv",
     #                 "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_1_timeshift_spec_on_res15_11192020/test_straming_wav/xiaoyu_03022018_validation_60_001_threshold_0_95/mean_scores.csv",
     #                 "xiaoyu")
@@ -147,13 +147,13 @@ if __name__ == "__main__":
     #                 "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_1_timeshift_spec_on_res15_11192020/test_straming_wav/xiaoyu_03022018_testing_60_001_threshold_0_95/mean_scores.csv",
     #                 "xiaoyu")
     # show_score_line("/mnt/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.csv", 
-    #                 "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_1_fbank_timeshift_up_spec_on_focal_res15_11032020/test_straming_wav/xiaoyu_10292020_testing_3600_001_threshold_0_95/mean_scores.csv",
+    #                 "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_1_timeshift_spec_on_res15_11192020/test_straming_wav/xiaoyu_10292020_testing_3600_001_threshold_0_95/original_scores.csv",
     #                 "xiaoyu")
     # show_score_line("/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.csv", 
-    #                 "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_1_fbank_timeshift_up_spec_on_focal_res15_11032020/test_straming_wav/weiboyulu_test_3600_001_threshold_0_95/mean_scores.csv",
+    #                 "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_1_timeshift_spec_on_res15_11192020/test_straming_wav/weiboyulu_test_3600_001_threshold_0_95/original_scores.csv",
     #                 "xiaoyu")
-    # show_score_line_find_words("/mnt/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.csv",
-    #                             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_1_fbank_timeshift_up_spec_on_focal_res15_11032020/test_straming_wav/xiaoyu_10292020_testing_3600_001_threshold_0_95/mean_scores.csv",
-    #                             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_1_fbank_timeshift_up_spec_on_focal_res15_11032020/test_straming_wav/xiaoyu_10292020_testing_3600_001_threshold_0_95/found_words.csv",
-    #                             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_1_fbank_timeshift_up_spec_on_focal_res15_11032020/test_straming_wav/xiaoyu_10292020_testing_3600_001_threshold_0_95/error_results/",
-    #                             "xiaoyu")
+    show_score_line_find_words("/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_43200_003.csv",
+                                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_1_timeshift_spec_on_res15_11192020/test_straming_wav/weiboyulu_test_43200_003_threshold_0_95/original_scores.csv",
+                                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_1_timeshift_spec_on_res15_11192020/test_straming_wav/weiboyulu_test_43200_003_threshold_0_95/found_words.csv",
+                                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_1_timeshift_spec_on_res15_11192020/test_straming_wav/weiboyulu_test_43200_003_threshold_0_95/error_results/",
+                                "xiaoyu")

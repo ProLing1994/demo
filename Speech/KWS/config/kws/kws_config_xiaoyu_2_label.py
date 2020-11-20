@@ -31,6 +31,7 @@ __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_110320
 # __C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.0_11112020/total_data_files.csv"
 # __C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.2_11122020/total_data_files.csv"
 # __C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_3.0_11192020/total_data_files.csv"
+# __C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_4.2_11202020/total_data_files.csv"
 
 # background noise path
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_1.0_11032020/background_noise_files.csv"
@@ -41,6 +42,7 @@ __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset
 # __C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.0_11112020/background_noise_files.csv"
 # __C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.2_11122020/background_noise_files.csv"
 # __C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_3.0_11192020/background_noise_files.csv"
+# __C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_4.2_11202020/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
