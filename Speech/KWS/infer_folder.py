@@ -78,6 +78,9 @@ def predict(config_file, epoch, input_folder, add_noise_on, timeshift_ms, result
     net = model['prediction']['net']
     net.eval()
 
+    # load label index 
+    label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
+
     # load data 
     data_file_list = os.listdir(input_folder)
 
@@ -91,7 +94,7 @@ def predict(config_file, epoch, input_folder, add_noise_on, timeshift_ms, result
         results_dict = {}
         results_dict['file'] = os.path.join(input_folder, data_file_list[audio_idx])
         results_dict['label'] = UNKNOWN_WORD_LABEL
-        results_dict['label_idx'] = UNKNOWN_WORD_INDEX
+        results_dict['label_idx'] = label_index[UNKNOWN_WORD_LABEL]
         
         pred, score = longterm_audio_predict(cfg, net, results_dict['file'], background_data, add_noise_on, timeshift_ms, result_mode)
         

@@ -59,8 +59,8 @@ def analysis_data_distribution(config_file):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config_file', type=str,
-                        default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py")
+    # parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py")
+    parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2_label.py")
     args = parser.parse_args()
 
     analysis_data_distribution(args.config_file)
