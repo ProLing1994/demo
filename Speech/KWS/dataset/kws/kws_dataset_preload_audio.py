@@ -189,9 +189,14 @@ class SpeechDataset(Dataset):
     # begin_t = time.time()
 
     # alignment data
-    data_length = len(data)
-    data = np.pad(data, (max(0, (self.desired_samples - data_length)//2), 0), "constant")
-    data = np.pad(data, (0, max(0, (self.desired_samples - data_length + 1)//2)), "constant")
+    # data_length = len(data)
+    # data = np.pad(data, (max(0, (self.desired_samples - data_length)//2), 0), "constant")
+    # data = np.pad(data, (0, max(0, (self.desired_samples - data_length + 1)//2)), "constant")
+    if len(data) < self.desired_samples:
+      data_length = len(data)
+      data_offset = np.random.randint(0, self.desired_samples - data_length - 1)
+      data = np.pad(data, (data_offset, 0), "constant")
+      data = np.pad(data, (0, self.desired_samples - data_length - data_offset), "constant")
 
     if len(data) > self.desired_samples:
       data_offset = np.random.randint(0, len(data) - self.desired_samples - 1)
