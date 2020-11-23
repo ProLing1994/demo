@@ -4,9 +4,7 @@ import pcen
 
 
 SILENCE_LABEL = '_silence_'
-SILENCE_INDEX = 0
 UNKNOWN_WORD_LABEL = '_unknown_'
-UNKNOWN_WORD_INDEX = 1
 BACKGROUND_NOISE_DIR_NAME = '_background_noise_'
 
 

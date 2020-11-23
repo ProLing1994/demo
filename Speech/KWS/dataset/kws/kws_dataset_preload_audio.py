@@ -129,13 +129,13 @@ class SpeechDataset(Dataset):
     possitive_volume = random.choice(self.possitive_volume_list)
     return possitive_speed, possitive_volume
 
-  def dataset_augmentation_waveform(self, data, audio_label_idx):
+  def dataset_augmentation_waveform(self, data, audio_label):
     # add time_shift
     time_shift_amount = 0
 
     # Time shift enhancement multiple of negative samples
     time_shift_samples = self.time_shift_samples
-    if audio_label_idx == UNKNOWN_WORD_INDEX:
+    if audio_label == UNKNOWN_WORD_LABEL:
       time_shift_samples *= self.time_shift_multiple
 
     if time_shift_samples > 0:
@@ -206,7 +206,7 @@ class SpeechDataset(Dataset):
     if audio_label == SILENCE_LABEL:
       data = self.dataset_add_noise(data, bool_silence_label=True)
     elif self.augmentation_on:
-      data = self.dataset_augmentation_waveform(data, audio_label_idx)
+      data = self.dataset_augmentation_waveform(data, audio_label)
     # print('Data augmentation Time: {}'.format((time.time() - begin_t) * 1.0))
     # begin_t = time.time()
 
