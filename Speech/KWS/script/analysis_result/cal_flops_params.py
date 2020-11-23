@@ -7,7 +7,7 @@ from thop import profile
 from thop import clever_format
 
 def main():
-    net_name = "res15"
+    net_name = "crnn"
 
     # load network structure
     net_module = importlib.import_module('network.' + net_name)
