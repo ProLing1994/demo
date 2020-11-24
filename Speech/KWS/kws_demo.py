@@ -189,7 +189,11 @@ class OnlineAudio:
         # config
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_3_timeshift_spec_on_focal_res15_11032020/test_straming_wav/kws_config_xiaoyu_2.py"
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_1_fbank_timeshift_spec_on_res15_11032020/test_straming_wav/kws_config_xiaoyu_2.py"
+        
+        # best
         config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_2_timeshift_spec_on_res15_11192020/kws_config_xiaoyu_2.py"
+        
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu7_0_timeshift_spec_on_res15_11192020/kws_config_xiaoyu_2_label.py"
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_1_timeshift_spec_on_res15_11192020/kws_config_xiaoyu_2.py"
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu7_0_timeshift_spec_on_res15_11192020/kws_config_xiaoyu_2_label.py"
         cfg = load_cfg_file(config_file)
@@ -289,7 +293,7 @@ class OnlineAudio:
         print("[Information:] Current main-process pid is: {}".format(os.getpid()))
         print("[Information:] If you want to kill the main process and sub-process, type: kill {}".format(os.getpid()))
 
-        # 监听
+        # # 监听
         # listen_process_play = Process(target=self.listen, args=(self.event, self.audio_queue_play))
         # listen_process_play.start()
 

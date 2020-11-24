@@ -12,7 +12,8 @@ cfg = __C
 __C.general = {}
 
 # model path
-__C.general.model_path = "./wakeup/model/kws_xiaoyu6_1_timeshift_spec_on_res15_11192020/"
+# __C.general.model_path = "./wakeup/model/kws_xiaoyu6_1_timeshift_spec_on_res15_11192020/"
+__C.general.model_path = "./wakeup/model/kws_xiaoyu6_2_timeshift_spec_on_res15_11192020/"
 
 # model epoch
 __C.general.model_epoch = -1
@@ -87,7 +88,8 @@ __C.net.name = 'res15'
 __C.test = {}
 
 # __C.test.detection_threshold = 0.95
-__C.test.detection_threshold = 0.5
+__C.test.detection_threshold = 0.8
+__C.test.detection_number_threshold = 0.5
 
 __C.test.timeshift_ms = 30
 
