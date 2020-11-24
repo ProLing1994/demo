@@ -46,7 +46,7 @@ __C.general.is_test = True
 # the output of training models and logging files
 # __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_xiaoyu3_0_timeshift_enhancement_multiple_res15_11032020/"
 # __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_xiaoyu3_1_timeshift_spec_on_res15_11032020/"
-__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoyu_11112020_test"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoyu_11112020_test_crnn"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu2_0_res15_10292020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_0_timeshift_enhancement_multiple_res15_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_1_timeshift_spec_on_res15_11032020/"
@@ -63,7 +63,8 @@ __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoyu_11112020_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_3_fbank_timeshift_spec_on_res15_finetune_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_0_timeshift_spec_on_res15_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_1_timeshift_spec_on_res15_11192020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu8_0_timeshift_spec_on_crnn_11032020/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_2_timeshift_spec_on_res15_11192020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu8_1_timeshift_spec_on_crnn_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu_mining_difficult_sample_11122020/"
 
 # finrtune model
@@ -203,11 +204,11 @@ __C.net = {}
 # __C.net.name = 'cnn-trad-pool2'
 # __C.net.name = 'cnn-one-fstride1'
 # __C.net.name = 'cnn-tpool2'
-# __C.net.name = 'res15'
+__C.net.name = 'res15'
 # __C.net.name = 'res15-narrow'
 # __C.net.name = 'res8'
 # __C.net.name = 'res8-narrow'
-__C.net.name = 'crnn'
+# __C.net.name = 'crnn'
 
 
 ######################################
