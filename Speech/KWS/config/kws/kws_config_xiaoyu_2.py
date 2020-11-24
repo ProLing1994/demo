@@ -208,7 +208,8 @@ __C.net = {}
 # __C.net.name = 'res15-narrow'
 # __C.net.name = 'res8'
 # __C.net.name = 'res8-narrow'
-__C.net.name = 'crnn'
+__C.net.name = 'lstm-avg'
+# __C.net.name = 'crnn'
 
 
 ######################################
