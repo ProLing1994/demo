@@ -17,15 +17,15 @@ from script.analysis_result.plot_score_line import show_score_line
 from script.analysis_result.cal_fpr_tpr import cal_fpr_tpr
 
 
-def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_duration_ms, detection_threshold):
-# def test(args):
+# def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_duration_ms, detection_threshold):
+def test(args):
 
-    # input_wav = args[0]
-    # config_file = args[1]
-    # model_epoch = args[2]
-    # timeshift_ms = args[3]
-    # average_window_duration_ms = args[4]
-    # detection_threshold = args[5]
+    input_wav = args[0]
+    config_file = args[1]
+    model_epoch = args[2]
+    timeshift_ms = args[3]
+    average_window_duration_ms = args[4]
+    detection_threshold = args[5]
 
     print("Do wave:{}, begin!!!".format(input_wav))
 
@@ -41,7 +41,7 @@ def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_durat
     positive_label = cfg.dataset.label.positive_label
 
     # load label index 
-    label_index = load_label_index(cfg.dataset.label.positive_label)
+    label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
 
     recognize_element = RecognizeResult()
     recognize_commands = RecognizeCommands(
@@ -146,12 +146,12 @@ def main():
     如果超过预设门限，则认为检测到关键词，否则认定未检测到关键词，最后分别计算假阳性和召回率
     """
     # test
-    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/test.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/test.wav"]
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_60_001.wav"]
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_3600_001.wav"]
-    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_training_60_001.wav",
-    #                         "/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_validation_60_001.wav",
-    #                         "/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_60_001.wav"]
+    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_training_60_001.wav",
+                            "/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_validation_60_001.wav",
+                            "/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_60_001.wav"]
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_43200_003.wav",
@@ -203,8 +203,8 @@ def main():
     #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_009.wav"]
 
     # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
-    # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py"
-    defaule_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_3_timeshift_spec_on_focal_res15_11032020/test_straming_wav/kws_config_xiaoyu_2.py"
+    defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py"
+    # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2_label.py"
     default_model_epoch = -1
     default_timeshift_ms = 30
     default_average_window_duration_ms = 800
@@ -228,20 +228,20 @@ def main():
                         type=int, default=default_detection_threshold)
     args = parser.parse_args()
 
-    # in_params = []
-    # for input_wav in args.input_wav_list:
-    #     in_args = [input_wav, args.config_file, args.model_epoch,
-    #                 args.timeshift_ms, args.average_window_duration_ms, args.detection_threshold]
-    #     in_params.append(in_args)
-
-    # p = multiprocessing.Pool(3)
-    # out = p.map(test, in_params)
-    # p.close()
-    # p.join()
-
+    in_params = []
     for input_wav in args.input_wav_list:
-        test(input_wav, args.config_file, args.model_epoch,
-            args.timeshift_ms, args.average_window_duration_ms, args.detection_threshold)
+        in_args = [input_wav, args.config_file, args.model_epoch,
+                    args.timeshift_ms, args.average_window_duration_ms, args.detection_threshold]
+        in_params.append(in_args)
+
+    p = multiprocessing.Pool(3)
+    out = p.map(test, in_params)
+    p.close()
+    p.join()
+
+    # for input_wav in args.input_wav_list:
+    #     test(input_wav, args.config_file, args.model_epoch,
+    #         args.timeshift_ms, args.average_window_duration_ms, args.detection_threshold)
 
 
 if __name__ == "__main__":

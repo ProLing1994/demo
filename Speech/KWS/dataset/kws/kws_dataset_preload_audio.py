@@ -23,7 +23,7 @@ class SpeechDataset(Dataset):
     super().__init__()
 
     # data index
-    self.label_index = load_label_index(cfg.dataset.label.positive_label)
+    self.label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
 
     # load data 
     data_pd = pd.read_csv(cfg.general.data_csv_path)
@@ -129,13 +129,13 @@ class SpeechDataset(Dataset):
     possitive_volume = random.choice(self.possitive_volume_list)
     return possitive_speed, possitive_volume
 
-  def dataset_augmentation_waveform(self, data, audio_label_idx):
+  def dataset_augmentation_waveform(self, data, audio_label):
     # add time_shift
     time_shift_amount = 0
 
     # Time shift enhancement multiple of negative samples
     time_shift_samples = self.time_shift_samples
-    if audio_label_idx == UNKNOWN_WORD_INDEX:
+    if audio_label == UNKNOWN_WORD_LABEL:
       time_shift_samples *= self.time_shift_multiple
 
     if time_shift_samples > 0:
@@ -189,9 +189,14 @@ class SpeechDataset(Dataset):
     # begin_t = time.time()
 
     # alignment data
-    data_length = len(data)
-    data = np.pad(data, (max(0, (self.desired_samples - data_length)//2), 0), "constant")
-    data = np.pad(data, (0, max(0, (self.desired_samples - data_length + 1)//2)), "constant")
+    # data_length = len(data)
+    # data = np.pad(data, (max(0, (self.desired_samples - data_length)//2), 0), "constant")
+    # data = np.pad(data, (0, max(0, (self.desired_samples - data_length + 1)//2)), "constant")
+    if len(data) < self.desired_samples:
+      data_length = len(data)
+      data_offset = np.random.randint(0, self.desired_samples - data_length - 1)
+      data = np.pad(data, (data_offset, 0), "constant")
+      data = np.pad(data, (0, self.desired_samples - data_length - data_offset), "constant")
 
     if len(data) > self.desired_samples:
       data_offset = np.random.randint(0, len(data) - self.desired_samples - 1)
@@ -206,7 +211,7 @@ class SpeechDataset(Dataset):
     if audio_label == SILENCE_LABEL:
       data = self.dataset_add_noise(data, bool_silence_label=True)
     elif self.augmentation_on:
-      data = self.dataset_augmentation_waveform(data, audio_label_idx)
+      data = self.dataset_augmentation_waveform(data, audio_label)
     # print('Data augmentation Time: {}'.format((time.time() - begin_t) * 1.0))
     # begin_t = time.time()
 

@@ -28,7 +28,10 @@ def longterm_audio_predict(cfg, net, audio_idx, audio_file, audio_mode, audio_la
     # librosa.output.write_wav(os.path.join("/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu_res15_10272020/testing/", filename.split('.')[0] + '.wav'), data, sr=sample_rate)
 
     # alignment data
-    data = np.pad(data, (0, max(0, desired_samples - len(data))), "constant")
+    # data = np.pad(data, (0, max(0, desired_samples - len(data))), "constant")
+    data_length = len(data)
+    data = np.pad(data, (max(0, (desired_samples - data_length)//2), 0), "constant")
+    data = np.pad(data, (0, max(0, (desired_samples - data_length + 1)//2)), "constant")
 
     # add noise 
     if audio_label == SILENCE_LABEL or add_noise_on:
@@ -61,6 +64,10 @@ def longterm_audio_predict(cfg, net, audio_idx, audio_file, audio_mode, audio_la
         # init 
         score_list = sorted(score_list, key=lambda p: p[audio_label_idx], reverse=False)
         average_scores = score_list[0]
+    elif result_mode == 'max':
+        # init 
+        score_list = sorted(score_list, key=lambda p: p[audio_label_idx], reverse=True)
+        average_scores = score_list[0]
     else:
         raise Exception("[ERROR:] Unknow result mode, please check!")
 
@@ -81,7 +88,7 @@ def predict(config_file, epoch, mode, add_noise_on, timeshift_ms, result_mode):
     net.eval()
 
     # load label index 
-    label_index = load_label_index(cfg.dataset.label.positive_label)
+    label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
 
     # load data 
     data_pd = pd.read_csv(cfg.general.data_csv_path)
@@ -146,11 +153,13 @@ def main():
     default_timeshift_ms = 30
     # default_result_mode = 'mean'
     default_result_mode = 'min'
+    # default_result_mode = 'max'
 
     parser = argparse.ArgumentParser(description='Streamax KWS Infering Engine')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config.py", help='config file')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
-    parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py", help='config file')
+    # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py", help='config file')
+    parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2_label.py", help='config file')
     parser.add_argument('--mode', type=str, default=default_mode)
     parser.add_argument('--epoch', type=str, default=default_model_epoch)
     parser.add_argument('--add_noise_on', type=bool, default=default_add_noise_on)
