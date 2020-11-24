@@ -77,9 +77,12 @@ def import_network(cfg):
     'CUDA is not available! Please check nvidia driver!'
 
   net_module = importlib.import_module('network.' + cfg.net.name)
-  net = net_module.SpeechResModel(num_classes=cfg.dataset.label.num_classes, 
-                                  image_height=cfg.dataset.data_size[1], 
-                                  image_weidth=cfg.dataset.data_size[0])
+  net = net_module.__getattribute__('SpeechResModel')(num_classes=cfg.dataset.label.num_classes, 
+                                                      image_height=cfg.dataset.data_size[1], 
+                                                      image_weidth=cfg.dataset.data_size[0])
+  # net = net_module.SpeechResModel(num_classes=cfg.dataset.label.num_classes, 
+  #                                 image_height=cfg.dataset.data_size[1], 
+  #                                 image_weidth=cfg.dataset.data_size[0])
   net_module.parameters_init(net)
   gpu_ids = list(range(cfg.general.num_gpus))
   net = torch.nn.parallel.DataParallel(net, device_ids=gpu_ids)
@@ -192,10 +195,31 @@ def load_checkpoint(epoch_idx, net, save_dir):
   return state['epoch'], state['batch']
 
 
-def save_checkpoint(net, epoch_idx, batch_idx, cfg, config_file):
+def load_checkpoint_resume(epoch_idx, net, optimizer, save_dir):
+  """
+  load network parameters from directory
+  :param epoch_idx: the epoch idx of model to load
+  :param net: the network object
+  :param optimizer: the network object
+  :param save_dir: the save directory
+  :return: loaded epoch index, loaded batch index
+  """
+  chk_file = os.path.join(save_dir,
+                          'checkpoints', 'chk_{}'.format(epoch_idx), 'parameter.pkl')
+  if not os.path.isfile(chk_file):
+    raise ValueError('checkpoint file not found: {}'.format(chk_file))
+
+  state = torch.load(chk_file)
+  net.load_state_dict(state['state_dict'])
+  optimizer.load_state_dict(state['optimizer'])
+  return state['epoch'], state['batch']
+
+
+def save_checkpoint(net, optimizer, epoch_idx, batch_idx, cfg, config_file):
   """
   save model and parameters into a checkpoint file (.pth)
   :param net: the network object
+  :param optimizer: the optimizer object
   :param epoch_idx: the epoch index
   :param batch_idx: the batch index
   :param cfg: the configuration object
@@ -215,6 +239,7 @@ def save_checkpoint(net, epoch_idx, batch_idx, cfg, config_file):
             'image_height': cfg.dataset.data_size[1],
             'image_weidth': cfg.dataset.data_size[0],
             'state_dict': net.state_dict(),
+            'optimizer': optimizer.state_dict(),
             }
   torch.save(state, filename)
   shutil.copy(config_file, os.path.join(chk_folder, 'config.py'))
