@@ -20,8 +20,10 @@ def data_clean(input_dir, output_dir):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input_dir', type=str, default="E:\\project\\data\\speech\\kws\\xiaoyu_dataset_03022018\\XiaoYuDataset_10292020\\xiaoyu")
-    parser.add_argument('--output_dir', type=str, default="E:\\project\\data\\speech\\kws\\xiaoyu_dataset_03022018\\test")
+    # parser.add_argument('--input_dir', type=str, default="E:\\project\\data\\speech\\kws\\xiaoyu_dataset_03022018\\XiaoYuDataset_10292020\\xiaoyu")
+    # parser.add_argument('--output_dir', type=str, default="E:\\project\\data\\speech\\kws\\xiaoyu_dataset_03022018\\test")
+    parser.add_argument('--input_dir', type=str, default="E:\\project\\data\\speech\\kws\\XiaoYuNew\\xiaoyu_add_11192020")
+    parser.add_argument('--output_dir', type=str, default="E:\\project\\data\\speech\\kws\\XiaoYuNew\\test")
     args = parser.parse_args()
     data_clean(args.input_dir, args.output_dir)
 
