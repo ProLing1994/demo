@@ -90,7 +90,7 @@ def predict(config_file, epoch, mode, add_noise_on, timeshift_ms, average_window
     net.eval()
 
     # load label index 
-    label_index = load_label_index(cfg.dataset.label.positive_label)
+    label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
 
     # load data 
     data_pd = pd.read_csv(cfg.general.data_csv_path)
@@ -142,7 +142,7 @@ def predict(config_file, epoch, mode, add_noise_on, timeshift_ms, average_window
 
 def main():
     """
-    使用模型对音频文件进行测试，配置为 --input 中的 config 文件，当存在音频文件长度大于模型送入的音频文件长度时(1s\2s\3s), 该脚本会通过滑窗的方式测试每一小段音频数据，计算连续 500ms(17帧) 音频的平均值结果，
+    使用模型对音频文件进行测试，配置为 --input 中的 config 文件，当存在音频文件长度大于模型送入的音频文件长度时(1s\2s\3s), 该脚本会通过滑窗的方式测试每一小段音频数据，计算连续 800ms(27帧) 音频的平均值结果，
     在得到的平均结果中对应label最小值作为最终结果
     该过程近似测试流程，可以作为参考
     """
@@ -155,12 +155,13 @@ def main():
     # default_add_noise_on = True
     default_add_noise_on = False
     default_timeshift_ms = 30
-    default_average_window_duration_ms = 500
+    default_average_window_duration_ms = 800
 
     parser = argparse.ArgumentParser(description='Streamax KWS Infering Engine')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config.py", help='config file')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
-    parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py", help='config file')
+    # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py", help='config file')
+    parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2_label.py", help='config file')
     parser.add_argument('--mode', type=str, default=default_mode)
     parser.add_argument('--epoch', type=str, default=default_model_epoch)
     parser.add_argument('--add_noise_on', type=bool, default=default_add_noise_on)

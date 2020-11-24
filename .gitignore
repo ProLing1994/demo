@@ -19,7 +19,7 @@ bin/
 *.exe
 
 # model
-*.pkl
+# *.pkl
 
 # python
 *__pycache__/

@@ -21,7 +21,7 @@ def predict(config_file, epoch, mode, augmentation_on):
     net.eval()
 
     # load label index 
-    label_index = load_label_index(cfg.dataset.label.positive_label)
+    label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
 
     # load data 
     data_pd = pd.read_csv(cfg.general.data_csv_path)

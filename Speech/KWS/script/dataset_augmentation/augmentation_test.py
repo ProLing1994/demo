@@ -31,7 +31,7 @@ def augmentation_test(config_file, output_dir):
     window_stride_samples = int(sample_rate * window_stride_ms / 1000)
 
     # data index
-    label_index = load_label_index(cfg.dataset.label.positive_label)
+    label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
 
     # load data csv
     data_pd = pd.read_csv(cfg.general.data_csv_path)

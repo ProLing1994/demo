@@ -15,7 +15,12 @@ def speed_volume_disturbution(config_file, speed_list, volume_list):
     # init 
     positive_label = cfg.dataset.label.positive_label[0]
     input_dir = os.path.join(cfg.general.data_dir, positive_label)
+
+    # add data
+    add_data_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/xiaoyu_add_11192020/"
+    
     audio_list = os.listdir(input_dir)
+    audio_add_list = os.listdir(add_data_dir)
     speed_list = speed_list.split(',')
     volume_list = volume_list.split(',')
 
@@ -23,7 +28,7 @@ def speed_volume_disturbution(config_file, speed_list, volume_list):
     assert os.path.exists(input_dir)
     for speed_idx in tqdm(range(len(speed_list))):
         for volume_idx in tqdm(range(len(volume_list))):
-            output_dir = os.path.join(cfg.general.data_dir, positive_label + "_speed_{}_volume_{}".format("_".join(speed_list[speed_idx].split('.')), "_".join(volume_list[volume_idx].split('.'))))
+            output_dir = os.path.join(cfg.general.data_dir, '../XiaoYuDataset_11032020_augumentation', positive_label + "_speed_{}_volume_{}".format("_".join(speed_list[speed_idx].split('.')), "_".join(volume_list[volume_idx].split('.'))))
             
             # mkdirs 
             if not os.path.exists(output_dir):
@@ -31,6 +36,13 @@ def speed_volume_disturbution(config_file, speed_list, volume_list):
 
             for audio_name in tqdm(audio_list):
                 input_path = os.path.join(input_dir, audio_name)
+                output_path = os.path.join(output_dir, audio_name)
+                script = " ".join(['sox', '--vol', volume_list[volume_idx], input_path, output_path, 'speed', speed_list[speed_idx]])
+                # print(script)
+                os.system(script)
+
+            for audio_name in tqdm(audio_add_list):
+                input_path = os.path.join(add_data_dir, audio_name)
                 output_path = os.path.join(output_dir, audio_name)
                 script = " ".join(['sox', '--vol', volume_list[volume_idx], input_path, output_path, 'speed', speed_list[speed_idx]])
                 # print(script)

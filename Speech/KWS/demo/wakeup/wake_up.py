@@ -1,7 +1,7 @@
 from wakeup.utils import load_cfg_file
 from wakeup.dataset_helper import load_label_index
 from wakeup.pred_pyimpl import kws_load_model, model_predict
-from wakeup.recognizer_pyimpl import RecognizeResult, RecognizeCommands
+from wakeup.recognizer_pyimpl import RecognizeResult, RecognizeCommands, RecognizeCommandsCountNumber
 
 
 class WakeUp:
@@ -26,11 +26,12 @@ class WakeUp:
         
         # init test parameter 
         detection_threshold = self._cfg.test.detection_threshold
+        detection_number_threshold = self._cfg.test.detection_number_threshold
         timeshift_ms = self._cfg.test.timeshift_ms
         average_window_duration_ms = self._cfg.test.average_window_duration_ms
 
         # load label index 
-        label_index = load_label_index(self._positive_label_list)
+        label_index = load_label_index(self._cfg.dataset.label.positive_label, self._cfg.dataset.label.negative_label)
 
         # init parameter
         self._audio_data = None
@@ -42,11 +43,19 @@ class WakeUp:
 
         # init recognizer
         self._recognize_element = RecognizeResult()
-        self._recognize_commands = RecognizeCommands(
+        # self._recognize_commands = RecognizeCommands(
+        #     labels=label_list,
+        #     positove_lable_index = label_index[self._positive_label_list[0]],
+        #     average_window_duration_ms=average_window_duration_ms,
+        #     detection_threshold=detection_threshold,
+        #     suppression_ms=3000,
+        #     minimum_count=15)
+        self._recognize_commands = RecognizeCommandsCountNumber(
             labels=label_list,
             positove_lable_index = label_index[self._positive_label_list[0]],
             average_window_duration_ms=average_window_duration_ms,
             detection_threshold=detection_threshold,
+            detection_number_threshold=detection_number_threshold,
             suppression_ms=3000,
             minimum_count=15)
 
