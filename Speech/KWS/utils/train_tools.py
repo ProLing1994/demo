@@ -22,6 +22,7 @@ sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 # from dataset.kws.kws_dataset import SpeechDataset
 # from dataset.kws.kws_dataset_preprocess import SpeechDataset
 from dataset.kws.kws_dataset_preload_audio import SpeechDataset
+from dataset.kws.dataset_helper import SILENCE_LABEL
 from utils.loss import FocalLoss
 
 def load_cfg_file(config_file):
