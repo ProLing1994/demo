@@ -65,6 +65,7 @@ __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoyu_11112020_test_crnn"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_1_timeshift_spec_on_res15_11192020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_2_timeshift_spec_on_res15_11192020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu8_1_timeshift_spec_on_crnn_11032020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu8_2_timeshift_spec_on_crnn_avg_11032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu_mining_difficult_sample_11122020/"
 
 # finrtune model
@@ -209,7 +210,9 @@ __C.net = {}
 # __C.net.name = 'res8'
 # __C.net.name = 'res8-narrow'
 # __C.net.name = 'lstm-avg'
-__C.net.name = 'crnn-avg'
+# __C.net.name = 'lstm-attention'
+# __C.net.name = 'crnn-avg'
+__C.net.name = 'crnn-attention'
 # __C.net.name = 'crnn'
 
 
@@ -229,7 +232,8 @@ __C.train.num_epochs = 1
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 1024
 # __C.train.batch_size = 64
-__C.train.batch_size = 16
+# __C.train.batch_size = 16
+__C.train.batch_size = 1
 
 # the number of threads for IO
 # __C.train.num_threads = 64

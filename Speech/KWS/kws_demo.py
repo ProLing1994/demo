@@ -210,8 +210,10 @@ class OnlineAudio:
         
         # init parameter 
         # detection_threshold = 0.95
-        detection_threshold = 0.8
-        detection_number_threshold = 0.5
+        detection_threshold = 0.9
+        # detection_threshold = 0.8
+        detection_number_threshold = 0.9
+        # detection_number_threshold = 0.5
         timeshift_ms = 30
         average_window_duration_ms = 800
         audio_data_length = 0

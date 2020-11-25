@@ -42,11 +42,7 @@ class SpeechResModel(nn.Module):
     x = x.permute(1, 0, 2).contiguous()       # shape: (36, batch, 128) ->  shape: (batch, 36, 128) 
 
     # dnn
-    b, t, h = x.size()
-    x = x.view(b * t, h)                      # shape: (batch, 36, 128)  ->  shape: (batch * 36, 128)
-    x = self.dnn1(x)                          # shape: (batch * 36, 128)  ->  shape: (batch * 36, 64)
+    x = x.mean(1)                             # pooling, shape: (batch, 36, 128)   ->  shape: (batch, 128) 
+    x = self.dnn1(x)                          # shape: (batch, 128)  ->  shape: (batch, 64)
     x = self.dropout(x)
-    x = x.view(b, t, -1)                      # shape: (batch * 36, 64)  ->  shape: (batch, 36, 64)
-
-    x = x.mean(1)                             # pooling, shape: (batch, 36, 64)   ->  shape: (batch, 64) 
     return self.output(x)                     # shape: (batch, 2)

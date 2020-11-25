@@ -28,11 +28,7 @@ class SpeechResModel(nn.Module):
     x, (ht, ct) = self.lstm(x)                # shape: (batch, 301, 40)  ->  shape: (batch, 301, 128)
 
     # dnn
-    b, t, h = x.size()
-    x = x.reshape(b * t, h)                      # shape: (batch, 301, 128)  ->  shape: (batch * 301, 128)
-    x = self.dnn1(x)                          # shape: (batch * 301, 128)  ->  shape: (batch * 301, 64)
-    x = self.dropout(x)
-    x = x.reshape(b, t, -1)                      # shape: (batch * 301, 64)  ->  shape: (batch, 301, 64)
-
     x = x.mean(1)                             # pooling, shape: (batch, 301, 64)  ->  shape: (batch, 64)
+    x = self.dnn1(x)                          # shape: (batch, 128)  ->  shape: (batch, 64)
+    x = self.dropout(x)
     return self.output(x)                     # shape: (batch, 2)
