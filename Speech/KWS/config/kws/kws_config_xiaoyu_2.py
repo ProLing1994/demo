@@ -210,9 +210,9 @@ __C.net = {}
 # __C.net.name = 'res8'
 # __C.net.name = 'res8-narrow'
 # __C.net.name = 'lstm-avg'
-# __C.net.name = 'lstm-attention'
+__C.net.name = 'lstm-attention'
 # __C.net.name = 'crnn-avg'
-__C.net.name = 'crnn-attention'
+# __C.net.name = 'crnn-attention'
 # __C.net.name = 'crnn'
 
 

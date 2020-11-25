@@ -10,8 +10,10 @@ from common.common.utils.python.kaiming_init import kaiming_weight_init
 
 
 def parameters_init(net):
-  net.apply(kaiming_weight_init)
-
+    net.apply(kaiming_weight_init)
+    nn.init.kaiming_normal_(net.weight_proj.data)
+    nn.init.kaiming_normal_(net.weight_W.data)
+    net.bias.data.zero_()
 
 def batch_matmul_bias(seq, weight, bias, nonlinearity=''):
     s = None
