@@ -9,6 +9,7 @@ import pandas as pd
 import random
 import re
 import sys 
+from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from utils.train_tools import *
@@ -46,6 +47,9 @@ def which_set(filename, validation_percentage, testing_percentage):
     # grouping wavs that are close variations of each other.
     # hash_name = re.sub(r'_nohash_.*$', '', base_name)
     hash_name = base_name.split('_')[0]
+    if 'PVTC' in base_name:
+        hash_name = base_name.split('_')[1].split('-')[0]
+    # print(hash_name)
     # This looks a bit magical, but we need to decide whether this file should
     # go into the training, testing, or validation sets, and we want to keep
     # existing files in the same set even if more files are subsequently
@@ -55,7 +59,7 @@ def which_set(filename, validation_percentage, testing_percentage):
     # probability value that we use to assign it.
     hash_name_hashed = hashlib.sha1(hash_name.encode()).hexdigest()
     percentage_hash = ((int(hash_name_hashed, 16) %
-                                            (MAX_NUM_WAVS_PER_CLASS + 1)) *
+                                         (MAX_NUM_WAVS_PER_CLASS + 1)) *
                                          (100.0 / MAX_NUM_WAVS_PER_CLASS))
     if percentage_hash < validation_percentage:
         result = 'validation'
@@ -84,15 +88,20 @@ def data_split(config_file):
     testing_percentage = cfg.dataset.label.testing_percentage
 
     all_labels_set = set()
-    positive_data_files = []        # {'label': [], 'file': [], 'mode': []}
+    positive_data_files = []              # {'label': [], 'file': [], 'mode': []}
     unknown_files = []                    # {'label': [], 'file': [], 'mode': []}
     silence_files = []                    # {'label': [], 'file': [], 'mode': []}
-    background_noise_files = [] # {'label': [], 'file': []}
-    total_data_files = []             # {'label': [], 'file': [], 'mode': []}
+    background_noise_files = []           # {'label': [], 'file': []}
+    total_data_files = []                 # {'label': [], 'file': [], 'mode': []}
 
     # Look through all the subfolders to find audio samples
     search_path = os.path.join(cfg.general.data_dir, '*', '*.wav')
-    for wav_path in glob.glob(search_path):
+    path_list = glob.glob(search_path)
+    if 'sub_data_dir' in cfg.general:
+        sub_search_path = os.path.join(cfg.general.sub_data_dir, '*', '*.wav')
+        path_list += glob.glob(sub_search_path)
+
+    for wav_path in tqdm(path_list):
         _, word = os.path.split(os.path.dirname(wav_path))
         word = word.lower()
 
@@ -169,7 +178,8 @@ def main():
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config.py", help='config file')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py", help='config file')
-    parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2_label.py", help='config file')
+    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2_label.py", help='config file')
+    parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py", help='config file')
     args = parser.parse_args()
     data_split(args.input)
 

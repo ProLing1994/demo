@@ -10,7 +10,7 @@ from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from dataset.kws.dataset_helper import *
-from dataset.kws.kws_dataset import *
+# from dataset.kws.kws_dataset import *
 from utils.train_tools import load_cfg_file
 
 
@@ -123,7 +123,12 @@ def preload_background_audio(config_file):
     print("Preload background audio Done!")
 
 
-def preload_audio_folder(config_file, input_dir, output_dir):
+# def preload_audio_folder(config_file, input_dir, output_dir):
+def preload_audio_folder(args):
+    config_file = args[0]
+    input_dir= args[1]
+    output_dir= args[2]
+
     print("Start preload folder audio: ")
 
     # load configuration file
@@ -139,23 +144,25 @@ def preload_audio_folder(config_file, input_dir, output_dir):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    for data_idx in range(len(data_list)):
+    for data_idx in tqdm(range(len(data_list))):
         data_path = os.path.join(input_dir, data_list[data_idx])
         audio_data = librosa.core.load(data_path, sr=sample_rate)[0]
         filename = os.path.basename(data_list[data_idx]).split('.')[0] + '.txt'
+        if os.path.exists(os.path.join(output_dir, filename)):
+            continue
         write_audio(audio_data, os.path.join(output_dir, filename))
-        print("Save Results: {}".format(filename))
+        tqdm.write("Save Results: {}".format(filename))
 
     print("Preload folder audio Done!")
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description='Streamax KWS Data Split Engine')
+    parser = argparse.ArgumentParser(description='Streamax KWS Data Split Engine')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config.py", help='config file')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
     # parser.add_argument('-i', '--input', type=str,  default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py", help='config file')
-    parser.add_argument('-i', '--input', type=str,  default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2_label.py", help='config file')
+    # parser.add_argument('-i', '--input', type=str,  default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2_label.py", help='config file')
+    parser.add_argument('-i', '--input', type=str,  default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py", help='config file')
     # parser.add_argument('-m', '--mode', type=str, default="training")
     # parser.add_argument('-m', '--mode', type=str, default="validation")
     parser.add_argument('-m', '--mode', type=str, default="testing")
@@ -164,16 +171,34 @@ def main():
     # preload_background_audio(args.input)
 
     # preload audio from folder
-    input_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/XiaoYuDataset_11032020_augumentation/"
-    output_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_4.2_11202020/dataset_audio/training"
-    dir_list = ['xiaoyu_speed_0_9_volume_0_4', 'xiaoyu_speed_0_9_volume_0_7', 'xiaoyu_speed_0_9_volume_1_0', 'xiaoyu_speed_0_9_volume_1_3', 'xiaoyu_speed_0_9_volume_1_6',
-                'xiaoyu_speed_1_0_volume_0_4', 'xiaoyu_speed_1_0_volume_0_7', 'xiaoyu_speed_1_0_volume_1_0', 'xiaoyu_speed_1_0_volume_1_3', 'xiaoyu_speed_1_0_volume_1_6',
-                'xiaoyu_speed_1_1_volume_0_4', 'xiaoyu_speed_1_1_volume_0_7', 'xiaoyu_speed_1_1_volume_1_0', 'xiaoyu_speed_1_1_volume_1_3', 'xiaoyu_speed_1_1_volume_1_6']
+    # input_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/XiaoYuDataset_11032020_augumentation/"
+    # output_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_4.2_11202020/dataset_audio/training"
+    # dir_list = ['xiaoyu_speed_0_9_volume_0_4', 'xiaoyu_speed_0_9_volume_0_7', 'xiaoyu_speed_0_9_volume_1_0', 'xiaoyu_speed_0_9_volume_1_3', 'xiaoyu_speed_0_9_volume_1_6',
+    #             'xiaoyu_speed_1_0_volume_0_4', 'xiaoyu_speed_1_0_volume_0_7', 'xiaoyu_speed_1_0_volume_1_0', 'xiaoyu_speed_1_0_volume_1_3', 'xiaoyu_speed_1_0_volume_1_6',
+    #             'xiaoyu_speed_1_1_volume_0_4', 'xiaoyu_speed_1_1_volume_0_7', 'xiaoyu_speed_1_1_volume_1_0', 'xiaoyu_speed_1_1_volume_1_3', 'xiaoyu_speed_1_1_volume_1_6']
+    input_dir = "/mnt/huanyuan/data/speech/kws/lenovo/LenovoDataset_11242020_augumentation/"
+    output_dir = "/mnt/huanyuan/data/speech/kws/lenovo/dataset_1.1_11252020/dataset_audio/training/"
+    dir_list = ['xiaole_speed_0_9_volume_0_4', 'xiaole_speed_0_9_volume_0_7', 'xiaole_speed_0_9_volume_1_0', 'xiaole_speed_0_9_volume_1_3', 'xiaole_speed_0_9_volume_1_6',
+                'xiaole_speed_1_0_volume_0_4', 'xiaole_speed_1_0_volume_0_7', 'xiaole_speed_1_0_volume_1_0', 'xiaole_speed_1_0_volume_1_3', 'xiaole_speed_1_0_volume_1_6',
+                'xiaole_speed_1_1_volume_0_4', 'xiaole_speed_1_1_volume_0_7', 'xiaole_speed_1_1_volume_1_0', 'xiaole_speed_1_1_volume_1_3', 'xiaole_speed_1_1_volume_1_6']
+    # # single process
+    # for dir in dir_list:
+    #     input_dir_idx = os.path.join(input_dir, dir)
+    #     output_dir_idx = os.path.join(output_dir, dir)
+    #     preload_audio_folder(args.input, input_dir_idx, output_dir_idx)
+
+    # multi process
+    in_params = []
     for dir in dir_list:
         input_dir_idx = os.path.join(input_dir, dir)
         output_dir_idx = os.path.join(output_dir, dir)
-        preload_audio_folder(args.input, input_dir_idx, output_dir_idx)
+        in_args = [args.input, input_dir_idx, output_dir_idx]
+        in_params.append(in_args)
 
+    p = multiprocessing.Pool(8)
+    out = p.map(preload_audio_folder, in_params)
+    p.close()
+    p.join()
 
 if __name__ == "__main__":
     main()
