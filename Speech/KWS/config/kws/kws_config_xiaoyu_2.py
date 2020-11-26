@@ -168,6 +168,10 @@ __C.dataset.augmentation.time_shift_ms = 100.0
 # Time shift enhancement multiple of negative samples, which is effective for advanced prediction and lag prediction
 __C.dataset.augmentation.time_shift_multiple = 15
 
+# based on audio waveform: on, just for positive samples.
+__C.dataset.augmentation.speed_volume_on = True
+# __C.dataset.augmentation.speed_volume_on = False
+
 # How fast the audio should be, just for positive samples.
 __C.dataset.augmentation.possitive_speed = '0.9,1.0,1.1'
 
@@ -211,10 +215,10 @@ __C.net = {}
 # __C.net.name = 'res8'
 # __C.net.name = 'res8-narrow'
 # __C.net.name = 'lstm-avg'
-# __C.net.name = 'lstm-attention'
+__C.net.name = 'lstm-attention'
 # __C.net.name = 'crnn-avg'
 # __C.net.name = 'crnn-avg-deeper'
-__C.net.name = 'crnn-avg-wider'
+# __C.net.name = 'crnn-avg-wider'
 # __C.net.name = 'crnn-attention'
 # __C.net.name = 'crnn'
 

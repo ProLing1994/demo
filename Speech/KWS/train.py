@@ -141,7 +141,7 @@ def train(config_file):
         train_loss_file = os.path.join(cfg.general.save_dir, 'train_loss.html')
         plot_loss2d(log_file, train_loss_file, name=['train_loss', 'eval_loss'],
                   display='Training/Validation Loss ({})'.format(cfg.loss.name)) 
-        train_accuracy_file = os.path.join(cfg.general.save_dir, 'train_accuracy.html')
+        train_accuracy_file = os.path.join(cfg.general.save_dir, 'train_cd accuracy.html')
         plot_loss2d(log_file, train_accuracy_file, name=['train_accuracy', 'eval_accuracy'],
                   display='Training/Validation Accuracy ({})'.format(cfg.loss.name)) 
       else:
@@ -169,6 +169,7 @@ def main():
   # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config.py", nargs='?', help='config file')
   # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", nargs='?', help='config file')
   parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py", nargs='?', help='config file')
+  # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py", nargs='?', help='config file')
   # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2_label.py", nargs='?', help='config file')
   args = parser.parse_args()
   train(args.input)

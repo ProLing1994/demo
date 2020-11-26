@@ -80,7 +80,7 @@ __C.dataset.preprocess = "fbank"
 __C.dataset.feature_bin_count = 40
 
 # input size of training data (w, h), unit: voxel
-__C.dataset.data_size = [40, 301]
+__C.dataset.data_size = [40, 101]
 
 
 ##################################
@@ -130,6 +130,10 @@ __C.dataset.augmentation.time_shift_ms = 100.0
 
 # Time shift enhancement multiple of negative samples, which is effective for advanced prediction and lag prediction
 __C.dataset.augmentation.time_shift_multiple = 15
+
+# based on audio waveform: on, just for positive samples.
+# __C.dataset.augmentation.speed_volume_on = True
+__C.dataset.augmentation.speed_volume_on = False
 
 # How fast the audio should be, just for positive samples.
 __C.dataset.augmentation.possitive_speed = '0.9,1.0,1.1'
@@ -196,8 +200,8 @@ __C.train.num_epochs = 1
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 1024
 # __C.train.batch_size = 64
-# __C.train.batch_size = 16
-__C.train.batch_size = 1
+__C.train.batch_size = 16
+# __C.train.batch_size = 1
 
 # the number of threads for IO
 # __C.train.num_threads = 64

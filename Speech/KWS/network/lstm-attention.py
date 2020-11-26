@@ -15,7 +15,6 @@ def parameters_init(net):
     nn.init.kaiming_normal_(net.weight_W.data)
     net.bias.data.zero_()
 
-
 def batch_matmul_bias(seq, weight, bias, nonlinearity=''):
     s = None
     bias_dim = bias.size()
@@ -31,8 +30,6 @@ def batch_matmul_bias(seq, weight, bias, nonlinearity=''):
             s = torch.cat((s,_s_bias),0)
     return s.squeeze(dim=2)
 
-
-
 def batch_matmul(seq, weight, nonlinearity=''):
     s = None
     for i in range(seq.size(0)):
@@ -45,7 +42,6 @@ def batch_matmul(seq, weight, nonlinearity=''):
         else:
             s = torch.cat((s,_s),0)
     return s.squeeze(dim=2)
-
 
 def attention_mul(rnn_outputs, att_weights):
     attn_vectors = None
@@ -62,6 +58,22 @@ def attention_mul(rnn_outputs, att_weights):
             attn_vectors = torch.cat((attn_vectors,h_i),0)
     return torch.sum(attn_vectors, 0)
 
+def batch_matmul_bias_like(seq, weight, bias, nonlinearity=''):
+    s = torch.matmul(seq, weight)
+    s += bias.squeeze(1).unsqueeze(0).expand_as(seq)
+    if(nonlinearity=='tanh'):
+        s = torch.tanh(s)
+    return s.squeeze(dim=2)
+
+def batch_matmul_like(seq, weight, nonlinearity=''):
+    s = torch.matmul(seq, weight)
+    if(nonlinearity=='tanh'):
+        s = torch.tanh(s)
+    return s.squeeze(dim=2)
+
+def attention_mul_like(rnn_outputs, att_weights):
+    attn_vectors = rnn_outputs * att_weights.unsqueeze(2).expand_as(rnn_outputs)
+    return torch.sum(attn_vectors, 0)
 
 class SpeechResModel(nn.Module):
   def __init__(self, num_classes, image_height, image_weidth, input_dim=40, hidden_dim=128, num_layers=2):
@@ -89,10 +101,15 @@ class SpeechResModel(nn.Module):
     x, (ht, ct) = self.lstm(x)                # shape: (301, batch, 40)  ->  shape: (301, batch, 128)
 
     # attention
-    squish = batch_matmul_bias(x, self.weight_W, self.bias, nonlinearity='tanh')        # shape: (301, batch, 128), tanh(self.weight_W * h_{t} + self.bias)
-    attn = batch_matmul(squish, self.weight_proj)                                       # shape: (301, batch), e_{t} = self.weight_proj^T * tanh(self.weight_W * h_{t} + self.bias)
-    attn_norm = self.softmax(attn.transpose(1,0))                                       # shape: (batch, 301), \alpha_{t} = softmax(e_{t})
-    x = attention_mul(x, attn_norm.transpose(1,0))                                      # shape: (batch, 128), \sum_{t=1}^{T} \alpha_{t} h_{t}
+    # squish = batch_matmul_bias(x, self.weight_W, self.bias, nonlinearity='tanh')        # shape: (301, batch, 128), tanh(self.weight_W * h_{t} + self.bias)
+    # attn = batch_matmul(squish, self.weight_proj)                                       # shape: (301, batch), e_{t} = self.weight_proj^T * tanh(self.weight_W * h_{t} + self.bias)
+    # attn_norm = self.softmax(attn.transpose(1,0))                                       # shape: (batch, 301), \alpha_{t} = softmax(e_{t})
+    # x = attention_mul(x, attn_norm.transpose(1,0))                                      # shape: (batch, 128), \sum_{t=1}^{T} \alpha_{t} h_{t}
+
+    squish_like = batch_matmul_bias_like(x, self.weight_W, self.bias, nonlinearity='tanh')        # shape: (301, batch, 128), tanh(self.weight_W * h_{t} + self.bias)
+    attn_like = batch_matmul_like(squish_like, self.weight_proj)                                  # shape: (301, batch), e_{t} = self.weight_proj^T * tanh(self.weight_W * h_{t} + self.bias)
+    attn_norm_like = self.softmax(attn_like.transpose(1,0))                                       # shape: (batch, 301), \alpha_{t} = softmax(e_{t})
+    x = attention_mul_like(x, attn_norm_like.transpose(1,0))                                      # shape: (batch, 128), \sum_{t=1}^{T} \alpha_{t} h_{t}
 
     # dnn
     x = self.dnn1(x)                          # shape: (batch, 128)  ->  shape: (batch, 64)

@@ -135,7 +135,7 @@ def cal_fpr_tpr(src_csv, pst_csv, positive_label, bool_write_audio):
 
 if __name__ == "__main__":
     bool_write_audio = True
-    model_name = "kws_xiaoyu8_2_timeshift_spec_on_crnn_avg_11032020"
+    model_name = "kws_xiaoyu8_3_timeshift_spec_on_lstm_attention_avg_11032020"
     # cal_fpr_tpr("/mnt/huanyuan/data/speech/kws/test_straming_wav/xiaoyu_03022018_training_60_001.csv",
     #             "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaoyu_03022018_training_60_001_threshold_0_95/found_words.csv".format(model_name),
     #             "xiaoyu",
