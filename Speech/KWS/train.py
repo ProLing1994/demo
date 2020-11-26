@@ -71,20 +71,22 @@ def train(config_file):
   # define loss function
   loss_func = define_loss_function(cfg)
 
+  # set training optimizer, learning rate scheduler
+  optimizer = set_optimizer(cfg, net)
+
   # load checkpoint if finetune_on == True or resume epoch > 0
   if cfg.general.finetune_on == True:
+    # fintune, Load model, reset learning rate
     last_save_epoch, start_batch = load_checkpoint(cfg.general.finetune_epoch, net,  
-                                                  cfg.general.finetune_model_dir)
+                                                    cfg.general.finetune_model_dir)
     start_epoch, last_save_epoch, start_batch = 0, 0, 0
   elif cfg.general.resume_epoch >= 0:
-    last_save_epoch, start_batch= load_checkpoint(cfg.general.resume_epoch, net,
-                                                  cfg.general.save_dir)
+    # resume, Load the model, continue the previous learning rate
+    last_save_epoch, start_batch = load_checkpoint_resume(cfg.general.resume_epoch, net, optimizer, 
+                                                          cfg.general.save_dir)
     start_epoch = last_save_epoch
   else:
     start_epoch, last_save_epoch, start_batch = 0, 0, 0
-
-  # set training optimizer, learning rate scheduler
-  optimizer = set_optimizer(cfg, net)
 
   # get training data set and test data set
   train_dataloader, len_dataset = generate_dataset(cfg, 'training')
@@ -139,7 +141,7 @@ def train(config_file):
         train_loss_file = os.path.join(cfg.general.save_dir, 'train_loss.html')
         plot_loss2d(log_file, train_loss_file, name=['train_loss', 'eval_loss'],
                   display='Training/Validation Loss ({})'.format(cfg.loss.name)) 
-        train_accuracy_file = os.path.join(cfg.general.save_dir, 'train_accuracy.html')
+        train_accuracy_file = os.path.join(cfg.general.save_dir, 'train_cd accuracy.html')
         plot_loss2d(log_file, train_accuracy_file, name=['train_accuracy', 'eval_accuracy'],
                   display='Training/Validation Accuracy ({})'.format(cfg.loss.name)) 
       else:
@@ -155,7 +157,7 @@ def train(config_file):
         last_save_epoch = epoch_idx
 
         # save training model
-        save_checkpoint(net, epoch_idx, batch_idx, cfg, config_file)
+        save_checkpoint(net, optimizer, epoch_idx, batch_idx, cfg, config_file)
 
         if cfg.general.is_test:
           test(cfg, net, loss_func, epoch_idx, batch_idx, logger, eval_validation_dataloader, mode='eval')
@@ -167,6 +169,7 @@ def main():
   # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config.py", nargs='?', help='config file')
   # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", nargs='?', help='config file')
   parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py", nargs='?', help='config file')
+  # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py", nargs='?', help='config file')
   # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2_label.py", nargs='?', help='config file')
   args = parser.parse_args()
   train(args.input)

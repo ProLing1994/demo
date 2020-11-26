@@ -137,23 +137,33 @@ def show_score_line_find_words(src_csv, pst_csv, find_words_csv, output_dir, pos
     return
 
 if __name__ == "__main__":
+    model_name = "kws_xiaoyu8_4_timeshift_spec_on_crnn_attention_avg_11032020"
     show_score_line("/mnt/huanyuan/data/speech/kws/test_straming_wav/xiaoyu_03022018_training_60_001.csv",
-                    "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu8_1_timeshift_spec_on_crnn_11032020/test_straming_wav/xiaoyu_03022018_training_60_001_threshold_0_95/mean_scores.csv",
+                    "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaoyu_03022018_training_60_001_threshold_0_95/mean_scores.csv".format(model_name),
                     "xiaoyu")
     show_score_line("/mnt/huanyuan/data/speech/kws/test_straming_wav/xiaoyu_03022018_validation_60_001.csv",
-                    "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu8_1_timeshift_spec_on_crnn_11032020/test_straming_wav/xiaoyu_03022018_validation_60_001_threshold_0_95/mean_scores.csv",
+                    "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaoyu_03022018_validation_60_001_threshold_0_95/mean_scores.csv".format(model_name),
                     "xiaoyu")
     show_score_line("/mnt/huanyuan/data/speech/kws/test_straming_wav/xiaoyu_03022018_testing_60_001.csv",
-                    "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu8_1_timeshift_spec_on_crnn_11032020/test_straming_wav/xiaoyu_03022018_testing_60_001_threshold_0_95/mean_scores.csv",
+                    "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaoyu_03022018_testing_60_001_threshold_0_95/mean_scores.csv".format(model_name),
+                    "xiaoyu")
+    show_score_line("/mnt/huanyuan/data/speech/kws/test_straming_wav/xiaoyu_03022018_training_60_001.csv",
+                    "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaoyu_03022018_training_60_001_threshold_0_95/original_scores.csv".format(model_name),
+                    "xiaoyu")
+    show_score_line("/mnt/huanyuan/data/speech/kws/test_straming_wav/xiaoyu_03022018_validation_60_001.csv",
+                    "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaoyu_03022018_validation_60_001_threshold_0_95/original_scores.csv".format(model_name),
+                    "xiaoyu")
+    show_score_line("/mnt/huanyuan/data/speech/kws/test_straming_wav/xiaoyu_03022018_testing_60_001.csv",
+                    "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaoyu_03022018_testing_60_001_threshold_0_95/original_scores.csv".format(model_name),
                     "xiaoyu")
     # show_score_line("/mnt/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.csv", 
-    #                 "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu8_1_timeshift_spec_on_crnn_11032020/test_straming_wav/xiaoyu_10292020_testing_3600_001_threshold_0_95/original_scores.csv",
+    #                 "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaoyu_10292020_testing_3600_001_threshold_0_95/original_scores.csv".format(model_name),
     #                 "xiaoyu")
     # show_score_line("/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.csv", 
-    #                 "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu8_1_timeshift_spec_on_crnn_11032020/test_straming_wav/weiboyulu_test_3600_001_threshold_0_95/original_scores.csv",
+    #                 "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/weiboyulu_test_3600_001_threshold_0_95/original_scores.csv".format(model_name),
     #                 "xiaoyu")
     # show_score_line_find_words("/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_43200_003.csv",
-    #                             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu8_1_timeshift_spec_on_crnn_11032020/test_straming_wav/weiboyulu_test_43200_003_threshold_0_95/original_scores.csv",
-    #                             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu8_1_timeshift_spec_on_crnn_11032020/test_straming_wav/weiboyulu_test_43200_003_threshold_0_95/found_words.csv",
-    #                             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu8_1_timeshift_spec_on_crnn_11032020/test_straming_wav/weiboyulu_test_43200_003_threshold_0_95/error_results/",
+    #                             "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/weiboyulu_test_43200_003_threshold_0_95/original_scores.csv".format(model_name),
+    #                             "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/weiboyulu_test_43200_003_threshold_0_95/found_words.csv".format(model_name),
+    #                             "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/weiboyulu_test_43200_003_threshold_0_95/error_results/".format(model_name),
     #                             "xiaoyu")

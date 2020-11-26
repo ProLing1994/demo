@@ -88,8 +88,8 @@ __C.net.name = 'res15'
 __C.test = {}
 
 # __C.test.detection_threshold = 0.95
-__C.test.detection_threshold = 0.8
-__C.test.detection_number_threshold = 0.5
+__C.test.detection_threshold = 0.9
+__C.test.detection_number_threshold = 0.9
 
 __C.test.timeshift_ms = 30
 
