@@ -21,3 +21,9 @@ def kaiming_weight_init(m, bn_std=0.02):
         nn.init.kaiming_normal_(m.weight)
         if m.bias is not None:
             m.bias.data.zero_()
+    elif 'LSTM' in classname:
+        for name, param in m.named_parameters():
+            if 'bias' in name:
+                nn.init.constant_(param, 0.0)
+            elif 'weight' in name:
+                nn.init.kaiming_normal_(param)

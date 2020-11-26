@@ -12,25 +12,6 @@ def parameters_init(net):
   net.apply(kaiming_weight_init)
 
 
-class LSTM(nn.Module):
-
-    def __init__(self, nIn, nHidden, nOut):
-        super(LSTM, self).__init__()
-
-        self.rnn = nn.LSTM(nIn, nHidden)
-        self.embedding = nn.Linear(nHidden, nOut)
-
-    def forward(self, input):
-        recurrent, _ = self.rnn(input)
-        T, b, h = recurrent.size()
-        t_rec = recurrent.view(T * b, h)
-
-        output = self.embedding(t_rec)  # [T * b, nOut]
-        output = output.view(T, b, -1)
-
-        return output
-
-
 class SpeechResModel(nn.Module):
   def __init__(self, num_classes, image_height, image_weidth):
     super().__init__()
@@ -42,10 +23,9 @@ class SpeechResModel(nn.Module):
       x = Variable(torch.zeros(1, 1, image_height, image_weidth))
       x = self.conv1(x)
       lstm_input_size = x.size(1) * x.size(3)
-
-    self.lstm1 = LSTM(lstm_input_size, 128, 128)
-    self.lstm2 = LSTM(128, 64, 64)
-    self.dnn1 = nn.Linear(2304, 64)
+    
+    self.lstm = nn.LSTM(lstm_input_size, 128, 2, dropout=0.2)
+    self.dnn1 = nn.Linear(128, 64)
     self.output = nn.Linear(64, num_classes, bias=True)
     self.dropout = nn.Dropout(0.5)
 
@@ -55,15 +35,14 @@ class SpeechResModel(nn.Module):
     x = x.permute(0, 2, 3, 1).contiguous()    # shape: (batch, 32, 36, 18) ->  shape: (batch, 36, 18, 32)
     b, t, _, _ = x.size()
     x = x.view(b, t, -1)                      # shape: (batch, 36, 18, 32) ->  shape: (batch, 36, 576)
-    x = x.permute(1, 0, 2)                    # shape: (batch, 36, 576) ->  shape: (36, batch, 576) (t, b, f)
 
     # lstm
-    x = self.lstm1(x)                         # shape: (36, batch, 576) ->  shape: (36, batch, 128)
-    x = self.lstm2(x)                         # shape: (36, batch, 128) ->  shape: (36, batch, 64)
-    x = x.permute(1, 0, 2).contiguous()       # shape: (36, batch, 64) ->  shape: (batch, 36, 64) 
-    b, _, _ = x.size()
-    x = x.view(b, -1)                         # shape: (batch, 36, 64) ->  shape: (batch, 2304) 
+    x = x.permute(1, 0, 2)                    # shape: (batch, 36, 576) ->  shape: (36, batch, 576) (t, b, f)
+    x, (ht, ct) = self.lstm(x)                # shape: (36, batch, 576) ->  shape: (36, batch, 128)
+    x = x.permute(1, 0, 2).contiguous()       # shape: (36, batch, 128) ->  shape: (batch, 36, 128) 
 
-    x = self.dnn1(x)                          # shape: (batch, 2304)  ->  shape: (batch, 64) 
+    # dnn
+    x = x.mean(1)                             # pooling, shape: (batch, 36, 128)   ->  shape: (batch, 128) 
+    x = self.dnn1(x)                          # shape: (batch, 128)  ->  shape: (batch, 64)
     x = self.dropout(x)
     return self.output(x)                     # shape: (batch, 2)
