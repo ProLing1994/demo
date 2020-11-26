@@ -25,6 +25,7 @@ class SpeechResModel(nn.Module):
     with torch.no_grad():
       x = Variable(torch.zeros(1, 1, image_height, image_weidth))
       x = self.conv1(x)
+      x = self.conv2(x)
       lstm_input_size = x.size(1) * x.size(3)
     
     self.lstm = nn.LSTM(lstm_input_size, 128, 2, dropout=0.2)

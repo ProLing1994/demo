@@ -48,6 +48,7 @@ class SpeechDataset(Dataset):
     self.data_size_w = cfg.dataset.data_size[0]
 
     self.augmentation_on = cfg.dataset.augmentation.on and augmentation_on
+    self.augmentation_speed_volume_on = cfg.dataset.augmentation.speed_volume_on
     self.background_frequency = cfg.dataset.augmentation.background_frequency
     self.background_volume = cfg.dataset.augmentation.background_volume
     self.time_shift_ms = cfg.dataset.augmentation.time_shift_ms
@@ -174,7 +175,7 @@ class SpeechDataset(Dataset):
     # data augmentation
     possitive_speed = '1.0'
     possitive_volume = '1.0'
-    if self.augmentation_on:
+    if self.augmentation_on and self.augmentation_speed_volume_on:
       possitive_speed, possitive_volume = self.dataset_augmentation_volume_speed()
 
     # load data

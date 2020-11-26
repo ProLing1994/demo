@@ -146,12 +146,16 @@ def preload_audio_folder(args):
 
     for data_idx in tqdm(range(len(data_list))):
         data_path = os.path.join(input_dir, data_list[data_idx])
-        audio_data = librosa.core.load(data_path, sr=sample_rate)[0]
         filename = os.path.basename(data_list[data_idx]).split('.')[0] + '.txt'
         if os.path.exists(os.path.join(output_dir, filename)):
             continue
-        write_audio(audio_data, os.path.join(output_dir, filename))
-        tqdm.write("Save Results: {}".format(filename))
+
+        try:
+            audio_data = librosa.core.load(data_path, sr=sample_rate)[0]
+            write_audio(audio_data, os.path.join(output_dir, filename))
+            tqdm.write("Save Results: {}".format(filename))
+        except:
+            continue
 
     print("Preload folder audio Done!")
 
@@ -195,10 +199,18 @@ def main():
         in_args = [args.input, input_dir_idx, output_dir_idx]
         in_params.append(in_args)
 
-    p = multiprocessing.Pool(8)
+    p = multiprocessing.Pool(5)
     out = p.map(preload_audio_folder, in_params)
     p.close()
     p.join()
 
+def load_test():
+    # data_path = "/mnt/huanyuan/data/speech/kws/lenovo/dataset_1.1_11252020/dataset_audio/training/小乐小乐_PVTC0057-xiaole-6-0518.wav"
+    data_path = "/mnt/huanyuan/data/speech/kws/lenovo/dataset_1.1_11252020/dataset_audio/training/test.wav"
+    # data_path = "/mnt/huanyuan/data/speech/kws/lenovo/LenovoDataset_11242020/xiaole/小乐小乐_PVTC0057-xiaole-6-0518.wav"
+    sample_rate = 16000
+    audio_data = librosa.core.load(data_path, sr=sample_rate)[0]
+
 if __name__ == "__main__":
     main()
+    # load_test()
