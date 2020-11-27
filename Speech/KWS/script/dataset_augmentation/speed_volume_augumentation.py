@@ -52,6 +52,12 @@ def speed_volume_disturbution(config_file, speed_list, volume_list):
             for audio_name in tqdm(audio_list):
                 input_path = os.path.join(input_dir, audio_name)
                 output_path = os.path.join(output_dir, audio_name)
+
+                # find_path = os.path.join("/mnt/huanyuan/data/speech/kws/lenovo/dataset_1.1_11252020/dataset_audio/training",  positive_label + "_speed_{}_volume_{}".format("_".join(speed_list[speed_idx].split('.')), "_".join(volume_list[volume_idx].split('.'))), audio_name.split('.')[0] + '.txt')
+                # if os.path.exists(find_path):
+                #     continue
+                # print(find_path)
+
                 in_args = [volume_list, volume_idx, speed_list, speed_idx, input_path, output_path]
                 in_params.append(in_args)
 

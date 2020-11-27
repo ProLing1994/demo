@@ -13,6 +13,7 @@ from torch.utils.data import Dataset
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from dataset.kws.dataset_helper import *
+from impl.pred_pyimpl import load_background_noise
 
 class SpeechDataset(Dataset):
   """
@@ -65,7 +66,7 @@ class SpeechDataset(Dataset):
     self.window_size_samples = int(self.sample_rate * self.window_size_ms / 1000)
     self.window_stride_samples = int(self.sample_rate * self.window_stride_ms / 1000)
     self.time_shift_samples =int(self.sample_rate * self.time_shift_ms / 1000)
-    self.background_data = [librosa.core.load(row.file, sr=self.sample_rate)[0] for idx, row in background_data_pd.iterrows()]
+    self.background_data = load_background_noise(cfg)
 
     self.audio_preprocess_type = cfg.dataset.preprocess
     self.audio_processor = AudioPreprocessor(sr=self.sample_rate, 
