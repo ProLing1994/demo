@@ -10,9 +10,10 @@ cfg = __C
 
 __C.general = {}
 
-# data folder
 __C.general.data_dir = "/mnt/huanyuan/data/speech/kws/lenovo/LenovoDataset_11242020"
 __C.general.sub_data_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/XiaoYuDataset_11032020"
+# __C.general.data_dir = "/home/engineers/yh_rmai/data/speech/kws/lenovo/LenovoDataset_11242020"
+# __C.general.sub_data_dir = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/XiaoYuDataset_11032020"
 
 # data version
 __C.general.version = "1.1"
@@ -22,15 +23,18 @@ __C.general.date = "11252020"
 
 # data path
 __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/lenovo/dataset_1.1_11252020/total_data_files.csv"
+# __C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/lenovo/dataset_1.1_11252020/total_data_files.csv"
 
 # background noise path
 __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/lenovo/dataset_1.1_11252020/background_noise_files.csv"
+# __C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/lenovo/dataset_1.1_11252020/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # the output of training models and logging files
 __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaole_11112020_test"
+# __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_xiaole1_0_res15_11242020/"
 
 # finrtune model
 __C.general.finetune_on = False
@@ -129,7 +133,7 @@ __C.dataset.augmentation.background_volume = 0.1
 __C.dataset.augmentation.time_shift_ms = 100.0
 
 # Time shift enhancement multiple of negative samples, which is effective for advanced prediction and lag prediction
-__C.dataset.augmentation.time_shift_multiple = 15
+__C.dataset.augmentation.time_shift_multiple = 5
 
 # based on audio waveform: on, just for positive samples.
 # __C.dataset.augmentation.speed_volume_on = True
@@ -144,7 +148,7 @@ __C.dataset.augmentation.possitive_volume = '0.4,0.7,1.0,1.3,1.6'
 # based on audio spectrum: on
 __C.dataset.augmentation.spec_on = True
 __C.dataset.augmentation.F = 5
-__C.dataset.augmentation.T = 30
+__C.dataset.augmentation.T = 10
 __C.dataset.augmentation.num_masks = 1
 
 ####################################
