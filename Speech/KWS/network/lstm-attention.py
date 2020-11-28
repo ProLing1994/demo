@@ -106,6 +106,7 @@ class SpeechResModel(nn.Module):
     # attn_norm = self.softmax(attn.transpose(1,0))                                       # shape: (batch, 301), \alpha_{t} = softmax(e_{t})
     # x = attention_mul(x, attn_norm.transpose(1,0))                                      # shape: (batch, 128), \sum_{t=1}^{T} \alpha_{t} h_{t}
 
+    # attention
     squish_like = batch_matmul_bias_like(x, self.weight_W, self.bias, nonlinearity='tanh')        # shape: (301, batch, 128), tanh(self.weight_W * h_{t} + self.bias)
     attn_like = batch_matmul_like(squish_like, self.weight_proj)                                  # shape: (301, batch), e_{t} = self.weight_proj^T * tanh(self.weight_W * h_{t} + self.bias)
     attn_norm_like = self.softmax(attn_like.transpose(1,0))                                       # shape: (batch, 301), \alpha_{t} = softmax(e_{t})
