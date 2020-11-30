@@ -186,7 +186,6 @@ __C.net.name = 'res15'
 # __C.net.name = 'lstm-attention'
 # __C.net.name = 'crnn-avg'
 # __C.net.name = 'crnn-attention'
-# __C.net.name = 'crnn'
 
 
 ######################################
