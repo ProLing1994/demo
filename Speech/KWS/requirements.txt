@@ -1,3 +1,6 @@
 easydict==1.9
 librosa==0.6.3
+numba==0.48.0
+plotly
+torchstat
 git+https://github.com/daemon/pytorch-pcen

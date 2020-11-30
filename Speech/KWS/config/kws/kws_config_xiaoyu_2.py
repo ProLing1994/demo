@@ -220,7 +220,6 @@ __C.net.name = 'lstm-attention'
 # __C.net.name = 'crnn-avg-deeper'
 # __C.net.name = 'crnn-avg-wider'
 # __C.net.name = 'crnn-attention'
-# __C.net.name = 'crnn'
 
 
 ######################################
