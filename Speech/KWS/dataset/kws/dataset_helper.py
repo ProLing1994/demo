@@ -36,7 +36,7 @@ def load_preload_audio(audio_file, audio_idx, audio_label, audio_label_idx, inpu
     else:
         filename =  os.path.basename(audio_file).split('.')[0] + '.txt'
 
-    f = open(os.path.join(input_dir, filename), 'rb')
+    f = open(os.path.join(input_dir, filename).encode('utf-8'), 'rb')
     data = pickle.load(f)
     f.close()
     return data, filename

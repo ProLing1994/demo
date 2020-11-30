@@ -22,7 +22,8 @@ __C.general.version = "1.1"
 __C.general.date = "11252020"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/lenovo/dataset_1.1_11252020/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/lenovo/dataset_1.1_11252020/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/lenovo/dataset_1.1_11252020/test.csv"
 # __C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/lenovo/dataset_1.1_11252020/total_data_files.csv"
 
 # background noise path
@@ -260,8 +261,8 @@ __C.train.betas = (0.9, 0.999)
 __C.debug = {}
 
 # whether to save input images
-# __C.debug.save_inputs = True
-__C.debug.save_inputs = False
+__C.debug.save_inputs = True
+# __C.debug.save_inputs = False
 
 # the number of processing for save input images
 # __C.debug.num_processing = 64
