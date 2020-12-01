@@ -5,9 +5,9 @@ import pandas as pd
 
 parser = argparse.ArgumentParser(description="Audio Split Using Auditok")
 parser.add_argument('--audio_path', type=str,
-                    default='E:\\project\\data\\speech\\kws\\xiaorui\\11302020\\0000000000000000-201130-141128-141431-000001001220.wav')
+                    default='E:\\project\\data\\speech\\kws\\xiaorui\\12012020\\test.wav')
 parser.add_argument('--output_dir', type=str,
-                    default='E:\\project\\data\\speech\\kws\\xiaorui\\11302020')
+                    default='E:\\project\\data\\speech\\kws\\xiaorui\\12012020')
 # parser.add_argument('--output_format', type=str, default="RM_ROOM_Mandarin_S{:0>3d}M{}P{:0>5d}.wav")
 parser.add_argument('--output_format', type=str, default="RM_KWS_XIAORUI_{}_S{:0>3d}M{}D{}T{}.wav")
 parser.add_argument('--text', type=str, default="xiaorui")
@@ -34,7 +34,7 @@ if __name__ == "__main__":
     audio_region_list = []
 
     # audio_regions = split(audio_path, 2, 10, 1.5, False, True)
-    audio_regions = split(audio_path, 0.5, 10, 1.5, False, True)
+    audio_regions = split(audio_path, 1, 5, 0.05, False, True)
 
     for region in audio_regions:
         audio_region_dict = {}
