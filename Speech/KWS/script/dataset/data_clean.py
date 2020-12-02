@@ -4,12 +4,16 @@ import os
 
 def data_clean(input_dir, output_dir):
     file_list = os.listdir(input_dir)
+    
+    # mkdir     
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
 
     for file_path in file_list:
         if not file_path.endswith(".wav"):
             continue
         audio_path = os.path.join(input_dir, file_path)
-        audio_regions = split(audio_path, 0.5, 4, 1.5, True, True)
+        audio_regions = split(audio_path, 0.5, 4, 1.5, False, True)
         idx = 0
         for region in audio_regions:
             if idx == 0:
@@ -23,8 +27,8 @@ def main():
     parser = argparse.ArgumentParser()
     # parser.add_argument('--input_dir', type=str, default="E:\\project\\data\\speech\\kws\\xiaoyu_dataset_03022018\\XiaoYuDataset_10292020\\xiaoyu")
     # parser.add_argument('--output_dir', type=str, default="E:\\project\\data\\speech\\kws\\xiaoyu_dataset_03022018\\test")
-    parser.add_argument('--input_dir', type=str, default="E:\\project\\data\\speech\\kws\\xiaorui\\11302020\\0000000000000000-201130-141128-141431-000001001220")
-    parser.add_argument('--output_dir', type=str, default="E:\\project\\data\\speech\\kws\\xiaorui\\11302020\\test")
+    parser.add_argument('--input_dir', type=str, default="E:\\project\\data\\speech\\kws\\xiaorui\\XiaoRuiDataset_12022020\\xiaorui")
+    parser.add_argument('--output_dir', type=str, default="E:\\project\\data\\speech\\kws\\xiaorui\\XiaoRuiDataset_12022020\\test")
     args = parser.parse_args()
     data_clean(args.input_dir, args.output_dir)
 
