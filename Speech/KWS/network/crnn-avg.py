@@ -38,6 +38,7 @@ class SpeechResModel(nn.Module):
 
     # lstm
     x = x.permute(1, 0, 2)                    # shape: (batch, 36, 576) ->  shape: (36, batch, 576) (t, b, f)
+    self.lstm.flatten_parameters()
     x, (ht, ct) = self.lstm(x)                # shape: (36, batch, 576) ->  shape: (36, batch, 128)
     x = x.permute(1, 0, 2).contiguous()       # shape: (36, batch, 128) ->  shape: (batch, 36, 128) 
 
