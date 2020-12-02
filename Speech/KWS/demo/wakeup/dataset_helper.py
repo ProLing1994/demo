@@ -22,18 +22,18 @@ def load_label_index(positive_label, negative_label):
 
 
 class AudioPreprocessor(object):
-    def __init__(self, sr=16000, n_dct_filters=40, n_mels=40, f_max=4000, f_min=20, n_fft=480, hop_length=160):
+    def __init__(self, sr=16000, n_dct_filters=40, n_mels=40, f_max=4000, f_min=20, win_length =480, hop_length=160):
         super().__init__()
         self.n_mels = n_mels
         self.sr = sr
         self.f_max = f_max if f_max is not None else sr // 2
         self.f_min = f_min
-        self.n_fft = n_fft
+        self.win_length = win_length 
         self.hop_length = hop_length
 
         self.dct_filters = librosa.filters.dct(n_dct_filters, n_mels)
         self.pcen_transform = pcen.StreamingPCENTransform(
-            n_mels=n_mels, n_fft=n_fft, hop_length=hop_length, trainable=True)
+            n_mels=n_mels, n_fft=win_length , hop_length=hop_length, trainable=True)
 
     def compute_mfccs(self, data):
         data = librosa.feature.melspectrogram(
@@ -41,7 +41,7 @@ class AudioPreprocessor(object):
             sr=self.sr,
             n_mels=self.n_mels,
             hop_length=self.hop_length,
-            n_fft=self.n_fft,
+            n_fft=self.win_length,
             fmin=self.f_min,
             fmax=self.f_max)
         data[data > 0] = np.log(data[data > 0])
@@ -56,7 +56,7 @@ class AudioPreprocessor(object):
             sr=self.sr,
             n_mels=self.n_mels,
             hop_length=self.hop_length,
-            n_fft=self.n_fft,
+            n_fft=self.win_length,
             fmin=self.f_min,
             fmax=self.f_max)
         data[data > 0] = np.log(data[data > 0])

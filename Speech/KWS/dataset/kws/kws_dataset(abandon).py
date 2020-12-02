@@ -59,7 +59,7 @@ class SpeechDataset(Dataset):
     self.audio_preprocess_type = cfg.dataset.preprocess
     self.audio_processor = AudioPreprocessor(sr=self.sample_rate, 
                                             n_dct_filters=self.feature_bin_count, 
-                                            n_fft=self.window_size_samples, 
+                                            win_length =self.window_size_samples, 
                                             hop_length=self.window_stride_samples)
 
   def __len__(self):

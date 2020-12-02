@@ -71,7 +71,7 @@ class SpeechDataset(Dataset):
     self.audio_preprocess_type = cfg.dataset.preprocess
     self.audio_processor = AudioPreprocessor(sr=self.sample_rate, 
                                             n_dct_filters=self.feature_bin_count, 
-                                            n_fft=self.window_size_samples, 
+                                            win_length =self.window_size_samples, 
                                             hop_length=self.window_stride_samples)
 
     self.save_audio_inputs_bool = cfg.debug.save_inputs
@@ -196,12 +196,12 @@ class SpeechDataset(Dataset):
     # data = np.pad(data, (0, max(0, (self.desired_samples - data_length + 1)//2)), "constant")
     if len(data) < self.desired_samples:
       data_length = len(data)
-      data_offset = np.random.randint(0, self.desired_samples - data_length - 1)
+      data_offset = np.random.randint(0, self.desired_samples - data_length)
       data = np.pad(data, (data_offset, 0), "constant")
       data = np.pad(data, (0, self.desired_samples - data_length - data_offset), "constant")
 
     if len(data) > self.desired_samples:
-      data_offset = np.random.randint(0, len(data) - self.desired_samples - 1)
+      data_offset = np.random.randint(0, len(data) - self.desired_samples)
       data = data[data_offset:(data_offset + self.desired_samples)]
 
     assert len(data) == self.desired_samples, "[ERROR:] Something wronge about audio length, please check"
@@ -235,6 +235,3 @@ class SpeechDataset(Dataset):
     assert data_tensor.shape[1] == self.data_size_h
     assert data_tensor.shape[2] == self.data_size_w
     return data_tensor, label_tensor, index
-    
-    
-
