@@ -210,8 +210,8 @@ __C.train.batch_size = 128
 # __C.train.batch_size = 1
 
 # the number of threads for IO
-# __C.train.num_threads = 64
-__C.train.num_threads = 16
+__C.train.num_threads = 64
+# __C.train.num_threads = 16
 # __C.train.num_threads = 1
 
 # the number of batches to update loss curve
