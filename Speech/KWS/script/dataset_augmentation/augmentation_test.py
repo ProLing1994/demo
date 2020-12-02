@@ -43,7 +43,7 @@ def augmentation_test(config_file, output_dir):
     # init AudioPreprocessor
     audio_processor = AudioPreprocessor(sr=sample_rate, 
                             n_dct_filters=feature_bin_count, 
-                            n_fft=window_size_samples, 
+                            win_length =window_size_samples, 
                             hop_length=window_stride_samples)
 
     background_data = load_background_noise(cfg)

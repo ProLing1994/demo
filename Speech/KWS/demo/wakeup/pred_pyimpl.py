@@ -115,7 +115,7 @@ def audio_preprocess(cfg, data):
     # init audio_processor
     audio_processor = AudioPreprocessor(sr=sample_rate, 
                                         n_dct_filters=feature_bin_count, 
-                                        n_fft=window_size_samples, 
+                                        win_length =window_size_samples, 
                                         hop_length=window_stride_samples)
 
     # check 
