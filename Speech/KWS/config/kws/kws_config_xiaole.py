@@ -22,8 +22,8 @@ __C.general.version = "1.1"
 __C.general.date = "11252020"
 
 # data path
-# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/lenovo/dataset_1.1_11252020/total_data_files.csv"
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/lenovo/dataset_1.1_11252020/test.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/lenovo/dataset_1.1_11252020/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/lenovo/dataset_1.1_11252020/test.csv"
 # __C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/lenovo/dataset_1.1_11252020/total_data_files.csv"
 
 # background noise path
@@ -137,8 +137,8 @@ __C.dataset.augmentation.time_shift_ms = 100.0
 __C.dataset.augmentation.time_shift_multiple = 5
 
 # based on audio waveform: on, just for positive samples.
-# __C.dataset.augmentation.speed_volume_on = True
-__C.dataset.augmentation.speed_volume_on = False
+__C.dataset.augmentation.speed_volume_on = True
+# __C.dataset.augmentation.speed_volume_on = False
 
 # How fast the audio should be, just for positive samples.
 __C.dataset.augmentation.possitive_speed = '0.9,1.0,1.1'
@@ -178,11 +178,11 @@ __C.net = {}
 # __C.net.name = 'cnn-trad-pool2'
 # __C.net.name = 'cnn-one-fstride1'
 # __C.net.name = 'cnn-tpool2'
-__C.net.name = 'res15'
+# __C.net.name = 'res15'
 # __C.net.name = 'res15-narrow'
 # __C.net.name = 'res8'
 # __C.net.name = 'res8-narrow'
-# __C.net.name = 'lstm-avg'
+__C.net.name = 'lstm-avg'
 # __C.net.name = 'lstm-attention'
 # __C.net.name = 'crnn-avg'
 # __C.net.name = 'crnn-attention'
@@ -198,13 +198,15 @@ __C.train = {}
 # __C.train.num_epochs = 16000
 # __C.train.num_epochs = 8000
 # __C.train.num_epochs = 4000
-__C.train.num_epochs = 1
+__C.train.num_epochs = 100
+# __C.train.num_epochs = 1
 
 # the number of samples in a batch
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 1024
+__C.train.batch_size = 128
 # __C.train.batch_size = 64
-__C.train.batch_size = 16
+# __C.train.batch_size = 16
 # __C.train.batch_size = 1
 
 # the number of threads for IO
@@ -225,8 +227,8 @@ __C.train.save_epochs = 25
 ######################################
 
 # learning rate = lr*gamma**(epoch//step_size)
-# __C.train.lr = 1e-3
-__C.train.lr = 1e-4
+__C.train.lr = 1e-3
+# __C.train.lr = 1e-4
 # __C.train.lr = 1e-5
 
 # step size for step learning rate
@@ -260,8 +262,8 @@ __C.train.betas = (0.9, 0.999)
 __C.debug = {}
 
 # whether to save input images
-__C.debug.save_inputs = True
-# __C.debug.save_inputs = False
+# __C.debug.save_inputs = True
+__C.debug.save_inputs = False
 
 # the number of processing for save input images
 # __C.debug.num_processing = 64

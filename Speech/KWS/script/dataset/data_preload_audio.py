@@ -51,7 +51,7 @@ def multiprocessing_preload_audio(args):
             image_name_idx)) + '_' + os.path.basename(image_name_idx).split('.')[0] + '.txt'
 
     write_audio(data, os.path.join(output_dir_idx, filename))
-    print("Save Results: {}".format(filename))
+    # print("Save Results: {}".format(filename), end='\r')
 
 
 def preload_audio(config_file, mode):
@@ -85,12 +85,12 @@ def preload_audio(config_file, mode):
 
     # data_preload_audio
     in_params = []
-    for idx in tqdm(range(len(data_file_list))):
+    for idx in range(len(data_file_list)):
         in_args = [cfg, data_pd, label_index, idx]
         in_params.append(in_args)
 
     p = multiprocessing.Pool(cfg.debug.num_processing)
-    out = p.map(multiprocessing_preload_audio, in_params)
+    out = list(tqdm(p.imap(multiprocessing_preload_audio, in_params), total=len(in_params)))
     p.close()
     p.join()
     print("Preload audio Done!")
@@ -171,7 +171,7 @@ def main():
     # parser.add_argument('-m', '--mode', type=str, default="validation")
     parser.add_argument('-m', '--mode', type=str, default="testing")
     args = parser.parse_args()
-    # preload_audio(args.input, args.mode)
+    preload_audio(args.input, args.mode)
     # preload_background_audio(args.input)
 
     # preload audio from folder
@@ -191,18 +191,18 @@ def main():
     #     output_dir_idx = os.path.join(output_dir, dir)
     #     preload_audio_folder(args.input, input_dir_idx, output_dir_idx)
 
-    # multi process
-    in_params = []
-    for dir in dir_list:
-        input_dir_idx = os.path.join(input_dir, dir)
-        output_dir_idx = os.path.join(output_dir, dir)
-        in_args = [args.input, input_dir_idx, output_dir_idx]
-        in_params.append(in_args)
+    # # multi process
+    # in_params = []
+    # for dir in dir_list:
+    #     input_dir_idx = os.path.join(input_dir, dir)
+    #     output_dir_idx = os.path.join(output_dir, dir)
+    #     in_args = [args.input, input_dir_idx, output_dir_idx]
+    #     in_params.append(in_args)
 
-    p = multiprocessing.Pool(5)
-    out = p.map(preload_audio_folder, in_params)
-    p.close()
-    p.join()
+    # p = multiprocessing.Pool(5)
+    # out = p.map(preload_audio_folder, in_params)
+    # p.close()
+    # p.join()
 
 def load_test():
     # data_path = "/mnt/huanyuan/data/speech/kws/lenovo/dataset_1.1_11252020/dataset_audio/training/小乐小乐_PVTC0057-xiaole-6-0518.wav"
