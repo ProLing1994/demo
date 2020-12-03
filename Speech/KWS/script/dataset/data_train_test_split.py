@@ -3,6 +3,7 @@ import argparse
 import copy
 import glob
 import hashlib
+import importlib
 import math
 import os
 import pandas as pd
@@ -18,7 +19,8 @@ from dataset.kws.dataset_helper import *
 MAX_NUM_WAVS_PER_CLASS = 2**27 - 1    # ~134M
 RANDOM_SEED = 59185
 
-def which_set(filename, validation_percentage, testing_percentage):
+
+def which_set(filename, validation_percentage, testing_percentage, get_hash_name):
     """Determines which data partition the file should belong to.
 
     We want to keep files in the same training, validation, or testing sets even
@@ -46,10 +48,9 @@ def which_set(filename, validation_percentage, testing_percentage):
     # deciding which set to put a wav in, so the data set creator has a way of
     # grouping wavs that are close variations of each other.
     # hash_name = re.sub(r'_nohash_.*$', '', base_name)
-    hash_name = base_name.split('_')[0]
-    if 'PVTC' in base_name:
-        hash_name = base_name.split('_')[1].split('-')[0]
-    # print(hash_name)
+    
+    hash_name = get_hash_name(base_name)
+
     # This looks a bit magical, but we need to decide whether this file should
     # go into the training, testing, or validation sets, and we want to keep
     # existing files in the same set even if more files are subsequently
@@ -59,8 +60,8 @@ def which_set(filename, validation_percentage, testing_percentage):
     # probability value that we use to assign it.
     hash_name_hashed = hashlib.sha1(hash_name.encode()).hexdigest()
     percentage_hash = ((int(hash_name_hashed, 16) %
-                                         (MAX_NUM_WAVS_PER_CLASS + 1)) *
-                                         (100.0 / MAX_NUM_WAVS_PER_CLASS))
+                            (MAX_NUM_WAVS_PER_CLASS + 1)) *
+                            (100.0 / MAX_NUM_WAVS_PER_CLASS))
     if percentage_hash < validation_percentage:
         result = 'validation'
     elif percentage_hash < (testing_percentage + validation_percentage):
@@ -68,6 +69,7 @@ def which_set(filename, validation_percentage, testing_percentage):
     else:
         result = 'training'
     return result
+
 
 def data_split(config_file):
     """ data split engine
@@ -113,7 +115,8 @@ def data_split(config_file):
         
         all_labels_set.add(word)
         # Divide training, test and verification set
-        set_index = which_set(wav_path, validation_percentage, testing_percentage)
+        dataset_module = importlib.import_module('prepare_dataset_{}'.format(os.path.basename(config_file).split('.')[0].split('_')[-1]))
+        set_index = which_set(wav_path, validation_percentage, testing_percentage, dataset_module.get_hash_name)
         # If it's a known class, store its detail, otherwise add it to the list
         # we'll use to train the unknown label. 
         if word in positive_label:
@@ -177,11 +180,14 @@ def main():
     parser = argparse.ArgumentParser(description='Streamax KWS Data Split Engine')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config.py", help='config file')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
-    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py", help='config file')
-    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2_label.py", help='config file')
-    parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py", help='config file')
+    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_2_label_xiaoyu.py", help='config file')
+    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py", help='config file')
+    parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py", help='config file')
     args = parser.parse_args()
+
+    print("[Begin] Train test dataset split")
     data_split(args.input)
+    print("[Done] Train test dataset split")
 
 if __name__ == "__main__":
     main()
