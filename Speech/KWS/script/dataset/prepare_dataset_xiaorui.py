@@ -5,6 +5,16 @@ import shutil
 import re
 
 
+def get_hash_name(file_name):
+    # xiaoyu spk
+    hash_name = file_name.split('_')[0]
+
+    if 'XIAORUI' in file_name:
+        hash_name = file_name.split('_')[4][:4]
+    # print(hash_name)
+    return hash_name
+
+
 def dataset_generator(input_dir, output_dir, lables, names):
     assert os.path.exists(input_dir), "[ERROR:] 不存在数据集，请检查！"
 

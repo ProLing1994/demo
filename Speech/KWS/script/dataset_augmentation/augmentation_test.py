@@ -100,7 +100,7 @@ def augmentation_test(config_file, output_dir):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py", nargs='?', help='config file')
+    parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", nargs='?', help='config file')
     parser.add_argument('--output_dir', type=str, default="/home/huanyuan/temp/audio_augmentation")
     args = parser.parse_args()
     augmentation_test(args.input, args.output_dir)

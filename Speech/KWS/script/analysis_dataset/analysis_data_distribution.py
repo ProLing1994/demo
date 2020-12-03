@@ -59,12 +59,14 @@ def analysis_data_distribution(config_file):
 
 def main():
     parser = argparse.ArgumentParser()
-    # parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py")
-    # parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2_label.py")
+    # parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py")
+    # parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_2_label_xiaoyu.py")
     parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py")
     args = parser.parse_args()
 
+    print("[Begin] Analysis Audio Distribution")
     analysis_data_distribution(args.config_file)
+    print("[Done] Analysis Audio Distribution")
 
 
 if __name__ == "__main__":

@@ -3,11 +3,44 @@
 # 该脚本用于训练集、验证集、测试集的分配，以及数据的预先加载
 
 # 注：执行脚本前，请执行以下操作：
-# 1. 执行文件 prepare_dataset_{}.py 整理数据集目录结构
+# 1. 执行文件 prepare_dataset_{}.py 整理数据集目录结构，同时需要自定义函数 get_hash_name
 # 2. 执行文件 data_clean.py 运用 VAD 工具对音频数据进行切割，仅保留唤醒词部分
-# 3. 若步骤 2 效果不理想，则需要运行 kaldi 强制对齐工具进行强制对齐，对音频数据进行切割，仅保留唤醒词部分
+# 3. 若步骤 2 效果不理想，则执行脚本，dataset_align/dataset_align.sh，运行 kaldi 强制对齐工具进行强制对齐，对音频数据进行切割，仅保留唤醒词部分
 # 4. 自行检测数据的完整性和正确性
 
 stage=1
 
+# init
+config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py
 
+echo "script/dataset/prepare_dataset.sh"
+
+# train test dataset split 
+if [ $stage -le 1 ];then
+	python data_train_test_split.py -i $config_file || exit 1
+fi
+
+# add mining difficult sample
+if [ $stage -le 2 ];then
+	python ../mining_difficult_sample/data_train_test_split_mining_difficult_sample.py \
+			--config_file $config_file \
+			--difficult_sample_mining_dir /mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/difficult_sample_mining_11122020/clean_audio/ || exit 1
+fi
+
+# speed volume augumentation
+if [ $stage -le 3 ];then
+	python ../dataset_augmentation/speed_volume_augumentation.py --config_file $config_file || exit 1
+fi
+
+# preload data
+if [ $stage -le 4 ];then
+	python data_preload_audio.py -i $config_file || exit 1
+fi
+
+# analysis dataset
+if [ $stage -le 5 ];then
+	python ../analysis_dataset/analysis_audio_length.py --config_file $config_file || exit 1
+	python ../analysis_dataset/analysis_data_distribution.py --config_file $config_file || exit 1
+fi
+
+echo "script/dataset/prepare_dataset.sh succeeded"
