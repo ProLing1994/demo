@@ -184,7 +184,8 @@ class SpeechDataset(Dataset):
       input_dir = os.path.join(self.input_dir, audio_label)
       data, filename = load_preload_audio(audio_file, index, audio_label, audio_label_idx, input_dir)
     else:
-      input_dir = os.path.join(self.input_dir, audio_label + '_speed_{}_volume_{}'.format("_".join(possitive_speed.split('.')), "_".join(possitive_volume.split('.'))))
+      # input_dir = os.path.join(self.input_dir, audio_label + '_speed_{}_volume_{}'.format("_".join(possitive_speed.split('.')), "_".join(possitive_volume.split('.'))))
+      input_dir = os.path.join(self.input_dir, "../augumentation/", audio_label + '_speed_{}_volume_{}'.format("_".join(possitive_speed.split('.')), "_".join(possitive_volume.split('.'))))
       data, filename = load_preload_audio(audio_file, index, audio_label, audio_label_idx, input_dir, refilename=False)
 
     # print('Load data Time: {}'.format((time.time() - begin_t) * 1.0))

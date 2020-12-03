@@ -5,6 +5,11 @@ import shutil
 import re
 
 
+def get_hash_name(file_name):
+    # xiaoyu spk
+    hash_name = file_name.split('_')[0]
+    return hash_name
+
 def dataset_generator(directory, lables, names):
     input_dir = os.path.join(directory, "小鱼在家-数据交付2020-10-29")
     assert os.path.exists(input_dir), "[ERROR:] 不存在数据集‘小鱼在家-数据交付2020-10-29’，请检查！"
