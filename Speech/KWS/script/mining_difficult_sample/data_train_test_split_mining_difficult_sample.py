@@ -28,7 +28,7 @@ def random_index(validation_percentage, testing_percentage):
     return result
 
 
-def prepare_dataset_csv(config_file, original_dataset_dir, difficult_sample_mining_dir):
+def prepare_dataset_csv(config_file, input_dir, difficult_sample_mining_dir):
     """ data split engine
     :param config_file:   the input configuration file
     :return:              None
@@ -58,23 +58,28 @@ def prepare_dataset_csv(config_file, original_dataset_dir, difficult_sample_mini
     output_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date))
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
+    
+    # input 
+    if not os.path.exists(input_dir):
+        input_dir = output_dir
 
     difficult_sample_pd = pd.DataFrame(difficult_sample_files)
     difficult_sample_pd.to_csv(os.path.join(output_dir, 'difficult_sample_files.csv'), index=False, encoding="utf_8_sig")
 
     # copy files
-    positive_data_csv = os.path.join(original_dataset_dir, 'positive_data_files.csv')
-    unknown_csv = os.path.join(original_dataset_dir, 'unknown_files.csv')
-    silence_csv = os.path.join(original_dataset_dir, 'silence_files.csv')
-    background_noise_csv = os.path.join(original_dataset_dir, 'background_noise_files.csv')
-    total_data_csv = os.path.join(original_dataset_dir, 'total_data_files.csv')
+    if input_dir != output_dir:
+        positive_data_csv = os.path.join(input_dir, 'positive_data_files.csv')
+        unknown_csv = os.path.join(input_dir, 'unknown_files.csv')
+        silence_csv = os.path.join(input_dir, 'silence_files.csv')
+        background_noise_csv = os.path.join(input_dir, 'background_noise_files.csv')
 
-    shutil.copy(positive_data_csv, os.path.join(output_dir, 'positive_data_files.csv'))
-    shutil.copy(unknown_csv, os.path.join(output_dir, 'unknown_files.csv'))
-    shutil.copy(silence_csv, os.path.join(output_dir, 'silence_files.csv'))
-    shutil.copy(background_noise_csv, os.path.join(output_dir, 'background_noise_files.csv'))
+        shutil.copy(positive_data_csv, os.path.join(output_dir, 'positive_data_files.csv'))
+        shutil.copy(unknown_csv, os.path.join(output_dir, 'unknown_files.csv'))
+        shutil.copy(silence_csv, os.path.join(output_dir, 'silence_files.csv'))
+        shutil.copy(background_noise_csv, os.path.join(output_dir, 'background_noise_files.csv'))
 
     total_data_files = []             # {'label': [], 'file': [], 'mode': []}
+    total_data_csv = os.path.join(input_dir, 'total_data_files.csv')
     if difficult_sample_mining == True:
         total_data_pd = pd.read_csv(total_data_csv)
         for _, row in total_data_pd.iterrows():
@@ -104,16 +109,18 @@ def prepare_dataset_csv(config_file, original_dataset_dir, difficult_sample_mini
 
 def main():
     # We only add hard mining difficult negative samples, we do not change the distribution of the original data set, only add additional negative sample data
-    parser = argparse.ArgumentParser(
-        description='Streamax KWS Data Split Engine')
-    # parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2.py", help='config file')
-    # parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu_2_label.py", help='config file')
-    parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py", help='config file')
-    parser.add_argument('--original_dataset_dir', type=str, default="/mnt/huanyuan/data/speech/kws/lenovo/dataset_1.0_11252020/")
+    parser = argparse.ArgumentParser(description='Streamax KWS Data Split Engine')
+    # parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
+    # parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_2_label_xiaoyu.py", help='config file')
+    # parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py", help='config file')
+    parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py", help='config file')
+    parser.add_argument('--input_dataset_dir', type=str, default="", help='The original dataset folder, if empty, will be changed under the current folder')
     parser.add_argument('--difficult_sample_mining_dir', type=str, default="/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/difficult_sample_mining_11122020/clean_audio/")
     args = parser.parse_args()
-    prepare_dataset_csv(args.config_file, args.original_dataset_dir, args.difficult_sample_mining_dir)
 
+    print("[Begin] Add mining difficult sample")
+    prepare_dataset_csv(args.config_file, args.input_dataset_dir, args.difficult_sample_mining_dir)
+    print("[Done] Add mining difficult sample")
 
 if __name__ == "__main__":
     main()

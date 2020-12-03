@@ -1,8 +1,19 @@
 import argparse
-import os 
 import multiprocessing 
+import os 
 import shutil
+
 from tqdm import tqdm
+
+
+def get_hash_name(file_name):
+    # xiaoyu spk
+    hash_name = file_name.split('_')[0]
+
+    # xiaole spk
+    if 'PVTC' in file_name:
+        hash_name = file_name.split('_')[1].split('-')[0]
+    return hash_name
 
 def copy_other_file(args):
     file_path = args[0]
@@ -21,20 +32,20 @@ def copy_other_file(args):
 
 
 def dataset_generator(input_dir, output_dir):
-    # # xiaole
-    # wav_file_path = os.path.join(input_dir, "PVTC", "wav.scp")
-    # wav_list = [line.split()[1] for line in open(wav_file_path)]
-    # print("Positive label: xiaole, number: ", len(wav_list))
+    # xiaole
+    wav_file_path = os.path.join(input_dir, "PVTC", "wav.scp")
+    wav_list = [line.split()[1] for line in open(wav_file_path)]
+    print("Positive label: xiaole, number: ", len(wav_list))
 
-    # output_xiaole_dir = os.path.join(output_dir, "xiaole")
-    # # mkdir 
-    # if not os.path.exists(output_xiaole_dir):
-    #     os.mkdir(output_xiaole_dir)
+    output_xiaole_dir = os.path.join(output_dir, "xiaole")
+    # mkdir 
+    if not os.path.exists(output_xiaole_dir):
+        os.mkdir(output_xiaole_dir)
 
-    # for file_path in tqdm(wav_list):
-    #     pst_path = os.path.join(output_xiaole_dir, os.path.basename(file_path))
-    #     tqdm.write("{} -> {}".format(file_path, pst_path))
-    #     shutil.copy(file_path, pst_path)
+    for file_path in tqdm(wav_list):
+        pst_path = os.path.join(output_xiaole_dir, os.path.basename(file_path))
+        tqdm.write("{} -> {}".format(file_path, pst_path))
+        shutil.copy(file_path, pst_path)
 
     # other
     wav_file_path = os.path.join(input_dir, "PVTC", "neg_wav.scp")
