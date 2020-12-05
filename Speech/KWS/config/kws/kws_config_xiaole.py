@@ -34,7 +34,8 @@ __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/lenovo/dataset
 __C.general.is_test = True
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaole_11112020_test"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaole_11112020_test"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaole1_0_res15_11242020/"
 # __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_xiaole1_0_res15_11242020/"
 
 # finrtune model
@@ -178,11 +179,11 @@ __C.net = {}
 # __C.net.name = 'cnn-trad-pool2'
 # __C.net.name = 'cnn-one-fstride1'
 # __C.net.name = 'cnn-tpool2'
-# __C.net.name = 'res15'
+__C.net.name = 'res15'
 # __C.net.name = 'res15-narrow'
 # __C.net.name = 'res8'
 # __C.net.name = 'res8-narrow'
-__C.net.name = 'lstm-avg'
+# __C.net.name = 'lstm-avg'
 # __C.net.name = 'lstm-attention'
 # __C.net.name = 'crnn-avg'
 # __C.net.name = 'crnn-attention'
@@ -227,8 +228,8 @@ __C.train.save_epochs = 25
 ######################################
 
 # learning rate = lr*gamma**(epoch//step_size)
-__C.train.lr = 1e-3
-# __C.train.lr = 1e-4
+# __C.train.lr = 1e-3
+__C.train.lr = 1e-4
 # __C.train.lr = 1e-5
 
 # step size for step learning rate

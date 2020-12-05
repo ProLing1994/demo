@@ -5,7 +5,11 @@
 stage=2 
 
 # init
-config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py
+# xiaorui
+# config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py
+
+# xiaoyu
+config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py
 
 echo "train.sh"
 

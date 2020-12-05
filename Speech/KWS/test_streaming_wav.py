@@ -17,7 +17,7 @@ from script.analysis_result.plot_score_line import show_score_line
 from script.analysis_result.cal_fpr_tpr import cal_fpr_tpr
 
 
-# def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_duration_ms, detection_threshold):
+# def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_duration_ms, detection_threshold, minimum_count):
 def test(args):
 
     input_wav = args[0]
@@ -26,6 +26,7 @@ def test(args):
     timeshift_ms = args[3]
     average_window_duration_ms = args[4]
     detection_threshold = args[5]
+    minimum_count = args[6]
 
     print("Do wave:{}, begin!!!".format(input_wav))
 
@@ -50,7 +51,7 @@ def test(args):
         average_window_duration_ms=average_window_duration_ms,
         detection_threshold=detection_threshold,
         suppression_ms=3000,
-        minimum_count=15)
+        minimum_count=minimum_count)
     
     # mkdir 
     # output_dir = os.path.join(os.path.dirname(input_wav), os.path.basename(input_wav).split('.')[0])
@@ -146,14 +147,30 @@ def main():
     如果超过预设门限，则认为检测到关键词，否则认定未检测到关键词，最后分别计算假阳性和召回率
     """
     # test
-    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/test.wav"]
+    
+    # xiaoyu
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_60_001.wav"]
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_3600_001.wav"]
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_training_60_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_validation_60_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_60_001.wav"]
-    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.wav",
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.wav",
+    #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
+
+    # xiaorui
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_12032020_training_60_001.wav",
+    #                             "/mnt/huanyuan/model/test_straming_wav/xiaorui_12032020_validation_60_001.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_12032020_validation_3600_001.wav",
+    #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
+
+
+    # xiaole
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaole_11252020_training_60_001.wav",
+    #                             "/mnt/huanyuan/model/test_straming_wav/xiaole_11252020_validation_60_001.wav",
+    #                             "/mnt/huanyuan/model/test_straming_wav/xiaole_11252020_testing_60_001.wav"]
+    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaole_11252020_testing_3600_001.wav",
                             "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
+
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_43200_003.wav",
     #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_news_cishicike_43200_001.wav",
     #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_novel_douluodalu_43200_001.wav",
@@ -202,16 +219,15 @@ def main():
     #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_008.wav",
     #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_009.wav"]
 
-    defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
+    # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
+    # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py"
+    defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py"
     # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_2_label_xiaoyu.py"
     default_model_epoch = -1
     default_timeshift_ms = 30
-    default_average_window_duration_ms = 800
-    # default_timeshift_ms = 50
-    # default_average_window_duration_ms = 2000
-    # default_detection_threshold = 0.8
+    default_average_window_duration_ms = 450    # [30,800]
     default_detection_threshold = 0.95
-    # default_detection_threshold = 0.5
+    default_minimum_count = 10
 
     parser = argparse.ArgumentParser(description='Streamax KWS Testing Engine')
     parser.add_argument('--input_wav_list', type=str,
@@ -225,12 +241,15 @@ def main():
                         type=int, default=default_average_window_duration_ms)
     parser.add_argument('--detection_threshold',
                         type=int, default=default_detection_threshold)
+    parser.add_argument('--minimum_count',
+                        type=int, default=default_minimum_count)
     args = parser.parse_args()
 
     in_params = []
     for input_wav in args.input_wav_list:
         in_args = [input_wav, args.config_file, args.model_epoch,
-                    args.timeshift_ms, args.average_window_duration_ms, args.detection_threshold]
+                    args.timeshift_ms, args.average_window_duration_ms, 
+                    args.detection_threshold, args.minimum_count]
         in_params.append(in_args)
 
     p = multiprocessing.Pool(3)

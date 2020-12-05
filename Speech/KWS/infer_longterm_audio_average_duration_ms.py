@@ -150,19 +150,17 @@ def main():
     该过程近似测试流程，可以作为参考
     """
 
-    # default_mode = "training"
-    # default_mode = "testing,validation,training"
-    # default_mode = "testing,validation"
-    default_mode = "validation"
+    default_mode = "validation"     # ["testing,validation,training"]
     default_model_epoch = -1
-    # default_add_noise_on = True
-    default_add_noise_on = False
+    default_add_noise_on = False    # [True,False]
     default_timeshift_ms = 30
     default_average_window_duration_ms = 800
 
     parser = argparse.ArgumentParser(description='Streamax KWS Infering Engine')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config.py", help='config file')
-    parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
+    # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
+    # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py", help='config file')
+    parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py", help='config file')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_2_label_xiaoyu.py", help='config file')
     parser.add_argument('--mode', type=str, default=default_mode)
     parser.add_argument('--epoch', type=str, default=default_model_epoch)

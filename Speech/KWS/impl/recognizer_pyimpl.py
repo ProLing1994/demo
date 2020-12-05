@@ -33,7 +33,7 @@ class RecognizeResult(object):
     def founded_command(self, value):
         self._founded_command = value
 
-    @property
+    @property 
     def score(self):
         return self._score
 
