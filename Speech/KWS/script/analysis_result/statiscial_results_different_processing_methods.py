@@ -17,7 +17,7 @@ from script.analysis_result.plot_score_line import show_score_line
 from script.analysis_result.cal_fpr_tpr import cal_fpr_tpr
 from impl.recognizer_pyimpl import RecognizeResult, RecognizeCommands, RecognizeCommandsCountNumber
 
-def statiscial_results_threshold(input_wav, config_file, timeshift_ms, average_window_duration_ms, detection_threshold, detection_number_threshold):
+def statiscial_results_threshold(input_wav, config_file, timeshift_ms, average_window_duration_ms, detection_threshold, detection_number_threshold, minimum_count):
     print("Do wave:{}, begin!!!".format(input_wav))
 
     # load configuration file
@@ -36,21 +36,25 @@ def statiscial_results_threshold(input_wav, config_file, timeshift_ms, average_w
     label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
 
     recognize_element = RecognizeResult()
-    # recognize_commands = RecognizeCommands(
-    #     labels=label_list,
-    #     positove_lable_index = label_index[positive_label[0]],
-    #     average_window_duration_ms=average_window_duration_ms,
-    #     detection_threshold=detection_threshold,
-    #     suppression_ms=3000,
-    #     minimum_count=15)
-    recognize_commands = RecognizeCommandsCountNumber(
-        labels=label_list,
-        positove_lable_index = label_index[positive_label[0]],
-        average_window_duration_ms=average_window_duration_ms,
-        detection_threshold=detection_threshold,
-        detection_number_threshold=detection_number_threshold,
-        suppression_ms=3000,
-        minimum_count=15)
+    if method_mode == 0:
+        recognize_commands = RecognizeCommands(
+            labels=label_list,
+            positove_lable_index = label_index[positive_label[0]],
+            average_window_duration_ms=average_window_duration_ms,
+            detection_threshold=detection_threshold,
+            suppression_ms=3000,
+            minimum_count=minimum_count)
+    elif method_mode == 1:
+        recognize_commands = RecognizeCommandsCountNumber(
+            labels=label_list,
+            positove_lable_index = label_index[positive_label[0]],
+            average_window_duration_ms=average_window_duration_ms,
+            detection_threshold=detection_threshold,
+            detection_number_threshold=detection_number_threshold,
+            suppression_ms=3000,
+            minimum_count=minimum_count)
+    else:
+        raise Exception("[ERROR:] Unknow method mode, please check!")
     
     # input dir 
     input_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', os.path.basename(input_wav).split('.')[0] + '_threshold_{}'.format("0_95"))
@@ -132,6 +136,7 @@ def main():
     default_average_window_duration_ms = 800
     default_detection_threshold_list = [0.8, 0.85, 0.9, 0.95]
     default_detection_number_threshold_list = [0.5, 0.75, 0.9]
+    default_minimum_count = 10
 
     parser = argparse.ArgumentParser(description='Streamax KWS Testing Engine')
     parser.add_argument('--input_wav_list', type=str,
@@ -146,13 +151,18 @@ def main():
                         type=int, default=default_detection_threshold_list)
     parser.add_argument('--detection_number_threshold_list',
                         type=int, default=default_detection_number_threshold_list)
+    parser.add_argument('--minimum_count',
+                        type=int, default=default_minimum_count)
     args = parser.parse_args()
 
     for detection_threshold in args.detection_threshold_list:
         for detection_number_threshold in args.detection_number_threshold_list:
             for input_wav in args.input_wav_list:
-                statiscial_results_threshold(input_wav, args.config_file, args.timeshift_ms, args.average_window_duration_ms, detection_threshold, detection_number_threshold)
+                statiscial_results_threshold(input_wav, args.config_file, args.timeshift_ms, 
+                                                args.average_window_duration_ms, detection_threshold, 
+                                                detection_number_threshold, args.minimum_count)
 
 if __name__ == "__main__":
+    method_mode = 1             # [0: RecognizeCommands, 1: RecognizeCommandsCountNumber]
     bool_write_audio = True
     main()

@@ -64,7 +64,9 @@ class OnlineAudio:
         """
         print("[Init:] Listen")
         # wave_path = "/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_60_001.wav"
-        wave_path = "/mnt/huanyuan/model/test_straming_wav/test.wav"
+        # wave_path = "/mnt/huanyuan/model/test_straming_wav/xiaorui_12032020_validation_60_001_demo.wav"
+        wave_path = "/mnt/huanyuan/model/test_straming_wav/xiaole_11252020_testing_60_001_demo.wav"
+        # wave_path = "/mnt/huanyuan/model/test_straming_wav/test.wav"
     
         # 打开音频流，output=True 表示音频输出
         pyaudio_play = pyaudio.PyAudio()
@@ -187,15 +189,17 @@ class OnlineAudio:
         print('[Init:] wake up')
 
         # config
-        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_3_timeshift_spec_on_focal_res15_11032020/test_straming_wav/kws_config_xiaoyu_2.py"
-        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_1_fbank_timeshift_spec_on_res15_11032020/test_straming_wav/kws_config_xiaoyu_2.py"
-        
-        # best
-        config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_2_timeshift_spec_on_res15_11192020/kws_config_xiaoyu_2.py"
-        
-        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu7_0_timeshift_spec_on_res15_11192020/kws_config_xiaoyu_2_label.py"
+        # xiaoyu
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_2_timeshift_spec_on_res15_11192020/kws_config_xiaoyu_2.py"
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_1_timeshift_spec_on_res15_11192020/kws_config_xiaoyu_2.py"
-        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu7_0_timeshift_spec_on_res15_11192020/kws_config_xiaoyu_2_label.py"
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_1_fbank_timeshift_spec_on_res15_11032020/test_straming_wav/kws_config_xiaoyu_2.py"
+
+        # xiaorui
+        config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/kws_config_xiaorui.py"
+
+        # xiaole
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaole1_0_res15_11242020/kws_config_xiaole.py"
+
         cfg = load_cfg_file(config_file)
         label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
         label_list = cfg.dataset.label.label_list
@@ -209,13 +213,12 @@ class OnlineAudio:
         model_epoch = -1
         
         # init parameter 
-        # detection_threshold = 0.95
-        detection_threshold = 0.9
-        # detection_threshold = 0.8
-        detection_number_threshold = 0.9
-        # detection_number_threshold = 0.5
+        method_mode = 1                     # [0: RecognizeCommands, 1: RecognizeCommandsCountNumber]
+        detection_threshold = 0.8           # [0.3,0.6,0.8,0.9,0.95]
+        detection_number_threshold = 0.5    # [0.5,0.9]
         timeshift_ms = 30
-        average_window_duration_ms = 800
+        average_window_duration_ms = 450    # [450,800]
+        minimum_count = 10
         audio_data_length = 0
         audio_data_offset = 0
 
@@ -224,21 +227,25 @@ class OnlineAudio:
 
         # init recognizer
         recognize_element = RecognizeResult()
-        # recognize_commands = RecognizeCommands(
-        #     labels=label_list,
-        #     positove_lable_index = label_index[positive_label[0]],
-        #     average_window_duration_ms=average_window_duration_ms,
-        #     detection_threshold=detection_threshold,
-        #     suppression_ms=3000,
-        #     minimum_count=15)
-        recognize_commands = RecognizeCommandsCountNumber(
-            labels=label_list,
-            positove_lable_index = label_index[positive_label[0]],
-            average_window_duration_ms=average_window_duration_ms,
-            detection_threshold=detection_threshold,
-            detection_number_threshold=detection_number_threshold,
-            suppression_ms=3000,
-            minimum_count=15)
+        if method_mode == 0:
+            recognize_commands = RecognizeCommands(
+                labels=label_list,
+                positove_lable_index = label_index[positive_label[0]],
+                average_window_duration_ms=average_window_duration_ms,
+                detection_threshold=detection_threshold,
+                suppression_ms=3000,
+                minimum_count=minimum_count)
+        elif method_mode == 1:
+            recognize_commands = RecognizeCommandsCountNumber(
+                labels=label_list,
+                positove_lable_index = label_index[positive_label[0]],
+                average_window_duration_ms=average_window_duration_ms,
+                detection_threshold=detection_threshold,
+                detection_number_threshold=detection_number_threshold,
+                suppression_ms=3000,
+                minimum_count=minimum_count)
+        else:
+            raise Exception("[ERROR:] Unknow method mode, please check!")
 
         # init model
         model = kws_load_model(model_path, gpu_ids, model_epoch)
@@ -269,6 +276,7 @@ class OnlineAudio:
                 # model infer
                 output_score = model_predict(cfg, net, input_data)
 
+                print(output_score[0][2])
                 # process result
                 current_time_ms = int(audio_data_offset * 1000 / sample_rate)
                 recognize_commands.process_latest_result(output_score, current_time_ms, recognize_element)
@@ -277,10 +285,11 @@ class OnlineAudio:
                 if recognize_element.is_new_command:
                     all_found_words_dict = {}
                     all_found_words_dict['label'] = positive_label[0]
+                    all_found_words_dict['score'] = recognize_element.score
                     all_found_words_dict['start_time'] = recognize_element.start_time
                     all_found_words_dict['end_time'] = recognize_element.end_time + clip_duration_ms
-                    print('Find words: label:{}, start time:{}, end time:{}, response time: {:.2f}s'.format(
-                        all_found_words_dict['label'], all_found_words_dict['start_time'], all_found_words_dict['end_time'], recognize_element.response_time))
+                    print('Find words: label:{}, score:{}, start time:{}, end time:{}, response time: {:.2f}s'.format(
+                        all_found_words_dict['label'], all_found_words_dict['score'], all_found_words_dict['start_time'], all_found_words_dict['end_time'], recognize_element.response_time))
 
                 audio_data_offset += timeshift_samples
                 audio_data = audio_data[timeshift_samples:]
@@ -304,6 +313,7 @@ class OnlineAudio:
         # play_process.start()
 
         # 监听
+        # listen_process_wakeeup = Process(target=self.listen_file, args=(self.event, self.audio_queue_wakeup))
         listen_process_wakeeup = Process(target=self.listen, args=(self.event, self.audio_queue_wakeup))
         listen_process_wakeeup.start()
 

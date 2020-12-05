@@ -8,6 +8,10 @@ import re
 def get_hash_name(file_name):
     # xiaoyu spk
     hash_name = file_name.split('_')[0]
+
+    if 'XIAOYU' in file_name:
+        hash_name = file_name.split('_')[4][:4]
+
     return hash_name
 
 def dataset_generator(directory, lables, names):

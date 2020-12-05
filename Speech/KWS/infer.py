@@ -76,8 +76,7 @@ def main():
     使用模型对音频文件进行测试，配置为 --input 中的 config 文件，当存在音频文件长度大于模型送入的音频文件长度时(1s\2s), 该脚本会随机截取一段音频进行测试，将测试结果作为整段音频的测试结果，
     在训练过程中，随机截取可以作为一种数据增强手段(需要考虑是否出现问题)，在测试过程中，随机截取存在误差，同时每次结果不同
     """
-    # default_mode = "testing,validation,training"
-    default_mode = "testing,validation"
+    default_mode = "testing,validation"     # ["testing,validation,training"]
     default_model_epoch = -1
     default_augmentation_on = False
 
