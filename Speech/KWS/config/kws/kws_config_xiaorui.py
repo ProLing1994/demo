@@ -12,6 +12,8 @@ __C.general = {}
 
 __C.general.data_dir = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/XiaoRuiDataset"
 __C.general.sub_data_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/XiaoYuDataset_11032020"
+# __C.general.data_dir = "/home/engineers/yh_rmai/data/speech/kws/xiaorui_dataset/experimental_dataset/XiaoRuiDataset/"
+# __C.general.sub_data_dir = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/XiaoYuDataset_11032020"
 
 # data version
 __C.general.version = "1.0"
@@ -21,15 +23,19 @@ __C.general.date = "12032020"
 
 # data path
 __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.0_12032020/total_data_files.csv"
+# __C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.0_12032020/total_data_files.csv"
 
 # background noise path
 __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.0_12032020/background_noise_files.csv"
+# __C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.0_12032020/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_12032020_test"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_12032020_test"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/"
+# __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_xiaorui1_0_res15_12032020/"
 
 # finrtune model
 __C.general.finetune_on = False

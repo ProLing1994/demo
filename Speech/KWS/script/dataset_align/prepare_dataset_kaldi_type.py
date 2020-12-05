@@ -39,13 +39,24 @@ def main():
         file_list = os.listdir(keyword_dir)
         file_list.sort()
 
-        for file_name in file_list:
+        for file_name in tqdm(file_list):
             file_path = os.path.join(keyword_dir, file_name)
             
-            spk = file_name.strip().split('_')[-1].split('.')[0][:6]
-            device = file_name.strip().split('_')[-1].split('.')[0][6:8]
-            text = file_name.strip().split('_')[-1].split('.')[0][8:]
-
+            if "唤醒词_小鱼小鱼" in file_name:
+                spk = file_name.strip().split('.')[0].split('_')[0]
+                device = 'D0'
+                text = file_name.strip().split('_')[-1].split('.')[0]
+            elif "RM_KWS_XIAOYU_" in file_name:
+                spk = file_name.strip().split('_')[-1].split('.')[0][:6]
+                device = file_name.strip().split('_')[-1].split('.')[0][6:8]
+                text = file_name.strip().split('_')[-1].split('.')[0][8:]
+            elif "RM_KWS_XIAORUI_" in file_name:
+                spk = file_name.strip().split('_')[-1].split('.')[0][:6]
+                device = file_name.strip().split('_')[-1].split('.')[0][6:8]
+                text = file_name.strip().split('_')[-1].split('.')[0][8:]
+            else:
+                raise Exception('[ERROR] Unknow file_name, please check!')
+            
             f1.writelines(spk+"-"+keyword+"-"+device+"-"+text + " " + keyword_chinese_name + "\n")
             f2.writelines(spk+"-"+keyword+"-"+device+"-"+text + " " + file_path+"\n")
             f3.writelines(spk+"-"+keyword+"-"+device+"-"+text + " " + spk+"\n" )

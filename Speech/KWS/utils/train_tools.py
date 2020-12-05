@@ -171,9 +171,9 @@ def generate_test_dataset(cfg, mode = 'validation', augmentation_on=False):
 
   data_set = SpeechDataset(cfg=cfg, mode=mode, augmentation_on=augmentation_on)
   data_loader = torch.utils.data.DataLoader(data_set,
-                                            batch_size=cfg.train.num_threads,
-                                            pin_memory=True,
-                                            num_workers=cfg.train.num_threads)
+                                            batch_size=1,
+                                            pin_memory=False,
+                                            num_workers=1)
   return data_loader
 
 

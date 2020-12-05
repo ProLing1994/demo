@@ -101,53 +101,28 @@ def show_roc(csv_list, color_list, linestyle_list, name_list, label_list):
 
 
 def main():
-    # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_res15_10232020/infer_validation_augmentation_False.csv"]
+    # tf_speech_commands
+    # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_res15_10232020/infer_validation_augmentation_False.csv"]
     # color_list =  ["r", "r", "r", "g", "g", "g", "b", "b", "b", "y", "y", "y"]
     # linestyle_list =  ["-", "--", ":", "-", "--", ":", "-", "--", ":", "-", "--", ":"]
-    # num_classes = 12
-    # show_roc_per_class(csv_list, color_list, linestyle_list, num_classes)
+    # label_list = ['_silence_', '_unknown_', "yes", "no", "up", "down", "left", "right", "on", "off", "stop", "go"]
+    # show_roc_per_class(csv_list, color_list, linestyle_list, label_list)
 
-    # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu_res15_10272020/infer_longterm_validation_augmentation_False_min.csv"]
-    # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu_res15_10272020/infer_longterm_average_validation_augmentation_False.csv"]
-    # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu2_0_res15_10292020/infer_longterm_validation_augmentation_False_min.csv"]
-    # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu2_0_res15_10292020/infer_longterm_average_validation_augmentation_False.csv"]
-    # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu2_1_timeshift_enhancement_multiple_res15_10292020/infer_longterm_validation_augmentation_False_min.csv"]
-    # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu2_1_timeshift_enhancement_multiple_res15_10292020/infer_longterm_average_validation_augmentation_False.csv"]
-    # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_0_timeshift_enhancement_multiple_res15_11032020/infer_longterm_validation_augmentation_False_min.csv"]
-    # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_0_timeshift_enhancement_multiple_res15_11032020/infer_longterm_average_validation_augmentation_False.csv"]
-    # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_1_timeshift_spec_on_res15_11032020/infer_longterm_validation_augmentation_False_min.csv"]
-    # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_1_timeshift_spec_on_res15_11032020/infer_longterm_average_validation_augmentation_False.csv"]
-    # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_2_timeshift_spec_off_focal_res15_11032020/infer_longterm_validation_augmentation_False_min.csv"]
-    # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_2_timeshift_spec_off_focal_res15_11032020/infer_longterm_average_validation_augmentation_False.csv"]
-    # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_3_timeshift_spec_on_focal_res15_11032020/infer_longterm_validation_augmentation_False_min.csv"]
-    # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_3_timeshift_spec_on_focal_res15_11032020/infer_longterm_average_validation_augmentation_False.csv"]
-    # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_4_timeshift_spec_on_focal_balanceweight_res15_11032020/infer_longterm_average_validation_augmentation_False.csv"]
-    # csv_list = ["/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_4_timeshift_spec_on_focal_balanceweight_res15_11032020/infer_longterm_average_validation_augmentation_False.csv"]
-    # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_0_fbank_timeshift_spec_on_focal_res15_11032020/infer_longterm_validation_augmentation_False_min.csv"]
-    # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_0_fbank_timeshift_spec_on_focal_res15_11032020/infer_longterm_average_validation_augmentation_False.csv"]
-    # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_1_fbank_timeshift_up_spec_on_focal_res15_11032020/infer_longterm_validation_augmentation_False_min.csv"]
-    # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_0_fbank_timeshift_spec_on_focal_res15_11032020/infer_longterm_average_validation_augmentation_False.csv"]
-    # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_0_timeshift_spec_on_res15_11032020/infer_longterm_validation_augmentation_False_min.csv"]
-    # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_0_timeshift_spec_on_res15_11032020/infer_longterm_average_validation_augmentation_False.csv"]
-    # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_0_timeshift_spec_on_res15_11032020/infer_longterm_average_validation_augmentation_True.csv"]
-    # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu8_2_timeshift_spec_on_crnn_avg_11032020/infer_longterm_average_validation_augmentation_False.csv"]
-    # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu8_2_timeshift_spec_on_crnn_avg_11032020/infer_longterm_validation_augmentation_False_min.csv"]
-    # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu8_3_timeshift_spec_on_lstm_attention_avg_11032020/infer_longterm_average_validation_augmentation_False.csv"]
-    # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu8_3_timeshift_spec_on_lstm_attention_avg_11032020/infer_longterm_validation_augmentation_False_min.csv"]
-    # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu8_4_timeshift_spec_on_crnn_attention_avg_11032020/infer_longterm_validation_augmentation_False_min.csv"]
-    csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu8_4_timeshift_spec_on_crnn_attention_avg_11032020/infer_longterm_average_validation_augmentation_False.csv"]
+    # xiaoyu： 3 label
+    csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/infer_longterm_validation_augmentation_False_min.csv"]
     color_list =  ["r", "g", "b"]
     linestyle_list =  ["-", "-", "-"]
-    label_list = ['_silence_', '_unknown_', 'xiaoyu']
+    label_list = ['_silence_', '_unknown_', 'xiaorui']
+    show_roc_per_class(csv_list, color_list, linestyle_list, label_list)
 
-    # 2 label 
-    # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu7_0_timeshift_spec_on_res15_11192020/infer_longterm_validation_augmentation_False_min.csv"]
+    # xiaoyu: 2 label 
     # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu7_0_timeshift_spec_on_res15_11192020/infer_longterm_average_validation_augmentation_False.csv"]
     # color_list =  ["r", "g", "b"]
     # linestyle_list =  ["-", "-", "-"]
     # label_list = ['_unknown_', 'xiaoyu']
-    show_roc_per_class(csv_list, color_list, linestyle_list, label_list)
+    # show_roc_per_class(csv_list, color_list, linestyle_list, label_list)
 
+    # mutil_label
     # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_10212020_le-4/infer_validation_augmentation_False.csv",
     #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_cnn-tpool2_10222020/infer_validation_augmentation_False.csv",
     #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_cnn-one-fstride1_10222020/infer_validation_augmentation_False.csv",
@@ -160,7 +135,6 @@ def main():
     # name_list = ["cnn-trad-pool2-validation", "cnn-tpool2-validation", "cnn-one-fstride1-validation",
     #             "res15-validation","res15-narrow-validation",
     #             "res8-validation","res8-narrow-validation"]
-    # num_classes = 12
     # label_list = ['_silence_', '_unknown_', "yes", "no", "up", "down", "left", "right", "on", "off", "stop", "go"]
     # show_roc(csv_list, color_list, linestyle_list, name_list, label_list)
 

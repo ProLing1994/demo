@@ -12,6 +12,7 @@ cfg = __C
 __C.general = {}
 
 # model path
+# xiaoyu
 # __C.general.model_path = "./wakeup/model/kws_xiaoyu6_1_timeshift_spec_on_res15_11192020/"
 __C.general.model_path = "./wakeup/model/kws_xiaoyu6_2_timeshift_spec_on_res15_11192020/"
 
@@ -87,10 +88,13 @@ __C.net.name = 'res15'
 
 __C.test = {}
 
+# mode
+__C.test.method_mode = 1             # [0: RecognizeCommands, 1: RecognizeCommandsCountNumber]
+
 # __C.test.detection_threshold = 0.95
 __C.test.detection_threshold = 0.9
 __C.test.detection_number_threshold = 0.9
 
 __C.test.timeshift_ms = 30
-
 __C.test.average_window_duration_ms = 800
+__C.test.minimum_count = 15
