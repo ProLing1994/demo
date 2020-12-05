@@ -25,10 +25,12 @@ class WakeUp:
         model_epoch = self._cfg.general.model_epoch
         
         # init test parameter 
+        method_mode = self._cfg.test.method_mode
         detection_threshold = self._cfg.test.detection_threshold
         detection_number_threshold = self._cfg.test.detection_number_threshold
         timeshift_ms = self._cfg.test.timeshift_ms
         average_window_duration_ms = self._cfg.test.average_window_duration_ms
+        minimum_count = self._cfg.test.minimum_count
 
         # load label index 
         label_index = load_label_index(self._cfg.dataset.label.positive_label, self._cfg.dataset.label.negative_label)
@@ -43,21 +45,25 @@ class WakeUp:
 
         # init recognizer
         self._recognize_element = RecognizeResult()
-        # self._recognize_commands = RecognizeCommands(
-        #     labels=label_list,
-        #     positove_lable_index = label_index[self._positive_label_list[0]],
-        #     average_window_duration_ms=average_window_duration_ms,
-        #     detection_threshold=detection_threshold,
-        #     suppression_ms=3000,
-        #     minimum_count=15)
-        self._recognize_commands = RecognizeCommandsCountNumber(
-            labels=label_list,
-            positove_lable_index = label_index[self._positive_label_list[0]],
-            average_window_duration_ms=average_window_duration_ms,
-            detection_threshold=detection_threshold,
-            detection_number_threshold=detection_number_threshold,
-            suppression_ms=3000,
-            minimum_count=15)
+        if method_mode == 0:
+            self._recognize_commands = RecognizeCommands(
+                labels=label_list,
+                positove_lable_index = label_index[self._positive_label_list[0]],
+                average_window_duration_ms=average_window_duration_ms,
+                detection_threshold=detection_threshold,
+                suppression_ms=3000,
+                minimum_count=minimum_count)
+        elif method_mode == 1:
+            self._recognize_commands = RecognizeCommandsCountNumber(
+                labels=label_list,
+                positove_lable_index = label_index[self._positive_label_list[0]],
+                average_window_duration_ms=average_window_duration_ms,
+                detection_threshold=detection_threshold,
+                detection_number_threshold=detection_number_threshold,
+                suppression_ms=3000,
+                minimum_count=minimum_count)
+        else:
+            raise Exception("[ERROR:] Unknow method mode, please check!")
 
         # init model
         model = kws_load_model(model_path, gpu_ids, model_epoch)

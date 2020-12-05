@@ -135,20 +135,22 @@ def cal_fpr_tpr(src_csv, pst_csv, positive_label, bool_write_audio):
 
 if __name__ == "__main__":
     bool_write_audio = True
-    model_name = "kws_xiaoyu8_3_timeshift_spec_on_lstm_attention_avg_11032020"
-    # cal_fpr_tpr("/mnt/huanyuan/data/speech/kws/test_straming_wav/xiaoyu_03022018_training_60_001.csv",
-    #             "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaoyu_03022018_training_60_001_threshold_0_95/found_words.csv".format(model_name),
+    model_name = "kws_xiaole1_0_res15_11242020"
+
+    # xiaoyu
+    # cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.csv",
+    #             "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaoyu_10292020_testing_3600_001_threshold_0_95/found_words.csv".format(model_name),
     #             "xiaoyu",
     #             bool_write_audio)
-    # cal_fpr_tpr("/mnt/huanyuan/data/speech/kws/test_straming_wav/xiaoyu_03022018_validation_60_001.csv",
-    #             "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaoyu_03022018_validation_60_001_threshold_0_95/found_words.csv".format(model_name),
-    #             "xiaoyu",
+
+    # xiaorui
+    # cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/xiaorui_12032020_validation_3600_001.csv",
+    #             "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaorui_12032020_validation_3600_001_threshold_0_8/found_words.csv".format(model_name),
+    #             "xiaorui",
     #             bool_write_audio)
-    # cal_fpr_tpr("/mnt/huanyuan/data/speech/kws/test_straming_wav/xiaoyu_03022018_testing_60_001.csv",
-    #             "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaoyu_03022018_testing_60_001_threshold_0_95/found_words.csv".format(model_name),
-    #             "xiaoyu",
-    #             bool_write_audio)
-    cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.csv",
-                "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaoyu_10292020_testing_3600_001_threshold_0_95/found_words.csv".format(model_name),
-                "xiaoyu",
+
+    # xiaole
+    cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/xiaole_11252020_testing_3600_001.csv",
+                "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaole_11252020_testing_3600_001_threshold_0_95/found_words.csv".format(model_name),
+                "xiaole",
                 bool_write_audio)

@@ -139,9 +139,6 @@ def straming_dataset_generator(input_dir, output_path, nosed_csv, config_file, a
             start_idx += 1
         else:
             pass 
-        
-        if not found_data.endswith('.m4a'):
-            continue
 
         # load data
         if found_label == SILENCE_LABEL:
@@ -170,8 +167,8 @@ def main():
     # 0: from config file
     # 1: from folder 
     # 2: from unused csv 
-    # default_mode = 0
-    default_mode = 1 
+    default_mode = 0
+    # default_mode = 1 
     # default_mode = 2
 
     default_add_noise_on = False
@@ -179,6 +176,7 @@ def main():
 
     # only for mode==0, support for ['training','validation','testing']
     default_audio_mode = 'testing'
+    default_output_path_list = ['/mnt/huanyuan/model/test_straming_wav/xiaole_11252020_testing_3600_001.wav']
 
     # only for mode==1, from folder
     # default_input_dir = '/mnt/huanyuan/data/speech/kws/weiboyulu/dataset'
@@ -233,12 +231,13 @@ def main():
     #                             '/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_station_suiyueruge_43200_003.wav',
     #                             '/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_station_suiyueruge_43200_004.wav',
     #                             '/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_station_suiyueruge_43200_005.wav']
-    default_input_dir =  "/mnt/huanyuan/data/speech/Negative_sample/QingTingFM/news/jiaodianshike/"
-    default_output_path_list = ['/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_news_jiaodianshike_43200_001.wav',
-                                '/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_news_jiaodianshike_43200_002.wav',
-                                '/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_news_jiaodianshike_43200_003.wav',
-                                '/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_news_jiaodianshike_43200_004.wav',
-                                '/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_news_jiaodianshike_43200_005.wav']
+    # default_input_dir =  "/mnt/huanyuan/data/speech/Negative_sample/QingTingFM/news/jiaodianshike/"
+    # default_output_path_list = ['/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_news_jiaodianshike_43200_001.wav',
+    #                             '/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_news_jiaodianshike_43200_002.wav',
+    #                             '/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_news_jiaodianshike_43200_003.wav',
+    #                             '/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_news_jiaodianshike_43200_004.wav',
+    #                             '/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_news_jiaodianshike_43200_005.wav']
+    default_input_dir =  ""
     
     # only for mode==2, from unused csv 
     # default_input_dir =  "/mnt/huanyuan/data/speech/Negative_sample/QingTingFM/music/xingetuijian/"
@@ -246,7 +245,9 @@ def main():
     # default_nosed_csv = "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/QingTingFM_music_xingetuijian_21600_noused.csv"
     default_nosed_csv = ""
     
-    default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
+    # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
+    # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py"
+    default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py"
 
     parser = argparse.ArgumentParser(description="Prepare XiaoYu Dataset")
     parser.add_argument('--input_dir', type=str, default=default_input_dir)
@@ -256,11 +257,13 @@ def main():
     parser.add_argument('--add_noise_on', type=bool, default=default_add_noise_on)
     parser.add_argument('--mode', type=int, default=default_mode)
     parser.add_argument('--audio_mode', type=str, default=default_audio_mode)
-    parser.add_argument('--test_duration_seconds', type=int, default=43200) # 12 hours
+    # parser.add_argument('--test_duration_seconds', type=int, default=43200) # 12 hours
     # parser.add_argument('--test_duration_seconds', type=int, default=21600) # 6 hours
     # parser.add_argument('--test_duration_seconds', type=int, default=7200) # 2 hours
-    # parser.add_argument('--word_gap_ms', type=int, default=3000)
-    parser.add_argument('--word_gap_ms', type=int, default=1000)
+    parser.add_argument('--test_duration_seconds', type=int, default=3600) # 1 hours
+    # parser.add_argument('--test_duration_seconds', type=int, default=60) # 1 minute
+    parser.add_argument('--word_gap_ms', type=int, default=3000)
+    # parser.add_argument('--word_gap_ms', type=int, default=1000)
     args = parser.parse_args()
     
     for output_path in args.output_path_list:
