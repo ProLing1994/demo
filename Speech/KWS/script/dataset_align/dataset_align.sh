@@ -16,7 +16,8 @@ stage=1
 
 # xiaoyu
 # data_set=/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/original_dataset/XiaoYuDataset_11032020/
-data_set=/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/original_dataset/XiaoYuDataset_11192020/
+# data_set=/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/original_dataset/XiaoYuDataset_11192020/
+data_set=/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experimental_dataset/XiaoYuDataset/
 keyword="xiaoyu"
 keyword_chinese="小 鱼 小 鱼"
 keyword_chinese_output="小,鱼,小#,鱼#"
