@@ -12,7 +12,8 @@ stage=1
 
 # init
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py
-config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py
+# config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py
+config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_confid_align_xiaoyu.py
 
 echo "script/dataset/prepare_dataset.sh"
 
@@ -28,18 +29,23 @@ if [ $stage -le 2 ];then
 			--difficult_sample_mining_dir /mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/difficult_sample_mining_11122020/clean_audio/ || exit 1
 fi
 
-# speed volume augumentation
+# prepare align dataset, clean the dataset according to the alignment results
 if [ $stage -le 3 ];then
+	python update_dataset.py -i $config_file || exit 1
+fi
+
+# speed volume augumentation
+if [ $stage -le 4 ];then
 	python ../dataset_augmentation/speed_volume_augumentation.py --config_file $config_file || exit 1
 fi
 
 # preload data
-if [ $stage -le 4 ];then
+if [ $stage -le 5 ];then
 	python data_preload_audio.py -i $config_file || exit 1
 fi
 
 # analysis dataset
-if [ $stage -le 5 ];then
+if [ $stage -le 6 ];then
 	python ../analysis_dataset/analysis_audio_length.py --config_file $config_file || exit 1
 	python ../analysis_dataset/analysis_data_distribution.py --config_file $config_file || exit 1
 fi
