@@ -167,12 +167,9 @@ def main():
     # 0: from config file
     # 1: from folder 
     # 2: from unused csv 
-    default_mode = 0
-    # default_mode = 1 
-    # default_mode = 2
+    default_mode = 0    # [0, 1, 2]
 
-    default_add_noise_on = False
-    # default_add_noise_on = True
+    default_add_noise_on = False    # [True, False]
 
     # only for mode==0, support for ['training','validation','testing']
     default_audio_mode = 'testing'

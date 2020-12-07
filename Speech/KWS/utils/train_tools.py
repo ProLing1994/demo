@@ -19,9 +19,8 @@ from common.common.utils.python.train_tools  import EpochConcateSampler
 
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/KWS')
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
-# from dataset.kws.kws_dataset import SpeechDataset
-# from dataset.kws.kws_dataset_preprocess import SpeechDataset
 from dataset.kws.kws_dataset_preload_audio import SpeechDataset
+from dataset.kws.kws_dataset_align_preload_audio import SpeechDatasetAlign
 from dataset.kws.dataset_helper import SILENCE_LABEL
 from utils.loss import FocalLoss
 
@@ -143,15 +142,22 @@ def set_optimizer(cfg, net):
 
   return opt
 
-def generate_dataset(cfg, mode):
+def generate_dataset(cfg, mode, training_mode=0):
   """
   :param cfg:            config contain data set information
-  :param mode:            Which partition to use, must be 'training', 'validation', or 'testing'.
+  :param mode:           Which partition to use, must be 'training', 'validation', or 'testing'.
+  :param training_mode:  the model training mode, must be 0 or 1.
   :return:               data loader, length of data set
   """
   assert mode in ['training', 'testing', 'validation'], "[ERROR:] Unknow mode: {}".format(mode)
 
-  data_set = SpeechDataset(cfg=cfg, mode=mode)
+  if training_mode == 0:
+    data_set = SpeechDataset(cfg=cfg, mode=mode)
+  elif training_mode == 1:
+    data_set = SpeechDatasetAlign(cfg=cfg, mode=mode)
+  else:
+    raise Exception("[ERROR:] Unknow training mode, please check!")
+
   sampler = EpochConcateSampler(data_set, cfg.train.num_epochs - (cfg.general.resume_epoch if cfg.general.resume_epoch != -1 else 0))
   data_loader = torch.utils.data.DataLoader(data_set,
                                             sampler=sampler,
@@ -161,15 +167,22 @@ def generate_dataset(cfg, mode):
                                             worker_init_fn=worker_init)
   return data_loader, len(data_set)
 
-def generate_test_dataset(cfg, mode = 'validation', augmentation_on=False):
+def generate_test_dataset(cfg, mode = 'validation', augmentation_on=False, training_mode=0):
   """
   :param cfg:            config contain data set information
   :param mode:           Which partition to use, must be 'training', 'validation', or 'testing'.
+  :param training_mode:  the model training mode, must be 0 or 1.
   :return:               data loader, length of data set
   """
   assert mode in ['training', 'testing', 'validation'], "[ERROR:] Unknow mode: {}".format(mode)
 
-  data_set = SpeechDataset(cfg=cfg, mode=mode, augmentation_on=augmentation_on)
+  if training_mode == 0:
+    data_set = SpeechDataset(cfg=cfg, mode=mode, augmentation_on=augmentation_on)
+  elif training_mode == 1:
+    data_set = SpeechDatasetAlign(cfg=cfg, mode=mode, augmentation_on=augmentation_on)
+  else:
+    raise Exception("[ERROR:] Unknow training mode, please check!")
+
   data_loader = torch.utils.data.DataLoader(data_set,
                                             batch_size=1,
                                             pin_memory=False,
@@ -268,6 +281,13 @@ def save_intermediate_results(cfg, mode, epoch, images, labels, indexs):
   data_pd = pd.read_csv(cfg.general.data_csv_path)
   data_pd = data_pd[data_pd['mode'] == mode]
 
+  # mkdir 
+  label_name_list = data_pd['label'].tolist()
+  for label_name_idx in range(len(label_name_list)):
+    output_dir = os.path.join(out_folder, str(label_name_list[label_name_idx]))
+    if not os.path.isdir(output_dir):
+        os.makedirs(output_dir)
+
   in_params = []
   batch_size = images.shape[0]
   for bth_idx in tqdm(range(batch_size)):
@@ -298,11 +318,6 @@ def multiprocessing_save(args):
   image_name_idx = str(data_pd['file'].tolist()[index_idx])
   label_name_idx = str(data_pd['label'].tolist()[index_idx])
   output_dir = os.path.join(out_folder, label_name_idx)
-  if not os.path.isdir(output_dir):
-      try:
-        os.makedirs(output_dir)
-      except:
-        pass
 
   # plot spectrogram
   if label_name_idx == SILENCE_LABEL:
