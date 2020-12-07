@@ -2,13 +2,15 @@ import argparse
 import librosa
 import multiprocessing as mp
 import os
+import sys
 import soundfile as sf
 
-
-from src.utils.file_tool import read_file_gen
 from tqdm import tqdm
 
-def read_utt2wav():
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS/script/dataset_align')
+from src.utils.file_tool import read_file_gen
+
+def read_utt2wav(wavscps):
     utt2wav = {}
     for wavscp in wavscps:
         curr_utt2wav = dict({line.split()[0]:line.split()[1] for line in open(wavscp)})
@@ -26,8 +28,8 @@ def read_signal(utt_id):
 def cut_word_and_save(items):
     utt_id = items[0]
     word = items[1]
-    tbegin = items[2]
-    tend = items[3]
+    tbegin = items[2] - cut_extern
+    tend = items[3] + cut_extern
 
     word_save_dir = save_dir + '/' + word + '/'
     if os.path.exists(word_save_dir + os.path.basename(utt2wav[utt_id])):
@@ -36,14 +38,14 @@ def cut_word_and_save(items):
     sig, sr = read_signal(utt_id)
     #sig = sig[:,0]
     if len(sig.shape) > 1:
-        keyword_sample = sig[int(sr*tbegin):int(sr*tend),:]
+        keyword_sample = sig[max(0, int(sr*tbegin)):min(int(sr*tend), len(sig)),:]
         sf.write(word_save_dir + os.path.basename(utt2wav[utt_id]), keyword_sample, sr)
     else:
-        keyword_sample = sig[int(sr*tbegin):int(sr*tend)]
+        keyword_sample = sig[max(0, int(sr*tbegin)):min(int(sr*tend), len(sig))]
         sf.write(word_save_dir + os.path.basename(utt2wav[utt_id]), keyword_sample, sr)
     return 1
 
-def get_words_list(ctm_file):
+def get_words_list(ctm_file, keyword_list):
     content_dict = {}
     word_segments = []
     
@@ -63,28 +65,27 @@ def get_words_list(ctm_file):
             print(utt_id)
     return word_segments
 
-def extract_words(ctm_file):
+def extract_words(ctm_file, keyword_list):
     process_num = 30
-    word_segments = get_words_list(ctm_file)
+    word_segments = get_words_list(ctm_file, keyword_list)
     print("word_segments:", len(word_segments))
-    with mp.Pool(process_num) as p:
-        frames = list(tqdm(p.imap(cut_word_and_save, word_segments), total=len(word_segments)))
-    # for idx in range(len(word_segments)):
-    #     cut_word_and_save(word_segments[idx])
+    # with mp.Pool(process_num) as p:
+    #     frames = list(tqdm(p.imap(cut_word_and_save, word_segments), total=len(word_segments)))
+    for idx in range(len(word_segments)):
+        cut_word_and_save(word_segments[idx])
 
 if __name__ == "__main__":
-    default_ctm_file = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_12022020/kaldi_type/tmp/nnet3_align/ctm"
-    default_wav_file = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_12022020/kaldi_type/wav.scp"
-    default_keyword_list = "小,锐,小#,锐#"
-    default_save_dir = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_12022020/kaldi_cut_keyword"
+    default_ctm_file = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/original_dataset/XiaoYuDataset_11032020/kaldi_type/tmp/nnet3_align/ctm"
+    default_wav_file = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/original_dataset/XiaoYuDataset_11032020/kaldi_type/wav.scp"
+    default_keyword_list = "小,鱼,小#,鱼#"
+    default_save_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/original_dataset/XiaoYuDataset_11032020//kaldi_cut_keyword"
 
     parser = argparse.ArgumentParser(description = "Cut keyword wavs and save them")
     parser.add_argument('--ctm_file', type=str,default=default_ctm_file,dest='ctm_file',help='Align ctm file path')
     parser.add_argument('--wav_file',type=str,default=default_wav_file,dest='wav_file',help='Wav path')
     parser.add_argument('--keyword_list',type=str,default=default_keyword_list,dest='keyword_list',help='Keyword list')
     parser.add_argument('--save_dir',type=str,default=default_save_dir,dest='save_dir',help='Save destination path')
-    args = parser.parse_args();
-
+    args = parser.parse_args()
 
     ctm_files = [args.ctm_file] # "/NASdata/zhangchx/kaldi/egs/thchs30/s5/exp/tri4b_dnn_mpe/decode_test_word_it3/ctm"]
     wavscps = [args.wav_file] # "/NASdata/zhangchx/kaldi/egs/thchs30/s5/data/test/wav.scp"]
@@ -92,14 +93,15 @@ if __name__ == "__main__":
     save_dir = args.save_dir
     beg_context = 0 # 3600
     end_context = 0 # 1200
+    cut_extern = 0.2 # 0.2s
 
     print("[Begin] Cut keyword wavs")
 
     os.system("mkdir -p " + save_dir + " && mkdir -p " + save_dir + "/" + "".join(keyword_list))
-    utt2wav = read_utt2wav()
+    utt2wav = read_utt2wav(wavscps)
 
     for ctm_file in ctm_files:
-        extract_words(ctm_file)
+        extract_words(ctm_file, keyword_list)
 
     print("[Done] Cut keyword wavs")
 

@@ -14,22 +14,22 @@ __C.general = {}
 __C.general.data_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experimental_dataset/XiaoYuDataset"
 
 # data version
-__C.general.version = "1.0"
+__C.general.version = "1.1"
 
 # data date
 __C.general.date = "12042020"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experimental_dataset/dataset_1.0_12042020/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experimental_dataset/dataset_1.1_12042020/total_data_files_align_clean.csv"
 
 # background noise path
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experimental_dataset/dataset_1.0_12042020/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experimental_dataset/dataset_1.1_12042020/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoyu_11112020"
+__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoyu_11112020_test"
 
 # finrtune model
 __C.general.finetune_on = False
@@ -62,7 +62,7 @@ __C.dataset.input_channel = 1
 __C.dataset.sample_rate = 16000
 
 # Length of each audio clip to be analyzed
-__C.dataset.clip_duration_ms = 2000
+__C.dataset.clip_duration_ms = 1500
 
 # Duration of frequency analysis window
 __C.dataset.window_size_ms = 30.0
@@ -79,7 +79,7 @@ __C.dataset.preprocess = "fbank"
 __C.dataset.feature_bin_count = 40
 
 # input size of training data (w, h), unit: voxel
-__C.dataset.data_size = [40, 201]
+__C.dataset.data_size = [40, 151]
 
 
 ##################################
@@ -90,11 +90,13 @@ __C.dataset.label = {}
 
 # label
 __C.dataset.label.positive_label = ["xiaoyu"]
+__C.dataset.label.positive_label_chinese_list = "小,鱼,小#,鱼#"
 __C.dataset.label.negative_label = ["_silence_", "_unknown_"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
 __C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[1]
 __C.dataset.label.label_list = __C.dataset.label.negative_label + __C.dataset.label.positive_label
-__C.dataset.label.num_classes = len(__C.dataset.label.positive_label) + len(__C.dataset.label.negative_label)
+# 正样本转音处，三个标签，负样本仅处理 "_unknown_" 标签，"_silence_" 与 "_unknown_" 融合，作为一类，此处共 4 类
+__C.dataset.label.num_classes = 3
 
 # label percentage
 __C.dataset.label.silence_percentage = 50.0      # 50%
@@ -115,8 +117,8 @@ __C.dataset.label.testing_percentage = 10.0     # 10%
 __C.dataset.augmentation = {}
 
 # based on audio waveform: on
-__C.dataset.augmentation.on = True
-# __C.dataset.augmentation.on = False
+# __C.dataset.augmentation.on = True
+__C.dataset.augmentation.on = False
 
 # How many of the training samples have background noise mixed in.
 __C.dataset.augmentation.background_frequency = 0.8
@@ -125,14 +127,14 @@ __C.dataset.augmentation.background_frequency = 0.8
 __C.dataset.augmentation.background_volume = 0.1
 
 # Range to randomly shift the training audio by in time(ms).
-__C.dataset.augmentation.time_shift_ms = 100.0
+__C.dataset.augmentation.time_shift_ms = 40.0
 
 # Time shift enhancement multiple of negative samples, which is effective for advanced prediction and lag prediction
-__C.dataset.augmentation.time_shift_multiple = 10
+__C.dataset.augmentation.time_shift_multiple = 5
 
 # based on audio waveform: on, just for positive samples.
-__C.dataset.augmentation.speed_volume_on = True
-# __C.dataset.augmentation.speed_volume_on = False
+# __C.dataset.augmentation.speed_volume_on = True
+__C.dataset.augmentation.speed_volume_on = False
 
 # How fast the audio should be, just for positive samples.
 __C.dataset.augmentation.possitive_speed = '0.9,1.0,1.1'
@@ -143,7 +145,7 @@ __C.dataset.augmentation.possitive_volume = '0.4,0.7,1.0,1.3,1.6'
 # based on audio spectrum: on
 __C.dataset.augmentation.spec_on = True
 __C.dataset.augmentation.F = 5
-__C.dataset.augmentation.T = 30
+__C.dataset.augmentation.T = 6
 __C.dataset.augmentation.num_masks = 1
 
 ####################################
@@ -199,13 +201,13 @@ __C.train.num_epochs = 1
 # the number of samples in a batch
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 1024
-# __C.train.batch_size = 64
-__C.train.batch_size = 16
+__C.train.batch_size = 64
+# __C.train.batch_size = 16
 # __C.train.batch_size = 1
 
 # the number of threads for IO
-# __C.train.num_threads = 64
-__C.train.num_threads = 16
+__C.train.num_threads = 64
+# __C.train.num_threads = 16
 # __C.train.num_threads = 1
 
 # the number of batches to update loss curve
