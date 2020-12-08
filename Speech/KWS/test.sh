@@ -15,8 +15,8 @@ echo "test.sh"
 
 # test model
 if [ $stage -le 1 ];then
-    python infer_longterm_audio_mean_min.py --input $config_file || exit 1
-    python infer_longterm_audio_average_duration_ms.py --input $config_file || exit 1
+    python ./infer/infer.py --input $config_file --result_mode "min" || exit 1
+    python ./infer/infer.py --input $config_file --result_mode "average_duration_ms" || exit 1
 fi
 
 echo "test.sh succeeded"

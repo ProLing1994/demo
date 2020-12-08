@@ -84,8 +84,9 @@ class SpeechDatasetAlign(Dataset):
     wav_file = os.path.join(cfg.general.data_dir, 'kaldi_type/wav.scp')
 
     self.keyword_list = cfg.dataset.label.positive_label_chinese_list.split(',')
-    self.label_list = ["".join([self.keyword_list[0], self.keyword_list[1], self.keyword_list[2]]),
-                      "".join([self.keyword_list[1], self.keyword_list[2], self.keyword_list[3]])]
+    self.label_list = ["".join([self.keyword_list[0], self.keyword_list[1]]),
+                      "".join([self.keyword_list[1], self.keyword_list[2]]),
+                      "".join([self.keyword_list[2], self.keyword_list[3]])]
     self.wav2utt = read_wav2utt([wav_file])
     self.word_segments = extract_words(ctm_file, self.keyword_list)
 
@@ -214,12 +215,19 @@ class SpeechDatasetAlign(Dataset):
       # get tmid
       utt_id = self.wav2utt[audio_file]
       assert keyword_label == self.word_segments[utt_id][keyword_index][0]
-      tbegin = float(self.word_segments[utt_id][keyword_index][1]) * 1000
-      tbegin_samples = int(self.sample_rate * tbegin / 1000)
-      tend = float(self.word_segments[utt_id][keyword_index][2]) * 1000
-      tend_samples = int(self.sample_rate * tend / 1000)
+      # tbegin = float(self.word_segments[utt_id][keyword_index][1]) * 1000
+      # tbegin_samples = int(self.sample_rate * tbegin / 1000)
+      # tend = float(self.word_segments[utt_id][keyword_index][2]) * 1000
+      # tend_samples = int(self.sample_rate * tend / 1000)
+      # data = data[max(0, tbegin_samples): min(tend_samples, len(data))]
 
-      data = data[max(0, tbegin_samples): min(tend_samples, len(data))]
+      tmid = float(self.word_segments[utt_id][keyword_index][1]) * 1000
+      tmid_samples = int(self.sample_rate * tmid / 1000)
+      windows_samples = self.desired_samples // 2
+      while tmid_samples - windows_samples < 0 or tmid_samples + windows_samples >= len(data):
+        windows_samples -= 1
+      data = data[max(0, tmid_samples - windows_samples): min(tmid_samples + windows_samples, len(data))] 
+      
 
     if len(data) < self.desired_samples:
       data_length = len(data)
@@ -259,6 +267,8 @@ class SpeechDatasetAlign(Dataset):
     # To tensor
     data_tensor = torch.from_numpy(data.reshape(1, -1, 40))
     data_tensor = data_tensor.float()
+    if audio_align_label_idx == 3:
+      audio_align_label_idx = 1
     label_tensor = torch.tensor(audio_align_label_idx)
 
     # check tensor

@@ -30,6 +30,7 @@ __C.general.is_test = True
 
 # the output of training models and logging files
 __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoyu_11112020_test"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu9_2_align_res15_12072020/"
 
 # finrtune model
 __C.general.finetune_on = False
@@ -62,7 +63,8 @@ __C.dataset.input_channel = 1
 __C.dataset.sample_rate = 16000
 
 # Length of each audio clip to be analyzed
-__C.dataset.clip_duration_ms = 1500
+# __C.dataset.clip_duration_ms = 1500
+__C.dataset.clip_duration_ms = 500
 
 # Duration of frequency analysis window
 __C.dataset.window_size_ms = 30.0
@@ -79,7 +81,8 @@ __C.dataset.preprocess = "fbank"
 __C.dataset.feature_bin_count = 40
 
 # input size of training data (w, h), unit: voxel
-__C.dataset.data_size = [40, 151]
+# __C.dataset.data_size = [40, 151]
+__C.dataset.data_size = [40, 51]
 
 
 ##################################
@@ -95,7 +98,7 @@ __C.dataset.label.negative_label = ["_silence_", "_unknown_"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
 __C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[1]
 __C.dataset.label.label_list = __C.dataset.label.negative_label + __C.dataset.label.positive_label
-# 正样本转音处，三个标签，负样本仅处理 "_unknown_" 标签，"_silence_" 与 "_unknown_" 融合，作为一类，此处共 4 类
+# 正样本: "小鱼"、"鱼小", 负样本："_silence_"、"_unknown_" 融合，作为一类，此处共 3 类
 __C.dataset.label.num_classes = 3
 
 # label percentage
@@ -117,8 +120,8 @@ __C.dataset.label.testing_percentage = 10.0     # 10%
 __C.dataset.augmentation = {}
 
 # based on audio waveform: on
-# __C.dataset.augmentation.on = True
-__C.dataset.augmentation.on = False
+__C.dataset.augmentation.on = True
+# __C.dataset.augmentation.on = False
 
 # How many of the training samples have background noise mixed in.
 __C.dataset.augmentation.background_frequency = 0.8
@@ -127,7 +130,7 @@ __C.dataset.augmentation.background_frequency = 0.8
 __C.dataset.augmentation.background_volume = 0.1
 
 # Range to randomly shift the training audio by in time(ms).
-__C.dataset.augmentation.time_shift_ms = 40.0
+__C.dataset.augmentation.time_shift_ms = 50.0
 
 # Time shift enhancement multiple of negative samples, which is effective for advanced prediction and lag prediction
 __C.dataset.augmentation.time_shift_multiple = 5
@@ -145,7 +148,7 @@ __C.dataset.augmentation.possitive_volume = '0.4,0.7,1.0,1.3,1.6'
 # based on audio spectrum: on
 __C.dataset.augmentation.spec_on = True
 __C.dataset.augmentation.F = 5
-__C.dataset.augmentation.T = 6
+__C.dataset.augmentation.T = 5
 __C.dataset.augmentation.num_masks = 1
 
 ####################################
@@ -159,7 +162,7 @@ __C.loss = {}
 __C.loss.name = 'focal'
 
 # the weight matrix for each class in focal loss, including background class
-__C.loss.obj_weight = np.array([[1/9, 0, 0], [0, 1/9, 0], [0, 0, 7/9]])
+__C.loss.obj_weight = np.array([[1/15, 0, 0], [0, 5/15, 0], [0, 0, 9/15]])
 
 # the gamma parameter in focal loss
 __C.loss.focal_gamma = 2
@@ -223,8 +226,8 @@ __C.train.save_epochs = 25
 ######################################
 
 # learning rate = lr*gamma**(epoch//step_size)
-# __C.train.lr = 1e-3
-__C.train.lr = 1e-4
+__C.train.lr = 1e-3
+# __C.train.lr = 1e-4
 # __C.train.lr = 1e-5
 
 # step size for step learning rate
@@ -258,8 +261,8 @@ __C.train.betas = (0.9, 0.999)
 __C.debug = {}
 
 # whether to save input images
-# __C.debug.save_inputs = True
-__C.debug.save_inputs = False
+__C.debug.save_inputs = True
+# __C.debug.save_inputs = False
 
 # the number of processing for save input images
 # __C.debug.num_processing = 64
