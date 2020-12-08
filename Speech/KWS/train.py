@@ -92,7 +92,7 @@ def train(config_file, training_mode):
   # get training data set and test data set
   train_dataloader, len_dataset = generate_dataset(cfg, 'training', training_mode)
   if cfg.general.is_test:
-    eval_validation_dataloader = generate_test_dataset(cfg, 'validation', training_mode)
+    eval_validation_dataloader = generate_test_dataset(cfg, 'validation', training_mode=training_mode)
     # eval_train_dataloader = generate_test_dataset(cfg, 'training')
 
   msg = 'Training dataset number: {}'.format(len_dataset)
@@ -165,21 +165,27 @@ def train(config_file, training_mode):
           # test(cfg, net, loss_func, epoch_idx, batch_idx, logger, eval_train_dataloader, mode='eval')
 
 def main():
-  # training mode: [0,1]
-  # 0: 将整个唤醒词作为一个 label 进行建模
-  # 1: 根据帧对齐结果，采用更简洁的建模方式，对转音位置进行建模，一个唤醒词拥有多个标签
-  training_mode = 1    # [0, 1]
-
   parser = argparse.ArgumentParser(description='Streamax KWS Training Engine')
+
+  # training_mode = 0
   # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config.py", nargs='?', help='config file')
   # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", nargs='?', help='config file')
   # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py", nargs='?', help='config file')
   # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py", nargs='?', help='config file')
-  parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_confid_align_xiaoyu.py", nargs='?', help='config file')
   # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_2_label_xiaoyu.py", nargs='?', help='config file')
-  parser.add_argument('-m', '--training_mode', type=int, default=training_mode)
+
+  # training_mode = 1
+  parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_confid_align_xiaoyu.py", nargs='?', help='config file')
   args = parser.parse_args()
-  train(args.input, args.training_mode)
+  
+  # training mode: [0,1]
+  # 0: 将整个唤醒词作为一个 label 进行建模
+  # 1: 根据帧对齐结果，采用更简洁的建模方式，对转音位置进行建模，一个唤醒词拥有多个标签
+  training_mode = 0
+  if 'align' in args.input:
+    training_mode = 1
+    
+  train(args.input, training_mode)
 
 if __name__ == "__main__":
   main()

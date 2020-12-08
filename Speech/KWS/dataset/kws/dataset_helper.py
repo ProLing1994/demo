@@ -161,8 +161,9 @@ def load_label_align_index(positive_label, positive_label_chinese_list, negative
         label_align_index[negative_word] = index
     index = 1
     keyword_list = positive_label_chinese_list.split(',')
-    label_list = ["".join([keyword_list[0], keyword_list[1], keyword_list[2]]),
-                  "".join([keyword_list[1], keyword_list[2], keyword_list[3]])]
+    label_list = ["".join([keyword_list[0], keyword_list[1]]),
+                  "".join([keyword_list[1], keyword_list[2]]),
+                  "".join([keyword_list[2], keyword_list[3]]),]
 
     for _, keyword in enumerate(label_list):
         label_align_index[keyword] = index
@@ -173,7 +174,7 @@ def load_label_align_index(positive_label, positive_label_chinese_list, negative
 def read_utt2wav(wavscps):
     utt2wav = {}
     for wavscp in wavscps:
-        curr_utt2wav = dict({line.split()[0]:line.split()[1] for line in open(wavscp)})
+        curr_utt2wav = dict({line.split()[0]:line.split()[1] for line in open(wavscp, encoding="utf-8")})
         # merge dict
         utt2wav = {**utt2wav, **curr_utt2wav}
     print("utt2wav:", len(list(utt2wav)))
@@ -183,7 +184,7 @@ def read_utt2wav(wavscps):
 def read_wav2utt(wavscps):
     wav2utt = {}
     for wavscp in wavscps:
-        curr_wav2utt = dict({line.split()[1]:line.split()[0] for line in open(wavscp)})
+        curr_wav2utt = dict({line.split()[1]:line.split()[0] for line in open(wavscp, encoding="utf-8")})
         # merge dict
         wav2utt = {**wav2utt, **curr_wav2utt}
     print("wav2utt:", len(list(wav2utt)))
@@ -206,10 +207,16 @@ def get_words_dict(ctm_file, keyword_list):
         content = content_dict[utt_id]
         try: 
             word_segments[utt_id] = []
-            word_segments[utt_id].append([keyword_list[0] + keyword_list[1] + keyword_list[2], 
-                                        float(content[keyword_list[0]][2]), float(content[keyword_list[2]][2]) + float(content[keyword_list[2]][3])])
-            word_segments[utt_id].append([keyword_list[1] + keyword_list[2] + keyword_list[3], 
-                                        float(content[keyword_list[1]][2]), float(content[keyword_list[3]][2]) + float(content[keyword_list[2]][3])])
+            # word_segments[utt_id].append([keyword_list[0] + keyword_list[1] + keyword_list[2], 
+            #                             float(content[keyword_list[0]][2]), float(content[keyword_list[2]][2]) + float(content[keyword_list[2]][3])])
+            # word_segments[utt_id].append([keyword_list[1] + keyword_list[2] + keyword_list[3], 
+            #                             float(content[keyword_list[1]][2]), float(content[keyword_list[3]][2]) + float(content[keyword_list[2]][3])])
+            word_segments[utt_id].append([keyword_list[0] + keyword_list[1], 
+                                        float(content[keyword_list[0]][2]) + float(content[keyword_list[0]][3])])
+            word_segments[utt_id].append([keyword_list[1] + keyword_list[2], 
+                                        float(content[keyword_list[1]][2]) + float(content[keyword_list[1]][3])])
+            word_segments[utt_id].append([keyword_list[2] + keyword_list[3], 
+                                        float(content[keyword_list[2]][2]) + float(content[keyword_list[2]][3])])
         except:
             print(utt_id)
     return word_segments

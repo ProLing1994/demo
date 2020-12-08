@@ -190,12 +190,13 @@ class OnlineAudio:
 
         # config
         # xiaoyu
+        config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu9_1_lr4_res15_12072020/kws_config_xiaoyu.py"
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_2_timeshift_spec_on_res15_11192020/kws_config_xiaoyu_2.py"
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_1_timeshift_spec_on_res15_11192020/kws_config_xiaoyu_2.py"
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_1_fbank_timeshift_spec_on_res15_11032020/test_straming_wav/kws_config_xiaoyu_2.py"
 
         # xiaorui
-        config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/kws_config_xiaorui.py"
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/kws_config_xiaorui.py"
 
         # xiaole
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaole1_0_res15_11242020/kws_config_xiaole.py"
@@ -214,10 +215,10 @@ class OnlineAudio:
         
         # init parameter 
         method_mode = 1                     # [0: RecognizeCommands, 1: RecognizeCommandsCountNumber]
-        detection_threshold = 0.8           # [0.3,0.6,0.8,0.9,0.95]
-        detection_number_threshold = 0.5    # [0.5,0.9]
+        detection_threshold = 0.9           # [0.3,0.6,0.8,0.9,0.95]
+        detection_number_threshold = 0.9    # [0.5,0.9]
         timeshift_ms = 30
-        average_window_duration_ms = 450    # [450,800]
+        average_window_duration_ms = 800    # [450,800]
         minimum_count = 10
         audio_data_length = 0
         audio_data_offset = 0

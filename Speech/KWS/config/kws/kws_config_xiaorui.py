@@ -11,7 +11,7 @@ cfg = __C
 __C.general = {}
 
 __C.general.data_dir = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/XiaoRuiDataset"
-__C.general.sub_data_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/XiaoYuDataset_11032020"
+__C.general.sub_data_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experimental_dataset/XiaoYuDataset/"
 # __C.general.data_dir = "/home/engineers/yh_rmai/data/speech/kws/xiaorui_dataset/experimental_dataset/XiaoRuiDataset/"
 # __C.general.sub_data_dir = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/XiaoYuDataset_11032020"
 
@@ -19,22 +19,22 @@ __C.general.sub_data_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_1103202
 __C.general.version = "1.0"
 
 # data date
-__C.general.date = "12032020"
+__C.general.date = "12052020"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.0_12032020/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.0_12052020/total_data_files.csv"
 # __C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.0_12032020/total_data_files.csv"
 
 # background noise path
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.0_12032020/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.0_12052020/background_noise_files.csv"
 # __C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.0_12032020/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_12032020_test"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/"
+__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_12032020_test"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/"
 # __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_xiaorui1_0_res15_12032020/"
 
 # finrtune model
@@ -68,7 +68,7 @@ __C.dataset.input_channel = 1
 __C.dataset.sample_rate = 16000
 
 # Length of each audio clip to be analyzed
-__C.dataset.clip_duration_ms = 1500
+__C.dataset.clip_duration_ms = 2000
 
 # Duration of frequency analysis window
 __C.dataset.window_size_ms = 30.0
@@ -85,7 +85,7 @@ __C.dataset.preprocess = "fbank"
 __C.dataset.feature_bin_count = 40
 
 # input size of training data (w, h), unit: voxel
-__C.dataset.data_size = [40, 151]
+__C.dataset.data_size = [40, 201]
 
 
 ##################################
@@ -134,7 +134,7 @@ __C.dataset.augmentation.background_volume = 0.1
 __C.dataset.augmentation.time_shift_ms = 100.0
 
 # Time shift enhancement multiple of negative samples, which is effective for advanced prediction and lag prediction
-__C.dataset.augmentation.time_shift_multiple = 7
+__C.dataset.augmentation.time_shift_multiple = 10
 
 # based on audio waveform: on, just for positive samples.
 __C.dataset.augmentation.speed_volume_on = True
@@ -149,7 +149,7 @@ __C.dataset.augmentation.possitive_volume = '0.4,0.7,1.0,1.3,1.6'
 # based on audio spectrum: on
 __C.dataset.augmentation.spec_on = True
 __C.dataset.augmentation.F = 5
-__C.dataset.augmentation.T = 10
+__C.dataset.augmentation.T = 20
 __C.dataset.augmentation.num_masks = 1
 
 ####################################
@@ -198,14 +198,14 @@ __C.train = {}
 # __C.train.num_epochs = 16000
 # __C.train.num_epochs = 8000
 # __C.train.num_epochs = 4000
-__C.train.num_epochs = 100
-# __C.train.num_epochs = 1
+# __C.train.num_epochs = 100
+__C.train.num_epochs = 1
 
 # the number of samples in a batch
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 1024
-__C.train.batch_size = 128
-# __C.train.batch_size = 64
+# __C.train.batch_size = 128
+__C.train.batch_size = 64
 # __C.train.batch_size = 16
 # __C.train.batch_size = 1
 
