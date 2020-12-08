@@ -5,12 +5,13 @@ import pandas as pd
 
 parser = argparse.ArgumentParser(description="Audio Split Using Auditok")
 parser.add_argument('--audio_path', type=str,
-                    default='D:\\data\\test\\5.wav')
+                    default='D:\\data\\test\\2.wav')
 parser.add_argument('--output_dir', type=str,
                     default='D:\\data\\test')
 parser.add_argument('--output_format', type=str, default="RM_ROOM_Mandarin_S{:0>3d}M{}P{:0>5d}.wav")
-# parser.add_argument('--output_format', type=str, default="RM_KWS_XIAORUI_{}_S{:0>3d}M{}D{}T{}.wav")
-# parser.add_argument('--text', type=str, default="xiaorui")
+# parser.add_argument('--output_format', type=str, default="RM_KWS_XIAORUI_{}_S{:0>3d}M{:0>1d}D{:0>2d}T{:0>3d}.wav")
+parser.add_argument('--energy_threshold', type=int, default=45)
+parser.add_argument('--text', type=str, default="xiaorui")
 parser.add_argument('--speaker', type=int, default=6)
 parser.add_argument('--sex', type=int, default=0, choices=[0, 1])
 # parser.add_argument('--distance', type=int, default=0, choices=[0, 1, 2])
@@ -34,7 +35,8 @@ if __name__ == "__main__":
     audio_region_list = []
 
     # audio_regions = split(audio_path, 2, 10, 1.5, False, True)
-    audio_regions = split(audio_path, 2, 10, 1.0, False, True, energy_threshold=55)
+    # audio_regions = split(audio_path, 2, 10, 1.0, False, True, energy_threshold=55)
+    audio_regions = split(audio_path, 2, 10, 1.0, False, True, energy_threshold=args.energy_threshold)
     # audio_regions = split(audio_path, 1, 5, 0.05, False, True)
 
     for region in audio_regions:

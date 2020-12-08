@@ -15,6 +15,22 @@ def get_hash_name(file_name):
     return hash_name
 
 
+def rename(input_dir, output_dir, device_id=0):
+    """
+    :param device_id：          设备，单兵 0|Jabra 桌面录音设备 1
+    """
+    image_list = os.listdir(input_dir)
+    image_list.sort()
+    for image_name in image_list:
+        temp = image_name.split('_')[-1].split('.')[0]
+        output_name = "_".join(image_name.split('_')[:-1]) + "_S{:0>3d}M{:0>1d}D{:0>2d}T{:0>3d}".format(int(temp[1:4]), int(temp[5]), device_id * 10 + int(temp[7]), int(temp[9:])) + '.wav'
+        print(image_name, '->', output_name)
+
+        image_path = os.path.join(input_dir, image_name)
+        output_path = os.path.join(output_dir, output_name)
+        # os.rename(image_path, output_path)
+        
+
 def dataset_generator(input_dir, output_dir, lables, names):
     assert os.path.exists(input_dir), "[ERROR:] 不存在数据集，请检查！"
 
@@ -58,7 +74,14 @@ def main():
     parser.add_argument('--labels', type=str, default='xiaorui')
     parser.add_argument('--names', type=str, default='xiaorui')
     args = parser.parse_args()
-    dataset_generator(args.input_dir, args.output_dir, args.labels, args.names)
+
+    # dataset_generator
+    # dataset_generator(args.input_dir, args.output_dir, args.labels, args.names)
+
+    # rename
+    rename("/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_12082020/xiaorui/", 
+            "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_12082020/xiaorui/",
+            1)
 
 if __name__ == "__main__":
     main()
