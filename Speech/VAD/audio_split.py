@@ -5,11 +5,12 @@ import pandas as pd
 
 parser = argparse.ArgumentParser(description="Audio Split Using Auditok")
 parser.add_argument('--audio_path', type=str,
-                    default='E:\\project\\data\\speech\\kws\\xiaorui\\12012020\\test.wav')
+                    default='D:\\data\\test\\2.wav')
 parser.add_argument('--output_dir', type=str,
-                    default='E:\\project\\data\\speech\\kws\\xiaorui\\12012020')
-# parser.add_argument('--output_format', type=str, default="RM_ROOM_Mandarin_S{:0>3d}M{}P{:0>5d}.wav")
-parser.add_argument('--output_format', type=str, default="RM_KWS_XIAORUI_{}_S{:0>3d}M{}D{}T{}.wav")
+                    default='D:\\data\\test')
+parser.add_argument('--output_format', type=str, default="RM_ROOM_Mandarin_S{:0>3d}M{}P{:0>5d}.wav")
+# parser.add_argument('--output_format', type=str, default="RM_KWS_XIAORUI_{}_S{:0>3d}M{:0>1d}D{:0>2d}T{:0>3d}.wav")
+parser.add_argument('--energy_threshold', type=int, default=45)
 parser.add_argument('--text', type=str, default="xiaorui")
 parser.add_argument('--speaker', type=int, default=6)
 parser.add_argument('--sex', type=int, default=0, choices=[0, 1])
@@ -34,12 +35,16 @@ if __name__ == "__main__":
     audio_region_list = []
 
     # audio_regions = split(audio_path, 2, 10, 1.5, False, True)
-    audio_regions = split(audio_path, 1, 5, 0.05, False, True)
+    # audio_regions = split(audio_path, 2, 10, 1.0, False, True, energy_threshold=55)
+    audio_regions = split(audio_path, 2, 10, 1.0, False, True, energy_threshold=args.energy_threshold)
+    # audio_regions = split(audio_path, 1, 5, 0.05, False, True)
 
     for region in audio_regions:
         audio_region_dict = {}
         output_name = args.output_format.format(
-            args.text, args.speaker, args.sex, args.distance, idx)
+            args.speaker, args.sex, idx)
+        # output_name = args.output_format.format(
+        #     args.text, args.speaker, args.sex, args.distance, idx)
         filename = region.save(os.path.join(output_path, output_name))
         audio_region_dict['audio_region'] = output_name.split('.')[0]
         audio_region_dict['state'] = 'N'

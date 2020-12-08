@@ -9,18 +9,21 @@ stage=1
 
 # init
 # xiaorui
-# data_set=/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_12022020
-# keyword="xiaorui"
-# keyword_chinese="小 锐 小 锐"
-# keyword_chinese_output="小,锐,小#,锐#"
+# data_set=/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_12012020
+# data_set=/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_12052020
+# data_set=/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_12082020
+data_set=/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/XiaoRuiDataset/
+keyword="xiaorui"
+keyword_chinese="小 锐 小 锐"
+keyword_chinese_output="小,锐,小#,锐#"
 
 # xiaoyu
 # data_set=/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/original_dataset/XiaoYuDataset_11032020/
 # data_set=/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/original_dataset/XiaoYuDataset_11192020/
-data_set=/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experimental_dataset/XiaoYuDataset/
-keyword="xiaoyu"
-keyword_chinese="小 鱼 小 鱼"
-keyword_chinese_output="小,鱼,小#,鱼#"
+# data_set=/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experimental_dataset/XiaoYuDataset/
+# keyword="xiaoyu"
+# keyword_chinese="小 鱼 小 鱼"
+# keyword_chinese_output="小,鱼,小#,鱼#"
 
 echo "script/dataset_align/dataset_align.sh"
 

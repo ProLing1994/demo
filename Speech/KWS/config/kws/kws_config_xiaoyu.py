@@ -29,7 +29,9 @@ __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset
 __C.general.is_test = True
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoyu_11112020"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoyu_11112020"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu9_0_res15_12072020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu9_1_lr4_res15_12072020/"
 
 # finrtune model
 __C.general.finetune_on = False
@@ -143,7 +145,7 @@ __C.dataset.augmentation.possitive_volume = '0.4,0.7,1.0,1.3,1.6'
 # based on audio spectrum: on
 __C.dataset.augmentation.spec_on = True
 __C.dataset.augmentation.F = 5
-__C.dataset.augmentation.T = 30
+__C.dataset.augmentation.T = 20
 __C.dataset.augmentation.num_masks = 1
 
 ####################################

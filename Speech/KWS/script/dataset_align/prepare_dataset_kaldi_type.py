@@ -52,8 +52,8 @@ def main():
                 text = file_name.strip().split('_')[-1].split('.')[0][8:]
             elif "RM_KWS_XIAORUI_" in file_name:
                 spk = file_name.strip().split('_')[-1].split('.')[0][:6]
-                device = file_name.strip().split('_')[-1].split('.')[0][6:8]
-                text = file_name.strip().split('_')[-1].split('.')[0][8:]
+                device = file_name.strip().split('_')[-1].split('.')[0][6:9]
+                text = file_name.strip().split('_')[-1].split('.')[0][9:]
             else:
                 raise Exception('[ERROR] Unknow file_name, please check!')
             

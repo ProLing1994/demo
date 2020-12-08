@@ -12,7 +12,7 @@ from dataset.kws.dataset_helper import *
 from utils.train_tools import *
 
 
-def longterm_audio_predict(cfg, net, audio_idx, audio_file, audio_mode, audio_label, audio_label_idx, background_data, add_noise_on, timeshift_ms, average_window_duration_ms):
+def longterm_audio_predict(cfg, net, audio_idx, audio_file, audio_mode, audio_label, audio_label_idx, background_data, add_noise_on, timeshift_ms, result_mode):
     # init 
     input_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset_audio', audio_mode)
     input_dir = os.path.join(input_dir, audio_label)
@@ -55,32 +55,27 @@ def longterm_audio_predict(cfg, net, audio_idx, audio_file, audio_mode, audio_la
         score = model_predict(cfg, net, data_list[data_idx])
         score_list.append(score[0])
 
-    average_window_length = 1 + average_window_duration_ms // timeshift_ms
-    if len(score_list) > average_window_length:
-        windows_number = 1 + len(score_list) - average_window_length
-        # Calculate the average score across all the results in the window.
-        average_scores_list = []
-        for windows_idx in range(windows_number):
-            score_list_window = score_list[windows_idx: windows_idx + average_window_length]
-            average_scores = np.zeros(num_classes)
-            for score in score_list_window:
-                for idx in range(num_classes):
-                    average_scores[idx] += score[idx] / len(score_list_window)
-            average_scores_list.append(average_scores)
-        # Sort the averaged results.
-        average_scores_list = sorted(average_scores_list, key=lambda p: p[audio_label_idx])
-        average_scores = average_scores_list[0]
-    else:
+    if result_mode == 'mean':
         average_scores = np.zeros(num_classes)
         for score in score_list:
             for idx in range(num_classes):
                 average_scores[idx] += score[idx] / len(score_list)
+    elif result_mode == 'min':
+        # init 
+        score_list = sorted(score_list, key=lambda p: p[audio_label_idx], reverse=False)
+        average_scores = score_list[0]
+    elif result_mode == 'max':
+        # init 
+        score_list = sorted(score_list, key=lambda p: p[audio_label_idx], reverse=True)
+        average_scores = score_list[0]
+    else:
+        raise Exception("[ERROR:] Unknow result mode, please check!")
 
     pred = np.argmax(average_scores)
     return pred, average_scores
 
 
-def predict(config_file, epoch, mode, add_noise_on, timeshift_ms, average_window_duration_ms):
+def predict(config_file, epoch, mode, add_noise_on, timeshift_ms, result_mode):
     # load configuration file
     cfg = load_cfg_file(config_file)
 
@@ -121,8 +116,8 @@ def predict(config_file, epoch, mode, add_noise_on, timeshift_ms, average_window
         #     continue
 
         pred, score = longterm_audio_predict(cfg, net, audio_idx, results_dict['file'], results_dict['mode'], results_dict['label'], results_dict['label_idx'], 
-                                            background_data, add_noise_on, timeshift_ms, average_window_duration_ms)
-
+                                            background_data, add_noise_on, timeshift_ms, result_mode)
+        
         preds.append(pred)
         labels.append(results_dict['label_idx'])
 
@@ -139,39 +134,37 @@ def predict(config_file, epoch, mode, add_noise_on, timeshift_ms, average_window
 
     # out csv
     csv_data_pd = pd.DataFrame(results_list)
-    csv_data_pd.to_csv(os.path.join(cfg.general.save_dir, 'infer_longterm_average_{}_augmentation_{}.csv'.format(mode, add_noise_on)), index=False, encoding="utf_8_sig")
-    return accuracy
+    csv_data_pd.to_csv(os.path.join(cfg.general.save_dir, 'infer_longterm_{}_augmentation_{}_{}.csv'.format(mode, add_noise_on, result_mode)), index=False, encoding="utf_8_sig")
 
 
 def main():
     """
-    使用模型对音频文件进行测试，配置为 --input 中的 config 文件，当存在音频文件长度大于模型送入的音频文件长度时(1s\2s\3s), 该脚本会通过滑窗的方式测试每一小段音频数据，计算连续 800ms(27帧) 音频的平均值结果，
-    在得到的平均结果中对应label最小值作为最终结果
-    该过程近似测试流程，可以作为参考
+    使用模型对音频文件进行测试，配置为 --input 中的 config 文件，当存在音频文件长度大于模型送入的音频文件长度时(1s\2s\3s), 该脚本会通过滑窗的方式测试每一小段音频数据，将每段结果的平均结果(或者对应label最小值)作为最终测试结果，
+    该过程有悖于测试流程，存在误差
     """
 
     default_mode = "validation"     # ["testing,validation,training"]
     default_model_epoch = -1
     default_add_noise_on = False    # [True,False]
     default_timeshift_ms = 30
-    default_average_window_duration_ms = 800
+    default_result_mode = 'min'     # ['min','mean','max']
 
     parser = argparse.ArgumentParser(description='Streamax KWS Infering Engine')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config.py", help='config file')
-    # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
+    parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py", help='config file')
-    parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py", help='config file')
+    # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py", help='config file')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_2_label_xiaoyu.py", help='config file')
     parser.add_argument('--mode', type=str, default=default_mode)
     parser.add_argument('--epoch', type=str, default=default_model_epoch)
     parser.add_argument('--add_noise_on', type=bool, default=default_add_noise_on)
     parser.add_argument('--timeshift_ms', type=int, default=default_timeshift_ms)
-    parser.add_argument('--average_window_duration_ms', type=int, default=default_average_window_duration_ms)
+    parser.add_argument('--result_mode', type=str, default=default_result_mode)
     args = parser.parse_args()
 
     mode_list = args.mode.strip().split(',')
     for mode_type in mode_list:
-        predict(args.input, args.epoch, mode_type, args.add_noise_on, args.timeshift_ms, args.average_window_duration_ms)
+        predict(args.input, args.epoch, mode_type, args.add_noise_on, args.timeshift_ms, args.result_mode)
 
 
 if __name__ == "__main__":

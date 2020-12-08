@@ -173,7 +173,7 @@ def main():
 
     # only for mode==0, support for ['training','validation','testing']
     default_audio_mode = 'testing'
-    default_output_path_list = ['/mnt/huanyuan/model/test_straming_wav/xiaole_11252020_testing_3600_001.wav']
+    default_output_path_list = ['/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_testing_3600_001.wav']
 
     # only for mode==1, from folder
     # default_input_dir = '/mnt/huanyuan/data/speech/kws/weiboyulu/dataset'
@@ -242,9 +242,9 @@ def main():
     # default_nosed_csv = "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/QingTingFM_music_xingetuijian_21600_noused.csv"
     default_nosed_csv = ""
     
-    # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
+    default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py"
-    default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py"
+    # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py"
 
     parser = argparse.ArgumentParser(description="Prepare XiaoYu Dataset")
     parser.add_argument('--input_dir', type=str, default=default_input_dir)
