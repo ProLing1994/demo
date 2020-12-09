@@ -12,14 +12,13 @@ sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from utils.train_tools import *
 from dataset.kws.dataset_helper import *
 from impl.pred_pyimpl import kws_load_model, model_predict
-from impl.recognizer_pyimpl import RecognizeResult, RecognizeCommands
+from impl.recognizer_pyimpl import RecognizeResult, RecognizeCommands, RecognizeCommandsAlign
 from script.analysis_result.plot_score_line import show_score_line
 from script.analysis_result.cal_fpr_tpr import cal_fpr_tpr
 
 
 # def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_duration_ms, detection_threshold, minimum_count):
 def test(args):
-
     input_wav = args[0]
     config_file = args[1]
     model_epoch = args[2]
@@ -33,6 +32,9 @@ def test(args):
     # load configuration file
     cfg = load_cfg_file(config_file)
 
+    # align bool
+    align_bool = 'align' in config_file
+
     # init
     sample_rate = cfg.dataset.sample_rate
     clip_duration_ms = cfg.dataset.clip_duration_ms
@@ -45,13 +47,22 @@ def test(args):
     label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
 
     recognize_element = RecognizeResult()
-    recognize_commands = RecognizeCommands(
-        labels=label_list,
-        positove_lable_index = label_index[positive_label[0]],
-        average_window_duration_ms=average_window_duration_ms,
-        detection_threshold=detection_threshold,
-        suppression_ms=3000,
-        minimum_count=minimum_count)
+    if not align_bool:
+        recognize_commands = RecognizeCommands(
+            labels=label_list,
+            positove_lable_index = label_index[positive_label[0]],
+            average_window_duration_ms=average_window_duration_ms,
+            detection_threshold=detection_threshold,
+            suppression_ms=3000,
+            minimum_count=minimum_count)
+    else:
+        recognize_commands = RecognizeCommandsAlign(
+            labels=label_list,
+            positove_lable_index = label_index[positive_label[0]],
+            average_window_duration_ms=average_window_duration_ms,
+            detection_threshold=detection_threshold,
+            suppression_ms=3000,
+            minimum_count=minimum_count)
     
     # mkdir 
     # output_dir = os.path.join(os.path.dirname(input_wav), os.path.basename(input_wav).split('.')[0])
@@ -71,7 +82,7 @@ def test(args):
 
     audio_data_offset = 0
     original_scores = [] 
-    mean_scores = [] 
+    final_scores = [] 
     all_found_words = []
 
     # record time
@@ -114,8 +125,8 @@ def test(args):
                 output_wav = audio_data[start_time: end_time]
                 librosa.output.write_wav(output_path, output_wav, sr=sample_rate)
 
-        original_scores.append({'start_time':current_time_ms, 'score':output_score[0][label_index[positive_label[0]]]})
-        mean_scores.append({'start_time':current_time_ms, 'score':recognize_element.score})
+        original_scores.append({'start_time':current_time_ms, 'score':",".join([str(output_score[0][idx]) for idx in range(output_score.shape[1])])})
+        final_scores.append({'start_time':current_time_ms, 'score':recognize_element.score})
 
         # time ++ 
         audio_data_offset += timeshift_samples
@@ -129,8 +140,8 @@ def test(args):
     found_words_pd.to_csv(os.path.join(output_dir, 'found_words.csv'), index=False)
     original_scores_pd = pd.DataFrame(original_scores)
     original_scores_pd.to_csv(os.path.join(output_dir, 'original_scores.csv'), index=False)
-    mean_scores_pd = pd.DataFrame(mean_scores)
-    mean_scores_pd.to_csv(os.path.join(output_dir, 'mean_scores.csv'), index=False)
+    final_scores_pd = pd.DataFrame(final_scores)
+    final_scores_pd.to_csv(os.path.join(output_dir, 'final_scores.csv'), index=False)
     
     # show result
     # show_score_line(input_wav.split('.')[0] + '.csv', os.path.join(output_dir, 'original_scores.csv'), positive_label[0])
@@ -143,21 +154,21 @@ def test(args):
 
 def main():
     """
-    使用模型对音频文件进行测试，模拟真实音频输入情况，配置为 --input 中的 config 文件，该脚本会通过滑窗的方式测试每一小段音频数据，计算连续 800ms(27帧)/2000ms(41帧) 音频的平均值结果，
-    如果超过预设门限，则认为检测到关键词，否则认定未检测到关键词，最后分别计算假阳性和召回率
+    本脚本模拟真实音频输入情况，对音频文件进行测试，配置为 --input 中的 config 文件。
+    测试过程：该脚本会通过滑窗的方式测试每一小段音频数据，计算连续 800ms(27帧)/2000ms(41帧) 音频的平均值结果，如果超过预设门限，则认为检测到关键词，否则认定未检测到关键词，最后分别计算假阳性和召回率。
     """   
     # xiaoyu
-    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_training_60_001.wav",
-                            "/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_validation_60_001.wav",
-                            "/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_testing_60_001.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_training_60_001.wav",
+    #                         "/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_validation_60_001.wav",
+    #                         "/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_testing_60_001.wav"]
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_testing_3600_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
     # xiaorui
-    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_12032020_training_60_001.wav",
-    #                             "/mnt/huanyuan/model/test_straming_wav/xiaorui_12032020_validation_60_001.wav"]
-    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_12032020_validation_3600_001.wav",
-    #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_12082020_training_60_001.wav",
+    #                             "/mnt/huanyuan/model/test_straming_wav/xiaorui_12082020_validation_60_001.wav"]
+    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_12082020_validation_3600_001.wav",
+                            "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
 
     # xiaole
@@ -174,9 +185,7 @@ def main():
     #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_43200_001.wav",
     #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_yeshimiwen_43200_001.wav",
     #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_zhongdongwangshi_7200_001.wav",
-    #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_xingetuijian_21600_001.wav"
-    #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_jinpingmei_7200_001.wav",
-    #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_baijiajiangtan_21600_001.wav"]
+    #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_xingetuijian_21600_001.wav"]
 
     # difficult sample mining
     # default_input_wav_list = ["/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_history_baijiajiangtan_21600_noused_001.wav",
@@ -216,14 +225,15 @@ def main():
     #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_008.wav",
     #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_009.wav"]
 
-    defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
-    # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py"
+    # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
+    defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py"
     # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py"
     # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_2_label_xiaoyu.py"
-    default_model_epoch = -1
+    # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaoyu.py"
+    default_model_epoch = 7500
     default_timeshift_ms = 30               
-    default_average_window_duration_ms = 800    # [450,800]
-    default_detection_threshold = 0.95
+    default_average_window_duration_ms = 800    # [450,800,1500]
+    default_detection_threshold = 0.95          # [0.4, 0.95]
     default_minimum_count = 10
 
     parser = argparse.ArgumentParser(description='Streamax KWS Testing Engine')
@@ -256,7 +266,7 @@ def main():
 
     # for input_wav in args.input_wav_list:
     #     test(input_wav, args.config_file, args.model_epoch,
-    #         args.timeshift_ms, args.average_window_duration_ms, args.detection_threshold)
+    #         args.timeshift_ms, args.average_window_duration_ms, args.detection_threshold, args.minimum_count)
 
 
 if __name__ == "__main__":

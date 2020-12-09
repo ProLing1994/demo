@@ -17,7 +17,7 @@ from script.analysis_result.plot_score_line import show_score_line
 from script.analysis_result.cal_fpr_tpr import cal_fpr_tpr
 from impl.recognizer_pyimpl import RecognizeResult, RecognizeCommands, RecognizeCommandsCountNumber
 
-def statiscial_results_threshold(input_wav, config_file, timeshift_ms, average_window_duration_ms, detection_threshold, detection_number_threshold, minimum_count):
+def generate_results_threshold(input_wav, config_file, timeshift_ms, average_window_duration_ms, detection_threshold, detection_number_threshold, minimum_count):
     print("Do wave:{}, begin!!!".format(input_wav))
 
     # load configuration file
@@ -61,7 +61,9 @@ def statiscial_results_threshold(input_wav, config_file, timeshift_ms, average_w
     assert os.path.exists(input_dir)
 
     # mkdir 
-    output_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', os.path.basename(input_wav).split('.')[0] + '_thresholds', 'threshold_{}_{}'.format('_'.join(str(detection_threshold).split('.')), '_'.join(str(detection_number_threshold).split('.'))))
+    output_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', os.path.basename(input_wav).split('.')[0] + '_thresholds', 
+                                'method_mode_{}'.format(method_mode),
+                                'threshold_{}_{}'.format('_'.join(str(detection_threshold).split('.')), '_'.join(str(detection_number_threshold).split('.'))))
     if not os.path.exists(output_dir):    
         os.makedirs(output_dir)
 
@@ -112,26 +114,28 @@ def statiscial_results_threshold(input_wav, config_file, timeshift_ms, average_w
 
 def main():
     """
-    测试脚本 test_streaming_wav.py 已经对音频文件进行测试，获得测试结果。使用模型对音频文件进行测试，模拟真实音频输入情况，配置为 --input 中的 config 文件，该脚本会通过滑窗的方式测试每一小段音频数据，计算连续 800ms(27帧) 音频的平均值结果，
-    如果超过预设门限，则认为检测到关键词，否则认定未检测到关键词，最后分别计算假阳性和召回率
-    本脚本，改变预设门限 threshold，计算不同门限下网络的假阳性和召回率。具体的，使用不同的后处理方法，通过计数超过门限值的个数，判断是否为关键词。
+    注意：请在运行测试脚本 test_streaming_wav.py 之后运行改脚本，上述脚本已经对音频文件进行测试，获得测试结果。
+    本脚本模拟真实音频输入情况，运用不同后处理方法对音频文件进行测试，配置为 --input 中的 config 文件，测试分为以下两种模式：
+    1：RecognizeCommands，该脚本会通过滑窗的方式测试每一小段音频数据，计算连续 800ms(27帧) 音频的平均值结果，如果超过预设门限，则认为检测到关键词，否则认定未检测到关键词，最后分别计算假阳性和召回率。
+    2：RecognizeCommandsCountNumber，该脚本会通过滑窗的方式测试每一小段音频数据，通过计数超过门限值的个数，判断是否为关键词。
     """
     # test
-    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_10292020_testing_3600_001.wav",
-                                "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_testing_3600_001.wav",
+    #                             "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
-    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_43200_003.wav",
-    #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_news_cishicike_43200_001.wav",
-    #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_novel_douluodalu_43200_001.wav",
-    #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_43200_001.wav",
-    #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_yeshimiwen_43200_001.wav",
-    #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_zhongdongwangshi_7200_001.wav",
-    #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_xingetuijian_21600_001.wav"]
+    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_43200_003.wav",
+                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_news_cishicike_43200_001.wav",
+                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_novel_douluodalu_43200_001.wav",
+                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_43200_001.wav",
+                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_yeshimiwen_43200_001.wav",
+                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_zhongdongwangshi_7200_001.wav",
+                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_xingetuijian_21600_001.wav"]
 
     # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
     # defaule_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_1_fbank_timeshift_spec_on_res15_11032020/test_straming_wav/kws_config_xiaoyu_2.py"
     # defaule_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_1_timeshift_spec_on_res15_11192020/kws_config_xiaoyu_2.py"
-    defaule_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_2_timeshift_spec_on_res15_11192020/kws_config_xiaoyu_2.py"
+    # defaule_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_2_timeshift_spec_on_res15_11192020/kws_config_xiaoyu_2.py"
+    defaule_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu9_0_res15_12072020/kws_config_xiaoyu.py"
     default_timeshift_ms = 30
     default_average_window_duration_ms = 800
     default_detection_threshold_list = [0.8, 0.85, 0.9, 0.95]
@@ -158,7 +162,7 @@ def main():
     for detection_threshold in args.detection_threshold_list:
         for detection_number_threshold in args.detection_number_threshold_list:
             for input_wav in args.input_wav_list:
-                statiscial_results_threshold(input_wav, args.config_file, args.timeshift_ms, 
+                generate_results_threshold(input_wav, args.config_file, args.timeshift_ms, 
                                                 args.average_window_duration_ms, detection_threshold, 
                                                 detection_number_threshold, args.minimum_count)
 
