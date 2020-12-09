@@ -14,7 +14,7 @@ parser.add_argument('--energy_threshold', type=int, default=45)
 parser.add_argument('--text', type=str, default="xiaorui")
 parser.add_argument('--speaker', type=int, default=6)
 parser.add_argument('--sex', type=int, default=0, choices=[0, 1])
-parser.add_argument('--distance', type=int, default=0, choices=[0, 1, 2])
+# parser.add_argument('--distance', type=int, default=0, choices=[0, 1, 2])
 parser.add_argument('--idx', type=int, default=1)
 args = parser.parse_args()
 
