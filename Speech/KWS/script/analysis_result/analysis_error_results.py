@@ -161,12 +161,11 @@ def main():
     # plot_score(args.config_file, args.input_wav_list)
 
     # difficult sample mining
-    put_together(args.config_file, args.input_wav_list, 'difficult_mining')
+    # put_together(args.config_file, args.input_wav_list, 'difficult_mining')
     # cal_features(args.config_file, 'difficult_mining')
 
 if __name__ == '__main__':
     timeshift_ms = 30
     average_window_duration_ms = 800
-    # detection_threshold = 0.95
-    detection_threshold = 0.5
+    detection_threshold = 0.95
     main()

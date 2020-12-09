@@ -175,7 +175,7 @@ def main():
   # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_2_label_xiaoyu.py", nargs='?', help='config file')
 
   # training_mode = 1
-  parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_confid_align_xiaoyu.py", nargs='?', help='config file')
+  parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaoyu.py", nargs='?', help='config file')
   args = parser.parse_args()
   
   # training mode: [0,1]
@@ -184,7 +184,7 @@ def main():
   training_mode = 0
   if 'align' in args.input:
     training_mode = 1
-    
+
   train(args.input, training_mode)
 
 if __name__ == "__main__":

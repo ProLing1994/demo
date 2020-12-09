@@ -207,10 +207,6 @@ def get_words_dict(ctm_file, keyword_list):
         content = content_dict[utt_id]
         try: 
             word_segments[utt_id] = []
-            # word_segments[utt_id].append([keyword_list[0] + keyword_list[1] + keyword_list[2], 
-            #                             float(content[keyword_list[0]][2]), float(content[keyword_list[2]][2]) + float(content[keyword_list[2]][3])])
-            # word_segments[utt_id].append([keyword_list[1] + keyword_list[2] + keyword_list[3], 
-            #                             float(content[keyword_list[1]][2]), float(content[keyword_list[3]][2]) + float(content[keyword_list[2]][3])])
             word_segments[utt_id].append([keyword_list[0] + keyword_list[1], 
                                         float(content[keyword_list[0]][2]) + float(content[keyword_list[0]][3])])
             word_segments[utt_id].append([keyword_list[1] + keyword_list[2], 
