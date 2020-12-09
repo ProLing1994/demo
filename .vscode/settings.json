@@ -79,4 +79,5 @@
         "*.so": "cpp"
     },
     "python.pythonPath": "/home/huanyuan/anaconda3/bin/python",
+    "python.linting.enabled": false,
 }
