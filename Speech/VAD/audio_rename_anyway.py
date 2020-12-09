@@ -6,8 +6,6 @@ import re
 
 parser = argparse.ArgumentParser(description="Audio Rename")
 parser.add_argument('--dir', type=str, default='D:\\data\\test\\1_1')
-# parser.add_argument('--state_format', type=str, default=r'^S\d*[MT]\d*D\d*T\d*')
-parser.add_argument('--state_format', type=str, default=r'^S\d*T\d*P\d*')
 args = parser.parse_args()
 
 if __name__ == "__main__":
@@ -17,18 +15,6 @@ if __name__ == "__main__":
     assert not os.path.exists(csv_rename_path), "[ERROR:] You already renamed audio, Please do not rename again!"
 
     csv_pd = pd.read_csv(csv_path)
-
-    # Check 
-    # Check Input
-    for idx, row in csv_pd.iterrows():
-        if str(row.state) == 'N':
-            continue
-        elif str(row.state) == 'D':
-            continue 
-        elif re.match(args.state_format, str(row.state).strip().split('_')[-1]):
-            continue
-        else:
-            raise Exception("[ERROR:] Invalid input: audio_region: {}, state: {}".format(row.audio_region, row.state))
     
     # Check Duplicate file 
     remainder_files_list = []
@@ -37,10 +23,8 @@ if __name__ == "__main__":
             remainder_files_list.append(row.audio_region)
         elif str(row.state) == 'D':
             continue
-        elif  re.match(args.state_format, str(row.state).strip().split('_')[-1]):
-            remainder_files_list.append(row.state)
         else:
-            raise Exception("[ERROR:] Invalid input: audio_region: {}, state: {}".format(row.audio_region, row.state))
+            remainder_files_list.append(row.state)
 
     remainder_files_set = list(set(remainder_files_list))
     if len(remainder_files_list) != len(remainder_files_set):
@@ -66,7 +50,7 @@ if __name__ == "__main__":
     # rename 
     tmp_rename_files = []
     for idx, row in csv_pd.iterrows():
-        if re.match(args.state_format, str(row.state).strip().split('_')[-1]):
+        if str(row.state) != 'D' and str(row.state) != 'N':
             if os.path.exists(os.path.join(args.dir, row.audio_region + '.wav')):
                 tmp_rename_files.append({'audio_region':row.audio_region, 'state':row.state, 'tmp':'tmp_' + row.state + '.wav'})
                 os.rename(os.path.join(args.dir, row.audio_region + '.wav'), os.path.join(args.dir, 'tmp_' + row.state + '.wav'))
@@ -89,11 +73,12 @@ if __name__ == "__main__":
         if str(row.state) == 'N':
             audio_region_dict['audio_region'] = row.audio_region
             audio_region_dict['state'] = 'N'
-        elif re.match(args.state_format, str(row.state).strip().split('_')[-1]):
+        elif str(row.state) == 'D':
+            continue
+        else:
             audio_region_dict['audio_region'] = row.state
             audio_region_dict['state'] = 'N'
-        else:
-            continue
+
         audio_region_list.append(audio_region_dict)
     audio_region_pd = pd.DataFrame(audio_region_list)
     audio_region_pd.to_csv(csv_rename_path, index=False)
