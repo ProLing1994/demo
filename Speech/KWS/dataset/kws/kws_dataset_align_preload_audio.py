@@ -215,11 +215,6 @@ class SpeechDatasetAlign(Dataset):
       # get tmid
       utt_id = self.wav2utt[audio_file]
       assert keyword_label == self.word_segments[utt_id][keyword_index][0]
-      # tbegin = float(self.word_segments[utt_id][keyword_index][1]) * 1000
-      # tbegin_samples = int(self.sample_rate * tbegin / 1000)
-      # tend = float(self.word_segments[utt_id][keyword_index][2]) * 1000
-      # tend_samples = int(self.sample_rate * tend / 1000)
-      # data = data[max(0, tbegin_samples): min(tend_samples, len(data))]
 
       tmid = float(self.word_segments[utt_id][keyword_index][1]) * 1000
       tmid_samples = int(self.sample_rate * tmid / 1000)

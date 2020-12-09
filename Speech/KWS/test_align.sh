@@ -6,7 +6,7 @@ stage=1
 
 # init
 # xiaoyu
-config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_confid_align_xiaoyu.py
+config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaoyu.py
 
 echo "test.sh"
 
