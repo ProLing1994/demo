@@ -156,18 +156,20 @@ def load_label_align_index(positive_label, positive_label_chinese_list, negative
         label_index[positive_word] = index
         index += 1
 
-    index = 0 
     for _, negative_word in enumerate(negative_label):
-        label_align_index[negative_word] = index
-    index = 1
-    keyword_list = positive_label_chinese_list.split(',')
-    label_list = ["".join([keyword_list[0], keyword_list[1]]),
-                  "".join([keyword_list[1], keyword_list[2]]),
-                  "".join([keyword_list[2], keyword_list[3]]),]
+        label_align_index[negative_word] = 0
 
-    for _, keyword in enumerate(label_list):
-        label_align_index[keyword] = index
-        index += 1
+    for label_idx in range(len(positive_label)):
+        positive_label_chinese_name = positive_label_chinese_list[label_idx]
+        keyword_list = positive_label_chinese_name.split(',')
+        if len(keyword_list) < 4:
+            continue
+        label_list = ["".join([keyword_list[0], keyword_list[1]]),
+                    "".join([keyword_list[1], keyword_list[2]]),
+                    "".join([keyword_list[2], keyword_list[3]]),]
+
+        for idx, keyword in enumerate(label_list):
+            label_align_index[keyword] = idx % 2 + 1
     return label_index, label_align_index
 
 
