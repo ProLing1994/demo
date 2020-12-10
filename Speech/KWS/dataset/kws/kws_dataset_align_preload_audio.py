@@ -80,15 +80,27 @@ class SpeechDatasetAlign(Dataset):
     self.save_audio_inputs_dir = cfg.general.save_dir
 
     # dataset align
-    ctm_file = os.path.join(cfg.general.data_dir, 'kaldi_type/tmp/nnet3_align/ctm')
-    wav_file = os.path.join(cfg.general.data_dir, 'kaldi_type/wav.scp')
+    self.wav2utt = {}
+    self.word_segments = {}
 
-    self.keyword_list = cfg.dataset.label.positive_label_chinese_list.split(',')
-    self.label_list = ["".join([self.keyword_list[0], self.keyword_list[1]]),
-                      "".join([self.keyword_list[1], self.keyword_list[2]]),
-                      "".join([self.keyword_list[2], self.keyword_list[3]])]
-    self.wav2utt = read_wav2utt([wav_file])
-    self.word_segments = extract_words(ctm_file, self.keyword_list)
+    dataset_dir_list = []
+    dataset_dir_list.append(cfg.general.data_dir)
+    dataset_dir_list.extend(cfg.general.sub_data_dir)
+    for label_idx in range(len(cfg.dataset.label.positive_label)):
+      for data_dir in dataset_dir_list:
+        positive_label = cfg.dataset.label.positive_label[label_idx]
+        ctm_file = os.path.join(data_dir, 'kaldi_type/{}/tmp/nnet3_align/ctm'.format(positive_label))
+        wav_file = os.path.join(data_dir, 'kaldi_type/{}/wav.scp'.format(positive_label))
+
+        if not os.path.exists(ctm_file):
+          continue
+        
+        positive_label_chinese_name = cfg.dataset.label.positive_label_chinese_list[label_idx]
+        keyword_list = positive_label_chinese_name.split(',')
+        print("label: {}, positive_label_chinese_name:{}".format(positive_label, positive_label_chinese_name))
+
+        self.wav2utt.update(read_wav2utt([wav_file]))
+        self.word_segments.update(extract_words(ctm_file, keyword_list))
 
   def __len__(self):
     """ get the number of images in this dataset """
@@ -179,18 +191,10 @@ class SpeechDatasetAlign(Dataset):
     audio_file = self.data_file_list[index]
     audio_mode = self.data_mode_list[index]
     audio_label = self.data_label_list[index]
+    audio_label_idx = self.label_index[audio_label]
     assert audio_mode == self.mode_type, "[ERROR:] Something wronge with mode, please check"
     # print('Init Time: {}'.format((time.time() - begin_t) * 1.0))
     # begin_t = time.time() 
-
-    # load label idx
-    keyword_index = np.random.randint(0, len(self.label_list))
-    keyword_label = self.label_list[keyword_index]
-    audio_label_idx = self.label_index[audio_label]
-    if audio_label == self.positive_label:
-      audio_align_label_idx = self.label_align_index[keyword_label]
-    else:
-      audio_align_label_idx = self.label_align_index[audio_label]
 
     # data speed & volume augmentation
     possitive_speed = '1.0'
@@ -212,17 +216,26 @@ class SpeechDatasetAlign(Dataset):
 
     # alignment data
     if audio_label == self.positive_label:
-      # get tmid
+      # utt_id
       utt_id = self.wav2utt[audio_file]
-      assert keyword_label == self.word_segments[utt_id][keyword_index][0]
 
-      tmid = float(self.word_segments[utt_id][keyword_index][1]) * 1000
-      tmid_samples = int(self.sample_rate * tmid / 1000)
+      # load label idx
+      label_list = self.word_segments[utt_id]
+      keyword_index = np.random.randint(0, len(label_list))
+      keyword_label = label_list[keyword_index][0]
+      audio_align_label_idx = self.label_align_index[keyword_label]
+      if audio_align_label_idx == 3:
+        audio_align_label_idx = 1
+
+      # get tmid
+      tmid = float(self.word_segments[utt_id][keyword_index][1]) * 1000.0 / float(possitive_speed)
+      tmid_samples = int(self.sample_rate * tmid / 1000.0)
       windows_samples = self.desired_samples // 2
       while tmid_samples - windows_samples < 0 or tmid_samples + windows_samples >= len(data):
         windows_samples -= 1
       data = data[max(0, tmid_samples - windows_samples): min(tmid_samples + windows_samples, len(data))] 
-      
+    else:
+      audio_align_label_idx = self.label_align_index[audio_label]
 
     if len(data) < self.desired_samples:
       data_length = len(data)
@@ -262,8 +275,6 @@ class SpeechDatasetAlign(Dataset):
     # To tensor
     data_tensor = torch.from_numpy(data.reshape(1, -1, 40))
     data_tensor = data_tensor.float()
-    if audio_align_label_idx == 3:
-      audio_align_label_idx = 1
     label_tensor = torch.tensor(audio_align_label_idx)
 
     # check tensor

@@ -13,7 +13,7 @@ sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from utils.train_tools import *
 from dataset.kws.dataset_helper import *
 from impl.pred_pyimpl import kws_load_model, model_predict
-from impl.recognizer_pyimpl import RecognizeResult, RecognizeCommands, RecognizeCommandsCountNumber
+from impl.recognizer_pyimpl import RecognizeResult, RecognizeCommands, RecognizeCommandsCountNumber, RecognizeCommandsAlign
 
 
 def term(sig_num, addtion):
@@ -190,12 +190,15 @@ class OnlineAudio:
 
         # config
         # xiaoyu
-        config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu9_1_lr4_res15_12072020/kws_config_xiaoyu.py"
+        config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu9_3_align_res15_12072020/kws_confid_align_xiaoyu.py"   # 0.4/_/1500
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu9_0_res15_12072020/kws_config_xiaoyu.py"
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu9_1_lr4_res15_12072020/kws_config_xiaoyu.py"
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_2_timeshift_spec_on_res15_11192020/kws_config_xiaoyu_2.py"
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_1_timeshift_spec_on_res15_11192020/kws_config_xiaoyu_2.py"
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_1_fbank_timeshift_spec_on_res15_11032020/test_straming_wav/kws_config_xiaoyu_2.py"
 
         # xiaorui
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12082020/kws_config_xiaorui.py"
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/kws_config_xiaorui.py"
 
         # xiaole
@@ -214,11 +217,11 @@ class OnlineAudio:
         model_epoch = -1
         
         # init parameter 
-        method_mode = 1                     # [0: RecognizeCommands, 1: RecognizeCommandsCountNumber]
-        detection_threshold = 0.9           # [0.3,0.6,0.8,0.9,0.95]
-        detection_number_threshold = 0.9    # [0.5,0.9]
+        method_mode = 2                     # [0: RecognizeCommands, 1: RecognizeCommandsCountNumber, 2:RecognizeCommandsAlign]
+        detection_threshold = 0.4           # [0.3,0.4,0.6,0.8,0.9,0.95]
+        detection_number_threshold = 0.5    # [0.5,0.75,0.9]
         timeshift_ms = 30
-        average_window_duration_ms = 800    # [450,800]
+        average_window_duration_ms = 1500   # [450,800,1500]
         minimum_count = 10
         audio_data_length = 0
         audio_data_offset = 0
@@ -243,6 +246,14 @@ class OnlineAudio:
                 average_window_duration_ms=average_window_duration_ms,
                 detection_threshold=detection_threshold,
                 detection_number_threshold=detection_number_threshold,
+                suppression_ms=3000,
+                minimum_count=minimum_count)
+        elif method_mode == 2:
+            recognize_commands = RecognizeCommandsAlign(
+                labels=label_list,
+                positove_lable_index = label_index[positive_label[0]],
+                average_window_duration_ms=average_window_duration_ms,
+                detection_threshold=detection_threshold,
                 suppression_ms=3000,
                 minimum_count=minimum_count)
         else:
@@ -282,7 +293,6 @@ class OnlineAudio:
                 current_time_ms = int(audio_data_offset * 1000 / sample_rate)
                 recognize_commands.process_latest_result(output_score, current_time_ms, recognize_element)
 
-                # print(output_score[0])
                 if recognize_element.is_new_command:
                     all_found_words_dict = {}
                     all_found_words_dict['label'] = positive_label[0]

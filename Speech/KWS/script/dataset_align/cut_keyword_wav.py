@@ -31,7 +31,7 @@ def cut_word_and_save(items):
     tbegin = items[2] - cut_extern
     tend = items[3] + cut_extern
 
-    word_save_dir = save_dir + '/' + word + '/'
+    word_save_dir = save_dir + '/' 
     if os.path.exists(word_save_dir + os.path.basename(utt2wav[utt_id])):
         return 0
 
@@ -69,10 +69,10 @@ def extract_words(ctm_file, keyword_list):
     process_num = 30
     word_segments = get_words_list(ctm_file, keyword_list)
     print("word_segments:", len(word_segments))
-    # with mp.Pool(process_num) as p:
-    #     frames = list(tqdm(p.imap(cut_word_and_save, word_segments), total=len(word_segments)))
-    for idx in range(len(word_segments)):
-        cut_word_and_save(word_segments[idx])
+    with mp.Pool(process_num) as p:
+        frames = list(tqdm(p.imap(cut_word_and_save, word_segments), total=len(word_segments)))
+    # for idx in range(len(word_segments)):
+    #     cut_word_and_save(word_segments[idx])
 
 if __name__ == "__main__":
     default_ctm_file = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/original_dataset/XiaoYuDataset_11032020/kaldi_type/tmp/nnet3_align/ctm"
@@ -97,7 +97,7 @@ if __name__ == "__main__":
 
     print("[Begin] Cut keyword wavs")
 
-    os.system("mkdir -p " + save_dir + " && mkdir -p " + save_dir + "/" + "".join(keyword_list))
+    os.system("mkdir -p " + save_dir)
     utt2wav = read_utt2wav(wavscps)
 
     for ctm_file in ctm_files:
