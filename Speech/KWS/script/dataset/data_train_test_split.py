@@ -100,8 +100,9 @@ def data_split(config_file):
     search_path = os.path.join(cfg.general.data_dir, '*', '*.wav')
     path_list = glob.glob(search_path)
     if 'sub_data_dir' in cfg.general:
-        sub_search_path = os.path.join(cfg.general.sub_data_dir, '*', '*.wav')
-        path_list += glob.glob(sub_search_path)
+        for sub_data_dir in cfg.general.sub_data_dir:
+            sub_search_path = os.path.join(sub_data_dir, '*', '*.wav')
+            path_list += glob.glob(sub_search_path)
 
     for wav_path in tqdm(path_list):
         _, word = os.path.split(os.path.dirname(wav_path))
@@ -120,7 +121,10 @@ def data_split(config_file):
         # If it's a known class, store its detail, otherwise add it to the list
         # we'll use to train the unknown label. 
         if word in positive_label:
-            positive_data_files.append({'label': word, 'file': wav_path, 'mode':set_index})
+            if 'positive_label_together' in cfg.dataset.label and cfg.dataset.label.positive_label_together:
+                positive_data_files.append({'label': positive_label[0], 'file': wav_path, 'mode':set_index})
+            else:
+                positive_data_files.append({'label': word, 'file': wav_path, 'mode':set_index})
         else:
             unknown_files.append({'label': word, 'file': wav_path, 'mode':set_index})
 
@@ -129,9 +133,8 @@ def data_split(config_file):
 
     for index, wanted_word in enumerate(positive_label):
         if wanted_word not in all_labels_set:
-            raise Exception('Expected to find ' + wanted_word +
-                                            ' in labels but only found ' +
-                                            ', '.join(positive_label.keys()))
+            print('[Warring] Expected to find ' + wanted_word +
+                    ' in labels but only found ' + ', '.join(positive_label))
     
     total_data_files.extend(positive_data_files)
     # silence and unknowns samples
@@ -182,7 +185,8 @@ def main():
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_2_label_xiaoyu.py", help='config file')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py", help='config file')
-    parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py", help='config file')
+    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py", help='config file')
+    parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py", help='config file')
     args = parser.parse_args()
 
     print("[Begin] Train test dataset split")

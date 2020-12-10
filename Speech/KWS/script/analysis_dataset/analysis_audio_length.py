@@ -33,17 +33,20 @@ def analysis_audio_length(config_file):
     # init 
     sample_rate = cfg.dataset.sample_rate
     data_dir = cfg.general.data_dir
-    positive_label = cfg.dataset.label.positive_label[0]
-    input_dir = os.path.join(data_dir, positive_label)
     output_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(
         cfg.general.version, cfg.general.date), 'data_distribution')
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
 
-    file_list = os.listdir(input_dir)
+    # load data 
+    data_pd = pd.read_csv(cfg.general.data_csv_path)
+    positive_label = cfg.dataset.label.positive_label[0]
+
+    label_pd = data_pd[data_pd['label'] == positive_label]
+    file_list =  label_pd['file'].tolist()
+
     audio_length_list = []
-    for file_name in tqdm(file_list):
-        file_path = os.path.join(input_dir, file_name)
+    for file_path in tqdm(file_list):
         audio_data = librosa.core.load(file_path, sr=sample_rate)[0]
         audio_length = int(len(audio_data) * 1000 / sample_rate)
         audio_length_list.append(audio_length)
