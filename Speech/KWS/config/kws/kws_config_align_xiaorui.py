@@ -10,27 +10,28 @@ cfg = __C
 
 __C.general = {}
 
-# data folder
-__C.general.data_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experimental_dataset/XiaoYuDataset"
+__C.general.data_dir = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/XiaoRuiDataset"
+__C.general.sub_data_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experimental_dataset/XiaoYuDataset/"
 
 # data version
 __C.general.version = "1.1"
 
 # data date
-__C.general.date = "12042020"
+__C.general.date = "12082020"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experimental_dataset/dataset_1.1_12042020/total_data_files_align_clean.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.1_12082020/total_data_files_align_clean.csv"
 
 # background noise path
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experimental_dataset/dataset_1.1_12042020/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.1_12082020/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoyu_11112020_test"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu9_3_align_res15_12072020/"
+__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_12032020_test"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12082020/"
 
 # finrtune model
 __C.general.finetune_on = False
@@ -90,13 +91,14 @@ __C.dataset.data_size = [40, 51]
 __C.dataset.label = {}
 
 # label
-__C.dataset.label.positive_label = ["xiaoyu"]
-__C.dataset.label.positive_label_chinese_list = ["小,鱼,小#,鱼#"]
+__C.dataset.label.positive_label = ["xiaorui"]
+__C.dataset.label.positive_label_chinese_list = ["小,锐,小#,锐#"]
+__C.dataset.label.positive_label_together = False
 __C.dataset.label.negative_label = ["_silence_", "_unknown_"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
 __C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[1]
 __C.dataset.label.label_list = __C.dataset.label.negative_label + __C.dataset.label.positive_label
-# 正样本: "小鱼"、"鱼小", 负样本："_silence_"、"_unknown_" 融合，作为一类，此处共 3 类
+# 正样本: "小锐"、"锐小", 负样本："_silence_"、"_unknown_" 融合，作为一类，此处共 3 类
 __C.dataset.label.num_classes = 3
 
 # label percentage
@@ -134,8 +136,8 @@ __C.dataset.augmentation.time_shift_ms = 50.0
 __C.dataset.augmentation.time_shift_multiple = 5
 
 # based on audio waveform: on, just for positive samples.
-# __C.dataset.augmentation.speed_volume_on = True
-__C.dataset.augmentation.speed_volume_on = False
+__C.dataset.augmentation.speed_volume_on = True
+# __C.dataset.augmentation.speed_volume_on = False
 
 # How fast the audio should be, just for positive samples.
 __C.dataset.augmentation.possitive_speed = '0.9,1.0,1.1'
@@ -182,8 +184,6 @@ __C.net.name = 'res15'
 # __C.net.name = 'lstm-avg'
 # __C.net.name = 'lstm-attention'
 # __C.net.name = 'crnn-avg'
-# __C.net.name = 'crnn-avg-deeper'
-# __C.net.name = 'crnn-avg-wider'
 # __C.net.name = 'crnn-attention'
 
 
@@ -197,11 +197,13 @@ __C.train = {}
 # __C.train.num_epochs = 16000
 # __C.train.num_epochs = 8000
 # __C.train.num_epochs = 4000
+# __C.train.num_epochs = 100
 __C.train.num_epochs = 1
 
 # the number of samples in a batch
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 1024
+# __C.train.batch_size = 128
 __C.train.batch_size = 64
 # __C.train.batch_size = 16
 # __C.train.batch_size = 1
@@ -263,8 +265,8 @@ __C.debug = {}
 __C.debug.save_inputs = False
 
 # the number of processing for save input images
-# __C.debug.num_processing = 64
-__C.debug.num_processing = 16
+__C.debug.num_processing = 64
+# __C.debug.num_processing = 16
 
 # random seed used in training
 __C.debug.seed = 0

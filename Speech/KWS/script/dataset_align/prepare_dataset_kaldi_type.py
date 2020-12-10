@@ -42,7 +42,11 @@ def main():
         for file_name in tqdm(file_list):
             file_path = os.path.join(keyword_dir, file_name)
             
-            if "唤醒词_小鱼小鱼" in file_name:
+            if "小乐小乐" in file_name:
+                spk = file_name.strip().split('-')[0].split('_')[1]
+                device = file_name.strip().split('-')[2]
+                text = file_name.strip().split('-')[-1].split('.')[0]
+            elif "唤醒词" in file_name:
                 spk = file_name.strip().split('.')[0].split('_')[0]
                 device = 'D0'
                 text = file_name.strip().split('_')[-1].split('.')[0]
@@ -55,7 +59,7 @@ def main():
                 device = file_name.strip().split('_')[-1].split('.')[0][6:9]
                 text = file_name.strip().split('_')[-1].split('.')[0][9:]
             else:
-                raise Exception('[ERROR] Unknow file_name, please check!')
+                raise Exception('[ERROR] Unknow file_name: {}, please check!'.format(file_name))
             
             f1.writelines(spk+"-"+keyword+"-"+device+"-"+text + " " + keyword_chinese_name + "\n")
             f2.writelines(spk+"-"+keyword+"-"+device+"-"+text + " " + file_path+"\n")
