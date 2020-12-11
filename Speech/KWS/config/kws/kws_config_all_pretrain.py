@@ -10,28 +10,28 @@ cfg = __C
 
 __C.general = {}
 
-__C.general.data_dir = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/XiaoRuiDataset"
-__C.general.sub_data_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experimental_dataset/XiaoYuDataset/"
+__C.general.data_dir = "/mnt/huanyuan/data/speech/kws/pre_train_dataset/PreTrainDataset/"
+__C.general.sub_data_dir = ["/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/XiaoRuiDataset/",
+                            "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experimental_dataset/XiaoYuDataset/",
+                            "/mnt/huanyuan/data/speech/kws/lenovo/LenovoDataset_11242020/"]
 
 # data version
 __C.general.version = "1.1"
 
 # data date
-__C.general.date = "12082020"
+__C.general.date = "12102020"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.1_12082020/total_data_files_align_clean.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/pre_train_dataset/dataset_1.1_12102020/total_data_files_align_clean.csv"
 
 # background noise path
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.1_12082020/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/pre_train_dataset/dataset_1.1_12102020/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_12032020_test"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12082020/"
+__C.general.save_dir = "/mnt/huanyuan/model/kws_pretrain_12102020_test"
 
 # finrtune model
 __C.general.finetune_on = False
@@ -64,7 +64,7 @@ __C.dataset.input_channel = 1
 __C.dataset.sample_rate = 16000
 
 # Length of each audio clip to be analyzed
-__C.dataset.clip_duration_ms = 500
+__C.dataset.clip_duration_ms = 2000
 
 # Duration of frequency analysis window
 __C.dataset.window_size_ms = 30.0
@@ -81,7 +81,7 @@ __C.dataset.preprocess = "fbank"
 __C.dataset.feature_bin_count = 40
 
 # input size of training data (w, h), unit: voxel
-__C.dataset.data_size = [40, 51]
+__C.dataset.data_size = [40, 201]
 
 
 ##################################
@@ -91,14 +91,13 @@ __C.dataset.data_size = [40, 51]
 __C.dataset.label = {}
 
 # label
-__C.dataset.label.positive_label = ["xiaorui"]
-__C.dataset.label.positive_label_chinese_name_list = ["小,锐,小#,锐#"]
-__C.dataset.label.positive_label_together = False
+__C.dataset.label.positive_label = ["positive","xiaorui","xiaoyu","xiaoya","xiaodu","xiaole"]
+__C.dataset.label.positive_label_chinese_name_list = ["","小,锐,小#,锐#","小,鱼,小#,鱼#","小,雅,小#,雅#","小,度,小#,度#","小,乐,小#,乐#"]
+__C.dataset.label.positive_label_together = True
 __C.dataset.label.negative_label = ["_silence_", "_unknown_"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
 __C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[1]
 __C.dataset.label.label_list = __C.dataset.label.negative_label + __C.dataset.label.positive_label
-# 正样本: "小锐"、"锐小", 负样本："_silence_"、"_unknown_" 融合，作为一类，此处共 3 类
 __C.dataset.label.num_classes = 3
 
 # label percentage
@@ -109,7 +108,7 @@ __C.dataset.label.difficult_sample_percentage = 200.0     # 200%
 
 # trian/validation/test percentage
 __C.dataset.label.validation_percentage = 10.0  # 10%
-__C.dataset.label.testing_percentage = 10.0     # 10%
+__C.dataset.label.testing_percentage = 0.0     # 0%
 
 
 ##################################
@@ -130,7 +129,7 @@ __C.dataset.augmentation.background_frequency = 0.8
 __C.dataset.augmentation.background_volume = 0.1
 
 # Range to randomly shift the training audio by in time(ms).
-__C.dataset.augmentation.time_shift_ms = 50.0
+__C.dataset.augmentation.time_shift_ms = 100.0
 
 # Time shift enhancement multiple of negative samples, which is effective for advanced prediction and lag prediction
 __C.dataset.augmentation.time_shift_multiple = 5
@@ -148,7 +147,7 @@ __C.dataset.augmentation.possitive_volume = '0.4,0.7,1.0,1.3,1.6'
 # based on audio spectrum: on
 __C.dataset.augmentation.spec_on = True
 __C.dataset.augmentation.F = 5
-__C.dataset.augmentation.T = 5
+__C.dataset.augmentation.T = 20
 __C.dataset.augmentation.num_masks = 1
 
 ####################################
@@ -162,7 +161,7 @@ __C.loss = {}
 __C.loss.name = 'focal'
 
 # the weight matrix for each class in focal loss, including background class
-__C.loss.obj_weight = np.array([[1/15, 0, 0], [0, 5/15, 0], [0, 0, 9/15]])
+__C.loss.obj_weight = np.array([[1/9, 0, 0], [0, 1/9, 0], [0, 0, 7/9]])
 
 # the gamma parameter in focal loss
 __C.loss.focal_gamma = 2
@@ -261,8 +260,8 @@ __C.train.betas = (0.9, 0.999)
 __C.debug = {}
 
 # whether to save input images
-__C.debug.save_inputs = True
-# __C.debug.save_inputs = False
+# __C.debug.save_inputs = True
+__C.debug.save_inputs = False
 
 # the number of processing for save input images
 __C.debug.num_processing = 64
