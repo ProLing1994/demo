@@ -229,14 +229,14 @@ def main():
     default_model_epoch = -1
     default_add_noise_on = False    # [True,False]
     default_timeshift_ms = 30       # [30]
-    default_average_window_duration_ms = 1500        # only for mode: average_duration_ms/double_edge_triggered_detecting
+    default_average_window_duration_ms = 1500                   # only for mode: average_duration_ms/double_edge_triggered_detecting
     default_result_mode = 'double_edge_triggered_detecting'     # ['min','mean','max', 'average_duration_ms'] align：["double_edge_triggered_detecting"]
     
     parser = argparse.ArgumentParser(description='Streamax KWS Infering Engine')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
     parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaoyu.py", help='config file')
     parser.add_argument('--mode', type=str, default=default_mode)
-    parser.add_argument('--epoch', type=str, default=default_model_epoch)
+    parser.add_argument('--epoch', type=int, default=default_model_epoch)
     parser.add_argument('--add_noise_on', type=bool, default=default_add_noise_on)
     parser.add_argument('--timeshift_ms', type=int, default=default_timeshift_ms)
     parser.add_argument('--average_window_duration_ms', type=int, default=default_average_window_duration_ms)

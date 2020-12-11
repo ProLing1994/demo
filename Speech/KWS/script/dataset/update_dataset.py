@@ -36,11 +36,11 @@ def clear_dataset(config_file):
             if not os.path.exists(ctm_file):
                 continue
 
-            if not "positive_label_chinese_list" in cfg.dataset.label:
-                print("[Warring] No positive_label_chinese_list defined, like '小,鱼,小#,鱼#', please check!")
+            if not "positive_label_chinese_name_list" in cfg.dataset.label:
+                print("[Warring] No positive_label_chinese_name_list defined, like '小,鱼,小#,鱼#', please check!")
                 return 
 
-            positive_label_chinese_name = cfg.dataset.label.positive_label_chinese_list[label_idx]
+            positive_label_chinese_name = cfg.dataset.label.positive_label_chinese_name_list[label_idx]
             keyword_list = positive_label_chinese_name.split(',')
             print("label: {}, positive_label_chinese_name:{}".format(positive_label, positive_label_chinese_name))
 

@@ -16,7 +16,9 @@ def sox(args):
     speed_idx = args[3]
     input_path = args[4]
     output_path = args[5]
-
+    
+    if os.path.exists(output_path):
+        return
     script = " ".join(['sox', '--vol', volume_list[volume_idx], input_path, output_path, 'speed', speed_list[speed_idx]])
     os.system(script)
     # tqdm.write(script)
