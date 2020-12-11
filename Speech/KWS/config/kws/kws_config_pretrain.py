@@ -91,7 +91,7 @@ __C.dataset.label = {}
 
 # label
 __C.dataset.label.positive_label = ["positive","xiaorui","xiaoyu","xiaoya","xiaodu"]
-__C.dataset.label.positive_label_chinese_list = ["","小,锐,小#,锐#","小,鱼,小#,鱼#","小,雅,小#,雅#","小,度,小#,度#"]
+__C.dataset.label.positive_label_chinese_name_list = ["","小,锐,小#,锐#","小,鱼,小#,鱼#","小,雅,小#,雅#","小,度,小#,度#"]
 __C.dataset.label.positive_label_together = True
 __C.dataset.label.negative_label = ["_silence_", "_unknown_"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]

@@ -353,7 +353,6 @@ class RecognizeCommandsAlign(object):
         self._minimum_count = minimum_count
         # Working Variable
         self._previous_results = collections.deque()
-        self._label_count = len(labels)
         self._previous_top_time = 0
 
     def process_latest_result(self, latest_results, current_time_ms,
@@ -375,10 +374,6 @@ class RecognizeCommandsAlign(object):
           ValueError: The timestamp of this result is earlier than the most
             previous one in the average window
         """
-        if latest_results[0].shape[0] != self._label_count:
-            raise ValueError("The results for recognition should contain {} "
-                             "elements, but there are {} produced".format(
-                                 self._label_count, latest_results[0].shape[0]))
         if (self._previous_results.__len__() != 0 and
                 current_time_ms < self._previous_results[0][0]):
             raise ValueError("Results must be fed in increasing time order, "

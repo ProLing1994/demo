@@ -179,6 +179,9 @@ def data_split(config_file):
     background_noise_pd.to_csv(os.path.join(output_dir, 'background_noise_files.csv'), index=False, encoding="utf_8_sig")
     total_data_pd.to_csv(os.path.join(output_dir, 'total_data_files.csv'), index=False, encoding="utf_8_sig")
 
+    # copy config
+    os.system("cp {} {}".format(config_file, output_dir))
+
 def main():
     parser = argparse.ArgumentParser(description='Streamax KWS Data Split Engine')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config.py", help='config file')

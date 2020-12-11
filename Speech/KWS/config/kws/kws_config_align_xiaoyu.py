@@ -30,7 +30,8 @@ __C.general.is_test = True
 
 # the output of training models and logging files
 # __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoyu_11112020_test"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu9_3_align_res15_12072020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu9_3_align_res15_12072020/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu9_4_align_crnn_12072020/"
 
 # finrtune model
 __C.general.finetune_on = False
@@ -91,7 +92,7 @@ __C.dataset.label = {}
 
 # label
 __C.dataset.label.positive_label = ["xiaoyu"]
-__C.dataset.label.positive_label_chinese_list = ["小,鱼,小#,鱼#"]
+__C.dataset.label.positive_label_chinese_name_list = ["小,鱼,小#,鱼#"]
 __C.dataset.label.negative_label = ["_silence_", "_unknown_"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
 __C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[1]
@@ -175,13 +176,13 @@ __C.net = {}
 # __C.net.name = 'cnn-trad-pool2'
 # __C.net.name = 'cnn-one-fstride1'
 # __C.net.name = 'cnn-tpool2'
-__C.net.name = 'res15'
+# __C.net.name = 'res15'
 # __C.net.name = 'res15-narrow'
 # __C.net.name = 'res8'
 # __C.net.name = 'res8-narrow'
 # __C.net.name = 'lstm-avg'
 # __C.net.name = 'lstm-attention'
-# __C.net.name = 'crnn-avg'
+__C.net.name = 'crnn-avg'
 # __C.net.name = 'crnn-avg-deeper'
 # __C.net.name = 'crnn-avg-wider'
 # __C.net.name = 'crnn-attention'

@@ -184,8 +184,8 @@ def show_score_line_find_words(src_csv, pst_csv, find_words_csv, output_dir, pos
 
 
 if __name__ == "__main__":
-    # xiaoyu
-    # model_name = "kws_xiaoyu9_3_align_res15_12072020"
+    # # xiaoyu
+    # model_name = "kws_xiaoyu9_4_align_crnn_12072020"
     # threshold = "0.4"
     # show_score_line("/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_training_60_001.csv",
     #                 "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaoyu_12042020_training_60_001_threshold_{}/final_scores.csv".format(model_name, "_".join(threshold.split('.'))),
@@ -213,19 +213,19 @@ if __name__ == "__main__":
     #                 "xiaoyu", positive_label_idx="1,2")
 
     # xiaorui
-    model_name = "kws_xiaorui1_0_res15_12082020"
-    show_score_line("/mnt/huanyuan/model/test_straming_wav/xiaorui_12082020_training_60_001.csv",
-                    "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaorui_12082020_training_60_001_threshold_0_95/final_scores.csv".format(model_name),
-                    "xiaorui")
-    show_score_line("/mnt/huanyuan/model/test_straming_wav/xiaorui_12082020_training_60_001.csv",
-                    "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaorui_12082020_training_60_001_threshold_0_95/original_scores.csv".format(model_name),
-                    "xiaorui")
-    show_score_line("/mnt/huanyuan/model/test_straming_wav/xiaorui_12082020_validation_60_001.csv",
-                    "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaorui_12082020_validation_60_001_threshold_0_95/final_scores.csv".format(model_name),
-                    "xiaorui")
-    show_score_line("/mnt/huanyuan/model/test_straming_wav/xiaorui_12082020_validation_60_001.csv",
-                    "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaorui_12082020_validation_60_001_threshold_0_95/original_scores.csv".format(model_name),
-                    "xiaorui")
+    # model_name = "kws_xiaorui1_0_res15_12082020"
+    # show_score_line("/mnt/huanyuan/model/test_straming_wav/xiaorui_12082020_training_60_001.csv",
+    #                 "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaorui_12082020_training_60_001_threshold_0_95/final_scores.csv".format(model_name),
+    #                 "xiaorui")
+    # show_score_line("/mnt/huanyuan/model/test_straming_wav/xiaorui_12082020_training_60_001.csv",
+    #                 "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaorui_12082020_training_60_001_threshold_0_95/original_scores.csv".format(model_name),
+    #                 "xiaorui")
+    # show_score_line("/mnt/huanyuan/model/test_straming_wav/xiaorui_12082020_validation_60_001.csv",
+    #                 "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaorui_12082020_validation_60_001_threshold_0_95/final_scores.csv".format(model_name),
+    #                 "xiaorui")
+    # show_score_line("/mnt/huanyuan/model/test_straming_wav/xiaorui_12082020_validation_60_001.csv",
+    #                 "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaorui_12082020_validation_60_001_threshold_0_95/original_scores.csv".format(model_name),
+    #                 "xiaorui")
     # show_score_line("/mnt/huanyuan/model/test_straming_wav/xiaorui_12082020_validation_3600_001.csv",
     #                 "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaorui_12032020_validation_3600_001_threshold_0_8/final_scores.csv".format(model_name),
     #                 "xiaorui")
@@ -259,6 +259,28 @@ if __name__ == "__main__":
     # show_score_line("/mnt/huanyuan/model/test_straming_wav/xiaole_11252020_testing_3600_001.csv",
     #                 "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaole_11252020_testing_3600_001_threshold_0_95/original_scores.csv".format(model_name),
     #                 "xiaole")
+
+    # pretrain
+    model_name = "kws_pretrain_align_12102020"
+    threshold = "0.4"
+    show_score_line("/mnt/huanyuan/model/test_straming_wav/pretrain_12102020_training_60_001.csv",
+                    "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/pretrain_12102020_training_60_001_threshold_{}/final_scores.csv".format(model_name, "_".join(threshold.split('.'))),
+                    "positive", positive_label_idx="1,2")
+    show_score_line("/mnt/huanyuan/model/test_straming_wav/pretrain_12102020_training_60_001.csv",
+                    "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/pretrain_12102020_training_60_001_threshold_{}/original_scores.csv".format(model_name, "_".join(threshold.split('.'))),
+                    "positive", positive_label_idx="1,2")
+    show_score_line("/mnt/huanyuan/model/test_straming_wav/pretrain_12102020_validation_60_001.csv",
+                    "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/pretrain_12102020_validation_60_001_threshold_{}/final_scores.csv".format(model_name, "_".join(threshold.split('.'))),
+                    "positive", positive_label_idx="1,2")
+    show_score_line("/mnt/huanyuan/model/test_straming_wav/pretrain_12102020_validation_60_001.csv",
+                    "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/pretrain_12102020_validation_60_001_threshold_{}/original_scores.csv".format(model_name, "_".join(threshold.split('.'))),
+                    "positive", positive_label_idx="1,2")
+    # show_score_line("/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_testing_3600_001.csv",
+    #                 "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaoyu_12042020_testing_3600_001_threshold_{}/final_scores.csv".format(model_name, "_".join(threshold.split('.'))),
+    #                 "positive", positive_label_idx="1,2")
+    # show_score_line("/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_testing_3600_001.csv",
+    #                 "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaoyu_12042020_testing_3600_001_threshold_{}/original_scores.csv".format(model_name, "_".join(threshold.split('.'))),
+    #                 "positive", positive_label_idx="1,2")
 
     # show find words
     # show_score_line_find_words("/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_43200_003.csv",

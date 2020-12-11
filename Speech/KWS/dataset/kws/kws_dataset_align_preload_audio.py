@@ -25,8 +25,9 @@ class SpeechDatasetAlign(Dataset):
 
     # data index
     self.label_index, self.label_align_index = load_label_align_index(cfg.dataset.label.positive_label, 
-                                                                      cfg.dataset.label.positive_label_chinese_list, 
-                                                                      cfg.dataset.label.negative_label)
+                                                                      cfg.dataset.label.positive_label_chinese_name_list, 
+                                                                      cfg.dataset.label.negative_label,
+                                                                      cfg.dataset.label.align_type)
 
     # load data 
     data_pd = pd.read_csv(cfg.general.data_csv_path)
@@ -95,12 +96,12 @@ class SpeechDatasetAlign(Dataset):
         if not os.path.exists(ctm_file):
           continue
         
-        positive_label_chinese_name = cfg.dataset.label.positive_label_chinese_list[label_idx]
+        positive_label_chinese_name = cfg.dataset.label.positive_label_chinese_name_list[label_idx]
         keyword_list = positive_label_chinese_name.split(',')
-        print("label: {}, positive_label_chinese_name:{}".format(positive_label, positive_label_chinese_name))
+        print("label: {}, positive_label_chinese_name:{}".format(positive_label.encode('utf-8'), positive_label_chinese_name.encode('utf-8')))
 
         self.wav2utt.update(read_wav2utt([wav_file]))
-        self.word_segments.update(extract_words(ctm_file, keyword_list))
+        self.word_segments.update(extract_words(ctm_file, keyword_list, cfg.dataset.label.align_type))
 
   def __len__(self):
     """ get the number of images in this dataset """
@@ -136,7 +137,8 @@ class SpeechDatasetAlign(Dataset):
     if len(self.background_data) > 0 and self.background_frequency > 0:
       background_index = np.random.randint(len(self.background_data))
       background_samples = self.background_data[background_index]
-      assert len(background_samples) >= self.desired_samples, "[ERROR:] Background sample is too short! Need more than {} samples but only {} were found".format(self.desired_samples, len(background_samples))
+      assert len(background_samples) >= self.desired_samples, \
+          "[ERROR:] Background sample is too short! Need more than {} samples but only {} were found".format(self.desired_samples, len(background_samples))
       background_offset = np.random.randint(
           0, len(background_samples) - self.desired_samples - 1)
       background_clipped = background_samples[background_offset:(
@@ -224,8 +226,6 @@ class SpeechDatasetAlign(Dataset):
       keyword_index = np.random.randint(0, len(label_list))
       keyword_label = label_list[keyword_index][0]
       audio_align_label_idx = self.label_align_index[keyword_label]
-      if audio_align_label_idx == 3:
-        audio_align_label_idx = 1
 
       # get tmid
       tmid = float(self.word_segments[utt_id][keyword_index][1]) * 1000.0 / float(possitive_speed)

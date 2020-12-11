@@ -30,8 +30,8 @@ __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/pre_train_data
 __C.general.is_test = True
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan/model/kws_pretrain_align_12102020_test"
-__C.general.save_dir = "/mnt/huanyuan/model/kws_pretrain_align_augmentation_12102020_test"
+__C.general.save_dir = "/mnt/huanyuan/model/kws_pretrain_align_12102020_test"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_12102020/"
 
 # finrtune model
 __C.general.finetune_on = False
@@ -92,13 +92,18 @@ __C.dataset.label = {}
 
 # label
 __C.dataset.label.positive_label = ["positive","xiaorui","xiaoyu","xiaoya","xiaodu"]
-__C.dataset.label.positive_label_chinese_list = ["","小,锐,小#,锐#","小,鱼,小#,鱼#","小,雅,小#,雅#","小,度,小#,度#"]
+__C.dataset.label.positive_label_chinese_name_list = ["","小,锐,小#,锐#","小,鱼,小#,鱼#","小,雅,小#,雅#","小,度,小#,度#"]
 __C.dataset.label.positive_label_together = True
 __C.dataset.label.negative_label = ["_silence_", "_unknown_"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
 __C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[1]
 __C.dataset.label.label_list = __C.dataset.label.negative_label + __C.dataset.label.positive_label
+
+# label: "nagative", "小", "鱼"
 __C.dataset.label.num_classes = 3
+
+# speech modeling based on frame alignment, support ['word', 'transform']
+__C.dataset.label.align_type = 'word' 
 
 # label percentage
 __C.dataset.label.silence_percentage = 50.0      # 50%
@@ -132,7 +137,7 @@ __C.dataset.augmentation.background_volume = 0.1
 __C.dataset.augmentation.time_shift_ms = 50.0
 
 # Time shift enhancement multiple of negative samples, which is effective for advanced prediction and lag prediction
-__C.dataset.augmentation.time_shift_multiple = 5
+__C.dataset.augmentation.time_shift_multiple = 2
 
 # based on audio waveform: on, just for positive samples.
 __C.dataset.augmentation.speed_volume_on = True
@@ -161,7 +166,7 @@ __C.loss = {}
 __C.loss.name = 'focal'
 
 # the weight matrix for each class in focal loss, including background class
-__C.loss.obj_weight = np.array([[1/15, 0, 0], [0, 5/15, 0], [0, 0, 9/15]])
+__C.loss.obj_weight = np.array([[1/7, 0, 0], [0, 3/7, 0], [0, 0, 3/7]])
 
 # the gamma parameter in focal loss
 __C.loss.focal_gamma = 2
