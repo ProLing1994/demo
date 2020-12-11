@@ -143,8 +143,8 @@ class AudioPreprocessor(object):
         return data
 
 
-#  data align
-def load_label_align_index(positive_label, positive_label_chinese_list, negative_label):
+# data align
+def load_label_align_index(positive_label, positive_label_chinese_name_list, negative_label, align_type='word'):
     # data index
     label_index = {}
     label_align_index = {} 
@@ -159,17 +159,37 @@ def load_label_align_index(positive_label, positive_label_chinese_list, negative
     for _, negative_word in enumerate(negative_label):
         label_align_index[negative_word] = 0
 
-    for label_idx in range(len(positive_label)):
-        positive_label_chinese_name = positive_label_chinese_list[label_idx]
-        keyword_list = positive_label_chinese_name.split(',')
-        if len(keyword_list) < 4:
-            continue
-        label_list = ["".join([keyword_list[0], keyword_list[1]]),
-                    "".join([keyword_list[1], keyword_list[2]]),
-                    "".join([keyword_list[2], keyword_list[3]]),]
+    if align_type == "transform":
+        for label_idx in range(len(positive_label)):
+            positive_label_chinese_name = positive_label_chinese_name_list[label_idx]
+            keyword_list = positive_label_chinese_name.split(',')
 
-        for idx, keyword in enumerate(label_list):
-            label_align_index[keyword] = idx % 2 + 1
+            if len(keyword_list) < 4:
+                continue
+
+            label_list = ["".join([keyword_list[0], keyword_list[1]]),
+                        "".join([keyword_list[1], keyword_list[2]]),
+                        "".join([keyword_list[2], keyword_list[3]]),]
+
+            for idx, keyword in enumerate(label_list):
+                label_align_index[keyword] = idx % 2 + 1
+
+    elif align_type == "word":
+        for label_idx in range(len(positive_label)):
+            positive_label_chinese_name = positive_label_chinese_name_list[label_idx]
+            keyword_list = positive_label_chinese_name.split(',')
+
+            if len(keyword_list) < 4:
+                continue
+
+            label_list = [keyword_list[0], keyword_list[1], keyword_list[2], keyword_list[3]]
+
+            for idx, keyword in enumerate(label_list):
+                label_align_index[keyword] = idx % 2 + 1
+
+    else:
+        raise Exception("[ERROR] Unknow align_type: {}, please check!".fomrat(align_type))
+
     return label_index, label_align_index
 
 
@@ -193,7 +213,7 @@ def read_wav2utt(wavscps):
     return wav2utt
 
 
-def get_words_dict(ctm_file, keyword_list):
+def get_words_dict(ctm_file, keyword_list, align_type='word'):
     content_dict = {}
     word_segments = {}
     
@@ -209,18 +229,31 @@ def get_words_dict(ctm_file, keyword_list):
         content = content_dict[utt_id]
         try: 
             word_segments[utt_id] = []
-            word_segments[utt_id].append([keyword_list[0] + keyword_list[1], 
-                                        float(content[keyword_list[0]][2]) + float(content[keyword_list[0]][3])])
-            word_segments[utt_id].append([keyword_list[1] + keyword_list[2], 
-                                        float(content[keyword_list[1]][2]) + float(content[keyword_list[1]][3])])
-            word_segments[utt_id].append([keyword_list[2] + keyword_list[3], 
-                                        float(content[keyword_list[2]][2]) + float(content[keyword_list[2]][3])])
+
+            if align_type == "transform":
+                word_segments[utt_id].append([keyword_list[0] + keyword_list[1], 
+                                            float(content[keyword_list[0]][2]) + float(content[keyword_list[0]][3])])
+                word_segments[utt_id].append([keyword_list[1] + keyword_list[2], 
+                                            float(content[keyword_list[1]][2]) + float(content[keyword_list[1]][3])])
+                word_segments[utt_id].append([keyword_list[2] + keyword_list[3], 
+                                            float(content[keyword_list[2]][2]) + float(content[keyword_list[2]][3])])
+            elif align_type == "word":
+                word_segments[utt_id].append([keyword_list[0], 
+                                            float(content[keyword_list[0]][2]) + float(content[keyword_list[0]][3]) / 2.0])
+                word_segments[utt_id].append([keyword_list[1], 
+                                            float(content[keyword_list[1]][2]) + float(content[keyword_list[1]][3]) / 2.0])
+                word_segments[utt_id].append([keyword_list[2],  
+                                            float(content[keyword_list[2]][2]) + float(content[keyword_list[2]][3]) / 2.0])
+                word_segments[utt_id].append([keyword_list[3], 
+                                            float(content[keyword_list[3]][2]) + float(content[keyword_list[3]][3]) / 2.0])
+            else:
+                raise Exception("[ERROR] Unknow align_type: {}, please check!".fomrat(align_type))
         except:
             print(utt_id)
     return word_segments
 
 
-def extract_words(ctm_file, keyword_list):
-    word_segments = get_words_dict(ctm_file, keyword_list)
+def extract_words(ctm_file, keyword_list, align_type='word'):
+    word_segments = get_words_dict(ctm_file, keyword_list, align_type)
     print("word_segments:", len(word_segments.keys()))
     return word_segments

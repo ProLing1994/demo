@@ -167,8 +167,8 @@ def main():
     # xiaorui
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_12082020_training_60_001.wav",
     #                             "/mnt/huanyuan/model/test_straming_wav/xiaorui_12082020_validation_60_001.wav"]
-    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_12082020_validation_3600_001.wav",
-                            "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_12082020_validation_3600_001.wav",
+    #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
 
     # xiaole
@@ -176,6 +176,12 @@ def main():
     #                             "/mnt/huanyuan/model/test_straming_wav/xiaole_11252020_validation_60_001.wav",
     #                             "/mnt/huanyuan/model/test_straming_wav/xiaole_11252020_testing_60_001.wav"]
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaole_11252020_testing_3600_001.wav",
+    #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
+
+    # pretrain
+    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/pretrain_12102020_training_60_001.wav",
+                            "/mnt/huanyuan/model/test_straming_wav/pretrain_12102020_validation_60_001.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/pretrain_12102020_validation_3600_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
     # nagetive test
@@ -226,14 +232,15 @@ def main():
     #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_009.wav"]
 
     # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
-    defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py"
+    # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py"
     # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py"
     # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_2_label_xiaoyu.py"
     # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaoyu.py"
-    default_model_epoch = 7500
+    defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_pretrain.py"
+    default_model_epoch = 3000
     default_timeshift_ms = 30               
-    default_average_window_duration_ms = 800    # [450,800,1500]
-    default_detection_threshold = 0.95          # [0.4, 0.95]
+    default_average_window_duration_ms = 1500    # [450,800,1500]
+    default_detection_threshold = 0.4          # [0.4, 0.95]
     default_minimum_count = 10
 
     parser = argparse.ArgumentParser(description='Streamax KWS Testing Engine')
