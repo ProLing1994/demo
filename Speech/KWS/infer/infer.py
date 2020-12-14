@@ -31,12 +31,22 @@ def longterm_audio_align_post_processing(cfg, score_list, audio_label_idx, resul
 
             for windows_idx in range(windows_number):
                 score_list_window = score_list[windows_idx: windows_idx + average_window_length]
-
-                # 后处理方法：检测结果：unknow、小鱼、鱼小，检测边缘：小鱼、鱼小、小鱼，故将 3 维检测结果拼接为 4 维
-                score_list_window = np.array(score_list_window)
-                score_list_window = np.concatenate((score_list_window, score_list_window[:, 1].reshape(score_list_window.shape[0], 1)), axis=1)
-                score = double_edge_detecting(score_list_window, word_num=3)
-                scores_list.append(score)
+                
+                if cfg.dataset.label.align_type == "transform":
+                    # 后处理方法：检测结果：unknow、小鱼、鱼小，检测边缘：小鱼、鱼小、小鱼，故将 3 维检测结果拼接为 4 维
+                    score_list_window = np.array(score_list_window)
+                    score_list_window = np.concatenate((score_list_window, score_list_window[:, 1].reshape(score_list_window.shape[0], 1)), axis=1)
+                    score = double_edge_detecting(score_list_window, word_num=3)
+                    scores_list.append(score)
+                
+                elif cfg.dataset.label.align_type == "word":
+                    # 后处理方法：检测结果：unknow、小、鱼，检测边缘：小、鱼、小、鱼，故将 3 维检测结果拼接为 5 维
+                    score_list_window = np.array(score_list_window)
+                    score_list_window = np.concatenate((score_list_window, score_list_window[:, 1:3].reshape(score_list_window.shape[0], 2)), axis=1)
+                    score = double_edge_detecting(score_list_window, word_num=4)
+                    scores_list.append(score)
+                else:
+                    raise Exception("[ERROR] Unknow align_type: {}, please check!".fomrat(align_type))
 
             # Sort the averaged results.
             scores_list.sort()
@@ -233,8 +243,8 @@ def main():
     default_result_mode = 'double_edge_triggered_detecting'     # ['min','mean','max', 'average_duration_ms'] align：["double_edge_triggered_detecting"]
     
     parser = argparse.ArgumentParser(description='Streamax KWS Infering Engine')
-    # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
-    parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaoyu.py", help='config file')
+    parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
+    # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaoyu.py", help='config file')
     parser.add_argument('--mode', type=str, default=default_mode)
     parser.add_argument('--epoch', type=int, default=default_model_epoch)
     parser.add_argument('--add_noise_on', type=bool, default=default_add_noise_on)
