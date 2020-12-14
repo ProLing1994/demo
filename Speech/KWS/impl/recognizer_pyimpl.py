@@ -110,7 +110,6 @@ class RecognizeCommands(object):
       _minimum_count: An integer count indicating the minimum results the average
         window should cover.
       _previous_results: A deque to store previous results.
-      _label_count: The length of label list.
       _previous_top_label: Last founded command. Initial value is '_silence_'.
       _previous_top_time: The timestamp of _previous results. Default is -np.inf.
     """
@@ -127,7 +126,6 @@ class RecognizeCommands(object):
         self._minimum_count = minimum_count
         # Working Variable
         self._previous_results = collections.deque()
-        self._label_count = len(labels)
         self._previous_top_time = 0
 
     def process_latest_result(self, latest_results, current_time_ms,
@@ -149,10 +147,6 @@ class RecognizeCommands(object):
           ValueError: The timestamp of this result is earlier than the most
             previous one in the average window
         """
-        if latest_results[0].shape[0] != self._label_count:
-            raise ValueError("The results for recognition should contain {} "
-                             "elements, but there are {} produced".format(
-                                 self._label_count, latest_results[0].shape[0]))
         if (self._previous_results.__len__() != 0 and
                 current_time_ms < self._previous_results[0][0]):
             raise ValueError("Results must be fed in increasing time order, "
@@ -180,7 +174,7 @@ class RecognizeCommands(object):
             return
 
         # Calculate the average score across all the results in the window.
-        average_scores = np.zeros(self._label_count)
+        average_scores = np.zeros(len(self._previous_results[0][1]))
         for item in self._previous_results:
             score = item[1]
             for i in range(score.size):
@@ -223,7 +217,6 @@ class RecognizeCommandsCountNumber(object):
       _minimum_count: An integer count indicating the minimum results the average
         window should cover.
       _previous_results: A deque to store previous results.
-      _label_count: The length of label list.
       _previous_top_label: Last founded command. Initial value is '_silence_'.
       _previous_top_time: The timestamp of _previous results. Default is -np.inf.
     """
@@ -241,7 +234,6 @@ class RecognizeCommandsCountNumber(object):
         self._minimum_count = minimum_count
         # Working Variable
         self._previous_results = collections.deque()
-        self._label_count = len(labels)
         self._previous_top_time = 0
 
     def process_latest_result(self, latest_results, current_time_ms,
@@ -263,10 +255,6 @@ class RecognizeCommandsCountNumber(object):
           ValueError: The timestamp of this result is earlier than the most
             previous one in the average window
         """
-        if latest_results[0].shape[0] != self._label_count:
-            raise ValueError("The results for recognition should contain {} "
-                             "elements, but there are {} produced".format(
-                                 self._label_count, latest_results[0].shape[0]))
         if (self._previous_results.__len__() != 0 and
                 current_time_ms < self._previous_results[0][0]):
             raise ValueError("Results must be fed in increasing time order, "
@@ -336,7 +324,6 @@ class RecognizeCommandsAlign(object):
       _minimum_count: An integer count indicating the minimum results the average
         window should cover.
       _previous_results: A deque to store previous results.
-      _label_count: The length of label list.
       _previous_top_label: Last founded command. Initial value is '_silence_'.
       _previous_top_time: The timestamp of _previous results. Default is -np.inf.
     """

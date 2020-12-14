@@ -198,8 +198,24 @@ def load_checkpoint(epoch_idx, net, save_dir):
   :param save_dir: the save directory
   :return: loaded epoch index, loaded batch index
   """
-  chk_file = os.path.join(save_dir,
-                          'checkpoints', 'chk_{}'.format(epoch_idx), 'parameter.pkl')
+  chk_file = os.path.join(save_dir, 'checkpoints', 'chk_{}'.format(epoch_idx), 'parameter.pkl')
+  if not os.path.isfile(chk_file):
+    raise ValueError('checkpoint file not found: {}'.format(chk_file))
+
+  state = torch.load(chk_file)
+  net.load_state_dict(state['state_dict'])
+  return state['epoch'], state['batch']
+
+
+def load_checkpoint_finetune(epoch_idx, net, save_dir):
+  """
+  load network parameters from directory
+  :param epoch_idx: the epoch idx of model to load
+  :param net: the network object
+  :param save_dir: the save directory
+  :return: loaded epoch index, loaded batch index
+  """
+  chk_file = os.path.join(save_dir, 'pretrain_model', 'chk_{}'.format(epoch_idx), 'parameter.pkl')
   if not os.path.isfile(chk_file):
     raise ValueError('checkpoint file not found: {}'.format(chk_file))
 
@@ -217,8 +233,7 @@ def load_checkpoint_resume(epoch_idx, net, optimizer, save_dir):
   :param save_dir: the save directory
   :return: loaded epoch index, loaded batch index
   """
-  chk_file = os.path.join(save_dir,
-                          'checkpoints', 'chk_{}'.format(epoch_idx), 'parameter.pkl')
+  chk_file = os.path.join(save_dir, 'checkpoints', 'chk_{}'.format(epoch_idx), 'parameter.pkl')
   if not os.path.isfile(chk_file):
     raise ValueError('checkpoint file not found: {}'.format(chk_file))
 

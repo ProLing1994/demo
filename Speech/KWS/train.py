@@ -78,8 +78,8 @@ def train(config_file, training_mode):
   # load checkpoint if finetune_on == True or resume epoch > 0
   if cfg.general.finetune_on == True:
     # fintune, Load model, reset learning rate
-    last_save_epoch, start_batch = load_checkpoint(cfg.general.finetune_epoch, net,  
-                                                    cfg.general.finetune_model_dir)
+    last_save_epoch, start_batch = load_checkpoint_finetune(cfg.general.finetune_epoch, net,  
+                                                            cfg.general.finetune_model_dir)
     start_epoch, last_save_epoch, start_batch = 0, 0, 0
   elif cfg.general.resume_epoch >= 0:
     # resume, Load the model, continue the previous learning rate
@@ -171,14 +171,15 @@ def main():
   # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config.py", nargs='?', help='config file')
   # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", nargs='?', help='config file')
   # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py", nargs='?', help='config file')
-  # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py", nargs='?', help='config file')
+  parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py", nargs='?', help='config file')
   # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py", nargs='?', help='config file')
+  # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_all_pretrain.py", nargs='?', help='config file')
   # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_2_label_xiaoyu.py", nargs='?', help='config file')
 
   # training_mode = 1
   # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaoyu.py", nargs='?', help='config file')
   # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaorui.py", nargs='?', help='config file')
-  parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_pretrain.py", nargs='?', help='config file')
+  # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_pretrain.py", nargs='?', help='config file')
   args = parser.parse_args()
   
   # training mode: [0,1]

@@ -229,7 +229,7 @@ def main():
     default_model_epoch = -1
     default_add_noise_on = False    # [True,False]
     default_timeshift_ms = 30       # [30]
-    default_average_window_duration_ms = 1500                   # only for mode: average_duration_ms/double_edge_triggered_detecting
+    default_average_window_duration_ms = 800                   # [800, 1500] only for mode: average_duration_ms/double_edge_triggered_detecting
     default_result_mode = 'double_edge_triggered_detecting'     # ['min','mean','max', 'average_duration_ms'] align：["double_edge_triggered_detecting"]
     
     parser = argparse.ArgumentParser(description='Streamax KWS Infering Engine')
