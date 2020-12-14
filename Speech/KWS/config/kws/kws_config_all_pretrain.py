@@ -161,7 +161,7 @@ __C.loss = {}
 __C.loss.name = 'focal'
 
 # the weight matrix for each class in focal loss, including background class
-__C.loss.obj_weight = np.array([[1/9, 0, 0], [0, 1/9, 0], [0, 0, 7/9]])
+__C.loss.obj_weight = np.array([[1/4, 0, 0], [0, 1/4, 0], [0, 0, 2/4]])
 
 # the gamma parameter in focal loss
 __C.loss.focal_gamma = 2
@@ -225,8 +225,8 @@ __C.train.save_epochs = 25
 ######################################
 
 # learning rate = lr*gamma**(epoch//step_size)
-__C.train.lr = 1e-3
-# __C.train.lr = 1e-4
+# __C.train.lr = 1e-3
+__C.train.lr = 1e-4
 # __C.train.lr = 1e-5
 
 # step size for step learning rate

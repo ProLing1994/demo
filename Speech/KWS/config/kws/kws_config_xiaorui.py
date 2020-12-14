@@ -29,14 +29,14 @@ __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_datase
 __C.general.is_test = True
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_12032020_test"
+__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_12032020_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12082020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12082020/"
 
 # finrtune model
-__C.general.finetune_on = False
-__C.general.finetune_model_dir = ""
-__C.general.finetune_epoch = 0
+__C.general.finetune_on = True
+__C.general.finetune_model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_12102020/"
+__C.general.finetune_epoch = 7999
 
 # set certain epoch to continue training, set -1 to train from scratch
 __C.general.resume_epoch = -1
@@ -130,7 +130,7 @@ __C.dataset.augmentation.background_volume = 0.1
 __C.dataset.augmentation.time_shift_ms = 100.0
 
 # Time shift enhancement multiple of negative samples, which is effective for advanced prediction and lag prediction
-__C.dataset.augmentation.time_shift_multiple = 10
+__C.dataset.augmentation.time_shift_multiple = 5
 
 # based on audio waveform: on, just for positive samples.
 __C.dataset.augmentation.speed_volume_on = True
@@ -223,9 +223,9 @@ __C.train.save_epochs = 25
 ######################################
 
 # learning rate = lr*gamma**(epoch//step_size)
-__C.train.lr = 1e-3
+# __C.train.lr = 1e-3
 # __C.train.lr = 1e-4
-# __C.train.lr = 1e-5
+__C.train.lr = 1e-5
 
 # step size for step learning rate
 __C.train.lr_step_size = 0

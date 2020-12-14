@@ -91,10 +91,9 @@ __C.test = {}
 # mode
 __C.test.method_mode = 1             # [0: RecognizeCommands, 1: RecognizeCommandsCountNumber]
 
-# __C.test.detection_threshold = 0.95
-__C.test.detection_threshold = 0.9
-__C.test.detection_number_threshold = 0.9
+__C.test.detection_threshold = 0.9          # [0.3,0.4,0.6,0.8,0.9,0.95]
+__C.test.detection_number_threshold = 0.9   # [0.5,0.75,0.9]
 
 __C.test.timeshift_ms = 30
-__C.test.average_window_duration_ms = 800
+__C.test.average_window_duration_ms = 800   # [450,800,1500]
 __C.test.minimum_count = 15

@@ -30,7 +30,8 @@ __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/pre_train_data
 __C.general.is_test = True
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws_pretrain_12102020_test"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws_pretrain_12102020_test"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_12102020"
 
 # finrtune model
 __C.general.finetune_on = False
