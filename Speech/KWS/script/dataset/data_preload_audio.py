@@ -22,6 +22,7 @@ def write_audio(data, output_path):
 
 def multiprocessing_preload_audio(args):
     cfg, data_pd, label_index, idx = args[0], args[1], args[2], args[3]
+    print('Done : [{}/{}]'.format(idx, len(data_pd['file'].tolist())), end='\r')
 
     # init
     sample_rate = cfg.dataset.sample_rate
@@ -32,12 +33,6 @@ def multiprocessing_preload_audio(args):
     label_name_idx = str(data_pd['label'].tolist()[idx])
     mode_name_idx = str(data_pd['mode'].tolist()[idx])
     label_idx = str(label_index[label_name_idx])
-
-    # load data
-    if label_name_idx == SILENCE_LABEL:
-        data = np.zeros(desired_samples, dtype=np.float32)
-    else:
-        data = librosa.core.load(image_name_idx, sr=sample_rate)[0]
 
     # output
     output_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(
@@ -50,8 +45,20 @@ def multiprocessing_preload_audio(args):
         filename = label_idx + '_' + os.path.basename(os.path.dirname(
             image_name_idx)) + '_' + os.path.basename(image_name_idx).split('.')[0] + '.txt'
 
-    write_audio(data, os.path.join(output_dir_idx, filename))
-    # print("Save Results: {}".format(filename), end='\r')
+    if os.path.exists(os.path.join(output_dir_idx, filename)):
+        return
+
+    try:
+        # load data
+        if label_name_idx == SILENCE_LABEL:
+            data = np.zeros(desired_samples, dtype=np.float32)
+        else:
+            data = librosa.core.load(image_name_idx, sr=sample_rate)[0]
+
+        write_audio(data, os.path.join(output_dir_idx, filename))
+    except:
+        print("[ERROR] Save Results: {}".format(filename))
+    return 
 
 
 def preload_audio(config_file, mode):
@@ -89,8 +96,9 @@ def preload_audio(config_file, mode):
         in_args = [cfg, data_pd, label_index, idx]
         in_params.append(in_args)
 
-    p = multiprocessing.Pool(cfg.debug.num_processing)
-    out = list(tqdm(p.imap(multiprocessing_preload_audio, in_params), total=len(in_params)))
+    p = multiprocessing.Pool(16)
+    # out = list(tqdm(p.imap(multiprocessing_preload_audio, in_params), total=len(in_params)))
+    out = p.map(multiprocessing_preload_audio, in_params)
     p.close()
     p.join()
     print("Preload audio({}) Done!".format(mode))
@@ -149,8 +157,8 @@ def preload_audio_folder(args):
             audio_data = librosa.core.load(data_path, sr=sample_rate)[0]
             write_audio(audio_data, os.path.join(output_dir, filename))
             # tqdm.write("Save Results: {}".format(filename))
-            # print("Save Results: {}".format(filename), end='\r')
         except:
+            print("[ERROR] Save Results: {}".format(filename))
             continue
 
     print("Preload folder audio: {} Done!".format(os.path.basename(input_dir)))
@@ -217,6 +225,7 @@ def main():
 
     preload_augumentation_audio(args.input, args.speed_list, args.volume_list)
     print("[Done] Data Preload")
+
 
 if __name__ == "__main__":
     main()
