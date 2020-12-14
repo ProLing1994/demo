@@ -230,8 +230,8 @@ __C.train.save_epochs = 25
 ######################################
 
 # learning rate = lr*gamma**(epoch//step_size)
-__C.train.lr = 1e-3
-# __C.train.lr = 1e-4
+# __C.train.lr = 1e-3
+__C.train.lr = 1e-4
 # __C.train.lr = 1e-5
 
 # step size for step learning rate
@@ -265,12 +265,12 @@ __C.train.betas = (0.9, 0.999)
 __C.debug = {}
 
 # whether to save input images
-__C.debug.save_inputs = True
-# __C.debug.save_inputs = False
+# __C.debug.save_inputs = True
+__C.debug.save_inputs = False
 
 # the number of processing for save input images
-__C.debug.num_processing = 64
-# __C.debug.num_processing = 16
+# __C.debug.num_processing = 64
+__C.debug.num_processing = 16
 
 # random seed used in training
 __C.debug.seed = 0
