@@ -198,7 +198,8 @@ class OnlineAudio:
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_1_fbank_timeshift_spec_on_res15_11032020/test_straming_wav/kws_config_xiaoyu_2.py"
 
         # xiaorui
-        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12082020/kws_config_xiaorui.py"     # best 1/0.8/0.5/30/800
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12082020/kws_config_xiaorui.py"                 # 1/0.8/0.5/30/800
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_1_finetune_res15_12082020/kws_config_xiaorui.py"        # 1/0.6/0.5/30/800, epoch 500
 
         # xiaole
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaole1_0_res15_11242020/kws_config_xiaole.py"

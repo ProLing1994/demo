@@ -329,7 +329,7 @@ class RecognizeCommandsAlign(object):
     """
 
     def __init__(self, labels, positove_lable_index, average_window_duration_ms, detection_threshold, 
-                 suppression_ms, minimum_count):
+                 suppression_ms, minimum_count, align_type="transform"):
         """Init the RecognizeCommands with parameters used for smoothing."""
         # Configuration
         self._labels = labels
@@ -341,6 +341,7 @@ class RecognizeCommandsAlign(object):
         # Working Variable
         self._previous_results = collections.deque()
         self._previous_top_time = 0
+        self._align_type = align_type
 
     def process_latest_result(self, latest_results, current_time_ms,
                               recognize_element):
@@ -391,11 +392,21 @@ class RecognizeCommandsAlign(object):
         scores_list = []
         for item in self._previous_results:
             scores_list.append(item[1])
-        # 后处理方法：检测结果：unknow、小鱼、鱼小，检测边缘：小鱼、鱼小、小鱼，故将 3 维检测结果拼接为 4 维
-        score_list_window = np.array(scores_list)
-        score_list_window = np.concatenate((score_list_window, score_list_window[:, 1].reshape(score_list_window.shape[0], 1)), axis=1)
-        score = double_edge_detecting(score_list_window, word_num=3)
-        recognize_element.score = score
+
+        if self._align_type == "transform":
+          # 后处理方法：检测结果：unknow、小鱼、鱼小，检测边缘：小鱼、鱼小、小鱼，故将 3 维检测结果拼接为 4 维
+          score_list_window = np.array(scores_list)
+          score_list_window = np.concatenate((score_list_window, score_list_window[:, 1].reshape(score_list_window.shape[0], 1)), axis=1)
+          score = double_edge_detecting(score_list_window, word_num=3)
+          recognize_element.score = score
+        elif self._align_type == "word":
+          # 后处理方法：检测结果：unknow、小、鱼，检测边缘：小、鱼、小、鱼，故将 3 维检测结果拼接为 5 维
+          score_list_window = np.array(scores_list)
+          score_list_window = np.concatenate((score_list_window, score_list_window[:, 1:3].reshape(score_list_window.shape[0], 2)), axis=1)
+          score = double_edge_detecting(score_list_window, word_num=4)
+          recognize_element.score = score
+        else:
+          raise Exception("[ERROR] Unknow align_type: {}, please check!".fomrat(align_type))
 
         time_since_last_top = current_time_ms - self._previous_top_time
         if self._previous_top_time == 0:
