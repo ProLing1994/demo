@@ -415,7 +415,7 @@ class RecognizeCommandsAlign(object):
         self._previous_top_time = 0
         self._align_type = align_type
         if self._double_threshold_bool:
-            self._double_edge_detecting = DoubleEdgeDetecting(0.1, detection_threshold)
+            self._double_edge_detecting = DoubleEdgeDetecting(detection_threshold/2, detection_threshold)
 
     def process_latest_result(self, latest_results, current_time_ms,
                               recognize_element):

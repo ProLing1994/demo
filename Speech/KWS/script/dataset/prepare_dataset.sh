@@ -14,9 +14,9 @@ stage=1
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaoyu.py
-# config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaorui.py
+config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaorui.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py
-config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_all_pretrain.py
+# config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_all_pretrain.py
 
 echo "script/dataset/prepare_dataset.sh"
 
