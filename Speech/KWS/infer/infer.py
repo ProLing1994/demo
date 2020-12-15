@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from impl.pred_pyimpl import kws_load_model, load_background_noise, dataset_add_noise, model_predict
-from impl.recognizer_pyimpl import double_edge_detecting
+from impl.recognizer_pyimpl import DoubleEdgeDetecting
 from dataset.kws.dataset_helper import *
 from utils.train_tools import *
 
@@ -36,14 +36,14 @@ def longterm_audio_align_post_processing(cfg, score_list, audio_label_idx, resul
                     # 后处理方法：检测结果：unknow、小鱼、鱼小，检测边缘：小鱼、鱼小、小鱼，故将 3 维检测结果拼接为 4 维
                     score_list_window = np.array(score_list_window)
                     score_list_window = np.concatenate((score_list_window, score_list_window[:, 1].reshape(score_list_window.shape[0], 1)), axis=1)
-                    score = double_edge_detecting(score_list_window, word_num=3)
+                    score = DoubleEdgeDetecting.compute_conf(score_list_window, word_num=3)
                     scores_list.append(score)
                 
                 elif cfg.dataset.label.align_type == "word":
                     # 后处理方法：检测结果：unknow、小、鱼，检测边缘：小、鱼、小、鱼，故将 3 维检测结果拼接为 5 维
                     score_list_window = np.array(score_list_window)
                     score_list_window = np.concatenate((score_list_window, score_list_window[:, 1:3].reshape(score_list_window.shape[0], 2)), axis=1)
-                    score = double_edge_detecting(score_list_window, word_num=4)
+                    score = DoubleEdgeDetecting.compute_conf(score_list_window, word_num=4)
                     scores_list.append(score)
                 else:
                     raise Exception("[ERROR] Unknow align_type: {}, please check!".fomrat(align_type))

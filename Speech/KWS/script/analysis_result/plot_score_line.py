@@ -261,8 +261,8 @@ if __name__ == "__main__":
     #                 "xiaole")
 
     # pretrain
-    model_name = "kws_pretrain_align_word_1_0_12102020"
-    threshold = "0.7"
+    model_name = "kws_pretrain_align_word_1_1_12102020"
+    threshold = "0.6"
     positive_label_idx = "1,2"
     # show_score_line("/mnt/huanyuan/model/test_straming_wav/pretrain_12102020_training_60_001.csv",
     #                 "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/pretrain_12102020_training_60_001_threshold_{}/final_scores.csv".format(model_name, "_".join(threshold.split('.'))),

@@ -190,7 +190,7 @@ class OnlineAudio:
 
         # config
         # xiaoyu
-        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu9_3_align_res15_12072020/kws_confid_align_xiaoyu.py"   # 0.4/_/1500
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu9_3_align_res15_12072020/kws_confid_align_xiaoyu.py"             # 2/0.4/_/30/1500
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu9_0_res15_12072020/kws_config_xiaoyu.py"
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu9_1_lr4_res15_12072020/kws_config_xiaoyu.py"
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_2_timeshift_spec_on_res15_11192020/kws_config_xiaoyu_2.py"     # best # 1/0.8/0.5/30/800
@@ -205,7 +205,8 @@ class OnlineAudio:
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaole1_0_res15_11242020/kws_config_xiaole.py"
 
         # pretrain
-        config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_12102020/kws_config_pretrain.py"   # best 1/0.8/0.5/30/800, xiaorui\xiaoya\xiaodu\xiaoyu
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_12102020/kws_config_pretrain.py"   # best 1/0.8/0.5/30/800, xiaorui\xiaoya\xiaodu\xiaoyu
+        config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_0_12102020/kws_config_align_pretrain.py"   # 2/0.7/_/30/1500, xiaorui\xiaoya\xiaodu\xiaoyu
 
         cfg = load_cfg_file(config_file)
         label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
@@ -220,11 +221,11 @@ class OnlineAudio:
         model_epoch = -1
         
         # init parameter 
-        method_mode = 1                     # [0: RecognizeCommands, 1: RecognizeCommandsCountNumber, 2:RecognizeCommandsAlign]
-        detection_threshold = 0.8           # [0.3,0.4,0.6,0.8,0.9,0.95]
+        method_mode = 2                     # [0: RecognizeCommands, 1: RecognizeCommandsCountNumber, 2:RecognizeCommandsAlign]
+        detection_threshold = 0.7           # [0.3,0.4,0.6,0.8,0.9,0.95]
         detection_number_threshold = 0.5    # [0.5,0.75,0.9]
         timeshift_ms = 30
-        average_window_duration_ms = 800    # [450,800,1500]
+        average_window_duration_ms = 1500    # [450,800,1500]
         minimum_count = 10
         audio_data_length = 0
         audio_data_offset = 0
