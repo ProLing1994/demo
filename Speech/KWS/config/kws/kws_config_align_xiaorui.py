@@ -11,7 +11,7 @@ cfg = __C
 __C.general = {}
 
 __C.general.data_dir = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/XiaoRuiDataset"
-__C.general.sub_data_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experimental_dataset/XiaoYuDataset/"
+__C.general.sub_data_dir = ["/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experimental_dataset/XiaoYuDataset/"]
 
 # data version
 __C.general.version = "1.1"
@@ -29,7 +29,8 @@ __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_datase
 __C.general.is_test = True
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_12032020_test"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_12032020_test"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_2_align_funtune_res15_12082020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12082020/"
 
@@ -112,8 +113,8 @@ __C.dataset.label.difficult_sample_mining = True
 __C.dataset.label.difficult_sample_percentage = 200.0     # 200%
 
 # trian/validation/test percentage
-__C.dataset.label.validation_percentage = 10.0  # 10%
-__C.dataset.label.testing_percentage = 10.0     # 10%
+__C.dataset.label.validation_percentage = 20.0  # 20%
+__C.dataset.label.testing_percentage = 0.0      # 0%
 
 
 ##################################
@@ -166,7 +167,7 @@ __C.loss = {}
 __C.loss.name = 'focal'
 
 # the weight matrix for each class in focal loss, including background class
-__C.loss.obj_weight = np.array([[1/7, 0, 0], [0, 3/7, 0], [0, 0, 3/7]])
+__C.loss.obj_weight = np.array([[1/7, 0, 0], [0, 1/7, 0], [0, 0, 5/7]])
 
 # the gamma parameter in focal loss
 __C.loss.focal_gamma = 2
@@ -252,7 +253,7 @@ __C.train.optimizer = 'Adam'
 __C.train.momentum = 0.9
 
 # SGD,Adam weight decay
-__C.train.weight_decay = 0.0
+__C.train.weight_decay = 0.0001
 
 # the beta in Adam optimizer
 __C.train.betas = (0.9, 0.999)
