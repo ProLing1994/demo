@@ -207,6 +207,7 @@ class OnlineAudio:
         # pretrain
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_12102020/kws_config_pretrain.py"   # best 1/0.8/0.5/30/800, xiaorui\xiaoya\xiaodu\xiaoyu
         config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_0_12102020/kws_config_align_pretrain.py"   # 2/0.7/_/30/1500, xiaorui\xiaoya\xiaodu\xiaoyu
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_1_12102020/kws_config_align_pretrain.py"     # 2/0.7/_/30/1500, xiaorui\xiaoya\xiaodu\xiaoyu
 
         cfg = load_cfg_file(config_file)
         label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
