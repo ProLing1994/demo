@@ -34,6 +34,13 @@ __C.general.save_dir = "/mnt/huanyuan/model/kws_pretrain_align_12102020_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_12102020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_0_12102020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_1_12102020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_3_12102020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_7_12102020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_4_12102020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_8_12102020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_5_12102020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_6_12102020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_2_12102020/"
 
 # finrtune model
 __C.general.finetune_on = False
@@ -66,7 +73,7 @@ __C.dataset.input_channel = 1
 __C.dataset.sample_rate = 16000
 
 # Length of each audio clip to be analyzed
-__C.dataset.clip_duration_ms = 300
+__C.dataset.clip_duration_ms = 500
 
 # Duration of frequency analysis window
 __C.dataset.window_size_ms = 30.0
@@ -83,7 +90,7 @@ __C.dataset.preprocess = "fbank"
 __C.dataset.feature_bin_count = 40
 
 # input size of training data (w, h), unit: voxel
-__C.dataset.data_size = [40, 31]
+__C.dataset.data_size = [40, 51]
 
 
 ##################################
@@ -136,14 +143,14 @@ __C.dataset.augmentation.background_frequency = 0.8
 __C.dataset.augmentation.background_volume = 0.1
 
 # Range to randomly shift the training audio by in time(ms).
-__C.dataset.augmentation.time_shift_ms = 0.0
+__C.dataset.augmentation.time_shift_ms = 50.0
 
 # Time shift enhancement multiple of negative samples, which is effective for advanced prediction and lag prediction
-__C.dataset.augmentation.time_shift_multiple = 0
+__C.dataset.augmentation.time_shift_multiple = 4
 
 # based on audio waveform: on, just for positive samples.
-# __C.dataset.augmentation.speed_volume_on = True
-__C.dataset.augmentation.speed_volume_on = False
+__C.dataset.augmentation.speed_volume_on = True
+# __C.dataset.augmentation.speed_volume_on = False
 
 # How fast the audio should be, just for positive samples.
 __C.dataset.augmentation.possitive_speed = '0.9,1.0,1.1'
@@ -168,7 +175,7 @@ __C.loss = {}
 __C.loss.name = 'focal'
 
 # the weight matrix for each class in focal loss, including background class
-__C.loss.obj_weight = np.array([[1/4, 0, 0], [0, 1/4, 0], [0, 0, 2/4]])
+__C.loss.obj_weight = np.array([[1/5, 0, 0], [0, 2/5, 0], [0, 0, 2/5]])
 
 # the gamma parameter in focal loss
 __C.loss.focal_gamma = 2
@@ -215,9 +222,9 @@ __C.train.batch_size = 64
 # __C.train.batch_size = 1
 
 # the number of threads for IO
-# __C.train.num_threads = 64
+__C.train.num_threads = 64
 # __C.train.num_threads = 16
-__C.train.num_threads = 1
+# __C.train.num_threads = 1
 
 # the number of batches to update loss curve
 __C.train.plot_snapshot = 5
@@ -254,7 +261,7 @@ __C.train.optimizer = 'Adam'
 __C.train.momentum = 0.9
 
 # SGD,Adam weight decay
-__C.train.weight_decay = 0.0
+__C.train.weight_decay = 0.0001
 
 # the beta in Adam optimizer
 __C.train.betas = (0.9, 0.999)
@@ -272,8 +279,8 @@ __C.debug.save_inputs = True
 
 # the number of processing for save input images
 # __C.debug.num_processing = 64
-# __C.debug.num_processing = 16
-__C.debug.num_processing = 8
+__C.debug.num_processing = 16
+# __C.debug.num_processing = 8
 
 # random seed used in training
 __C.debug.seed = 0
