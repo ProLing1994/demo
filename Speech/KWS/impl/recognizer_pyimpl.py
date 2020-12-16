@@ -30,6 +30,11 @@ class DoubleEdgeDetecting(object):
         while deque_length < len(self._scores):
             self._scores.popleft()
 
+        # 当得分超过最大阈值时，认为检测到结果
+        if np.array(self._scores).max() > 0.9:
+            detection_bool = True
+            return detection_bool
+
         # 双门限法，检测两个边缘，同时两个边缘分别大于两个预设门限值
         # 求一阶导数
         first_order_score_float = abs(np.array(self._scores)[1:] - np.array(self._scores)[:-1])
@@ -415,7 +420,7 @@ class RecognizeCommandsAlign(object):
         self._previous_top_time = 0
         self._align_type = align_type
         if self._double_threshold_bool:
-            self._double_edge_detecting = DoubleEdgeDetecting(detection_threshold/2, detection_threshold)
+            self._double_edge_detecting = DoubleEdgeDetecting(0.1, detection_threshold)
 
     def process_latest_result(self, latest_results, current_time_ms,
                               recognize_element):
