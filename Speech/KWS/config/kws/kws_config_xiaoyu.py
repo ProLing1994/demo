@@ -29,8 +29,8 @@ __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset
 __C.general.is_test = True
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoyu_11112020"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu9_0_res15_12072020/"
+__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoyu_11112020"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu9_0_res15_12072020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu9_1_lr4_res15_12072020/"
 
 # finrtune model
@@ -175,6 +175,7 @@ __C.net = {}
 # __C.net.name = 'cnn-one-fstride1'
 # __C.net.name = 'cnn-tpool2'
 __C.net.name = 'res15'
+# __C.net.name = 'wavenet'
 # __C.net.name = 'res15-narrow'
 # __C.net.name = 'res8'
 # __C.net.name = 'res8-narrow'
@@ -201,8 +202,8 @@ __C.train.num_epochs = 1
 # the number of samples in a batch
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 1024
-# __C.train.batch_size = 64
-__C.train.batch_size = 16
+__C.train.batch_size = 64
+# __C.train.batch_size = 16
 # __C.train.batch_size = 1
 
 # the number of threads for IO

@@ -17,7 +17,7 @@ from script.analysis_result.plot_score_line import show_score_line
 from script.analysis_result.cal_fpr_tpr import cal_fpr_tpr
 
 
-# def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_duration_ms, detection_threshold, minimum_count):
+# def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_duration_ms, detection_threshold, detection_threshold_low, minimum_count):
 def test(args):
     input_wav = args[0]
     config_file = args[1]
@@ -25,7 +25,8 @@ def test(args):
     timeshift_ms = args[3]
     average_window_duration_ms = args[4]
     detection_threshold = args[5]
-    minimum_count = args[6]
+    detection_threshold_low = args[6]
+    minimum_count = args[7]
 
     print("Do wave:{}, begin!!!".format(input_wav))
 
@@ -60,7 +61,8 @@ def test(args):
             labels=label_list,
             positove_lable_index = label_index[positive_label[0]],
             average_window_duration_ms=average_window_duration_ms,
-            detection_threshold=detection_threshold,
+            detection_threshold_low=detection_threshold_low,
+            detection_threshold_high=detection_threshold,
             suppression_ms=3000,
             minimum_count=minimum_count,
             align_type=cfg.dataset.label.align_type)
@@ -166,9 +168,9 @@ def main():
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_testing_3600_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
-    # xiaorui
-    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui1_1_12082020_training_60_001.wav",
-                                "/mnt/huanyuan/model/test_straming_wav/xiaorui1_1_12082020_validation_60_001.wav"]
+    # # xiaorui
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui1_1_12082020_training_60_001.wav",
+    #                             "/mnt/huanyuan/model/test_straming_wav/xiaorui1_1_12082020_validation_60_001.wav"]
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui1_1_12082020_validation_3600_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
@@ -181,8 +183,8 @@ def main():
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
     # pretrain
-    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/pretrain_12102020_training_60_001.wav",
-    #                         "/mnt/huanyuan/model/test_straming_wav/pretrain_12102020_validation_60_001.wav"]
+    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/pretrain_12102020_training_60_001.wav",
+                            "/mnt/huanyuan/model/test_straming_wav/pretrain_12102020_validation_60_001.wav"]
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/pretrain_12102020_validation_3600_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
@@ -241,12 +243,13 @@ def main():
 
     # align
     # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaoyu.py"
-    # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_pretrain.py"
-    defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaorui.py"
+    defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_pretrain.py"
+    # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaorui.py"
     default_model_epoch = -1
     default_timeshift_ms = 30               
     default_average_window_duration_ms = 1500    # [450,800,1500]
-    default_detection_threshold = 0.6            # [0.4, 0.6, 0.95]
+    default_detection_threshold = 0.7            # [0.4, 0.6, 0.95]
+    default_detection_threshold_low = 0.1        # [0.1], only for method_mode=2:RecognizeCommandsAlign
     default_minimum_count = 10
 
     parser = argparse.ArgumentParser(description='Streamax KWS Testing Engine')
@@ -261,6 +264,8 @@ def main():
                         type=int, default=default_average_window_duration_ms)
     parser.add_argument('--detection_threshold',
                         type=int, default=default_detection_threshold)
+    parser.add_argument('--detection_threshold_low',
+                        type=int, default=default_detection_threshold_low)
     parser.add_argument('--minimum_count',
                         type=int, default=default_minimum_count)
     args = parser.parse_args()
@@ -269,7 +274,7 @@ def main():
     for input_wav in args.input_wav_list:
         in_args = [input_wav, args.config_file, args.model_epoch,
                     args.timeshift_ms, args.average_window_duration_ms, 
-                    args.detection_threshold, args.minimum_count]
+                    args.detection_threshold, args.detection_threshold_low, args.minimum_count]
         in_params.append(in_args)
 
     p = multiprocessing.Pool(3)
@@ -279,7 +284,7 @@ def main():
 
     # for input_wav in args.input_wav_list:
     #     test(input_wav, args.config_file, args.model_epoch,
-    #         args.timeshift_ms, args.average_window_duration_ms, args.detection_threshold, args.minimum_count)
+    #         args.timeshift_ms, args.average_window_duration_ms, args.detection_threshold, args.detection_threshold_low, args.minimum_count)
 
 
 if __name__ == "__main__":

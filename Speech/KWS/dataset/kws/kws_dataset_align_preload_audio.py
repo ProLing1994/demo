@@ -231,11 +231,21 @@ class SpeechDatasetAlign(Dataset):
       tmid = float(self.word_segments[utt_id][keyword_index][1]) * 1000.0 / float(possitive_speed)
       tmid_samples = int(self.sample_rate * tmid / 1000.0)
       windows_samples = self.desired_samples // 2
+      # best
       # while tmid_samples - windows_samples < 0 or tmid_samples + windows_samples >= len(data):
       #   windows_samples -= 1
-      while  len(data[max(0, tmid_samples - windows_samples): min(tmid_samples + windows_samples, len(data))]) < self.desired_samples / 2:
-        windows_samples += 1
+      # data = data[max(0, tmid_samples - windows_samples): min(tmid_samples + windows_samples, len(data))] 
+
+      # bad 
+      # while  len(data[max(0, tmid_samples - windows_samples): min(tmid_samples + windows_samples, len(data))]) < self.desired_samples / 2:
+      #   windows_samples += 1
+      # data = data[max(0, tmid_samples - windows_samples): min(tmid_samples + windows_samples, len(data))] 
+
+      # try 
+      time_shift_left = - min(0, tmid_samples - windows_samples)
+      time_shift_right = max(0, tmid_samples + windows_samples - len(data))
       data = data[max(0, tmid_samples - windows_samples): min(tmid_samples + windows_samples, len(data))] 
+      data = np.pad(data, (time_shift_left, time_shift_right), "constant")
     else:
       audio_align_label_idx = self.label_align_index[audio_label]
 
