@@ -12,6 +12,7 @@ class DoubleEdgeDetecting(object):
         # Configuration
         self._detection_threshold_low = detection_threshold_low
         self._detection_threshold_high = detection_threshold_high
+        self._detection_threshold_highest = 0.9
         self._boundary_threshold = 0.02
         # Working Variable
         self._scores = collections.deque()
@@ -29,6 +30,11 @@ class DoubleEdgeDetecting(object):
         # Prune any earlier scores that are too old for the window.
         while deque_length < len(self._scores):
             self._scores.popleft()
+
+        # 当得分超过最大阈值时，认为检测到结果
+        if np.array(self._scores).max() > self._detection_threshold_highest:
+            detection_bool = True
+            return detection_bool
 
         # 双门限法，检测两个边缘，同时两个边缘分别大于两个预设门限值
         # 求一阶导数
@@ -399,14 +405,14 @@ class RecognizeCommandsAlign(object):
       _previous_top_time: The timestamp of _previous results. Default is -np.inf.
     """
 
-    def __init__(self, labels, positove_lable_index, average_window_duration_ms, detection_threshold,
+    def __init__(self, labels, positove_lable_index, average_window_duration_ms, detection_threshold_low, detection_threshold_high,
                  suppression_ms, minimum_count, align_type="transform", double_threshold_bool=True):
         """Init the RecognizeCommands with parameters used for smoothing."""
         # Configuration
         self._labels = labels
         self._positove_lable_index = positove_lable_index
         self._average_window_duration_ms = average_window_duration_ms
-        self._detection_threshold = detection_threshold
+        self._detection_threshold = detection_threshold_high
         self._suppression_ms = suppression_ms
         self._minimum_count = minimum_count
         self._double_threshold_bool = double_threshold_bool
@@ -415,7 +421,7 @@ class RecognizeCommandsAlign(object):
         self._previous_top_time = 0
         self._align_type = align_type
         if self._double_threshold_bool:
-            self._double_edge_detecting = DoubleEdgeDetecting(detection_threshold/2, detection_threshold)
+            self._double_edge_detecting = DoubleEdgeDetecting(detection_threshold_low, detection_threshold_high)
 
     def process_latest_result(self, latest_results, current_time_ms,
                               recognize_element):

@@ -225,9 +225,11 @@ class OnlineAudio:
         # init parameter 
         method_mode = 2                     # [0: RecognizeCommands, 1: RecognizeCommandsCountNumber, 2:RecognizeCommandsAlign]
         detection_threshold = 0.6           # [0.3,0.4,0.6,0.8,0.9,0.95]
-        detection_number_threshold = 0.5    # [0.5,0.75,0.9]
+        detection_number_threshold = 0.5    # [0.5,0.75,0.9], only for method_mode=1: RecognizeCommandsCountNumber
+        detection_threshold_low = 0.1       # [0.1], only for method_mode=2:RecognizeCommandsAlign
+        detection_threshold_high = detection_threshold  # only for method_mode=2:RecognizeCommandsAlign
         timeshift_ms = 30
-        average_window_duration_ms = 1500    # [450,800,1500]
+        average_window_duration_ms = 1500   # [450,800,1500]
         minimum_count = 10
         audio_data_length = 0
         audio_data_offset = 0
@@ -259,7 +261,8 @@ class OnlineAudio:
                 labels=label_list,
                 positove_lable_index = label_index[positive_label[0]],
                 average_window_duration_ms=average_window_duration_ms,
-                detection_threshold=detection_threshold,
+                detection_threshold_low=detection_threshold_low,
+                detection_threshold_high=detection_threshold_high,
                 suppression_ms=3000,
                 minimum_count=minimum_count)
         else:

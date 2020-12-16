@@ -1,6 +1,8 @@
 easydict==1.9
+ffmpeg
 librosa==0.6.3
 numba==0.48.0
 plotly
+thop
 torchstat
 git+https://github.com/daemon/pytorch-pcen
