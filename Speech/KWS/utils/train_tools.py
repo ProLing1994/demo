@@ -79,9 +79,6 @@ def import_network(cfg):
   net = net_module.__getattribute__('SpeechResModel')(num_classes=cfg.dataset.label.num_classes, 
                                                       image_height=cfg.dataset.data_size[1], 
                                                       image_weidth=cfg.dataset.data_size[0])
-  # net = net_module.SpeechResModel(num_classes=cfg.dataset.label.num_classes, 
-  #                                 image_height=cfg.dataset.data_size[1], 
-  #                                 image_weidth=cfg.dataset.data_size[0])
   net_module.parameters_init(net)
   gpu_ids = list(range(cfg.general.num_gpus))
   net = torch.nn.parallel.DataParallel(net, device_ids=gpu_ids)

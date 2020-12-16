@@ -30,7 +30,7 @@ __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/pre_train_data
 __C.general.is_test = True
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws_pretrain_align_12102020_test"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws_pretrain_align_12102020_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_12102020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_0_12102020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_1_12102020/"
@@ -40,7 +40,7 @@ __C.general.save_dir = "/mnt/huanyuan/model/kws_pretrain_align_12102020_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_8_12102020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_5_12102020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_6_12102020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_2_12102020/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_2_12102020/"
 
 # finrtune model
 __C.general.finetune_on = False
