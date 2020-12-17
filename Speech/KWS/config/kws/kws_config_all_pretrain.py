@@ -247,7 +247,7 @@ __C.train.optimizer = 'Adam'
 __C.train.momentum = 0.9
 
 # SGD,Adam weight decay
-__C.train.weight_decay = 0.0
+__C.train.weight_decay = 0.0001
 
 # the beta in Adam optimizer
 __C.train.betas = (0.9, 0.999)

@@ -135,7 +135,7 @@ def cal_fpr_tpr(src_csv, pst_csv, positive_label, bool_write_audio):
 
 if __name__ == "__main__":
     bool_write_audio = True
-    model_name = "kws_pretrain_align_word_1_6_12102020"
+    model_name = "kws_pretrain_align_word_1_10_12102020"
     threshold = "0.7"
 
     # xiaoyu
