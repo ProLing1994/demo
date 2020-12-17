@@ -11,7 +11,7 @@ cfg = __C
 __C.general = {}
 
 __C.general.data_dir = "/mnt/huanyuan/data/speech/kws/lenovo/LenovoDataset_11242020"
-__C.general.sub_data_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/XiaoYuDataset_11032020"
+__C.general.sub_data_dir = ["/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/XiaoYuDataset_11032020"]
 # __C.general.data_dir = "/home/engineers/yh_rmai/data/speech/kws/lenovo/LenovoDataset_11242020"
 # __C.general.sub_data_dir = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/XiaoYuDataset_11032020"
 

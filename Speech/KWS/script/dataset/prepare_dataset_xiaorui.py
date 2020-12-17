@@ -28,6 +28,7 @@ def rename(input_dir, output_dir, device_id=0):
     for image_name in image_list:
         temp = image_name.split('_')[-1].split('.')[0]
         output_name = "_".join(image_name.split('_')[:-1]) + "_S{:0>3d}M{:0>1d}D{:0>2d}T{:0>3d}".format(int(temp[1:4]), int(temp[5]), device_id * 10 + int(temp[7]), int(temp[9:])) + '.wav'
+        # output_name = "_".join(image_name.split('_')[:-1]) + "_S{:0>3d}M{:0>1d}D{:0>2d}T{:0>3d}".format(int(temp[1:4]), int(temp[5]), int(temp[7:9]), int(temp[10:])) + '.wav'
         print(image_name, '->', output_name)
 
         image_path = os.path.join(input_dir, image_name)
@@ -83,8 +84,8 @@ def main():
     # dataset_generator(args.input_dir, args.output_dir, args.labels, args.names)
 
     # rename
-    rename("/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_12082020/xiaorui/", 
-            "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_12082020/xiaorui/",
+    rename("/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_12162020/xiaorui/", 
+            "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_12162020/xiaorui/",
             1)
 
 if __name__ == "__main__":
