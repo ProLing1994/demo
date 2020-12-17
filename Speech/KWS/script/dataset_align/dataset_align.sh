@@ -12,10 +12,11 @@ stage=1
 # data_set=/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_12012020
 # data_set=/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_12052020
 # data_set=/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_12082020
-# data_set=/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/XiaoRuiDataset/
-# keyword="xiaorui"
-# keyword_chinese="小 锐 小 锐"
-# keyword_chinese_output="小,锐,小#,锐#"
+# data_set=/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_12162020
+data_set=/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/XiaoRuiDataset/
+keyword="xiaorui"
+keyword_chinese="小 锐 小 锐"
+keyword_chinese_output="小,锐,小#,锐#"
 
 # xiaoyu
 # data_set=/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/original_dataset/XiaoYuDataset_11032020/
@@ -26,10 +27,10 @@ stage=1
 # keyword_chinese_output="小,鱼,小#,鱼#"
 
 # xiaole
-data_set=/mnt/huanyuan/data/speech/kws/lenovo/LenovoDataset_11242020/
-keyword="xiaole"
-keyword_chinese="小 乐 小 乐"
-keyword_chinese_output="小,乐,小#,乐#"
+# data_set=/mnt/huanyuan/data/speech/kws/lenovo/LenovoDataset_11242020/
+# keyword="xiaole"
+# keyword_chinese="小 乐 小 乐"
+# keyword_chinese_output="小,乐,小#,乐#"
 
 # other 
 # data_set=/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/original_dataset/XiaoYuDataset_11032020/

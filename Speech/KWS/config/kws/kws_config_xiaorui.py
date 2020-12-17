@@ -10,32 +10,32 @@ cfg = __C
 
 __C.general = {}
 
-__C.general.data_dir = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/XiaoRuiDataset"
-__C.general.sub_data_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experimental_dataset/XiaoYuDataset/"
+__C.general.data_dir = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/XiaoRuiDataset/"
+__C.general.sub_data_dir = ["/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experimental_dataset/XiaoYuDataset/"]
 
 # data version
-__C.general.version = "1.0"
+__C.general.version = "1.2"
 
 # data date
-__C.general.date = "12082020"
+__C.general.date = "12162020"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.0_12082020/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.2_12162020/total_data_files_align_clean.csv"
 
 # background noise path
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.0_12082020/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.2_12162020/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_12032020_test"
+__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_12162020_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12082020/"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_1_finetune_res15_12082020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_1_finetune_res15_12082020/"
 
 # finrtune model
-__C.general.finetune_on = True
+__C.general.finetune_on = False
 __C.general.finetune_model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_12102020/"
 __C.general.finetune_epoch = 7999
 
@@ -93,6 +93,8 @@ __C.dataset.label = {}
 
 # label
 __C.dataset.label.positive_label = ["xiaorui"]
+__C.dataset.label.positive_label_chinese_name_list = ["小,锐,小#,锐#"]
+__C.dataset.label.positive_label_together = False
 __C.dataset.label.negative_label = ["_silence_", "_unknown_"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
 __C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[1]
@@ -106,8 +108,8 @@ __C.dataset.label.difficult_sample_mining = True
 __C.dataset.label.difficult_sample_percentage = 200.0     # 200%
 
 # trian/validation/test percentage
-__C.dataset.label.validation_percentage = 10.0  # 10%
-__C.dataset.label.testing_percentage = 10.0     # 10%
+__C.dataset.label.validation_percentage = 15.0  # 15%
+__C.dataset.label.testing_percentage = 0.0     # 0%
 
 
 ##################################
@@ -225,8 +227,8 @@ __C.train.save_epochs = 25
 
 # learning rate = lr*gamma**(epoch//step_size)
 # __C.train.lr = 1e-3
-# __C.train.lr = 1e-4
-__C.train.lr = 1e-5
+__C.train.lr = 1e-4
+# __C.train.lr = 1e-5
 
 # step size for step learning rate
 __C.train.lr_step_size = 0

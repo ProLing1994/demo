@@ -31,7 +31,8 @@ __C.general.is_test = True
 
 # the output of training models and logging files
 # __C.general.save_dir = "/mnt/huanyuan/model/kws_pretrain_12102020_test"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_12102020"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_12102020"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain2_1_wavenet_12102020"
 
 # finrtune model
 __C.general.finetune_on = False
@@ -176,7 +177,8 @@ __C.net = {}
 # __C.net.name = 'cnn-trad-pool2'
 # __C.net.name = 'cnn-one-fstride1'
 # __C.net.name = 'cnn-tpool2'
-__C.net.name = 'res15'
+__C.net.name = 'wavenet'
+# __C.net.name = 'res15'
 # __C.net.name = 'res15-narrow'
 # __C.net.name = 'res8'
 # __C.net.name = 'res8-narrow'
@@ -225,8 +227,8 @@ __C.train.save_epochs = 25
 ######################################
 
 # learning rate = lr*gamma**(epoch//step_size)
-__C.train.lr = 1e-3
-# __C.train.lr = 1e-4
+# __C.train.lr = 1e-3
+__C.train.lr = 1e-4
 # __C.train.lr = 1e-5
 
 # step size for step learning rate
@@ -247,7 +249,7 @@ __C.train.optimizer = 'Adam'
 __C.train.momentum = 0.9
 
 # SGD,Adam weight decay
-__C.train.weight_decay = 0.0
+__C.train.weight_decay = 0.0001
 
 # the beta in Adam optimizer
 __C.train.betas = (0.9, 0.999)

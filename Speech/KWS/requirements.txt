@@ -3,6 +3,7 @@ ffmpeg
 librosa==0.6.3
 numba==0.48.0
 plotly
+soundfile
 thop
 torchstat
 git+https://github.com/daemon/pytorch-pcen

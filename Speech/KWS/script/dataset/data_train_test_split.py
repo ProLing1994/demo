@@ -62,10 +62,15 @@ def which_set(filename, validation_percentage, testing_percentage, get_hash_name
     percentage_hash = ((int(hash_name_hashed, 16) %
                             (MAX_NUM_WAVS_PER_CLASS + 1)) *
                             (100.0 / MAX_NUM_WAVS_PER_CLASS))
-    if percentage_hash < validation_percentage:
-        result = 'validation'
-    elif percentage_hash < (testing_percentage + validation_percentage):
+
+    # owner, should be validation:
+    if hash_name == "S015M1":
+        return 'validation'
+
+    if percentage_hash < testing_percentage:
         result = 'testing'
+    elif percentage_hash < (testing_percentage + validation_percentage):
+        result = 'validation'
     else:
         result = 'training'
     return result
@@ -100,6 +105,7 @@ def data_split(config_file):
     search_path = os.path.join(cfg.general.data_dir, '*', '*.wav')
     path_list = glob.glob(search_path)
     if 'sub_data_dir' in cfg.general:
+        assert type(cfg.general.sub_data_dir) == type(list())
         for sub_data_dir in cfg.general.sub_data_dir:
             sub_search_path = os.path.join(sub_data_dir, '*', '*.wav')
             path_list += glob.glob(sub_search_path)
