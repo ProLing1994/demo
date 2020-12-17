@@ -183,10 +183,10 @@ def main():
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
     # pretrain
-    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/pretrain_12102020_training_60_001.wav",
-                            "/mnt/huanyuan/model/test_straming_wav/pretrain_12102020_validation_60_001.wav"]
-    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/pretrain_12102020_validation_3600_001.wav",
-    #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/pretrain_12102020_training_60_001.wav",
+    #                         "/mnt/huanyuan/model/test_straming_wav/pretrain_12102020_validation_60_001.wav"]
+    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/pretrain_12102020_validation_3600_001.wav",
+                            "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
     # nagetive test
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_43200_003.wav",
@@ -239,15 +239,15 @@ def main():
     # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py"
     # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py"
     # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_2_label_xiaoyu.py"
-    # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py"
+    defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py"
 
     # align
     # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaoyu.py"
-    defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_pretrain.py"
+    # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_pretrain.py"
     # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaorui.py"
     default_model_epoch = -1
     default_timeshift_ms = 30               
-    default_average_window_duration_ms = 1500    # [450,800,1500]
+    default_average_window_duration_ms = 800    # [450,800,1500]
     default_detection_threshold = 0.7            # [0.4, 0.6, 0.95]
     default_detection_threshold_low = 0.1        # [0.1], only for method_mode=2:RecognizeCommandsAlign
     default_minimum_count = 10
