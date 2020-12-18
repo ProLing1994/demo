@@ -51,6 +51,10 @@ __C.general.num_gpus = 1
 # __C.general.gpu_ids = '6, 7'
 __C.general.gpu_ids = '0'
 
+# data_parallel_mode: [0, 1]
+# 0: 单机多卡，DataParallel
+# 1: 单/多级多卡、分布式，DistributedDataParallel
+__C.general.data_parallel_mode = 0
 
 ##################################
 # data set parameters

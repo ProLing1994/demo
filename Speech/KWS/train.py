@@ -55,6 +55,9 @@ def train(config_file, training_mode):
   # load configuration file
   cfg = load_cfg_file(config_file)
 
+  # check 
+  assert cfg.general.data_parallel_mode == 0, "[ERROR] If you want DistributedDataParallel, please run train_dpp.py"
+
   # clean the existing folder if the user want to train from scratch
   setup_workshop(cfg)
 

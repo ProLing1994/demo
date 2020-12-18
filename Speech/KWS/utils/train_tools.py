@@ -69,14 +69,13 @@ def init_torch_and_numpy(cfg, local_rank=0):
     torch.manual_seed(cfg.debug.seed)
     torch.cuda.manual_seed(cfg.debug.seed)
 
-    if data_parallel_mode in cfg.general:
-        if cfg.general.data_parallel_mode == 0:
-            pass
-        elif cfg.general.data_parallel_mode == 1:
-            torch.distributed.init_process_group(backend='nccl', init_method='env://')
-            torch.cuda.set_device(local_rank)
-        else:
-            raise Exception("[ERROR:] Unknow data parallel mode, please check!")
+    if cfg.general.data_parallel_mode == 0:
+        pass
+    elif cfg.general.data_parallel_mode == 1:
+        torch.distributed.init_process_group(backend='nccl', init_method='env://')
+        torch.cuda.set_device(local_rank)
+    else:
+        raise Exception("[ERROR:] Unknow data parallel mode, please check!")
 
 
 def import_network(cfg):
@@ -94,18 +93,14 @@ def import_network(cfg):
     net_module.parameters_init(net)
     gpu_ids = list(range(cfg.general.num_gpus))
 
-    if data_parallel_mode in cfg.general:
-        if cfg.general.data_parallel_mode == 0:
-            net = torch.nn.parallel.DataParallel(net, device_ids=gpu_ids)
-            net = net.cuda()
-        elif cfg.general.data_parallel_mode == 1:
-            net = net.cuda()
-            net = torch.nn.parallel.DistributedDataParallel(net)
-        else:
-            raise Exception("[ERROR:] Unknow data parallel mode, please check!")
-    else:
+    if cfg.general.data_parallel_mode == 0:
         net = torch.nn.parallel.DataParallel(net, device_ids=gpu_ids)
         net = net.cuda()
+    elif cfg.general.data_parallel_mode == 1:
+        net = net.cuda()
+        net = torch.nn.parallel.DistributedDataParallel(net)
+    else:
+        raise Exception("[ERROR:] Unknow data parallel mode, please check!")
     return net
 
 
