@@ -59,6 +59,9 @@ def train(config_file, local_rank, training_mode):
     # load configuration file
     cfg = load_cfg_file(config_file)
 
+    # check 
+    assert cfg.general.data_parallel_mode == 1, "[ERROR] If you want DataParallel, please run train.py"
+
     # clean the existing folder if the user want to train from scratch
     setup_workshop(cfg)
 
@@ -108,7 +111,7 @@ def train(config_file, local_rank, training_mode):
     # loop over batches
     for epoch_idx in range(cfg.train.num_epochs - (cfg.general.resume_epoch if cfg.general.resume_epoch != -1 else 0)):
 
-        train_sampler.set_epoch(epoch)
+        train_sampler.set_epoch(epoch_idx)
 
         for batch_idx, (inputs, labels, indexs) in enumerate(train_dataloader):
 
