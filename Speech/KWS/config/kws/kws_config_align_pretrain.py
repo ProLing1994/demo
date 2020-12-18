@@ -42,7 +42,8 @@ __C.general.is_test = True
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_6_12102020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_2_12102020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_9_12102020/"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_10_12102020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_10_12102020/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_11_12102020/"
 
 # finrtune model
 __C.general.finetune_on = False
@@ -75,7 +76,7 @@ __C.dataset.input_channel = 1
 __C.dataset.sample_rate = 16000
 
 # Length of each audio clip to be analyzed
-__C.dataset.clip_duration_ms = 300
+__C.dataset.clip_duration_ms = 500
 
 # Duration of frequency analysis window
 __C.dataset.window_size_ms = 30.0
@@ -92,7 +93,7 @@ __C.dataset.preprocess = "fbank"
 __C.dataset.feature_bin_count = 40
 
 # input size of training data (w, h), unit: voxel
-__C.dataset.data_size = [40, 31]
+__C.dataset.data_size = [40, 51]
 
 
 ##################################
@@ -145,10 +146,10 @@ __C.dataset.augmentation.background_frequency = 0.8
 __C.dataset.augmentation.background_volume = 0.1
 
 # Range to randomly shift the training audio by in time(ms).
-__C.dataset.augmentation.time_shift_ms = 30.0
+__C.dataset.augmentation.time_shift_ms = 50.0
 
 # Time shift enhancement multiple of negative samples, which is effective for advanced prediction and lag prediction
-__C.dataset.augmentation.time_shift_multiple = 4
+__C.dataset.augmentation.time_shift_multiple = 6
 
 # based on audio waveform: on, just for positive samples.
 __C.dataset.augmentation.speed_volume_on = True

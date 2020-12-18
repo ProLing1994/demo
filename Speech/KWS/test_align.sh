@@ -10,7 +10,8 @@ stage=1
 
 # pretran
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_pretrain.py
-config_file=/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_0_12102020/kws_config_align_pretrain.py
+# config_file=/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_0_12102020/kws_config_align_pretrain.py
+config_file=/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_11_12102020/kws_config_align_pretrain.py
 
 echo "test.sh"
 
