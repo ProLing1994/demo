@@ -10,7 +10,6 @@ from utils.train_tools import *
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo')
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from common.common.utils.python.logging_helpers import setup_logger
-from common.common.utils.python.plotly_tools import plot_loss, plot_loss2d
 
 def test(cfg, net, loss_func, epoch_idx, batch_idx, logger, test_data_loader, mode='eval'):
   """
@@ -55,6 +54,9 @@ def train(config_file, training_mode):
 
   # load configuration file
   cfg = load_cfg_file(config_file)
+
+  # check 
+  assert cfg.general.data_parallel_mode == 0, "[ERROR] If you want DistributedDataParallel, please run train_dpp.py"
 
   # clean the existing folder if the user want to train from scratch
   setup_workshop(cfg)
@@ -138,20 +140,7 @@ def train(config_file, training_mode):
     logger.info(msg)
 
     if (batch_idx % cfg.train.plot_snapshot) == 0:
-      if cfg.general.is_test:
-        train_loss_file = os.path.join(cfg.general.save_dir, 'train_loss.html')
-        plot_loss2d(log_file, train_loss_file, name=['train_loss', 'eval_loss'],
-                  display='Training/Validation Loss ({})'.format(cfg.loss.name)) 
-        train_accuracy_file = os.path.join(cfg.general.save_dir, 'train_accuracy.html')
-        plot_loss2d(log_file, train_accuracy_file, name=['train_accuracy', 'eval_accuracy'],
-                  display='Training/Validation Accuracy ({})'.format(cfg.loss.name)) 
-      else:
-        train_loss_file = os.path.join(cfg.general.save_dir, 'train_loss.html')
-        plot_loss(log_file, train_loss_file, name='train_loss',
-                  display='Training Loss ({})'.format(cfg.loss.name))
-        train_accuracy_file = os.path.join(cfg.general.save_dir, 'train_accuracy.html')
-        plot_loss(log_file, train_accuracy_file, name='train_accuracy',
-                  display='Training Accuracy ({})'.format(cfg.loss.name))
+      plot_tool(cfg, log_file)
 
     if epoch_idx % cfg.train.save_epochs == 0 or epoch_idx == cfg.train.num_epochs - 1:
       if last_save_epoch != epoch_idx:
