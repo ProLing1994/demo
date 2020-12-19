@@ -29,10 +29,11 @@ __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_datase
 __C.general.is_test = True
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_12162020_test"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_12162020_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12082020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_1_finetune_res15_12082020/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_3_res15_12162020/"
 
 # finrtune model
 __C.general.finetune_on = False
@@ -51,6 +52,10 @@ __C.general.num_gpus = 1
 # __C.general.gpu_ids = '6, 7'
 __C.general.gpu_ids = '0'
 
+# data_parallel_mode: [0, 1]
+# 0: 单机多卡，DataParallel
+# 1: 单/多级多卡、分布式，DistributedDataParallel
+__C.general.data_parallel_mode = 0
 
 ##################################
 # data set parameters
@@ -133,7 +138,7 @@ __C.dataset.augmentation.background_volume = 0.1
 __C.dataset.augmentation.time_shift_ms = 100.0
 
 # Time shift enhancement multiple of negative samples, which is effective for advanced prediction and lag prediction
-__C.dataset.augmentation.time_shift_multiple = 5
+__C.dataset.augmentation.time_shift_multiple = 10
 
 # based on audio waveform: on, just for positive samples.
 __C.dataset.augmentation.speed_volume_on = True
