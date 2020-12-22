@@ -168,7 +168,7 @@ def main():
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_testing_3600_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
-    # # xiaorui
+    # xiaorui
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_training_60_001.wav",
     #                             "/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_validation_60_001.wav"]
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_validation_3600_001.wav",
@@ -186,6 +186,10 @@ def main():
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/pretrain_12102020_training_60_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/pretrain_12102020_validation_60_001.wav"]
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/pretrain_12102020_validation_3600_001.wav",
+    #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/pretrain_1_1_12212020_training_60_001.wav",
+    #                         "/mnt/huanyuan/model/test_straming_wav/pretrain_1_1_12212020_validation_60_001.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/pretrain_1_1_12212020_validation_3600_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
     # nagetive test
@@ -233,6 +237,9 @@ def main():
     #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_007.wav",
     #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_008.wav",
     #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_009.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/data/speech/Negative_sample/CollectVoice/Jabra_510/Jabra_510_background_noise_001.wav",
+    #                             "/mnt/huanyuan/data/speech/Negative_sample/CollectVoice/Jabra_510/Jabra_510_background_noise_002.wav",
+    #                             "/mnt/huanyuan/data/speech/Negative_sample/CollectVoice/Jabra_510/Jabra_510_background_noise_003.wav"]
 
     # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
     defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py"
@@ -247,7 +254,7 @@ def main():
     default_model_epoch = -1
     default_timeshift_ms = 30               
     default_average_window_duration_ms = 800        # [450,800,1500]
-    default_detection_threshold = 0.95              # [0.4, 0.6, 0.95]
+    default_detection_threshold = 0.8              # [0.4, 0.6, 0.95]
     default_detection_threshold_low = 0.1           # [0.1], only for method_mode=2:RecognizeCommandsAlign
     default_minimum_count = 10
 

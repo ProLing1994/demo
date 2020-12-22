@@ -14,16 +14,16 @@ __C.general.data_dir = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experiment
 __C.general.sub_data_dir = ["/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experimental_dataset/XiaoYuDataset/"]
 
 # data version
-__C.general.version = "1.2"
+__C.general.version = "1.3"
 
 # data date
 __C.general.date = "12162020"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.2_12162020/total_data_files_align_clean.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.3_12162020/total_data_files_align_clean.csv"
 
 # background noise path
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.2_12162020/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.3_12162020/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -33,7 +33,11 @@ __C.general.is_test = True
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12082020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_1_finetune_res15_12082020/"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_3_res15_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_3_res15_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_4_finetune_res15_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_5_finetune_res15_12162020/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_6_res15_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_7_res15_narrow_12162020/"
 
 # finrtune model
 __C.general.finetune_on = False
@@ -56,6 +60,7 @@ __C.general.gpu_ids = '0'
 # 0: 单机多卡，DataParallel
 # 1: 单/多级多卡、分布式，DistributedDataParallel
 __C.general.data_parallel_mode = 0
+
 
 ##################################
 # data set parameters

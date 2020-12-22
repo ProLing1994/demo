@@ -31,7 +31,8 @@ __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/pre_train_data
 __C.general.is_test = True
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws_pretrain_12102020_test"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws_pretrain_12102020_test"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain1_1_12102020/"
 
 # finrtune model
 __C.general.finetune_on = False
@@ -49,6 +50,11 @@ __C.general.num_gpus = 1
 # __C.general.gpu_ids = '4, 5, 6, 7'
 # __C.general.gpu_ids = '6, 7'
 __C.general.gpu_ids = '0'
+
+# data_parallel_mode: [0, 1]
+# 0: 单机多卡，DataParallel
+# 1: 单/多级多卡、分布式，DistributedDataParallel
+__C.general.data_parallel_mode = 0
 
 
 ##################################
@@ -247,7 +253,7 @@ __C.train.optimizer = 'Adam'
 __C.train.momentum = 0.9
 
 # SGD,Adam weight decay
-__C.train.weight_decay = 0.0001
+__C.train.weight_decay = 0.0
 
 # the beta in Adam optimizer
 __C.train.betas = (0.9, 0.999)
