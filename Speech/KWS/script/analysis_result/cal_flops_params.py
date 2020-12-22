@@ -10,7 +10,8 @@ def main():
     # net_name = "crnn-attention"
     # net_name = "crnn-avg"
     # net_name = "res15"
-    net_name = "wavenet"
+    net_name = "res15-narrow"
+    # net_name = "wavenet"
 
     # load network structure
     net_module = importlib.import_module('network.' + net_name)

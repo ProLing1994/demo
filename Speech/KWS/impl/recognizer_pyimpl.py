@@ -302,7 +302,7 @@ class RecognizeCommandsCountNumber(object):
         self._labels = labels
         self._positove_lable_index = positove_lable_index
         self._average_window_duration_ms = average_window_duration_ms
-        self._detection_threshold = detection_threshold
+        self._detection_threshold = float(detection_threshold)
         self._detection_number_threshold = detection_number_threshold
         self._suppression_ms = suppression_ms
         self._minimum_count = minimum_count
@@ -360,6 +360,7 @@ class RecognizeCommandsCountNumber(object):
         detection_number = 0
         for item in self._previous_results:
             score = item[1]
+            # print(score[self._positove_lable_index], self._detection_threshold)
             if score[self._positove_lable_index] > self._detection_threshold:
                 detection_number += 1
         recognize_element.score = detection_number

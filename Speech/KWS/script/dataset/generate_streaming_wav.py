@@ -173,7 +173,7 @@ def main():
 
     # only for mode==0, support for ['training','validation','testing']
     default_audio_mode = 'validation'
-    default_output_path_list = ['/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_validation_3600_001.wav']
+    default_output_path_list = ['/mnt/huanyuan/model/test_straming_wav/pretrain_1_1_12212020_validation_3600_001.wav']
 
     # only for mode==1, from folder
     # default_input_dir = '/mnt/huanyuan/data/speech/kws/weiboyulu/dataset'
@@ -243,10 +243,11 @@ def main():
     default_nosed_csv = ""
     
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
-    default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py"
+    # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_pretrain.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaorui.py"
+    default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_all_pretrain.py"
 
     parser = argparse.ArgumentParser(description="Prepare XiaoYu Dataset")
     parser.add_argument('--input_dir', type=str, default=default_input_dir)
