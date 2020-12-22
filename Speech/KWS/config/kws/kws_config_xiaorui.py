@@ -29,17 +29,17 @@ __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_datase
 __C.general.is_test = True
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_12162020_test"
+__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_12162020_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12082020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_1_finetune_res15_12082020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_3_res15_12162020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_4_finetune_res15_12162020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_5_finetune_res15_12162020/"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_6_res15_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_6_res15_12162020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_7_res15_narrow_12162020/"
 
-# finrtune model
+# finetune model
 __C.general.finetune_on = False
 __C.general.finetune_model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_12102020/"
 __C.general.finetune_epoch = 7999
@@ -60,6 +60,30 @@ __C.general.gpu_ids = '0'
 # 0: 单机多卡，DataParallel
 # 1: 单/多级多卡、分布式，DistributedDataParallel
 __C.general.data_parallel_mode = 0
+
+
+##################################
+# knowledge distillation parameters
+##################################
+
+__C.knowledge_distillation = {}
+
+# knowledge distillation: on
+__C.knowledge_distillation.on = True
+
+# teacher model
+__C.knowledge_distillation.teacher_model_name = 'res15'
+__C.knowledge_distillation.teacher_model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_6_res15_12162020/"
+__C.knowledge_distillation.epoch = 7999
+
+# loss
+__C.knowledge_distillation.loss_name = 'kd'
+
+# kd, alpha
+__C.knowledge_distillation.alpha = 0.95
+
+# kd, temperature
+__C.knowledge_distillation.temperature = 6
 
 
 ##################################
@@ -187,8 +211,8 @@ __C.net = {}
 # __C.net.name = 'cnn-trad-pool2'
 # __C.net.name = 'cnn-one-fstride1'
 # __C.net.name = 'cnn-tpool2'
-__C.net.name = 'res15'
-# __C.net.name = 'res15-narrow'
+# __C.net.name = 'res15'
+__C.net.name = 'res15-narrow'
 # __C.net.name = 'res8'
 # __C.net.name = 'res8-narrow'
 # __C.net.name = 'lstm-avg'

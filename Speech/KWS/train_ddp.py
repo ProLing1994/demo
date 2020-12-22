@@ -73,7 +73,7 @@ def train(config_file, local_rank, training_mode):
     logger = setup_logger(log_file, 'kws_train')
 
     # define network
-    net = import_network(cfg)
+    net = import_network(cfg, cfg.net.name)
 
     # define loss function
     loss_func = define_loss_function(cfg)
@@ -84,13 +84,15 @@ def train(config_file, local_rank, training_mode):
     # load checkpoint if finetune_on == True or resume epoch > 0
     if cfg.general.finetune_on == True:
         # fintune, Load model, reset learning rate
-        last_save_epoch, start_batch = load_checkpoint_finetune(cfg.general.finetune_epoch, net,
-                                                                cfg.general.finetune_model_dir)
+        last_save_epoch, start_batch = load_checkpoint(cfg.general.finetune_epoch, net,
+                                                        cfg.general.finetune_model_dir, 
+                                                        sub_folder_name='pretrain_model')
         start_epoch, last_save_epoch, start_batch = 0, 0, 0
     elif cfg.general.resume_epoch >= 0:
         # resume, Load the model, continue the previous learning rate
-        last_save_epoch, start_batch = load_checkpoint_resume(cfg.general.resume_epoch, net, optimizer,
-                                                              cfg.general.save_dir)
+        last_save_epoch, start_batch = load_checkpoint(cfg.general.resume_epoch, net,
+                                                        cfg.general.save_dir, 
+                                                        optimizer=optimizer)
         start_epoch = last_save_epochyes
     else:
         start_epoch, last_save_epoch, start_batch = 0, 0, 0
