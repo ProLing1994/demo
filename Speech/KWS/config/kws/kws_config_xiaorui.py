@@ -29,7 +29,7 @@ __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_datase
 __C.general.is_test = True
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_12162020_test"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_12162020_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12082020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_1_finetune_res15_12082020/"
@@ -38,11 +38,13 @@ __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_12162020_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_5_finetune_res15_12162020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_6_res15_12162020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_7_res15_narrow_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_10_res15_finetune_12162020/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_11_res15_narrow_kd_12162020/"
 
 # finetune model
 __C.general.finetune_on = False
-__C.general.finetune_model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_12102020/"
-__C.general.finetune_epoch = 7999
+__C.general.finetune_model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain1_1_12102020/"
+__C.general.finetune_epoch = 1500
 
 # set certain epoch to continue training, set -1 to train from scratch
 __C.general.resume_epoch = -1
@@ -57,8 +59,8 @@ __C.general.num_gpus = 1
 __C.general.gpu_ids = '0'
 
 # data_parallel_mode: [0, 1]
-# 0: 单机多卡，DataParallel
-# 1: 单/多级多卡、分布式，DistributedDataParallel
+# 0: 鍗曟満澶氬崱锛孌ataParallel
+# 1: 鍗?澶氱骇澶氬崱銆佸垎甯冨紡锛孌istributedDataParallel
 __C.general.data_parallel_mode = 0
 
 
@@ -77,6 +79,8 @@ __C.knowledge_distillation.teacher_model_dir = "/mnt/huanyuan/model/model_10_30_
 __C.knowledge_distillation.epoch = 7999
 
 # loss
+# kd: https://github.com/peterliht/knowledge-distillation-pytorch
+# cd: https://github.com/zhouzaida/channel-distillation
 __C.knowledge_distillation.loss_name = 'kd'
 
 # kd, alpha
@@ -127,7 +131,7 @@ __C.dataset.label = {}
 
 # label
 __C.dataset.label.positive_label = ["xiaorui"]
-__C.dataset.label.positive_label_chinese_name_list = ["小,锐,小#,锐#"]
+__C.dataset.label.positive_label_chinese_name_list = ["灏?閿?灏?,閿?"]
 __C.dataset.label.positive_label_together = False
 __C.dataset.label.negative_label = ["_silence_", "_unknown_"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
@@ -305,3 +309,32 @@ __C.debug.num_processing = 64
 
 # random seed used in training
 __C.debug.seed = 0
+
+
+##################################
+# test parameters
+##################################
+
+__C.test = {}
+
+# the number of testing epochs
+__C.test.model_epoch = -1
+
+# mode, support [0: RecognizeCommands, 1: RecognizeCommandsCountNumber, 2:RecognizeCommandsAlign]
+__C.test.method_mode = 0
+
+# detection threshold, support [0.3,0.4,0.6,0.8,0.9,0.95]
+__C.test.detection_threshold = 0.95
+
+# detection number threshold, only support method_mode=1:RecognizeCommandsCountNumber
+__C.test.detection_number_threshold = 0.9   # [0.5,0.75,0.9]
+
+# detection threshold low & high, only support method_mode=2:RecognizeCommandsAlign
+__C.test.detection_threshold_low = 0.1
+__C.test.detection_threshold_high = __C.test.detection_threshold
+    
+# parameter
+__C.test.timeshift_ms = 30
+__C.test.average_window_duration_ms = 800    # [450,800,1500]
+__C.test.minimum_count = 10
+__C.test.suppression_ms = 2500               # [500, 3000]

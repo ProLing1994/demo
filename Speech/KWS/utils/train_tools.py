@@ -9,21 +9,22 @@ import sys
 import shutil
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 from tqdm import tqdm
 
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo')
 sys.path.insert(0, '/home/huanyuan/code/demo')
+from common.common.utils.python.train_tools import EpochConcateSampler
+from common.common.utils.python.file_tools import load_module_from_disk
+from common.common.utils.python.plotly_tools import plot_loss2d, plot_loss
+
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/KWS')
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from utils.loss import FocalLoss
 from dataset.kws.dataset_helper import SILENCE_LABEL
 from dataset.kws.kws_dataset_align_preload_audio import SpeechDatasetAlign
 from dataset.kws.kws_dataset_preload_audio import SpeechDataset
-
-# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/KWS')
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
-from common.common.utils.python.train_tools import EpochConcateSampler
-from common.common.utils.python.file_tools import load_module_from_disk
-from common.common.utils.python.plotly_tools import plot_loss2d, plot_loss
 
 def load_cfg_file(config_file):
     """
@@ -131,7 +132,7 @@ def loss_fn_kd(cfg, original_scores, teacher_scores, loss):
     assert cfg.knowledge_distillation.loss_name == 'kd'
     alpha = cfg.knowledge_distillation.alpha
     T = cfg.knowledge_distillation.temperature
-    KD_loss = nn.KLDivLoss()(F.log_softmax(original_scores/T, dim=1), F.softmax(teacher_scores/T, dim=1)) * (alpha * T * T) + \
+    KD_loss = nn.KLDivLoss(reduction='batchmean')(F.log_softmax(original_scores/T, dim=1), F.softmax(teacher_scores/T, dim=1)) * (alpha * T * T) + \
                 loss * (1. - alpha)
 
     return KD_loss

@@ -12,35 +12,26 @@ sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from utils.train_tools import *
 from dataset.kws.dataset_helper import *
 from impl.pred_pyimpl import kws_load_model, model_predict
-from impl.recognizer_pyimpl import RecognizeResult, RecognizeCommands, RecognizeCommandsAlign
+from impl.recognizer_pyimpl import RecognizeResult, RecognizeCommands, RecognizeCommandsCountNumber, RecognizeCommandsAlign
 from script.analysis_result.plot_score_line import show_score_line
 from script.analysis_result.cal_fpr_tpr import cal_fpr_tpr
 
 
-# def test(input_wav, config_file, model_epoch, timeshift_ms, average_window_duration_ms, detection_threshold, detection_threshold_low, minimum_count):
-def test(args):
-    input_wav = args[0]
-    config_file = args[1]
-    model_epoch = args[2]
-    timeshift_ms = args[3]
-    average_window_duration_ms = args[4]
-    detection_threshold = args[5]
-    detection_threshold_low = args[6]
-    minimum_count = args[7]
+# def test(input_wav, args):
+def test(in_args):
+    input_wav = in_args[0]
+    args = in_args[1]
 
     print("Do wave:{}, begin!!!".format(input_wav))
 
     # load configuration file
-    cfg = load_cfg_file(config_file)
-
-    # align bool
-    align_bool = 'align' in config_file
+    cfg = load_cfg_file(args.config_file)
 
     # init
     sample_rate = cfg.dataset.sample_rate
     clip_duration_ms = cfg.dataset.clip_duration_ms
     desired_samples = int(sample_rate * clip_duration_ms / 1000)
-    timeshift_samples = int(sample_rate * timeshift_ms / 1000)
+    timeshift_samples = int(sample_rate * cfg.test.timeshift_ms / 1000)
     label_list = cfg.dataset.label.label_list
     positive_label = cfg.dataset.label.positive_label
 
@@ -48,33 +39,51 @@ def test(args):
     label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
 
     recognize_element = RecognizeResult()
-    if not align_bool:
+    if cfg.test.method_mode == 0:
         recognize_commands = RecognizeCommands(
             labels=label_list,
             positove_lable_index = label_index[positive_label[0]],
-            average_window_duration_ms=average_window_duration_ms,
-            detection_threshold=detection_threshold,
-            suppression_ms=3000,
-            minimum_count=minimum_count)
-    else:
+            average_window_duration_ms=cfg.test.average_window_duration_ms,
+            detection_threshold=cfg.test.detection_threshold,
+            suppression_ms=cfg.test.suppression_ms,
+            minimum_count=cfg.test.minimum_count)
+    elif cfg.test.method_mode == 1:
+        recognize_commands = RecognizeCommandsCountNumber(
+            labels=label_list,
+            positove_lable_index = label_index[positive_label[0]],
+            average_window_duration_ms=cfg.test.average_window_duration_ms,
+            detection_threshold=cfg.test.detection_threshold,
+            detection_number_threshold=cfg.test.detection_number_threshold,
+            suppression_ms=cfg.test.suppression_ms,
+            minimum_count=cfg.test.minimum_count)
+    elif cfg.test.method_mode == 2:
         recognize_commands = RecognizeCommandsAlign(
             labels=label_list,
             positove_lable_index = label_index[positive_label[0]],
-            average_window_duration_ms=average_window_duration_ms,
-            detection_threshold_low=detection_threshold_low,
-            detection_threshold_high=detection_threshold,
-            suppression_ms=3000,
-            minimum_count=minimum_count,
+            average_window_duration_ms=cfg.test.average_window_duration_ms,
+            detection_threshold_low=cfg.test.detection_threshold_low,
+            detection_threshold_high=cfg.test.detection_threshold_high,
+            suppression_ms=cfg.test.suppression_ms,
+            minimum_count=cfg.test.minimum_count,
             align_type=cfg.dataset.label.align_type)
-    
+    else:
+        raise Exception("[ERROR:] Unknow method mode, please check!")
+
     # mkdir 
-    # output_dir = os.path.join(os.path.dirname(input_wav), os.path.basename(input_wav).split('.')[0])
-    output_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', os.path.basename(input_wav).split('.')[0] + '_threshold_{}'.format('_'.join(str(detection_threshold).split('.'))))
+    if args.mode == "0":
+        output_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', 
+                                    os.path.basename(input_wav).split('.')[0] + '_threshold_{}'.format('_'.join(str(cfg.test.detection_threshold).split('.'))))
+    elif args.mode == "1":
+        output_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', 
+                                    os.path.basename(args.csv_path).split('.')[0], args.type, 'bool_noise_reduction_' + str(args.bool_noise_reduction),
+                                    os.path.basename(input_wav).split('.')[0] + '_threshold_{}'.format('_'.join(str(cfg.test.detection_threshold).split('.'))))
+    else:
+        raise Exception("[ERROR:] Unknow mode, please check!")
     if not os.path.exists(output_dir):    
         os.makedirs(output_dir)
     
     # load model
-    model = kws_load_model(cfg.general.save_dir, int(cfg.general.gpu_ids), model_epoch)
+    model = kws_load_model(cfg.general.save_dir, int(cfg.general.gpu_ids), cfg.test.model_epoch)
     net = model['prediction']['net']
     net.eval()
 
@@ -161,6 +170,12 @@ def main():
     本脚本模拟真实音频输入情况，对音频文件进行测试，配置为 --input 中的 config 文件。
     测试过程：该脚本会通过滑窗的方式测试每一小段音频数据，计算连续 800ms(27帧)/2000ms(41帧) 音频的平均值结果，如果超过预设门限，则认为检测到关键词，否则认定未检测到关键词，最后分别计算假阳性和召回率。
     """   
+    # mode: [0,1,2]
+    # 0: from input_wav_list
+    # 1: from csv
+    default_mode = "0"    # ["0", "1", "2"]
+
+    # mode 0: from input_wav_list
     # xiaoyu
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_training_60_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_validation_60_001.wav",
@@ -173,7 +188,6 @@ def main():
     #                             "/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_validation_60_001.wav"]
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_validation_3600_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
-
 
     # xiaole
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaole_11252020_training_60_001.wav",
@@ -241,56 +255,64 @@ def main():
     #                             "/mnt/huanyuan/data/speech/Negative_sample/CollectVoice/Jabra_510/Jabra_510_background_noise_002.wav",
     #                             "/mnt/huanyuan/data/speech/Negative_sample/CollectVoice/Jabra_510/Jabra_510_background_noise_003.wav"]
 
+    # mode 1: from csv
+    default_csv_path = "/mnt/huanyuan/data/speech/Real_vehicle_sample/20201218/Real_vehicle_sample_20201218.csv"
+    default_type = 'normal_driving'                 # ['normal_driving', 'idling_driving']
+    default_bool_noise_reduction = False            # [False, True]
+
+    # config file
     # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
     defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py"
     # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py"
     # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_2_label_xiaoyu.py"
     # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py"
 
-    # align
+    # align config file
     # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaoyu.py"
     # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_pretrain.py"
     # defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaorui.py"
-    default_model_epoch = -1
-    default_timeshift_ms = 30               
-    default_average_window_duration_ms = 800        # [450,800,1500]
-    default_detection_threshold = 0.8              # [0.4, 0.6, 0.95]
-    default_detection_threshold_low = 0.1           # [0.1], only for method_mode=2:RecognizeCommandsAlign
-    default_minimum_count = 10
 
     parser = argparse.ArgumentParser(description='Streamax KWS Testing Engine')
-    parser.add_argument('--input_wav_list', type=str,
-                        default=default_input_wav_list)
-    parser.add_argument('--config_file', type=str,
-                        default=defaule_config_file)
-    parser.add_argument('--model_epoch', type=str, default=default_model_epoch)
-    parser.add_argument('--timeshift_ms', type=int,
-                        default=default_timeshift_ms)
-    parser.add_argument('--average_window_duration_ms',
-                        type=int, default=default_average_window_duration_ms)
-    parser.add_argument('--detection_threshold',
-                        type=int, default=default_detection_threshold)
-    parser.add_argument('--detection_threshold_low',
-                        type=int, default=default_detection_threshold_low)
-    parser.add_argument('--minimum_count',
-                        type=int, default=default_minimum_count)
+    parser.add_argument('--mode', type=str, default=default_mode)
+    parser.add_argument('--input_wav_list', type=str, default=default_input_wav_list)
+    parser.add_argument('--csv_path', type=str, default=default_csv_path)
+    parser.add_argument('--type', type=str, default=default_type)
+    parser.add_argument('--bool_noise_reduction', type=bool, default=default_bool_noise_reduction)
+    parser.add_argument('--config_file', type=str, default=defaule_config_file)
     args = parser.parse_args()
 
-    in_params = []
-    for input_wav in args.input_wav_list:
-        in_args = [input_wav, args.config_file, args.model_epoch,
-                    args.timeshift_ms, args.average_window_duration_ms, 
-                    args.detection_threshold, args.detection_threshold_low, args.minimum_count]
-        in_params.append(in_args)
+    if str(args.mode) == "0":
+        in_params = []
+        for input_wav in args.input_wav_list:
+            in_args = [input_wav, args]
+            in_params.append(in_args)
 
-    p = multiprocessing.Pool(3)
-    out = p.map(test, in_params)
-    p.close()
-    p.join()
+        p = multiprocessing.Pool(3)
+        out = p.map(test, in_params)
+        p.close()
+        p.join()
 
-    # for input_wav in args.input_wav_list:
-    #     test(input_wav, args.config_file, args.model_epoch,
-    #         args.timeshift_ms, args.average_window_duration_ms, args.detection_threshold, args.detection_threshold_low, args.minimum_count)
+        # for input_wav in args.input_wav_list:
+        #     test(input_wav, args)
+    elif str(args.mode) == "1":
+        dataset_pd = pd.read_csv(args.csv_path)
+        dataset_pd = dataset_pd[dataset_pd["type"] == args.type]
+        dataset_pd = dataset_pd[dataset_pd["bool_noise_reduction"] == args.bool_noise_reduction]
+
+        in_params = []
+        for _, row in dataset_pd.iterrows():
+            in_args = [row['path'], args]
+            in_params.append(in_args)
+
+        p = multiprocessing.Pool(3)
+        out = p.map(test, in_params)
+        p.close()
+        p.join()
+
+        # for _, row in dataset_pd.iterrows():
+        #     test(row['path'], args)
+    else:
+        raise Exception("[ERROR:] Unknow mode, please check!")
 
 
 if __name__ == "__main__":
