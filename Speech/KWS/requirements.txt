@@ -6,4 +6,5 @@ plotly
 soundfile
 thop
 torchstat
+tensorwatch
 git+https://github.com/daemon/pytorch-pcen

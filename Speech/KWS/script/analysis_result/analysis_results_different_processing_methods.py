@@ -131,7 +131,7 @@ def main():
                                 "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_zhongdongwangshi_7200_001.wav",
                                 "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_xingetuijian_21600_001.wav"]
 
-    defaule_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
+    default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
     default_detection_threshold_list = [0.6, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
     default_detection_number_threshold_list = [0.5, 0.75, 0.9]
 
@@ -139,7 +139,7 @@ def main():
     parser.add_argument('--input_wav_list', type=str,
                         default=default_input_wav_list)
     parser.add_argument('--config_file', type=str,
-                        default=defaule_config_file)
+                        default=default_config_file)
     parser.add_argument('--detection_threshold_list',
                         type=int, default=default_detection_threshold_list)
     parser.add_argument('--detection_number_threshold_list',

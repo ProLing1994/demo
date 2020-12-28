@@ -405,6 +405,7 @@ def plot_spectrogram(image, output_path):
     fig = plt.figure(figsize=(10, 4))
     heatmap = plt.pcolor(image)
     fig.colorbar(mappable=heatmap)
+    plt.axis('off')
     plt.xlabel("Time(s)")
     plt.ylabel("MFCC Coefficients")
     plt.tight_layout()

@@ -2,9 +2,10 @@ import importlib
 import torch
 import sys
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from thop import profile   
 from thop import clever_format
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
+
 
 def main():
     # net_name = "crnn-attention"
