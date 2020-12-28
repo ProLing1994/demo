@@ -118,18 +118,19 @@ def static_result(args):
 
 def main():
     # config file
-    # defaule_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_6_res15_12162020/kws_config_xiaorui.py"
-    # defaule_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_10_res15_finetune_12162020/kws_config_xiaorui.py"
-    defaule_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_3_res15_12162020/kws_config_xiaorui.py"
+    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_6_res15_12162020/kws_config_xiaorui.py"
+    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_10_res15_finetune_12162020/kws_config_xiaorui.py"
+    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_3_res15_12162020/kws_config_xiaorui.py"
+    default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_11_res15_narrow_kd_12162020/kws_config_xiaorui.py"
     default_csv_path = "/mnt/huanyuan/data/speech/Real_vehicle_sample/20201218/Real_vehicle_sample_20201218.csv"
-    default_type = 'normal_driving'                 # ['normal_driving', 'idling_driving']
-    default_bool_noise_reduction = False            # [False, True]
+    default_type = 'idling_driving'                 # ['normal_driving', 'idling_driving']
+    default_bool_noise_reduction = True            # [False, True]
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config_file', type=str, default=defaule_config_file)
+    parser.add_argument('--config_file', type=str, default=default_config_file)
     parser.add_argument('--csv_path', type=str, default=default_csv_path)
     parser.add_argument('--type', type=str, default=default_type)
-    parser.add_argument('--bool_noise_reduction', action='store_true', type=bool, default=default_bool_noise_reduction)
+    parser.add_argument('--bool_noise_reduction', action='store_true', default=default_bool_noise_reduction)
     args = parser.parse_args()
     static_result(args)
 

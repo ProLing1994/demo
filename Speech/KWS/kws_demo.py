@@ -197,10 +197,11 @@ class OnlineAudio:
 
         # xiaorui
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_2_align_funtune_res15_12082020/kws_config_align_xiaorui.py"   # 2/0.6/_/30/1500, epoch 300
-        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_3_res15_12162020/kws_config_xiaorui.py"                       # best 1/0.85/0.9/30/800
-        config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_6_res15_12162020/kws_config_xiaorui.py"                       # best 1/0.6/0.75/30/800
-        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_10_res15_finetune_12162020/kws_config_xiaorui.py"             # best 1/0.7/0.9/30/800
-        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_7_res15_narrow_12162020/kws_config_xiaorui.py"                # small best 1/0.9/0.5/30/800
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_3_res15_12162020/kws_config_xiaorui.py"                       # 1/0.85/0.9/30/800
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_6_res15_12162020/kws_config_xiaorui.py"                       # best 1/0.6/0.75/30/800
+        config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_10_res15_finetune_12162020/kws_config_xiaorui.py"             # best 1/0.7/0.9/30/800
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_7_res15_narrow_12162020/kws_config_xiaorui.py"                # small 1/0.9/0.5/30/800
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_11_res15_narrow_kd_12162020/kws_config_xiaorui.py"             # small best 1/0.8/0.5/30/800
 
         # pretrain
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_12102020/kws_config_pretrain.py"        # best 1/0.8/0.5/30/800, xiaorui\xiaoya\xiaodu\xiaoyu

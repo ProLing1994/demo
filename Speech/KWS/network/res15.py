@@ -8,6 +8,9 @@ from torch.autograd import Variable
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from common.common.utils.python.kaiming_init import kaiming_weight_init
 
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
+from network.network_helper import draw_features
+
 def parameters_init(net):
   net.apply(kaiming_weight_init)
 
@@ -30,7 +33,7 @@ class SpeechResModel(nn.Module):
 
     self.output = nn.Linear(num_features, num_classes)
 
-  def forward(self, x):
+  def forward(self, x, bool_draw_features=False, output_dir=""):
     for i in range(self.n_layers + 1):
         y = F.relu(getattr(self, "conv{}".format(i))(x))
         if i == 0:
@@ -42,6 +45,9 @@ class SpeechResModel(nn.Module):
             x = y
         if i > 0:
             x = getattr(self, "bn{}".format(i))(x)
+        
+        if bool_draw_features and i % 2 == 0:
+          draw_features(5, 9, x.cpu().detach().numpy(), "{}/conv_{}.png".format(output_dir, i))
   
     x = x.view(x.size(0), x.size(1), -1)     # shape: (batch, 45, 101, 40) ->  # shape: (batch, 45, 4040)
     x = torch.mean(x, 2)      # shape: (batch, 45, 4040) ->  # shape: (batch, 45)

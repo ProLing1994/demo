@@ -32,7 +32,8 @@ __C.general.is_test = True
 
 # the output of training models and logging files
 # __C.general.save_dir = "/mnt/huanyuan/model/kws_pretrain_12102020_test"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain1_1_12102020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain1_1_12102020/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain1_2_res15_narrow_12102020/"
 
 # finrtune model
 __C.general.finetune_on = False
@@ -138,7 +139,7 @@ __C.dataset.augmentation.background_volume = 0.1
 __C.dataset.augmentation.time_shift_ms = 100.0
 
 # Time shift enhancement multiple of negative samples, which is effective for advanced prediction and lag prediction
-__C.dataset.augmentation.time_shift_multiple = 5
+__C.dataset.augmentation.time_shift_multiple = 10
 
 # based on audio waveform: on, just for positive samples.
 __C.dataset.augmentation.speed_volume_on = True
@@ -182,8 +183,8 @@ __C.net = {}
 # __C.net.name = 'cnn-trad-pool2'
 # __C.net.name = 'cnn-one-fstride1'
 # __C.net.name = 'cnn-tpool2'
-__C.net.name = 'res15'
-# __C.net.name = 'res15-narrow'
+# __C.net.name = 'res15'
+__C.net.name = 'res15-narrow'
 # __C.net.name = 'res8'
 # __C.net.name = 'res8-narrow'
 # __C.net.name = 'lstm-avg'
@@ -253,7 +254,7 @@ __C.train.optimizer = 'Adam'
 __C.train.momentum = 0.9
 
 # SGD,Adam weight decay
-__C.train.weight_decay = 0.0
+__C.train.weight_decay = 0.0001
 
 # the beta in Adam optimizer
 __C.train.betas = (0.9, 0.999)
@@ -275,3 +276,32 @@ __C.debug.num_processing = 64
 
 # random seed used in training
 __C.debug.seed = 0
+
+
+##################################
+# test parameters
+##################################
+
+__C.test = {}
+
+# the number of testing epochs
+__C.test.model_epoch = -1
+
+# mode, support [0: RecognizeCommands, 1: RecognizeCommandsCountNumber, 2:RecognizeCommandsAlign]
+__C.test.method_mode = 0
+
+# detection threshold, support [0.3,0.4,0.6,0.8,0.9,0.95]
+__C.test.detection_threshold = 0.95
+
+# detection number threshold, only support method_mode=1:RecognizeCommandsCountNumber
+__C.test.detection_number_threshold = 0.9   # [0.5,0.75,0.9]
+
+# detection threshold low & high, only support method_mode=2:RecognizeCommandsAlign
+__C.test.detection_threshold_low = 0.1
+__C.test.detection_threshold_high = __C.test.detection_threshold
+    
+# parameter
+__C.test.timeshift_ms = 30
+__C.test.average_window_duration_ms = 800    # [450,800,1500]
+__C.test.minimum_count = 10
+__C.test.suppression_ms = 2500               # [500, 3000]
