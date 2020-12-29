@@ -106,8 +106,7 @@ class OnlineAudio:
         进程：语音唤醒
         """
         print("[Init:] Wake up")
-        # wake_up = WakeUp(config_file="./wakeup/wake_up_xiaoyu_config.py")
-        wake_up = WakeUp(config_file="./wakeup/wake_up_xiaorui_config.py")
+        wake_up = WakeUp(config_file=config_file)
 
         while True:
             wake_up_event.wait()
@@ -180,6 +179,9 @@ class OnlineAudio:
 
 
 if __name__ == '__main__':
+    # config_file="./wakeup/wake_up_xiaoyu_config.py"
+    config_file="./wakeup/wake_up_xiaorui_config.py"
+
     freeze_support()
     online_audio = OnlineAudio()
     online_audio.start()
