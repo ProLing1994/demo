@@ -13,8 +13,8 @@ __C.general = {}
 
 # model path
 # xiaoyu
-# __C.general.model_path = "./wakeup/model/kws_xiaoyu6_1_timeshift_spec_on_res15_11192020/"
-__C.general.model_path = "./wakeup/model/kws_xiaoyu6_2_timeshift_spec_on_res15_11192020/"
+__C.general.model_path = "./wakeup/model/kws_xiaoyu6_2_timeshift_spec_on_res15_11192020/"       # best # 1/0.8/0.5/30/800
+# __C.general.model_path = "./wakeup/model/kws_xiaorui1_11_res15_narrow_kd_12162020/"             # small best # 1/0.8/0.5/30/800
 
 # model epoch
 __C.general.model_epoch = -1
@@ -91,9 +91,10 @@ __C.test = {}
 # mode
 __C.test.method_mode = 1             # [0: RecognizeCommands, 1: RecognizeCommandsCountNumber]
 
-__C.test.detection_threshold = 0.9          # [0.3,0.4,0.6,0.8,0.9,0.95]
-__C.test.detection_number_threshold = 0.9   # [0.5,0.75,0.9]
+__C.test.detection_threshold = 0.8          # [0.3,0.4,0.6,0.8,0.9,0.95]
+__C.test.detection_number_threshold = 0.5   # [0.5,0.75,0.9]
 
 __C.test.timeshift_ms = 30
 __C.test.average_window_duration_ms = 800   # [450,800,1500]
+__C.test.suppression_ms = 3000
 __C.test.minimum_count = 15

@@ -30,6 +30,7 @@ class WakeUp:
         detection_number_threshold = self._cfg.test.detection_number_threshold
         timeshift_ms = self._cfg.test.timeshift_ms
         average_window_duration_ms = self._cfg.test.average_window_duration_ms
+        suppression_ms = self._cfg.test.suppression_ms
         minimum_count = self._cfg.test.minimum_count
 
         # load label index 
@@ -51,7 +52,7 @@ class WakeUp:
                 positove_lable_index = label_index[self._positive_label_list[0]],
                 average_window_duration_ms=average_window_duration_ms,
                 detection_threshold=detection_threshold,
-                suppression_ms=3000,
+                suppression_ms=suppression_ms,
                 minimum_count=minimum_count)
         elif method_mode == 1:
             self._recognize_commands = RecognizeCommandsCountNumber(
@@ -60,7 +61,7 @@ class WakeUp:
                 average_window_duration_ms=average_window_duration_ms,
                 detection_threshold=detection_threshold,
                 detection_number_threshold=detection_number_threshold,
-                suppression_ms=3000,
+                suppression_ms=suppression_ms,
                 minimum_count=minimum_count)
         else:
             raise Exception("[ERROR:] Unknow method mode, please check!")
@@ -74,7 +75,8 @@ class WakeUp:
 
         # model infer
         output_score = model_predict(self._cfg, self._net, input_data)
-
+        # print(output_score)
+        
         # process result
         current_time_ms = int(self._audio_data_offset * 1000 / self._sample_rate)
         self._recognize_commands.process_latest_result(output_score, current_time_ms, self._recognize_element)
