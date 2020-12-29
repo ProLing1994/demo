@@ -30,20 +30,21 @@ def parameters_init(net):
 class SpeechResModel(nn.Module):
   def __init__(self, num_classes, image_height, image_weidth):
     super().__init__()
-    self.conv0 = nn.Conv2d(in_channels=1, out_channels=45,
+    num_features = 19
+    self.conv0 = nn.Conv2d(in_channels=1, out_channels=num_features,
                            kernel_size=(3, 3), padding=(1, 1), 
                            stride=(1, 1), bias=False)
     
     self.n_layers = 13
-    self.convs = [nn.Conv2d(in_channels=45, out_channels=45,
+    self.convs = [nn.Conv2d(in_channels=num_features, out_channels=num_features,
                             kernel_size=(3, 3), padding=int(2**(i // 3)), 
                             dilation=int(2**(i // 3)), bias=False) for i in range(self.n_layers)]
 
     for i, conv in enumerate(self.convs):
-        self.add_module("bn{}".format(i + 1), nn.BatchNorm2d(45, affine=False))
+        self.add_module("bn{}".format(i + 1), nn.BatchNorm2d(num_features, affine=False))
         self.add_module("conv{}".format(i + 1), conv)
 
-    self.output = nn.Linear(45, num_classes)
+    self.output = nn.Linear(num_features, num_classes)
 
   def forward(self, x):
     for i in range(self.n_layers + 1):
@@ -58,6 +59,6 @@ class SpeechResModel(nn.Module):
         if i > 0:
             x = getattr(self, "bn{}".format(i))(x)
   
-    x = x.view(x.size(0), x.size(1), -1)     # shape: (batch, 45, 101, 40) ->  # shape: (batch, 45, 4040)
-    x = torch.mean(x, 2)      # shape: (batch, 45, 4040) ->  # shape: (batch, 45)
+    x = x.view(x.size(0), x.size(1), -1)     # shape: (batch, 19, 101, 40) ->  # shape: (batch, 19, 4040)
+    x = torch.mean(x, 2)      # shape: (batch, 19, 4040) ->  # shape: (batch, 19)
     return self.output(x)     # shape: (batch, 12)

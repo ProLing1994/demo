@@ -56,7 +56,6 @@ class OnlineAudio:
         进程：监听本地音乐
         """
         print("[Init:] Listen")
-        # wave_path = "/mnt/huanyuan/model/test_straming_wav/xiaoyu_03022018_testing_60_001.wav"
         wave_path = "/mnt/huanyuan/model/test_straming_wav/test.wav"
     
         # 打开音频流，output=True 表示音频输出
@@ -100,7 +99,8 @@ class OnlineAudio:
         进程：语音唤醒
         """
         print("[Init:] wake up")
-        wake_up = WakeUp()
+        # wake_up = WakeUp(config_file="./wakeup/wake_up_xiaoyu_config.py")
+        wake_up = WakeUp(config_file="./wakeup/wake_up_xiaorui_config.py")
 
         while True:
             if wake_up.audio_data_length < wake_up.desired_samples:
@@ -150,9 +150,9 @@ class OnlineAudio:
         # play_process.start()
 
         # 监听
-        listen_process_wakeeup = Process(target=self.listen, args=(self.event, self.audio_queue_wakeup))
-        # listen_process_wakeeup = Process(target=self.listen_file, args=(self.event, self.audio_queue_wakeup))
-        listen_process_wakeeup.start()
+        listen_process_wakeup = Process(target=self.listen, args=(self.event, self.audio_queue_wakeup))
+        # listen_process_wakeup = Process(target=self.listen_file, args=(self.event, self.audio_queue_wakeup))
+        listen_process_wakeup.start()
 
         # 唤醒
         wakeup_process = Process(target=self.wake_up, args=(self.event, self.audio_queue_wakeup))
@@ -160,7 +160,7 @@ class OnlineAudio:
 
         # listen_process_play.join()
         # play_process.join()
-        listen_process_wakeeup.join()
+        listen_process_wakeup.join()
         wakeup_process.join()
 
 
