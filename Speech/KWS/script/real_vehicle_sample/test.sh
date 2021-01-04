@@ -6,7 +6,7 @@ stage=1
 
 # init
 # xiaorui
-config_file=/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_11_res15_narrow_kd_12162020/kws_config_xiaorui.py
+config_file=/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_13_res15_narrow_fintune_kd_12162020/kws_config_xiaorui.py
 csv_path=/mnt/huanyuan/data/speech/Real_vehicle_sample/20201218/Real_vehicle_sample_20201218.csv
 echo "test.sh"
 

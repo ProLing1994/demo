@@ -8,3 +8,4 @@ thop
 torchstat
 tensorwatch
 git+https://github.com/daemon/pytorch-pcen
+git+https://github.com/amsehili/auditok
