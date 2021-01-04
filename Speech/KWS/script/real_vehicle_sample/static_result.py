@@ -121,10 +121,12 @@ def main():
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_6_res15_12162020/kws_config_xiaorui.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_10_res15_finetune_12162020/kws_config_xiaorui.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_3_res15_12162020/kws_config_xiaorui.py"
-    default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_11_res15_narrow_kd_12162020/kws_config_xiaorui.py"
+    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_11_res15_narrow_kd_12162020/kws_config_xiaorui.py"
+    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_12_res15_narrow_fintune_12162020/kws_config_xiaorui.py"
+    default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_13_res15_narrow_fintune_kd_12162020/kws_config_xiaorui.py"
     default_csv_path = "/mnt/huanyuan/data/speech/Real_vehicle_sample/20201218/Real_vehicle_sample_20201218.csv"
-    default_type = 'idling_driving'                 # ['normal_driving', 'idling_driving']
-    default_bool_noise_reduction = True            # [False, True]
+    default_type = 'normal_driving'                 # ['normal_driving', 'idling_driving']
+    default_bool_noise_reduction = False            # [False, True]
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--config_file', type=str, default=default_config_file)

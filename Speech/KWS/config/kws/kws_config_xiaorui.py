@@ -39,12 +39,14 @@ __C.general.is_test = True
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_6_res15_12162020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_7_res15_narrow_12162020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_10_res15_finetune_12162020/"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_11_res15_narrow_kd_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_11_res15_narrow_kd_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_12_res15_narrow_fintune_12162020/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_13_res15_narrow_fintune_kd_12162020/"
 
 # finetune model
-__C.general.finetune_on = False
-__C.general.finetune_model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain1_1_12102020/"
-__C.general.finetune_epoch = 1500
+__C.general.finetune_on = True
+__C.general.finetune_model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain1_2_res15_narrow_12102020/"
+__C.general.finetune_epoch = 3999
 
 # set certain epoch to continue training, set -1 to train from scratch
 __C.general.resume_epoch = -1
@@ -75,8 +77,8 @@ __C.knowledge_distillation.on = True
 
 # teacher model
 __C.knowledge_distillation.teacher_model_name = 'res15'
-__C.knowledge_distillation.teacher_model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_6_res15_12162020/"
-__C.knowledge_distillation.epoch = 7999
+__C.knowledge_distillation.teacher_model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_10_res15_finetune_12162020/"
+__C.knowledge_distillation.epoch = 3999
 
 # loss
 # kd: https://github.com/peterliht/knowledge-distillation-pytorch
@@ -131,7 +133,7 @@ __C.dataset.label = {}
 
 # label
 __C.dataset.label.positive_label = ["xiaorui"]
-__C.dataset.label.positive_label_chinese_name_list = ["灏?閿?灏?,閿?"]
+__C.dataset.label.positive_label_chinese_name_list = ["小,锐,小#,锐#"]
 __C.dataset.label.positive_label_together = False
 __C.dataset.label.negative_label = ["_silence_", "_unknown_"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
@@ -265,8 +267,8 @@ __C.train.save_epochs = 25
 
 # learning rate = lr*gamma**(epoch//step_size)
 # __C.train.lr = 1e-3
-__C.train.lr = 1e-4
-# __C.train.lr = 1e-5
+# __C.train.lr = 1e-4
+__C.train.lr = 1e-5
 
 # step size for step learning rate
 __C.train.lr_step_size = 0
