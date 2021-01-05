@@ -1,0 +1,1 @@
+audio_rename_anyway.exe --dir=E:\\project\\data\\speech\\kws\\xiaorui\\11302020\\0000000000000000-201130-141128-141431-000001001220
