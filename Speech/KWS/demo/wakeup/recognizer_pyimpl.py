@@ -93,12 +93,11 @@ class RecognizeCommands(object):
       _minimum_count: An integer count indicating the minimum results the average
         window should cover.
       _previous_results: A deque to store previous results.
-      _label_count: The length of label list.
       _previous_top_label: Last founded command. Initial value is '_silence_'.
       _previous_top_time: The timestamp of _previous results. Default is -np.inf.
     """
 
-    def __init__(self, labels, positove_lable_index,average_window_duration_ms, detection_threshold,
+    def __init__(self, labels, positove_lable_index, average_window_duration_ms, detection_threshold,
                  suppression_ms, minimum_count):
         """Init the RecognizeCommands with parameters used for smoothing."""
         # Configuration
@@ -110,7 +109,6 @@ class RecognizeCommands(object):
         self._minimum_count = minimum_count
         # Working Variable
         self._previous_results = collections.deque()
-        self._label_count = len(labels)
         self._previous_top_time = 0
 
     def process_latest_result(self, latest_results, current_time_ms,
@@ -132,10 +130,6 @@ class RecognizeCommands(object):
           ValueError: The timestamp of this result is earlier than the most
             previous one in the average window
         """
-        if latest_results[0].shape[0] != self._label_count:
-            raise ValueError("The results for recognition should contain {} "
-                             "elements, but there are {} produced".format(
-                                 self._label_count, latest_results[0].shape[0]))
         if (self._previous_results.__len__() != 0 and
                 current_time_ms < self._previous_results[0][0]):
             raise ValueError("Results must be fed in increasing time order, "
@@ -144,7 +138,8 @@ class RecognizeCommands(object):
                                  current_time_ms, self._previous_results[0][0]))
 
         # Add the latest result to the head of the deque.
-        self._previous_results.append([current_time_ms, latest_results[0], time.perf_counter()])
+        self._previous_results.append(
+            [current_time_ms, latest_results[0], time.perf_counter()])
 
         # Prune any earlier results that are too old for the averaging window.
         time_limit = current_time_ms - self._average_window_duration_ms
@@ -163,7 +158,7 @@ class RecognizeCommands(object):
             return
 
         # Calculate the average score across all the results in the window.
-        average_scores = np.zeros(self._label_count)
+        average_scores = np.zeros(len(self._previous_results[0][1]))
         for item in self._previous_results:
             score = item[1]
             for i in range(score.size):
@@ -181,9 +176,10 @@ class RecognizeCommands(object):
             recognize_element.start_time = self._previous_results[0][0]
             recognize_element.end_time = self._previous_results[-1][0]
             recognize_element.founded_command = self._labels[self._positove_lable_index]
-            recognize_element.response_time = self._previous_results[-1][2] - self._previous_results[0][2]
+            recognize_element.response_time = self._previous_results[-1][2] - \
+                self._previous_results[0][2]
         else:
-            recognize_element.is_new_command = False        
+            recognize_element.is_new_command = False
             recognize_element.founded_command = SILENCE_LABEL
 
 
@@ -206,25 +202,23 @@ class RecognizeCommandsCountNumber(object):
       _minimum_count: An integer count indicating the minimum results the average
         window should cover.
       _previous_results: A deque to store previous results.
-      _label_count: The length of label list.
       _previous_top_label: Last founded command. Initial value is '_silence_'.
       _previous_top_time: The timestamp of _previous results. Default is -np.inf.
     """
 
-    def __init__(self, labels, positove_lable_index, average_window_duration_ms, detection_threshold, detection_number_threshold, 
+    def __init__(self, labels, positove_lable_index, average_window_duration_ms, detection_threshold, detection_number_threshold,
                  suppression_ms, minimum_count):
         """Init the RecognizeCommands with parameters used for smoothing."""
         # Configuration
         self._labels = labels
         self._positove_lable_index = positove_lable_index
         self._average_window_duration_ms = average_window_duration_ms
-        self._detection_threshold = detection_threshold
+        self._detection_threshold = float(detection_threshold)
         self._detection_number_threshold = detection_number_threshold
         self._suppression_ms = suppression_ms
         self._minimum_count = minimum_count
         # Working Variable
         self._previous_results = collections.deque()
-        self._label_count = len(labels)
         self._previous_top_time = 0
 
     def process_latest_result(self, latest_results, current_time_ms,
@@ -246,10 +240,6 @@ class RecognizeCommandsCountNumber(object):
           ValueError: The timestamp of this result is earlier than the most
             previous one in the average window
         """
-        if latest_results[0].shape[0] != self._label_count:
-            raise ValueError("The results for recognition should contain {} "
-                             "elements, but there are {} produced".format(
-                                 self._label_count, latest_results[0].shape[0]))
         if (self._previous_results.__len__() != 0 and
                 current_time_ms < self._previous_results[0][0]):
             raise ValueError("Results must be fed in increasing time order, "
@@ -258,7 +248,8 @@ class RecognizeCommandsCountNumber(object):
                                  current_time_ms, self._previous_results[0][0]))
 
         # Add the latest result to the head of the deque.
-        self._previous_results.append([current_time_ms, latest_results[0], time.perf_counter()])
+        self._previous_results.append(
+            [current_time_ms, latest_results[0], time.perf_counter()])
 
         # Prune any earlier results that are too old for the averaging window.
         time_limit = current_time_ms - self._average_window_duration_ms
@@ -277,9 +268,10 @@ class RecognizeCommandsCountNumber(object):
             return
 
         # Calculate the number of score greater than the threshold.
-        detection_number = 0  
+        detection_number = 0
         for item in self._previous_results:
             score = item[1]
+            # print(score[self._positove_lable_index], self._detection_threshold)
             if score[self._positove_lable_index] > self._detection_threshold:
                 detection_number += 1
         recognize_element.score = detection_number
@@ -295,7 +287,8 @@ class RecognizeCommandsCountNumber(object):
             recognize_element.start_time = self._previous_results[0][0]
             recognize_element.end_time = self._previous_results[-1][0]
             recognize_element.founded_command = self._labels[self._positove_lable_index]
-            recognize_element.response_time = self._previous_results[-1][2] - self._previous_results[0][2]
+            recognize_element.response_time = self._previous_results[-1][2] - \
+                self._previous_results[0][2]
         else:
-            recognize_element.is_new_command = False        
+            recognize_element.is_new_command = False
             recognize_element.founded_command = SILENCE_LABEL

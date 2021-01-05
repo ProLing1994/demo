@@ -14,20 +14,21 @@ def parameters_init(net):
 class SpeechResModel(nn.Module):
   def __init__(self, num_classes, image_height, image_weidth):
     super().__init__()
-    self.conv0 = nn.Conv2d(in_channels=1, out_channels=19,
+    num_features = 19
+    self.conv0 = nn.Conv2d(in_channels=1, out_channels=num_features,
                            kernel_size=(3, 3), padding=(1, 1), 
                            stride=(1, 1), bias=False)
     
     self.n_layers = 13
-    self.convs = [nn.Conv2d(in_channels=19, out_channels=19,
+    self.convs = [nn.Conv2d(in_channels=num_features, out_channels=num_features,
                             kernel_size=(3, 3), padding=int(2**(i // 3)), 
                             dilation=int(2**(i // 3)), bias=False) for i in range(self.n_layers)]
 
     for i, conv in enumerate(self.convs):
-        self.add_module("bn{}".format(i + 1), nn.BatchNorm2d(19, affine=False))
+        self.add_module("bn{}".format(i + 1), nn.BatchNorm2d(num_features, affine=False))
         self.add_module("conv{}".format(i + 1), conv)
 
-    self.output = nn.Linear(19, num_classes)
+    self.output = nn.Linear(num_features, num_classes)
 
   def forward(self, x):
     for i in range(self.n_layers + 1):

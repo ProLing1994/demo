@@ -10,56 +10,38 @@ cfg = __C
 
 __C.general = {}
 
-# data folder
-# __C.general.data_dir = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/XiaoYuDataset_11032020"
-__C.general.data_dir = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/XiaoYuDataset_11032020"
+__C.general.data_dir = "/home/engineers/yh_rmai/data/speech/kws/xiaorui_dataset/experimental_dataset/XiaoRuiDataset/"
+__C.general.sub_data_dir = ["/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset/experimental_dataset/XiaoYuDataset/"]
 
 # data version
-__C.general.version = "2.2"
+__C.general.version = "1.3"
 
 # data date
-__C.general.date = "11122020"
+__C.general.date = "12162020"
 
 # data path
-# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_1.0_11032020/total_data_files.csv"
-# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.2_11122020/total_data_files.csv"
-# __C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_1.0_11032020/total_data_files.csv"
-# __C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.0_11112020/total_data_files.csv"
-__C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.2_11122020/total_data_files.csv"
+__C.general.data_csv_path = "/home/engineers/yh_rmai/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.3_12162020/total_data_files_align_clean.csv"
 
 # background noise path
-# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_1.0_11032020/background_noise_files.csv"
-# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.2_11122020/background_noise_files.csv"
-# __C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_1.0_11032020/background_noise_files.csv"
-# __C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.0_11112020/background_noise_files.csv"
-__C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/xiaoyu_dataset_11032020/dataset_2.2_11122020/background_noise_files.csv"
+__C.general.background_data_path = "/home/engineers/yh_rmai/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.3_12162020/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # the output of training models and logging files
-# __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_xiaoyu3_0_timeshift_enhancement_multiple_res15_11032020/"
-# __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_xiaoyu3_1_timeshift_spec_on_res15_11032020/"
-# __C.general.save_dir = "/home/engineers/yh_rmai/model/kws_xiaoyu5_0_timeshift_spec_on_res15_11032020/"
-__C.general.save_dir = "/home/engineers/yh_rmai/model/kws_xiaoyu5_1_fbank_timeshift_spec_on_res15_11032020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoyu_11032020_focal_loss_test"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu2_0_res15_10292020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_0_timeshift_enhancement_multiple_res15_11032020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_1_timeshift_spec_on_res15_11032020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_2_timeshift_spec_off_focal_res15_11032020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_3_timeshift_spec_on_focal_res15_11032020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_4_timeshift_spec_on_focal_balanceweight_res15_11032020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_5_timeshift_spec_on_focal_res15_11032020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_6_timeshift_spec_on_mask_2_focal_res15_11032020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_0_fbank_timeshift_spec_on_focal_res15_11032020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu4_1_fbank_timeshift_up_spec_on_focal_res15_11032020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_0_timeshift_spec_on_res15_11032020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_1_fbank_timeshift_spec_on_res15_11032020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu_mining_difficult_sample_11122020/"
+__C.general.save_dir = "/home/engineers/yh_rmai/model/kws_xiaorui1_11_res15_narrow_kd_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12082020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_1_finetune_res15_12082020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_3_res15_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_4_finetune_res15_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_5_finetune_res15_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_6_res15_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_7_res15_narrow_12162020/"
 
-# finrtune model
+# finetune model
 __C.general.finetune_on = False
-__C.general.finetune_model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu3_3_timeshift_spec_on_focal_res15_11032020/"
+__C.general.finetune_model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_12102020/"
 __C.general.finetune_epoch = 7999
 
 # set certain epoch to continue training, set -1 to train from scratch
@@ -75,6 +57,35 @@ __C.general.gpu_ids = '0, 1, 2, 3'
 # __C.general.gpu_ids = '6, 7'
 # __C.general.gpu_ids = '0'
 
+# data_parallel_mode: [0, 1]
+# 0: 单机多卡，DataParallel
+# 1: 单/多级多卡、分布式，DistributedDataParallel
+__C.general.data_parallel_mode = 0
+
+
+##################################
+# knowledge distillation parameters
+##################################
+
+__C.knowledge_distillation = {}
+
+# knowledge distillation: on
+__C.knowledge_distillation.on = True
+
+# teacher model
+__C.knowledge_distillation.teacher_model_name = 'res15'
+__C.knowledge_distillation.teacher_model_dir = "/home/engineers/yh_rmai/model/kws_xiaorui1_6_res15_12162020/"
+__C.knowledge_distillation.epoch = 7999
+
+# loss
+__C.knowledge_distillation.loss_name = 'kd'
+
+# kd, alpha
+__C.knowledge_distillation.alpha = 0.95
+
+# kd, temperature
+__C.knowledge_distillation.temperature = 6
+
 
 ##################################
 # data set parameters
@@ -89,7 +100,7 @@ __C.dataset.input_channel = 1
 __C.dataset.sample_rate = 16000
 
 # Length of each audio clip to be analyzed
-__C.dataset.clip_duration_ms = 3000
+__C.dataset.clip_duration_ms = 2000
 
 # Duration of frequency analysis window
 __C.dataset.window_size_ms = 30.0
@@ -99,13 +110,14 @@ __C.dataset.window_stride_ms = 10.0
 
 # How the spectrogram is processed to produce features, support ["mfcc", "pcen", "fbank"]
 __C.dataset.preprocess = "fbank"
+# __C.dataset.preprocess = "pcen"
 # __C.dataset.preprocess = "mfcc"
 
 # How many bins to use for the MFCC fingerprint
 __C.dataset.feature_bin_count = 40
 
 # input size of training data (w, h), unit: voxel
-__C.dataset.data_size = [40, 301]
+__C.dataset.data_size = [40, 201]
 
 
 ##################################
@@ -115,7 +127,9 @@ __C.dataset.data_size = [40, 301]
 __C.dataset.label = {}
 
 # label
-__C.dataset.label.positive_label = ["xiaoyu"]
+__C.dataset.label.positive_label = ["xiaorui"]
+__C.dataset.label.positive_label_chinese_name_list = ["小,锐,小#,锐#"]
+__C.dataset.label.positive_label_together = False
 __C.dataset.label.negative_label = ["_silence_", "_unknown_"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
 __C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[1]
@@ -129,8 +143,8 @@ __C.dataset.label.difficult_sample_mining = True
 __C.dataset.label.difficult_sample_percentage = 200.0     # 200%
 
 # trian/validation/test percentage
-__C.dataset.label.validation_percentage = 10.0  # 10%
-__C.dataset.label.testing_percentage = 10.0     # 10%
+__C.dataset.label.validation_percentage = 15.0  # 15%
+__C.dataset.label.testing_percentage = 0.0     # 0%
 
 
 ##################################
@@ -154,12 +168,22 @@ __C.dataset.augmentation.background_volume = 0.1
 __C.dataset.augmentation.time_shift_ms = 100.0
 
 # Time shift enhancement multiple of negative samples, which is effective for advanced prediction and lag prediction
-__C.dataset.augmentation.time_shift_multiple = 15
+__C.dataset.augmentation.time_shift_multiple = 10
+
+# based on audio waveform: on, just for positive samples.
+__C.dataset.augmentation.speed_volume_on = True
+# __C.dataset.augmentation.speed_volume_on = False
+
+# How fast the audio should be, just for positive samples.
+__C.dataset.augmentation.possitive_speed = '0.9,1.0,1.1'
+
+# How loud the audio should be, just for positive samples.
+__C.dataset.augmentation.possitive_volume = '0.4,0.7,1.0,1.3,1.6'
 
 # based on audio spectrum: on
 __C.dataset.augmentation.spec_on = True
 __C.dataset.augmentation.F = 5
-__C.dataset.augmentation.T = 30
+__C.dataset.augmentation.T = 20
 __C.dataset.augmentation.num_masks = 1
 
 ####################################
@@ -188,10 +212,14 @@ __C.net = {}
 # __C.net.name = 'cnn-trad-pool2'
 # __C.net.name = 'cnn-one-fstride1'
 # __C.net.name = 'cnn-tpool2'
-__C.net.name = 'res15'
-# __C.net.name = 'res15-narrow'
+# __C.net.name = 'res15'
+__C.net.name = 'res15-narrow'
 # __C.net.name = 'res8'
 # __C.net.name = 'res8-narrow'
+# __C.net.name = 'lstm-avg'
+# __C.net.name = 'lstm-attention'
+# __C.net.name = 'crnn-avg'
+# __C.net.name = 'crnn-attention'
 
 
 ######################################
@@ -204,13 +232,16 @@ __C.train = {}
 # __C.train.num_epochs = 16000
 __C.train.num_epochs = 8000
 # __C.train.num_epochs = 4000
-# __C.train.num_epochs = 10
+# __C.train.num_epochs = 100
+# __C.train.num_epochs = 1
 
 # the number of samples in a batch
 # __C.train.batch_size = 2048
 __C.train.batch_size = 1024
+# __C.train.batch_size = 128
 # __C.train.batch_size = 64
 # __C.train.batch_size = 16
+# __C.train.batch_size = 1
 
 # the number of threads for IO
 __C.train.num_threads = 64
@@ -252,7 +283,8 @@ __C.train.optimizer = 'Adam'
 __C.train.momentum = 0.9
 
 # SGD,Adam weight decay
-__C.train.weight_decay = 0.0
+# __C.train.weight_decay = 0.0
+__C.train.weight_decay = 0.0001
 
 # the beta in Adam optimizer
 __C.train.betas = (0.9, 0.999)
@@ -269,8 +301,8 @@ __C.debug = {}
 __C.debug.save_inputs = False
 
 # the number of processing for save input images
-# __C.debug.num_processing = 64
-__C.debug.num_processing = 16
+__C.debug.num_processing = 64
+# __C.debug.num_processing = 16
 
 # random seed used in training
 __C.debug.seed = 0

@@ -1,8 +1,8 @@
 import sys 
 
 # read file
-def read_file_gen(file_path, to_be_split=" "):
-    with open(file_path,encoding="utf-8") as f:
+def read_file_gen(file_path, encoding="utf-8", to_be_split=" "):
+    with open(file_path, encoding=encoding) as f:
         all_lines = f.readlines()
         for index, single_line in enumerate(all_lines):
             single_items = single_line.replace("\n", "").split(to_be_split)
