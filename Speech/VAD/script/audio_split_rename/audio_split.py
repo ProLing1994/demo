@@ -4,12 +4,13 @@ import os
 import pandas as pd
 
 parser = argparse.ArgumentParser(description="Audio Split Using Auditok")
-parser.add_argument('--audio_path', type=str, default="/mnt/huanyuan/data/speech/Automatic_Speech_Recognition/12302020/阿凡达/裁剪音频_1.wav")
-parser.add_argument('--output_dir', type=str, default="/mnt/huanyuan/data/speech/Automatic_Speech_Recognition/12302020/阿凡达/")
+parser.add_argument('--audio_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/Radio_sample/QingTingFM/news/全国新闻联播_wav/00001_全国新闻联播_2021_1_4.wav")
+parser.add_argument('--output_dir', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/Radio_sample/QingTingFM/audio_split/news/")
 # parser.add_argument('--output_format', type=str, default="RM_ROOM_Mandarin_S{:0>3d}M{}P{:0>5d}.wav")
 # parser.add_argument('--output_format', type=str, default="RM_ROOM_Mandarin_8K_iso_S{:0>3d}T{}P{:0>5d}.wav")
 # parser.add_argument('--output_format', type=str, default="RM_KWS_XIAORUI_{}_S{:0>3d}M{:0>1d}D{:0>2d}T{:0>3d}.wav")
-parser.add_argument('--output_format', type=str, default="RM_MOVIE_S{:0>3d}T{:0>3d}.wav")
+# parser.add_argument('--output_format', type=str, default="RM_MOVIE_S{:0>3d}T{:0>3d}.wav")
+parser.add_argument('--output_format', type=str, default="RM_NEWs_S{:0>4d}T{:0>3d}.wav")
 parser.add_argument('--energy_threshold', type=int, default=50)
 parser.add_argument('--text', type=str, default="xiaorui")
 parser.add_argument('--speaker', type=int, default=1)
@@ -35,7 +36,8 @@ if __name__ == "__main__":
 
     # VAD
     # audio_regions = split(audio_path, 2, 10, 1.0, False, True, energy_threshold=55)
-    audio_regions = split(audio_path, 2, 10, 1.0, False, True, energy_threshold=args.energy_threshold)
+    # audio_regions = split(audio_path, 2, 10, 1.0, False, True, energy_threshold=args.energy_threshold)
+    audio_regions = split(audio_path, 4, 10, 0.1, False, True, energy_threshold=args.energy_threshold)
 
     # XIAORUI
     # audio_regions = split(audio_path, 1, 5, 0.05, False, True, energy_threshold=args.energy_threshold)
