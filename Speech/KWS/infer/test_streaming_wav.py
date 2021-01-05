@@ -89,7 +89,13 @@ def test(in_args):
 
     # load data
     audio_data = librosa.core.load(input_wav, sr=sample_rate)[0]
-    assert len(audio_data) > desired_samples, "[ERROR:] Wav is too short! Need more than {} samples but only {} were found".format(
+
+    # alignment data, 模拟长时语音
+    if len(audio_data) < 6 * desired_samples:
+        data_length = len(audio_data)
+        audio_data = np.pad(audio_data, (max(0, (6 * desired_samples - data_length)//2), 0), "constant")
+        audio_data = np.pad(audio_data, (0, max(0, (6 * desired_samples - data_length + 1)//2)), "constant")
+    assert len(audio_data) >= 6 * desired_samples, "[ERROR:] Wav is too short! Need more than {} samples but only {} were found".format(
         desired_samples, len(audio_data))
 
     audio_data_offset = 0

@@ -2,6 +2,7 @@ import argparse
 import librosa
 import os
 import pandas as pd
+import re
 import sys
 
 from tqdm import tqdm
@@ -53,6 +54,10 @@ def clean_srt(srt):
     srt = "".join(srt.strip().split('-'))
     srt = "".join(srt.strip().split('《'))
     srt = "".join(srt.strip().split('》'))
+
+    dict_number = {"0":u"零","1":u"一","2":u"二","3":u"三","4":u"四","5":u"五","6":u"六","7":u"七","8":u"八","9":u"九"}
+    for key, value in dict_number.items():
+        srt = srt.replace(key, value)
     return srt
 
 
@@ -71,6 +76,9 @@ def merge_srt(args, srt_list):
         srt_dict_temp['srt'] = clean_srt(str_item['srt'])
 
         if srt_dict_temp['srt'].startswith('(') and srt_dict_temp['srt'].endswith(')'):
+            continue
+        
+        if bool(re.search('[a-z]', srt_dict_temp['srt'], re.I)):
             continue
 
         if srt_dict:
@@ -165,9 +173,9 @@ def audio_split_subtitle(args):
 
 def main():
     parser = argparse.ArgumentParser(description="Audio Split Using Subtitle")
-    parser.add_argument('--audio_path', type=str, default="/mnt/huanyuan/data/speech/mkv_movie_audio_capture/01042021/无人区/音频_C.wav") 
-    parser.add_argument('--subtitle_path', type=str, default="/mnt/huanyuan/data/speech/mkv_movie_audio_capture/01042021/无人区/字幕.srt") 
-    parser.add_argument('--output_dir', type=str, default="/mnt/huanyuan/data/speech/mkv_movie_audio_capture/01042021/无人区/")
+    parser.add_argument('--audio_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/01042021/一代宗师/音频_C.wav") 
+    parser.add_argument('--subtitle_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/01042021/一代宗师/字幕.srt") 
+    parser.add_argument('--output_dir', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/01042021/一代宗师/test")
     parser.add_argument('--time_shift', type=str, default="+,0.0")
     parser.add_argument('--output_format', type=str, default="RM_MOVIE_S{:0>3d}T{:0>3d}.wav")
     parser.add_argument('--movie_id', type=int, default=1)

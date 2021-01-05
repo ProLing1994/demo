@@ -7,7 +7,8 @@ import re
 
 from tqdm import tqdm
 
-def find_audio(args):
+
+def find_audio_with_txt(args):
     # init
     dataset_list = []      # {'name': [], 'id':[], 'path': [], 'type': [], 'bool_noise_reduction':[], 'text':[], 'label_name':[], 'lable_number':[]}
 
@@ -64,15 +65,46 @@ def find_audio(args):
     dataset_pd.to_csv(os.path.join(args.input_dir, os.path.basename(os.path.dirname(args.input_dir)) + '_' + os.path.basename(args.input_dir) + '.csv'), index=False, encoding="utf_8_sig")
                 
 
+def find_audio_folder(args):
+    # init
+    dataset_list = []      # {'name': [], 'id':[], 'path': [], 'type': [], 'bool_noise_reduction':[], 'text':[], 'label_name':[], 'lable_number':[]}
+
+    # find wav
+    suffix = '.wav'
+    audio_list = glob.glob(os.path.join(args.input_dir, '*/*/' + '*' + suffix))
+    audio_list.sort()
+
+    for idx in tqdm(range(len(audio_list))):
+        audio_path = audio_list[idx]
+        dir_path = os.path.dirname(audio_path)
+        tqdm.write("Do: {}".format(audio_path))
+
+        audio_type = os.path.basename(os.path.dirname(audio_path))
+        bool_noise_reduction = True if os.path.basename(os.path.dirname(audio_path)).startswith('降噪后') else False
+
+        # dataset_list
+        dataset_list.append({'name': os.path.basename(audio_path), 
+                            'id':int(os.path.basename(audio_path).split('.')[0].split('_')[-1][1:6]), 
+                            'path': audio_path, 
+                            'type': audio_type, 
+                            'bool_noise_reduction':bool_noise_reduction, 
+                            'text':args.chinese_names,
+                            'label_name':args.label_names, 
+                            'lable_number':1})
+    dataset_pd = pd.DataFrame(dataset_list)
+    dataset_pd.to_csv(os.path.join(args.input_dir, os.path.basename(os.path.dirname(args.input_dir)) + '_' + os.path.basename(args.input_dir) + '.csv'), index=False, encoding="utf_8_sig")
+
 def main():
     parser = argparse.ArgumentParser(description="Prepare Real Vehicle Sample Dataset")
-    parser.add_argument('--input_dir', type=str, default="/mnt/huanyuan/data/speech/Real_vehicle_sample/20201218")
-    parser.add_argument('--audio_format', type=str, default="RM_Carchat_Mandarin_S{:0>3d}P{:0>5d}.wav")
+    # parser.add_argument('--input_dir', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/Real_vehicle_sample/20201218")
+    parser.add_argument('--input_dir', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/Real_vehicle_sample/20210105")
     parser.add_argument('--label_names', type=str, default='xiaorui')
     parser.add_argument('--chinese_names', type=str, default='小锐小锐')
     args = parser.parse_args()
 
-    find_audio(args)
+    # 目前文件格式不统一，需要根据实际需求进行修改
+    # find_audio_with_txt(args)
+    find_audio_folder(args)
 
 if __name__ == "__main__":
     main()
