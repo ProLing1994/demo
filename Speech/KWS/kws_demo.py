@@ -83,7 +83,6 @@ class OnlineAudio:
             queue.put(data)
             event.set()
             
-
     def play(self, event, queue):
         """
         进程：播放音乐
@@ -196,16 +195,16 @@ class OnlineAudio:
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_1_fbank_timeshift_spec_on_res15_11032020/test_straming_wav/kws_config_xiaoyu_2.py"
 
         # xiaorui
-        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12082020/kws_config_xiaorui.py"                       # best 1/0.8/0.5/30/800
-        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_1_finetune_res15_12082020/kws_config_xiaorui.py"              # 1/0.6/0.5/30/800, epoch 500
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_2_align_funtune_res15_12082020/kws_config_align_xiaorui.py"   # 2/0.6/_/30/1500, epoch 300
-        config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_3_res15_12162020/kws_config_xiaorui.py"                         # best 1/0.8/0.5/30/800
-
-        # xiaole
-        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaole1_0_res15_11242020/kws_config_xiaole.py"
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_3_res15_12162020/kws_config_xiaorui.py"                       # 1/0.85/0.9/30/800
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_6_res15_12162020/kws_config_xiaorui.py"                       # best 1/0.6/0.75/30/800
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_10_res15_finetune_12162020/kws_config_xiaorui.py"             # best 1/0.7/0.9/30/800
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_7_res15_narrow_12162020/kws_config_xiaorui.py"                # small 1/0.9/0.5/30/800
+        config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_11_res15_narrow_kd_12162020/kws_config_xiaorui.py"             # small best 1/0.8/0.5/30/800
 
         # pretrain
-        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_12102020/kws_config_pretrain.py"   # best 1/0.8/0.5/30/800, xiaorui\xiaoya\xiaodu\xiaoyu
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_12102020/kws_config_pretrain.py"        # best 1/0.8/0.5/30/800, xiaorui\xiaoya\xiaodu\xiaoyu
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain1_1_12102020/kws_config_all_pretrain.py"   # 1/0.8/0.5/30/800, xiaorui\xiaoya\xiaodu\xiaoyu
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_11_12102020/kws_config_align_pretrain.py"     # beat 2/0.7/_/30/1500, xiaorui\xiaoya\xiaodu\xiaoyu
 
         cfg = load_cfg_file(config_file)
@@ -218,56 +217,47 @@ class OnlineAudio:
         # inin model parameter
         model_path = cfg.general.save_dir
         gpu_ids = int(cfg.general.gpu_ids)
-        model_epoch = -1
         
         # init parameter 
-        method_mode = 1                     # [0: RecognizeCommands, 1: RecognizeCommandsCountNumber, 2:RecognizeCommandsAlign]
-        detection_threshold = 0.8           # [0.3,0.4,0.6,0.8,0.9,0.95]
-        detection_number_threshold = 0.5    # [0.5,0.75,0.9], only for method_mode=1: RecognizeCommandsCountNumber
-        detection_threshold_low = 0.1       # [0.1], only for method_mode=2:RecognizeCommandsAlign
-        detection_threshold_high = detection_threshold  # only for method_mode=2:RecognizeCommandsAlign
-        timeshift_ms = 30
-        average_window_duration_ms = 800   # [450,800,1500]
-        minimum_count = 10
         audio_data_length = 0
         audio_data_offset = 0
 
         desired_samples = int(sample_rate * clip_duration_ms / 1000)
-        timeshift_samples = int(sample_rate * timeshift_ms / 1000)
+        timeshift_samples = int(sample_rate * cfg.test.timeshift_ms / 1000)
 
         # init recognizer
         recognize_element = RecognizeResult()
-        if method_mode == 0:
+        if cfg.test.method_mode == 0:
             recognize_commands = RecognizeCommands(
                 labels=label_list,
                 positove_lable_index = label_index[positive_label[0]],
-                average_window_duration_ms=average_window_duration_ms,
-                detection_threshold=detection_threshold,
-                suppression_ms=3000,
-                minimum_count=minimum_count)
-        elif method_mode == 1:
+                average_window_duration_ms=cfg.test.average_window_duration_ms,
+                detection_threshold=cfg.test.detection_threshold,
+                suppression_ms=cfg.test.suppression_ms,
+                minimum_count=cfg.test.minimum_count)
+        elif cfg.test.method_mode == 1:
             recognize_commands = RecognizeCommandsCountNumber(
                 labels=label_list,
                 positove_lable_index = label_index[positive_label[0]],
-                average_window_duration_ms=average_window_duration_ms,
-                detection_threshold=detection_threshold,
-                detection_number_threshold=detection_number_threshold,
-                suppression_ms=3000,
-                minimum_count=minimum_count)
-        elif method_mode == 2:
+                average_window_duration_ms=cfg.test.average_window_duration_ms,
+                detection_threshold=cfg.test.detection_threshold,
+                detection_number_threshold=cfg.test.detection_number_threshold,
+                suppression_ms=cfg.test.suppression_ms,
+                minimum_count=cfg.test.minimum_count)
+        elif cfg.test.method_mode == 2:
             recognize_commands = RecognizeCommandsAlign(
                 labels=label_list,
                 positove_lable_index = label_index[positive_label[0]],
-                average_window_duration_ms=average_window_duration_ms,
-                detection_threshold_low=detection_threshold_low,
-                detection_threshold_high=detection_threshold_high,
-                suppression_ms=3000,
-                minimum_count=minimum_count)
+                average_window_duration_ms=cfg.test.average_window_duration_ms,
+                detection_threshold_low=cfg.test.detection_threshold_low,
+                detection_threshold_high=cfg.test.detection_threshold_high,
+                suppression_ms=cfg.test.suppression_ms,
+                minimum_count=cfg.test.minimum_count)
         else:
             raise Exception("[ERROR:] Unknow method mode, please check!")
 
         # init model
-        model = kws_load_model(model_path, gpu_ids, model_epoch)
+        model = kws_load_model(model_path, gpu_ids, cfg.test.model_epoch)
         net = model['prediction']['net']
         net.eval()
 
@@ -294,8 +284,8 @@ class OnlineAudio:
 
                 # model infer
                 output_score = model_predict(cfg, net, input_data)
+                print(output_score)
 
-                print(output_score[0][2])
                 # process result
                 current_time_ms = int(audio_data_offset * 1000 / sample_rate)
                 recognize_commands.process_latest_result(output_score, current_time_ms, recognize_element)
@@ -331,9 +321,9 @@ class OnlineAudio:
         # play_process.start()
 
         # 监听
-        # listen_process_wakeeup = Process(target=self.listen_file, args=(self.event, self.audio_queue_wakeup))
-        listen_process_wakeeup = Process(target=self.listen, args=(self.event, self.audio_queue_wakeup))
-        listen_process_wakeeup.start()
+        # listen_process_wakeup = Process(target=self.listen_file, args=(self.event, self.audio_queue_wakeup))
+        listen_process_wakeup = Process(target=self.listen, args=(self.event, self.audio_queue_wakeup))
+        listen_process_wakeup.start()
 
         # 唤醒
         wakeup_process = Process(target=self.wake_up, args=(self.event, self.audio_queue_wakeup))
@@ -349,7 +339,7 @@ class OnlineAudio:
 
         # listen_process_play.join()
         # play_process.join()
-        listen_process_wakeeup.join()
+        listen_process_wakeup.join()
         wakeup_process.join()
         # display_process.join()
         # judge_alarm_process.join()

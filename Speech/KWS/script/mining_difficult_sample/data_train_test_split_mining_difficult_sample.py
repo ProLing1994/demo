@@ -46,6 +46,21 @@ def prepare_dataset_csv(config_file, input_dir, difficult_sample_mining_dir):
     testing_percentage = cfg.dataset.label.testing_percentage
 
     difficult_sample_files = []          # {'label': [], 'file': [], 'mode': []}
+    simple_difficult_sample_files = []   # {'label': [], 'file': [], 'mode': []}
+    # output
+    output_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date))
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    # input 
+    if not os.path.exists(input_dir):
+        input_dir = output_dir
+
+    # 加载原有存在的 difficult_sample_files.csv
+    if os.path.exists(os.path.join(output_dir, 'difficult_sample_files.csv')):
+        difficult_sample_pd = pd.read_csv(os.path.join(output_dir, 'difficult_sample_files.csv'))
+        for _, row in difficult_sample_pd.iterrows():
+            difficult_sample_files.append({'label': row['label'], 'file': row['file'], 'mode':row['mode']})
 
     # Look through difficult sample to find audio samples
     search_path = os.path.join(difficult_sample_mining_dir, '*.wav')
@@ -53,15 +68,7 @@ def prepare_dataset_csv(config_file, input_dir, difficult_sample_mining_dir):
         # Divide training, test and verification set
         set_index = random_index(validation_percentage, testing_percentage)
         difficult_sample_files.append({'label': UNKNOWN_WORD_LABEL, 'file': wav_path, 'mode':set_index})
-
-    # output
-    output_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date))
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-    
-    # input 
-    if not os.path.exists(input_dir):
-        input_dir = output_dir
+        simple_difficult_sample_files.append({'label': UNKNOWN_WORD_LABEL, 'file': wav_path, 'mode':set_index})
 
     difficult_sample_pd = pd.DataFrame(difficult_sample_files)
     difficult_sample_pd.to_csv(os.path.join(output_dir, 'difficult_sample_files.csv'), index=False, encoding="utf_8_sig")
@@ -86,14 +93,14 @@ def prepare_dataset_csv(config_file, input_dir, difficult_sample_mining_dir):
             total_data_files.append({'label': row['label'], 'file': row['file'], 'mode':row['mode']})
             
         # random
-        random.shuffle(difficult_sample_files)
+        random.shuffle(simple_difficult_sample_files)
         
         for set_index in ['validation', 'testing', 'training']:
             set_size = np.array([x['mode'] == set_index and x['label'] == cfg.dataset.label.positive_label[0] for x in total_data_files]).astype(np.int).sum()
 
             # difficult samples
             difficult_size = int(math.ceil(set_size * difficult_sample_percentage / 100))
-            difficult_sample_files_set = [x for x in difficult_sample_files if x['mode'] == set_index]
+            difficult_sample_files_set = [x for x in simple_difficult_sample_files if x['mode'] == set_index]
             difficult_sample_files_set = copy.deepcopy(difficult_sample_files_set)
             difficult_sample_files_set = difficult_sample_files_set[:difficult_size]
             for idx in range(len(difficult_sample_files_set)):

@@ -29,7 +29,10 @@ fi
 if [ $stage -le 2 ];then
 	python ../mining_difficult_sample/data_train_test_split_mining_difficult_sample.py \
 			--config_file $config_file \
-			--difficult_sample_mining_dir /mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/difficult_sample_mining_11122020/clean_audio/ || exit 1
+			--difficult_sample_mining_dir /mnt/huanyuan/data/speech/kws/difficult_sample_mining/difficult_sample_mining_11122020/clean_audio/ || exit 1
+	python ../mining_difficult_sample/data_train_test_split_mining_difficult_sample.py \
+			--config_file $config_file \
+			--difficult_sample_mining_dir /mnt/huanyuan/data/speech/kws/difficult_sample_mining/difficult_sample_mining_12212020/audio/ || exit 1
 fi
 
 # prepare align dataset, clean the dataset according to the alignment results

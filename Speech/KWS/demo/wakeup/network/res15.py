@@ -27,7 +27,6 @@ def kaiming_weight_init(m, bn_std=0.02):
 def parameters_init(net):
   net.apply(kaiming_weight_init)
 
-
 class SpeechResModel(nn.Module):
   def __init__(self, num_classes, image_height, image_weidth):
     super().__init__()

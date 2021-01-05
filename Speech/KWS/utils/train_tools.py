@@ -9,21 +9,22 @@ import sys
 import shutil
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 from tqdm import tqdm
 
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo')
 sys.path.insert(0, '/home/huanyuan/code/demo')
+from common.common.utils.python.train_tools import EpochConcateSampler
+from common.common.utils.python.file_tools import load_module_from_disk
+from common.common.utils.python.plotly_tools import plot_loss2d, plot_loss
+
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/KWS')
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from utils.loss import FocalLoss
 from dataset.kws.dataset_helper import SILENCE_LABEL
 from dataset.kws.kws_dataset_align_preload_audio import SpeechDatasetAlign
 from dataset.kws.kws_dataset_preload_audio import SpeechDataset
-
-# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/KWS')
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
-from common.common.utils.python.train_tools import EpochConcateSampler
-from common.common.utils.python.file_tools import load_module_from_disk
-from common.common.utils.python.plotly_tools import plot_loss2d, plot_loss
 
 def load_cfg_file(config_file):
     """
@@ -78,7 +79,7 @@ def init_torch_and_numpy(cfg, local_rank=0):
         raise Exception("[ERROR:] Unknow data parallel mode, please check!")
 
 
-def import_network(cfg):
+def import_network(cfg, model_name, class_name='SpeechResModel'):
     """ import network
     :param cfg:
     :return:
@@ -86,10 +87,10 @@ def import_network(cfg):
     assert torch.cuda.is_available(), \
         'CUDA is not available! Please check nvidia driver!'
 
-    net_module = importlib.import_module('network.' + cfg.net.name)
-    net = net_module.__getattribute__('SpeechResModel')(num_classes=cfg.dataset.label.num_classes,
-                                                        image_height=cfg.dataset.data_size[1],
-                                                        image_weidth=cfg.dataset.data_size[0])
+    net_module = importlib.import_module('network.' + model_name)
+    net = net_module.__getattribute__(class_name)(num_classes=cfg.dataset.label.num_classes,
+                                                    image_height=cfg.dataset.data_size[1],
+                                                    image_weidth=cfg.dataset.data_size[0])
     net_module.parameters_init(net)
     gpu_ids = list(range(cfg.general.num_gpus))
 
@@ -118,6 +119,23 @@ def define_loss_function(cfg):
     else:
         raise ValueError('Unsupported loss function.')
     return loss_func.cuda()
+
+
+def loss_fn_kd(cfg, original_scores, teacher_scores, loss):
+    """
+    Compute the knowledge-distillation (KD) loss given outputs, labels.
+    "Hyperparameters": temperature and alpha
+
+    NOTE: the KL Divergence for PyTorch comparing the softmaxs of teacher
+    and student expects the input tensor to be log probabilities! See Issue #2
+    """
+    assert cfg.knowledge_distillation.loss_name == 'kd'
+    alpha = cfg.knowledge_distillation.alpha
+    T = cfg.knowledge_distillation.temperature
+    KD_loss = nn.KLDivLoss(reduction='batchmean')(F.log_softmax(original_scores/T, dim=1), F.softmax(teacher_scores/T, dim=1)) * (alpha * T * T) + \
+                loss * (1. - alpha)
+
+    return KD_loss
 
 
 def worker_init(worker_idx):
@@ -238,59 +256,25 @@ def generate_dataset_ddp(cfg, mode, training_mode=0):
     return train_loader, train_sampler, len(data_set)
 
 
-def load_checkpoint(epoch_idx, net, save_dir):
+def load_checkpoint(epoch_num, net, net_dir, optimizer=None, sub_folder_name='checkpoints'):
     """
     load network parameters from directory
-    :param epoch_idx: the epoch idx of model to load
+    :param epoch_num: the epoch idx of model to load
     :param net: the network object
-    :param save_dir: the save directory
+    :param net_dir: the network directory
     :return: loaded epoch index, loaded batch index
     """
-    chk_file = os.path.join(save_dir, 'checkpoints',
-                            'chk_{}'.format(epoch_idx), 'parameter.pkl')
+    chk_file = os.path.join(net_dir, sub_folder_name,
+                            'chk_{}'.format(epoch_num), 'parameter.pkl')
     if not os.path.isfile(chk_file):
         raise ValueError('checkpoint file not found: {}'.format(chk_file))
 
     state = torch.load(chk_file)
     net.load_state_dict(state['state_dict'])
-    return state['epoch'], state['batch']
 
+    if optimizer:
+        optimizer.load_state_dict(state['optimizer'])
 
-def load_checkpoint_finetune(epoch_idx, net, save_dir):
-    """
-    load network parameters from directory
-    :param epoch_idx: the epoch idx of model to load
-    :param net: the network object
-    :param save_dir: the save directory
-    :return: loaded epoch index, loaded batch index
-    """
-    chk_file = os.path.join(save_dir, 'pretrain_model',
-                            'chk_{}'.format(epoch_idx), 'parameter.pkl')
-    if not os.path.isfile(chk_file):
-        raise ValueError('checkpoint file not found: {}'.format(chk_file))
-
-    state = torch.load(chk_file)
-    net.load_state_dict(state['state_dict'])
-    return state['epoch'], state['batch']
-
-
-def load_checkpoint_resume(epoch_idx, net, optimizer, save_dir):
-    """
-    load network parameters from directory
-    :param epoch_idx: the epoch idx of model to load
-    :param net: the network object
-    :param optimizer: the network object
-    :param save_dir: the save directory
-    :return: loaded epoch index, loaded batch index
-    """
-    chk_file = os.path.join(save_dir, 'checkpoints',
-                            'chk_{}'.format(epoch_idx), 'parameter.pkl')
-    if not os.path.isfile(chk_file):
-        raise ValueError('checkpoint file not found: {}'.format(chk_file))
-
-    state = torch.load(chk_file)
-    net.load_state_dict(state['state_dict'])
-    optimizer.load_state_dict(state['optimizer'])
     return state['epoch'], state['batch']
 
 
@@ -421,6 +405,7 @@ def plot_spectrogram(image, output_path):
     fig = plt.figure(figsize=(10, 4))
     heatmap = plt.pcolor(image)
     fig.colorbar(mappable=heatmap)
+    plt.axis('off')
     plt.xlabel("Time(s)")
     plt.ylabel("MFCC Coefficients")
     plt.tight_layout()

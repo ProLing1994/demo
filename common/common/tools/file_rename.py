@@ -26,8 +26,10 @@ if __name__ == '__main__':
     # file_format = 'shanggantingting_'
     # input_dir = "/mnt/huanyuan/data/speech/Negative_sample/QingTingFM/music_station/suiyueruge/"
     # file_format = 'suiyueruge_'
-    input_dir = "/mnt/huanyuan/data/speech/Negative_sample/QingTingFM/news/jiaodianshike/"
-    file_format = 'jiaodianshike_'
+    # input_dir = "/mnt/huanyuan/data/speech/Negative_sample/QingTingFM/news/jiaodianshike/"
+    # file_format = 'jiaodianshike_'
+    input_dir = "/mnt/huanyuan/data/speech/Recording_sample/Radio_sample/QingTingFM/news/全国新闻联播/"
+    file_format = '全国新闻联播_'
     file_type = ".m4a"
     start_id = 1
 
@@ -35,6 +37,12 @@ if __name__ == '__main__':
     file_list.sort()
     for idx in range(len(file_list)):
         file_path = file_list[idx]
-        rename_path = os.path.join(os.path.dirname(file_path), "{}{:0>5d}{}".format(file_format, (start_id + idx), file_type))
+
+        # 自定义重命名规则
+        # rename_path = os.path.join(os.path.dirname(file_path), "{}{:0>5d}{}".format(file_format, (start_id + idx), file_type))
+        
+        basename = "_".join(os.path.basename(file_path).split('.')[0].split('_')[-3:])
+        rename_path = os.path.join(os.path.dirname(file_path), "{:0>5d}_{}{}{}".format((start_id + idx), file_format, basename, file_type))
+
         print(file_path, '->', rename_path)
         # os.rename(file_path, rename_path)

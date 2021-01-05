@@ -14,16 +14,16 @@ __C.general.data_dir = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experiment
 __C.general.sub_data_dir = ["/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experimental_dataset/XiaoYuDataset/"]
 
 # data version
-__C.general.version = "1.2"
+__C.general.version = "1.3"
 
 # data date
 __C.general.date = "12162020"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.2_12162020/total_data_files_align_clean.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.3_12162020/total_data_files_align_clean.csv"
 
 # background noise path
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.2_12162020/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.3_12162020/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -33,12 +33,20 @@ __C.general.is_test = True
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12082020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_1_finetune_res15_12082020/"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_3_res15_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_3_res15_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_4_finetune_res15_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_5_finetune_res15_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_6_res15_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_7_res15_narrow_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_10_res15_finetune_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_11_res15_narrow_kd_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_12_res15_narrow_fintune_12162020/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_13_res15_narrow_fintune_kd_12162020/"
 
-# finrtune model
-__C.general.finetune_on = False
-__C.general.finetune_model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_12102020/"
-__C.general.finetune_epoch = 7999
+# finetune model
+__C.general.finetune_on = True
+__C.general.finetune_model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain1_2_res15_narrow_12102020/"
+__C.general.finetune_epoch = 3999
 
 # set certain epoch to continue training, set -1 to train from scratch
 __C.general.resume_epoch = -1
@@ -53,9 +61,36 @@ __C.general.num_gpus = 1
 __C.general.gpu_ids = '0'
 
 # data_parallel_mode: [0, 1]
-# 0: 单机多卡，DataParallel
-# 1: 单/多级多卡、分布式，DistributedDataParallel
+# 0: 鍗曟満澶氬崱锛孌ataParallel
+# 1: 鍗?澶氱骇澶氬崱銆佸垎甯冨紡锛孌istributedDataParallel
 __C.general.data_parallel_mode = 0
+
+
+##################################
+# knowledge distillation parameters
+##################################
+
+__C.knowledge_distillation = {}
+
+# knowledge distillation: on
+__C.knowledge_distillation.on = True
+
+# teacher model
+__C.knowledge_distillation.teacher_model_name = 'res15'
+__C.knowledge_distillation.teacher_model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_10_res15_finetune_12162020/"
+__C.knowledge_distillation.epoch = 3999
+
+# loss
+# kd: https://github.com/peterliht/knowledge-distillation-pytorch
+# cd: https://github.com/zhouzaida/channel-distillation
+__C.knowledge_distillation.loss_name = 'kd'
+
+# kd, alpha
+__C.knowledge_distillation.alpha = 0.95
+
+# kd, temperature
+__C.knowledge_distillation.temperature = 6
+
 
 ##################################
 # data set parameters
@@ -182,8 +217,8 @@ __C.net = {}
 # __C.net.name = 'cnn-trad-pool2'
 # __C.net.name = 'cnn-one-fstride1'
 # __C.net.name = 'cnn-tpool2'
-__C.net.name = 'res15'
-# __C.net.name = 'res15-narrow'
+# __C.net.name = 'res15'
+__C.net.name = 'res15-narrow'
 # __C.net.name = 'res8'
 # __C.net.name = 'res8-narrow'
 # __C.net.name = 'lstm-avg'
@@ -232,8 +267,8 @@ __C.train.save_epochs = 25
 
 # learning rate = lr*gamma**(epoch//step_size)
 # __C.train.lr = 1e-3
-__C.train.lr = 1e-4
-# __C.train.lr = 1e-5
+# __C.train.lr = 1e-4
+__C.train.lr = 1e-5
 
 # step size for step learning rate
 __C.train.lr_step_size = 0
@@ -276,3 +311,32 @@ __C.debug.num_processing = 64
 
 # random seed used in training
 __C.debug.seed = 0
+
+
+##################################
+# test parameters
+##################################
+
+__C.test = {}
+
+# the number of testing epochs
+__C.test.model_epoch = -1
+
+# mode, support [0: RecognizeCommands, 1: RecognizeCommandsCountNumber, 2:RecognizeCommandsAlign]
+__C.test.method_mode = 0
+
+# detection threshold, support [0.3,0.4,0.6,0.8,0.9,0.95]
+__C.test.detection_threshold = 0.95
+
+# detection number threshold, only support method_mode=1:RecognizeCommandsCountNumber
+__C.test.detection_number_threshold = 0.9   # [0.5,0.75,0.9]
+
+# detection threshold low & high, only support method_mode=2:RecognizeCommandsAlign
+__C.test.detection_threshold_low = 0.1
+__C.test.detection_threshold_high = __C.test.detection_threshold
+    
+# parameter
+__C.test.timeshift_ms = 30
+__C.test.average_window_duration_ms = 800    # [450,800,1500]
+__C.test.minimum_count = 10
+__C.test.suppression_ms = 2500               # [500, 3000]
