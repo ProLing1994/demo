@@ -3,12 +3,17 @@ import librosa
 import os
 import pandas as pd
 import re
-import sys
 
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS/script/dataset_align')
-from src.utils.file_tool import read_file_gen
+# read file
+def read_file_gen(file_path, encoding="utf-8", to_be_split=" "):
+    with open(file_path, encoding=encoding) as f:
+        all_lines = f.readlines()
+        for index, single_line in enumerate(all_lines):
+            single_items = single_line.replace("\n", "").split(to_be_split)
+            yield index, single_items
+
 
 def time2second(time):
     h, m, s = time.strip().split(":")
