@@ -178,9 +178,9 @@ def audio_split_subtitle(args):
 
 def main():
     parser = argparse.ArgumentParser(description="Audio Split Using Subtitle")
-    parser.add_argument('--audio_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/01042021/一代宗师/音频_C.wav") 
-    parser.add_argument('--subtitle_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/01042021/一代宗师/字幕.srt") 
-    parser.add_argument('--output_dir', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/01042021/一代宗师/test")
+    parser.add_argument('--audio_path', type=str, default="D:\\data\\test\\音频_C.wav") 
+    parser.add_argument('--subtitle_path', type=str, default="D:\\data\\test\\字幕.srt") 
+    parser.add_argument('--output_dir', type=str, default="D:\\data\\test\\")
     parser.add_argument('--time_shift', type=str, default="+,0.0")
     parser.add_argument('--output_format', type=str, default="RM_MOVIE_S{:0>3d}T{:0>3d}.wav")
     parser.add_argument('--movie_id', type=int, default=1)
