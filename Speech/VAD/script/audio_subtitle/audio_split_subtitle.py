@@ -22,12 +22,11 @@ def time2second(time):
     return int(h) * 3600 + int(m) * 60 + int(s)
 
 
-def load_srt(srt_file):
+def load_srt(args, srt_file):
     srt_list = []       # [{'idx':(), 'start_time':(), 'end_time':(), 'srt':()}]
     srt_dict = {}
     srt_idx = 1
-    # for _, items in read_file_gen(srt_file, encoding="gbk"):
-    for item_idx, items in read_file_gen(srt_file):
+    for item_idx, items in read_file_gen(srt_file, encoding=args.file_encoding):
         if len(items) == 1 and (items[0] == str(srt_idx) or items[0] == '\ufeff1'):
             if srt_dict:
                 srt_list.append(srt_dict)
@@ -46,23 +45,45 @@ def load_srt(srt_file):
                 srt_dict['srt'] = " ".join(items)
     
     # end 
-    srt_list.append(srt_dict)
-    srt_dict = {}
+    if srt_dict:
+        srt_list.append(srt_dict)
+        srt_dict = {}
     return srt_list
 
 
-def clean_srt(srt):
-    srt = "".join(srt.strip().split(' '))
-    srt = "".join(srt.strip().split('?'))
-    srt = "".join(srt.strip().split('!'))
-    srt = "".join(srt.strip().split(':'))
-    srt = "".join(srt.strip().split('-'))
-    srt = "".join(srt.strip().split('《'))
-    srt = "".join(srt.strip().split('》'))
+def clean_srt_chinese(srt):
+    srt = srt.replace(' ', '')
+    srt = srt.replace('?', '')
+    srt = srt.replace('!', '')
+    srt = srt.replace(',', '')
+    srt = srt.replace('.', '')
+    srt = srt.replace(':', '')
+    srt = srt.replace('-', '')
+    srt = srt.replace('《', '')
+    srt = srt.replace('》', '')
+    srt = re.sub(' +', '', srt)
 
     dict_number = {"0":u"零","1":u"一","2":u"二","3":u"三","4":u"四","5":u"五","6":u"六","7":u"七","8":u"八","9":u"九"}
     for key, value in dict_number.items():
         srt = srt.replace(key, value)
+    return srt
+
+
+def clean_srt_english(srt):
+    srt = srt.replace('<i>', ' ')
+    srt = srt.replace('</i>', ' ')
+    srt = srt.replace('?', ' ')
+    srt = srt.replace('!', ' ')
+    srt = srt.replace(',', ' ')
+    srt = srt.replace('.', ' ')
+    srt = srt.replace(':', ' ')
+    srt = srt.replace('-', ' ')
+    srt = srt.replace('《', ' ')
+    srt = srt.replace('》', ' ')
+    srt = srt.replace('"', ' ')
+    srt = srt.replace('%', ' percent ')
+    srt = re.sub(' +', ' ', srt)
+    srt = srt.lstrip().rstrip()
     return srt
 
 
@@ -78,16 +99,27 @@ def merge_srt(args, srt_list):
         srt_dict_temp['start_time'] = str_item['start_time']
         srt_dict_temp['end_time'] = str_item['end_time']
         srt_dict_temp['length'] = time2second(str_item['end_time']) - time2second(str_item['start_time'])
-        srt_dict_temp['srt'] = clean_srt(str_item['srt'])
+        srt_dict_temp['srt'] = str_item['srt']
 
-        if srt_dict_temp['srt'].startswith('(') and srt_dict_temp['srt'].endswith(')'):
-            continue
-        
-        if bool(re.search('[a-z]', srt_dict_temp['srt'], re.I)):
-            continue
+        if args.language == "Chinese":
+            srt_dict_temp['srt'] = clean_srt_chinese(srt_dict_temp['srt'])
+            if srt_dict_temp['srt'].startswith('(') and srt_dict_temp['srt'].endswith(')'):
+                continue
+            if bool(re.search('[a-z]', srt_dict_temp['srt'], re.I)):
+                continue
+        elif args.language == "English": 
+            srt_dict_temp['srt'] = clean_srt_english(srt_dict_temp['srt'])
+        else:
+            raise Exception("[ERROR:] Unknow language, please check!")
 
         if srt_dict:
-            srt = srt_dict['srt'] + srt_dict_temp['srt']
+            if args.language == "Chinese":
+                srt = srt_dict['srt'] + srt_dict_temp['srt']
+            elif args.language == "English": 
+                srt = srt_dict['srt'] + ' ' + srt_dict_temp['srt']
+            else:
+                raise Exception("[ERROR:] Unknow language, please check!")   
+
             srt_length = time2second(srt_dict_temp['end_time']) - time2second(srt_dict['start_time'])
             if srt_length > args.max_length_second:
                 srt_clean_list.append(srt_dict)
@@ -117,11 +149,12 @@ def merge_srt(args, srt_list):
 
     # end
     if srt_length <= args.max_length_second:
-        srt_clean_list.append(srt_dict)
-        srt_dict = {}
-        srt_idx += 1
-        srt_dict = srt_dict_temp
-        srt_dict['idx'] = srt_idx
+        if srt_dict:
+            srt_clean_list.append(srt_dict)
+            srt_dict = {}
+            srt_idx += 1
+            srt_dict = srt_dict_temp
+            srt_dict['idx'] = srt_idx
     return srt_clean_list
 
 
@@ -142,7 +175,7 @@ def audio_split_subtitle(args):
 
     # load srt
     print("Load srt: ")
-    srt_list = load_srt(args.subtitle_path)
+    srt_list = load_srt(args, args.subtitle_path)
     print("Load srt Done!")
 
     # merge srt
@@ -178,9 +211,11 @@ def audio_split_subtitle(args):
 
 def main():
     parser = argparse.ArgumentParser(description="Audio Split Using Subtitle")
-    parser.add_argument('--audio_path', type=str, default="D:\\data\\test\\音频_C.wav") 
-    parser.add_argument('--subtitle_path', type=str, default="D:\\data\\test\\字幕.srt") 
-    parser.add_argument('--output_dir', type=str, default="D:\\data\\test\\")
+    parser.add_argument('--audio_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/01072021/Watchmen/音频-C.wav") 
+    parser.add_argument('--subtitle_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/01072021/Watchmen/字幕.srt") 
+    parser.add_argument('--output_dir', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/01072021/Watchmen/")
+    parser.add_argument('--language', type=str, choices=["Chinese", "English"], default="English")
+    parser.add_argument('--file_encoding', type=str, choices=["gbk", "utf-8"], default="utf-8")
     parser.add_argument('--time_shift', type=str, default="+,0.0")
     parser.add_argument('--output_format', type=str, default="RM_MOVIE_S{:0>3d}T{:0>3d}.wav")
     parser.add_argument('--movie_id', type=int, default=1)
