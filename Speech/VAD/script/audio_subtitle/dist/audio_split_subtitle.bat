@@ -1,0 +1,1 @@
+audio_split_subtitle.exe --audio_path="D:\\data\\test\\音频_C.wav" --subtitle_path="D:\\data\\test\\字幕.srt" --output_dir="D:\\data\\test\\" --movie_id=1
