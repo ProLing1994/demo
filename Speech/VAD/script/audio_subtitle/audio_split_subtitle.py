@@ -61,6 +61,22 @@ def clean_srt_chinese(srt):
     srt = srt.replace('-', '')
     srt = srt.replace('《', '')
     srt = srt.replace('》', '')
+    srt = srt.replace('(', '')
+    srt = srt.replace(')', '')
+
+    srt = srt.replace('，', '')
+    srt = srt.replace('、', '')
+    srt = srt.replace('。', '')
+    srt = srt.replace('「', '')
+    srt = srt.replace('」', '')
+    srt = srt.replace('？', '')
+    srt = srt.replace('！', '')
+    srt = srt.replace('…', '')
+    srt = srt.replace('”', '')
+    srt = srt.replace('“', '')
+    srt = srt.replace('（', '')
+    srt = srt.replace('）', '')
+
     srt = re.sub(' +', '', srt)
 
     dict_number = {"0":u"零","1":u"一","2":u"二","3":u"三","4":u"四","5":u"五","6":u"六","7":u"七","8":u"八","9":u"九"}
@@ -89,11 +105,18 @@ def clean_srt_english(srt):
 
 def merge_srt(args, srt_list):
     srt_clean_list = []         # [{'idx':(), 'start_time':(), 'end_time':(), 'length':(), 'srt':()}]
+    srt_failed_list = []         # [{'idx':(), 'start_time':(), 'end_time':(), 'length':(), 'srt':()}]
     srt_dict = {}
     srt_idx = 1
     
     for idx in range(len(srt_list)):
         str_item = srt_list[idx]
+
+        # check 
+        if 'srt' not in str_item or 'start_time' not in str_item or 'end_time' not in str_item:
+            srt_failed_list.append(str_item)
+            continue
+        
         srt_dict_temp = {}
         srt_dict_temp['idx'] = srt_idx
         srt_dict_temp['start_time'] = str_item['start_time']
@@ -102,11 +125,16 @@ def merge_srt(args, srt_list):
         srt_dict_temp['srt'] = str_item['srt']
 
         if args.language == "Chinese":
-            srt_dict_temp['srt'] = clean_srt_chinese(srt_dict_temp['srt'])
             if srt_dict_temp['srt'].startswith('(') and srt_dict_temp['srt'].endswith(')'):
+                srt_failed_list.append(str_item)
+                continue
+            if srt_dict_temp['srt'].startswith('「') and srt_dict_temp['srt'].endswith('」'):
+                srt_failed_list.append(str_item)
                 continue
             if bool(re.search('[a-z]', srt_dict_temp['srt'], re.I)):
+                srt_failed_list.append(str_item)
                 continue
+            srt_dict_temp['srt'] = clean_srt_chinese(srt_dict_temp['srt'])
         elif args.language == "English": 
             srt_dict_temp['srt'] = clean_srt_english(srt_dict_temp['srt'])
         else:
@@ -122,9 +150,22 @@ def merge_srt(args, srt_list):
 
             srt_length = time2second(srt_dict_temp['end_time']) - time2second(srt_dict['start_time'])
             if srt_length > args.max_length_second:
-                srt_clean_list.append(srt_dict)
+
+                # check
+                # 字幕中，不希望包含剔除的字幕段
+                bool_find_failed_srt = False
+                for failed_idx in range(len(srt_failed_list)):
+                    srt_failed = srt_failed_list[failed_idx]
+                    if time2second(srt_dict['start_time']) < time2second(srt_failed['start_time']) \
+                        and time2second(srt_dict['end_time']) > time2second(srt_failed['end_time']):
+                        bool_find_failed_srt = True
+                        break
+                
+                if not bool_find_failed_srt:
+                    srt_clean_list.append(srt_dict)
+                    srt_idx += 1
+
                 srt_dict = {}
-                srt_idx += 1
                 srt_dict = srt_dict_temp
                 srt_dict['idx'] = srt_idx
             else:
@@ -211,11 +252,11 @@ def audio_split_subtitle(args):
 
 def main():
     parser = argparse.ArgumentParser(description="Audio Split Using Subtitle")
-    parser.add_argument('--audio_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/01072021/Watchmen/音频-C.wav") 
-    parser.add_argument('--subtitle_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/01072021/Watchmen/字幕.srt") 
-    parser.add_argument('--output_dir', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/01072021/Watchmen/")
-    parser.add_argument('--language', type=str, choices=["Chinese", "English"], default="English")
-    parser.add_argument('--file_encoding', type=str, choices=["gbk", "utf-8"], default="utf-8")
+    parser.add_argument('--audio_path', type=str, default="E:\\迅雷下载\\mkv\\六福喜事\\六福喜事.wav") 
+    parser.add_argument('--subtitle_path', type=str, default="E:\\迅雷下载\\mkv\\六福喜事\\六福喜事.srt") 
+    parser.add_argument('--output_dir', type=str, default="E:\\迅雷下载\\mkv\\六福喜事\\")
+    parser.add_argument('--language', type=str, choices=["Chinese", "English"], default="Chinese")
+    parser.add_argument('--file_encoding', type=str, choices=["gbk", "utf-8"], default="gbk")
     parser.add_argument('--time_shift', type=str, default="+,0.0")
     parser.add_argument('--output_format', type=str, default="RM_MOVIE_S{:0>3d}T{:0>3d}.wav")
     parser.add_argument('--movie_id', type=int, default=1)
