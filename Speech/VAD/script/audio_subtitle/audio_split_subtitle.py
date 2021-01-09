@@ -1,4 +1,5 @@
 import argparse
+import audioread
 import librosa
 import os
 import pandas as pd
@@ -103,20 +104,50 @@ def clean_srt_english(srt):
     return srt
 
 
+def find_failed_srt(srt_dict, srt_failed_list):
+    # 检测输出字幕，字幕中不希望包含剔除的字幕段
+    for failed_idx in range(len(srt_failed_list)):
+        srt_failed = srt_failed_list[failed_idx]
+        if time2second(srt_dict['start_time']) <= time2second(srt_failed['start_time']) \
+            and time2second(srt_dict['end_time']) >= time2second(srt_failed['end_time']):
+            return True
+    return False
+
+
 def merge_srt(args, srt_list):
     srt_clean_list = []         # [{'idx':(), 'start_time':(), 'end_time':(), 'length':(), 'srt':()}]
     srt_failed_list = []         # [{'idx':(), 'start_time':(), 'end_time':(), 'length':(), 'srt':()}]
     srt_dict = {}
     srt_idx = 1
-    
+    srt_length = 0
+
     for idx in range(len(srt_list)):
         str_item = srt_list[idx]
 
-        # check 
+        # check srt 
         if 'srt' not in str_item or 'start_time' not in str_item or 'end_time' not in str_item:
             srt_failed_list.append(str_item)
             continue
-        
+        # check chinese 
+        if args.language == "Chinese":
+            if str_item['srt'].startswith('(') and str_item['srt'].endswith(')'):
+                srt_failed_list.append(str_item)
+                continue
+            if str_item['srt'].startswith('「') and str_item['srt'].endswith('」'):
+                srt_failed_list.append(str_item)
+                continue
+            if str_item['srt'].startswith('♪') and str_item['srt'].endswith('♪'):
+                srt_failed_list.append(str_item)
+                continue
+            if bool(re.search('[a-z]', str_item['srt'], re.I)):
+                srt_failed_list.append(str_item)
+                continue
+        # check English 
+        elif args.language == "English": 
+            pass
+        else:
+            raise Exception("[ERROR:] Unknow language, please check!")
+
         srt_dict_temp = {}
         srt_dict_temp['idx'] = srt_idx
         srt_dict_temp['start_time'] = str_item['start_time']
@@ -124,78 +155,61 @@ def merge_srt(args, srt_list):
         srt_dict_temp['length'] = time2second(str_item['end_time']) - time2second(str_item['start_time'])
         srt_dict_temp['srt'] = str_item['srt']
 
+        # clean srt
         if args.language == "Chinese":
-            if srt_dict_temp['srt'].startswith('(') and srt_dict_temp['srt'].endswith(')'):
-                srt_failed_list.append(str_item)
-                continue
-            if srt_dict_temp['srt'].startswith('「') and srt_dict_temp['srt'].endswith('」'):
-                srt_failed_list.append(str_item)
-                continue
-            if bool(re.search('[a-z]', srt_dict_temp['srt'], re.I)):
-                srt_failed_list.append(str_item)
-                continue
             srt_dict_temp['srt'] = clean_srt_chinese(srt_dict_temp['srt'])
         elif args.language == "English": 
             srt_dict_temp['srt'] = clean_srt_english(srt_dict_temp['srt'])
         else:
             raise Exception("[ERROR:] Unknow language, please check!")
+        
+        bool_output_srt = False
+        if srt_dict: 
+            srt_dict_length = time2second(srt_dict['end_time']) - time2second(srt_dict['start_time'])
 
-        if srt_dict:
-            if args.language == "Chinese":
-                srt = srt_dict['srt'] + srt_dict_temp['srt']
-            elif args.language == "English": 
-                srt = srt_dict['srt'] + ' ' + srt_dict_temp['srt']
-            else:
-                raise Exception("[ERROR:] Unknow language, please check!")   
-
-            srt_length = time2second(srt_dict_temp['end_time']) - time2second(srt_dict['start_time'])
-            if srt_length > args.max_length_second:
-
-                # check
-                # 字幕中，不希望包含剔除的字幕段
-                bool_find_failed_srt = False
-                for failed_idx in range(len(srt_failed_list)):
-                    srt_failed = srt_failed_list[failed_idx]
-                    if time2second(srt_dict['start_time']) < time2second(srt_failed['start_time']) \
-                        and time2second(srt_dict['end_time']) > time2second(srt_failed['end_time']):
-                        bool_find_failed_srt = True
-                        break
+            if srt_dict_length >= args.best_length_second:
+                bool_output_srt = True
                 
-                if not bool_find_failed_srt:
-                    srt_clean_list.append(srt_dict)
-                    srt_idx += 1
+            else:
+                srt_length = time2second(srt_dict_temp['end_time']) - time2second(srt_dict['start_time'])
 
+                if srt_length > args.max_length_second:
+                    bool_output_srt = True
+                    
+                else:
+                    if args.language == "Chinese":
+                            srt = srt_dict['srt'] + srt_dict_temp['srt']
+                    elif args.language == "English": 
+                        srt = srt_dict['srt'] + ' ' + srt_dict_temp['srt']
+                    else:
+                        raise Exception("[ERROR:] Unknow language, please check!")  
+
+                    srt_dict['end_time'] = srt_dict_temp['end_time']
+                    srt_dict['length'] = srt_length
+                    srt_dict['srt'] = srt
+        else:
+            if srt_dict_temp['length'] > args.max_length_second:
+                print("[Warring:] 字幕: {}, 长度超过预测最大长度：{}s/{}s".format(srt_dict_temp['srt'], srt_dict_temp['length'], args.max_length_second))
+                pass
+            else:
+                srt_dict = srt_dict_temp
+
+        if bool_output_srt:
+            # check，字幕中不希望包含剔除的字幕段
+            if find_failed_srt(srt_dict, srt_failed_list) or srt_dict_length < args.min_length_second:
                 srt_dict = {}
                 srt_dict = srt_dict_temp
                 srt_dict['idx'] = srt_idx
             else:
-                srt_dict['end_time'] = srt_dict_temp['end_time']
-                srt_dict['length'] = srt_length
-                srt_dict['srt'] = srt
-                if srt_length > args.min_length_second:
-                    srt_clean_list.append(srt_dict)
-                    srt_dict = {}
-                    srt_idx += 1
-
-        else:
-            if srt_dict_temp['length'] > args.max_length_second:
-                print("[Warring:] 字幕: {}, 长度超过预测最大长度：{}s/{}s".format(srt_dict_temp['srt'], srt_dict_temp['length'], args.max_length_second))
-            elif srt_dict_temp['length'] > args.min_length_second:
-                srt_dict = srt_dict_temp
                 srt_clean_list.append(srt_dict)
-                srt_dict = {}
                 srt_idx += 1
-            else:
+                srt_dict = {}
                 srt_dict = srt_dict_temp
+                srt_dict['idx'] = srt_idx
 
     # end
-    if srt_length <= args.max_length_second:
-        if srt_dict:
-            srt_clean_list.append(srt_dict)
-            srt_dict = {}
-            srt_idx += 1
-            srt_dict = srt_dict_temp
-            srt_dict['idx'] = srt_idx
+    if srt_dict and srt_length <= args.max_length_second and srt_length > args.min_length_second:
+        srt_clean_list.append(srt_dict)
     return srt_clean_list
 
 
@@ -227,6 +241,7 @@ def audio_split_subtitle(args):
     # load audio
     print("Load audio: ")
     audio_data = librosa.core.load(args.audio_path, sr=sample_rate)[0]
+    # audio_data = audioread.ffdec.FFmpegAudioFile(args.audio_path)
     print("Load audio Done!")
 
     # audio split
@@ -252,15 +267,16 @@ def audio_split_subtitle(args):
 
 def main():
     parser = argparse.ArgumentParser(description="Audio Split Using Subtitle")
-    parser.add_argument('--audio_path', type=str, default="E:\\迅雷下载\\mkv\\六福喜事\\六福喜事.wav") 
-    parser.add_argument('--subtitle_path', type=str, default="E:\\迅雷下载\\mkv\\六福喜事\\六福喜事.srt") 
-    parser.add_argument('--output_dir', type=str, default="E:\\迅雷下载\\mkv\\六福喜事\\")
+    parser.add_argument('--audio_path', type=str, default="E:\\迅雷下载\\mkv\\失孤\\失孤.wav") 
+    parser.add_argument('--subtitle_path', type=str, default="E:\\迅雷下载\\mkv\\失孤\\失孤.srt") 
+    parser.add_argument('--output_dir', type=str, default="E:\\迅雷下载\\mkv\\失孤\\")
     parser.add_argument('--language', type=str, choices=["Chinese", "English"], default="Chinese")
-    parser.add_argument('--file_encoding', type=str, choices=["gbk", "utf-8"], default="gbk")
+    parser.add_argument('--file_encoding', type=str, choices=["gbk", "utf-8"], default="utf-8")
     parser.add_argument('--time_shift', type=str, default="+,0.0")
     parser.add_argument('--output_format', type=str, default="RM_MOVIE_S{:0>3d}T{:0>3d}.wav")
     parser.add_argument('--movie_id', type=int, default=1)
-    parser.add_argument('--min_length_second', type=int, default=8)
+    parser.add_argument('--min_length_second', type=int, default=2)
+    parser.add_argument('--best_length_second', type=int, default=4)
     parser.add_argument('--max_length_second', type=int, default=10)
     args = parser.parse_args()
 
