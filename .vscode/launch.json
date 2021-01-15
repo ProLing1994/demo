@@ -5,11 +5,31 @@
     "version": "0.2.0",
     "configurations": [
         {
+
             "name": "Python: 当前文件",
             "type": "python",
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal"
+        },
+        {            
+            "name": "(gdb) test_asr_demo",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/Speech/ASR/lib/Debug/test_asr_demo",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/Speech/ASR/lib/Debug/",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
         },
         {
             "name": "(gdb) test_mosaic_api_thread",

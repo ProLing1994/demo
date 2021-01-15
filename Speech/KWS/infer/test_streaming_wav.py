@@ -17,10 +17,10 @@ from script.analysis_result.plot_score_line import show_score_line
 from script.analysis_result.cal_fpr_tpr import cal_fpr_tpr
 
 
-# def test(input_wav, args):
-def test(in_args):
-    input_wav = in_args[0]
-    args = in_args[1]
+def test(input_wav, args):
+# def test(in_args):
+#     input_wav = in_args[0]
+#     args = in_args[1]
 
     print("Do wave:{}, begin!!!".format(input_wav))
 
@@ -182,6 +182,10 @@ def main():
     default_mode = "0"    # ["0", "1"]
 
     # mode 0: from input_wav_list
+    # test
+    # default_input_wav_list = ["/home/huanyuan/share/audio_data/RM_KWS_XIAORUI_xiaorui_S001M1D00T001.wav",
+    #                         "/home/huanyuan/share/audio_data/RM_KWS_XIAORUI_xiaorui_S001M1D00T002.wav"]
+
     # xiaoyu
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_training_60_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_validation_60_001.wav",
@@ -190,8 +194,8 @@ def main():
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
     # xiaorui
-    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_training_60_001.wav",
-    #                             "/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_validation_60_001.wav"]
+    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_training_60_001.wav",
+                                "/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_validation_60_001.wav"]
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_validation_3600_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
@@ -213,13 +217,13 @@ def main():
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
     # nagetive test
-    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_43200_003.wav",
-                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_news_cishicike_43200_001.wav",
-                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_novel_douluodalu_43200_001.wav",
-                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_43200_001.wav",
-                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_yeshimiwen_43200_001.wav",
-                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_zhongdongwangshi_7200_001.wav",
-                                "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_xingetuijian_21600_001.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_43200_003.wav",
+    #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_news_cishicike_43200_001.wav",
+    #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_novel_douluodalu_43200_001.wav",
+    #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_43200_001.wav",
+    #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_yeshimiwen_43200_001.wav",
+    #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_zhongdongwangshi_7200_001.wav",
+    #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_xingetuijian_21600_001.wav"]
 
     # difficult sample mining
     # default_input_wav_list = ["/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_history_baijiajiangtan_21600_noused_001.wav",
@@ -288,18 +292,18 @@ def main():
     args = parser.parse_args()
 
     if str(args.mode) == "0":
-        in_params = []
-        for input_wav in args.input_wav_list:
-            in_args = [input_wav, args]
-            in_params.append(in_args)
-
-        p = multiprocessing.Pool(3)
-        out = p.map(test, in_params)
-        p.close()
-        p.join()
-
+        # in_params = []
         # for input_wav in args.input_wav_list:
-        #     test(input_wav, args)
+        #     in_args = [input_wav, args]
+        #     in_params.append(in_args)
+
+        # p = multiprocessing.Pool(3)
+        # out = p.map(test, in_params)
+        # p.close()
+        # p.join()
+
+        for input_wav in args.input_wav_list:
+            test(input_wav, args)
     elif str(args.mode) == "1":
         dataset_pd = pd.read_csv(args.csv_path)
         dataset_pd = dataset_pd[dataset_pd["type"] == args.type]
