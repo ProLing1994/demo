@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "common/wav_loader.hpp"
+#include "common/wave_data.hpp"
 #include "common/feature.hpp"
 
 #include "common/utils/csrc/file_system.h"
@@ -45,17 +45,17 @@ int main(int argc, char **argv) {
         std::cout << "\033[0;31m" << "[Information:] Audio path: " << audio_path << "\033[0;39m" << std::endl;
         
         // load wav
-        ASR::Wave_Data_S wave_data;
-        ASR::ReadWave(audio_path.c_str(), &wave_data);
-        std::cout << "\033[0;31m" << "[Information:] Audio Length: " << wave_data.data_length << ", Audio Fs: " << wave_data.fs << "\033[0;39m" << std::endl;
+        ASR::Wave_Data wave_data;
+        wave_data.load_data(audio_path.c_str());
+        std::cout << "\033[0;31m" << "[Information:] Audio Length: " << wave_data.data_length() << ", Audio Fs: " << wave_data.fs() << "\033[0;39m" << std::endl;
 
         // forward
-        int windows_times = int((wave_data.data_length - window_size_samples) * 1.0 / window_stride_samples);
+        int windows_times = int((wave_data.data_length() - window_size_samples) * 1.0 / window_stride_samples);
         for(int times = 0; times < windows_times; times ++) {
             std::cout << "\033[0;31m" << "\n[Information:] Wave start time: " << times * window_stride_samples << "\033[0;39m" << std::endl;
 
             for(int i = 0; i < window_size_samples; i ++) {
-                audio_data[i] = static_cast<short>(wave_data.data[i + times * window_stride_samples]);
+                audio_data[i] = static_cast<short>(wave_data.data()[i + times * window_stride_samples]);
             }
 
             // check, / 32768.0
@@ -71,8 +71,8 @@ int main(int argc, char **argv) {
             cv::log(mfsc_feature + 1, mfsc_feature);
             ASR::GetIntFeat(mfsc_feature, &mfsc_feature_int);
 
-            // std::cout << "\033[0;31m" << "[Information:] mfsc_feature_int.rows: " << mfsc_feature_int.rows << ", mfsc_feature_int.cols: " << mfsc_feature_int.cols <<"\033[0;39m" << std::endl;
-		    // ASR::ShowMatUchar(mfsc_feature_int, 296, 48);
+            std::cout << "\033[0;31m" << "[Information:] mfsc_feature_int.rows: " << mfsc_feature_int.rows << ", mfsc_feature_int.cols: " << mfsc_feature_int.cols <<"\033[0;39m" << std::endl;
+            ASR::ShowMatUchar(mfsc_feature_int, 296, 48);  
         }
     }
 
