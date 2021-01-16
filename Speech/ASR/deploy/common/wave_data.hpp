@@ -1,5 +1,5 @@
-#ifndef _ASR_WAV_LOADER_H_
-#define _ASR_WAV_LOADER_H_
+#ifndef _ASR_WAVE_DATA_H_
+#define _ASR_WAVE_DATA_H_
 
 typedef signed char int8_t;
 typedef unsigned char uint8_t;
@@ -7,10 +7,6 @@ typedef signed short int int16_t;
 typedef unsigned short int uint16_t;
 typedef signed int int32_t;
 typedef unsigned int uint32_t;
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 namespace ASR
 {
@@ -33,18 +29,35 @@ namespace ASR
 
 	struct Wave_Data_S
 	{
-		int16_t *data = NULL;
-		unsigned int data_length = 0;
-		unsigned short fs = 0;
+		Wave_Data_S(): 
+			data(nullptr), 	
+			data_length(0),
+			fs(0) {}
+
+		int16_t *data;
+		unsigned int data_length;
+		unsigned short fs;
 	};
 	
-	unsigned int ReadWaveLength(const char *filename);
-    void ReadWave(const char *filename, Wave_Data_S *wave_data);
-	void Wave_copy_data_to(Wave_Data_S *wave_data, int16_t *data);
+	class Wave_Data
+	{
+	public:
+		Wave_Data();
+		~Wave_Data();
+
+		inline int data_length() const { return m_wave_data.data_length; } 
+		inline int fs() const { return m_wave_data.fs; } 
+		inline int16_t *data() { return m_wave_data.data; }
+	
+	public:
+		int load_data_length(const char *filename, int *length);
+		int load_data(const char *filename);
+		void copy_data_to(int16_t *data);
+		void clear_state();
+		
+	private:
+		Wave_Data_S m_wave_data;
+	};
 } // namespace ASR
 
-#ifdef __cplusplus
-}
-#endif
-
-#endif // _ASR_WAV_LOADER_H_
+#endif // _ASR_WAVE_DATA_H_
