@@ -29,11 +29,6 @@ def model_init(prototxt, model, CHW_params, use_gpu=False):
 
 def demo(args):
     # init 
-    n_fft = 512
-    feature_freq = 48
-    time_seg_ms = 32
-    time_step_ms = 10
-
     window_size_ms = 3000
     window_stride_ms = 2000
     sample_rate = 16000
@@ -43,8 +38,8 @@ def demo(args):
     # result id init
     result_id_list = []
     with open(args.result_dict, "r") as f :
-        lines = f.readlines()       # 逐行读取文本文件（这种方法不好）
-        for line in lines:          # 对每一行数据进行操作
+        lines = f.readlines()       
+        for line in lines:          
             result_id_list.append(line.strip())
 
     # model init
@@ -62,14 +57,19 @@ def demo(args):
         wave_data = wave_loader.to_numpy()
 
         # forward
-        windows_times = int((len(wave_data) - window_size_samples) * 1.0 / window_stride_samples)
+        windows_times = int((len(wave_data) - window_size_samples) * 1.0 / window_stride_samples) + 1
         for times in range(windows_times):
             print("\n[Information:] Wave start time: ", times * window_stride_samples)
 
             audio_data = wave_data[times * int(window_stride_samples): times * int(window_stride_samples) + int(window_size_samples)]
-            feature_data = Feature.GetMelIntFeature(audio_data, len(audio_data), n_fft, sample_rate, time_seg_ms, time_step_ms, feature_freq)
+
+            # cal feature
+            feature = Feature()
+            feature.get_mel_int_feature(audio_data, len(audio_data))
+            feature_data = feature.copy_mfsc_feature_int_to()
             # print(feature_data)
 
+            # net forward
             feature_data = feature_data.astype(np.float32)
             net.blobs['data'].data[...] = np.expand_dims(feature_data, axis=0)
             net_output = net.forward()['conv7']
@@ -78,6 +78,7 @@ def demo(args):
             print(net_output.shape)
             # print(net_output[0])
 
+            # decode
             decode = Decode()
             decode.ctc_decoder(net_output)
             result_id = decode.result_id_to_numpy()

@@ -6,7 +6,6 @@
 #define MAX_MATRIX_SIZE 4194304 // 2048 * 2048
 #define PI 3.141592653
 #define MAX_VECTOR_LENGTH 10000 //
-//#define      FFT_N                          512
 
 typedef struct Complex
 {
@@ -17,7 +16,7 @@ typedef struct Complex
 class rm_FFT
 {
 public:
-	rm_FFT(int FFT_N);
+	rm_FFT(int n_fft);
 	~rm_FFT(void);
 
 public:

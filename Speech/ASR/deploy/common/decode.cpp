@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "decode.hpp"
 
 namespace ASR
@@ -5,7 +7,12 @@ namespace ASR
     Decode::Decode()
     {
     }
-    
+
+    Decode::Decode(const int blank_id)
+    {
+        m_blank_id = blank_id;
+    }
+
     Decode::~Decode()
     {
     }
@@ -76,6 +83,36 @@ namespace ASR
         }
 
         return;
+    }
+
+    int Decode::get_edit_dist(std::vector<std::string> string1, std::vector<std::string> string2)
+    {
+        int m = string1.size();
+        int n = string2.size();
+        cv::Mat v = cv::Mat::zeros(m + 1, n + 1, CV_32SC1);
+        for (int i = 0; i < m; i++)
+        {
+            v.at<int>(i + 1, 0) = i + 1;
+        }
+        for (int j = 0; j < n; j++)
+        {
+            v.at<int>(0, j + 1) = j + 1;
+        }
+        for (int i = 0; i < m; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                if (string1[i] == string2[j])
+                {
+                    v.at<int>(i + 1, j + 1) = v.at<int>(i, j);
+                }
+                else
+                {
+                    v.at<int>(i + 1, j + 1) = 1 + std::min(std::min(v.at<int>(i + 1, j), v.at<int>(i, j + 1)), v.at<int>(i, j));
+                }
+            }
+        }
+        return v.at<int>(m, n);
     }
 
     void Decode::copy_result_id_to(int *data)
