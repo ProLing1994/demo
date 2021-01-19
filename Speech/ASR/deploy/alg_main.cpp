@@ -1,22 +1,20 @@
 #include <algorithm>
 #include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string>
 #include <vector>
 
-#include "common/wave_data.hpp"
-#include "common/feature.hpp"
-
-#include "common/utils/csrc/file_system.h"
+#include "./common/rm_ASR.hpp"
+#include "./common/common.hpp"
+#include "./common/wave_data.hpp"
 
 int main(int argc, char **argv) {
-    std::string audio_folder = "/home/huanyuan/share/audio_data/";
-    std::string model_path = "/home/huanyuan/share/KWS_model/";
+    std::string audio_folder = "/home/huanyuan/share/audio_data";
+    std::string model_path = "/home/huanyuan/share/KWS_model";
 
     // init
-    int window_len = 512;
-    int feature_freq = 48;
-    int time_seg_ms = 32;
-    int time_step_ms = 10;
+    int ret = RMAPI_AI_AsrInit(const_cast<char *>(model_path.c_str()));
 
     int window_size_ms = 3000;
     int window_stride_ms = 2000;
@@ -24,20 +22,13 @@ int main(int argc, char **argv) {
     int window_size_samples = int(sample_rate * window_size_ms / 1000);
     int window_stride_samples = int(sample_rate * window_stride_ms / 1000);
 
-    int feature_time = (window_size_samples * 1.0 / sample_rate * 1000 - time_seg_ms) / time_step_ms;
-    cv::Mat mel_filter = cv::Mat::zeros(window_len / 2, feature_freq, CV_32FC1);
-    cv::Mat speech_feature = cv::Mat::zeros(feature_time, window_len / 2, CV_32FC1);
-	cv::Mat mfsc_feature = cv::Mat::zeros(feature_time, feature_freq, CV_32FC1);
-	cv::Mat mfsc_feature_int = cv::Mat::zeros(feature_time, feature_freq, CV_8UC1);
-	// ASR::get_mel_filter(mel_filter, window_len, sample_rate, feature_freq, 48);
-	ASR::get_mel_filter(&mel_filter, window_len, sample_rate, feature_freq);
-
     short audio_data[window_size_samples] = {0};
+    char* outKeyword = NULL;
 
     // find auido names
     std::vector<std::string> subfolder;
     std::vector<std::string> audio_names;
-    yh_common::list_directory(audio_folder.c_str(), subfolder, audio_names);
+    ASR::ListDirectory(audio_folder.c_str(), subfolder, audio_names);
     sort(audio_names.begin(),audio_names.end());
     
     for (unsigned int idx = 0; idx < audio_names.size(); idx++) {
@@ -46,7 +37,16 @@ int main(int argc, char **argv) {
         
         // load wav
         ASR::Wave_Data wave_data;
-        wave_data.load_data(audio_path.c_str());
+        int ret = wave_data.load_data(audio_path.c_str());
+        if(ret == -1) 
+        {
+            std::cout << "\033[0;31m" << "[ERROR:] Read wav failed!!!" << "\033[0;39m" << std::endl;
+            continue;
+        }
+        if (wave_data.data_length() < window_size_samples) {
+            continue;
+        }
+
         std::cout << "\033[0;31m" << "[Information:] Audio Length: " << wave_data.data_length() << ", Audio Fs: " << wave_data.fs() << "\033[0;39m" << std::endl;
 
         // forward
@@ -58,23 +58,17 @@ int main(int argc, char **argv) {
                 audio_data[i] = static_cast<short>(wave_data.data()[i + times * window_stride_samples]);
             }
 
-            // check, / 32768.0
+            // // check, / 32768.0
             std::cout << "\033[0;31m" << "[Information:] Audio Data: " << "\033[0;39m" << std::endl;
             for(unsigned int i = 0; i < 10; i ++) {
                 std::cout << audio_data[i]<< " ";
             }
             std::cout << std::endl;
 
-            ASR::get_frequency_feature(audio_data, window_size_samples, &speech_feature, window_len, sample_rate, time_step_ms);
-	        ASR::get_mfsc(speech_feature, mel_filter, &mfsc_feature, feature_freq);
-
-            cv::log(mfsc_feature + 1, mfsc_feature);
-            ASR::get_int_feature(mfsc_feature, &mfsc_feature_int);
-
-            std::cout << "\033[0;31m" << "[Information:] mfsc_feature_int.rows: " << mfsc_feature_int.rows << ", mfsc_feature_int.cols: " << mfsc_feature_int.cols <<"\033[0;39m" << std::endl;
-            // ASR::show_mat_uchar(mfsc_feature_int, 296, 48);  
+            RMAPI_AI_AsrAlgStart(audio_data, window_size_samples, outKeyword);
         }
     }
+    ret = RMAPI_AI_AsrDeinit();
 
     return 0;
 }

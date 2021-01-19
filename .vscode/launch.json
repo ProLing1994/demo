@@ -13,6 +13,25 @@
             "console": "integratedTerminal"
         },
         {            
+            "name": "(gdb) alg_main",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/Speech/ASR/lib/Debug/alg_main",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/Speech/ASR/lib/Debug/",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {            
             "name": "(gdb) test_asr_demo",
             "type": "cppdbg",
             "request": "launch",

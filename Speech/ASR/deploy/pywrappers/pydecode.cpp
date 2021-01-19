@@ -19,7 +19,7 @@ namespace ASR
         obj->ctc_decoder(input, rows, cols);
     }
 
-    int Decode_length(void* decode)
+    int Decode_result_id_length(void* decode)
     {
         Decode* obj = static_cast<Decode*>(decode);
         return obj->result_id_length();

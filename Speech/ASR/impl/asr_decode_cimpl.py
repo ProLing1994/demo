@@ -26,9 +26,9 @@ def __load_c_functions():
     lib.Decode_ctc_decoder.restype = None
     fun_dict['Decode_ctc_decoder'] = lib.Decode_ctc_decoder
 
-    lib.Decode_length.argtypes = [ctypes.c_void_p]
-    lib.Decode_length.restype = ctypes.c_int
-    fun_dict['Decode_length'] = lib.Decode_length
+    lib.Decode_result_id_length.argtypes = [ctypes.c_void_p]
+    lib.Decode_result_id_length.restype = ctypes.c_int
+    fun_dict['Decode_result_id_length'] = lib.Decode_result_id_length
 
     lib.Decode_copy_result_id_to.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_int)]
     lib.Decode_copy_result_id_to.restype = None
@@ -92,11 +92,11 @@ class Decode(object):
     call_func('Decode_ctc_decoder', self.ptr, data_ptr, rows, cols)
     return 
 
-  def data_length(self):
-    return call_func('Decode_length', self.ptr)
+  def result_id_length(self):
+    return call_func('Decode_result_id_length', self.ptr)
 
   def result_id_to_numpy(self):
-    data_length = self.data_length()  
+    data_length = self.result_id_length()
     data = np.empty((data_length), dtype=np.int32)
     data_ptr = data.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
     call_func('Decode_copy_result_id_to', self.ptr, data_ptr)

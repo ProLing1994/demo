@@ -5,10 +5,10 @@
 
 #include "fft.h"
 
-rm_FFT::rm_FFT(int FFT_N)
+rm_FFT::rm_FFT(int n_fft)
 {
-	inVec = new Complex[FFT_N];
-	outVec = new Complex[FFT_N];
+	inVec = new Complex[n_fft];
+	outVec = new Complex[n_fft];
 }
 
 rm_FFT::~rm_FFT()

@@ -50,7 +50,6 @@ namespace ASR
 		inline int16_t *data() { return m_wave_data.data; }
 	
 	public:
-		int load_data_length(const char *filename, int *length);
 		int load_data(const char *filename);
 		void copy_data_to(int16_t *data);
 		void clear_state();

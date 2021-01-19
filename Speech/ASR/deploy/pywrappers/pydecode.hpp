@@ -12,7 +12,7 @@ namespace ASR
 	void* Decode_create();
 	void Decode_delete(void* decode);
     void Decode_ctc_decoder(void* decode, float *input, int rows=35, int cols=480);
-	int Decode_length(void* decode);
+	int Decode_result_id_length(void* decode);
 	void Decode_copy_result_id_to(void* decode, int *data);
 } // namespace ASR
 
