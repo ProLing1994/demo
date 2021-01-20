@@ -78,6 +78,6 @@
         "*.inc": "cpp",
         "*.so": "cpp"
     },
-    "python.pythonPath": "C:\\Users\\yh\\anaconda3\\python.exe",
+    "python.pythonPath": "/home/huanyuan/anaconda3/envs/py35/bin/python",
     "python.linting.enabled": false,
 }
