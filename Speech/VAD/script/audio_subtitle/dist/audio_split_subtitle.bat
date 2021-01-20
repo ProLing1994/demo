@@ -1,1 +1,1 @@
-audio_split_subtitle.exe --audio_path="D:\\data\\test\\音频_C.wav" --subtitle_path="D:\\data\\test\\字幕.srt" --output_dir="D:\\data\\test\\" --language="Chinese" --file_encoding="utf-8" --movie_id=1
+audio_split_subtitle.exe --audio_path="E:\\迅雷下载\\mkv\\失孤\\失孤.wav" --subtitle_path="E:\\迅雷下载\\mkv\\失孤\\失孤.srt" --output_dir="E:\\迅雷下载\\mkv\\失孤\\" --language="Chinese" --file_encoding="utf-8" --movie_id=1
