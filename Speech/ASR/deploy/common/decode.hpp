@@ -17,6 +17,7 @@ namespace ASR
         ~Decode();
 
     inline int result_id_length() const { return m_result_id.size(); }
+    inline std::vector<int> result_id() const { return m_result_id; }
 
     public:
         void ctc_decoder(float *input, int rows=35, int cols=480, bool greedy=true);

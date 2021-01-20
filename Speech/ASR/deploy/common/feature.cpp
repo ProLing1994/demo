@@ -260,24 +260,14 @@ namespace ASR
     Feature::Feature()
     {
         m_feature_options = Feature_Options_S();        
-
-        m_mel_filter = cv::Mat::zeros(m_feature_options.n_fft / 2, m_feature_options.feature_freq, CV_32FC1);
-        m_frequency_feature = cv::Mat::zeros(m_feature_options.feature_time, m_feature_options.n_fft / 2, CV_32FC1);
-        m_mfsc_feature = cv::Mat::zeros(m_feature_options.feature_time, m_feature_options.feature_freq, CV_32FC1);
-        m_output_feature = cv::Mat::zeros(m_feature_options.feature_time, m_feature_options.feature_freq, CV_8UC1);
-
+        feature_mat_init();
         mel_filter_init();
     }
 
     Feature::Feature(const Feature_Options_S &feature_options)
     {
         m_feature_options = Feature_Options_S(feature_options);
-
-        m_mel_filter = cv::Mat::zeros(m_feature_options.n_fft / 2, m_feature_options.feature_freq, CV_32FC1);
-        m_frequency_feature = cv::Mat::zeros(m_feature_options.feature_time, m_feature_options.n_fft / 2, CV_32FC1);
-        m_mfsc_feature = cv::Mat::zeros(m_feature_options.feature_time, m_feature_options.feature_freq, CV_32FC1);
-        m_output_feature = cv::Mat::zeros(m_feature_options.feature_time, m_feature_options.feature_freq, CV_8UC1);
-
+        feature_mat_init();
         mel_filter_init();
     }
 
@@ -289,13 +279,24 @@ namespace ASR
     void Feature::mel_filter_init()
     {
         // init 
-        get_mel_filter(&m_mel_filter, m_feature_options.n_fft, m_feature_options.sample_rate, m_feature_options.feature_freq);
+        get_mel_filter(&m_mel_filter64, m_feature_options.n_fft, m_feature_options.sample_rate, m_feature_options.feature_freq);
+        get_mel_filter(&m_mel_filter48, m_feature_options.n_fft, m_feature_options.sample_rate, m_feature_options.feature_freq, 48);
     }
 
-    int Feature::check_feature_time(int data_len_samples)
+    void Feature::feature_mat_init()
+    {   
+        m_mel_filter48 = cv::Mat::zeros(m_feature_options.n_fft / 2, m_feature_options.feature_freq, CV_32FC1);
+        m_mel_filter64 = cv::Mat::zeros(m_feature_options.n_fft / 2, m_feature_options.feature_freq, CV_32FC1);
+        m_frequency_feature = cv::Mat::zeros(m_feature_options.data_mat_time, m_feature_options.n_fft / 2, CV_32FC1);
+        m_mfsc_feature = cv::Mat::zeros(m_feature_options.data_mat_time, m_feature_options.feature_freq, CV_32FC1);
+        m_mfsc_feature_int = cv::Mat::zeros(m_feature_options.data_mat_time, m_feature_options.feature_freq, CV_8UC1);
+
+        m_single_feature = cv::Mat::zeros(m_feature_options.feature_time, m_feature_options.feature_freq, CV_8UC1);
+    }
+
+    int Feature::check_data_length(int data_len_samples)
     {
-        int feature_time = (data_len_samples * 1.0 / m_feature_options.sample_rate * 1000 - m_feature_options.time_seg_ms) / m_feature_options.time_step_ms;
-        if(feature_time == m_feature_options.feature_time)
+        if(data_len_samples == m_feature_options.data_len_samples)
             return 0;
         else
             return -1;
@@ -303,15 +304,28 @@ namespace ASR
 
     void Feature::copy_mfsc_feature_int_to(unsigned char *feature_data)
     {
-        memcpy(feature_data, m_output_feature.data, m_feature_options.feature_time * m_feature_options.feature_freq * sizeof(unsigned char));
+        memcpy(feature_data, m_mfsc_feature_int.data, m_feature_options.feature_time * m_feature_options.feature_freq * sizeof(unsigned char));
     }
 
-    void Feature::get_mel_int_feature(short *pdata, int data_len_samples)
+    void Feature::get_mfsc_feature(short *pdata, int data_len_samples)
     {
         get_frequency_feature(pdata, data_len_samples, &m_frequency_feature, m_feature_options.n_fft, m_feature_options.sample_rate, m_feature_options.time_step_ms);
-        get_mfsc(m_frequency_feature, m_mel_filter, &m_mfsc_feature, m_feature_options.feature_freq);
+        get_mfsc(m_frequency_feature, m_mel_filter64, &m_mfsc_feature_int, m_feature_options.feature_freq);
+    }
+
+    void Feature::get_mel_int_feature(short *pdata, int data_len_samples, int mel_filter)
+    {
+        get_frequency_feature(pdata, data_len_samples, &m_frequency_feature, m_feature_options.n_fft, m_feature_options.sample_rate, m_feature_options.time_step_ms);
+
+        if(mel_filter == 64)
+            get_mfsc(m_frequency_feature, m_mel_filter64, &m_mfsc_feature, m_feature_options.feature_freq);
+        else if(mel_filter == 48)
+            get_mfsc(m_frequency_feature, m_mel_filter48, &m_mfsc_feature, m_feature_options.feature_freq);
+        else
+            std::cerr << "[ERROR:] unknow mel_filter, please check!!! " << std::endl;
+            
         cv::log(m_mfsc_feature + 1, m_mfsc_feature);
-        get_int_feature(m_mfsc_feature, &m_output_feature);
+        get_int_feature(m_mfsc_feature, &m_mfsc_feature_int);
     }
 
     void Feature::get_mel_pcen_feature(short *pdata, int data_len_samples)
@@ -319,7 +333,7 @@ namespace ASR
         int u8_data = 0;
 
         get_frequency_feature(pdata, data_len_samples, &m_frequency_feature, m_feature_options.n_fft, m_feature_options.sample_rate, m_feature_options.time_step_ms);
-        get_mfsc(m_frequency_feature, m_mel_filter, &m_mfsc_feature, m_feature_options.feature_freq);
+        get_mfsc(m_frequency_feature, m_mel_filter64, &m_mfsc_feature, m_feature_options.feature_freq);
 		get_pcen(m_mfsc_feature);
 		for (int r = 0; r < m_feature_options.feature_time; r++)
 		{
@@ -330,9 +344,48 @@ namespace ASR
 					u8_data = (int)(m_mfsc_feature.at<float>(r, c, k) * 255 / 3);
 					u8_data = u8_data < 0 ? 0 : u8_data;
 					u8_data = u8_data > 255 ? 255 : u8_data;
-					m_output_feature.at<unsigned char>(r, c, k) = u8_data;
+					m_mfsc_feature_int.at<unsigned char>(r, c, k) = u8_data;
 				}
 			}
 		}
+    }
+
+    void Feature::get_featuer_total_window(short *pdata, int data_len_samples)
+    {
+        if(m_feature_options.pcen_flag == true)
+        {
+            get_mel_pcen_feature(pdata, data_len_samples);
+        }
+        else
+        {
+            get_mel_int_feature(pdata, data_len_samples);
+        }
+    }
+
+    void Feature::get_featuer_slides_window(short *pdata, int data_len_samples, int mel_filter)
+    {
+        if(m_feature_options.pcen_flag == true)
+        {
+            // do FFT to all wav, then do PCEN to each fragment
+            get_mfsc_feature(pdata, data_len_samples);
+        }
+        else
+        {
+            get_mel_int_feature(pdata, data_len_samples, mel_filter);
+        }
+    }
+    
+    void Feature::get_single_feature(int start_feature_time)
+    {
+        if (m_feature_options.pcen_flag == true)
+        {
+            cv::Mat pcen_feature = m_mfsc_feature(cv::Range(start_feature_time, start_feature_time + m_feature_options.feature_time), cv::Range(0, m_feature_options.feature_freq)).clone();
+            get_pcen(pcen_feature);
+            get_int_feature(pcen_feature, &m_single_feature, 3);
+        }
+        else
+        {
+            m_single_feature = m_mfsc_feature_int(cv::Range(start_feature_time, start_feature_time + m_feature_options.feature_time), cv::Range(0, m_feature_options.feature_freq)).clone();
+        }
     }
 } // namespace ASR

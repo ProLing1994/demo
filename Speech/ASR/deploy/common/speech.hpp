@@ -45,7 +45,10 @@ namespace ASR
     public:
         void load_param(const ASR_PARAM_S &params, const char *file_path = NULL);
         void speech_recognition(short *pdata, int data_len_samples, char *outKeyword);
+
+	private:
         void asr_recognition(short *pdata, int data_len_samples, char *outKeyword);
+        void kws_asr_recognition(short *pdata, int data_len_samples, char *outKeyword);
 
     private:
         std::unique_ptr<Feature> m_feature;
