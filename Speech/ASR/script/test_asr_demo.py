@@ -67,7 +67,7 @@ def demo(args):
             feature = Feature()
             feature.get_mel_int_feature(audio_data, len(audio_data))
             feature_data = feature.copy_mfsc_feature_int_to()
-            # print(feature_data)
+            print(feature_data)
 
             # net forward
             feature_data = feature_data.astype(np.float32)

@@ -30,9 +30,9 @@ def __load_c_functions():
     lib.Feature_feature_freq.restype = ctypes.c_int
     fun_dict['Feature_feature_freq'] = lib.Feature_feature_freq
 
-    lib.Feature_check_feature_time.argtypes = [ctypes.c_void_p, ctypes.c_int]
-    lib.Feature_check_feature_time.restype = ctypes.c_int
-    fun_dict['Feature_check_feature_time'] = lib.Feature_check_feature_time
+    lib.Feature_check_data_length.argtypes = [ctypes.c_void_p, ctypes.c_int]
+    lib.Feature_check_data_length.restype = ctypes.c_int
+    fun_dict['Feature_check_data_length'] = lib.Feature_check_data_length
 
     lib.Feature_get_mel_int_feature.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_short), ctypes.c_int]
     lib.Feature_get_mel_int_feature.restype = None
@@ -97,7 +97,7 @@ class Feature(object):
 
     def check_feature_time(self, data_len_samples):
         data_len_samples = ctypes.c_int(data_len_samples)
-        return call_func('Feature_check_feature_time', self.ptr, data_len_samples)
+        return call_func('Feature_check_data_length', self.ptr, data_len_samples)
 
     def get_mel_int_feature(self, data, data_len_samples):
         data = np.ascontiguousarray(data, dtype=np.int16)

@@ -24,6 +24,7 @@ namespace ASR
     struct Feature_Options_S
 	{
 		Feature_Options_S(): 
+            data_len_samples(48000),
             sample_rate(16000), 	
             n_fft(512),
             time_seg_ms(32),
@@ -33,9 +34,12 @@ namespace ASR
             feature_channels(1),
             pcen_flag(false),
             nfilt(64),
-            scale_num(10) {}
+            scale_num(10) {
+                data_mat_time = (data_len_samples * 1.0 / sample_rate * 1000 - time_seg_ms) / time_step_ms;
+            }
 
         Feature_Options_S(const Feature_Options_S &feature_options): 
+            data_len_samples(feature_options.data_len_samples),
             sample_rate(feature_options.sample_rate), 	
             n_fft(feature_options.n_fft),
             time_seg_ms(feature_options.time_seg_ms),
@@ -45,8 +49,12 @@ namespace ASR
             feature_channels(feature_options.feature_channels),
             pcen_flag(feature_options.pcen_flag),
             nfilt(feature_options.nfilt),
-            scale_num(feature_options.sample_rate) {}
+            scale_num(feature_options.sample_rate) {
+                data_mat_time = (data_len_samples * 1.0 / sample_rate * 1000 - time_seg_ms) / time_step_ms;
+            }
 
+        int data_len_samples;
+        int data_mat_time;
 		int sample_rate;
         int n_fft;
 		int time_seg_ms;
@@ -67,27 +75,45 @@ namespace ASR
 		Feature(const Feature_Options_S &feature_options);
 		~Feature();
 
+        inline int data_mat_time() const { return m_feature_options.data_mat_time; } 
         inline int feature_time() const { return m_feature_options.feature_time; } 
         inline int feature_freq() const { return m_feature_options.feature_freq; }
+        inline int time_step_ms() const { return m_feature_options.time_step_ms; }
         inline int pcen_flag() const { return m_feature_options.pcen_flag; } 
-        inline cv::Mat output_feature() const { return m_output_feature; }
+        inline cv::Mat mfsc_feature_int() const { return m_mfsc_feature_int; }
+        inline cv::Mat single_feature() const { return m_single_feature; }
 
 	public:
-        int check_feature_time(int data_len_samples);
+        int check_data_length(int data_len_samples);
         void copy_mfsc_feature_int_to(unsigned char *feature_data);
-        void get_mel_int_feature(short *pdata, int data_len_samples);
+
+        void get_mfsc_feature(short *pdata, int data_len_samples);
+        void get_mel_int_feature(short *pdata, int data_len_samples, int mel_filter = 64);
         void get_mel_pcen_feature(short *pdata, int data_len_samples);
+
+        // 输入数据长度与解码长度相同，整个窗口直接解码，适用于 asr && vad
+        void get_featuer_total_window(short *pdata, int data_len_samples);
+        
+        // 输入数据长度与解码长度不同，滑窗解码，适用于 kws 
+        void get_featuer_slides_window(short *pdata, int data_len_samples, int mel_filter = 64);
+        void get_single_feature(int start_feature_time);
     
     private:
         void mel_filter_init();
+        void feature_mat_init();
 
     private:
         Feature_Options_S m_feature_options;
 
-        cv::Mat m_mel_filter;
+        // total_window
+        cv::Mat m_mel_filter48;
+        cv::Mat m_mel_filter64;
         cv::Mat m_frequency_feature;
         cv::Mat m_mfsc_feature;
-        cv::Mat m_output_feature;
+        cv::Mat m_mfsc_feature_int;
+
+        // slides_window
+        cv::Mat m_single_feature;
     };
 } // namespace ASR
 

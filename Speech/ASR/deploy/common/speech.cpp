@@ -56,6 +56,7 @@ namespace ASR
             printf("[Information:] Initial KWS Param Start!!!\n");
 
             Feature_Options_S feature_options;
+            feature_options.data_len_samples = 48000;
             feature_options.feature_channels = 1;
             feature_options.n_fft = params.n_fft;
             feature_options.feature_freq = params.feature_freq;
@@ -96,6 +97,7 @@ namespace ASR
         {
             printf("[Information:] Initial ASR Param Start!!!\n");
             Feature_Options_S feature_options;
+            feature_options.data_len_samples = 48000;
             feature_options.feature_channels = 1;
             feature_options.n_fft = params.n_fft;
             feature_options.feature_freq = params.feature_freq;
@@ -153,8 +155,7 @@ namespace ASR
         //std::cerr<<"====RMAPI_AI_ASR_RUN_Start====="<<std::endl;
         if (m_algorithem_id == 0)
         {
-            // To do
-            // g_asr_agent.KeywordsRecognition_ASR(pBuffer, length, outKeyword);
+            kws_asr_recognition(pdata, data_len_samples, outKeyword);
         }
         else
         {
@@ -165,28 +166,43 @@ namespace ASR
     void Speech_Engine::asr_recognition(short *pdata, int data_len_samples, char *outKeyword)
     {
         // check
-        int ret = m_feature->check_feature_time(data_len_samples);
+        int ret = m_feature->check_data_length(data_len_samples);
         if (ret != 0)
         {
             std::cerr << "[ERROR:] asr_recognition input data length is not 24000 " << std::endl;
             return;
         }
 
-        // get feature
-        if(m_feature->pcen_flag() == true)
-        {
-            m_feature->get_mel_pcen_feature(pdata, data_len_samples);
-        }
-        else
-        {
-            m_feature->get_mel_int_feature(pdata, data_len_samples);
-        }
-        cv::Mat output_feature = m_feature->output_feature();
+        m_feature->get_featuer_total_window(pdata, data_len_samples);
+        cv::Mat output_feature = m_feature->mfsc_feature_int();
 
         std::cout << "\033[0;31m" << "[Information:] output_feature.rows: " << output_feature.rows << ", output_feature.cols: " << output_feature.cols <<"\033[0;39m" << std::endl;
 		ASR::show_mat_uchar(output_feature, 296, 48);
 
         return;
+    }
+
+    void Speech_Engine::kws_asr_recognition(short *pdata, int data_len_samples, char *outKeyword)
+    {
+        // check
+        int ret = m_feature->check_data_length(data_len_samples);
+        if (ret != 0)
+        {
+            std::cerr << "[ERROR:] asr_recognition input data length is not 24000 " << std::endl;
+            return;
+        }
+
+        // get feature       
+        m_feature->get_featuer_slides_window(pdata, data_len_samples, 48);
+
+        for (int i = 0; i < m_feature->data_mat_time() - m_feature->feature_time(); i = i + m_feature->time_step_ms())
+        {
+            m_feature->get_single_feature(i);
+            cv::Mat output_feature = m_feature->single_feature();
+
+            std::cout << "\033[0;31m" << "[Information:] output_feature.rows: " << output_feature.rows << ", output_feature.cols: " << output_feature.cols <<"\033[0;39m" << std::endl;
+            ASR::show_mat_uchar(output_feature, 120, 48);
+        }
     }
 
 } // namespace ASR

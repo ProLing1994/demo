@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
             ASR::get_int_feature(mfsc_feature, &mfsc_feature_int);
 
             std::cout << "\033[0;31m" << "[Information:] mfsc_feature_int.rows: " << mfsc_feature_int.rows << ", mfsc_feature_int.cols: " << mfsc_feature_int.cols <<"\033[0;39m" << std::endl;
-            // ASR::show_mat_uchar(mfsc_feature_int, 296, 48);  
+            ASR::show_mat_uchar(mfsc_feature_int, 296, 48);  
         }
     }
 

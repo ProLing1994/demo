@@ -25,10 +25,10 @@ namespace ASR
         return obj->feature_freq();
     }
 
-    int Feature_check_feature_time(void *feature, int data_len_samples)
+    int Feature_check_data_length(void *feature, int data_len_samples)
     {
         Feature* obj = static_cast<Feature*>(feature);
-        return obj->check_feature_time(data_len_samples);
+        return obj->check_data_length(data_len_samples);
     }
 
     void Feature_get_mel_int_feature(void *feature, short *pdata, int data_len_samples)
