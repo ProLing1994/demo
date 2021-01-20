@@ -17,8 +17,8 @@ namespace ASR
 
     void get_mel_filter(cv::Mat *mel_filter, int n_fft = 256, int sample_rate = 8000, int n_mel = 48, int nfilt = 64);
     void get_frequency_feature(short *pdata, int data_len_samples, cv::Mat *frequency_feature, int n_fft = 256, int sample_rate = 8000, int time_step_ms = 10);
-    void get_mfsc(cv::Mat &frequency_feature, cv::Mat &mel_filter, cv::Mat *MFSC, int n_mel = 48);
-    void get_pcen(cv::Mat &pcen_feature, bool mask = false);
+    void get_mfsc_feature(cv::Mat &frequency_feature, cv::Mat &mel_filter, cv::Mat *MFSC, int n_mel = 48);
+    void get_pcen_feature(cv::Mat &pcen_feature, bool mask = false);
     void get_int_feature(cv::Mat &input, cv::Mat *output, int scale_num = 10);
 
     struct Feature_Options_S
@@ -87,17 +87,17 @@ namespace ASR
         int check_data_length(int data_len_samples);
         void copy_mfsc_feature_int_to(unsigned char *feature_data);
 
-        void get_mfsc_feature(short *pdata, int data_len_samples);
+        void get_mfsc_feature_filter(int mel_filter = 64);
         void get_mel_int_feature(short *pdata, int data_len_samples, int mel_filter = 64);
-        void get_mel_pcen_feature(short *pdata, int data_len_samples);
+        void get_mel_pcen_feature(short *pdata, int data_len_sampless, int mel_filter = 64);
 
         // 输入数据长度与解码长度相同，整个窗口直接解码，适用于 asr && vad
         void get_featuer_total_window(short *pdata, int data_len_samples);
-        
+
         // 输入数据长度与解码长度不同，滑窗解码，适用于 kws 
         void get_featuer_slides_window(short *pdata, int data_len_samples, int mel_filter = 64);
         void get_single_feature(int start_feature_time);
-    
+
     private:
         void mel_filter_init();
         void feature_mat_init();

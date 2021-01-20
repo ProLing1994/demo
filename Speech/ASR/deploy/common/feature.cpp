@@ -116,7 +116,7 @@ namespace ASR
         return;
     }
 
-    void get_mfsc(cv::Mat &frequency_feature, cv::Mat &mel_filter, cv::Mat *MFSC, int n_mel)
+    void get_mfsc_feature(cv::Mat &frequency_feature, cv::Mat &mel_filter, cv::Mat *MFSC, int n_mel)
     {
         (void) n_mel;
         serial_multiplication(frequency_feature, mel_filter, MFSC);
@@ -178,7 +178,7 @@ namespace ASR
         return;
     }
 
-    void get_pcen(cv::Mat &pcen_feature, bool mask)
+    void get_pcen_feature(cv::Mat &pcen_feature, bool mask)
     {
         float s = 0.025;
         float m_s = 1 - s;
@@ -307,34 +307,31 @@ namespace ASR
         memcpy(feature_data, m_mfsc_feature_int.data, m_feature_options.feature_time * m_feature_options.feature_freq * sizeof(unsigned char));
     }
 
-    void Feature::get_mfsc_feature(short *pdata, int data_len_samples)
+    void Feature::get_mfsc_feature_filter(int mel_filter)
     {
-        get_frequency_feature(pdata, data_len_samples, &m_frequency_feature, m_feature_options.n_fft, m_feature_options.sample_rate, m_feature_options.time_step_ms);
-        get_mfsc(m_frequency_feature, m_mel_filter64, &m_mfsc_feature_int, m_feature_options.feature_freq);
+        if(mel_filter == 64)
+            get_mfsc_feature(m_frequency_feature, m_mel_filter64, &m_mfsc_feature, m_feature_options.feature_freq);
+        else if(mel_filter == 48)
+            get_mfsc_feature(m_frequency_feature, m_mel_filter48, &m_mfsc_feature, m_feature_options.feature_freq);
+        else
+            std::cerr << "[ERROR:] unknow mel_filter, please check!!! " << std::endl;
     }
 
     void Feature::get_mel_int_feature(short *pdata, int data_len_samples, int mel_filter)
     {
         get_frequency_feature(pdata, data_len_samples, &m_frequency_feature, m_feature_options.n_fft, m_feature_options.sample_rate, m_feature_options.time_step_ms);
-
-        if(mel_filter == 64)
-            get_mfsc(m_frequency_feature, m_mel_filter64, &m_mfsc_feature, m_feature_options.feature_freq);
-        else if(mel_filter == 48)
-            get_mfsc(m_frequency_feature, m_mel_filter48, &m_mfsc_feature, m_feature_options.feature_freq);
-        else
-            std::cerr << "[ERROR:] unknow mel_filter, please check!!! " << std::endl;
-            
+        get_mfsc_feature_filter(mel_filter);
         cv::log(m_mfsc_feature + 1, m_mfsc_feature);
         get_int_feature(m_mfsc_feature, &m_mfsc_feature_int);
     }
 
-    void Feature::get_mel_pcen_feature(short *pdata, int data_len_samples)
+    void Feature::get_mel_pcen_feature(short *pdata, int data_len_samples, int mel_filter)
     {
         int u8_data = 0;
 
         get_frequency_feature(pdata, data_len_samples, &m_frequency_feature, m_feature_options.n_fft, m_feature_options.sample_rate, m_feature_options.time_step_ms);
-        get_mfsc(m_frequency_feature, m_mel_filter64, &m_mfsc_feature, m_feature_options.feature_freq);
-		get_pcen(m_mfsc_feature);
+        get_mfsc_feature_filter(mel_filter);
+		get_pcen_feature(m_mfsc_feature);
 		for (int r = 0; r < m_feature_options.feature_time; r++)
 		{
 			for (int c = 0; c < m_feature_options.feature_freq; c++)
@@ -367,7 +364,8 @@ namespace ASR
         if(m_feature_options.pcen_flag == true)
         {
             // do FFT to all wav, then do PCEN to each fragment
-            get_mfsc_feature(pdata, data_len_samples);
+            get_frequency_feature(pdata, data_len_samples, &m_frequency_feature, m_feature_options.n_fft, m_feature_options.sample_rate, m_feature_options.time_step_ms);
+            get_mfsc_feature_filter(mel_filter);
         }
         else
         {
@@ -380,7 +378,7 @@ namespace ASR
         if (m_feature_options.pcen_flag == true)
         {
             cv::Mat pcen_feature = m_mfsc_feature(cv::Range(start_feature_time, start_feature_time + m_feature_options.feature_time), cv::Range(0, m_feature_options.feature_freq)).clone();
-            get_pcen(pcen_feature);
+            get_pcen_feature(pcen_feature);
             get_int_feature(pcen_feature, &m_single_feature, 3);
         }
         else

@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
             std::cout << std::endl;
 
             ASR::get_frequency_feature(audio_data, window_size_samples, &speech_feature, window_len, sample_rate, time_step_ms);
-	        ASR::get_mfsc(speech_feature, mel_filter, &mfsc_feature, feature_freq);
+	        ASR::get_mfsc_feature(speech_feature, mel_filter, &mfsc_feature, feature_freq);
 
             cv::log(mfsc_feature + 1, mfsc_feature);
             ASR::get_int_feature(mfsc_feature, &mfsc_feature_int);

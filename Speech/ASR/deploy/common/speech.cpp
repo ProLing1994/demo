@@ -66,19 +66,19 @@ namespace ASR
             feature_options.time_step_ms = params.time_step_ms;
             feature_options.pcen_flag = false;
 
-            m_feature.reset(new Feature(feature_options));
-            m_decode.reset(new Decode);
-
             m_algorithem_id = params.algorithem_id; 
             m_output_num = params.output_num;
-            
+            m_feature.reset(new Feature(feature_options));
+
+            std::vector<std::string> keywords;
+            std::vector<std::string> symbol_list;
             int kws_num = cconfig.GetInt("KwsParam", "kws_num");
-            m_keywords.push_back("");
+            keywords.push_back("");
             for (int i = 1; i <= kws_num; i++)
             {
                 s = std::to_string(i);
                 tmp = cconfig.GetStr("CQ_KWS_18", s.c_str());
-                m_keywords.push_back(tmp);
+                keywords.push_back(tmp);
             }
 
             sprintf(config_file, "%s/configFiles/dict_without_tone.txt", file_path);
@@ -88,9 +88,11 @@ namespace ASR
             {
                 tmp = s;
                 tmp.erase(tmp.end() - 1);
-                m_symbollist.push_back(tmp);
+                symbol_list.push_back(tmp);
             }
             infile.close();
+
+            m_decode.reset(new Decode(keywords, symbol_list));
             printf("[Information:] Initial KWS Param Done!!!\n");
         }
         else
@@ -107,14 +109,15 @@ namespace ASR
             feature_options.time_step_ms = params.time_step_ms;
             feature_options.pcen_flag = false;
 
-            m_feature.reset(new Feature(feature_options));
-            m_decode.reset(new Decode(0));
-
             m_algorithem_id = params.algorithem_id; 
             m_output_num = params.output_num;
             m_fc1_dim = params.fc1_kernels;
             m_fc2_dim = params.fc2_kernels;
+            m_feature.reset(new Feature(feature_options));
 
+            std::vector<std::string> symbol_list;
+            std::vector<std::string> hanzi_kws_list;
+            std::vector<std::vector<std::string>> pinyin_kws_list;
             char config_file[256] = "";
             sprintf(config_file, "%s/configFiles/dict_without_tone.txt", file_path);
 
@@ -124,7 +127,7 @@ namespace ASR
             {
                 tmp = s;
                 tmp.erase(tmp.end() - 1);
-                m_symbollist.push_back(tmp);
+                symbol_list.push_back(tmp);
             }
             infile.close();
 
@@ -139,11 +142,13 @@ namespace ASR
                 std::vector<std::string> tmp_pny;
                 s = std::to_string(i);
                 tmp = cconfig.GetStr("Demo_Mandarin_KWS", s.c_str());
-                m_hanzi_kws_list.push_back(tmp);
+                hanzi_kws_list.push_back(tmp);
                 tmp = cconfig.GetStr("Demo_Mandarin_id", tmp.c_str());
                 tmp_pny = ASR::StringSplit(tmp, " ");
-                m_pny_kws_list.push_back(tmp_pny);
+                pinyin_kws_list.push_back(tmp_pny);
             }
+
+            m_decode.reset(new Decode(0, symbol_list, hanzi_kws_list, pinyin_kws_list));
             printf("[Information:] Initial ASR Param Done!!!\n");
         }
 
@@ -192,7 +197,7 @@ namespace ASR
             return;
         }
 
-        // get feature       
+        // get feature
         m_feature->get_featuer_slides_window(pdata, data_len_samples, 48);
 
         for (int i = 0; i < m_feature->data_mat_time() - m_feature->feature_time(); i = i + m_feature->time_step_ms())

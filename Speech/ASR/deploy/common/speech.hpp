@@ -58,12 +58,6 @@ namespace ASR
         int m_output_num;
 		int m_fc1_dim;
 		int m_fc2_dim;
-
-        std::vector<std::string> m_keywords;
-        std::vector<std::string> m_symbollist;
-        std::vector<std::string> m_hanzi_kws_list;
-		std::vector<std::vector<std::string>> m_pny_kws_list;
-        
     };
 
 } // namespace ASR
