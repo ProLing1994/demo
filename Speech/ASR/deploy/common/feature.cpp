@@ -26,9 +26,9 @@ namespace ASR
         {
             for (int j = 0; j < cols; j++)
             {
-                std::cerr << (int)*(p_data + j + i * feature_mat.cols) << " ";
+                std::cout << (int)*(p_data + j + i * feature_mat.cols) << " ";
             }
-            std::cerr << std::endl;
+            std::cout << std::endl;
         }
     }
 
@@ -39,9 +39,9 @@ namespace ASR
         {
             for (int j = 0; j < cols; j++)
             {
-                std::cerr << (int)*(p_data + j + i * feature_mat.cols) << " ";
+                std::cout << (int)*(p_data + j + i * feature_mat.cols) << " ";
             }
-            std::cerr << std::endl;
+            std::cout << std::endl;
         }
     }
 
@@ -52,9 +52,9 @@ namespace ASR
         {
             for (int j = 0; j < cols; j++)
             {
-                std::cerr << (float)*(p_data + j + i * feature_mat.cols) << " ";
+                std::cout << (float)*(p_data + j + i * feature_mat.cols) << " ";
             }
-            std::cerr << std::endl;
+            std::cout << std::endl;
         }
     }
 
@@ -273,7 +273,6 @@ namespace ASR
 
     Feature::~Feature()
     {
-
     }
 
     void Feature::mel_filter_init()
@@ -315,7 +314,7 @@ namespace ASR
         else if(mel_filter == 48)
             get_mfsc_feature(m_frequency_feature, m_mel_filter48, &m_mfsc_feature, m_feature_options.feature_freq);
         else
-            std::cerr << "[ERROR:] unknow mel_filter, please check!!! " << std::endl;
+            printf("[ERROR:] %s, %d: Unknow Mel Filter.\n", __FUNCTION__, __LINE__);
     }
 
     void Feature::get_mel_int_feature(short *pdata, int data_len_samples, int mel_filter)

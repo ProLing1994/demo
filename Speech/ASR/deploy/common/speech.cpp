@@ -34,9 +34,9 @@ namespace ASR
         printf("[Information:] Init Feature && Decode && Model Start.\n");
 
         // check 
-        if (file_path == NULL)
+        if (file_path == nullptr)
         {
-            printf("[ERROR:] %s, %d: Load param, miss file path\n", __FUNCTION__, __LINE__);
+            printf("[ERROR:] %s, %d: Load param, miss file path.\n", __FUNCTION__, __LINE__);
             return;
         }
 
@@ -186,7 +186,7 @@ namespace ASR
 
     void Speech_Engine::speech_recognition(short *pdata, int data_len_samples, char *output_keyword)
     {
-        //std::cerr<<"====RMAPI_AI_ASR_RUN_Start====="<<std::endl;
+        //std::cout<<"====RMAPI_AI_ASR_RUN_Start====="<<std::endl;
         if (m_algorithem_id == 0)
         {
             kws_asr_recognition(pdata, data_len_samples, output_keyword);
@@ -207,7 +207,7 @@ namespace ASR
         int ret = m_feature->check_data_length(data_len_samples);
         if (ret != 0)
         {
-            printf("[ERROR:] %s, %d: Input data length is not 24000\n", __FUNCTION__, __LINE__);
+            printf("[ERROR:] %s, %d: Input data length is not 24000.\n", __FUNCTION__, __LINE__);
             return;
         }
 
@@ -217,6 +217,11 @@ namespace ASR
         std::cout << "\033[0;31m" << "[Information:] output_feature.rows: " << output_feature.rows << ", output_feature.cols: " << output_feature.cols <<"\033[0;39m" << std::endl;
 		ASR::show_mat_uchar(output_feature, 296, 48);
         ret = m_model->asr_forward(output_feature, &cnn_out);
+        if (ret != 0)
+        {
+            printf("[ERROR:] %s, %d: ASR Forward Failed.\n", __FUNCTION__, __LINE__);
+            return;
+        }
 
         // decode 
         m_decode->ctc_decoder(cnn_out);
@@ -233,7 +238,7 @@ namespace ASR
         int ret = m_feature->check_data_length(data_len_samples);
         if (ret != 0)
         {
-            std::cerr << "[ERROR:] kws_asr_recognition input data length is not 24000 " << std::endl;
+            printf("[ERROR:] %s, %d: Input data length is not 24000.\n", __FUNCTION__, __LINE__);
             return;
         }
 
