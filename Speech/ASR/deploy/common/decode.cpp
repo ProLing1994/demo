@@ -23,11 +23,9 @@ namespace ASR
         }
     }
 
-    Decode::Decode(const int blank_id, const std::vector<std::string> &symbol_list, 
+    Decode::Decode(const std::vector<std::string> &symbol_list, 
                     const std::vector<std::string> &hanzi_kws_list, const std::vector<std::vector<std::string>> &pinyin_kws_list)
     {
-        m_blank_id = blank_id;
-
         m_symbol_list.reserve(symbol_list.size());
         for(int i = 0; i < symbol_list.size(); i++)
         {
@@ -119,7 +117,16 @@ namespace ASR
         return;
     }
 
-    void Decode::match_keywords_robust(std::string *out)
+    void Decode::show_symbol()
+    {
+        for(int i = 0; i < m_result_id.size(); i++)
+        {
+            std::cout << m_symbol_list[m_result_id[i]] <<" ";
+        }
+        std::cout << std::endl;
+    }
+
+    void Decode::match_keywords_robust(std::string *output)
     {
         int index = 0;
         int dist = 0;
@@ -128,16 +135,24 @@ namespace ASR
         std::vector<int> match_id;
         std::vector<std::string> tmp_kws;
         std::vector<std::string> result_str;
+
         for (int i = 0; i < m_result_id.size(); i++)
         {
             result_str.push_back(m_symbol_list[m_result_id[i]]);
         }
+        
         tmp_kws.reserve(100);
         while (index < result_str.size())
         {
             match_flag = false;
             for (int i = 0; i < m_pinyin_kws_list.size(); i++)
-            {
+            {   
+                // for(int j = 0; j < m_pinyin_kws_list[i].size(); j++)
+                // {
+                //     std::cout << m_pinyin_kws_list[i][j] << " ";
+                // }
+                // std::cout << std::endl;
+
                 if (result_str[index] == m_pinyin_kws_list[i][0] && (index + m_pinyin_kws_list[i].size()) <= m_result_id.size())
                 {
                     tmp_kws.clear();
@@ -168,8 +183,8 @@ namespace ASR
         {
             for (int i = 0; i < match_id.size(); i++)
             {
-                out->append(m_hanzi_kws_list[match_id[i]]);
-                out->append(" ");
+                output->append(m_hanzi_kws_list[match_id[i]]);
+                output->append(" ");
             }
         }
     }

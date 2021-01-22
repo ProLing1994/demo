@@ -23,7 +23,6 @@ int main(int argc, char **argv) {
     int window_stride_samples = int(sample_rate * window_stride_ms / 1000);
 
     short audio_data[window_size_samples] = {0};
-    char* outKeyword = NULL;
 
     // find auido names
     std::vector<std::string> subfolder;
@@ -59,13 +58,15 @@ int main(int argc, char **argv) {
             }
 
             // // check, / 32768.0
-            std::cout << "\033[0;31m" << "[Information:] Audio Data: " << "\033[0;39m" << std::endl;
-            for(unsigned int i = 0; i < 10; i ++) {
-                std::cout << audio_data[i]<< " ";
-            }
-            std::cout << std::endl;
+            // std::cout << "\033[0;31m" << "[Information:] Audio Data: " << "\033[0;39m" << std::endl;
+            // for(unsigned int i = 0; i < 10; i ++) {
+            //     std::cout << audio_data[i]<< " ";
+            // }
+            // std::cout << std::endl;
 
+            char outKeyword[100] = "";
             RMAPI_AI_AsrAlgStart(audio_data, window_size_samples, outKeyword);
+            std::cout << "\033[0;31m" << "[Information:] outKeyword: " << outKeyword << "\033[0;39m" << std::endl;
         }
     }
     ret = RMAPI_AI_AsrDeinit();

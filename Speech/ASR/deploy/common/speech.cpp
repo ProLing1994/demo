@@ -10,40 +10,33 @@ namespace ASR
     {
         m_feature.reset(new Feature);
         m_decode.reset(new Decode);
-        
-        // TO Do
-        // model and image init
+        m_model.reset(new Model);
     }
 
     Speech_Engine::Speech_Engine(const ASR_PARAM_S &params, const char *file_path)
     {
-        load_param(params, file_path);
-
-        // TO Do
-        // model and image init
+        init_feature_decode_model(params, file_path);
     }
 
     Speech_Engine::~Speech_Engine()
     {
         m_feature.reset(nullptr);
         m_decode.reset(nullptr);
-        
-        // TO Do
-        // model and image release
+        m_model.reset(nullptr);
     }
  
-    void Speech_Engine::load_param(const ASR_PARAM_S &params, const char *file_path)
+    void Speech_Engine::init_feature_decode_model(const ASR_PARAM_S &params, const char *file_path)
     {
         rmCConfig cconfig;
         std::string s, tmp;
         std::ifstream infile;
         
-        printf("[Information:] Load param Start!!!\n");
+        printf("[Information:] Init Feature && Decode && Model Start.\n");
 
         // check 
         if (file_path == NULL)
         {
-            std::cerr << "[ERROR:] Load Param, miss file path" << std::endl;
+            printf("[ERROR:] %s, %d: Load param, miss file path\n", __FUNCTION__, __LINE__);
             return;
         }
 
@@ -52,9 +45,12 @@ namespace ASR
         cconfig.OpenFile(config_file);
 
         if (params.algorithem_id == 0)
-        {
-            printf("[Information:] Initial KWS Param Start!!!\n");
+        {   
+            // Params
+            m_algorithem_id = params.algorithem_id; 
 
+            // Feature
+            printf("[Information:] Init KWS Feature.\n");
             Feature_Options_S feature_options;
             feature_options.data_len_samples = 48000;
             feature_options.feature_channels = 1;
@@ -66,10 +62,10 @@ namespace ASR
             feature_options.time_step_ms = params.time_step_ms;
             feature_options.pcen_flag = false;
 
-            m_algorithem_id = params.algorithem_id; 
-            m_output_num = params.output_num;
             m_feature.reset(new Feature(feature_options));
 
+            // Decode
+            printf("[Information:] Init KWS Decode.\n");
             std::vector<std::string> keywords;
             std::vector<std::string> symbol_list;
             int kws_num = cconfig.GetInt("KwsParam", "kws_num");
@@ -93,11 +89,30 @@ namespace ASR
             infile.close();
 
             m_decode.reset(new Decode(keywords, symbol_list));
-            printf("[Information:] Initial KWS Param Done!!!\n");
+
+            // Model
+            printf("[Information:] Init KWS Model.\n");
+
+            Model_Options_S model_options;
+            model_options.input_feature_freq = params.feature_freq; 
+            model_options.input_feature_time = params.feature_time; 
+            model_options.output_feature_num = params.output_num; 
+            model_options.output_feature_time = 1; 
+
+            m_model.reset(new Model(model_options));
+
+            // char model_path[128] = "";
+            // sprintf(model_path, "%s/%s", file_path, "mandarin_asr_nofc_16K.bin");
+            // m_model->asr_init(model_path, m_feature->feature_freq(),  m_feature->feature_time());
+
         }
         else
         {
-            printf("[Information:] Initial ASR Param Start!!!\n");
+            // Params
+            m_algorithem_id = params.algorithem_id; 
+
+            // Feature
+            printf("[Information:] Init ASR Feature.\n");
             Feature_Options_S feature_options;
             feature_options.data_len_samples = 48000;
             feature_options.feature_channels = 1;
@@ -109,12 +124,10 @@ namespace ASR
             feature_options.time_step_ms = params.time_step_ms;
             feature_options.pcen_flag = false;
 
-            m_algorithem_id = params.algorithem_id; 
-            m_output_num = params.output_num;
-            m_fc1_dim = params.fc1_kernels;
-            m_fc2_dim = params.fc2_kernels;
             m_feature.reset(new Feature(feature_options));
 
+            // Decode
+            printf("[Information:] Init ASR Decode.\n");
             std::vector<std::string> symbol_list;
             std::vector<std::string> hanzi_kws_list;
             std::vector<std::vector<std::string>> pinyin_kws_list;
@@ -148,33 +161,53 @@ namespace ASR
                 pinyin_kws_list.push_back(tmp_pny);
             }
 
-            m_decode.reset(new Decode(0, symbol_list, hanzi_kws_list, pinyin_kws_list));
-            printf("[Information:] Initial ASR Param Done!!!\n");
+            m_decode.reset(new Decode(symbol_list, hanzi_kws_list, pinyin_kws_list));
+
+            // Model
+            printf("[Information:] Init KWS Model.\n");
+
+            Model_Options_S model_options;
+            // m_fc1_dim = params.fc1_kernels;
+            // m_fc2_dim = params.fc2_kernels;
+            model_options.input_feature_freq = params.feature_freq; 
+            model_options.input_feature_time = params.feature_time; 
+            model_options.output_feature_num = params.output_num; 
+            model_options.output_feature_time = 35; 
+
+            m_model.reset(new Model(model_options));
+
+            char model_path[128] = "";
+            sprintf(model_path, "%s/%s", file_path, "mandarin_asr_nofc_16K.bin");
+            m_model->asr_init(model_path, m_feature->feature_freq(),  m_feature->feature_time());
         }
 
-        printf("[Information:] Load load_param Done!!!\n");
+        printf("[Information:] Init Feature && Decode && Model Done.\n");
     }
 
-    void Speech_Engine::speech_recognition(short *pdata, int data_len_samples, char *outKeyword)
+    void Speech_Engine::speech_recognition(short *pdata, int data_len_samples, char *output_keyword)
     {
         //std::cerr<<"====RMAPI_AI_ASR_RUN_Start====="<<std::endl;
         if (m_algorithem_id == 0)
         {
-            kws_asr_recognition(pdata, data_len_samples, outKeyword);
+            kws_asr_recognition(pdata, data_len_samples, output_keyword);
         }
         else
         {
-            asr_recognition(pdata, data_len_samples, outKeyword);
+            asr_recognition(pdata, data_len_samples, output_keyword);
         }
     }
 
-    void Speech_Engine::asr_recognition(short *pdata, int data_len_samples, char *outKeyword)
+    void Speech_Engine::asr_recognition(short *pdata, int data_len_samples, char *output_keyword)
     {
+        // init 
+        std::string output_str;
+        cv::Mat cnn_out = cv::Mat::zeros(m_model->output_feature_time(), m_model->output_feature_num(), CV_32SC1);
+
         // check
         int ret = m_feature->check_data_length(data_len_samples);
         if (ret != 0)
         {
-            std::cerr << "[ERROR:] asr_recognition input data length is not 24000 " << std::endl;
+            printf("[ERROR:] %s, %d: Input data length is not 24000\n", __FUNCTION__, __LINE__);
             return;
         }
 
@@ -183,17 +216,24 @@ namespace ASR
 
         std::cout << "\033[0;31m" << "[Information:] output_feature.rows: " << output_feature.rows << ", output_feature.cols: " << output_feature.cols <<"\033[0;39m" << std::endl;
 		ASR::show_mat_uchar(output_feature, 296, 48);
+        ret = m_model->asr_forward(output_feature, &cnn_out);
 
+        // decode 
+        m_decode->ctc_decoder(cnn_out);
+        m_decode->show_symbol();
+        m_decode->match_keywords_robust(&output_str);
+
+        sprintf(output_keyword, "%s%s", output_keyword, output_str.c_str());
         return;
     }
 
-    void Speech_Engine::kws_asr_recognition(short *pdata, int data_len_samples, char *outKeyword)
+    void Speech_Engine::kws_asr_recognition(short *pdata, int data_len_samples, char *output_keyword)
     {
         // check
         int ret = m_feature->check_data_length(data_len_samples);
         if (ret != 0)
         {
-            std::cerr << "[ERROR:] asr_recognition input data length is not 24000 " << std::endl;
+            std::cerr << "[ERROR:] kws_asr_recognition input data length is not 24000 " << std::endl;
             return;
         }
 

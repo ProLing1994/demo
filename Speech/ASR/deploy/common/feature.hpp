@@ -34,7 +34,8 @@ namespace ASR
             feature_channels(1),
             pcen_flag(false),
             nfilt(64),
-            scale_num(10) {
+            mel_int_scale_num(10),
+            mel_pecn_scale_num(3) {
                 data_mat_time = (data_len_samples * 1.0 / sample_rate * 1000 - time_seg_ms) / time_step_ms;
             }
 
@@ -49,7 +50,8 @@ namespace ASR
             feature_channels(feature_options.feature_channels),
             pcen_flag(feature_options.pcen_flag),
             nfilt(feature_options.nfilt),
-            scale_num(feature_options.sample_rate) {
+            mel_int_scale_num(feature_options.mel_int_scale_num),
+            mel_pecn_scale_num(feature_options.mel_pecn_scale_num) {
                 data_mat_time = (data_len_samples * 1.0 / sample_rate * 1000 - time_seg_ms) / time_step_ms;
             }
 
@@ -64,8 +66,9 @@ namespace ASR
         int feature_channels;
         bool pcen_flag;
 
-        int nfilt;      // get_mel_filter
-        int scale_num;  // get_int_feature
+        int nfilt;      // [Unused] get_mel_filter 
+        int mel_int_scale_num;  // get_int_feature
+        int mel_pecn_scale_num;  // get_int_feature
 	};
 
     class Feature
@@ -92,7 +95,8 @@ namespace ASR
         void get_mel_pcen_feature(short *pdata, int data_len_sampless, int mel_filter = 64);
 
         // 输入数据长度与解码长度相同，整个窗口直接解码，适用于 asr && vad
-        void get_featuer_total_window(short *pdata, int data_len_samples);
+        // 由于不同的模型使用的 mel_filter 不同，故 mel_filter 作为参数传入
+        void get_featuer_total_window(short *pdata, int data_len_samples, int mel_filter = 64);
 
         // 输入数据长度与解码长度不同，滑窗解码，适用于 kws 
         void get_featuer_slides_window(short *pdata, int data_len_samples, int mel_filter = 64);
