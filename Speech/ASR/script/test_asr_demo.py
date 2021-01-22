@@ -67,12 +67,16 @@ def demo(args):
             feature = Feature()
             feature.get_mel_int_feature(audio_data, len(audio_data))
             feature_data = feature.copy_mfsc_feature_int_to()
-            print(feature_data)
 
             # net forward
             feature_data = feature_data.astype(np.float32)
             net.blobs['data'].data[...] = np.expand_dims(feature_data, axis=0)
+
+            print(np.expand_dims(feature_data, axis=0).shape)
+            # print(feature_data)
+
             net_output = net.forward()['conv7']
+            print(net_output.shape)
             net_output = np.squeeze(net_output)
             net_output = net_output.T
             print(net_output.shape)

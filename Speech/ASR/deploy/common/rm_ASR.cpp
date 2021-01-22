@@ -62,6 +62,7 @@ ASR_OPEN_API int RMAPI_AI_AsrDeinit()
 {
 	delete g_asr_engine;
 	g_asr_engine = nullptr;
+	return 0;
 }
 
 ASR_OPEN_API int RMAPI_AI_AsrAlgStart(short *pBuffer, int length, char *outKeyword)
