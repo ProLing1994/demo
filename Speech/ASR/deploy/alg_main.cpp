@@ -15,6 +15,11 @@ int main(int argc, char **argv) {
 
     // init
     int ret = RMAPI_AI_AsrInit(const_cast<char *>(model_path.c_str()));
+	if (ret != 0)
+	{
+        std::cout << "\033[0;31m" << "[ERROR:] RMAPI AI AsrInit Failed." << "\033[0;39m" << std::endl;
+		return ret;
+	}
 
     int window_size_ms = 3000;
     int window_stride_ms = 2000;
@@ -39,7 +44,7 @@ int main(int argc, char **argv) {
         int ret = wave_data.load_data(audio_path.c_str());
         if(ret == -1) 
         {
-            std::cout << "\033[0;31m" << "[ERROR:] Read wav failed!!!" << "\033[0;39m" << std::endl;
+            std::cout << "\033[0;31m" << "[ERROR:] Read wav failed." << "\033[0;39m" << std::endl;
             continue;
         }
         if (wave_data.data_length() < window_size_samples) {

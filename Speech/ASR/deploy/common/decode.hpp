@@ -13,9 +13,11 @@ namespace ASR
     {
     public:
         Decode();
-        Decode(const std::vector<std::string> &keywords, const std::vector<std::string> &symbol_list);
+        Decode(const std::vector<std::string> &keywords, 
+                const std::vector<std::string> &symbol_list);
         Decode(const std::vector<std::string> &symbol_list, 
-                const std::vector<std::string> &hanzi_kws_list, const std::vector<std::vector<std::string>> &pinyin_kws_list);
+                const std::vector<std::string> &hanzi_kws_list, 
+                const std::vector<std::vector<std::string>> &pinyin_kws_list);
         ~Decode();
 
         inline int result_id_length() const { return m_result_id.size(); }

@@ -41,12 +41,12 @@ namespace ASR
         inline int output_feature_time() const { return m_model_options.output_feature_time; }
 
     public:
-        int asr_init(const char *model_path, int feature_freq, int feature_time, const char *out_port_name="conv7", int rgb_type=2);
+        void asr_init(const char *model_path, int feature_freq, int feature_time, const char *out_port_name="conv7", int rgb_type=2);
         int asr_forward(cv::Mat &input, cv::Mat *output);
 
     // private:
     //     void amba_init();
-    //     int amba_net_init(const char *model_path, void **model, const char *out_port_name="conv7", int rgb_type=2);
+    //     void amba_net_init(const char *model_path, void **model, const char *out_port_name="conv7", int rgb_type=2);
     private:
         Model_Options_S m_model_options;
 

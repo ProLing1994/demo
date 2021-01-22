@@ -8,15 +8,13 @@ static ASR::Speech_Engine *g_asr_engine;
 
 int load_params(char *file_path, ASR::ASR_PARAM_S &params)
 {
-    int ret;
-
     char config_file[256] = {0};
 	sprintf(config_file, "%s/configFiles/configFileASR.cfg", file_path);
 	rmCConfig cconfig;
-	ret = cconfig.OpenFile(config_file);
-	if (0 != ret)
+	int ret = cconfig.OpenFile(config_file);
+	if (ret != 0)
 	{
-		printf("[ERROR:] Read config failed!\n");
+		printf("[ERROR:] %s, %d: Read Config Failed.\n", __FUNCTION__, __LINE__);
 		return ret;
 	}
 
@@ -30,7 +28,6 @@ int load_params(char *file_path, ASR::ASR_PARAM_S &params)
 		params.feature_freq = cconfig.GetInt("KwsParam", "feature_freq");
 		params.feature_time = cconfig.GetInt("KwsParam", "feature_time");
 		params.sample_rate = cconfig.GetInt("KwsParam", "fs");
-		
 	}
 	else
 	{
@@ -50,10 +47,8 @@ int load_params(char *file_path, ASR::ASR_PARAM_S &params)
 
 ASR_OPEN_API int RMAPI_AI_AsrInit(char *file_path)
 {
-    int ret;
     ASR::ASR_PARAM_S params;
-
-    ret = load_params(file_path, params);
+    int ret = load_params(file_path, params);
 	g_asr_engine = new ASR::Speech_Engine(params, file_path);
     return ret;
 }

@@ -39,28 +39,26 @@ namespace ASR
     //     memset((void *)&m_cnn_param, 0, sizeof(CV2X_CNN_PARAM_S));
     // }
 
-    // int Model::amba_net_init(const char *model_path, void **model, const char *out_port_name, int rgb_type)
+    // void Model::amba_net_init(const char *model_path, void **model, const char *out_port_name, int rgb_type)
     // {
     //     //========initialize param========
     //     memset((void *)&m_cnn_param, 0, sizeof(CV2X_CNN_PARAM_S));
 
     //     strcpy(m_cnn_param.cavalry_bin, model_path);
     //     memset(m_cnn_param.mean_name, '\0', CV2X_FILENAME_LENGTH);
-    //     strcpy(m_cnn_param.out_port_name[0], "conv7");
+    //     strcpy(m_cnn_param.out_port_name[0], out_port_name);
     //     memset(m_cnn_param.out_port_name[1], '\0', CV2X_FILENAME_LENGTH);
-    //     m_cnn_param.rgb_type = 2;
+    //     m_cnn_param.rgb_type = rgb_type;
     //     *model = (void *)(new amb_cv2x::CNN(&m_cnn_param));
-    //     return 0;
     // }
     
-    int Model::asr_init(const char *model_path, int feature_freq, int feature_time, const char *out_port_name, int rgb_type)
+    void Model::asr_init(const char *model_path, int feature_freq, int feature_time, const char *out_port_name, int rgb_type)
     {
         // // image 
         // m_src_image = amb_cv2x::CreateImage(CV2X_IMAGE_TYPE_U8C1, feature_freq, feature_time);
 
         // // model
         // amba_net_init(model_path, &m_asr_model, out_port_name, rgb_type);
-        // return 0;
     }
 
     int Model::asr_forward(cv::Mat &input, cv::Mat *output)
@@ -69,10 +67,12 @@ namespace ASR
         // if(input.rows !=  m_model_options.input_feature_time or input.cols !=  m_model_options.input_feature_freq)
         // {
         //     printf("[ERROR:] %s, %d: Wrong Input Feature Shape.\n", __FUNCTION__, __LINE__);
+        //     return -1;
         // }
         // if(output->rows !=  m_model_options.output_feature_time or output->cols !=  m_model_options.output_feature_num)
         // {
         //     printf("[ERROR:] %s, %d: Wrong Output Shape.\n", __FUNCTION__, __LINE__);
+        //     return -1;
         // }
 
         // // input
@@ -114,7 +114,7 @@ namespace ASR
         //     }
 
         // }
-        // printf("[Information:] Model Forward Done!!!\n");
+        // printf("[Information:] Model Forward Done.\n");
         // return ret;
     }
 

@@ -24,7 +24,8 @@ namespace ASR
     }
 
     Decode::Decode(const std::vector<std::string> &symbol_list, 
-                    const std::vector<std::string> &hanzi_kws_list, const std::vector<std::vector<std::string>> &pinyin_kws_list)
+                    const std::vector<std::string> &hanzi_kws_list, 
+                    const std::vector<std::vector<std::string>> &pinyin_kws_list)
     {
         m_symbol_list.reserve(symbol_list.size());
         for(int i = 0; i < symbol_list.size(); i++)
