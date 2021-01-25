@@ -76,6 +76,7 @@ namespace ASR
     public:
 		Feature();
 		Feature(const Feature_Options_S &feature_options);
+        Feature(int data_len_samples);
 		~Feature();
 
         inline int data_mat_time() const { return m_feature_options.data_mat_time; } 
@@ -83,8 +84,8 @@ namespace ASR
         inline int feature_freq() const { return m_feature_options.feature_freq; }
         inline int time_step_ms() const { return m_feature_options.time_step_ms; }
         inline int pcen_flag() const { return m_feature_options.pcen_flag; } 
-        inline cv::Mat mfsc_feature_int() const { return m_mfsc_feature_int; }
-        inline cv::Mat single_feature() const { return m_single_feature; }
+        inline const cv::Mat &mfsc_feature_int() const { return m_mfsc_feature_int; }
+        inline const cv::Mat &single_feature() const { return m_single_feature; }
 
 	public:
         int check_data_length(int data_len_samples);

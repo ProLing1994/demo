@@ -64,8 +64,6 @@ int rm_FFT::get_computation_layers(int num)
 // Param 3: output vector, which is the result of fft
 bool rm_FFT::fft(const Complex inVec[], const int vecLen, Complex outVec[])
 {
-	char msg[256] = "11111 ";
-
 	if ((vecLen <= 0) || (NULL == inVec) || (NULL == outVec))
 		return false;
 	if (!is_power_of_two(vecLen))
@@ -153,8 +151,6 @@ bool rm_FFT::fft(const Complex inVec[], const int vecLen, Complex outVec[])
 
 bool rm_FFT::ifft(const Complex inVec[], int const len, Complex outVec[])
 {
-	char msg[256] = "11111 ";
-
 	if ((len <= 0) || (!inVec))
 		return false;
 	if (false == is_power_of_two(len))

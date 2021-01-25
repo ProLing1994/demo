@@ -76,7 +76,8 @@ namespace ASR
         // }
 
         // // input
-        // input.copyTo(cv::Mat(cv::Size(m_src_image->u32Width, m_src_image->u32Height), CV_8UC1, (unsigned char*)(m_src_image->au64VirAddr[0]), m_src_image->au32Stride[0])); 
+        // input.copyTo(cv::Mat(cv::Size(m_src_image->u32Width, m_src_image->u32Height), 
+        //                 CV_8UC1, (unsigned char*)(m_src_image->au64VirAddr[0]), m_src_image->au32Stride[0])); 
 
         // // forward
         // std::vector<CV2X_BLOB_S> layerout;
@@ -88,18 +89,21 @@ namespace ASR
         // // std::cout << "\033[0;31m" << "[Information:]layerout.size: " << layerout.size()  <<"\033[0;39m" << std::endl;
 
         // // output
-        // for(int i = 0; i < layerout.size(); i++)
+        // for(unsigned int i = 0; i < layerout.size(); i++)
         // {
         //     unsigned int u32Width = layerout[i].unShape.stWhc.u32Width;
         //     unsigned int u32Height = layerout[i].unShape.stWhc.u32Height;
         //     unsigned int u32Chn = layerout[i].unShape.stWhc.u32Chn;
         //     unsigned int u32Stride = layerout[i].u32Stride;
-        //     // std::cout << "\033[0;31m" << "[Information:] u32Chn: " << u32Chn << ", u32Height: " << u32Height \
-        //     //         << ", u32Width: " << u32Width  << ", u32Stride: " << u32Stride << "\033[0;39m" << std::endl;
+            
+        //     /*
+        //     std::cout << "\033[0;31m" << "[Information:] u32Chn: " << u32Chn << ", u32Height: " << u32Height << ", \
+        //     u32Width: " << u32Width  << ", u32Stride: " << u32Stride << "\033[0;39m" << std::endl;
+        //     */
 
         //     float *pResultBlob = (float *)(layerout[i].u64VirAddr);
 
-        //     for (int i = 0; i < u32Chn; i++)
+        //     for (unsigned int i = 0; i < u32Chn; i++)
         //     {
         //         for (unsigned int j = 0; j < u32Height; j++)
         //         {
@@ -114,7 +118,6 @@ namespace ASR
         //     }
 
         // }
-        // printf("[Information:] Model Forward Done.\n");
         // return ret;
     }
 

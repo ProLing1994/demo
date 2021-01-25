@@ -4,6 +4,20 @@
 #include "config.h"
 #include "speech.hpp"
 
+#ifdef _TESTTIME
+#ifndef TEST_TIME
+#include <sys/time.h>
+#define TEST_TIME(times) do{\
+        struct timeval cur_time;\
+        gettimeofday(&cur_time, NULL);\
+        times = (cur_time.tv_sec * 1000000llu + cur_time.tv_usec) / 1000llu;\
+    }while(0)
+#endif
+double feature_time = 0;
+double model_forward_time = 0;
+double decode_time = 0;
+#endif
+
 namespace ASR
 {
     Speech_Engine::Speech_Engine()
@@ -104,7 +118,6 @@ namespace ASR
             // char model_path[128] = "";
             // sprintf(model_path, "%s/%s", file_path, "mandarin_asr_nofc_16K.bin");
             // m_model->asr_init(model_path, m_feature->feature_freq(),  m_feature->feature_time());
-
         }
         else
         {
@@ -211,11 +224,24 @@ namespace ASR
             return;
         }
 
+        #ifdef _TESTTIME
+        unsigned long long time_begin, time_end;
+        TEST_TIME(time_begin);
+        #endif
+
+        // feature
         m_feature->get_featuer_total_window(pdata, data_len_samples);
         cv::Mat output_feature = m_feature->mfsc_feature_int();
-
-        std::cout << "\033[0;31m" << "[Information:] output_feature.rows: " << output_feature.rows << ", output_feature.cols: " << output_feature.cols <<"\033[0;39m" << std::endl;
+        std::cout << "[Information:] output_feature.rows: " << output_feature.rows << ", output_feature.cols: " << output_feature.cols << std::endl;
 		ASR::show_mat_uchar(output_feature, 296, 48);
+
+        #ifdef _TESTTIME
+        TEST_TIME(time_end);
+        feature_time += time_end - time_begin;
+        TEST_TIME(time_begin);
+        #endif
+
+        // forward
         ret = m_model->asr_forward(output_feature, &cnn_out);
         if (ret != 0)
         {
@@ -223,10 +249,22 @@ namespace ASR
             return;
         }
 
+        #ifdef _TESTTIME
+        TEST_TIME(time_end);
+        model_forward_time += time_end - time_begin;
+        TEST_TIME(time_begin);
+        #endif
+
         // decode 
         m_decode->ctc_decoder(cnn_out);
-        m_decode->show_symbol();
+        // m_decode->show_symbol();
+        // m_decode->output_symbol(&output_str);
         m_decode->match_keywords_robust(&output_str);
+
+        #ifdef _TESTTIME
+        TEST_TIME(time_end);
+        decode_time += time_end - time_begin;
+        #endif
 
         sprintf(output_keyword, "%s%s", output_keyword, output_str.c_str());
         return;

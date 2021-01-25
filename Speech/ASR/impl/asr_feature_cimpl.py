@@ -18,9 +18,17 @@ def __load_c_functions():
     lib.Feature_create.restype = ctypes.c_void_p
     fun_dict['Feature_create'] = lib.Feature_create
 
+    lib.Feature_create_samples.argtypes = [ctypes.c_int]
+    lib.Feature_create_samples.restype = ctypes.c_void_p
+    fun_dict['Feature_create_samples'] = lib.Feature_create_samples
+
     lib.Feature_delete.argtypes = [ctypes.c_void_p]
     lib.Feature_delete.restype = None
     fun_dict['Feature_delete'] = lib.Feature_delete
+
+    lib.Feature_data_mat_time.argtypes = [ctypes.c_void_p]
+    lib.Feature_data_mat_time.restype = ctypes.c_int
+    fun_dict['Feature_data_mat_time'] = lib.Feature_data_mat_time
 
     lib.Feature_feature_time.argtypes = [ctypes.c_void_p]
     lib.Feature_feature_time.restype = ctypes.c_int
@@ -82,13 +90,20 @@ def call_func(func_name, *args):
 
 class Feature(object):
     """ feature python wrapper """
-    def __init__(self):
-        self.ptr = call_func('Feature_create')
+    def __init__(self, data_len_samples=48000):
+        if data_len_samples == 48000:
+            self.ptr = call_func('Feature_create')
+        else:
+            data_len_samples = ctypes.c_int(data_len_samples)
+            self.ptr = call_func('Feature_create_samples', data_len_samples)
 
     def __del__(self):
         call_func('Feature_delete', self.ptr)
         self.ptr = None
   
+    def data_mat_time(self):
+        return call_func('Feature_data_mat_time', self.ptr)
+        
     def feature_time(self):
         return call_func('Feature_feature_time', self.ptr)
 
@@ -108,7 +123,7 @@ class Feature(object):
         return 
 
     def copy_mfsc_feature_int_to(self):
-        feature_data = np.zeros((self.feature_time(), self.feature_freq()), dtype=np.uint8)
+        feature_data = np.zeros((self.data_mat_time(), self.feature_freq()), dtype=np.uint8)
         feature_data_ptr = feature_data.ctypes.data_as(ctypes.POINTER(ctypes.c_ubyte))
 
         call_func('Feature_copy_mfsc_feature_int_to', self.ptr, feature_data_ptr)
