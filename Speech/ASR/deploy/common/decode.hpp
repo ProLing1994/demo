@@ -27,19 +27,19 @@ namespace ASR
         void ctc_decoder(float *input, int rows=35, int cols=480, bool greedy=true);
         void ctc_decoder(cv::Mat input, bool greedy = true);
 
-        void show_symbol();
         void match_keywords_robust(std::string *output);
-        void copy_result_id_to(int *data);
-
-    private:
         int get_edit_dist(std::vector<std::string> string1, std::vector<std::string> string2);
+
+        void show_symbol();
+        void output_symbol(std::string *output);
+        void copy_result_id_to(int *data);
 
     private:
         std::vector<int> m_result_id;
 
         int m_blank_id = 0;                         // 静音 SIL id, default：0
         
-        std::vector<std::string> m_symbol_list;     // 音符  
+        std::vector<std::string> m_symbol_list;     // 符号
         std::vector<std::string> m_hanzi_kws_list;  // 汉字
         std::vector<std::vector<std::string>> m_pinyin_kws_list;    // 拼音
         std::vector<std::string> m_keywords;        // 关键词

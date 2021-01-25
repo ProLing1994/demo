@@ -11,7 +11,9 @@ extern "C"
 namespace ASR
 {
     void *Feature_create();
+    void *Feature_create_samples(int data_len_samples);
     void Feature_delete(void *feature);
+    int Feature_data_mat_time(void *feature);
     int Feature_feature_time(void *feature);
     int Feature_feature_freq(void *feature);
     int Feature_check_data_length(void *feature, int data_len_samples);

@@ -271,6 +271,16 @@ namespace ASR
         mel_filter_init();
     }
 
+    Feature::Feature(int data_len_samples)
+    {
+        Feature_Options_S feature_options;
+        feature_options.data_len_samples = data_len_samples;
+
+        m_feature_options = Feature_Options_S(feature_options);
+        feature_mat_init();
+        mel_filter_init();
+    }
+
     Feature::~Feature()
     {
     }
@@ -304,7 +314,7 @@ namespace ASR
 
     void Feature::copy_mfsc_feature_int_to(unsigned char *feature_data)
     {
-        memcpy(feature_data, m_mfsc_feature_int.data, m_feature_options.feature_time * m_feature_options.feature_freq * sizeof(unsigned char));
+        memcpy(feature_data, m_mfsc_feature_int.data, m_feature_options.data_mat_time * m_feature_options.feature_freq * sizeof(unsigned char));
     }
 
     void Feature::get_mfsc_feature_filter(int mel_filter)
