@@ -26,9 +26,9 @@ namespace ASR
         {
             for (int j = 0; j < cols; j++)
             {
-                std::cerr << (int)*(p_data + j + i * feature_mat.cols) << " ";
+                std::cout << (int)*(p_data + j + i * feature_mat.cols) << " ";
             }
-            std::cerr << std::endl;
+            std::cout << std::endl;
         }
     }
 
@@ -39,9 +39,9 @@ namespace ASR
         {
             for (int j = 0; j < cols; j++)
             {
-                std::cerr << (int)*(p_data + j + i * feature_mat.cols) << " ";
+                std::cout << (int)*(p_data + j + i * feature_mat.cols) << " ";
             }
-            std::cerr << std::endl;
+            std::cout << std::endl;
         }
     }
 
@@ -52,9 +52,9 @@ namespace ASR
         {
             for (int j = 0; j < cols; j++)
             {
-                std::cerr << (float)*(p_data + j + i * feature_mat.cols) << " ";
+                std::cout << (float)*(p_data + j + i * feature_mat.cols) << " ";
             }
-            std::cerr << std::endl;
+            std::cout << std::endl;
         }
     }
 
@@ -271,9 +271,18 @@ namespace ASR
         mel_filter_init();
     }
 
+    Feature::Feature(int data_len_samples)
+    {
+        Feature_Options_S feature_options;
+        feature_options.data_len_samples = data_len_samples;
+
+        m_feature_options = Feature_Options_S(feature_options);
+        feature_mat_init();
+        mel_filter_init();
+    }
+
     Feature::~Feature()
     {
-
     }
 
     void Feature::mel_filter_init()
@@ -287,6 +296,7 @@ namespace ASR
     {   
         m_mel_filter48 = cv::Mat::zeros(m_feature_options.n_fft / 2, m_feature_options.feature_freq, CV_32FC1);
         m_mel_filter64 = cv::Mat::zeros(m_feature_options.n_fft / 2, m_feature_options.feature_freq, CV_32FC1);
+
         m_frequency_feature = cv::Mat::zeros(m_feature_options.data_mat_time, m_feature_options.n_fft / 2, CV_32FC1);
         m_mfsc_feature = cv::Mat::zeros(m_feature_options.data_mat_time, m_feature_options.feature_freq, CV_32FC1);
         m_mfsc_feature_int = cv::Mat::zeros(m_feature_options.data_mat_time, m_feature_options.feature_freq, CV_8UC1);
@@ -304,7 +314,7 @@ namespace ASR
 
     void Feature::copy_mfsc_feature_int_to(unsigned char *feature_data)
     {
-        memcpy(feature_data, m_mfsc_feature_int.data, m_feature_options.feature_time * m_feature_options.feature_freq * sizeof(unsigned char));
+        memcpy(feature_data, m_mfsc_feature_int.data, m_feature_options.data_mat_time * m_feature_options.feature_freq * sizeof(unsigned char));
     }
 
     void Feature::get_mfsc_feature_filter(int mel_filter)
@@ -314,7 +324,7 @@ namespace ASR
         else if(mel_filter == 48)
             get_mfsc_feature(m_frequency_feature, m_mel_filter48, &m_mfsc_feature, m_feature_options.feature_freq);
         else
-            std::cerr << "[ERROR:] unknow mel_filter, please check!!! " << std::endl;
+            printf("[ERROR:] %s, %d: Unknow Mel Filter.\n", __FUNCTION__, __LINE__);
     }
 
     void Feature::get_mel_int_feature(short *pdata, int data_len_samples, int mel_filter)
@@ -322,41 +332,23 @@ namespace ASR
         get_frequency_feature(pdata, data_len_samples, &m_frequency_feature, m_feature_options.n_fft, m_feature_options.sample_rate, m_feature_options.time_step_ms);
         get_mfsc_feature_filter(mel_filter);
         cv::log(m_mfsc_feature + 1, m_mfsc_feature);
-        get_int_feature(m_mfsc_feature, &m_mfsc_feature_int);
+        get_int_feature(m_mfsc_feature, &m_mfsc_feature_int, m_feature_options.mel_int_scale_num);
     }
 
     void Feature::get_mel_pcen_feature(short *pdata, int data_len_samples, int mel_filter)
     {
-        int u8_data = 0;
-
         get_frequency_feature(pdata, data_len_samples, &m_frequency_feature, m_feature_options.n_fft, m_feature_options.sample_rate, m_feature_options.time_step_ms);
         get_mfsc_feature_filter(mel_filter);
 		get_pcen_feature(m_mfsc_feature);
-		for (int r = 0; r < m_feature_options.feature_time; r++)
-		{
-			for (int c = 0; c < m_feature_options.feature_freq; c++)
-			{
-				for (int k = 0; k < m_feature_options.feature_channels; k++)
-				{
-					u8_data = (int)(m_mfsc_feature.at<float>(r, c, k) * 255 / 3);
-					u8_data = u8_data < 0 ? 0 : u8_data;
-					u8_data = u8_data > 255 ? 255 : u8_data;
-					m_mfsc_feature_int.at<unsigned char>(r, c, k) = u8_data;
-				}
-			}
-		}
+        get_int_feature(m_mfsc_feature, &m_mfsc_feature_int, m_feature_options.mel_pecn_scale_num);
     }
 
-    void Feature::get_featuer_total_window(short *pdata, int data_len_samples)
+    void Feature::get_featuer_total_window(short *pdata, int data_len_samples, int mel_filter)
     {
         if(m_feature_options.pcen_flag == true)
-        {
-            get_mel_pcen_feature(pdata, data_len_samples);
-        }
+            get_mel_pcen_feature(pdata, data_len_samples, mel_filter);
         else
-        {
-            get_mel_int_feature(pdata, data_len_samples);
-        }
+            get_mel_int_feature(pdata, data_len_samples, mel_filter);
     }
 
     void Feature::get_featuer_slides_window(short *pdata, int data_len_samples, int mel_filter)
@@ -379,7 +371,7 @@ namespace ASR
         {
             cv::Mat pcen_feature = m_mfsc_feature(cv::Range(start_feature_time, start_feature_time + m_feature_options.feature_time), cv::Range(0, m_feature_options.feature_freq)).clone();
             get_pcen_feature(pcen_feature);
-            get_int_feature(pcen_feature, &m_single_feature, 3);
+            get_int_feature(pcen_feature, &m_single_feature, m_feature_options.mel_pecn_scale_num);
         }
         else
         {
