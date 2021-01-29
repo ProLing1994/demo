@@ -21,9 +21,9 @@ int load_params(char *file_path, ASR::ASR_PARAM_S &params)
 	params.algorithem_id = cconfig.GetInt("AsrAlgorithem_ID", "algorithem_id");
 	if (params.algorithem_id == 0)
 	{
-		params.n_fft = cconfig.GetInt("KwsParam", "win_len");
-		params.time_seg_ms = cconfig.GetInt("KwsParam", "time_seg");
-		params.time_step_ms = cconfig.GetInt("KwsParam", "time_step");
+		params.n_fft = cconfig.GetInt("KwsParam", "n_fft");
+		params.time_seg_ms = cconfig.GetInt("KwsParam", "time_seg_ms");
+		params.time_step_ms = cconfig.GetInt("KwsParam", "time_step_ms");
 		params.output_num = cconfig.GetInt("KwsParam", "output_num");
 		params.feature_freq = cconfig.GetInt("KwsParam", "feature_freq");
 		params.feature_time = cconfig.GetInt("KwsParam", "feature_time");
@@ -31,14 +31,15 @@ int load_params(char *file_path, ASR::ASR_PARAM_S &params)
 	}
 	else
 	{
-		params.n_fft = cconfig.GetInt("AsrParam", "win_len");
-		params.time_seg_ms = cconfig.GetInt("AsrParam", "time_seg");
-		params.time_step_ms = cconfig.GetInt("AsrParam", "time_step");
-		params.fc1_kernels = cconfig.GetInt("AsrParam", "fc1_kernels");
-		params.fc2_kernels = cconfig.GetInt("AsrParam", "fc2_kernels");
+		params.n_fft = cconfig.GetInt("AsrParam", "n_fft");
+		params.time_seg_ms = cconfig.GetInt("AsrParam", "time_seg_ms");
+		params.time_step_ms = cconfig.GetInt("AsrParam", "time_step_ms");
 		params.output_num = cconfig.GetInt("AsrParam", "output_num");
+		params.output_time = cconfig.GetInt("AsrParam", "output_time");
 		params.feature_freq = cconfig.GetInt("AsrParam", "feature_freq");
 		params.feature_time = cconfig.GetInt("AsrParam", "feature_time");
+		params.model_name = cconfig.GetStr("AsrParam", "model_name");
+		params.output_name = cconfig.GetStr("AsrParam", "output_name");
 		params.sample_rate = cconfig.GetInt("AsrParam", "fs");
 	}
 
