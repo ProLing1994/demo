@@ -34,6 +34,19 @@ class RNNLM(nn.Module):
         score=self.softmax(fc_out)
         return score,(hn, cn)
 
+def save_feature_map(model_path, feature_np):
+    feature_map_txt = "feature_map.txt"
+    with open(os.path.join(model_path, feature_map_txt), "w+") as f :
+        c = feature_np.shape[0]
+        w = feature_np.shape[1]
+        h = feature_np.shape[2]
+
+        for i in range(c):
+            for j in range(w):
+                for k in range(h):
+                    f.write("{} ".format(feature_np[i,j,k]))
+
+        f.write("\n")
 
 if __name__ == '__main__':
     # input 
@@ -52,16 +65,20 @@ if __name__ == '__main__':
     input = torch.ones([1, 32]).long()
     fc_out, _, x = pytorch_network.forward(input)
 
-    # load caffe prototxt
+    # save_feature_map
+    # save_feature_map(model_path, x.data.numpy())
 
+    # load caffe model
     caffe.set_mode_cpu()
     net = caffe.Net(os.path.join(model_path, caffe_prototxt), os.path.join(model_path, caffe_model), caffe.TEST)
-    net.blobs['data'].reshape(1, 32, 1, 512) 
+
+    # caffe format
+    net.blobs['data'].reshape(32, 1, 512) 
     net.blobs['data'].data[...] = np.expand_dims(x.data.numpy(), axis=0)
     
-    net.blobs['clip'].reshape(1, 32, 1, 1) 
-    clip_data = np.ones((32, 1, 1), dtype = np.int16)
-    clip_data[0][0][0] = 0
+    net.blobs['clip'].reshape(32, 1) 
+    clip_data = np.ones((32, 1), dtype = np.int16)
+    clip_data[0][0] = 0
     net.blobs['clip'].data[...] = np.expand_dims(clip_data, axis=0)
     net_output = net.forward()['fc_out'] 
 
