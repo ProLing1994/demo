@@ -1,0 +1,115 @@
+name: "cn_without_tone_lm_26"
+layer{
+    name:"data"
+    type:"Input"
+    top:"data"
+    input_param{
+    shape{
+        dim:32
+        dim:1
+        dim:512
+         }
+    }
+}
+
+layer{
+    name:"clip"
+    type:"Input"
+    top:"clip"
+    input_param{
+    shape{
+        dim:32
+        dim:1
+         }
+    }
+}
+
+##########################
+
+layer {
+    name: "lstm1"
+    type: "LSTM"
+    bottom: "data"
+    bottom: "clip"
+    top: "lstm1"
+    recurrent_param {
+        num_output: 512
+        weight_filler {
+          type: "constant"
+          value: 0
+        }
+        bias_filler {
+          type: "constant"
+          value: 0
+        }
+    }
+}
+
+layer {
+    name: "lstm2"
+    type: "LSTM"
+    bottom: "lstm1"
+    bottom: "clip"
+    top: "lstm2"
+    recurrent_param {
+        num_output: 512
+        weight_filler {
+          type: "constant"
+          value: 0
+        }
+        bias_filler {
+          type: "constant"
+          value: 0
+        }
+    }
+}
+
+layer {
+    name: "lstm3"
+    type: "LSTM"
+    bottom: "lstm2"
+    bottom: "clip"
+    top: "lstm3"
+    recurrent_param {
+        num_output: 512
+        weight_filler {
+          type: "constant"
+          value: 0
+        }
+        bias_filler {
+          type: "constant"
+          value: 0
+        }
+    }
+}
+
+layer {
+    name: "reshape3"
+    type: "Reshape"
+    bottom: "lstm3"
+    top: "lstm3_reshape"
+    reshape_param {
+        shape {
+            dim: 32
+            dim: 512
+        }
+    }
+}
+
+layer {
+  name: "fc_out"
+  type: "InnerProduct"
+  bottom: "lstm3_reshape"
+  top: "fc_out"
+  inner_product_param {
+    num_output: 408
+    bias_term: true
+    weight_filler {
+      type: "constant"
+      value: 0
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
