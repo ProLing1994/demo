@@ -67,6 +67,8 @@ def clean_srt_chinese(srt):
     srt = srt.replace('(', '')
     srt = srt.replace(')', '')
 
+    srt = srt.replace('Ｂ', '')
+
     srt = srt.replace('，', '')
     srt = srt.replace('、', '')
     srt = srt.replace('。', '')
@@ -269,11 +271,11 @@ def audio_split_subtitle(args):
 
 def main():
     parser = argparse.ArgumentParser(description="Audio Split Using Subtitle")
-    parser.add_argument('--audio_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/01182021/建军大业/建军大业.wav") 
-    parser.add_argument('--subtitle_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/01182021/建军大业/建军大业.srt") 
-    parser.add_argument('--output_dir', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/01182021/建军大业/")
+    parser.add_argument('--audio_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/01292021/李小龙我的兄弟/李小龙我的兄弟.wav") 
+    parser.add_argument('--subtitle_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/01292021/李小龙我的兄弟/李小龙我的兄弟.srt") 
+    parser.add_argument('--output_dir', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/01292021/李小龙我的兄弟/")
     parser.add_argument('--language', type=str, choices=["Chinese", "English"], default="Chinese")
-    parser.add_argument('--file_encoding', type=str, choices=["gbk", "utf-8"], default="gbk")
+    parser.add_argument('--file_encoding', type=str, choices=["gbk", "utf-8", "gb2312"], default="utf-8")
     parser.add_argument('--time_shift', type=str, default="+,0.0")
     parser.add_argument('--output_format', type=str, default="RM_MOVIE_S{:0>3d}T{:0>3d}.wav")
     parser.add_argument('--movie_id', type=int, default=1)
