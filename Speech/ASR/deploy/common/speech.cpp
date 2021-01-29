@@ -180,18 +180,18 @@ namespace ASR
             printf("[Information:] Init KWS Model.\n");
 
             Model_Options_S model_options;
-            // m_fc1_dim = params.fc1_kernels;
-            // m_fc2_dim = params.fc2_kernels;
             model_options.input_feature_freq = params.feature_freq; 
             model_options.input_feature_time = params.feature_time; 
             model_options.output_feature_num = params.output_num; 
-            model_options.output_feature_time = 35; 
+            // If the output shape is uncertain, the parameter is set to zero, output_feature_time = 35; 
+            if(params.output_time != 0)
+                model_options.output_feature_time = params.output_time; 
 
             m_model.reset(new Model(model_options));
 
             char model_path[128] = "";
-            sprintf(model_path, "%s/%s", file_path, "mandarin_asr_nofc_16K.bin");
-            m_model->asr_init(model_path, m_feature->feature_freq(),  m_feature->feature_time());
+            sprintf(model_path, "%s/%s", file_path, params.model_name.c_str());
+            m_model->asr_init(model_path, m_feature->feature_freq(),  m_feature->feature_time(), params.output_name.c_str());
         }
 
         printf("[Information:] Init Feature && Decode && Model Done.\n");
@@ -232,8 +232,8 @@ namespace ASR
         // feature
         m_feature->get_featuer_total_window(pdata, data_len_samples);
         cv::Mat output_feature = m_feature->mfsc_feature_int();
-        std::cout << "[Information:] output_feature.rows: " << output_feature.rows << ", output_feature.cols: " << output_feature.cols << std::endl;
-		ASR::show_mat_uchar(output_feature, 296, 48);
+        // std::cout << "[Information:] output_feature.rows: " << output_feature.rows << ", output_feature.cols: " << output_feature.cols << std::endl;
+		// ASR::show_mat_uchar(output_feature, 296, 64);
 
         #ifdef _TESTTIME
         TEST_TIME(time_end);
@@ -260,13 +260,12 @@ namespace ASR
         // m_decode->show_symbol();
         // m_decode->output_symbol(&output_str);
         m_decode->match_keywords_robust(&output_str);
+        sprintf(output_keyword, "%s%s", output_keyword, output_str.c_str());
 
         #ifdef _TESTTIME
         TEST_TIME(time_end);
         decode_time += time_end - time_begin;
         #endif
-
-        sprintf(output_keyword, "%s%s", output_keyword, output_str.c_str());
         return;
     }
 

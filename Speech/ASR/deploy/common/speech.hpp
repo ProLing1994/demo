@@ -18,10 +18,11 @@ namespace ASR
                         time_step_ms(10),
                         feature_freq(48),
                         feature_time(296),
-                        fc1_kernels(4096),
-                        fc2_kernels(256),
-                        output_num(19),
+                        output_num(408),
+                        output_time(35),
                         sample_rate(16000),
+                        model_name(""),
+                        output_name(""),
                         algorithem_id(0) {}
 
         int n_fft;
@@ -29,10 +30,11 @@ namespace ASR
         int time_step_ms;
         int feature_freq;
         int feature_time;
-        int fc1_kernels;
-        int fc2_kernels;
         int output_num;
+        int output_time;
         int sample_rate;
+        std::string model_name;
+        std::string output_name;
         int algorithem_id;
     };
 

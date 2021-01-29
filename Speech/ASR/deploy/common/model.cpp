@@ -86,7 +86,11 @@ namespace ASR
         //     printf("[ERROR:] %s, %d: ASR Net Forward failed.\n", __FUNCTION__, __LINE__);
         //     return ret;
         // }
-        // // std::cout << "\033[0;31m" << "[Information:]layerout.size: " << layerout.size()  <<"\033[0;39m" << std::endl;
+        // // std::cout << "\033[0;31m" << "[Information:] layerout.size: " << layerout.size()  <<"\033[0;39m" << std::endl;
+        // // std::cout << "\033[0;31m" << "[Information:] u32Chn: " << layerout[0].unShape.stWhc.u32Chn \
+        // //             << ", u32Height: " << layerout[0].unShape.stWhc.u32Height \ 
+        // //             << ", u32Width: " << layerout[0].unShape.stWhc.u32Width \
+        // //             << ", u32Stride: " << layerout[0].u32Stride;
 
         // // output
         // for(unsigned int i = 0; i < layerout.size(); i++)
@@ -95,11 +99,6 @@ namespace ASR
         //     unsigned int u32Height = layerout[i].unShape.stWhc.u32Height;
         //     unsigned int u32Chn = layerout[i].unShape.stWhc.u32Chn;
         //     unsigned int u32Stride = layerout[i].u32Stride;
-            
-        //     /*
-        //     std::cout << "\033[0;31m" << "[Information:] u32Chn: " << u32Chn << ", u32Height: " << u32Height << ", \
-        //     u32Width: " << u32Width  << ", u32Stride: " << u32Stride << "\033[0;39m" << std::endl;
-        //     */
 
         //     float *pResultBlob = (float *)(layerout[i].u64VirAddr);
 
@@ -116,7 +115,6 @@ namespace ASR
         //             pResultBlob += u32Stride / sizeof(float);
         //         }
         //     }
-
         // }
         // return ret;
     }

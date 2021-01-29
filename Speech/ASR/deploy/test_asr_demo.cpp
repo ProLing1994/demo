@@ -9,7 +9,7 @@
 #include "common/utils/csrc/file_system.h"
 
 int main(int argc, char **argv) {
-    std::string audio_folder = "/home/huanyuan/share/audio_data/";
+    std::string audio_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景";
     std::string model_path = "/home/huanyuan/share/KWS_model/";
 
     // init
@@ -41,6 +41,10 @@ int main(int argc, char **argv) {
     sort(audio_names.begin(),audio_names.end());
     
     for (unsigned int idx = 0; idx < audio_names.size(); idx++) {
+        // check 
+        if (audio_names[idx].find(".wav") == audio_names[idx].npos)
+            continue;
+
         std::string audio_path = audio_folder + "/" + audio_names[idx];
         std::cout << "\033[0;31m" << "[Information:] Audio path: " << audio_path << "\033[0;39m" << std::endl;
         
