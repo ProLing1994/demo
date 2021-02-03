@@ -18,7 +18,7 @@ def __load_c_functions():
     lib.Feature_create.restype = ctypes.c_void_p
     fun_dict['Feature_create'] = lib.Feature_create
 
-    lib.Feature_create_samples.argtypes = [ctypes.c_int]
+    lib.Feature_create_samples.argtypes = [ctypes.c_int, ctypes.c_int]
     lib.Feature_create_samples.restype = ctypes.c_void_p
     fun_dict['Feature_create_samples'] = lib.Feature_create_samples
 
@@ -42,9 +42,17 @@ def __load_c_functions():
     lib.Feature_check_data_length.restype = ctypes.c_int
     fun_dict['Feature_check_data_length'] = lib.Feature_check_data_length
 
+    lib.Feature_get_mel_feature.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_short), ctypes.c_int]
+    lib.Feature_get_mel_feature.restype = None
+    fun_dict['Feature_get_mel_feature'] = lib.Feature_get_mel_feature
+
     lib.Feature_get_mel_int_feature.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_short), ctypes.c_int]
     lib.Feature_get_mel_int_feature.restype = None
     fun_dict['Feature_get_mel_int_feature'] = lib.Feature_get_mel_int_feature
+
+    lib.Feature_copy_mfsc_feature_to.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_float)]
+    lib.Feature_copy_mfsc_feature_to.restype = None
+    fun_dict['Feature_copy_mfsc_feature_to'] = lib.Feature_copy_mfsc_feature_to
 
     lib.Feature_copy_mfsc_feature_int_to.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_ubyte)]
     lib.Feature_copy_mfsc_feature_int_to.restype = None
@@ -90,12 +98,10 @@ def call_func(func_name, *args):
 
 class Feature(object):
     """ feature python wrapper """
-    def __init__(self, data_len_samples=48000):
-        if data_len_samples == 48000:
-            self.ptr = call_func('Feature_create')
-        else:
-            data_len_samples = ctypes.c_int(data_len_samples)
-            self.ptr = call_func('Feature_create_samples', data_len_samples)
+    def __init__(self, data_len_samples=48000, feature_freq=48):
+        data_len_samples = ctypes.c_int(data_len_samples)
+        feature_freq = ctypes.c_int(feature_freq)
+        self.ptr = call_func('Feature_create_samples', data_len_samples, feature_freq)
 
     def __del__(self):
         call_func('Feature_delete', self.ptr)
@@ -114,6 +120,14 @@ class Feature(object):
         data_len_samples = ctypes.c_int(data_len_samples)
         return call_func('Feature_check_data_length', self.ptr, data_len_samples)
 
+    def get_mel_feature(self, data, data_len_samples):
+        data = np.ascontiguousarray(data, dtype=np.int16)
+        data_ptr = data.ctypes.data_as(ctypes.POINTER(ctypes.c_short))
+
+        data_len_samples = ctypes.c_int(data_len_samples)
+        call_func('Feature_get_mel_feature', self.ptr, data_ptr, data_len_samples)
+        return 
+
     def get_mel_int_feature(self, data, data_len_samples):
         data = np.ascontiguousarray(data, dtype=np.int16)
         data_ptr = data.ctypes.data_as(ctypes.POINTER(ctypes.c_short))
@@ -121,6 +135,13 @@ class Feature(object):
         data_len_samples = ctypes.c_int(data_len_samples)
         call_func('Feature_get_mel_int_feature', self.ptr, data_ptr, data_len_samples)
         return 
+
+    def copy_mfsc_feature_to(self):
+        feature_data = np.zeros((self.data_mat_time(), self.feature_freq()), dtype=np.float32)
+        feature_data_ptr = feature_data.ctypes.data_as(ctypes.POINTER(ctypes.c_float))
+
+        call_func('Feature_copy_mfsc_feature_to', self.ptr, feature_data_ptr)
+        return feature_data
 
     def copy_mfsc_feature_int_to(self):
         feature_data = np.zeros((self.data_mat_time(), self.feature_freq()), dtype=np.uint8)

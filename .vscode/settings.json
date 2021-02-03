@@ -76,7 +76,13 @@
         "string": "cpp",
         "*.ipp": "cpp",
         "*.inc": "cpp",
-        "*.so": "cpp"
+        "*.so": "cpp",
+        "iterator": "cpp",
+        "map": "cpp",
+        "memory_resource": "cpp",
+        "optional": "cpp",
+        "set": "cpp",
+        "string_view": "cpp"
     },
     "python.pythonPath": "/home/huanyuan/anaconda3/envs/py35/bin/python",
     "python.linting.enabled": false,

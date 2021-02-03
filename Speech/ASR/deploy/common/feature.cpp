@@ -271,10 +271,11 @@ namespace ASR
         mel_filter_init();
     }
 
-    Feature::Feature(int data_len_samples)
+    Feature::Feature(int data_len_samples, int feature_freq)
     {
         Feature_Options_S feature_options;
         feature_options.data_len_samples = data_len_samples;
+        feature_options.feature_freq = feature_freq;
 
         m_feature_options = Feature_Options_S(feature_options);
         feature_mat_init();
@@ -289,7 +290,11 @@ namespace ASR
     {
         // init 
         get_mel_filter(&m_mel_filter64, m_feature_options.n_fft, m_feature_options.sample_rate, m_feature_options.feature_freq);
-        get_mel_filter(&m_mel_filter48, m_feature_options.n_fft, m_feature_options.sample_rate, m_feature_options.feature_freq, 48);
+
+        if(m_feature_options.feature_freq <= 48)
+        {
+            get_mel_filter(&m_mel_filter48, m_feature_options.n_fft, m_feature_options.sample_rate, m_feature_options.feature_freq, 48);
+        }
     }
 
     void Feature::feature_mat_init()
@@ -317,6 +322,11 @@ namespace ASR
         memcpy(feature_data, m_mfsc_feature_int.data, m_feature_options.data_mat_time * m_feature_options.feature_freq * sizeof(unsigned char));
     }
 
+    void Feature::copy_mfsc_feature_to(float *feature_data)
+    {
+        memcpy(feature_data, m_mfsc_feature.data, m_feature_options.data_mat_time * m_feature_options.feature_freq * sizeof(float));
+    }
+
     void Feature::get_mfsc_feature_filter(int mel_filter)
     {
         if(mel_filter == 64)
@@ -325,6 +335,13 @@ namespace ASR
             get_mfsc_feature(m_frequency_feature, m_mel_filter48, &m_mfsc_feature, m_feature_options.feature_freq);
         else
             printf("[ERROR:] %s, %d: Unknow Mel Filter.\n", __FUNCTION__, __LINE__);
+    }
+
+    void Feature::get_mel_feature(short *pdata, int data_len_samples, int mel_filter)
+    {
+        get_frequency_feature(pdata, data_len_samples, &m_frequency_feature, m_feature_options.n_fft, m_feature_options.sample_rate, m_feature_options.time_step_ms);
+        get_mfsc_feature_filter(mel_filter);
+        cv::log(m_mfsc_feature + 1, m_mfsc_feature);
     }
 
     void Feature::get_mel_int_feature(short *pdata, int data_len_samples, int mel_filter)
