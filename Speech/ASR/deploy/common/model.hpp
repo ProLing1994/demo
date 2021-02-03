@@ -50,16 +50,16 @@ namespace ASR
     private:
         Model_Options_S m_model_options;
 
-        // CV2X_CNN_PARAM_S m_cnn_param;
+    //     CV2X_CNN_PARAM_S m_cnn_param;
 
-        // // image 
-        // CV2X_IMAGE_S* m_src_image;
+    //     // image 
+    //     CV2X_IMAGE_S* m_src_image;
         
-        // // model
-        // void *m_asr_model;
-        // // void *m_vad_model;
-        // // void *m_kws_model;
-        // // void *m_kws_cas_model;
+    //     // model
+    //     void *m_asr_model;
+    //     // void *m_vad_model;
+    //     // void *m_kws_model;
+        // void *m_kws_cas_model;
     };
 } // namespace ASR
 

@@ -30,7 +30,6 @@ namespace ASR
             time_seg_ms(32),
             time_step_ms(10),
             feature_freq(48),
-            // feature_freq(64),
             feature_time(296),
             feature_channels(1),
             pcen_flag(false),

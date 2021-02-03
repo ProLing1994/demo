@@ -19,8 +19,10 @@ int load_params(char *file_path, ASR::ASR_PARAM_S &params)
 	}
 
 	params.algorithem_id = cconfig.GetInt("AsrAlgorithem_ID", "algorithem_id");
+	params.language_id = cconfig.GetInt("AsrAlgorithem_ID", "language_id");
 	if (params.algorithem_id == 0)
 	{
+		params.bpe_path = cconfig.GetStr("Bpe", "path");
 		params.n_fft = cconfig.GetInt("KwsParam", "n_fft");
 		params.time_seg_ms = cconfig.GetInt("KwsParam", "time_seg_ms");
 		params.time_step_ms = cconfig.GetInt("KwsParam", "time_step_ms");
@@ -31,6 +33,7 @@ int load_params(char *file_path, ASR::ASR_PARAM_S &params)
 	}
 	else
 	{
+		params.bpe_path = cconfig.GetStr("Bpe", "path");
 		params.n_fft = cconfig.GetInt("AsrParam", "n_fft");
 		params.time_seg_ms = cconfig.GetInt("AsrParam", "time_seg_ms");
 		params.time_step_ms = cconfig.GetInt("AsrParam", "time_step_ms");

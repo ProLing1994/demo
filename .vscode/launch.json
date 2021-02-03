@@ -32,10 +32,10 @@
             ]
         },
         {            
-            "name": "(gdb) test_asr_demo",
+            "name": "(gdb) test_feature",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/Speech/ASR/lib/Debug/test_asr_demo",
+            "program": "${workspaceFolder}/Speech/ASR/lib/Debug/test_feature",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/Speech/ASR/lib/Debug/",

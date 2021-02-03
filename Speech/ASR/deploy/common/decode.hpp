@@ -17,7 +17,8 @@ namespace ASR
                 const std::vector<std::string> &symbol_list);
         Decode(const std::vector<std::string> &symbol_list, 
                 const std::vector<std::string> &hanzi_kws_list, 
-                const std::vector<std::vector<std::string>> &pinyin_kws_list);
+                const std::vector<std::vector<std::string>> &pinyin_kws_list,
+                const std::vector<std::vector<std::string>> &english_kws_list);
         ~Decode();
 
         inline int result_id_length() const { return m_result_id.size(); }
@@ -28,11 +29,18 @@ namespace ASR
         void ctc_decoder(cv::Mat input, bool greedy = true);
 
         void match_keywords_robust(std::string *output);
+        void match_keywords_english(std::string *output);
         int get_edit_dist(std::vector<std::string> string1, std::vector<std::string> string2);
 
+        void show_result_id();
         void show_symbol();
+        void show_symbol_english();
         void output_symbol(std::string *output);
+        void output_symbol_english(std::string *output);
         void copy_result_id_to(int *data);
+
+    private:
+        bool match_english_string(const std::string output1, const std::string output2);
 
     private:
         std::vector<int> m_result_id;
@@ -42,6 +50,7 @@ namespace ASR
         std::vector<std::string> m_symbol_list;     // 符号
         std::vector<std::string> m_hanzi_kws_list;  // 汉字
         std::vector<std::vector<std::string>> m_pinyin_kws_list;    // 拼音
+        std::vector<std::vector<std::string>> m_english_kws_list;   // 英文
         std::vector<std::string> m_keywords;        // 关键词
     };
 } // namespace ASR

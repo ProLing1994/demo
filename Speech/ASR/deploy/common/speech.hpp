@@ -23,7 +23,9 @@ namespace ASR
                         sample_rate(16000),
                         model_name(""),
                         output_name(""),
-                        algorithem_id(0) {}
+                        bpe_path(""),
+                        algorithem_id(0),
+                        language_id(0) {}
 
         int n_fft;
         int time_seg_ms;
@@ -35,7 +37,9 @@ namespace ASR
         int sample_rate;
         std::string model_name;
         std::string output_name;
-        int algorithem_id;
+        std::string bpe_path;
+        int algorithem_id;      // 0: KWS; 1: ASR_16k; 
+        int language_id;        // 0: chinese; 1: english; 
     };
 
     class Speech_Engine
@@ -58,7 +62,8 @@ namespace ASR
         std::unique_ptr<Decode> m_decode;
         std::unique_ptr<Model> m_model;
 
-        int m_algorithem_id;
+        int m_algorithem_id;    // 0: KWS; 1: ASR_16k; 
+        int m_language_id;      // 0: chinese; 1: english; 
         // int m_fc1_dim;
         // int m_fc2_dim;
     };

@@ -19,7 +19,7 @@ if __name__ == "__main__":
             break
 
         string_idx = decode_string_list[idx : idx + test_string_len]
-        # string_idx = ['start', 'stop', 'record', 'unmute', 'mute', 'audio', 'fire', 'freeze', 'audio', 'shot', 'fire']
+        string_idx = ['start', 'stop', 'record', 'unmute', 'mute', 'audio', 'fire', 'freeze', 'audio', 'shot', 'fire']
         print("[Information:] Input: ", string_idx)
 
         # decode 

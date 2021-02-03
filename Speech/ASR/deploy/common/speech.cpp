@@ -62,6 +62,7 @@ namespace ASR
         {   
             // Params
             m_algorithem_id = params.algorithem_id; 
+            m_language_id = params.language_id; 
 
             // Feature
             printf("[Information:] Init KWS Feature.\n");
@@ -91,7 +92,7 @@ namespace ASR
                 keywords.push_back(tmp);
             }
 
-            sprintf(config_file, "%s/configFiles/dict_without_tone.txt", file_path);
+            sprintf(config_file, "%s/configFiles/%s", file_path, params.bpe_path.c_str());
             infile.open(config_file);
             assert(infile.is_open());
             while (getline(infile, s))
@@ -123,6 +124,7 @@ namespace ASR
         {
             // Params
             m_algorithem_id = params.algorithem_id; 
+            m_language_id = params.language_id; 
 
             // Feature
             printf("[Information:] Init ASR Feature.\n");
@@ -144,8 +146,9 @@ namespace ASR
             std::vector<std::string> symbol_list;
             std::vector<std::string> hanzi_kws_list;
             std::vector<std::vector<std::string>> pinyin_kws_list;
+            std::vector<std::vector<std::string>> english_kws_list;
             char config_file[256] = "";
-            sprintf(config_file, "%s/configFiles/dict_without_tone.txt", file_path);
+            sprintf(config_file, "%s/configFiles/%s", file_path, params.bpe_path.c_str());
 
             infile.open(config_file);
             assert(infile.is_open());
@@ -161,9 +164,8 @@ namespace ASR
             sprintf(config_file, "%s/configFiles/configFileASR.cfg", file_path);
             cconfig.OpenFile(config_file);
 
-            int kws_num = cconfig.GetInt("AsrParam", "kws_num");
-
-            for (int i = 1; i <= kws_num; i++)
+            int mandarin_kws_num = cconfig.GetInt("AsrParam", "mandarin_kws_num");
+            for (int i = 1; i <= mandarin_kws_num; i++)
             {
                 std::vector<std::string> tmp_pny;
                 s = std::to_string(i);
@@ -174,7 +176,17 @@ namespace ASR
                 pinyin_kws_list.push_back(tmp_pny);
             }
 
-            m_decode.reset(new Decode(symbol_list, hanzi_kws_list, pinyin_kws_list));
+            int english_kws_num = cconfig.GetInt("AsrParam", "english_kws_num");
+            for (int i = 1; i <= english_kws_num; i++)
+            {
+                std::vector<std::string> tmp_pny;
+                s = std::to_string(i);
+                tmp = cconfig.GetStr("Demo_English_KWS", s.c_str());
+                tmp_pny = ASR::StringSplit(tmp, " ");
+                english_kws_list.push_back(tmp_pny);
+            }
+
+            m_decode.reset(new Decode(symbol_list, hanzi_kws_list, pinyin_kws_list, english_kws_list));
 
             // Model
             printf("[Information:] Init KWS Model.\n");
@@ -200,14 +212,17 @@ namespace ASR
     void Speech_Engine::speech_recognition(short *pdata, int data_len_samples, char *output_keyword)
     {
         //std::cout<<"====RMAPI_AI_ASR_RUN_Start====="<<std::endl;
-        if (m_algorithem_id == 0)
-        {
+        if (m_algorithem_id == 0) {
             kws_asr_recognition(pdata, data_len_samples, output_keyword);
         }
-        else
-        {
+        else if (m_algorithem_id == 1){
             asr_recognition(pdata, data_len_samples, output_keyword);
         }
+        else {
+            printf("[ERROR:] %s, %d: Unknow m_algorithem_id.\n", __FUNCTION__, __LINE__);
+            return;
+        }
+
     }
 
     void Speech_Engine::asr_recognition(short *pdata, int data_len_samples, char *output_keyword)
@@ -248,6 +263,8 @@ namespace ASR
             printf("[ERROR:] %s, %d: ASR Forward Failed.\n", __FUNCTION__, __LINE__);
             return;
         }
+        // std::cout << "[Information:] cnn_out.rows: " << cnn_out.rows << ", cnn_out.cols: " << cnn_out.cols << std::endl;
+        // ASR::show_mat_float(cnn_out, 74, 1000);
 
         #ifdef _TESTTIME
         TEST_TIME(time_end);
@@ -257,9 +274,29 @@ namespace ASR
 
         // decode 
         m_decode->ctc_decoder(cnn_out);
-        // m_decode->show_symbol();
-        // m_decode->output_symbol(&output_str);
-        m_decode->match_keywords_robust(&output_str);
+
+        if(m_language_id == 0) {
+            // chinese
+            // m_decode->show_result_id();
+            // m_decode->show_symbol();
+            // m_decode->output_symbol(&output_str);
+            m_decode->match_keywords_robust(&output_str);
+        }
+        else if (m_language_id == 1) {
+            // english
+            // m_decode->show_result_id();
+            // m_decode->show_symbol();
+            // m_decode->show_symbol_english();
+            // m_decode->output_symbol(&output_str);
+            // m_decode->output_symbol_english(&output_str);
+            m_decode->match_keywords_english(&output_str);
+        }
+        else {
+            printf("[ERROR:] %s, %d: Unknow m_language_id.\n", __FUNCTION__, __LINE__);
+            return;
+        }
+
+        std::cout << "[Information:] output_str: " << output_str << std::endl;
         sprintf(output_keyword, "%s%s", output_keyword, output_str.c_str());
 
         #ifdef _TESTTIME
