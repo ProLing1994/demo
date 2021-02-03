@@ -53,6 +53,7 @@ if __name__ == '__main__':
     model_path =  "/mnt/huanyuan/model/kws_model/RNN_language_model"
     pytorch_model = "cn_without_tone_lm_26.pth"
     caffe_prototxt = "cn_without_tone_lm_26.prototxt"
+    # caffe_prototxt = "cn_without_tone_lm_26_2.prototxt"
     caffe_model = "cn_without_tone_lm_26.caffemodel"
 
     # load pytorch model

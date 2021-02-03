@@ -30,6 +30,7 @@ namespace ASR
             time_seg_ms(32),
             time_step_ms(10),
             feature_freq(48),
+            // feature_freq(64),
             feature_time(296),
             feature_channels(1),
             pcen_flag(false),
@@ -76,7 +77,7 @@ namespace ASR
     public:
 		Feature();
 		Feature(const Feature_Options_S &feature_options);
-        Feature(int data_len_samples);
+        Feature(int data_len_samples, int feature_freq);
 		~Feature();
 
         inline int data_mat_time() const { return m_feature_options.data_mat_time; } 
@@ -90,8 +91,10 @@ namespace ASR
 	public:
         int check_data_length(int data_len_samples);
         void copy_mfsc_feature_int_to(unsigned char *feature_data);
+        void copy_mfsc_feature_to(float *feature_data);
 
         void get_mfsc_feature_filter(int mel_filter = 64);
+        void get_mel_feature(short *pdata, int data_len_samples, int mel_filter = 64);
         void get_mel_int_feature(short *pdata, int data_len_samples, int mel_filter = 64);
         void get_mel_pcen_feature(short *pdata, int data_len_sampless, int mel_filter = 64);
 

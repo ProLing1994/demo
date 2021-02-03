@@ -24,6 +24,7 @@ namespace ASR
 		int16_t bit_per_sample;	  //bit per sample
 		char data_char[4]; 		  //"data"
 		int32_t data_size;        //data size
+		char temp[2];			  //某些数据头存在差异
 		int16_t wave_data[3000000];
 	};
 
