@@ -28,8 +28,10 @@ extern double decode_time;
 #endif
 
 int main(int argc, char **argv) {
-    std::string audio_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景";
-    std::string output_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/test";
+    // std::string audio_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景";
+    // std::string output_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/test";
+    std::string audio_folder = "/home/huanyuan/share/audio_data/english_wav";
+    std::string output_folder = "/home/huanyuan/share/audio_data/english_wav/amba_test";
     std::string model_path = "/home/huanyuan/share/KWS_model";
 
     // init

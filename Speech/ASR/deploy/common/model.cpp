@@ -63,6 +63,12 @@ namespace ASR
 
     int Model::asr_forward(cv::Mat &input, cv::Mat *output)
     {   
+        // // std::cout << "\033[0;31m" << "[Information:] input_feature_freq: " << m_model_options.input_feature_freq \
+        // //             << ", input_feature_time: " << m_model_options.input_feature_time \  
+        // //             << ", output_feature_num: " << m_model_options.output_feature_num \  
+        // //             << ", output_feature_time: " << m_model_options.output_feature_time \  
+        // //             <<"\033[0;39m" << std::endl;
+
         // // check
         // if(input.rows !=  m_model_options.input_feature_time or input.cols !=  m_model_options.input_feature_freq)
         // {
@@ -90,7 +96,7 @@ namespace ASR
         // // std::cout << "\033[0;31m" << "[Information:] u32Chn: " << layerout[0].unShape.stWhc.u32Chn \
         // //             << ", u32Height: " << layerout[0].unShape.stWhc.u32Height \ 
         // //             << ", u32Width: " << layerout[0].unShape.stWhc.u32Width \
-        // //             << ", u32Stride: " << layerout[0].u32Stride;
+        // //             << ", u32Stride: " << layerout[0].u32Stride << std::endl;
 
         // // output
         // for(unsigned int i = 0; i < layerout.size(); i++)

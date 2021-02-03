@@ -10,9 +10,9 @@ add_library(ai_speech_asr SHARED ${ASR_COMMON_FILES} ${ASR_PYWRAPPERS_FILES})
 target_link_libraries(ai_speech_asr ${OpenCV_LIBS})
 
 # add test
-add_executable(test_asr_demo test_asr_demo.cpp)
-target_link_libraries(test_asr_demo ai_speech_asr ${OpenCV_LIBS})
-target_link_libraries(test_asr_demo debug ${COMMON_UTILITY_LIBRARY_DEBUG} optimized ${COMMON_UTILITY_LIBRARY_RELEASE})
+add_executable(test_feature test_feature.cpp)
+target_link_libraries(test_feature ai_speech_asr ${OpenCV_LIBS})
+target_link_libraries(test_feature debug ${COMMON_UTILITY_LIBRARY_DEBUG} optimized ${COMMON_UTILITY_LIBRARY_RELEASE})
 
 # add test
 add_executable(alg_main alg_main.cpp)

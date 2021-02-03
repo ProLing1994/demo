@@ -290,7 +290,7 @@ namespace ASR
     {
         // init 
         get_mel_filter(&m_mel_filter64, m_feature_options.n_fft, m_feature_options.sample_rate, m_feature_options.feature_freq);
-
+        
         if(m_feature_options.feature_freq <= 48)
         {
             get_mel_filter(&m_mel_filter48, m_feature_options.n_fft, m_feature_options.sample_rate, m_feature_options.feature_freq, 48);
@@ -343,7 +343,7 @@ namespace ASR
         get_mfsc_feature_filter(mel_filter);
         cv::log(m_mfsc_feature + 1, m_mfsc_feature);
     }
-
+    
     void Feature::get_mel_int_feature(short *pdata, int data_len_samples, int mel_filter)
     {
         get_frequency_feature(pdata, data_len_samples, &m_frequency_feature, m_feature_options.n_fft, m_feature_options.sample_rate, m_feature_options.time_step_ms);
