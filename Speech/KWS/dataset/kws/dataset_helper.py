@@ -28,15 +28,13 @@ def load_label_index(positive_label, negative_label):
     return label_index
 
 
-def load_preload_audio(audio_file, audio_idx, audio_label, audio_label_idx, input_dir, refilename=True):
+def load_preload_audio(audio_file, audio_idx, audio_label, input_dir, refilename=True):
     # load data
     if refilename:
         if audio_label == SILENCE_LABEL:
-            filename = str(audio_label_idx) + '_' + audio_label + \
-                '_' + str(audio_idx) + '.txt'
+            filename = audio_label + '_' + str(audio_idx) + '.txt'
         else:
-            filename = str(audio_label_idx) + '_' + os.path.basename(os.path.dirname(
-                audio_file)) + '_' + os.path.basename(audio_file).split('.')[0] + '.txt'
+            filename = os.path.basename(os.path.dirname(audio_file)) + '_' + os.path.basename(audio_file).split('.')[0] + '.txt'
     else:
         filename =  os.path.basename(audio_file).split('.')[0] + '.txt'
 

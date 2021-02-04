@@ -33,15 +33,11 @@ def speed_volume_disturbution(args):
     speed_list = cfg.dataset.augmentation.possitive_speed.split(',')
     volume_list = cfg.dataset.augmentation.possitive_volume.split(',')
     positive_label_list = cfg.dataset.label.positive_label
-    positive_label_together_label = []
-    if cfg.dataset.label.positive_label_together:
-        positive_label_together_label += cfg.dataset.label.positive_label_together_label   
-        positive_label_list += positive_label_together_label
     data_dir = cfg.general.data_dir if not cfg.general.data_dir.endswith('/') else cfg.general.data_dir[:-1]
 
     if not speed_volume_on:
         return
-        
+
     # Look through all the subfolders to find audio samples
     search_path = os.path.join(cfg.general.data_dir, '*', '*.wav')
     path_list = glob.glob(search_path)
@@ -51,19 +47,16 @@ def speed_volume_disturbution(args):
             path_list += glob.glob(sub_search_path)
 
     # check
-    assert len(audio_list) > 0
     in_params = []
-
     for positive_label in positive_label_list:
         for speed_idx in range(len(speed_list)):
             for volume_idx in range(len(volume_list)):
                 output_dir = os.path.join(data_dir, '../{}_augumentation'.format(os.path.basename(data_dir)), positive_label + "_speed_{}_volume_{}".format("_".join(speed_list[speed_idx].split('.')), "_".join(volume_list[volume_idx].split('.'))))
 
                 for audio_path in path_list:
-                    _, word = os.path.split(os.path.dirname(wav_path))
+                    _, word = os.path.split(os.path.dirname(audio_path))
                     word = word.lower()
-
-                    if word not in positive_label_list or word not in positive_label_together_label:
+                    if word != positive_label:
                         continue
 
                     # mkdirs 

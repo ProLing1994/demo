@@ -127,10 +127,7 @@ def data_split(config_file):
         # If it's a known class, store its detail, otherwise add it to the list
         # we'll use to train the unknown label. 
         if word in positive_label:
-            if 'positive_label_together' in cfg.dataset.label and cfg.dataset.label.positive_label_together:
-                positive_data_files.append({'label': cfg.dataset.label.positive_label_together_label[0], 'file': wav_path, 'mode':set_index})
-            else:
-                positive_data_files.append({'label': word, 'file': wav_path, 'mode':set_index})
+            positive_data_files.append({'label': word, 'file': wav_path, 'mode':set_index})
         else:
             unknown_files.append({'label': word, 'file': wav_path, 'mode':set_index})
 

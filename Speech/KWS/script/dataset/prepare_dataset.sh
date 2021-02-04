@@ -8,7 +8,7 @@
 # 3. 若步骤 2 效果不理想，则执行脚本，dataset_align/dataset_align.sh，运行 kaldi 强制对齐工具进行强制对齐，对音频数据进行切割，仅保留唤醒词部分
 # 4. 自行检测数据的完整性和正确性
 
-stage=1
+stage=6
 
 # init
 config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_speech.py

@@ -15,16 +15,16 @@ __C.general.data_dir = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/speech_
 __C.general.sub_data_dir = []
 
 # data version
-__C.general.version = "1.0"
+__C.general.version = "1.1"
 
 # data date
 __C.general.date = "02042021"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.0_02042021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.1_02042021/total_data_files.csv"
 
 # background noise path
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.0_02042021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.1_02042021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -231,21 +231,21 @@ __C.net.name = 'res15'
 __C.train = {}
 
 # the number of training epochs
-__C.train.num_epochs = 4000
+# __C.train.num_epochs = 4000
 # __C.train.num_epochs = 2000
 # __C.train.num_epochs = 500
-# __C.train.num_epochs = 1
+__C.train.num_epochs = 1
 
 # the number of samples in a batch
 # __C.train.batch_size = 2048
-__C.train.batch_size = 256
-# __C.train.batch_size = 16
+# __C.train.batch_size = 256
+__C.train.batch_size = 16
 # __C.train.batch_size = 1
 
 # the number of threads for IO
 # __C.train.num_threads = 64
-__C.train.num_threads = 16
-# __C.train.num_threads = 1
+# __C.train.num_threads = 16
+__C.train.num_threads = 1
 
 # the number of batches to update loss curve
 __C.train.plot_snapshot = 5

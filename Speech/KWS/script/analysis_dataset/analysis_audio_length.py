@@ -24,6 +24,7 @@ def plot_hist(data, bins, xlabel='', ylabel='', title='', savefig=''):
     # 显示图形
     # plt.show()
     plt.savefig(savefig, dpi=300)
+    plt.close()
 
 
 def analysis_audio_length(config_file):
@@ -40,10 +41,7 @@ def analysis_audio_length(config_file):
 
     # load data 
     data_pd = pd.read_csv(cfg.general.data_csv_path)
-    if cfg.dataset.label.positive_label_together:
-        positive_label_list = cfg.dataset.label.positive_label_together_label
-    else:
-        positive_label_list = cfg.dataset.label.positive_label
+    positive_label_list = cfg.dataset.label.positive_label
 
     for positive_label in positive_label_list:
         print("[Information:] Positive Label: ", positive_label)
