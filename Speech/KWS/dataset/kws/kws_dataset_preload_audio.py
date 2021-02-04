@@ -37,7 +37,7 @@ class SpeechDataset(Dataset):
     self.data_mode_list = self.data_pd['mode'].tolist()
     self.data_label_list = self.data_pd['label'].tolist()
 
-    self.positive_label = cfg.dataset.label.positive_label[0]
+    self.positive_label_together_label = cfg.dataset.label.positive_label_together_label
     self.sample_rate = cfg.dataset.sample_rate
     self.clip_duration_ms = cfg.dataset.clip_duration_ms
     self.window_size_ms = cfg.dataset.window_size_ms
@@ -180,7 +180,7 @@ class SpeechDataset(Dataset):
       possitive_speed, possitive_volume = self.dataset_augmentation_volume_speed()
 
     # load data
-    if audio_label != self.positive_label or (possitive_speed == '1.0' and possitive_volume == '1.0'):
+    if audio_label != self.positive_label_together_label or (possitive_speed == '1.0' and possitive_volume == '1.0'):
       input_dir = os.path.join(self.input_dir, audio_label)
       data, filename = load_preload_audio(audio_file, index, audio_label, audio_label_idx, input_dir)
     else:

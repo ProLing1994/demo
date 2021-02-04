@@ -11,12 +11,12 @@
 stage=1
 
 # init
-config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py
+config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_speech.py
+# config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaoyu.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaorui.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py
-# config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_all_pretrain.py
 
 echo "script/dataset/prepare_dataset.sh"
 
@@ -26,6 +26,7 @@ if [ $stage -le 1 ];then
 fi
 
 # add mining difficult sample
+# 如果配置文件 difficult_sample_mining = False，将不会添加到 total_data_files.csv
 if [ $stage -le 2 ];then
 	python ../mining_difficult_sample/data_train_test_split_mining_difficult_sample.py \
 			--config_file $config_file \
@@ -36,18 +37,20 @@ if [ $stage -le 2 ];then
 fi
 
 # prepare align dataset, clean the dataset according to the alignment results
+# 如果文件夹下不存在 kaldi_type，则不进行 update_dataset
 if [ $stage -le 3 ];then
-	python update_dataset.py -i $config_file || exit 1
+	python update_dataset.py --config_file $config_file || exit 1
 fi
 
 # speed volume augumentation
+# 如果配置文件 speed_volume_on = False，将不会进行 augumentation
 if [ $stage -le 4 ];then
 	python ../dataset_augmentation/speed_volume_augumentation.py --config_file $config_file || exit 1
 fi
 
 # preload data
 if [ $stage -le 5 ];then
-	python data_preload_audio.py -i $config_file || exit 1
+	python data_preload_audio.py --config_file $config_file || exit 1
 fi
 
 # analysis dataset

@@ -15,9 +15,9 @@ def extract_words(ctm_file, keyword_list):
     return word_segments
 
 
-def clear_dataset(config_file):
+def clear_dataset(args):
     # load configuration file
-    cfg = load_cfg_file(config_file)
+    cfg = load_cfg_file(args.config_file)
 
     # dataset_dir_list
     dataset_dir_list = []
@@ -52,6 +52,9 @@ def clear_dataset(config_file):
                 utt_id = word_segment[0]
                 wav_list.append(utt2wav[utt_id])
 
+    if not wav_list:
+        return
+        
     # update csv
     total_data_files = []                 # {'label': [], 'file': [], 'mode': []}
     csv_pd = pd.read_csv(os.path.join(csv_dir, 'total_data_files.csv'))
@@ -69,12 +72,12 @@ def clear_dataset(config_file):
 def main():
     # prepare align dataset, clean the dataset according to the alignment results
     parser = argparse.ArgumentParser(description='Streamax KWS Data Split Engine')
-    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
-    parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py", help='config file')
+    # parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
+    parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py", help='config file')
     args = parser.parse_args()
 
     print("[Begin] Clean the dataset according to the alignment results")
-    clear_dataset(args.input)
+    clear_dataset(args)
     print("[Done] Clean the dataset")
 
 
