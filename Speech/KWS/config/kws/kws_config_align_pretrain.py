@@ -10,21 +10,22 @@ cfg = __C
 
 __C.general = {}
 
-__C.general.data_dir = "/mnt/huanyuan/data/speech/kws/pre_train_dataset/PreTrainDataset/"
-__C.general.sub_data_dir = ["/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/XiaoRuiDataset/",
-                            "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experimental_dataset/XiaoYuDataset/"]
+__C.general.data_dir = "/yuanhuan/dataset/speech/kws/pre_train_dataset/PreTrainDataset/"
+__C.general.sub_data_dir = ["/yuanhuan/dataset/speech/kws/xiaorui_dataset/XiaoRuiDataset/",
+                            "/yuanhuan/dataset/speech/kws/xiaoyu_dataset/XiaoYuDataset/",
+                            "/yuanhuan/dataset/speech/kws/lenovo/LenovoDataset_11242020/"]
 
 # data version
-__C.general.version = "1.0"
+__C.general.version = "1.1"
 
 # data date
 __C.general.date = "12102020"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/pre_train_dataset/dataset_1.0_12102020/total_data_files_align_clean.csv"
+__C.general.data_csv_path = "/yuanhuan/dataset/speech/kws/pre_train_dataset/dataset_1.1_12102020/total_data_files_align_clean.csv"
 
 # background noise path
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/pre_train_dataset/dataset_1.0_12102020/background_noise_files.csv"
+__C.general.background_data_path = "/yuanhuan/dataset/speech/kws/pre_train_dataset/dataset_1.1_12102020/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -43,7 +44,8 @@ __C.general.is_test = True
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_2_12102020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_9_12102020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_10_12102020/"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_11_12102020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_11_12102020/"
+__C.general.save_dir = "/yuanhuan/model/kws_pretrain_align_word_2_1_12102020/"
 
 # finrtune model
 __C.general.finetune_on = False
@@ -54,13 +56,18 @@ __C.general.finetune_epoch = 0
 __C.general.resume_epoch = -1
 
 # the number of GPUs used in training
-# __C.general.num_gpus = 4
-__C.general.num_gpus = 1
+__C.general.num_gpus = 4
+# __C.general.num_gpus = 1
 
 # the GPUs' id used in training
-# __C.general.gpu_ids = '4, 5, 6, 7'
+__C.general.gpu_ids = '0, 1, 2, 3'
 # __C.general.gpu_ids = '6, 7'
-__C.general.gpu_ids = '0'
+# __C.general.gpu_ids = '0'
+
+# data_parallel_mode: [0, 1]
+# 0: 单机多卡，DataParallel
+# 1: 单/多级多卡、分布式，DistributedDataParallel
+__C.general.data_parallel_mode = 1
 
 
 ##################################
@@ -103,8 +110,8 @@ __C.dataset.data_size = [40, 51]
 __C.dataset.label = {}
 
 # label
-__C.dataset.label.positive_label = ["positive","xiaorui","xiaoyu","xiaoya","xiaodu"]
-__C.dataset.label.positive_label_chinese_name_list = ["","小,锐,小#,锐#","小,鱼,小#,鱼#","小,雅,小#,雅#","小,度,小#,度#"]
+__C.dataset.label.positive_label = ["positive","xiaorui","xiaoyu","xiaoya","xiaodu","xiaole"]
+__C.dataset.label.positive_label_chinese_name_list = ["","小,锐,小#,锐#","小,鱼,小#,鱼#","小,雅,小#,雅#","小,度,小#,度#","小,乐,小#,乐#"]
 __C.dataset.label.positive_label_together = True
 __C.dataset.label.negative_label = ["_silence_", "_unknown_"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
@@ -211,21 +218,23 @@ __C.train = {}
 
 # the number of training epochs
 # __C.train.num_epochs = 16000
-# __C.train.num_epochs = 8000
+__C.train.num_epochs = 8000
 # __C.train.num_epochs = 4000
 # __C.train.num_epochs = 100
-__C.train.num_epochs = 1
+# __C.train.num_epochs = 1
 
 # the number of samples in a batch
+__C.train.batch_size = 4096
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 1024
 # __C.train.batch_size = 128
-__C.train.batch_size = 64
+# __C.train.batch_size = 64
 # __C.train.batch_size = 16
 # __C.train.batch_size = 1
 
 # the number of threads for IO
-__C.train.num_threads = 64
+__C.train.num_threads = 128
+# __C.train.num_threads = 64
 # __C.train.num_threads = 16
 # __C.train.num_threads = 1
 
@@ -277,8 +286,8 @@ __C.train.betas = (0.9, 0.999)
 __C.debug = {}
 
 # whether to save input images
-__C.debug.save_inputs = True
-# __C.debug.save_inputs = False
+# __C.debug.save_inputs = True
+__C.debug.save_inputs = False
 
 # the number of processing for save input images
 # __C.debug.num_processing = 64
