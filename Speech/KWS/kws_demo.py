@@ -189,23 +189,20 @@ class OnlineAudio:
 
         # config
         # xiaoyu
-        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu9_3_align_res15_12072020/kws_confid_align_xiaoyu.py"             # 2/0.4/_/30/1500
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_2_timeshift_spec_on_res15_11192020/kws_config_xiaoyu_2.py"     # best # 1/0.8/0.5/30/800
-        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu6_1_timeshift_spec_on_res15_11192020/kws_config_xiaoyu_2.py"
-        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu5_1_fbank_timeshift_spec_on_res15_11032020/test_straming_wav/kws_config_xiaoyu_2.py"
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu9_3_align_res15_12072020/kws_confid_align_xiaoyu.py"             # 2/0.4/_/30/1500
 
         # xiaorui
-        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_2_align_funtune_res15_12082020/kws_config_align_xiaorui.py"   # 2/0.6/_/30/1500, epoch 300
-        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_3_res15_12162020/kws_config_xiaorui.py"                       # 1/0.85/0.9/30/800
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_6_res15_12162020/kws_config_xiaorui.py"                       # best 1/0.6/0.75/30/800
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_10_res15_finetune_12162020/kws_config_xiaorui.py"             # best 1/0.7/0.9/30/800
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_7_res15_narrow_12162020/kws_config_xiaorui.py"                # small 1/0.9/0.5/30/800
         config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_11_res15_narrow_kd_12162020/kws_config_xiaorui.py"             # small best 1/0.8/0.5/30/800
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_2_align_funtune_res15_12082020/kws_config_align_xiaorui.py"   # 2/0.6/_/30/1500, epoch 300
 
         # pretrain
-        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_12102020/kws_config_pretrain.py"        # best 1/0.8/0.5/30/800, xiaorui\xiaoya\xiaodu\xiaoyu
-        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain1_1_12102020/kws_config_all_pretrain.py"   # 1/0.8/0.5/30/800, xiaorui\xiaoya\xiaodu\xiaoyu
-        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_11_12102020/kws_config_align_pretrain.py"     # beat 2/0.7/_/30/1500, xiaorui\xiaoya\xiaodu\xiaoyu
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_12102020/kws_config_pretrain.py"                                # best 1/0.8/0.5/30/800, xiaorui\xiaoya\xiaodu\xiaoyu
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain1_1_12102020/kws_config_all_pretrain.py"                         # 1/0.8/0.5/30/800, xiaorui\xiaoya\xiaodu\xiaoyu\xiaole
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_11_12102020/kws_config_align_pretrain.py"          # beat 2/0.7/_/30/1500, xiaorui\xiaoya\xiaodu\xiaoyu
 
         cfg = load_cfg_file(config_file)
         label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
