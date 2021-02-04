@@ -230,35 +230,35 @@ if __name__ == "__main__":
     # [0: Sliding window decoding
     #  1: Full window decoding]
     global mode
-    mode = 0
+    mode = 1
 
    # language: 
     # [0: chinese
     #  1: english]
     global language
-    language = 0
+    language = 1
 
-    # chinese:
-    default_audio_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/"
-    default_output_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/result_caffe"
-    default_model_path = "/mnt/huanyuan/model/kws_model/asr/mandarin_asr_nofc_16K.caffemodel"
-    default_prototxt_path = "/home/huanyuan/share/KWS_model/mandarin_asr_nofc_16K.prototxt"
-    default_bpe = "/home/huanyuan/share/KWS_model/configFiles/dict_without_tone.txt"
-    default_net_input_name = "data"
-    default_net_output_name = "conv7"
-    default_CHW_params = "1,296,48"
-    default_gpu = False
-
-    # # english:
-    # default_audio_folder = "/home/huanyuan/share/audio_data/english_wav/"
-    # default_output_folder = "/home/huanyuan/share/audio_data/english_wav/result_caffe"
-    # default_model_path = "/mnt/huanyuan/model/kws_model/asr_english/english_0202_better.caffemodel"
-    # default_prototxt_path = "/mnt/huanyuan/model/kws_model/asr_english/english_0202_mark.prototxt"
-    # default_bpe = "/home/huanyuan/share/KWS_model/configFiles/english_bpe.txt"
+    # # chinese:
+    # default_audio_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/"
+    # default_output_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/result_caffe"
+    # default_model_path = "/mnt/huanyuan/model/kws_model/asr/mandarin_asr_nofc_16K.caffemodel"
+    # default_prototxt_path = "/home/huanyuan/share/KWS_model/mandarin_asr_nofc_16K.prototxt"
+    # default_bpe = "/home/huanyuan/share/KWS_model/configFiles/dict_without_tone.txt"
     # default_net_input_name = "data"
-    # default_net_output_name = "conv39"
-    # default_CHW_params = "1,296,64"
+    # default_net_output_name = "conv7"
+    # default_CHW_params = "1,296,48"
     # default_gpu = False
+
+    # english:
+    default_audio_folder = "/home/huanyuan/share/audio_data/english_wav/"
+    default_output_folder = "/home/huanyuan/share/audio_data/english_wav/result_caffe"
+    default_model_path = "/mnt/huanyuan/model/kws_model/asr_english/english_0202_better.caffemodel"
+    default_prototxt_path = "/mnt/huanyuan/model/kws_model/asr_english/english_0202_mark.prototxt"
+    default_bpe = "/home/huanyuan/share/KWS_model/configFiles/english_bpe.txt"
+    default_net_input_name = "data"
+    default_net_output_name = "conv39"
+    default_CHW_params = "1,296,64"
+    default_gpu = False
 
     parser = argparse.ArgumentParser(description='Streamax ASR Demo Engine')
     parser.add_argument('-i', '--audio_folder', type=str, default=default_audio_folder)

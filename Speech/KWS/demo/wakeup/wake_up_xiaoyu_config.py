@@ -14,7 +14,6 @@ __C.general = {}
 # model path
 # xiaoyu
 __C.general.model_path = "./wakeup/model/kws_xiaoyu6_2_timeshift_spec_on_res15_11192020/"       # best # 1/0.8/0.5/30/800
-# __C.general.model_path = "./wakeup/model/kws_xiaorui1_11_res15_narrow_kd_12162020/"             # small best # 1/0.8/0.5/30/800
 
 # model epoch
 __C.general.model_epoch = -1
