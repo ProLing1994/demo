@@ -12,27 +12,28 @@ __C.general = {}
 
 __C.general.data_dir = "/mnt/huanyuan/data/speech/kws/pre_train_dataset/PreTrainDataset/"
 __C.general.sub_data_dir = ["/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/XiaoRuiDataset/",
-                            "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experimental_dataset/XiaoYuDataset/"]
+                            "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experimental_dataset/XiaoYuDataset/",
+                            "/mnt/huanyuan/data/speech/kws/lenovo/LenovoDataset_11242020/"]
 
 # data version
-__C.general.version = "1.0"
+__C.general.version = "1.1"
 
 # data date
 __C.general.date = "12102020"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/pre_train_dataset/dataset_1.0_12102020/total_data_files_align_clean.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/pre_train_dataset/dataset_1.1_12102020/total_data_files_align_clean.csv"
 
 # background noise path
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/pre_train_dataset/dataset_1.0_12102020/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/pre_train_dataset/dataset_1.1_12102020/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # the output of training models and logging files
 # __C.general.save_dir = "/mnt/huanyuan/model/kws_pretrain_12102020_test"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_12102020"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain2_1_wavenet_12102020"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain1_1_12102020/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain1_2_res15_narrow_12102020/"
 
 # finrtune model
 __C.general.finetune_on = False
@@ -50,6 +51,11 @@ __C.general.num_gpus = 1
 # __C.general.gpu_ids = '4, 5, 6, 7'
 # __C.general.gpu_ids = '6, 7'
 __C.general.gpu_ids = '0'
+
+# data_parallel_mode: [0, 1]
+# 0: 单机多卡，DataParallel
+# 1: 单/多级多卡、分布式，DistributedDataParallel
+__C.general.data_parallel_mode = 0
 
 
 ##################################
@@ -92,8 +98,8 @@ __C.dataset.data_size = [40, 201]
 __C.dataset.label = {}
 
 # label
-__C.dataset.label.positive_label = ["positive","xiaorui","xiaoyu","xiaoya","xiaodu"]
-__C.dataset.label.positive_label_chinese_name_list = ["","小,锐,小#,锐#","小,鱼,小#,鱼#","小,雅,小#,雅#","小,度,小#,度#"]
+__C.dataset.label.positive_label = ["positive","xiaorui","xiaoyu","xiaoya","xiaodu","xiaole"]
+__C.dataset.label.positive_label_chinese_name_list = ["","小,锐,小#,锐#","小,鱼,小#,鱼#","小,雅,小#,雅#","小,度,小#,度#","小,乐,小#,乐#"]
 __C.dataset.label.positive_label_together = True
 __C.dataset.label.negative_label = ["_silence_", "_unknown_"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
@@ -133,7 +139,7 @@ __C.dataset.augmentation.background_volume = 0.1
 __C.dataset.augmentation.time_shift_ms = 100.0
 
 # Time shift enhancement multiple of negative samples, which is effective for advanced prediction and lag prediction
-__C.dataset.augmentation.time_shift_multiple = 5
+__C.dataset.augmentation.time_shift_multiple = 10
 
 # based on audio waveform: on, just for positive samples.
 __C.dataset.augmentation.speed_volume_on = True
@@ -162,7 +168,7 @@ __C.loss = {}
 __C.loss.name = 'focal'
 
 # the weight matrix for each class in focal loss, including background class
-__C.loss.obj_weight = np.array([[1/9, 0, 0], [0, 1/9, 0], [0, 0, 7/9]])
+__C.loss.obj_weight = np.array([[1/4, 0, 0], [0, 1/4, 0], [0, 0, 2/4]])
 
 # the gamma parameter in focal loss
 __C.loss.focal_gamma = 2
@@ -177,9 +183,8 @@ __C.net = {}
 # __C.net.name = 'cnn-trad-pool2'
 # __C.net.name = 'cnn-one-fstride1'
 # __C.net.name = 'cnn-tpool2'
-__C.net.name = 'wavenet'
 # __C.net.name = 'res15'
-# __C.net.name = 'res15-narrow'
+__C.net.name = 'res15-narrow'
 # __C.net.name = 'res8'
 # __C.net.name = 'res8-narrow'
 # __C.net.name = 'lstm-avg'
@@ -271,3 +276,32 @@ __C.debug.num_processing = 64
 
 # random seed used in training
 __C.debug.seed = 0
+
+
+##################################
+# test parameters
+##################################
+
+__C.test = {}
+
+# the number of testing epochs
+__C.test.model_epoch = -1
+
+# mode, support [0: RecognizeCommands, 1: RecognizeCommandsCountNumber, 2:RecognizeCommandsAlign]
+__C.test.method_mode = 0
+
+# detection threshold, support [0.3,0.4,0.6,0.8,0.9,0.95]
+__C.test.detection_threshold = 0.95
+
+# detection number threshold, only support method_mode=1:RecognizeCommandsCountNumber
+__C.test.detection_number_threshold = 0.9   # [0.5,0.75,0.9]
+
+# detection threshold low & high, only support method_mode=2:RecognizeCommandsAlign
+__C.test.detection_threshold_low = 0.1
+__C.test.detection_threshold_high = __C.test.detection_threshold
+    
+# parameter
+__C.test.timeshift_ms = 30
+__C.test.average_window_duration_ms = 800    # [450,800,1500]
+__C.test.minimum_count = 10
+__C.test.suppression_ms = 2500               # [500, 3000]
