@@ -40,10 +40,9 @@ def multiprocessing_preload_audio(args):
     output_dir_idx = os.path.join(output_dir, label_name_idx)
 
     if label_name_idx == SILENCE_LABEL:
-        filename = label_idx + '_' + label_name_idx + '_' + str(idx) + '.txt'
+        filename = label_name_idx + '_' + str(idx) + '.txt'
     else:
-        filename = label_idx + '_' + os.path.basename(os.path.dirname(
-            image_name_idx)) + '_' + os.path.basename(image_name_idx).split('.')[0] + '.txt'
+        filename = os.path.basename(os.path.dirname(image_name_idx)) + '_' + os.path.basename(image_name_idx).split('.')[0] + '.txt'
 
     if os.path.exists(os.path.join(output_dir_idx, filename)):
         return
@@ -182,10 +181,7 @@ def preload_augumentation_audio(args):
     speed_volume_on = cfg.dataset.augmentation.speed_volume_on
     speed_list = cfg.dataset.augmentation.possitive_speed.split(',')
     volume_list = cfg.dataset.augmentation.possitive_volume.split(',')
-    if cfg.dataset.label.positive_label_together:
-        positive_label_list = cfg.dataset.label.positive_label_together_label
-    else:
-        positive_label_list = cfg.dataset.label.positive_label
+    positive_label_list = cfg.dataset.label.positive_label
 
     if not speed_volume_on:
         return
@@ -226,9 +222,9 @@ def main():
     for mode in args.mode.split(','):
         preload_audio(args, mode)
 
-    preload_background_audio(args)
+    # preload_background_audio(args)
 
-    preload_augumentation_audio(args)
+    # preload_augumentation_audio(args)
     print("[Done] Data Preload")
 
 
