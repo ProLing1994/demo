@@ -40,29 +40,36 @@ def analysis_audio_length(config_file):
 
     # load data 
     data_pd = pd.read_csv(cfg.general.data_csv_path)
-    positive_label = cfg.dataset.label.positive_label[0]
+    if cfg.dataset.label.positive_label_together:
+        positive_label_list = cfg.dataset.label.positive_label_together_label
+    else:
+        positive_label_list = cfg.dataset.label.positive_label
 
-    label_pd = data_pd[data_pd['label'] == positive_label]
-    file_list =  label_pd['file'].tolist()
+    for positive_label in positive_label_list:
+        print("[Information:] Positive Label: ", positive_label)
+        label_pd = data_pd[data_pd['label'] == positive_label]
+        file_list =  label_pd['file'].tolist()
 
-    audio_length_list = []
-    for file_path in tqdm(file_list):
-        audio_data = librosa.core.load(file_path, sr=sample_rate)[0]
-        audio_length = int(len(audio_data) * 1000 / sample_rate)
-        audio_length_list.append(audio_length)
-        # if audio_length > 4000:
-        #     print(file_path)
+        audio_length_list = []
+        for file_path in tqdm(file_list):
+            audio_data = librosa.core.load(file_path, sr=sample_rate)[0]
+            audio_length = int(len(audio_data) * 1000 / sample_rate)
+            audio_length_list.append(audio_length)
+            # if audio_length > 4000:
+            #     print(file_path)
 
-    plot_bins = max((int((np.array(audio_length_list).max() - np.array(audio_length_list).min()) // 1000.0) + 1) * 2, 6)
-    plot_hist(np.array(audio_length_list), plot_bins, 'Audio Length', 'frequency', 'Hist For Audio Length', os.path.join(output_dir, "hist_for_audio_length.png"))   
+        plot_bins = max((int((np.array(audio_length_list).max() - np.array(audio_length_list).min()) // 1000.0) + 1) * 2, 6)
+        plot_hist(np.array(audio_length_list), plot_bins, 'Audio Length', 'frequency', 'Hist For Audio Length', \
+                    os.path.join(output_dir, "hist_for_audio_length_{}.png".format(positive_label)))   
 
     
 def main():
     # Calculate the distribution of speech length of positive samples
     parser = argparse.ArgumentParser()
+    parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_speech.py")
     # parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py")
     # parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py")
-    parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py")
+    # parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py")
     args = parser.parse_args()
 
     print("[Begin] Analysis Audio Length")

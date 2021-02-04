@@ -61,15 +61,15 @@ def multiprocessing_preload_audio(args):
     return 
 
 
-def preload_audio(config_file, mode):
+def preload_audio(args, mode):
     """ data preprocess engine
-    :param config_file:   the input configuration file
+    :param args:          the input args
     :param mode:  
     :return:              None
     """
     print("Start preload audio({}): ".format(mode))
     # load configuration file
-    cfg = load_cfg_file(config_file)
+    cfg = load_cfg_file(args.config_file)
 
     # data index
     label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
@@ -104,11 +104,11 @@ def preload_audio(config_file, mode):
     print("Preload audio({}) Done!".format(mode))
 
 
-def preload_background_audio(config_file):
+def preload_background_audio(args):
     print("Start preload background audio: ")
 
     # load configuration file
-    cfg = load_cfg_file(config_file)
+    cfg = load_cfg_file(args.config_file)
 
     # init
     sample_rate = cfg.dataset.sample_rate
@@ -164,12 +164,11 @@ def preload_audio_folder(args):
     print("Preload folder audio: {} Done!".format(os.path.basename(input_dir)))
 
 
-def preload_augumentation_audio(config_file, speed_list, volume_list):
+def preload_augumentation_audio(args):
     # load configuration file
-    cfg = load_cfg_file(config_file)
+    cfg = load_cfg_file(args.config_file)
 
     # init 
-    positive_label = cfg.dataset.label.positive_label[0]
     data_dir = cfg.general.data_dir if not cfg.general.data_dir.endswith('/') else cfg.general.data_dir[:-1]
     input_dir = os.path.join(data_dir, '../{}_augumentation'.format(os.path.basename(data_dir)))
 
@@ -179,21 +178,32 @@ def preload_augumentation_audio(config_file, speed_list, volume_list):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    speed_list = speed_list.split(',')
-    volume_list = volume_list.split(',')
-    
+    # init 
+    speed_volume_on = cfg.dataset.augmentation.speed_volume_on
+    speed_list = cfg.dataset.augmentation.possitive_speed.split(',')
+    volume_list = cfg.dataset.augmentation.possitive_volume.split(',')
+    if cfg.dataset.label.positive_label_together:
+        positive_label_list = cfg.dataset.label.positive_label_together_label
+    else:
+        positive_label_list = cfg.dataset.label.positive_label
+
+    if not speed_volume_on:
+        return
+        
     # multi process
     in_params = []
-    for speed_idx in range(len(speed_list)):
-        for volume_idx in range(len(volume_list)):
-            folder_name = positive_label + "_speed_{}_volume_{}".format("_".join(speed_list[speed_idx].split('.')), "_".join(volume_list[volume_idx].split('.')))
-            
-            input_dir_idx = os.path.join(input_dir, folder_name)
-            output_dir_idx = os.path.join(output_dir, folder_name)
-            if not os.path.exists(output_dir_idx):
-                os.makedirs(output_dir_idx)
-            in_args = [config_file, input_dir_idx, output_dir_idx]
-            in_params.append(in_args)
+    for positive_label in positive_label_list:
+        print("[Information:] Positive Label: ", positive_label)
+        for speed_idx in range(len(speed_list)):
+            for volume_idx in range(len(volume_list)):
+                folder_name = positive_label + "_speed_{}_volume_{}".format("_".join(speed_list[speed_idx].split('.')), "_".join(volume_list[volume_idx].split('.')))
+                
+                input_dir_idx = os.path.join(input_dir, folder_name)
+                output_dir_idx = os.path.join(output_dir, folder_name)
+                if not os.path.exists(output_dir_idx):
+                    os.makedirs(output_dir_idx)
+                in_args = [args.config_file, input_dir_idx, output_dir_idx]
+                in_params.append(in_args)
 
     p = multiprocessing.Pool(16)
     out = list(tqdm(p.imap(preload_audio_folder, in_params), total=len(in_params)))
@@ -202,28 +212,23 @@ def preload_augumentation_audio(config_file, speed_list, volume_list):
 
 
 def main():
-    default_speed_list = "0.9,1.0,1.1"
-    default_volume_list = "0.4,0.7,1.0,1.3,1.6"
-
     parser = argparse.ArgumentParser(description='Streamax KWS Data Split Engine')
-    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config.py", help='config file')
-    # parser.add_argument('-i', '--input', type=str,  default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
-    # parser.add_argument('-i', '--input', type=str,  default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_2_label_xiaoyu.py", help='config file')
-    # parser.add_argument('-i', '--input', type=str,  default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py", help='config file')
-    parser.add_argument('-i', '--input', type=str,  default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py", help='config file')
+    parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_speech.py", help='config file')
+    # parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
+    # parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_2_label_xiaoyu.py", help='config file')
+    # parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py", help='config file')
+    # parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py", help='config file')
     parser.add_argument('-m', '--mode', type=str, default="training,validation,testing")
-    parser.add_argument('--speed_list', type=str, default=default_speed_list)
-    parser.add_argument('--volume_list', type=str, default=default_volume_list)
     args = parser.parse_args()
 
     print("[Begin] Data Preload")
 
     for mode in args.mode.split(','):
-        preload_audio(args.input, mode)
+        preload_audio(args, mode)
 
-    preload_background_audio(args.input)
+    preload_background_audio(args)
 
-    preload_augumentation_audio(args.input, args.speed_list, args.volume_list)
+    preload_augumentation_audio(args)
     print("[Done] Data Preload")
 
 
