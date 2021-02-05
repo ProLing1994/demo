@@ -82,8 +82,6 @@ def prepare_dataset_csv(config_file, original_dataset_dir):
     random.shuffle(new_sample_files)
     
     for set_index in ['validation', 'testing', 'training']:
-        set_size = np.array([x['mode'] == set_index and x['label'] == positive_label for x in total_data_files]).astype(np.int).sum()
-
         # new samples
         new_sample_files_set = [x for x in new_sample_files if x['mode'] == set_index]
         new_sample_files_set = copy.deepcopy(new_sample_files_set)
@@ -99,7 +97,8 @@ def prepare_dataset_csv(config_file, original_dataset_dir):
 
 
 def main():
-    # We only add hard mining difficult negative samples, we do not change the distribution of the original data set, only add additional negative sample data
+    # To do, Wronge
+    # We only add data, we do not change the distribution of the original data set, only add additional sample data
     parser = argparse.ArgumentParser(
         description='Streamax KWS Data Split Engine')
     # parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')

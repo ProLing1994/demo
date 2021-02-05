@@ -126,7 +126,8 @@ __C.dataset.data_size = [40, 101]
 __C.dataset.label = {}
 
 # label
-__C.dataset.label.positive_label = ["yes", "no", "up", "down", "left", "right", "on", "off", "stop", "go"]
+# __C.dataset.label.positive_label = ["yes", "no", "up", "down", "left", "right", "on", "off", "stop", "go"]
+__C.dataset.label.positive_label = ["yes", "no"]
 __C.dataset.label.positive_label_chinese_name_list = [""]
 __C.dataset.label.positive_label_together = False
 __C.dataset.label.positive_label_together_label = ["positive"]
@@ -139,8 +140,9 @@ __C.dataset.label.num_classes = len(__C.dataset.label.positive_label) + len(__C.
 # label percentage
 __C.dataset.label.silence_percentage = 10.0     # 10%
 __C.dataset.label.unknown_percentage = 10.0     # 10%
+# __C.dataset.label.difficult_sample_mining = True
 __C.dataset.label.difficult_sample_mining = False
-__C.dataset.label.difficult_sample_percentage = 0.0
+__C.dataset.label.difficult_sample_percentage = 10.0
 
 # trian/validation/test percentage
 __C.dataset.label.validation_percentage = 10.0  # 10%
