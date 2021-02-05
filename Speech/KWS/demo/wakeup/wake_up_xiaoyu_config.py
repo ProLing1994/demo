@@ -78,7 +78,7 @@ __C.dataset.label.num_classes = len(__C.dataset.label.positive_label) + len(__C.
 
 __C.net = {}
 
-__C.net.name = 'res15'
+__C.net.model_name = 'res15'
 
 
 ##################################

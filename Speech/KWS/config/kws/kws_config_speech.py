@@ -15,16 +15,16 @@ __C.general.data_dir = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/speech_
 __C.general.sub_data_dir = []
 
 # data version
-__C.general.version = "1.1"
+__C.general.version = "1.0"
 
 # data date
 __C.general.date = "02042021"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.1_02042021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.0_02042021/total_data_files.csv"
 
 # background noise path
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.1_02042021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.0_02042021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -109,8 +109,8 @@ __C.dataset.window_size_ms = 30.0
 __C.dataset.window_stride_ms = 10.0
 
 # How the spectrogram is processed to produce features, support ["mfcc", "pcen", "fbank"]
-# __C.dataset.preprocess = "fbank"
-__C.dataset.preprocess = "mfcc"
+__C.dataset.preprocess = "fbank"
+# __C.dataset.preprocess = "mfcc"
 
 # How many bins to use for the MFCC fingerprint
 __C.dataset.feature_bin_count = 40
@@ -126,8 +126,7 @@ __C.dataset.data_size = [40, 101]
 __C.dataset.label = {}
 
 # label
-# __C.dataset.label.positive_label = ["yes", "no", "up", "down", "left", "right", "on", "off", "stop", "go"]
-__C.dataset.label.positive_label = ["yes", "no"]
+__C.dataset.label.positive_label = ["yes", "no", "up", "down", "left", "right", "on", "off", "stop", "go"]
 __C.dataset.label.positive_label_chinese_name_list = [""]
 __C.dataset.label.positive_label_together = False
 __C.dataset.label.positive_label_together_label = ["positive"]
@@ -213,17 +212,19 @@ __C.loss.focal_gamma = 2
 __C.net = {}
 
 # the network name
-# __C.net.name = 'cnn-trad-pool2'
-# __C.net.name = 'cnn-one-fstride1'
-# __C.net.name = 'cnn-tpool2'
-__C.net.name = 'res15'
-# __C.net.name = 'res15-narrow'
-# __C.net.name = 'res8'
-# __C.net.name = 'res8-narrow'
-# __C.net.name = 'lstm-avg'
-# __C.net.name = 'lstm-attention'
-# __C.net.name = 'crnn-avg'
-# __C.net.name = 'crnn-attention'
+__C.net.class_name = "SpeechResModel"
+# __C.net.model_name = 'cnn-trad-pool2'
+# __C.net.model_name = 'cnn-one-fstride1'
+# __C.net.model_name = 'cnn-tpool2'
+# __C.net.model_name = 'res15'
+# __C.net.model_name = 'res15-narrow'
+# __C.net.model_name = 'res8'
+# __C.net.model_name = 'res8-narrow'
+# __C.net.model_name = 'lstm-avg'
+# __C.net.model_name = 'lstm-attention'
+# __C.net.model_name = 'crnn-avg'
+# __C.net.model_name = 'crnn-attention'
+__C.net.model_name = 'edge-speech-nets'
 
 
 ######################################
@@ -241,8 +242,8 @@ __C.train.num_epochs = 1
 # the number of samples in a batch
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 256
-__C.train.batch_size = 16
-# __C.train.batch_size = 1
+# __C.train.batch_size = 16
+__C.train.batch_size = 1
 
 # the number of threads for IO
 # __C.train.num_threads = 64

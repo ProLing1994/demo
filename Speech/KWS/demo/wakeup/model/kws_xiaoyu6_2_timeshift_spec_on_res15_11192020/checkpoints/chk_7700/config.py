@@ -197,13 +197,13 @@ __C.loss.focal_gamma = 2
 __C.net = {}
 
 # the network name
-# __C.net.name = 'cnn-trad-pool2'
-# __C.net.name = 'cnn-one-fstride1'
-# __C.net.name = 'cnn-tpool2'
-__C.net.name = 'res15'
-# __C.net.name = 'res15-narrow'
-# __C.net.name = 'res8'
-# __C.net.name = 'res8-narrow'
+# __C.net.model_name = 'cnn-trad-pool2'
+# __C.net.model_name = 'cnn-one-fstride1'
+# __C.net.model_name = 'cnn-tpool2'
+__C.net.model_name = 'res15'
+# __C.net.model_name = 'res15-narrow'
+# __C.net.model_name = 'res8'
+# __C.net.model_name = 'res8-narrow'
 
 
 ######################################

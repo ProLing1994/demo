@@ -222,9 +222,9 @@ def main():
     for mode in args.mode.split(','):
         preload_audio(args, mode)
 
-    # preload_background_audio(args)
+    preload_background_audio(args)
 
-    # preload_augumentation_audio(args)
+    preload_augumentation_audio(args)
     print("[Done] Data Preload")
 
 

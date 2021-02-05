@@ -73,7 +73,7 @@ def train(config_file, local_rank, training_mode):
     logger = setup_logger(log_file, 'kws_train')
 
     # define network
-    net = import_network(cfg, cfg.net.name)
+    net = import_network(cfg, cfg.net.model_name, cfg.net.class_name)
 
     # define loss function
     loss_func = define_loss_function(cfg)
