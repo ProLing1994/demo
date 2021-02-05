@@ -72,7 +72,7 @@ def train(config_file, training_mode):
     logger = setup_logger(log_file, 'kws_train')
 
     # define network
-    net = import_network(cfg, cfg.net.name)
+    net = import_network(cfg, cfg.net.model_name, cfg.net.class_name)
 
     # define loss function
     loss_func = define_loss_function(cfg)
@@ -98,7 +98,7 @@ def train(config_file, training_mode):
 
     # knowledge distillation
     if cfg.knowledge_distillation.on:
-        msg = 'Knowledge Distillation: {} -> {}'.format(cfg.knowledge_distillation.teacher_model_name, cfg.net.name)
+        msg = 'Knowledge Distillation: {} -> {}'.format(cfg.knowledge_distillation.teacher_model_name, cfg.net.model_name)
         logger.info(msg)
 
         teacher_model = import_network(cfg, model_name=cfg.knowledge_distillation.teacher_model_name)

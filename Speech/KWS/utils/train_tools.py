@@ -317,7 +317,7 @@ def save_checkpoint(net, optimizer, epoch_idx, batch_idx, cfg, config_file):
 
     state = {'epoch': epoch_idx,
              'batch': batch_idx,
-             'net': cfg.net.name,
+             'net': cfg.net.model_name,
              'num_classes': cfg.dataset.label.num_classes,
              'image_height': cfg.dataset.data_size[1],
              'image_weidth': cfg.dataset.data_size[0],
