@@ -311,22 +311,22 @@ class OnlineAudio:
         print("[Information:] Current main-process pid is: {}".format(os.getpid()))
         print("[Information:] If you want to kill the main process and sub-process, type: kill {}".format(os.getpid()))
 
-        # # 监听
-        # listen_process_play = Process(target=self.listen, args=(self.event, self.audio_queue_play))
-        # listen_process_play.start()
-
-        # # 播放
-        # play_process = Process(target=self.play, args=(self.event, self.audio_queue_play))
-        # play_process.start()
-
         # 监听
-        # listen_process_wakeup = Process(target=self.listen_file, args=(self.event, self.audio_queue_wakeup))
-        listen_process_wakeup = Process(target=self.listen, args=(self.event, self.audio_queue_wakeup))
-        listen_process_wakeup.start()
+        listen_process_play = Process(target=self.listen, args=(self.event, self.audio_queue_play))
+        listen_process_play.start()
 
-        # 唤醒
-        wakeup_process = Process(target=self.wake_up, args=(self.event, self.audio_queue_wakeup))
-        wakeup_process.start()
+        # 播放
+        play_process = Process(target=self.play, args=(self.event, self.audio_queue_play))
+        play_process.start()
+
+        # # 监听
+        # # listen_process_wakeup = Process(target=self.listen_file, args=(self.event, self.audio_queue_wakeup))
+        # listen_process_wakeup = Process(target=self.listen, args=(self.event, self.audio_queue_wakeup))
+        # listen_process_wakeup.start()
+
+        # # 唤醒
+        # wakeup_process = Process(target=self.wake_up, args=(self.event, self.audio_queue_wakeup))
+        # wakeup_process.start()
 
         # # 绘图
         # display_process = Process(target=self.display, args=(self.event, self.audio_queue_wakeup))
@@ -336,10 +336,10 @@ class OnlineAudio:
         # judge_alarm_process = Process(target=self.fit,args=(self.event, self.audio_queue_play))
         # judge_alarm_process.start()
 
-        # listen_process_play.join()
-        # play_process.join()
-        listen_process_wakeup.join()
-        wakeup_process.join()
+        listen_process_play.join()
+        play_process.join()
+        # listen_process_wakeup.join()
+        # wakeup_process.join()
         # display_process.join()
         # judge_alarm_process.join()
 
