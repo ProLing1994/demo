@@ -208,6 +208,8 @@ class OnlineAudio:
         label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
         label_list = cfg.dataset.label.label_list
         positive_label = cfg.dataset.label.positive_label
+        assert len(positive_label) == 1, "We only support one positive label yet"
+        
         sample_rate = cfg.dataset.sample_rate
         clip_duration_ms = cfg.dataset.clip_duration_ms
 

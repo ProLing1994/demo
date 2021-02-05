@@ -34,6 +34,7 @@ def test(input_wav, args):
     timeshift_samples = int(sample_rate * cfg.test.timeshift_ms / 1000)
     label_list = cfg.dataset.label.label_list
     positive_label = cfg.dataset.label.positive_label
+    assert len(positive_label) == 1, "We only support one positive label yet"
 
     # load label index 
     label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)

@@ -41,6 +41,7 @@ class SpeechDatasetAlign(Dataset):
     self.data_label_list = self.data_pd['label'].tolist()
 
     self.positive_label = cfg.dataset.label.positive_label[0]
+    assert len(positive_label) == 1, "We only support one positive label yet"
     self.sample_rate = cfg.dataset.sample_rate
     self.clip_duration_ms = cfg.dataset.clip_duration_ms
     self.window_size_ms = cfg.dataset.window_size_ms
