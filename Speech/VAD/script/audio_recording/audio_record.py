@@ -1,4 +1,6 @@
 import argparse
+import glob
+import multiprocessing
 import numpy as np
 import os
 import pyaudio
@@ -30,23 +32,44 @@ class OnlineAudio:
         self._chunk = chunk
         self._format = format
         self._channels = channels
+        self._record_channes = args.record_channes
         self._rate = rate
         self._record_second_asr = record_second_asr
 
         # init 
         self._input_folder = args.input_folder
         self._output_folder = args.output_folder
+        self._pause_interval_s = args.pause_interval_s
         self._audio_list = []
-        file_list = os.listdir(self._input_folder)
-        for idx in range(len(file_list)):
-            file_name = file_list[idx]
-            if file_name.endswith(args.suffix):
-                self._audio_list.append(file_name)
-        self._audio_list.sort()
 
         # mkdir 
         if not os.path.exists(self._output_folder):
-            os.mkdir(self._output_folder)
+            os.makedirs(self._output_folder)
+
+        # load audio_list
+        print("[Init:] Load audio list: ")
+        wave_list = glob.glob(os.path.join(self._input_folder, '*' + args.suffix))
+        wave_list += glob.glob(os.path.join(self._input_folder, '*/*' + args.suffix))
+        wave_list += glob.glob(os.path.join(self._input_folder, '*/*/*' + args.suffix))
+        wave_list += glob.glob(os.path.join(self._input_folder, '*/*/*/*' + args.suffix))
+        for idx in tqdm(range(len(wave_list))):
+            wave_path = wave_list[idx]
+
+            if not wave_path.endswith(args.suffix):
+                continue
+
+            output_path = wave_path.replace(self._input_folder, self._output_folder)
+            # tqdm.write("{} -> {}".format(input_path, output_path))
+
+            if os.path.exists(output_path):
+                continue
+
+            output_dir = os.path.dirname(output_path)
+            if not os.path.exists(output_dir):
+                os.makedirs(output_dir)
+
+            self._audio_list.append(wave_path)
+        self._audio_list.sort()
 
         # event
         # play_ready
@@ -79,7 +102,7 @@ class OnlineAudio:
                                             frames_per_buffer=self._chunk)
         play_idx = 0
         while play_idx < len(self._audio_list):
-            wave_path = os.path.join(self._input_folder, self._audio_list[play_idx])
+            wave_path = self._audio_list[play_idx]
             print("[paly: ] {}/{}, {}".format(play_idx, len(self._audio_list), wave_path))
 
             # 加载语音
@@ -97,7 +120,7 @@ class OnlineAudio:
 
             self._play_ready_event.clear()
             self._play_event.set()
-            time.sleep(args.pause_interval_s)
+            time.sleep(self._pause_interval_s)
             self._listen_event.wait()
             self._listen_event.clear()
             play_idx += 1
@@ -111,7 +134,7 @@ class OnlineAudio:
         print("[Init:] Listen")
         pyaudio_listen = pyaudio.PyAudio()
         stream = pyaudio_listen.open(format=self._format,
-                                    channels=self._channels,
+                                    channels=self._record_channes,
                                     rate=self._rate,
                                     input=True,
                                     frames_per_buffer=self._chunk)
@@ -129,12 +152,13 @@ class OnlineAudio:
                 self._play_event.clear()
                 self._listen_ready_event.clear()
 
-                wave_path = os.path.join(self._output_folder, self._audio_list[listen_idx])
+                wave_path = self._audio_list[listen_idx]
+                wave_path = wave_path.replace(self._input_folder, self._output_folder)
                 print("[listen: ] {}/{}, {}".format(listen_idx, len(self._audio_list), wave_path))
 
                 # 保存语音
                 wf = wave.open(wave_path, 'wb')
-                wf.setnchannels(self._channels)
+                wf.setnchannels(self._record_channes)
                 wf.setsampwidth(pyaudio_listen.get_sample_size(self._format))
                 wf.setframerate(self._rate)
                 wf.writeframes(b''.join(frames))
@@ -165,18 +189,20 @@ class OnlineAudio:
 
         play_process.join()
         listen_process.join()
-        
+        term
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Streamax KWS Training Engine')
+    multiprocessing.freeze_support()
+    # freeze_support()
 
-    parser.add_argument('--input_folder', type=str, default="/mnt/huanyuan/test/")
-    parser.add_argument('--output_folder', type=str, default="/mnt/huanyuan/test_1/")
+    parser = argparse.ArgumentParser(description='Streamax Engine')
+    parser.add_argument('--input_folder', type=str, default="/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech_wav/")
+    parser.add_argument('--output_folder', type=str, default="/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech_wav_record/")
     parser.add_argument('--suffix', type=str, default=".wav")
+    parser.add_argument('--record_channes', type=int, default=1)
     parser.add_argument('--pause_interval_s', type=float, default=1)
     args = parser.parse_args()
 
-    freeze_support()
     online_audio = OnlineAudio()
     online_audio.start()
