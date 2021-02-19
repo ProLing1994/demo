@@ -30,7 +30,7 @@ __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/tf_speech_comm
 __C.general.is_test = True
 
 # the output of training models and logging files
-# __C.general.save_dir = "/home/huanyuan/model/kws_test"
+__C.general.save_dir = "/home/huanyuan/model/kws_test"
 # __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_10212020_le-4/"
 # __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_cnn-tpool2_10222020/"
 # __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_cnn-one-fstride1_10222020/"
@@ -38,7 +38,7 @@ __C.general.is_test = True
 # __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_res15-narrow_10232020/"
 # __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_res8_10232020/"
 # __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_res8-narrow_10232020/"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_commands_res15_02042021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_commands_res15_02042021/"
 
 # finetune model
 __C.general.finetune_on = False
@@ -224,7 +224,8 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'lstm-attention'
 # __C.net.model_name = 'crnn-avg'
 # __C.net.model_name = 'crnn-attention'
-__C.net.model_name = 'edge-speech-nets'
+# __C.net.model_name = 'edge-speech-nets'
+__C.net.model_name = 'tc-resnet8'
 
 
 ######################################
@@ -242,13 +243,13 @@ __C.train.num_epochs = 1
 # the number of samples in a batch
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 256
-# __C.train.batch_size = 16
-__C.train.batch_size = 1
+__C.train.batch_size = 16
+# __C.train.batch_size = 1
 
 # the number of threads for IO
 # __C.train.num_threads = 64
-# __C.train.num_threads = 16
-__C.train.num_threads = 1
+__C.train.num_threads = 16
+# __C.train.num_threads = 1
 
 # the number of batches to update loss curve
 __C.train.plot_snapshot = 5

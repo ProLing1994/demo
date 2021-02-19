@@ -14,7 +14,7 @@ def kaiming_weight_init(m, bn_std=0.02):
         if m.bias is not None:
             m.bias.data.zero_()
     elif 'BatchNorm' in classname:
-        if m.weight:
+        if m.weight is not None:
             m.weight.data.normal_(1.0, bn_std)
             m.bias.data.zero_()
     elif 'Linear' in classname:
