@@ -37,7 +37,7 @@ def flac_to_wav(args):
         in_args = [input_path, output_path]
         in_params.append(in_args)
 
-    p = multiprocessing.Pool(12)
+    p = multiprocessing.Pool(16)
     # out = list(tqdm(p.imap(multiprocessing_format_transform, in_params), total=len(in_params)))
     out = p.map(multiprocessing_format_transform, in_params)
     p.close()
@@ -46,8 +46,8 @@ def flac_to_wav(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Streamax Engine')
-    parser.add_argument('--input_folder', type=str, default="/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-clean-360/")
-    parser.add_argument('--output_folder', type=str, default="/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech_wav/train-clean-360/")
+    parser.add_argument('--input_folder', type=str, default="/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-other-500/")
+    parser.add_argument('--output_folder', type=str, default="/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech_wav/train-other-500/")
     parser.add_argument('--input_suffix', type=str, default=".flac")
     parser.add_argument('--output_suffix', type=str, default=".wav")
     args = parser.parse_args()
