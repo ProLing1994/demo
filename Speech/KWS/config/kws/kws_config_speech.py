@@ -225,7 +225,8 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'crnn-avg'
 # __C.net.model_name = 'crnn-attention'
 # __C.net.model_name = 'edge-speech-nets'
-__C.net.model_name = 'tc-resnet8'
+# __C.net.model_name = 'tc-resnet8'
+__C.net.model_name = 'tc-resnet14'
 
 
 ######################################
@@ -243,13 +244,13 @@ __C.train.num_epochs = 1
 # the number of samples in a batch
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 256
-__C.train.batch_size = 16
-# __C.train.batch_size = 1
+# __C.train.batch_size = 16
+__C.train.batch_size = 1
 
 # the number of threads for IO
 # __C.train.num_threads = 64
-__C.train.num_threads = 16
-# __C.train.num_threads = 1
+# __C.train.num_threads = 16
+__C.train.num_threads = 1
 
 # the number of batches to update loss curve
 __C.train.plot_snapshot = 5
