@@ -36,8 +36,8 @@ class SpeechDataset(Dataset):
             self.label_index = load_label_index(self.positive_label_list, cfg.dataset.label.negative_label)
 
         # load data
-        data_pd = pd.read_csv(cfg.general.data_csv_path)
-        background_data_pd = pd.read_csv(cfg.general.background_data_path)
+        data_pd = pd.read_csv(cfg.general.data_csv_path, encoding='utf_8_sig')
+        background_data_pd = pd.read_csv(cfg.general.background_data_path, encoding='utf_8_sig')
 
         self.mode_type = mode
         self.data_pd = data_pd[data_pd['mode'] == mode]
