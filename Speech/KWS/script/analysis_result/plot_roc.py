@@ -141,10 +141,12 @@ def main():
     # show_roc(csv_list, color_list, linestyle_list, name_list, label_list)
     csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_1_edge-speech-nets_02042021/infer_longterm_validation_augmentation_False_mean.csv",
                 "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_2_tc-resnet8_02192021/infer_longterm_validation_augmentation_False_mean.csv",
-                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_3_tc-resnet14_02192021/infer_longterm_validation_augmentation_False_mean.csv"]
-    color_list = ["r", "g", "b"]
-    linestyle_list = ["-", "-", "-"]
-    name_list = ["edge-speech-nets", "tc-resnet8", "tc-resnet14"]
+                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_3_tc-resnet14_02192021/infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_4_tc-resnet8-dropout_02192021/infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_5_tc-resnet14-dropout_02192021/infer_longterm_validation_augmentation_False_mean.csv"]
+    color_list = ["r", "g", "b", "g", "b"]
+    linestyle_list = ["-", "-", "-", "--", "--"]
+    name_list = ["edge-speech-nets", "tc-resnet8", "tc-resnet14", "tc-resnet8-dropout", "tc-resnet14-dropout"]
     label_list = ['_silence_', '_unknown_', "yes", "no", "up", "down", "left", "right", "on", "off", "stop", "go"]
     show_roc(csv_list, color_list, linestyle_list, name_list, label_list)
 

@@ -227,9 +227,7 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'crnn-avg'
 # __C.net.model_name = 'crnn-attention'
 # __C.net.model_name = 'tc-resnet8'
-# __C.net.model_name = 'tc-resnet14'
-# __C.net.model_name = 'tc-resnet8-dropout'
-__C.net.model_name = 'tc-resnet14-dropout'
+__C.net.model_name = 'tc-resnet14'
 
 ######################################
 # training parameters
@@ -248,14 +246,14 @@ __C.train.num_epochs = 1
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 1024
 # __C.train.batch_size = 128
-__C.train.batch_size = 64
+# __C.train.batch_size = 64
 # __C.train.batch_size = 16
-# __C.train.batch_size = 1
+__C.train.batch_size = 1
 
 # the number of threads for IO
-__C.train.num_threads = 64
+# __C.train.num_threads = 64
 # __C.train.num_threads = 16
-# __C.train.num_threads = 1
+__C.train.num_threads = 1
 
 # the number of batches to update loss curve
 __C.train.plot_snapshot = 5
@@ -271,8 +269,8 @@ __C.train.save_epochs = 25
 
 # learning rate = lr*gamma**(epoch//step_size)
 # __C.train.lr = 1e-3
-# __C.train.lr = 1e-4
-__C.train.lr = 1e-5
+__C.train.lr = 1e-4
+# __C.train.lr = 1e-5
 
 # step size for step learning rate
 __C.train.lr_step_size = 0
