@@ -29,7 +29,7 @@ __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_datase
 __C.general.is_test = True
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_12162020_test"
+__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_12162020_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12082020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_1_finetune_res15_12082020/"
@@ -41,12 +41,12 @@ __C.general.is_test = True
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_10_res15_finetune_12162020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_11_res15_narrow_kd_12162020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_12_res15_narrow_fintune_12162020/"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_13_res15_narrow_fintune_kd_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_13_res15_narrow_fintune_kd_12162020/"
 
 # finetune model
-__C.general.finetune_on = True
-__C.general.finetune_model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain1_2_res15_narrow_12102020/"
-__C.general.finetune_epoch = 3999
+__C.general.finetune_on = False
+__C.general.finetune_model_dir = ""
+__C.general.finetune_epoch = 0
 
 # set certain epoch to continue training, set -1 to train from scratch
 __C.general.resume_epoch = -1
@@ -73,12 +73,12 @@ __C.general.data_parallel_mode = 0
 __C.knowledge_distillation = {}
 
 # knowledge distillation: on
-__C.knowledge_distillation.on = True
+__C.knowledge_distillation.on = False
 
 # teacher model
-__C.knowledge_distillation.teacher_model_name = 'res15'
-__C.knowledge_distillation.teacher_model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_10_res15_finetune_12162020/"
-__C.knowledge_distillation.epoch = 3999
+__C.knowledge_distillation.teacher_model_name = ''
+__C.knowledge_distillation.teacher_model_dir = ""
+__C.knowledge_distillation.epoch = 0
 
 # loss
 # kd: https://github.com/peterliht/knowledge-distillation-pytorch
@@ -214,18 +214,22 @@ __C.loss.focal_gamma = 2
 __C.net = {}
 
 # the network name
+__C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'cnn-trad-pool2'
 # __C.net.model_name = 'cnn-one-fstride1'
 # __C.net.model_name = 'cnn-tpool2'
 # __C.net.model_name = 'res15'
-__C.net.model_name = 'res15-narrow'
+# __C.net.model_name = 'res15-narrow'
 # __C.net.model_name = 'res8'
 # __C.net.model_name = 'res8-narrow'
 # __C.net.model_name = 'lstm-avg'
 # __C.net.model_name = 'lstm-attention'
 # __C.net.model_name = 'crnn-avg'
 # __C.net.model_name = 'crnn-attention'
-
+# __C.net.model_name = 'tc-resnet8'
+# __C.net.model_name = 'tc-resnet14'
+# __C.net.model_name = 'tc-resnet8-dropout'
+__C.net.model_name = 'tc-resnet14-dropout'
 
 ######################################
 # training parameters

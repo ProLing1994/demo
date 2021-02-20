@@ -228,8 +228,10 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'crnn-avg'
 # __C.net.model_name = 'crnn-attention'
 # __C.net.model_name = 'edge-speech-nets'
-__C.net.model_name = 'tc-resnet8'
+# __C.net.model_name = 'tc-resnet8'
 # __C.net.model_name = 'tc-resnet14'
+# __C.net.model_name = 'tc-resnet8-dropout'
+__C.net.model_name = 'tc-resnet14-dropout'
 
 
 ######################################
