@@ -28,10 +28,10 @@ class SpeechDataset(Dataset):
         # data index
         self.positive_label_list = cfg.dataset.label.positive_label
         self.positive_label_together = cfg.dataset.label.positive_label_together
-        self.positive_label_together_label_list = cfg.dataset.label.positive_label_together_label
 
         if self.positive_label_together:
             self.label_index = load_label_index(self.positive_label_together_label_list, cfg.dataset.label.negative_label)
+            self.positive_label_together_label_list = cfg.dataset.label.positive_label_together_label
         else:
             self.label_index = load_label_index(self.positive_label_list, cfg.dataset.label.negative_label)
 
@@ -262,4 +262,7 @@ class SpeechDataset(Dataset):
         assert data_tensor.shape[0] == self.input_channel
         assert data_tensor.shape[1] == self.data_size_h
         assert data_tensor.shape[2] == self.data_size_w
+
+        # print
+        # print(audio_label, label_tensor)
         return data_tensor, label_tensor, index

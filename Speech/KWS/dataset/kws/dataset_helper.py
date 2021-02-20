@@ -1,3 +1,4 @@
+import glob
 import librosa
 import numpy as np
 import os
@@ -38,7 +39,9 @@ def load_preload_audio(audio_file, audio_idx, audio_label, input_dir, refilename
     else:
         filename =  os.path.basename(audio_file).split('.')[0] + '.txt'
 
-    f = open(os.path.join(input_dir, filename).encode('utf-8'), 'rb')
+    file_path_list = glob.glob(os.path.join(input_dir, '*' + filename))
+    assert len(file_path_list) == 1
+    f = open(file_path_list[0].encode('utf-8'), 'rb')
     data = pickle.load(f)
     f.close()
     return data, filename

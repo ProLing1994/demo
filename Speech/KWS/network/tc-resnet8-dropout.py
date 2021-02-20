@@ -35,9 +35,9 @@ class TCBlock(nn.Module):
             self.shortcut = nn.Sequential(
                 nn.Conv2d(in_planes, self.expansion*planes,
                           kernel_size=1, stride=stride, bias=False),
-                nn.BatchNorm2d(self.expansion*planes)
+                nn.BatchNorm2d(self.expansion*planes),
                 nn.ReLU()
-                )
+            )
 
     def forward(self, x):
         out = self.relu(self.bn1(self.conv1(x)))
@@ -61,6 +61,7 @@ class SpeechResModel(nn.Module):
 
         self.conv1 = nn.Conv2d(image_weidth, self.in_planes, kernel_size=self.first_conv_kernel,
                                stride=1, padding=(1, 0), bias=False)
+        self.relu = torch.nn.ReLU() 
 
         self.layer1 = self._make_layer(TCBlock, int(self.planes[1] * self.width_multiplier), stride=2)
         self.layer2 = self._make_layer(TCBlock, int(self.planes[2] * self.width_multiplier), stride=2)
@@ -76,7 +77,7 @@ class SpeechResModel(nn.Module):
 
     def forward(self, x):
         x = x.permute(0, 3, 2, 1).contiguous()                          # shape: (batch, 1, 101, 40)  ->  shape: (batch, 40, 101, 1) 
-        out = self.conv1(x)                                             # shape: (batch, 40, 101, 1) -> shape: (batch, 16, 101, 1)
+        out = self.relu(self.conv1(x))                                  # shape: (batch, 40, 101, 1) -> shape: (batch, 16, 101, 1)
         out = self.layer1(out)                                          # shape: (batch, 16, 101, 1) -> shape: (batch, 24, 51, 1)
         out = self.layer2(out)                                          # shape: (batch, 24, 51, 1) -> shape: (batch, 32, 26, 1)
         out = self.layer3(out)                                          # shape: (batch, 32, 26, 1) -> shape: (batch, 48, 13, 1)
