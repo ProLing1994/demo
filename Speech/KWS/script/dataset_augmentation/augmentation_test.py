@@ -61,7 +61,7 @@ def augmentation_test(config_file, output_dir):
 
         # load data
         input_dir_index = os.path.join(input_dir, audio_mode, audio_label)
-        audio_data, filename = load_preload_audio(audio_file, audio_index, audio_label, audio_label_idx, input_dir_index)
+        audio_data, filename = load_preload_audio(audio_file, audio_index, audio_label, input_dir_index)
 
         # alignment data
         audio_data_length = len(audio_data)

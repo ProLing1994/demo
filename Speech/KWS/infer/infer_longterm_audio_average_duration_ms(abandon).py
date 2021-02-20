@@ -22,7 +22,7 @@ def longterm_audio_predict(cfg, net, audio_idx, audio_file, audio_mode, audio_la
     desired_samples = int(sample_rate * clip_duration_ms / 1000)
 
     # load data
-    data, filename = load_preload_audio(audio_file, audio_idx, audio_label, audio_label_idx, input_dir)
+    data, filename = load_preload_audio(audio_file, audio_idx, audio_label, input_dir)
 
     # # debug
     # librosa.output.write_wav(os.path.join("/home/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu_res15_10272020/testing/", filename.split('.')[0] + '.wav'), data, sr=sample_rate)

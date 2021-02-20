@@ -30,7 +30,7 @@ __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/tf_speech_comm
 __C.general.is_test = True
 
 # the output of training models and logging files
-__C.general.save_dir = "/home/huanyuan/model/kws_test"
+# __C.general.save_dir = "/home/huanyuan/model/kws_test"
 # __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_10212020_le-4/"
 # __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_cnn-tpool2_10222020/"
 # __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_cnn-one-fstride1_10222020/"
@@ -38,7 +38,10 @@ __C.general.save_dir = "/home/huanyuan/model/kws_test"
 # __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_res15-narrow_10232020/"
 # __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_res8_10232020/"
 # __C.general.save_dir = "/home/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_res8-narrow_10232020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_commands_res15_02042021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_0_res15_02042021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_1_edge-speech-nets_02042021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_2_tc-resnet8_02192021/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_3_tc-resnet14_02192021/"
 
 # finetune model
 __C.general.finetune_on = False
@@ -109,8 +112,8 @@ __C.dataset.window_size_ms = 30.0
 __C.dataset.window_stride_ms = 10.0
 
 # How the spectrogram is processed to produce features, support ["mfcc", "pcen", "fbank"]
-__C.dataset.preprocess = "fbank"
-# __C.dataset.preprocess = "mfcc"
+# __C.dataset.preprocess = "fbank"
+__C.dataset.preprocess = "mfcc"
 
 # How many bins to use for the MFCC fingerprint
 __C.dataset.feature_bin_count = 40
@@ -225,8 +228,8 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'crnn-avg'
 # __C.net.model_name = 'crnn-attention'
 # __C.net.model_name = 'edge-speech-nets'
-# __C.net.model_name = 'tc-resnet8'
-__C.net.model_name = 'tc-resnet14'
+__C.net.model_name = 'tc-resnet8'
+# __C.net.model_name = 'tc-resnet14'
 
 
 ######################################
@@ -285,7 +288,7 @@ __C.train.optimizer = 'Adam'
 # SGD, Adam momentum
 __C.train.momentum = 0.9
 
-# SGD,Adam weight decay
+# SGD, Adam weight decay
 # __C.train.weight_decay = 0.0
 __C.train.weight_decay = 0.0001
 

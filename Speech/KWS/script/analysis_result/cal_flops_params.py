@@ -13,7 +13,9 @@ def main():
     # net_name = "res15"
     # net_name = "res15-narrow"
     # net_name = "wavenet"
-    net_name = "edge-speech-nets"
+    # net_name = "edge-speech-nets"
+    # net_name = "tc-resnet8"
+    net_name = "tc-resnet14"
 
     # load network structure
     net_module = importlib.import_module('network.' + net_name)
