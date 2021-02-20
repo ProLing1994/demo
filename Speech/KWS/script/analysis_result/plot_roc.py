@@ -17,8 +17,10 @@ from dataset.kws.dataset_helper import SILENCE_LABEL, UNKNOWN_WORD_LABEL
 def plot_roc(fpr, tpr, color, linestyle, label):
     plt.plot(fpr, tpr, color = color,  linewidth=1.0, linestyle=linestyle, marker = 'o', label = label)
     plt.legend(loc=4)
-    plt.xlim([-0.01, 0.1])
-    plt.ylim([0.8, 1.01])
+    # plt.xlim([-0.01, 0.1])
+    # plt.ylim([0.8, 1.01])
+    plt.xlim([0.0, 0.1])
+    plt.ylim([0.7, 1.0])
     plt.xlabel('Flase Positive Rate')
     plt.ylabel('True Positive Rate')
     plt.title('Receiver Operating Characteristic')
@@ -109,11 +111,11 @@ def main():
     # show_roc_per_class(csv_list, color_list, linestyle_list, label_list)
 
     # xiaoyu： 3 label
-    csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/infer_longterm_validation_augmentation_False_min.csv"]
-    color_list =  ["r", "g", "b"]
-    linestyle_list =  ["-", "-", "-"]
-    label_list = ['_silence_', '_unknown_', 'xiaorui']
-    show_roc_per_class(csv_list, color_list, linestyle_list, label_list)
+    # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/infer_longterm_validation_augmentation_False_min.csv"]
+    # color_list =  ["r", "g", "b"]
+    # linestyle_list =  ["-", "-", "-"]
+    # label_list = ['_silence_', '_unknown_', 'xiaorui']
+    # show_roc_per_class(csv_list, color_list, linestyle_list, label_list)
 
     # xiaoyu: 2 label 
     # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu7_0_timeshift_spec_on_res15_11192020/infer_longterm_average_validation_augmentation_False.csv"]
@@ -137,6 +139,14 @@ def main():
     #             "res8-validation","res8-narrow-validation"]
     # label_list = ['_silence_', '_unknown_', "yes", "no", "up", "down", "left", "right", "on", "off", "stop", "go"]
     # show_roc(csv_list, color_list, linestyle_list, name_list, label_list)
+    csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_1_edge-speech-nets_02042021/infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_2_tc-resnet8_02192021/infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_3_tc-resnet14_02192021/infer_longterm_validation_augmentation_False_mean.csv"]
+    color_list = ["r", "g", "b"]
+    linestyle_list = ["-", "-", "-"]
+    name_list = ["edge-speech-nets", "tc-resnet8", "tc-resnet14"]
+    label_list = ['_silence_', '_unknown_', "yes", "no", "up", "down", "left", "right", "on", "off", "stop", "go"]
+    show_roc(csv_list, color_list, linestyle_list, name_list, label_list)
 
 
 if __name__ == "__main__":
