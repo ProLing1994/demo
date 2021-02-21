@@ -10,7 +10,7 @@ sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 def main():
     batch_size = 1
     in_channels = 1
-    image_height = 101
+    image_height = 201
     image_weidth = 40
     num_classes = 3
 
@@ -20,8 +20,11 @@ def main():
     # net_name = "res15-narrow"
     # net_name = "wavenet"
     # net_name = "edge-speech-nets"
-    net_name = "tc-resnet8"
+    # net_name = "tc-resnet8"
+    # net_name = "tc-resnet8-dropout"
     # net_name = "tc-resnet14"
+    # net_name = "tc-resnet14-dropout"
+    net_name = "tc-resnet18-dropout"
 
     # load network structure
     net_module = importlib.import_module('network.' + net_name)
