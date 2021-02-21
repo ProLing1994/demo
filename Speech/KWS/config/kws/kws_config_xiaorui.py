@@ -42,6 +42,8 @@ __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_12162020_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_11_res15_narrow_kd_12162020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_12_res15_narrow_fintune_12162020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_13_res15_narrow_fintune_kd_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_2_2_tc-resnet8-dropout_02202021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_2_3_tc-resnet14-dropout_02202021/"
 
 # finetune model
 __C.general.finetune_on = False
@@ -227,7 +229,10 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'crnn-avg'
 # __C.net.model_name = 'crnn-attention'
 # __C.net.model_name = 'tc-resnet8'
-__C.net.model_name = 'tc-resnet14'
+# __C.net.model_name = 'tc-resnet14'
+# __C.net.model_name = 'tc-resnet8-dropout'
+# __C.net.model_name = 'tc-resnet14-dropout'
+__C.net.model_name = 'tc-resnet18-dropout'
 
 ######################################
 # training parameters
@@ -246,12 +251,12 @@ __C.train.num_epochs = 1
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 1024
 # __C.train.batch_size = 128
-# __C.train.batch_size = 64
+__C.train.batch_size = 64
 # __C.train.batch_size = 16
-__C.train.batch_size = 1
+# __C.train.batch_size = 1
 
 # the number of threads for IO
-# __C.train.num_threads = 64
+__C.train.num_threads = 64
 # __C.train.num_threads = 16
 __C.train.num_threads = 1
 
@@ -329,6 +334,7 @@ __C.test.method_mode = 0
 
 # detection threshold, support [0.3,0.4,0.6,0.8,0.9,0.95]
 __C.test.detection_threshold = 0.95
+# __C.test.detection_threshold = 0.8
 
 # detection number threshold, only support method_mode=1:RecognizeCommandsCountNumber
 __C.test.detection_number_threshold = 0.9   # [0.5,0.75,0.9]
