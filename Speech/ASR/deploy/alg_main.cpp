@@ -30,9 +30,11 @@ extern double decode_time;
 int main(int argc, char **argv) {
     // std::string audio_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景";
     // std::string output_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/test";
-    std::string audio_folder = "/home/huanyuan/share/audio_data/english_wav";
-    std::string output_folder = "/home/huanyuan/share/audio_data/english_wav/amba_test";
-    std::string model_path = "/home/huanyuan/share/KWS_model";
+    // std::string audio_folder = "/home/huanyuan/share/audio_data/english_wav";
+    // std::string output_folder = "/home/huanyuan/share/audio_data/english_wav/amba_test";
+    std::string audio_folder = "/home/huanyuan/share/audio_data";
+    std::string output_folder = "/home/huanyuan/share/audio_data/novt_test";
+    std::string model_path = "/home/huanyuan/share/novt/KWS_model";
 
     // init
     int ret = RMAPI_AI_AsrInit(const_cast<char *>(model_path.c_str()));
@@ -96,12 +98,12 @@ int main(int argc, char **argv) {
                 audio_data[i] = static_cast<short>(wave_data.data()[i + times * window_stride_samples]);
             }
 
-            // // check, / 32768.0
-            // std::cout << "\033[0;31m" << "[Information:] Audio Data: " << "\033[0;39m" << std::endl;
-            // for(unsigned int i = 0; i < 10; i ++) {
-            //     std::cout << audio_data[i]<< " ";
-            // }
-            // std::cout << std::endl;
+            // check, / 32768.0
+            std::cout << "\033[0;31m" << "[Information:] Audio Data: " << "\033[0;39m" << std::endl;
+            for(unsigned int i = 0; i < 10; i ++) {
+                std::cout << audio_data[i]<< " ";
+            }
+            std::cout << std::endl;
 
             // forward
             #ifdef _TESTTIME

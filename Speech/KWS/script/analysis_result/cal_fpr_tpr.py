@@ -135,7 +135,7 @@ def cal_fpr_tpr(src_csv, pst_csv, positive_label, bool_write_audio):
 
 if __name__ == "__main__":
     bool_write_audio = True
-    model_name = "kws_xiaorui_2_3_tc-resnet14-dropout_02202021"
+    model_name = "kws_xiaorui_2_5_tc-resnet14-dropout_kd_02202021"
     threshold = "0.8"
 
     # xiaoyu
@@ -149,6 +149,10 @@ if __name__ == "__main__":
                 "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaorui_12162020_validation_3600_001_threshold_{}/found_words.csv".format(model_name, "_".join(threshold.split('.'))),
                 "xiaorui",
                 bool_write_audio)
+    # cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_validation_3600_001.csv",
+    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_2_5_tc-resnet14-dropout_kd_02202021/test_straming_wav/xiaorui_12162020_validation_3600_001_thresholds/method_mode_1/threshold_0_95_0_9/found_words.csv",
+    #             "xiaorui",
+    #             bool_write_audio)
 
     # # xiaole
     # cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/xiaole_11252020_testing_3600_001.csv",

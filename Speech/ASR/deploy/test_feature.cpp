@@ -9,9 +9,10 @@
 #include "common/utils/csrc/file_system.h"
 
 int main(int argc, char **argv) {
-    std::string audio_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景";
+    // std::string audio_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景";
     // std::string audio_folder = "/home/huanyuan/share/audio_data/english_wav";
-    std::string model_path = "/home/huanyuan/share/KWS_model/";
+    std::string audio_folder = "/home/huanyuan/share/audio_data";
+    std::string model_path = "/home/huanyuan/share/novt/KWS_model";
 
     // init
     int window_len = 512;

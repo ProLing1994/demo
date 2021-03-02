@@ -119,14 +119,11 @@ def static_result(args):
 def main():
     # config file
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_6_res15_12162020/kws_config_xiaorui.py"
-    default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_10_res15_finetune_12162020/kws_config_xiaorui.py"
-    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_3_res15_12162020/kws_config_xiaorui.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_11_res15_narrow_kd_12162020/kws_config_xiaorui.py"
-    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_12_res15_narrow_fintune_12162020/kws_config_xiaorui.py"
-    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_13_res15_narrow_fintune_kd_12162020/kws_config_xiaorui.py"
+    default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_2_5_tc-resnet14-dropout_kd_02202021/kws_config_xiaorui.py"
 
-    # default_csv_path = "/mnt/huanyuan/data/speech/Recording_sample/Real_vehicle_sample/20201218/Real_vehicle_sample_20201218.csv"
-    default_csv_path = "/mnt/huanyuan/data/speech/Recording_sample/Real_vehicle_sample/20210105/Real_vehicle_sample_20210105.csv"
+    default_csv_path = "/mnt/huanyuan/data/speech/Recording_sample/Real_vehicle_sample/20201218/Real_vehicle_sample_20201218.csv"
+    # default_csv_path = "/mnt/huanyuan/data/speech/Recording_sample/Real_vehicle_sample/20210105/Real_vehicle_sample_20210105.csv"
     default_type = 'normal_driving'                 # ['normal_driving', 'idling_driving', '降噪前', '降噪后-SPD', '降噪后-GSC']
     default_bool_noise_reduction = False            # [False, True]
 
