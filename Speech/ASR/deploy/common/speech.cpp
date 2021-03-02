@@ -247,8 +247,8 @@ namespace ASR
         // feature
         m_feature->get_featuer_total_window(pdata, data_len_samples);
         cv::Mat output_feature = m_feature->mfsc_feature_int();
-        // std::cout << "[Information:] output_feature.rows: " << output_feature.rows << ", output_feature.cols: " << output_feature.cols << std::endl;
-		// ASR::show_mat_uchar(output_feature, 296, 64);
+        std::cout << "[Information:] output_feature.rows: " << output_feature.rows << ", output_feature.cols: " << output_feature.cols << std::endl;
+		ASR::show_mat_uchar(output_feature, 296, 56);
 
         #ifdef _TESTTIME
         TEST_TIME(time_end);

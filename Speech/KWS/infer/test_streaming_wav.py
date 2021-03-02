@@ -17,10 +17,10 @@ from script.analysis_result.plot_score_line import show_score_line
 from script.analysis_result.cal_fpr_tpr import cal_fpr_tpr
 
 
-def test(input_wav, args):
-# def test(in_args):
-#     input_wav = in_args[0]
-#     args = in_args[1]
+# def test(input_wav, args):
+def test(in_args):
+    input_wav = in_args[0]
+    args = in_args[1]
 
     print("Do wave:{}, begin!!!".format(input_wav))
 
@@ -195,8 +195,8 @@ def main():
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
     # xiaorui
-    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_training_60_001.wav",
-                                "/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_validation_60_001.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_training_60_001.wav",
+    #                             "/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_validation_60_001.wav"]
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_validation_3600_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
@@ -264,16 +264,24 @@ def main():
     #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_009.wav"]
     # default_input_wav_list = ["/mnt/huanyuan/data/speech/Negative_sample/CollectVoice/Jabra_510/Jabra_510_background_noise_001.wav",
     #                             "/mnt/huanyuan/data/speech/Negative_sample/CollectVoice/Jabra_510/Jabra_510_background_noise_002.wav",
-    #                             "/mnt/huanyuan/data/speech/Negative_sample/CollectVoice/Jabra_510/Jabra_510_background_noise_003.wav"]
+    #                             "/mnt/huanyuan/data/speech/Negative_sample/CollectVoice/Jabra_510/Jabra_510_background_noise_003.wav",
+    #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_004.wav",
+    #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_005.wav",
+    #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_006.wav",
+    #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_007.wav",
+    #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_008.wav",
+    #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_009.wav"]
+    default_input_wav_list = ["/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_010.wav",
+                                "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_011.wav"]
 
     # mode 1: from csv
-    default_csv_path = "/mnt/huanyuan/data/speech/Real_vehicle_sample/20201218/Real_vehicle_sample_20201218.csv"
-    default_type = 'normal_driving'                 # ['normal_driving', 'idling_driving']
-    default_bool_noise_reduction = False            # [False, True]
+    default_csv_path = "/mnt/huanyuan/data/speech/Recording_sample/Real_vehicle_sample/20201218/Real_vehicle_sample_20201218.csv"
+    default_type = 'idling_driving'                 # ['normal_driving', 'idling_driving']
+    default_bool_noise_reduction = True            # [False, True]
 
     # config file
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
-    default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py"
+    # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_2_label_xiaoyu.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py"
@@ -282,6 +290,10 @@ def main():
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaoyu.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_pretrain.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaorui.py"
+
+    # specific config file
+    default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_11_res15_narrow_kd_12162020/kws_config_xiaorui_difficult_sample_mining.py"
+    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_2_5_tc-resnet14-dropout_kd_02202021/kws_config_xiaorui.py"
 
     parser = argparse.ArgumentParser(description='Streamax KWS Testing Engine')
     parser.add_argument('--mode', type=str, default=default_mode)
@@ -293,18 +305,18 @@ def main():
     args = parser.parse_args()
 
     if str(args.mode) == "0":
-        # in_params = []
-        # for input_wav in args.input_wav_list:
-        #     in_args = [input_wav, args]
-        #     in_params.append(in_args)
-
-        # p = multiprocessing.Pool(3)
-        # out = p.map(test, in_params)
-        # p.close()
-        # p.join()
-
+        in_params = []
         for input_wav in args.input_wav_list:
-            test(input_wav, args)
+            in_args = [input_wav, args]
+            in_params.append(in_args)
+
+        p = multiprocessing.Pool(3)
+        out = p.map(test, in_params)
+        p.close()
+        p.join()
+
+        # for input_wav in args.input_wav_list:
+        #     test(input_wav, args)
     elif str(args.mode) == "1":
         dataset_pd = pd.read_csv(args.csv_path)
         dataset_pd = dataset_pd[dataset_pd["type"] == args.type]

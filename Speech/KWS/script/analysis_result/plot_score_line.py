@@ -213,7 +213,7 @@ if __name__ == "__main__":
     #                 "xiaoyu", positive_label_idx="1,2")
 
     # xiaorui
-    model_name = "kws_xiaorui_2_3_tc-resnet14-dropout_02202021"
+    model_name = "kws_xiaorui_2_5_tc-resnet14-dropout_kd_02202021"
     threshold = "0.95"
     positive_label_idx = "2"
     show_score_line("/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_training_60_001.csv",

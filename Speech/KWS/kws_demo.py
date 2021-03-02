@@ -196,8 +196,9 @@ class OnlineAudio:
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_6_res15_12162020/kws_config_xiaorui.py"                       # best 1/0.6/0.75/30/800
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_10_res15_finetune_12162020/kws_config_xiaorui.py"             # best 1/0.7/0.9/30/800
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_7_res15_narrow_12162020/kws_config_xiaorui.py"                # small 1/0.9/0.5/30/800
-        config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_11_res15_narrow_kd_12162020/kws_config_xiaorui.py"             # small best 1/0.8/0.5/30/800
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_11_res15_narrow_kd_12162020/kws_config_xiaorui.py"            # small best 1/0.8/0.5/30/800
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_2_align_funtune_res15_12082020/kws_config_align_xiaorui.py"   # 2/0.6/_/30/1500, epoch 300
+        config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_2_5_tc-resnet14-dropout_kd_02202021/kws_config_xiaorui.py"        # tc-resnet14-kd best 1/0.8/0.75/30/800
 
         # pretrain
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_12102020/kws_config_pretrain.py"                                # best 1/0.8/0.5/30/800, xiaorui\xiaoya\xiaodu\xiaoyu
@@ -283,7 +284,7 @@ class OnlineAudio:
 
                 # model infer
                 output_score = model_predict(cfg, net, input_data)
-                print(output_score)
+                # print(output_score)
 
                 # process result
                 current_time_ms = int(audio_data_offset * 1000 / sample_rate)
@@ -311,22 +312,22 @@ class OnlineAudio:
         print("[Information:] Current main-process pid is: {}".format(os.getpid()))
         print("[Information:] If you want to kill the main process and sub-process, type: kill {}".format(os.getpid()))
 
-        # 监听
-        listen_process_play = Process(target=self.listen, args=(self.event, self.audio_queue_play))
-        listen_process_play.start()
-
-        # 播放
-        play_process = Process(target=self.play, args=(self.event, self.audio_queue_play))
-        play_process.start()
-
         # # 监听
-        # # listen_process_wakeup = Process(target=self.listen_file, args=(self.event, self.audio_queue_wakeup))
-        # listen_process_wakeup = Process(target=self.listen, args=(self.event, self.audio_queue_wakeup))
-        # listen_process_wakeup.start()
+        # listen_process_play = Process(target=self.listen, args=(self.event, self.audio_queue_play))
+        # listen_process_play.start()
 
-        # # 唤醒
-        # wakeup_process = Process(target=self.wake_up, args=(self.event, self.audio_queue_wakeup))
-        # wakeup_process.start()
+        # # 播放
+        # play_process = Process(target=self.play, args=(self.event, self.audio_queue_play))
+        # play_process.start()
+
+        # 监听
+        # listen_process_wakeup = Process(target=self.listen_file, args=(self.event, self.audio_queue_wakeup))
+        listen_process_wakeup = Process(target=self.listen, args=(self.event, self.audio_queue_wakeup))
+        listen_process_wakeup.start()
+
+        # 唤醒
+        wakeup_process = Process(target=self.wake_up, args=(self.event, self.audio_queue_wakeup))
+        wakeup_process.start()
 
         # # 绘图
         # display_process = Process(target=self.display, args=(self.event, self.audio_queue_wakeup))
@@ -336,10 +337,10 @@ class OnlineAudio:
         # judge_alarm_process = Process(target=self.fit,args=(self.event, self.audio_queue_play))
         # judge_alarm_process.start()
 
-        listen_process_play.join()
-        play_process.join()
-        # listen_process_wakeup.join()
-        # wakeup_process.join()
+        # listen_process_play.join()
+        # play_process.join()
+        listen_process_wakeup.join()
+        wakeup_process.join()
         # display_process.join()
         # judge_alarm_process.join()
 

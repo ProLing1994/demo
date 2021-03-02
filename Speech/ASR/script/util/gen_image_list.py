@@ -62,14 +62,21 @@ def gen_image_list(args):
             # print(output_path)
             cv2.imwrite(output_path, feature_data)
 
-
 if __name__ == "__main__":
     # chinese:
     # default_audio_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/"
     # default_output_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/image_296_64"
-    default_audio_folder = "/home/huanyuan/share/audio_data/第三批数据/闹市场景/"
-    default_output_folder = "/home/huanyuan/share/audio_data/第三批数据/闹市场景/image_296_64"
-    default_CHW_params = "1,296,64"
+    # default_audio_folder = "/home/huanyuan/share/audio_data/第三批数据/闹市场景/"
+    # default_output_folder = "/home/huanyuan/share/audio_data/第三批数据/闹市场景/image_296_64"
+    # default_CHW_params = "1,296,64"
+
+    default_audio_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/"
+    default_output_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/image_296_56"
+    # default_audio_folder = "/home/huanyuan/share/audio_data/第三批数据/闹市场景/"
+    # default_output_folder = "/home/huanyuan/share/audio_data/第三批数据/闹市场景/image_296_56"
+    # default_audio_folder = "/home/huanyuan/share/audio_data/"
+    # default_output_folder = "/home/huanyuan/share/audio_data/image_296_56"
+    default_CHW_params = "1,296,56"
 
     # # english:
     # default_audio_folder = "/home/huanyuan/share/audio_data/english_wav/"
