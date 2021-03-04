@@ -22,8 +22,8 @@ if net_name == 'mobilenet':
     net_file = 'depoly/caffemodels/mobilenetv2/mobilenetv2.prototxt'
     caffe_model = 'depoly/caffemodels/mobilenetv2/mobilenetv2.caffemodel'
 elif net_name == 'vgg':
-    # net_file = "/home/huanyuan/share/novt/POSE_model/Convolution1.prototxt"
-    net_file = "/home/huanyuan/share/novt/POSE_model/softmax.prototxt"
+    net_file = "/home/huanyuan/share/novt/POSE_model/Convolution1.prototxt"
+    # net_file = "/home/huanyuan/share/novt/POSE_model/softmax.prototxt"
     # net_file = "/home/huanyuan/share/novt/POSE_model/deploy.prototxt"
     caffe_model = "/home/huanyuan/share/novt/POSE_model/deploy.caffemodel"
 else:
@@ -65,8 +65,8 @@ if __name__ == '__main__':
     print('caffe forward time %d', time_caffe)
 
     print('------------ Output Difference ------------')
-    # net_output = caffe_blobs["Convolution1"].data[0]
-    net_output = caffe_blobs["Softmax"].data[0]
+    net_output = caffe_blobs["Convolution1"].data[0]
+    # net_output = caffe_blobs["Softmax"].data[0] 
     print(net_output.shape)
     print(net_output)
 
