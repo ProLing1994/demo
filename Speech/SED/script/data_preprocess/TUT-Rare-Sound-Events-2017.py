@@ -35,9 +35,9 @@ def main():
         continuous_segments = []
         if 'valid_segments' in info_yaml:
             single_segments += info_yaml['valid_segments']
-        if 'single_segments' in info_yaml:
+        if 'single_segments' in info_yaml and info_yaml['single_segments']:
             single_segments += info_yaml['single_segments']
-        if 'continuous_segments' in info_yaml:
+        if 'continuous_segments' in info_yaml and info_yaml['continuous_segments']:
             continuous_segments += info_yaml['continuous_segments']
 
         audio_data = librosa.core.load(wave_path, sr=sample_rate)[0]
@@ -64,8 +64,8 @@ if __name__ == "__main__":
     parser.add_argument('--input_folder', type=str, default="/mnt/huanyuan/data/speech/sed/TUT-Rare-Sound-Events-2017/original_dataset/TUT-rare-sound-events-2017-development/data/source_data/events/")
     # parser.add_argument('--input_folder', type=str, default="/mnt/huanyuan/data/speech/sed/TUT-Rare-Sound-Events-2017/original_dataset/TUT-rare-sound-events-2017-evaluation/data/source_data/events/")
     parser.add_argument('--output_folder', type=str, default="/mnt/huanyuan/data/speech/sed/TUT-Rare-Sound-Events-2017/processed_dataset/")
-    parser.add_argument('--label', type=str, default="gunshot")
-    # parser.add_argument('--label', type=str, default="gunshot_rm")
+    # parser.add_argument('--label', type=str, default="gunshot")
+    parser.add_argument('--label', type=str, default="gunshot_rm_labeled")
     parser.add_argument('--audio_suffix', type=str, default=".wav")
     parser.add_argument('--label_suffix', type=str, default=".yaml")
     args = parser.parse_args()

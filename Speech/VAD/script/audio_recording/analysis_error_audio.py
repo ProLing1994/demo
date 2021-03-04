@@ -26,19 +26,20 @@ def main():
         if not wave_path.endswith(args.suffix):
             continue
 
-        output_path = wave_path.replace(args.record_folder, args.output_folder)
-        if os.path.exists(output_path):
-            continue
+        # output_path = wave_path.replace(args.record_folder, args.output_folder)
+        # if os.path.exists(output_path):
+        #     continue
 
         audio_list.append(wave_path)
 
+    audio_list.sort()
     # Find error audio data
     print("[Init:] Find error audio data: ")
     for idx in tqdm(range(len(audio_list))):
         wave_path = audio_list[idx]
         data = librosa.core.load(wave_path, sr=sample_rate)[0]
 
-        if data.max() * (pow(2,15)) == 16349 and data.min() * (pow(2,15)) == -16350.0:
+        if  len(data) == 0 or (data.max() * (pow(2,15)) == 16349 and data.min() * (pow(2,15)) == -16350.0) :
             output_path = wave_path.replace(args.record_folder, args.output_folder)
             output_dir = os.path.dirname(output_path)
             if not os.path.exists(output_dir):
@@ -49,6 +50,9 @@ def main():
                 os.system("cp {} {}".format(input_path, output_path))
             elif mode == 1:
                 librosa.output.write_wav(output_path, data, sr=sample_rate) 
+            elif mode == 2:
+                print(wave_path)
+                os.remove(wave_path)
             else:
                 raise Exception("[ERROR: ] Unknow mode")
 
@@ -56,7 +60,8 @@ if __name__ == "__main__":
     # mode: [0, 1]
     # 0: 拷贝原始音频
     # 1：拷贝错误音频
-    mode = 0
+    # 2: 删除错误音频
+    mode = 2
 
     parser = argparse.ArgumentParser(description='Streamax Engine')
     parser.add_argument('--record_folder', type=str, default="/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech_wav_record/")

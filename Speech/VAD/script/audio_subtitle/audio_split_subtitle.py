@@ -231,6 +231,8 @@ def audio_split_subtitle(args):
     sample_rate = 16000
     time_shift_symbol = args.time_shift.split(',')[0]
     time_shift_second = float(args.time_shift.split(',')[1])
+    # check
+    assert time_shift_symbol == '+' or time_shift_symbol == '-', "[ERROR:] time_shift: only support [+,-], but we gut {}, please check!".format(time_shift_symbol)
 
     # load srt
     print("Load srt: ")
@@ -255,6 +257,15 @@ def audio_split_subtitle(args):
         start_time = max(0, time2second(srt['start_time']) * 1000 - 200)        # - 200 ms
         end_time = min(len(audio_data) * 1000 / sample_rate, time2second(srt['end_time']) * 1000 + 200)             # + 200 ms
 
+        if time_shift_symbol == '+':
+            start_time += time_shift_second * 1000
+            end_time += time_shift_second * 1000
+        elif time_shift_symbol == '-':
+            start_time -= time_shift_second * 1000
+            end_time -= time_shift_second * 1000
+        else:
+            raise Exception("[ERROR:] Unknow time_shift_symbol, please check!")  
+
         start_samples = int(sample_rate * start_time / 1000)
         end_samples = int(sample_rate * end_time / 1000)
 
@@ -271,12 +282,12 @@ def audio_split_subtitle(args):
 
 def main():
     parser = argparse.ArgumentParser(description="Audio Split Using Subtitle")
-    parser.add_argument('--audio_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/01292021/李小龙我的兄弟/李小龙我的兄弟.wav") 
-    parser.add_argument('--subtitle_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/01292021/李小龙我的兄弟/李小龙我的兄弟.srt") 
-    parser.add_argument('--output_dir', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/01292021/李小龙我的兄弟/")
+    parser.add_argument('--audio_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/抢红/抢红.wav") 
+    parser.add_argument('--subtitle_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/抢红/抢红.srt") 
+    parser.add_argument('--output_dir', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/抢红/")
     parser.add_argument('--language', type=str, choices=["Chinese", "English"], default="Chinese")
     parser.add_argument('--file_encoding', type=str, choices=["gbk", "utf-8", "gb2312"], default="utf-8")
-    parser.add_argument('--time_shift', type=str, default="+,0.0")
+    parser.add_argument('--time_shift', type=str, default="-,0.0")
     parser.add_argument('--output_format', type=str, default="RM_MOVIE_S{:0>3d}T{:0>3d}.wav")
     parser.add_argument('--movie_id', type=int, default=1)
     parser.add_argument('--min_length_second', type=int, default=2)
