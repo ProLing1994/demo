@@ -313,6 +313,7 @@ class OnlineAudio:
         print("[Information:] If you want to kill the main process and sub-process, type: kill {}".format(os.getpid()))
 
         # # 监听
+        # # listen_process_play = Process(target=self.listen_file, args=(self.event, self.audio_queue_wakeup))
         # listen_process_play = Process(target=self.listen, args=(self.event, self.audio_queue_play))
         # listen_process_play.start()
 
