@@ -238,7 +238,7 @@ if __name__ == "__main__":
     global language
     language = 0
 
-    # # chinese:
+    # # chinese (amba):
     # # default_audio_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/"
     # # default_output_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/result_caffe"
     # default_audio_folder = "/home/huanyuan/share/audio_data/"
@@ -251,14 +251,15 @@ if __name__ == "__main__":
     # default_CHW_params = "1,296,48"
     # default_gpu = False
 
-    # chinese:
-    default_audio_folder = "/home/huanyuan/share/audio_data/"
-    default_output_folder = "/home/huanyuan/share/audio_data/result_caffe"
-    # default_model_path = "/home/huanyuan/share/novt/KWS_model/asr_mandarin_16K.caffemodel"
-    # # default_prototxt_path = "/home/huanyuan/share/novt/KWS_model/asr_mandarin_16K.prototxt"
-    # default_prototxt_path = "/home/huanyuan/share/novt/KWS_model/asr_mandarin_16K_update.prototxt"
+    # chinese (novt):
+    # default_audio_folder = "/home/huanyuan/share/audio_data/"
+    # default_output_folder = "/home/huanyuan/share/audio_data/result_caffe"
+    default_audio_folder = "/home/huanyuan/share/audio_data/第三批数据/闹市场景/"
+    default_output_folder = "/home/huanyuan/share/audio_data/第三批数据/闹市场景/result_caffe"
     default_model_path = "/home/huanyuan/share/novt/KWS_model/asr_mandarin_16K_20210302.caffemodel"
     default_prototxt_path = "/home/huanyuan/share/novt/KWS_model/asr_mandarin_16K_20210302.prototxt"
+    # default_model_path = "/home/huanyuan/share/novt/KWS_model/asr_mandarin_16K_0304.caffemodel"
+    # default_prototxt_path = "/home/huanyuan/share/novt/KWS_model/asr_mandarin_16K_0304.prototxt"
     default_bpe = "/home/huanyuan/share/novt/KWS_model/configFiles/dict_without_tone.txt"
     default_net_input_name = "blob1"
     default_net_output_name = "conv_blob24"
