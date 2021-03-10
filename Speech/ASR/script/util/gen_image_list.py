@@ -59,6 +59,7 @@ def gen_image_list(args):
             assert feature_data.max() <= 255
             assert feature_data.min() >= 0
             output_path = os.path.join(args.output_folder, wave_list[idx].split('.')[0] + '_' + str(times * window_stride_samples) + '.jpg')
+            # output_path = os.path.join(args.output_folder, wave_list[idx].split('.')[0] + '_' + str(times * window_stride_samples) + '.png')
             # print(output_path)
             cv2.imwrite(output_path, feature_data)
 
@@ -70,12 +71,12 @@ if __name__ == "__main__":
     # default_output_folder = "/home/huanyuan/share/audio_data/第三批数据/闹市场景/image_296_64"
     # default_CHW_params = "1,296,64"
 
-    default_audio_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/"
-    default_output_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/image_296_56"
+    # default_audio_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/"
+    # default_output_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/image_296_56"
     # default_audio_folder = "/home/huanyuan/share/audio_data/第三批数据/闹市场景/"
     # default_output_folder = "/home/huanyuan/share/audio_data/第三批数据/闹市场景/image_296_56"
-    # default_audio_folder = "/home/huanyuan/share/audio_data/"
-    # default_output_folder = "/home/huanyuan/share/audio_data/image_296_56"
+    default_audio_folder = "/home/huanyuan/share/audio_data/"
+    default_output_folder = "/home/huanyuan/share/audio_data/image_296_56"
     default_CHW_params = "1,296,56"
 
     # # english:

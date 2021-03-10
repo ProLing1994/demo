@@ -5,6 +5,7 @@ import argparse
 import glob
 import librosa
 import os 
+import pandas as pd
 import yaml
 
 from tqdm import tqdm
@@ -16,6 +17,7 @@ def main():
         os.makedirs(os.path.join(args.output_folder, args.label))
 
     # load audio_list 
+    file_list = []
     audio_list = []
     audio_list = glob.glob(os.path.join(args.input_folder, args.label, '*' + args.audio_suffix))
     audio_list.sort()
@@ -47,16 +49,21 @@ def main():
             single_data = audio_data[int((single_segment[0] * sample_rate)) : int((single_segment[1]) * sample_rate)]
         
             # output 
-            output_path = os.path.join(args.output_folder, args.label, "TUT2017_SED_" + args.label + "_{}_{}{:0>3d}{}".format(os.path.basename(wave_path).split('.')[0], 'S', segment_idx, args.audio_suffix))
+            output_path = os.path.join(args.output_folder, args.label, "TUT2017_SED_" + args.label + "_{}_{}_{:0>3d}{}".format(os.path.basename(wave_path).split('.')[0], 'Single', segment_idx, args.audio_suffix))
             librosa.output.write_wav(output_path, single_data, sr=sample_rate) 
+            file_list.append({"input path": wave_path, "output": output_path})
         
         for segment_idx in range(len(continuous_segments)):
             continuous_segment = continuous_segments[segment_idx]
             continuous_data = audio_data[int((continuous_segment[0] * sample_rate)) : int((continuous_segment[1]) * sample_rate)]
 
             # output
-            output_path = os.path.join(args.output_folder, args.label, "TUT2017_SED_" + args.label + "_{}_{}{:0>3d}{}".format(os.path.basename(wave_path).split('.')[0], 'C', segment_idx, args.audio_suffix))
+            output_path = os.path.join(args.output_folder, args.label, "TUT2017_SED_" + args.label + "_{}_{}_{:0>3d}{}".format(os.path.basename(wave_path).split('.')[0], 'Auto', segment_idx, args.audio_suffix))
             librosa.output.write_wav(output_path, continuous_data, sr=sample_rate) 
+            file_list.append({"input path": wave_path, "output": output_path})
+
+    file_pd = pd.DataFrame(file_list)
+    file_pd.to_csv(os.path.join(args.output_folder, args.label, args.label + '_1.csv'), index=False, encoding="utf_8_sig")
 
 
 if __name__ == "__main__":

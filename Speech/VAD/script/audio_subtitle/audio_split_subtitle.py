@@ -1,11 +1,21 @@
 import argparse
 import audioread
+import chardet
 import librosa
 import os
 import pandas as pd
 import re
 
 from tqdm import tqdm
+
+# encode_type_dict = {'UTF-8-SIG': "utf-8", 'GB2312': "gbk"}
+
+# def detect_encoding(path):
+#     with open(path, 'rb') as file:
+#         data = file.read(20000)
+#         dicts = chardet.detect(data)
+#     return dicts['encoding']
+
 
 # read file
 def read_file_gen(file_path, encoding="utf-8", to_be_split=" "):
@@ -29,6 +39,7 @@ def load_srt(args, srt_file):
     srt_list = []       # [{'idx':(), 'start_time':(), 'end_time':(), 'srt':()}]
     srt_dict = {}
     srt_idx = 1
+    # encode_type = detect_encoding(srt_file)
     for item_idx, items in read_file_gen(srt_file, encoding=args.file_encoding):
         if len(items) == 1 and (items[0] == str(srt_idx) or items[0] == '\ufeff1'):
             if srt_dict:
@@ -55,6 +66,7 @@ def load_srt(args, srt_file):
 
 
 def clean_srt_chinese(srt):
+    srt = srt.replace('　', '')
     srt = srt.replace(' ', '')
     srt = srt.replace('?', '')
     srt = srt.replace('!', '')
@@ -62,6 +74,7 @@ def clean_srt_chinese(srt):
     srt = srt.replace('.', '')
     srt = srt.replace(':', '')
     srt = srt.replace('-', '')
+    srt = srt.replace('#', '')
     srt = srt.replace('《', '')
     srt = srt.replace('》', '')
     srt = srt.replace('(', '')
@@ -72,6 +85,8 @@ def clean_srt_chinese(srt):
     srt = srt.replace('，', '')
     srt = srt.replace('、', '')
     srt = srt.replace('。', '')
+    srt = srt.replace('『', '')
+    srt = srt.replace('』', '')
     srt = srt.replace('「', '')
     srt = srt.replace('」', '')
     srt = srt.replace('？', '')
@@ -222,7 +237,7 @@ def audio_split_subtitle(args):
     assert audio_path.endswith('.wav'), "[ERROR:] Only support wav data"
 
     output_dir = os.path.join(args.output_dir, os.path.basename(audio_path).split('.')[0])
-    # assert not os.path.exists(output_dir), "[ERROR:] Please remove directory: {}, firstly".format(output_dir)
+    assert not os.path.exists(output_dir), "[ERROR:] Please remove directory: {}, firstly".format(output_dir)
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -276,20 +291,41 @@ def audio_split_subtitle(args):
         librosa.output.write_wav(output_path, audio_sample, sample_rate) 
     print("Split audio Done!")
 
-    # output srt 
-    srt_pd = pd.DataFrame(srt_list)
-    srt_pd.to_csv(os.path.join(output_dir, 'srt.csv'), index=False, encoding="utf_8_sig")
+    # output label.csv
+    label_list = []                             # [{'name':(), 'label':()}]
+    for srt_idx in range(len(srt_list)):
+        label_list.append({'name': args.output_format.format(args.movie_id, srt_list[srt_idx]['idx']), 'label':srt_list[srt_idx]['srt']})
+
+    srt_pd = pd.DataFrame(label_list)
+    srt_pd.to_csv(os.path.join(output_dir, 'label.csv'), index=False, encoding="utf_8_sig")
+
+    # output movie_id.csv
+    movie_id_path = os.path.join(args.output_dir, 'movie_id.csv')
+    movie_id_list = []                          # [{'movie':(), 'movie_id':()}]
+
+    if os.path.exists(movie_id_path):
+        movie_id_pd = pd.read_csv(movie_id_path, encoding='utf_8_sig')
+        for idx, row in movie_id_pd.iterrows(): 
+            movie_id_list.append({'movie': row['movie'], 'movie_id': row['movie_id']})
+
+    movie_id_list.append({'movie': os.path.basename(audio_path).split('.')[0], 'movie_id': args.movie_id})
+
+    movie_id_pd = pd.DataFrame(movie_id_list)
+    movie_id_pd.sort_values(by='movie_id', inplace=True)
+    assert len(list(movie_id_pd['movie_id'])) == len(list(set(list(movie_id_pd['movie_id'])))), "[ERROR:] movie_id reiterated, please check!!"
+    assert len(list(movie_id_pd['movie'])) == len(list(set(list(movie_id_pd['movie'])))), "[ERROR:] movie_id reiterated, please check!!"
+    movie_id_pd.to_csv(movie_id_path, index=False, encoding="utf_8_sig")
 
 def main():
     parser = argparse.ArgumentParser(description="Audio Split Using Subtitle")
-    parser.add_argument('--audio_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/抢红/抢红.wav") 
-    parser.add_argument('--subtitle_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/抢红/抢红.srt") 
-    parser.add_argument('--output_dir', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/抢红/")
+    parser.add_argument('--audio_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/original_dataset/诛仙/诛仙.wav") 
+    parser.add_argument('--subtitle_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/original_dataset/诛仙/诛仙.srt") 
+    parser.add_argument('--output_dir', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/result/")
     parser.add_argument('--language', type=str, choices=["Chinese", "English"], default="Chinese")
     parser.add_argument('--file_encoding', type=str, choices=["gbk", "utf-8", "gb2312"], default="utf-8")
     parser.add_argument('--time_shift', type=str, default="-,0.0")
     parser.add_argument('--output_format', type=str, default="RM_MOVIE_S{:0>3d}T{:0>3d}.wav")
-    parser.add_argument('--movie_id', type=int, default=1)
+    parser.add_argument('--movie_id', type=int, default=4)
     parser.add_argument('--min_length_second', type=int, default=2)
     parser.add_argument('--best_length_second', type=int, default=4)
     parser.add_argument('--max_length_second', type=int, default=10)

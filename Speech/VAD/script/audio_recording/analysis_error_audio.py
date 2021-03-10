@@ -61,7 +61,7 @@ if __name__ == "__main__":
     # 0: 拷贝原始音频
     # 1：拷贝错误音频
     # 2: 删除错误音频
-    mode = 2
+    mode = 1
 
     parser = argparse.ArgumentParser(description='Streamax Engine')
     parser.add_argument('--record_folder', type=str, default="/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech_wav_record/")

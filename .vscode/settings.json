@@ -84,6 +84,6 @@
         "set": "cpp",
         "string_view": "cpp"
     },
-    "python.pythonPath": "/home/huanyuan/anaconda3/envs/py35/bin/python",
+    "python.pythonPath": "/home/huanyuan/anaconda3/bin/python",
     "python.linting.enabled": false,
 }
