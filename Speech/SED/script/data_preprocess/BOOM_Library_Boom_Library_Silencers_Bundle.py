@@ -13,9 +13,10 @@ import yaml
 from tqdm import tqdm
 
 ignore_list = ['Handling', 'Loading']
-gun_types_list = ['Beretta M9', 'Colt1911', 'FNH FNP40', 'FNH FNP45', 'KelTec P318', 'S&W Model 66', 'S&W Model66', 'SKS M59', 'AK47', 'M4',
-                    'Dragunov PSL', 'GSG5', 'Mosin Nagant', 'MosinNagant', 'Ruger 1022', 'Ithica M37', 'IthicaM37', 'Maverick 88', 'Maverick88', 'Maverick 88 FM',
-                    'Maverick88FM', 'Winchester1300']
+gun_types_list = ['AR Noveske 8in', 'AR Noveske 10in', 'AR AK47', 'AR M16', 'AR FN SCAR 556', 'AR FN SCAR 762', 'AR HK G3 ', 'AR HK 416', 'AR M&P 15-22', 'AR Sig 550',
+                    'PI 1911', 'PI Glock 19', 'PI Glock 21', 'PI Glock 23', 'PI Ruger SR22', 'PI USP 9', 'PI USP 40', 'PI Walther PKK .22', 'RI AR 10 .308', 'RI Chiappa LittleBadger',
+                    'RI Deviant .300', 'RI DTA SRS .308', 'RI Summit Carbon .338', 'RI Tikka T3 Varmint', 'SG Benelli M2', 'SG Benelli Super Black Eagle', 'SG Remington 870',
+                    'SG Saiga 12', 'SMG CZ Scorpion', 'SMG HK MP5', 'AR AR15', 'AR Sig 553']
 
 def vad_save(args, wave_path, audio_dict, gun_type, file_list, status='Auto'):
     # VAD
@@ -45,6 +46,7 @@ def main():
     file_list = []
     audio_list = []
     audio_list = glob.glob(os.path.join(args.input_folder, '*/*/*' + args.audio_suffix))
+    audio_list += glob.glob(os.path.join(args.input_folder, '*/*' + args.audio_suffix))
     audio_list += glob.glob(os.path.join(args.input_folder, '*' + args.audio_suffix))
     audio_list.sort()
 
@@ -76,13 +78,13 @@ def main():
 
                     file_list = vad_save(args, wave_path, audio_dict_auto, gun_type, file_list, 'Auto')
 
-                elif 'Bursts' in wave_path or 'Double Tap' in wave_path:
+                elif 'Burst' in wave_path or  'Bursts' in wave_path or 'Double Tap' in wave_path:
                     if gun_type not in audio_dict_burst:
                         audio_dict_burst[gun_type] = 1
 
                     file_list = vad_save(args, wave_path, audio_dict_burst, gun_type, file_list, 'Burst')
 
-                elif 'Single Shots' in wave_path or 'Shot Sequence' in wave_path or 'SingleShots' in wave_path:
+                elif 'Single' in wave_path or 'Single Shots' in wave_path or 'Shot Sequence' in wave_path or 'SingleShots' in wave_path:
                     if gun_type not in audio_dict_single:
                         audio_dict_single[gun_type] = 1
 
@@ -90,6 +92,10 @@ def main():
                     
                 else:
                     print(wave_path)
+                    if gun_type not in audio_dict_single:
+                        audio_dict_single[gun_type] = 1
+
+                    file_list = vad_save(args, wave_path, audio_dict_single, gun_type, file_list, 'Single')
 
                 break
 
@@ -101,17 +107,17 @@ def main():
     
 
 if __name__ == "__main__":
-    default_input_folder = "/mnt/huanyuan/data/speech/sed/BOOM_Library/original_dataset/23_Boom_Library_Silencers_Bundle/Silencers - Construction Kits/"
+    # default_input_folder = "/mnt/huanyuan/data/speech/sed/BOOM_Library/original_dataset/23_Boom_Library_Silencers_Bundle/Silencers - Construction Kits/"
+    # default_output_folder = "/mnt/huanyuan/data/speech/sed/BOOM_Library/processed_dataset/Boom_Library_Silencers_Bundle/"
+    # default_dataset_name = "BOOMLibrary23_SED_"
+    # default_label = "gunshot"
+    # default_csv_num = 0
+
+    default_input_folder = "/mnt/huanyuan/data/speech/sed/BOOM_Library/original_dataset/23_Boom_Library_Silencers_Bundle/Silencers - Designed/"
     default_output_folder = "/mnt/huanyuan/data/speech/sed/BOOM_Library/processed_dataset/Boom_Library_Silencers_Bundle/"
     default_dataset_name = "BOOMLibrary23_SED_"
-    default_label = "gunshot"
-    default_csv_num = 0
-
-    # default_input_folder = "/mnt/huanyuan/data/speech/sed/BOOM_Library/original_dataset/11_Guns_Bundle/Guns - Designed/"
-    # default_output_folder = "/mnt/huanyuan/data/speech/sed/BOOM_Library/processed_dataset/Guns/"
-    # default_dataset_name = "BOOMLibrary11_SED_"
-    # default_label = "gunshot_designed"
-    # default_csv_num = 1
+    default_label = "gunshot_designed"
+    default_csv_num = 1
 
     parser = argparse.ArgumentParser(description='BOOM_Library Engine')
     parser.add_argument('--input_folder', type=str, default=default_input_folder)

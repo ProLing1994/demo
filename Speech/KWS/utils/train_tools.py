@@ -325,6 +325,8 @@ def save_checkpoint(net, optimizer, epoch_idx, batch_idx, cfg, config_file):
              'optimizer': optimizer.state_dict(),
              }
     torch.save(state, filename)
+    # 用于在单卡和cpu上加载模型
+    # torch.save(net.cpu().module.state_dict(), os.path.join(chk_folder, 'net_parameter.pkl'))
     shutil.copy(config_file, os.path.join(chk_folder, 'config.py'))
 
 

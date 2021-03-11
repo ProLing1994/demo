@@ -24,7 +24,8 @@ def main():
     # net_name = "tc-resnet8-dropout"
     # net_name = "tc-resnet14"
     # net_name = "tc-resnet14-dropout"
-    net_name = "tc-resnet18-dropout"
+    # net_name = "tc-resnet18-dropout"
+    net_name = "tc-resnet14-dropout-amba"
 
     # load network structure
     net_module = importlib.import_module('network.' + net_name)

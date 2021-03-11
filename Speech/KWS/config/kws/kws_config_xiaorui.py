@@ -26,10 +26,10 @@ __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/exper
 __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.3_12162020/background_noise_files.csv"
 
 # test after save pytorch model
-__C.general.is_test = True
+__C.general.is_test = False
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_12162020_test"
+__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_12162020_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12082020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_1_finetune_res15_12082020/"
@@ -45,7 +45,7 @@ __C.general.is_test = True
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_2_2_tc-resnet8-dropout_02202021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_2_3_tc-resnet14-dropout_02202021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_2_4_tc-resnet18-dropout_02202021/"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_2_5_tc-resnet14-dropout_kd_02202021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_2_5_tc-resnet14-dropout_kd_02202021/"
 
 # finetune model
 __C.general.finetune_on = False
@@ -224,6 +224,7 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'cnn-tpool2'
 # __C.net.model_name = 'res15'
 # __C.net.model_name = 'res15-narrow'
+__C.net.model_name = 'res15-narrow-amba'
 # __C.net.model_name = 'res8'
 # __C.net.model_name = 'res8-narrow'
 # __C.net.model_name = 'lstm-avg'
@@ -233,7 +234,8 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'tc-resnet8'
 # __C.net.model_name = 'tc-resnet14'
 # __C.net.model_name = 'tc-resnet8-dropout'
-__C.net.model_name = 'tc-resnet14-dropout'
+# __C.net.model_name = 'tc-resnet14-dropout'
+# __C.net.model_name = 'tc-resnet14-dropout-amba'
 # __C.net.model_name = 'tc-resnet18-dropout'
 
 ######################################
@@ -247,7 +249,7 @@ __C.train = {}
 # __C.train.num_epochs = 8000
 # __C.train.num_epochs = 4000
 # __C.train.num_epochs = 100
-__C.train.num_epochs = 1
+__C.train.num_epochs = 2
 
 # the number of samples in a batch
 # __C.train.batch_size = 2048
@@ -266,8 +268,8 @@ __C.train.num_threads = 1
 __C.train.plot_snapshot = 5
 
 # the number of epochs to save model
-__C.train.save_epochs = 25
-# __C.train.save_epochs = 1
+# __C.train.save_epochs = 25
+__C.train.save_epochs = 1
 
 
 ######################################
