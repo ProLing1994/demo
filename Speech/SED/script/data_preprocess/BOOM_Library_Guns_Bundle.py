@@ -101,17 +101,17 @@ def main():
     
 
 if __name__ == "__main__":
-    default_input_folder = "/mnt/huanyuan/data/speech/sed/BOOM_Library/original_dataset/11_Guns_Bundle/Guns - Construction Kit/"
-    default_output_folder = "/mnt/huanyuan/data/speech/sed/BOOM_Library/processed_dataset/Guns/"
-    default_dataset_name = "BOOMLibrary11_SED_"
-    default_label = "gunshot"
-    default_csv_num = 0
-
-    # default_input_folder = "/mnt/huanyuan/data/speech/sed/BOOM_Library/original_dataset/11_Guns_Bundle/Guns - Designed/"
+    # default_input_folder = "/mnt/huanyuan/data/speech/sed/BOOM_Library/original_dataset/11_Guns_Bundle/Guns - Construction Kit/"
     # default_output_folder = "/mnt/huanyuan/data/speech/sed/BOOM_Library/processed_dataset/Guns/"
     # default_dataset_name = "BOOMLibrary11_SED_"
-    # default_label = "gunshot_designed"
-    # default_csv_num = 1
+    # default_label = "gunshot"
+    # default_csv_num = 0
+
+    default_input_folder = "/mnt/huanyuan/data/speech/sed/BOOM_Library/original_dataset/11_Guns_Bundle/Guns - Designed/"
+    default_output_folder = "/mnt/huanyuan/data/speech/sed/BOOM_Library/processed_dataset/Guns/"
+    default_dataset_name = "BOOMLibrary11_SED_"
+    default_label = "gunshot_designed"
+    default_csv_num = 1
 
     parser = argparse.ArgumentParser(description='BOOM_Library Engine')
     parser.add_argument('--input_folder', type=str, default=default_input_folder)

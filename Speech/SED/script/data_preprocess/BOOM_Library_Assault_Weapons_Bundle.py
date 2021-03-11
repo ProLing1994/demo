@@ -13,9 +13,9 @@ import yaml
 from tqdm import tqdm
 
 ignore_list = ['Trigger IR']
-gun_types_list = ['AK 47', 'AK 74', 'F2000', 'FAL 5042', 'FAL 50-42', 'FAL 50-62', 'HK53', 'HK416', 'M16 16in', 'M16 GAU5A', 'M16A2', 'SIG 552', 
-                    'Grenade Launcher', 'MG42', 'MP5', 'Steyr Aug', 'Uzi 9mm', 'Uzi 45', 'L96A1', 'M14', 'M24E1', 'M82A1', 'Model 700 20in',
-                    'Model 700P 338']
+gun_types_list = ['AR AK 74', 'AR AK 47', 'AR FN F2000', 'AR FN FAL 5042', 'AR FN FAL 5062', 'AR HK53', 'AR HK416', 'AR M16 16in', 'AR M16A2', 'AR SIG 552', 'Grenade Launcher', 'MG MG42', 
+                    'PI AK 47', 'SMG HK MP5', 'SMG Steyr Aug', 'SMG Uzi 9mm', 'SMG Uzi 45', 'SR L96A1', 'SR M14',  'SR M24E1', 'SR M82A1', 'SR Model 700 20in', 'AR FN FAL 50-42',
+                    ' AR M16 GAU5Ain', 'AR M16 GAU5A', 'SR Model 700P 338', 'AR FN FAL 50-62']
 
 
 def vad_save(args, wave_path, audio_dict, gun_type, file_list, status='Auto'):

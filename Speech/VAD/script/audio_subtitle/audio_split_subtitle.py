@@ -237,10 +237,11 @@ def audio_split_subtitle(args):
     assert audio_path.endswith('.wav'), "[ERROR:] Only support wav data"
 
     output_dir = os.path.join(args.output_dir, os.path.basename(audio_path).split('.')[0])
-    assert not os.path.exists(output_dir), "[ERROR:] Please remove directory: {}, firstly".format(output_dir)
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
+
+    assert len(os.listdir(output_dir)) == 0, "[ERROR:] Please remove directory: {}, firstly".format(output_dir)
 
     # init
     sample_rate = 16000

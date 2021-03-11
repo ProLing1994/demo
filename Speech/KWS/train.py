@@ -92,7 +92,7 @@ def train(config_file, training_mode):
         last_save_epoch, start_batch = load_checkpoint(cfg.general.resume_epoch, net,
                                                         cfg.general.save_dir, 
                                                         optimizer=optimizer)
-        start_epoch = last_save_epochyes
+        start_epoch = last_save_epoch
     else:
         start_epoch, last_save_epoch, start_batch = 0, 0, 0
 
@@ -122,6 +122,10 @@ def train(config_file, training_mode):
     data_iter = iter(train_dataloader)
     batch_idx = start_batch
 
+    # # save model 
+    # os.makedirs('/mnt/huanyuan/model/kws_xiaorui_12162020_test/checkpoints/chk_1/')
+    # torch.save(net.cpu().module.state_dict(), '/mnt/huanyuan/model/kws_xiaorui_12162020_test/checkpoints/chk_1/net_parameter.pth')
+
     # loop over batches
     for i in range(batch_number):
 
@@ -140,6 +144,7 @@ def train(config_file, training_mode):
                 cfg, "training", epoch_idx, inputs, labels, indexs)
 
         inputs, labels = inputs.cuda(), labels.cuda()
+
         scores = net(inputs)
         loss = loss_func(scores, labels)
         if cfg.knowledge_distillation.on:
