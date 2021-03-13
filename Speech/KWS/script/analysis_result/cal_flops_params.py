@@ -18,6 +18,7 @@ def main():
     # net_name = "crnn-avg"
     # net_name = "res15"
     # net_name = "res15-narrow"
+    # net_name = "res15-narrow-amba"
     # net_name = "wavenet"
     # net_name = "edge-speech-nets"
     # net_name = "tc-resnet8"
@@ -25,7 +26,7 @@ def main():
     # net_name = "tc-resnet14"
     # net_name = "tc-resnet14-dropout"
     # net_name = "tc-resnet18-dropout"
-    net_name = "tc-resnet14-dropout-amba"
+    net_name = "tc-resnet14-amba"
 
     # load network structure
     net_module = importlib.import_module('network.' + net_name)

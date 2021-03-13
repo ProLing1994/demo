@@ -4,18 +4,27 @@ import os
 import sys
 import time
 
-caffe_root = "/home/huanyuan/code/caffe/"
+caffe_root = "/home/huanyuan/code/caffe_ssd/"
 sys.path.insert(0, caffe_root + 'python')
 sys.path.append('./')
 import caffe
 
+# res15_narrow_amba
+# caffe_prototxt = "/mnt/huanyuan/model/audio_model/kws_xiaorui_res15_narrow/res15_narrow_amba_03112011.prototxt"
+# caffe_model = "/mnt/huanyuan/model/audio_model/kws_xiaorui_res15_narrow/res15_narrow_amba_03112011.caffemodel"
+# model_output = "fc_blob1"
+# image_transpose = [0, 1, 2, 3]
+# model_input_size = [1, 1, 201, 40]
 
-net_file = "/mnt/huanyuan/model/audio_model/kws_xiaorui_res15_narrow/res15_narrow_amba_03112011.prototxt"
-caffe_model = "/mnt/huanyuan/model/audio_model/kws_xiaorui_res15_narrow/res15_narrow_amba_03112011.caffemodel"
+# tc_resnet14_amba
+caffe_prototxt = "/mnt/huanyuan/model/audio_model/kws_xiaorui_tc_resnet14/tc_resnet14_amba_031120221.prototxt"
+caffe_model = "/mnt/huanyuan/model/audio_model/kws_xiaorui_tc_resnet14/tc_resnet14_amba_031120221.caffemodel"
+model_output = "conv_blob23"
+image_transpose = [0, 1, 3, 2]
+model_input_size = [1, 1, 40, 201]
 
-net = caffe.Net(net_file, caffe_model, caffe.TEST)
-size = (201, 40)
-
+net = caffe.Net(caffe_prototxt, caffe_model, caffe.TEST)
+image_size = [1, 1, 201, 40]
 
 def forward_caffe(protofile, weightfile, image):
 
@@ -24,7 +33,7 @@ def forward_caffe(protofile, weightfile, image):
     caffe.set_mode_cpu()
 
     net = caffe.Net(protofile, weightfile, caffe.TEST)
-    net.blobs['data'].reshape(1, 1, size[0], size[1])
+    net.blobs['data'].reshape(*model_input_size)
     net.blobs['data'].data[...] = image
     t0 = time.time()
     output = net.forward()
@@ -33,16 +42,14 @@ def forward_caffe(protofile, weightfile, image):
 
 
 if __name__ == '__main__':
-    img = np.ones([1, 1, size[0], size[1]], dtype=np.float32)
+    img = np.ones(image_size, dtype=np.float32)
+    img = np.transpose(img, axes=image_transpose)
 
-    time_caffe, caffe_blobs, caffe_params = forward_caffe(net_file, caffe_model, img)
+    time_caffe, caffe_blobs, caffe_params = forward_caffe(caffe_prototxt, caffe_model, img)
 
     print('caffe forward time %d', time_caffe)
 
     print('------------ Output Difference ------------')
-    # net_output = caffe_blobs["add_blob6"].data[0]
-    # net_output = caffe_blobs["relu_blob14"].data[0]
-    # net_output = caffe_blobs["batch_norm_blob13"].data[0]
-    net_output = caffe_blobs["fc_blob1"].data[0]
+    net_output = caffe_blobs[model_output].data[0]
     print(net_output.shape)
     print(net_output)
