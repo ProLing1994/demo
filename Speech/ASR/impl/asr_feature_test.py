@@ -76,8 +76,8 @@ if __name__ == "__main__":
     # default_audio_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/"
     # default_audio_folder = "/home/huanyuan/share/audio_data/第三批数据/闹市场景/"
     default_audio_folder = "/home/huanyuan/share/audio_data/"
-    # default_CHW_params = "1,296,48"
-    default_CHW_params = "1,196,64"
+    default_CHW_params = "1,296,48"
+    # default_CHW_params = "1,196,64"
 
     # # english:
     # default_audio_folder = "/home/huanyuan/share/audio_data/english_wav/"
