@@ -30,6 +30,7 @@ def test(cfg, net, loss_func, epoch_idx, batch_idx, logger, test_data_loader, mo
     for _, (x, label, index) in tqdm(enumerate(test_data_loader)):
         x, label = x.cuda(), label.cuda()
         score = net(x)
+        score = score.view(score.size()[0], score.size()[1])
         loss = loss_func(score, label)
 
         scores.append(torch.max(score, 1)[1].cpu().data.numpy())
@@ -146,6 +147,7 @@ def train(config_file, training_mode):
         inputs, labels = inputs.cuda(), labels.cuda()
 
         scores = net(inputs)
+        scores = scores.view(scores.size()[0], scores.size()[1])
         loss = loss_func(scores, labels)
         if cfg.knowledge_distillation.on:
             teacher_model.eval()

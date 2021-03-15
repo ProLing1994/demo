@@ -87,7 +87,10 @@ class SpeechDataset(Dataset):
         self.audio_processor = AudioPreprocessor(sr=self.sample_rate,
                                                  n_dct_filters=self.feature_bin_count,
                                                  win_length=self.window_size_samples,
-                                                 hop_length=self.window_stride_samples)
+                                                 hop_length=self.window_stride_samples,
+                                                 data_len_samples = self.desired_samples,
+                                                 winlen=self.window_size_ms / 1000, 
+                                                 winstep=self.window_stride_ms / 1000)
 
         self.save_audio_inputs_bool = cfg.debug.save_inputs
         self.save_audio_inputs_dir = cfg.general.save_dir
@@ -110,7 +113,7 @@ class SpeechDataset(Dataset):
     def audio_preprocess(self, data):
         # check
         assert self.audio_preprocess_type in [
-            "mfcc", "pcen", "fbank"], "[ERROR:] Audio preprocess type is wronge, please check"
+            "mfcc", "pcen", "fbank", "fbank_cpu"], "[ERROR:] Audio preprocess type is wronge, please check"
 
         # preprocess
         if self.audio_preprocess_type == "mfcc":
@@ -119,6 +122,8 @@ class SpeechDataset(Dataset):
             audio_data = self.audio_processor.compute_pcen(data)
         elif self.audio_preprocess_type == "fbank":
             audio_data = self.audio_processor.compute_fbanks(data)
+        elif self.audio_preprocess_type == "fbank_cpu":
+            audio_data = self.audio_processor.compute_fbanks_cpu(data)
         return audio_data
 
     def dataset_add_noise(self, data, bool_silence_label=False):
@@ -250,11 +255,11 @@ class SpeechDataset(Dataset):
         # print('Audio preprocess Time: {}'.format((time.time() - begin_t) * 1.0))
 
         # data augmentation
-        if self.augmentation_spec_on:
+        if self.augmentation_on and self.augmentation_spec_on:
             data = self.dataset_augmentation_spectrum(data)
 
         # To tensor
-        data_tensor = torch.from_numpy(data.reshape(1, -1, 40))
+        data_tensor = torch.from_numpy(np.expand_dims(data, axis=0))
         data_tensor = data_tensor.float()
         label_tensor = torch.tensor(audio_label_idx)
 

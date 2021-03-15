@@ -384,7 +384,7 @@ def multiprocessing_save(args):
     out_folder = args[4]
     bth_idx = args[5]
 
-    image_idx = images[bth_idx].numpy().reshape((-1, 40))
+    image_idx = images[bth_idx].numpy().reshape((-1, images[bth_idx].numpy().shape[-1]))
     label_idx = str(labels[bth_idx].numpy())
     index_idx = int(indexs[bth_idx])
 

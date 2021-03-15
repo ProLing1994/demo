@@ -8,6 +8,8 @@ import sys
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/ASR')
 from impl.asr_data_loader_cimpl import WaveLoader
 from impl.asr_feature_cimpl import Feature
+# from impl.asr_data_loader_pyimpl import WaveLoader
+# from impl.asr_feature_pyimpl import Feature
 from impl.asr_decode_cimpl import Decode
 
 caffe_root = '/home/huanyuan/code/caffe/'
@@ -115,6 +117,8 @@ def decode_sliding_window(args, wave_data, window_size_samples, window_stride_sa
         print("[Information:] Wave start time: ", times * window_stride_samples)
 
         audio_data = wave_data[times * int(window_stride_samples): times * int(window_stride_samples) + int(window_size_samples)]
+        print(audio_data.shape)
+        print(audio_data[:10])
 
         # cal feature
         # feature = Feature()
@@ -238,33 +242,33 @@ if __name__ == "__main__":
     global language
     language = 0
 
-    # # chinese (amba):
-    # # default_audio_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/"
-    # # default_output_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/result_caffe"
-    # default_audio_folder = "/home/huanyuan/share/audio_data/"
-    # default_output_folder = "/home/huanyuan/share/audio_data/result_caffe"
-    # default_model_path = "/home/huanyuan/share/amba/KWS_model/mandarin_asr_nofc_16K.caffemodel"
-    # default_prototxt_path = "/home/huanyuan/share/amba/KWS_model/mandarin_asr_nofc_16K.prototxt"
-    # default_bpe = "/home/huanyuan/share/amba/KWS_model/configFiles/dict_without_tone.txt"
-    # default_net_input_name = "data"
-    # default_net_output_name = "conv7"
-    # default_CHW_params = "1,296,48"
-    # default_gpu = False
-
-    # chinese (novt):
-    # default_audio_folder = "/home/huanyuan/share/audio_data/"
-    # default_output_folder = "/home/huanyuan/share/audio_data/result_caffe"
-    default_audio_folder = "/home/huanyuan/share/audio_data/第三批数据/闹市场景/"
-    default_output_folder = "/home/huanyuan/share/audio_data/第三批数据/闹市场景/result_caffe"
-    default_model_path = "/home/huanyuan/share/novt/KWS_model/asr_mandarin_16K_20210302.caffemodel"
-    default_prototxt_path = "/home/huanyuan/share/novt/KWS_model/asr_mandarin_16K_20210302.prototxt"
-    # default_model_path = "/home/huanyuan/share/novt/KWS_model/asr_mandarin_16K_0304.caffemodel"
-    # default_prototxt_path = "/home/huanyuan/share/novt/KWS_model/asr_mandarin_16K_0304.prototxt"
-    default_bpe = "/home/huanyuan/share/novt/KWS_model/configFiles/dict_without_tone.txt"
-    default_net_input_name = "blob1"
-    default_net_output_name = "conv_blob24"
-    default_CHW_params = "1,296,56"
+    # chinese (amba):
+    # default_audio_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/"
+    # default_output_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/result_caffe"
+    default_audio_folder = "/home/huanyuan/share/audio_data/"
+    default_output_folder = "/home/huanyuan/share/audio_data/result_caffe"
+    default_model_path = "/home/huanyuan/share/amba/KWS_model/mandarin_asr_nofc_16K.caffemodel"
+    default_prototxt_path = "/home/huanyuan/share/amba/KWS_model/mandarin_asr_nofc_16K.prototxt"
+    default_bpe = "/home/huanyuan/share/amba/KWS_model/configFiles/dict_without_tone.txt"
+    default_net_input_name = "data"
+    default_net_output_name = "conv7"
+    default_CHW_params = "1,296,48"
     default_gpu = False
+
+    # # chinese (novt):
+    # # default_audio_folder = "/home/huanyuan/share/audio_data/"
+    # # default_output_folder = "/home/huanyuan/share/audio_data/result_caffe"
+    # default_audio_folder = "/home/huanyuan/share/audio_data/第三批数据/闹市场景/"
+    # default_output_folder = "/home/huanyuan/share/audio_data/第三批数据/闹市场景/result_caffe"
+    # default_model_path = "/home/huanyuan/share/novt/KWS_model/asr_mandarin_16K_20210302.caffemodel"
+    # default_prototxt_path = "/home/huanyuan/share/novt/KWS_model/asr_mandarin_16K_20210302.prototxt"
+    # # default_model_path = "/home/huanyuan/share/novt/KWS_model/asr_mandarin_16K_0304.caffemodel"
+    # # default_prototxt_path = "/home/huanyuan/share/novt/KWS_model/asr_mandarin_16K_0304.prototxt"
+    # default_bpe = "/home/huanyuan/share/novt/KWS_model/configFiles/dict_without_tone.txt"
+    # default_net_input_name = "blob1"
+    # default_net_output_name = "conv_blob24"
+    # default_CHW_params = "1,296,56"
+    # default_gpu = False
 
     # # english:
     # default_audio_folder = "/home/huanyuan/share/audio_data/english_wav/"

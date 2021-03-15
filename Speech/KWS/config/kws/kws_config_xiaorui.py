@@ -112,21 +112,25 @@ __C.dataset.sample_rate = 16000
 __C.dataset.clip_duration_ms = 2000
 
 # Duration of frequency analysis window
-__C.dataset.window_size_ms = 30.0
+# __C.dataset.window_size_ms = 30.0
+__C.dataset.window_size_ms = 32.0
 
 # How far to move in time between frequency windows
 __C.dataset.window_stride_ms = 10.0
 
-# How the spectrogram is processed to produce features, support ["mfcc", "pcen", "fbank"]
-__C.dataset.preprocess = "fbank"
+# How the spectrogram is processed to produce features, support ["mfcc", "pcen", "fbank", "fbank"]
+# __C.dataset.preprocess = "fbank"
 # __C.dataset.preprocess = "pcen"
 # __C.dataset.preprocess = "mfcc"
+__C.dataset.preprocess = "fbank_cpu"
 
 # How many bins to use for the MFCC fingerprint
-__C.dataset.feature_bin_count = 40
+# __C.dataset.feature_bin_count = 40
+__C.dataset.feature_bin_count = 64
 
 # input size of training data (w, h), unit: voxel
-__C.dataset.data_size = [40, 201]
+# __C.dataset.data_size = [40, 201]
+__C.dataset.data_size = [64, 196]
 
 
 ##################################
@@ -225,7 +229,7 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'res15'
 # __C.net.model_name = 'res15-narrow'
 # __C.net.model_name = 'res15-narrow-amba'
-__C.net.model_name = 'res15-narrow-novt'
+# __C.net.model_name = 'res15-narrow-novt'
 # __C.net.model_name = 'res8'
 # __C.net.model_name = 'res8-narrow'
 # __C.net.model_name = 'lstm-avg'
@@ -234,7 +238,7 @@ __C.net.model_name = 'res15-narrow-novt'
 # __C.net.model_name = 'crnn-attention'
 # __C.net.model_name = 'tc-resnet8'
 # __C.net.model_name = 'tc-resnet14'
-# __C.net.model_name = 'tc-resnet14-amba'
+__C.net.model_name = 'tc-resnet14-amba'
 # __C.net.model_name = 'tc-resnet8-dropout'
 # __C.net.model_name = 'tc-resnet14-dropout'
 # __C.net.model_name = 'tc-resnet18-dropout'
@@ -250,15 +254,15 @@ __C.train = {}
 # __C.train.num_epochs = 8000
 # __C.train.num_epochs = 4000
 # __C.train.num_epochs = 100
-__C.train.num_epochs = 2
+__C.train.num_epochs = 1
 
 # the number of samples in a batch
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 1024
 # __C.train.batch_size = 128
-# __C.train.batch_size = 64
+__C.train.batch_size = 64
 # __C.train.batch_size = 16
-__C.train.batch_size = 1
+# __C.train.batch_size = 1
 
 # the number of threads for IO
 # __C.train.num_threads = 64
@@ -314,8 +318,8 @@ __C.train.betas = (0.9, 0.999)
 __C.debug = {}
 
 # whether to save input images
-# __C.debug.save_inputs = True
-__C.debug.save_inputs = False
+__C.debug.save_inputs = True
+# __C.debug.save_inputs = False
 
 # the number of processing for save input images
 __C.debug.num_processing = 64

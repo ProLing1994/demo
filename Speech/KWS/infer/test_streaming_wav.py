@@ -270,9 +270,16 @@ def main():
     #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_006.wav",
     #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_007.wav",
     #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_008.wav",
-    #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_009.wav"]
-    default_input_wav_list = ["/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_010.wav",
-                                "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_011.wav"]
+    #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_009.wav",
+    #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_010.wav",
+    #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_011.wav"]
+    default_input_wav_list = ["/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_012.wav",
+                                "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_013.wav",
+                                "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_014.wav",
+                                "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_015.wav",
+                                "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_016.wav",
+                                "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_017.wav",
+                                "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_018.wav"]
 
     # mode 1: from csv
     default_csv_path = "/mnt/huanyuan/data/speech/Recording_sample/Real_vehicle_sample/20201218/Real_vehicle_sample_20201218.csv"
