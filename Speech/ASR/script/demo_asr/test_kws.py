@@ -112,10 +112,6 @@ def test_dir(torch_model=None):
         sum+=len(kws_listall)
         print('kws', pos/sum,pos,sum)
 
-
-
-
-
 if __name__ == '__main__':
     # print('This is main... ')
     # with open('./dataloader/data/english_bpe.txt','r') as dict_file:

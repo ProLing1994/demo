@@ -145,10 +145,12 @@ def audio_preprocess(cfg, data):
     audio_processor = AudioPreprocessor(sr=sample_rate, 
                                         n_dct_filters=feature_bin_count, 
                                         win_length =window_size_samples, 
-                                        hop_length=window_stride_samples)
-
+                                        hop_length=window_stride_samples,
+                                        data_len_samples = desired_samples,
+                                        winlen=window_size_ms / 1000, 
+                                        winstep=window_stride_ms / 1000)
     # check 
-    assert audio_preprocess_type in ["mfcc", "pcen", "fbank"], "[ERROR:] Audio preprocess type is wronge, please check"
+    assert audio_preprocess_type in ["mfcc", "pcen", "fbank", 'fbank_cpu'], "[ERROR:] Audio preprocess type is wronge, please check"
 
     # preprocess
     if audio_preprocess_type == "mfcc":
@@ -157,6 +159,8 @@ def audio_preprocess(cfg, data):
       audio_data = audio_processor.compute_pcen(data)
     elif audio_preprocess_type == "fbank":
       audio_data = audio_processor.compute_fbanks(data)
+    elif audio_preprocess_type == "fbank_cpu":
+      audio_data = audio_processor.compute_fbanks_cpu(data)
     return audio_data 
 
 
@@ -177,7 +181,7 @@ def model_predict(cfg, model, data):
     data = audio_preprocess(cfg, data)
 
     # to tensor
-    data_tensor = torch.from_numpy(data.reshape(1, -1, 40))
+    data_tensor = torch.from_numpy(np.expand_dims(data, axis=0))
     data_tensor = data_tensor.float()
 
     # check tensor

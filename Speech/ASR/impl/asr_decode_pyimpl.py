@@ -1,5 +1,9 @@
 import numpy as np
 
+kws_list = [['start', 'record'], ['stop', 'record'], ['mute', 'audio'], ['unmute', 'audio'], 
+            ['shot', 'fire'], ['freeze'], ['drop', 'gun'], ['keep', 'hand'], ['put', 'hand'],['down', 'ground']]
+
+control_command_list = [['start', 'record'], ['stop', 'record'], ['mute', 'audio'], ['unmute', 'audio']]
 
 def edit_distance_symbol(word1, word2):
     word1 = "".join(word1.strip().split(' '))
@@ -40,7 +44,7 @@ def edit_distance_pinyin(sentence1, sentence2):
 class Decode(object):
     """ decode python wrapper """ 
     def __init__(self):
-        pass
+        self.asr_symbol_list = []
 
     def __del__(self):
         pass
@@ -54,7 +58,28 @@ class Decode(object):
     def result_id_to_numpy(self):
         pass
 
-    def match_kws_english(self, string_list, kws_list):
+    def init_ast_symbol_list(self, asr_bpe_path):
+        with open(asr_bpe_path, "r") as f :
+            lines = f.readlines()       
+            for line in lines:          
+                self.asr_symbol_list.append(line.strip())
+
+    def output_symbol_english(self, result_id):
+        output_symbol = ""
+        for idx in range(len(result_id)):
+            symbol = self.asr_symbol_list[result_id[idx]] 
+
+            if symbol[0] == '_':
+                if idx != 0:
+                    output_symbol += " "
+                output_symbol += symbol[1:]
+            else:
+                output_symbol += symbol
+        if len(result_id):
+            output_symbol += " "
+        return output_symbol
+
+    def match_kws_english(self, string_list):
         # init 
         match_list = []
         output_list = []
@@ -99,3 +124,15 @@ class Decode(object):
                     break
 
         return output_list
+
+    def match_kws_english_control_command(self, string_list):
+        # init 
+        output_control_command_list = []
+        output_not_control_command_list = []
+
+        for idx in range(len(string_list)):
+            if string_list[idx] in control_command_list:
+                output_control_command_list.append(string_list[idx])
+            else:
+                output_not_control_command_list.append(string_list[idx])
+        return output_control_command_list, output_not_control_command_list

@@ -4,7 +4,7 @@ import pandas as pd
 import sys
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/ASR')
-from impl.asr_decode_pympl import edit_distance_symbol, edit_distance_pinyin
+from impl.asr_decode_pyimpl import edit_distance_symbol, edit_distance_pinyin
 
 def clean_tone(srt):
     srt = srt.replace('1', '')

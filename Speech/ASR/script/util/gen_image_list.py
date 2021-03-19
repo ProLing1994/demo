@@ -14,8 +14,10 @@ from impl.asr_decode_cimpl import Decode
 def gen_image_list(args):
     # init 
     sample_rate = 16000
-    window_size_ms = 3000
-    window_stride_ms = 3000
+    # window_size_ms = 3000
+    # window_stride_ms = 3000
+    window_size_ms = 2000
+    window_stride_ms = 2000
     window_size_samples = int(sample_rate * window_size_ms / 1000)
     window_stride_samples = int(sample_rate * window_stride_ms / 1000)
 
@@ -50,7 +52,7 @@ def gen_image_list(args):
             feature = Feature(window_size_samples, int(args.CHW_params.split(",")[2]))
             feature.get_mel_int_feature(audio_data, len(audio_data))
             feature_data = feature.copy_mfsc_feature_int_to()
-            # print(np.expand_dims(feature_data, axis=0).shape)
+            print(np.expand_dims(feature_data, axis=0).shape)
             # print(feature_data)
             # print(feature_data.sum())
 
@@ -75,9 +77,15 @@ if __name__ == "__main__":
     # default_output_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/image_296_56"
     # default_audio_folder = "/home/huanyuan/share/audio_data/第三批数据/闹市场景/"
     # default_output_folder = "/home/huanyuan/share/audio_data/第三批数据/闹市场景/image_296_56"
-    default_audio_folder = "/home/huanyuan/share/audio_data/"
-    default_output_folder = "/home/huanyuan/share/audio_data/image_296_56"
-    default_CHW_params = "1,296,56"
+    # default_audio_folder = "/home/huanyuan/share/audio_data/"
+    # default_output_folder = "/home/huanyuan/share/audio_data/image_296_56"
+    # default_CHW_params = "1,296,56"
+
+    # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/xiaorui/"
+    default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/xiaorui_long/"
+    # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/other/"
+    default_output_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/image_196_64"
+    default_CHW_params = "1,196,64"
 
     # # english:
     # default_audio_folder = "/home/huanyuan/share/audio_data/english_wav/"
