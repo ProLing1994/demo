@@ -18,7 +18,7 @@ def main():
 
     for idx in range(len(file_list)):
         file_path = file_list[idx]
-        os.system("python /home/huanyuan/code/demo/Speech/VAD/script/audio_split_rename/audio_split.py --audio_path {} --output_dir {} --speaker {} --idx {}".format(
+        os.system("python/home/huanyuan/code/demo/Speech/VAD/script/audio_split_rename/audio_split.py --audio_path {} --output_dir {} --speaker {} --idx {}".format(
                     file_path, args.output_dir, speaker, args.idx))
         speaker += 1;
     

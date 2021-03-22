@@ -28,3 +28,6 @@ bin/
 
 # tar.gz
 *.tar.gz
+
+#.caffemodel
+*.caffemodel
