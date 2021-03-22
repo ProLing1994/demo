@@ -209,11 +209,12 @@ def preload_augumentation_audio(args):
 
 def main():
     parser = argparse.ArgumentParser(description='Streamax KWS Data Split Engine')
-    parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_speech.py", help='config file')
+    # parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_speech.py", help='config file')
     # parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
     # parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_2_label_xiaoyu.py", help='config file')
     # parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py", help='config file')
     # parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py", help='config file')
+    parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py", help='config file')
     parser.add_argument('-m', '--mode', type=str, default="training,validation,testing")
     args = parser.parse_args()
 

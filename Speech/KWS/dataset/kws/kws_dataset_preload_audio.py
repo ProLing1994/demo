@@ -104,7 +104,10 @@ class SpeechDataset(Dataset):
             self.save_audio_inputs_dir, self.mode_type + '_audio', audio_label)
 
         if not os.path.isdir(out_folder):
-            os.makedirs(out_folder)
+            try:
+                os.makedirs(out_folder)
+            except:
+                pass
 
         filename = filename.split('.')[0] + '.wav'
         librosa.output.write_wav(os.path.join(

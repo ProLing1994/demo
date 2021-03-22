@@ -34,6 +34,7 @@ def clear_dataset(args):
             wav_file = os.path.join(data_dir, 'kaldi_type/{}/wav.scp'.format(positive_label))
 
             if not os.path.exists(ctm_file):
+                print("[Warring] label: {}, No ctm file find, please check!".format(positive_label))
                 continue
 
             if not "positive_label_chinese_name_list" in cfg.dataset.label:
@@ -53,6 +54,7 @@ def clear_dataset(args):
                 wav_list.append(utt2wav[utt_id])
 
     if not wav_list:
+        print("[Warring] Do not update dataset, please check!")
         return
         
     # update csv
@@ -73,7 +75,8 @@ def main():
     # prepare align dataset, clean the dataset according to the alignment results
     parser = argparse.ArgumentParser(description='Streamax KWS Data Split Engine')
     # parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
-    parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py", help='config file')
+    # parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py", help='config file')
+    parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py", help='config file')
     args = parser.parse_args()
 
     print("[Begin] Clean the dataset according to the alignment results")

@@ -36,6 +36,7 @@ def speed_volume_disturbution(args):
     data_dir = cfg.general.data_dir if not cfg.general.data_dir.endswith('/') else cfg.general.data_dir[:-1]
 
     if not speed_volume_on:
+        print("[Warring] Do not speed volume augumentation, please check!")
         return
 
     # Look through all the subfolders to find audio samples
@@ -78,10 +79,11 @@ def speed_volume_disturbution(args):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_speech.py", nargs='?', help='config file')
+    # parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_speech.py", nargs='?', help='config file')
     # parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", nargs='?', help='config file')
     # parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py", nargs='?', help='config file')
     # parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py", nargs='?', help='config file')
+    parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py", nargs='?', help='config file')
     args = parser.parse_args()
 
     print("[Begin] Speed Volume Augumentation")

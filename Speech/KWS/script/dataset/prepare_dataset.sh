@@ -4,19 +4,21 @@
 
 # 注：执行脚本前，请执行以下操作：
 # 1. 执行文件 prepare_dataset_{}.py 整理数据集目录结构，同时需要自定义函数 get_hash_name
-# 2. 执行文件 data_clean.py 运用 VAD 工具对音频数据进行切割，仅保留唤醒词部分，当然可以手动检查
+# 2. 执行文件 data_clean.py 运用 VAD 工具对音频数据进行切割，仅保留唤醒词部分
 # 3. 若步骤 2 效果不理想，则执行脚本，dataset_align/dataset_align.sh，运行 kaldi 强制对齐工具进行强制对齐，对音频数据进行切割，仅保留唤醒词部分
+# 4. 若步骤 2、步骤 3 效果不理想，则手动进行检测（目前英文关键词只能通过手动检查的方法）
 # 4. 自行检测数据的完整性和正确性
 
 stage=1
 
 # init
-config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_speech.py
+# config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_speech.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaoyu.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaorui.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py
+config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py
 
 echo "script/dataset/prepare_dataset.sh"
 
@@ -29,11 +31,7 @@ fi
 # 如果配置文件 difficult_sample_mining = False，将不会添加到 total_data_files.csv
 if [ $stage -le 2 ];then
 	python ../mining_difficult_sample/data_train_test_split_mining_difficult_sample.py \
-			--config_file $config_file \
-			--difficult_sample_mining_dir /mnt/huanyuan/data/speech/kws/difficult_sample_mining/difficult_sample_mining_11122020/clean_audio/ || exit 1
-	python ../mining_difficult_sample/data_train_test_split_mining_difficult_sample.py \
-			--config_file $config_file \
-			--difficult_sample_mining_dir /mnt/huanyuan/data/speech/kws/difficult_sample_mining/difficult_sample_mining_12212020/audio/ || exit 1
+			--config_file $config_file || exit 1
 fi
 
 # prepare align dataset, clean the dataset according to the alignment results

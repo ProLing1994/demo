@@ -20,10 +20,10 @@ __C.general.version = "1.0"
 __C.general.date = "03222021"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_1.0_03222020/total_data_files_align_clean.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_1.0_03222021/total_data_files.csv"
 
 # background noise path
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_1.0_03222020/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_1.0_03222021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = False
@@ -135,9 +135,13 @@ __C.dataset.label.num_classes = len(__C.dataset.label.positive_label) + len(__C.
 
 # label percentage
 # __C.dataset.label.silence_percentage = 50.0      # 50%
-__C.dataset.label.unknown_percentage = 900.0       # 900%
+__C.dataset.label.unknown_percentage = 1000.0       # 1000%
+
+# difficult sample mining
 __C.dataset.label.difficult_sample_mining = False
-__C.dataset.label.difficult_sample_percentage = 200.0     # 200%
+__C.dataset.label.difficult_sample_percentage = 200.0     # 200% per dir
+__C.dataset.label.difficult_sample_mining_dir = ["/mnt/huanyuan/data/speech/kws/difficult_sample_mining/difficult_sample_mining_11122020/clean_audio/",
+                                                 "/mnt/huanyuan/data/speech/kws/difficult_sample_mining/difficult_sample_mining_12212020/audio/"]
 
 # trian/validation/test percentage
 __C.dataset.label.validation_percentage = 15.0  # 15%
@@ -245,14 +249,14 @@ __C.train.num_epochs = 1
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 1024
 # __C.train.batch_size = 128
-# __C.train.batch_size = 64
+__C.train.batch_size = 64
 # __C.train.batch_size = 16
-__C.train.batch_size = 1
+# __C.train.batch_size = 1
 
 # the number of threads for IO
 # __C.train.num_threads = 64
-# __C.train.num_threads = 16
-__C.train.num_threads = 1
+__C.train.num_threads = 16
+# __C.train.num_threads = 1
 
 # the number of batches to update loss curve
 __C.train.plot_snapshot = 5
@@ -303,8 +307,8 @@ __C.train.betas = (0.9, 0.999)
 __C.debug = {}
 
 # whether to save input images
-# __C.debug.save_inputs = True
-__C.debug.save_inputs = False
+__C.debug.save_inputs = True
+# __C.debug.save_inputs = False
 
 # the number of processing for save input images
 __C.debug.num_processing = 64

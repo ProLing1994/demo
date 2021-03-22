@@ -347,7 +347,10 @@ def save_intermediate_results(cfg, mode, epoch, images, labels, indexs):
 
     out_folder = os.path.join(cfg.general.save_dir, mode + '_jpg')
     if not os.path.isdir(out_folder):
-        os.makedirs(out_folder)
+        try:
+            os.makedirs(out_folder)
+        except:
+            pass
 
     # load csv
     data_pd = pd.read_csv(cfg.general.data_csv_path)

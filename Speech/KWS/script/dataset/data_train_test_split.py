@@ -89,7 +89,8 @@ def data_split(config_file):
 
     # init
     positive_label = cfg.dataset.label.positive_label
-    silence_percentage = cfg.dataset.label.silence_percentage
+    if 'silence_percentage' in cfg.dataset.label:
+        silence_percentage = cfg.dataset.label.silence_percentage
     unknown_percentage = cfg.dataset.label.unknown_percentage
     validation_percentage = cfg.dataset.label.validation_percentage
     testing_percentage = cfg.dataset.label.testing_percentage
@@ -144,14 +145,15 @@ def data_split(config_file):
     silence_wav_path = ''
     random.shuffle(unknown_files)
     for set_index in ['validation', 'testing', 'training']:
-        set_size = np.array([x['mode'] == set_index for x in positive_data_files]).astype(np.int).sum()
+        set_size = np.array([x['mode'] == set_index for x in positive_data_files]).astype(int).sum()
         
         # silence samples
-        silence_size = int(math.ceil(set_size * silence_percentage / 100))
-        for _ in range(silence_size):
-            silence_wav = {'label': SILENCE_LABEL, 'file': silence_wav_path, 'mode':set_index}
-            silence_files.append(silence_wav)
-            total_data_files.append(silence_wav)
+        if 'silence_percentage' in cfg.dataset.label:
+            silence_size = int(math.ceil(set_size * silence_percentage / 100))
+            for _ in range(silence_size):
+                silence_wav = {'label': SILENCE_LABEL, 'file': silence_wav_path, 'mode':set_index}
+                silence_files.append(silence_wav)
+                total_data_files.append(silence_wav)
 
         # unknowns samples
         unknown_size = int(math.ceil(set_size * unknown_percentage / 100))
@@ -192,8 +194,9 @@ def main():
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_2_label_xiaoyu.py", help='config file')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py", help='config file')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py", help='config file')
-    parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py", help='config file')
+    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py", help='config file')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaorui.py", help='config file')
+    parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py", help='config file')
     args = parser.parse_args()
 
     print("[Begin] Train test dataset split")

@@ -42,24 +42,22 @@ def prepare_dataset_csv(args):
     # init 
     difficult_sample_mining = cfg.dataset.label.difficult_sample_mining
     difficult_sample_percentage = cfg.dataset.label.difficult_sample_percentage
+    difficult_sample_mining_dir = cfg.dataset.label.difficult_sample_mining_dir
     validation_percentage = cfg.dataset.label.validation_percentage
     testing_percentage = cfg.dataset.label.testing_percentage
 
+    difficult_sample_mining_wav_list = []
     difficult_sample_files = []          # {'label': [], 'file': [], 'mode': []}
     simple_difficult_sample_files = []   # {'label': [], 'file': [], 'mode': []}
     
     # input
     input_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date))
 
-    # 加载原有存在的 difficult_sample_files.csv
-    if os.path.exists(os.path.join(input_dir, 'difficult_sample_files.csv')):
-        difficult_sample_pd = pd.read_csv(os.path.join(input_dir, 'difficult_sample_files.csv'))
-        for _, row in difficult_sample_pd.iterrows():
-            difficult_sample_files.append({'label': row['label'], 'file': row['file'], 'mode':row['mode']})
-
     # Look through difficult sample to find audio samples
-    search_path = os.path.join(args.difficult_sample_mining_dir, '*.wav')
-    for wav_path in glob.glob(search_path):
+    for folder_dir in difficult_sample_mining_dir:
+        difficult_sample_mining_wav_list += glob.glob(os.path.join(folder_dir, '*.wav'))
+
+    for wav_path in difficult_sample_mining_wav_list:
         # Divide training, test and verification set
         set_index = random_index(validation_percentage, testing_percentage)
         difficult_sample_files.append({'label': UNKNOWN_WORD_LABEL, 'file': wav_path, 'mode':set_index})
@@ -70,6 +68,7 @@ def prepare_dataset_csv(args):
 
     total_data_files = []             # {'label': [], 'file': [], 'mode': []}
     total_data_csv = os.path.join(input_dir, 'total_data_files.csv')
+
     if difficult_sample_mining == True:
         total_data_pd = pd.read_csv(total_data_csv)
         for _, row in total_data_pd.iterrows():
@@ -95,16 +94,18 @@ def prepare_dataset_csv(args):
 
         total_data_pd = pd.DataFrame(total_data_files)
         total_data_pd.to_csv(os.path.join(input_dir, 'total_data_files.csv'), index=False, encoding="utf_8_sig")
+    else:
+        print("[Warring] Do not add difficult sample mining, please check!")
 
 
 def main():
     # We only add hard mining difficult negative samples, we do not change the distribution of the original data set, only add additional negative sample data
     parser = argparse.ArgumentParser(description='Streamax KWS Data Split Engine')
-    parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_speech.py", help='config file')
+    # parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_speech.py", help='config file')
     # parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
     # parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py", help='config file')
     # parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py", help='config file')
-    parser.add_argument('--difficult_sample_mining_dir', type=str, default="/mnt/huanyuan/data/speech/kws/xiaoyu_dataset_11032020/difficult_sample_mining_11122020/clean_audio/")
+    parser.add_argument('--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py", help='config file')
     args = parser.parse_args()
 
     print("[Begin] Add mining difficult sample")
