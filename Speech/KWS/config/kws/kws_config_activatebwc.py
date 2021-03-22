@@ -10,45 +10,26 @@ cfg = __C
 
 __C.general = {}
 
-__C.general.data_dir = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/XiaoRuiDataset/"
-__C.general.sub_data_dir = ["/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experimental_dataset/XiaoYuDataset/"]
+__C.general.data_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/"
+__C.general.sub_data_dir = []
 
 # data version
-__C.general.version = "1.3"
+__C.general.version = "1.0"
 
 # data date
-__C.general.date = "12162020"
+__C.general.date = "03222021"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.3_12162020/total_data_files_align_clean.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_1.0_03222020/total_data_files_align_clean.csv"
 
 # background noise path
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.3_12162020/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_1.0_03222020/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = False
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_12162020_test"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12082020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_1_finetune_res15_12082020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_3_res15_12162020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_4_finetune_res15_12162020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_5_finetune_res15_12162020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_6_res15_12162020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_7_res15_narrow_12162020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_10_res15_finetune_12162020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_11_res15_narrow_kd_12162020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_12_res15_narrow_fintune_12162020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_13_res15_narrow_fintune_kd_12162020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_2_2_tc-resnet8-dropout_02202021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_2_3_tc-resnet14-dropout_02202021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_2_4_tc-resnet18-dropout_02202021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_2_5_tc-resnet14-dropout_kd_02202021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_3_1_res15_fbankcpu_03112021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_3_2_res15_narrow_amba_fbankcpu_kd_03112021/"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_3_3_tc-resnet14-amba_fbankcpu_kd_03112021/"
+__C.general.save_dir = "/mnt/huanyuan/model/kws_english_test"
 
 # finetune model
 __C.general.finetune_on = False
@@ -143,19 +124,19 @@ __C.dataset.data_size = [64, 196]
 __C.dataset.label = {}
 
 # label
-__C.dataset.label.positive_label = ["xiaorui"]
-__C.dataset.label.positive_label_chinese_name_list = ["小,锐,小#,锐#"]
+__C.dataset.label.positive_label = ["activatebwc"]
+__C.dataset.label.positive_label_chinese_name_list = [""]
 __C.dataset.label.positive_label_together = False
-__C.dataset.label.negative_label = ["_silence_", "_unknown_"]
-__C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
-__C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[1]
+__C.dataset.label.negative_label = ["_unknown_"]
+# __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
+__C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[0]
 __C.dataset.label.label_list = __C.dataset.label.negative_label + __C.dataset.label.positive_label
 __C.dataset.label.num_classes = len(__C.dataset.label.positive_label) + len(__C.dataset.label.negative_label)
 
 # label percentage
-__C.dataset.label.silence_percentage = 50.0      # 50%
-__C.dataset.label.unknown_percentage = 200.0     # 200%
-__C.dataset.label.difficult_sample_mining = True
+# __C.dataset.label.silence_percentage = 50.0      # 50%
+__C.dataset.label.unknown_percentage = 900.0       # 900%
+__C.dataset.label.difficult_sample_mining = False
 __C.dataset.label.difficult_sample_percentage = 200.0     # 200%
 
 # trian/validation/test percentage
@@ -171,8 +152,8 @@ __C.dataset.label.testing_percentage = 0.0     # 0%
 __C.dataset.augmentation = {}
 
 # based on audio waveform: on
-__C.dataset.augmentation.on = True
-# __C.dataset.augmentation.on = False
+# __C.dataset.augmentation.on = True
+__C.dataset.augmentation.on = False
 
 # How many of the training samples have background noise mixed in.
 __C.dataset.augmentation.background_frequency = 0.8
@@ -187,8 +168,8 @@ __C.dataset.augmentation.time_shift_ms = 100.0
 __C.dataset.augmentation.time_shift_multiple = 10
 
 # based on audio waveform: on, just for positive samples.
-__C.dataset.augmentation.speed_volume_on = True
-# __C.dataset.augmentation.speed_volume_on = False
+# __C.dataset.augmentation.speed_volume_on = True
+__C.dataset.augmentation.speed_volume_on = False
 
 # How fast the audio should be, just for positive samples.
 __C.dataset.augmentation.possitive_speed = '0.9,1.0,1.1'
@@ -197,7 +178,8 @@ __C.dataset.augmentation.possitive_speed = '0.9,1.0,1.1'
 __C.dataset.augmentation.possitive_volume = '0.4,0.7,1.0,1.3,1.6'
 
 # based on audio spectrum: on
-__C.dataset.augmentation.spec_on = True
+# __C.dataset.augmentation.spec_on = True
+__C.dataset.augmentation.spec_on = False
 __C.dataset.augmentation.F = 5
 __C.dataset.augmentation.T = 20
 __C.dataset.augmentation.num_masks = 1
@@ -213,7 +195,7 @@ __C.loss = {}
 __C.loss.name = 'focal'
 
 # the weight matrix for each class in focal loss, including background class
-__C.loss.obj_weight = np.array([[1/9, 0, 0], [0, 1/9, 0], [0, 0, 7/9]])
+__C.loss.obj_weight = np.array([[1/9, 0], [0, 8/9]])
 
 # the gamma parameter in focal loss
 __C.loss.focal_gamma = 2
@@ -229,7 +211,7 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'cnn-trad-pool2'
 # __C.net.model_name = 'cnn-one-fstride1'
 # __C.net.model_name = 'cnn-tpool2'
-# __C.net.model_name = 'res15'
+__C.net.model_name = 'res15'
 # __C.net.model_name = 'res15-narrow'
 # __C.net.model_name = 'res15-narrow-amba'
 # __C.net.model_name = 'res15-narrow-novt'
@@ -241,7 +223,7 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'crnn-attention'
 # __C.net.model_name = 'tc-resnet8'
 # __C.net.model_name = 'tc-resnet14'
-__C.net.model_name = 'tc-resnet14-amba'
+# __C.net.model_name = 'tc-resnet14-amba'
 # __C.net.model_name = 'tc-resnet8-dropout'
 # __C.net.model_name = 'tc-resnet14-dropout'
 # __C.net.model_name = 'tc-resnet18-dropout'

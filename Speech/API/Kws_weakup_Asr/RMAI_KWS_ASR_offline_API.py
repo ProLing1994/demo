@@ -4,11 +4,10 @@ import numpy as np
 import os
 import sys
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-from ASR.impl.asr_data_loader_pyimpl import WaveLoader
-from ASR.impl.asr_feature_pyimpl import Feature
-import ASR.impl.asr_decode_cimpl as Decode_C
-import ASR.impl.asr_decode_pyimpl as Decode_Python
+from impl.asr_data_loader_pyimpl import WaveLoader
+from impl.asr_feature_pyimpl import Feature
+import impl.asr_decode_cimpl as Decode_C
+import impl.asr_decode_pyimpl as Decode_Python
 
 caffe_root = "/home/huanyuan/code/caffe_ssd/"
 sys.path.insert(0, caffe_root + 'python')
@@ -54,30 +53,28 @@ counter_weakup = 0
 counter_asr = 0
 
 # argparse
-# default_kws_model_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_xiaorui_res15/res15_03162011.caffemodel"
-# default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_xiaorui_res15/res15_03162011.prototxt"
+# default_kws_model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "res15_03162011.caffemodel")
+# default_kws_prototxt_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "res15_03162011.prototxt")
 # default_kws_net_input_name = "blob1"
 # default_kws_net_output_name = "Softmax"
 # default_kws_chw_params = "1,196,64"
 # default_kws_transpose = False
-default_kws_model_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_xiaorui_tc_resnet14/tc_resnet14_amba_031920221.caffemodel"
-default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_xiaorui_tc_resnet14/tc_resnet14_amba_031920221.prototxt"
+default_kws_model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "tc_resnet14_amba_031920221.caffemodel")
+default_kws_prototxt_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "tc_resnet14_amba_031920221.prototxt")
 default_kws_net_input_name = "data"
-default_kws_net_output_name = "Softmax"
+default_kws_net_output_name = "conv_blob23"
 default_kws_chw_params = "1,64,196"
 default_kws_transpose = True
 
-default_asr_model_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/english_0202_better.caffemodel"
-default_asr_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/english_0202_mark.prototxt"
+default_asr_model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "english_0202_better.caffemodel")
+default_asr_prototxt_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "english_0202_mark.prototxt")
 default_asr_net_input_name = "data"
 default_asr_net_output_name = "conv39"
 default_asr_chw_params = "1,296,64"
-default_asr_bpe = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/english_bpe.txt"
+default_asr_bpe = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "english_bpe.txt")
 
-# default_input_wav = "/home/huanyuan/share/audio_data/english_wav/1-0127-asr_16k.wav"
-# default_input_wav = "/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_training_60_001.wav"
-default_input_wav = "/mnt/huanyuan/data/speech/Recording_sample/iphone/test-kws-asr.wav"
-default_output_folder = "/mnt/huanyuan/data/speech/Recording_sample/demo_kws_asr_online_api/{}".format(datetime.now())
+default_input_wav = os.path.join(os.path.dirname(os.path.abspath(__file__)), "audio", "test-kws-asr.wav")
+default_output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output", "{}".format(datetime.now()))
 default_gpu = True
 
 parser = argparse.ArgumentParser(description='Streamax KWS ASR offine Engine')

@@ -197,8 +197,7 @@ def main():
     # xiaorui
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_training_60_001.wav",
     #                             "/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_validation_60_001.wav"]
-    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_validation_3600_001.wav",
-                            "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
+tmux 
 
     # xiaole
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaole_11252020_training_60_001.wav",

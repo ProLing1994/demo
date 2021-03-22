@@ -63,6 +63,7 @@ def gen_image_list(args):
             output_path = os.path.join(args.output_folder, wave_list[idx].split('.')[0] + '_' + str(times * window_stride_samples) + '.jpg')
             # output_path = os.path.join(args.output_folder, wave_list[idx].split('.')[0] + '_' + str(times * window_stride_samples) + '.png')
             # print(output_path)
+            # feature_data = feature_data.T
             cv2.imwrite(output_path, feature_data)
 
 if __name__ == "__main__":
@@ -85,6 +86,7 @@ if __name__ == "__main__":
     default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/xiaorui_long/"
     # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/other/"
     default_output_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/image_196_64"
+    # default_output_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/image_64_196"
     default_CHW_params = "1,196,64"
 
     # # english:

@@ -135,7 +135,7 @@ def cal_fpr_tpr(src_csv, pst_csv, positive_label, bool_write_audio):
 
 if __name__ == "__main__":
     bool_write_audio = True
-    model_name = "kws_xiaorui_3_2_res15_narrow_amba_fbankcpu_kd_03112021"
+    model_name = "kws_xiaorui_3_3_tc-resnet14-amba_fbankcpu_kd_03112021"
     threshold = "0.8"
 
     # xiaoyu

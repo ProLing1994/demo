@@ -34,7 +34,8 @@ if __name__ == '__main__':
     # start_id = 1
     # input_dir = "/mnt/huanyuan/model/kws_model/asr_english/image_296_64/"
     # input_dir = "/home/huanyuan/share/temp/vm_kws/"
-    input_dir = "/home/huanyuan/share/audio_data/weakup_xiaorui/image_196_64/"
+    # input_dir = "/home/huanyuan/share/audio_data/weakup_xiaorui/image_196_64/"
+    input_dir = "/home/huanyuan/share/audio_data/weakup_xiaorui/image_64_196/"
     file_format = 'pic_'
     file_type = ".jpg"
     start_id = 1

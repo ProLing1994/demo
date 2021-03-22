@@ -55,9 +55,7 @@ class OnlineAudio:
         进程：监听本地音乐
         """
         print("[Init:] Listen")
-        wave_path = "/mnt/huanyuan/data/speech/Recording_sample/iphone/test-kws-asr.wav"
-        # wave_path = "/home/huanyuan/share/audio_data/english_wav/1-0127-asr_16k.wav"
-        # wave_path = "/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_training_60_001.wav"
+        wave_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "audio", "test-kws-asr.wav")
     
         # 打开音频流，output=True 表示音频输出
         pyaudio_play = pyaudio.PyAudio()
