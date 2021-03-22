@@ -249,14 +249,14 @@ __C.train.num_epochs = 1
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 1024
 # __C.train.batch_size = 128
-__C.train.batch_size = 64
+# __C.train.batch_size = 64
 # __C.train.batch_size = 16
-# __C.train.batch_size = 1
+__C.train.batch_size = 1
 
 # the number of threads for IO
 # __C.train.num_threads = 64
-__C.train.num_threads = 16
-# __C.train.num_threads = 1
+# __C.train.num_threads = 16
+__C.train.num_threads = 1
 
 # the number of batches to update loss curve
 __C.train.plot_snapshot = 5
@@ -307,8 +307,8 @@ __C.train.betas = (0.9, 0.999)
 __C.debug = {}
 
 # whether to save input images
-__C.debug.save_inputs = True
-# __C.debug.save_inputs = False
+# __C.debug.save_inputs = True
+__C.debug.save_inputs = False
 
 # the number of processing for save input images
 __C.debug.num_processing = 64
