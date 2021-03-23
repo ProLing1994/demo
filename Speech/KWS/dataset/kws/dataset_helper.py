@@ -155,6 +155,7 @@ class AudioPreprocessor(object):
     def compute_fbanks_cpu(self, data):
         # data to numpy
         data = data * pow(2,15)
+        data = data.astype(int)
         # print(data[:10])
         
         # compute fbank cpu

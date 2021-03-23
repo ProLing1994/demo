@@ -27,11 +27,16 @@ class SpeechDataset(Dataset):
 
         # data index
         self.positive_label_list = cfg.dataset.label.positive_label
+        self.negative_label_list = cfg.dataset.label.negative_label
         self.positive_label_together = cfg.dataset.label.positive_label_together
+        self.negative_label_together = cfg.dataset.label.negative_label_together
 
         if self.positive_label_together:
-            self.label_index = load_label_index(self.positive_label_together_label_list, cfg.dataset.label.negative_label)
             self.positive_label_together_label_list = cfg.dataset.label.positive_label_together_label
+            self.label_index = load_label_index(self.positive_label_together_label_list, cfg.dataset.label.negative_label)
+        elif self.negative_label_together:
+            self.negative_label_together_label_list = cfg.dataset.label.negative_label_together_label
+            self.label_index = load_label_index(self.positive_label_list, self.negative_label_together_label_list)
         else:
             self.label_index = load_label_index(self.positive_label_list, cfg.dataset.label.negative_label)
 
@@ -205,6 +210,8 @@ class SpeechDataset(Dataset):
         # load label idx
         if self.positive_label_together and audio_label in self.positive_label_list:
             audio_label_idx = self.label_index[self.positive_label_together_label_list[0]]
+        elif self.negative_label_together and audio_label in self.negative_label_list:
+            audio_label_idx = self.label_index[self.negative_label_together_label_list[0]]
         else:
             audio_label_idx = self.label_index[audio_label]
 

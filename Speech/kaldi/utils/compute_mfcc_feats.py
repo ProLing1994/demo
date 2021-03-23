@@ -29,17 +29,18 @@ def plot_freq(signal, sample_rate, fft_size=512):
   plt.show()
 
 # 绘制频谱图
-def plot_spectrogram(spec, note):
+def plot_spectrogram(spec, note, title='Audio Image'):
   fig = plt.figure(figsize=(10, 4))
   heatmap = plt.pcolor(spec) 
   fig.colorbar(mappable=heatmap)
   plt.xlabel('Time(s)')
   plt.ylabel(note)
+  plt.title(title)
   plt.tight_layout()
   plt.show()
 
 if __name__ == "__main__":
-  wav_file = "/home/huanyuan/data/speech/kws/tf_speech_commands/speech_commands/up/bde0f20a_nohash_4.wav"
+  wav_file = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/XiaoRuiDataset/xiaorui/RM_KWS_XIAORUI_xiaorui_S001M1D00T001.wav"
 
   # options
   pre_emphasis = 0.97
@@ -90,17 +91,19 @@ if __name__ == "__main__":
 
   frames *= hamming
   # 绘制加窗后第一帧音频时域图
-  # plot_time(frames[0], sample_rate, 'Frame 0: Hamming Audio Image')
-  # plot_freq(frames[1], sample_rate)
+  plot_time(frames[25], sample_rate, 'Frame 25: Hamming Audio Image')
+  # plot_freq(frames[25], sample_rate)
 
   # 5. 快速傅里叶变换（FFT）
   NFFT = 512
   mag_frames = np.absolute(np.fft.rfft(frames, NFFT))
   pow_frames = ((1.0 / NFFT) * (mag_frames ** 2))
   print(pow_frames.shape)
-  # plt.figure(figsize=(10, 4))
-  # plt.plot(pow_frames[1])
-  # plt.grid()
+  plt.figure(figsize=(10, 4))
+  plt.plot(pow_frames[25])
+  plt.title('Frame 25: FFT')
+  plt.grid()
+  plt.show()
 
   # 6. Mel 滤波器组
   low_freq_mel = 0
@@ -127,11 +130,11 @@ if __name__ == "__main__":
   filter_banks = np.where(filter_banks == 0, np.finfo(float).eps, filter_banks)
   filter_banks = 20 * np.log10(filter_banks)  # dB
   print(filter_banks.shape)
-  plot_spectrogram(filter_banks.T, 'Filter Banks')
+  plot_spectrogram(filter_banks.T, 'Filter Banks', 'FBanks')
 
   # 7. 离散余弦变换 dct 
   num_ceps = 40
   mfcc = dct(filter_banks, type=2, axis=1, norm='ortho')[:, 1:(num_ceps+1)]
   print(mfcc.shape)
-  plot_spectrogram(mfcc.T, 'MFCC Coefficients')
+  plot_spectrogram(mfcc.T, 'MFCC Coefficients', 'MFCC')
   print()

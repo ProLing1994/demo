@@ -31,9 +31,9 @@ __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/pre_train_data
 __C.general.is_test = True
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan/model/kws_pretrain_12102020_test"
+__C.general.save_dir = "/mnt/huanyuan/model/kws_pretrain_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain1_1_12102020/"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain1_2_res15_narrow_12102020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain1_2_res15_narrow_12102020/"
 
 # finrtune model
 __C.general.finetune_on = False
@@ -57,6 +57,30 @@ __C.general.gpu_ids = '0'
 # 1: 单/多级多卡、分布式，DistributedDataParallel
 __C.general.data_parallel_mode = 0
 
+##################################
+# knowledge distillation parameters
+##################################
+
+__C.knowledge_distillation = {}
+
+# knowledge distillation: on
+__C.knowledge_distillation.on = False
+
+# teacher model
+__C.knowledge_distillation.teacher_model_name = ''
+__C.knowledge_distillation.teacher_model_dir = ""
+__C.knowledge_distillation.epoch = 0
+
+# loss
+# kd: https://github.com/peterliht/knowledge-distillation-pytorch
+# cd: https://github.com/zhouzaida/channel-distillation
+__C.knowledge_distillation.loss_name = 'kd'
+
+# kd, alpha
+__C.knowledge_distillation.alpha = 0.95
+
+# kd, temperature
+__C.knowledge_distillation.temperature = 6
 
 ##################################
 # data set parameters
@@ -101,6 +125,7 @@ __C.dataset.label = {}
 __C.dataset.label.positive_label = ["positive","xiaorui","xiaoyu","xiaoya","xiaodu","xiaole"]
 __C.dataset.label.positive_label_chinese_name_list = ["","小,锐,小#,锐#","小,鱼,小#,鱼#","小,雅,小#,雅#","小,度,小#,度#","小,乐,小#,乐#"]
 __C.dataset.label.positive_label_together = True
+__C.dataset.label.positive_label_together_label = ["positive"]
 __C.dataset.label.negative_label = ["_silence_", "_unknown_"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
 __C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[1]
@@ -180,17 +205,26 @@ __C.loss.focal_gamma = 2
 __C.net = {}
 
 # the network name
+__C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'cnn-trad-pool2'
 # __C.net.model_name = 'cnn-one-fstride1'
 # __C.net.model_name = 'cnn-tpool2'
-# __C.net.model_name = 'res15'
-__C.net.model_name = 'res15-narrow'
+__C.net.model_name = 'res15'
+# __C.net.model_name = 'res15-narrow'
+# __C.net.model_name = 'res15-narrow-amba'
+# __C.net.model_name = 'res15-narrow-novt'
 # __C.net.model_name = 'res8'
 # __C.net.model_name = 'res8-narrow'
 # __C.net.model_name = 'lstm-avg'
 # __C.net.model_name = 'lstm-attention'
 # __C.net.model_name = 'crnn-avg'
 # __C.net.model_name = 'crnn-attention'
+# __C.net.model_name = 'tc-resnet8'
+# __C.net.model_name = 'tc-resnet14'
+# __C.net.model_name = 'tc-resnet14-amba'
+# __C.net.model_name = 'tc-resnet8-dropout'
+# __C.net.model_name = 'tc-resnet14-dropout'
+# __C.net.model_name = 'tc-resnet18-dropout'
 
 
 ######################################
@@ -210,21 +244,21 @@ __C.train.num_epochs = 1
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 1024
 # __C.train.batch_size = 128
-__C.train.batch_size = 64
+# __C.train.batch_size = 64
 # __C.train.batch_size = 16
-# __C.train.batch_size = 1
+__C.train.batch_size = 1
 
 # the number of threads for IO
-__C.train.num_threads = 64
+# __C.train.num_threads = 64
 # __C.train.num_threads = 16
-# __C.train.num_threads = 1
+__C.train.num_threads = 1
 
 # the number of batches to update loss curve
 __C.train.plot_snapshot = 5
 
 # the number of epochs to save model
-__C.train.save_epochs = 25
-# __C.train.save_epochs = 1
+# __C.train.save_epochs = 25
+__C.train.save_epochs = 1
 
 
 ######################################
