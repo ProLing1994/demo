@@ -29,9 +29,9 @@ __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_da
 __C.general.is_test = False
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws_english_test"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws_english_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_0_res15_fbankcpu_03222021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_1_res15_fbankcpu_03222021/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_1_res15_fbankcpu_03222021/"
 
 # finetune model
 __C.general.finetune_on = False

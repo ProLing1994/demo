@@ -198,7 +198,10 @@ class OnlineAudio:
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_7_res15_narrow_12162020/kws_config_xiaorui.py"                # small 1/0.9/0.5/30/800
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_11_res15_narrow_kd_12162020/kws_config_xiaorui.py"            # small best 1/0.8/0.5/30/800
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_2_align_funtune_res15_12082020/kws_config_align_xiaorui.py"   # 2/0.6/_/30/1500, epoch 300
-        config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_2_5_tc-resnet14-dropout_kd_02202021/kws_config_xiaorui.py"        # tc-resnet14-kd best 1/0.8/0.75/30/800
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_2_5_tc-resnet14-dropout_kd_02202021/kws_config_xiaorui.py"     # tc-resnet14-kd best 1/0.8/0.75/30/800
+
+        # activate bwc
+        config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_1_res15_fbankcpu_03222021/kws_config_activatebwc.py"     # res15 1/0.8/0.75/30/800
 
         # pretrain
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_12102020/kws_config_pretrain.py"                                # best 1/0.8/0.5/30/800, xiaorui\xiaoya\xiaodu\xiaoyu
@@ -206,13 +209,25 @@ class OnlineAudio:
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_align_word_1_11_12102020/kws_config_align_pretrain.py"          # beat 2/0.7/_/30/1500, xiaorui\xiaoya\xiaodu\xiaoyu
 
         cfg = load_cfg_file(config_file)
-        label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
         label_list = cfg.dataset.label.label_list
         positive_label = cfg.dataset.label.positive_label
+        positive_label_together = cfg.dataset.label.positive_label_together
+        negative_label_together = cfg.dataset.label.negative_label_together
         assert len(positive_label) == 1, "We only support one positive label yet"
         
         sample_rate = cfg.dataset.sample_rate
         clip_duration_ms = cfg.dataset.clip_duration_ms
+
+        # load label index 
+        # label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
+        if positive_label_together:
+            positive_label_together_label_list = cfg.dataset.label.positive_label_together_label
+            label_index = load_label_index(positive_label_together_label_list, cfg.dataset.label.negative_label)
+        elif negative_label_together:
+            negative_label_together_label_list = cfg.dataset.label.negative_label_together_label
+            label_index = load_label_index(cfg.dataset.label.positive_label, negative_label_together_label_list)
+        else:
+            label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
 
         # inin model parameter
         model_path = cfg.general.save_dir

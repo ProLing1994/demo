@@ -17,7 +17,7 @@ from script.analysis_result.plot_score_line import show_score_line
 from script.analysis_result.cal_fpr_tpr import cal_fpr_tpr
 
 
-# def test(input_wav, args):s
+# def test(input_wav, args):
 def test(in_args):
     input_wav = in_args[0]
     args = in_args[1]
@@ -34,10 +34,20 @@ def test(in_args):
     timeshift_samples = int(sample_rate * cfg.test.timeshift_ms / 1000)
     label_list = cfg.dataset.label.label_list
     positive_label = cfg.dataset.label.positive_label
+    positive_label_together = cfg.dataset.label.positive_label_together
+    negative_label_together = cfg.dataset.label.negative_label_together
     assert len(positive_label) == 1, "We only support one positive label yet"
 
     # load label index 
-    label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
+    # label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
+    if positive_label_together:
+        positive_label_together_label_list = cfg.dataset.label.positive_label_together_label
+        label_index = load_label_index(positive_label_together_label_list, cfg.dataset.label.negative_label)
+    elif negative_label_together:
+        negative_label_together_label_list = cfg.dataset.label.negative_label_together_label
+        label_index = load_label_index(cfg.dataset.label.positive_label, negative_label_together_label_list)
+    else:
+        label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
 
     recognize_element = RecognizeResult()
     if cfg.test.method_mode == 0:
@@ -205,9 +215,11 @@ def main():
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaole_11252020_testing_3600_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
-    # activatebwc
-    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/activatebwc_0322021_training_60_001.wav",
-                                "/mnt/huanyuan/model/test_straming_wav/activatebwc_0322021_validation_60_001.wav"]
+    # # activatebwc
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_training_60_001.wav",
+    #                             "/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_validation_60_001.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_testing_3600_001.wav",
+    #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
     # pretrain
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/pretrain_12102020_training_60_001.wav",
@@ -264,17 +276,17 @@ def main():
     #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_007.wav",
     #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_008.wav",
     #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_009.wav"]
-    # default_input_wav_list = ["/mnt/huanyuan/data/speech/Negative_sample/CollectVoice/Jabra_510/Jabra_510_background_noise_001.wav",
-    #                             "/mnt/huanyuan/data/speech/Negative_sample/CollectVoice/Jabra_510/Jabra_510_background_noise_002.wav",
-    #                             "/mnt/huanyuan/data/speech/Negative_sample/CollectVoice/Jabra_510/Jabra_510_background_noise_003.wav",
-    #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_004.wav",
-    #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_005.wav",
-    #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_006.wav",
-    #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_007.wav",
-    #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_008.wav",
-    #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_009.wav",
-    #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_010.wav",
-    #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_011.wav"]
+    default_input_wav_list = ["/mnt/huanyuan/data/speech/Negative_sample/CollectVoice/Jabra_510/Jabra_510_background_noise_001.wav",
+                                "/mnt/huanyuan/data/speech/Negative_sample/CollectVoice/Jabra_510/Jabra_510_background_noise_002.wav",
+                                "/mnt/huanyuan/data/speech/Negative_sample/CollectVoice/Jabra_510/Jabra_510_background_noise_003.wav",
+                                "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_004.wav",
+                                "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_005.wav",
+                                "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_006.wav",
+                                "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_007.wav",
+                                "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_008.wav",
+                                "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_009.wav",
+                                "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_010.wav",
+                                "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_011.wav"]
     # default_input_wav_list = ["/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_012.wav",
     #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_013.wav",
     #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_014.wav",

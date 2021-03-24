@@ -12,11 +12,11 @@ def main():
     in_channels = 1
     image_height = 196
     image_weidth = 64
-    num_classes = 3
+    num_classes = 2
 
     # net_name = "crnn-attention"
     # net_name = "crnn-avg"
-    # net_name = "res15"
+    net_name = "res15"
     # net_name = "res15-narrow"
     # net_name = "res15-narrow-amba"
     # net_name = "wavenet"
@@ -26,7 +26,7 @@ def main():
     # net_name = "tc-resnet14"
     # net_name = "tc-resnet14-dropout"
     # net_name = "tc-resnet18-dropout"
-    net_name = "tc-resnet14-amba"
+    # net_name = "tc-resnet14-amba"
 
     # load network structure
     net_module = importlib.import_module('network.' + net_name)
