@@ -94,6 +94,7 @@ def data_split(config_file):
     unknown_percentage = cfg.dataset.label.unknown_percentage
     validation_percentage = cfg.dataset.label.validation_percentage
     testing_percentage = cfg.dataset.label.testing_percentage
+    ignore_label = cfg.dataset.label.ignore_label
 
     all_labels_set = set()
     positive_data_files = []              # {'label': [], 'file': [], 'mode': []}
@@ -121,6 +122,9 @@ def data_split(config_file):
             background_noise_files.append({'label': BACKGROUND_NOISE_DIR_NAME, 'file':wav_path})
             continue
         
+        if word in ignore_label:
+            continue
+
         all_labels_set.add(word)
         # Divide training, test and verification set
         dataset_module = importlib.import_module('prepare_dataset_{}'.format(os.path.basename(config_file).split('.')[0].split('_')[-1]))

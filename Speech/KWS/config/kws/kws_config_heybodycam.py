@@ -14,16 +14,16 @@ __C.general.data_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experi
 __C.general.sub_data_dir = []
 
 # data version
-__C.general.version = "1.1"
+__C.general.version = "1.2"
 
 # data date
 __C.general.date = "03232021"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_1.1_03232021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_1.2_03232021/total_data_files.csv"
 
 # background noise path
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_1.1_03232021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_1.2_03232021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = False
@@ -126,7 +126,7 @@ __C.dataset.data_size = [64, 196]
 __C.dataset.label = {}
 
 # label
-__C.dataset.label.positive_label = ["activatebwc"]
+__C.dataset.label.positive_label = ["heybodycam"]
 __C.dataset.label.positive_label_chinese_name_list = [""]
 __C.dataset.label.positive_label_together = False
 __C.dataset.label.positive_label_together_label = ["positive"]
@@ -135,6 +135,7 @@ __C.dataset.label.negative_label_together = True
 __C.dataset.label.negative_label_together_label = ["negative"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
 __C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[1]
+__C.dataset.label.ignore_label = ["activatebwc"]
 __C.dataset.label.label_list = __C.dataset.label.negative_label + __C.dataset.label.positive_label
 __C.dataset.label.num_classes = 2
 

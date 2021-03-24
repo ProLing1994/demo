@@ -14,7 +14,7 @@ namespace ASR
 	{
 		char riff_char[4];		  //"RIFF"
 		int32_t file_size;		  //file size - 8 bytes
-		char wave_fmt_char[8];	  //"wave" and "fmt"
+		char wave_fmt_char[8];	  //"WAVE" and "fmt "
 		int32_t format_length;	  //format length
 		int16_t format_tag;		  //format tag
 		int16_t channel;		  //channel
@@ -22,9 +22,9 @@ namespace ASR
 		int32_t avg_bytes_sec; 	  //sample_rate*bit_per_sample*channel/8
 		int16_t block_align;	  //block align
 		int16_t bit_per_sample;	  //bit per sample
+		char temp[2];			  //某些数据头存在差异
 		char data_char[4]; 		  //"data"
 		int32_t data_size;        //data size
-		// char temp[2];			  //某些数据头存在差异
 		int16_t wave_data[3000000];
 	};
 
@@ -52,6 +52,7 @@ namespace ASR
 	
 	public:
 		int load_data(const char *filename);
+		void write_data(int16_t *data, unsigned int data_length, unsigned short fs, const char *filename);
 		void copy_data_to(int16_t *data);
 		void clear_state();
 		
