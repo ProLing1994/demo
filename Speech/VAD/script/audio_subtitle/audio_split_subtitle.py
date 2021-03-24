@@ -113,15 +113,24 @@ def clean_srt_english(srt):
     srt = srt.replace(',', ' ')
     srt = srt.replace('.', ' ')
     srt = srt.replace(':', ' ')
+    srt = srt.replace(';', ' ')
     srt = srt.replace('-', ' ')
     srt = srt.replace('《', ' ')
     srt = srt.replace('》', ' ')
     srt = srt.replace('"', ' ')
-    srt = srt.replace('♪', ' ')
-    srt = srt.replace('j»', ' ')
+    srt = srt.replace('=', ' ')
     srt = srt.replace('>', ' ')
     srt = srt.replace('%', ' percent ')
     srt = re.sub(' +', ' ', srt)
+    srt = re.sub(r'\(.*\)', '', srt)
+    srt = re.sub(r'\[.*\]', '', srt)
+    srt = re.sub(r'\{.*\} ', '', srt)
+    srt = re.sub(r'J.*j', '', srt)
+    srt = re.sub(r'j.*j', '', srt)
+    srt = re.sub(r'j.*J', '', srt)
+    srt = re.sub(r'♪.*♪', '', srt)
+    srt = re.sub(r'¶.*¶', '', srt)
+
     srt = srt.lstrip().rstrip()
     return srt
 
@@ -166,7 +175,45 @@ def merge_srt(args, srt_list):
                 continue
         # check English 
         elif args.language == "English": 
-            pass
+            if str_item['srt'].startswith('¶') and str_item['srt'].endswith('¶'):
+                srt_failed_list.append(str_item)
+                continue
+            if str_item['srt'].startswith('♪') and str_item['srt'].endswith('♪'):
+                srt_failed_list.append(str_item)
+                continue
+            if str_item['srt'].startswith('(') and str_item['srt'].endswith(')'):
+                srt_failed_list.append(str_item)
+                continue
+            if str_item['srt'].startswith('[') and str_item['srt'].endswith(']'):
+                srt_failed_list.append(str_item)
+                continue
+            if str_item['srt'].startswith('J') and str_item['srt'].endswith('j'):
+                srt_failed_list.append(str_item)
+                continue
+            if str_item['srt'].startswith('j') and str_item['srt'].endswith('j'):
+                srt_failed_list.append(str_item)
+                continue
+            if str_item['srt'].startswith('j') and str_item['srt'].endswith('J'):
+                srt_failed_list.append(str_item)
+                continue
+            if 'j ' in str_item['srt']:
+                srt_failed_list.append(str_item)
+                continue
+            if 'J ' in str_item['srt']:
+                srt_failed_list.append(str_item)
+                continue
+            if '>' in str_item['srt']:
+                srt_failed_list.append(str_item)
+                continue
+            if 'j»' in str_item['srt']:
+                srt_failed_list.append(str_item)
+                continue
+            if 'J»' in str_item['srt']:
+                srt_failed_list.append(str_item)
+                continue
+            if '»' in str_item['srt']:
+                srt_failed_list.append(str_item)
+                continue
         else:
             raise Exception("[ERROR:] Unknow language, please check!")
 
@@ -185,6 +232,10 @@ def merge_srt(args, srt_list):
         else:
             raise Exception("[ERROR:] Unknow language, please check!")
         
+        # check srt 
+        if len(srt_dict_temp['srt']) == 0:
+            continue
+
         bool_output_srt = False
         if srt_dict: 
             srt_dict_length = time2second(srt_dict['end_time']) - time2second(srt_dict['start_time'])
@@ -322,14 +373,14 @@ def audio_split_subtitle(args):
 
 def main():
     parser = argparse.ArgumentParser(description="Audio Split Using Subtitle")
-    parser.add_argument('--audio_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/original_dataset/诛仙/诛仙.wav") 
-    parser.add_argument('--subtitle_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/original_dataset/诛仙/诛仙.srt") 
-    parser.add_argument('--output_dir', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/result/")
-    parser.add_argument('--language', type=str, choices=["Chinese", "English"], default="Chinese")
+    parser.add_argument('--audio_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/original_dataset/Underwater/Underwater.wav") 
+    parser.add_argument('--subtitle_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/original_dataset/Underwater/Underwater.srt") 
+    parser.add_argument('--output_dir', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/subtitle_result/")
+    parser.add_argument('--language', type=str, choices=["Chinese", "English"], default="English")
     parser.add_argument('--file_encoding', type=str, choices=["gbk", "utf-8", "gb2312"], default="utf-8")
     parser.add_argument('--time_shift', type=str, default="-,0.0")
     parser.add_argument('--output_format', type=str, default="RM_MOVIE_S{:0>3d}T{:0>3d}.wav")
-    parser.add_argument('--movie_id', type=int, default=4)
+    parser.add_argument('--movie_id', type=int, default=12)
     parser.add_argument('--min_length_second', type=int, default=2)
     parser.add_argument('--best_length_second', type=int, default=4)
     parser.add_argument('--max_length_second', type=int, default=10)
