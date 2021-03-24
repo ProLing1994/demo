@@ -29,9 +29,9 @@ __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_da
 __C.general.is_test = False
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws_english_test"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_0_res15_fbankcpu_03222021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_1_res15_fbankcpu_03222021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws_english_test"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_heybodycam_1_0_res15_fbankcpu_20_03222021/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_heybodycam_1_1_res15_fbankcpu_15_03222021/"
 
 # finetune model
 __C.general.finetune_on = False
@@ -95,7 +95,8 @@ __C.dataset.input_channel = 1
 __C.dataset.sample_rate = 16000
 
 # Length of each audio clip to be analyzed
-__C.dataset.clip_duration_ms = 2000
+# __C.dataset.clip_duration_ms = 2000
+__C.dataset.clip_duration_ms = 1500
 
 # Duration of frequency analysis window
 # __C.dataset.window_size_ms = 30.0
@@ -116,7 +117,8 @@ __C.dataset.feature_bin_count = 64
 
 # input size of training data (w, h), unit: voxel
 # __C.dataset.data_size = [40, 201]
-__C.dataset.data_size = [64, 196]
+# __C.dataset.data_size = [64, 196]
+__C.dataset.data_size = [64, 146]
 
 
 ##################################
