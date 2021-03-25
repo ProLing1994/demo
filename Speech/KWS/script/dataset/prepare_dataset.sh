@@ -18,8 +18,8 @@ stage=1
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaoyu.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaorui.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py
-# config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py
-config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_heybodycam.py
+config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py
+# config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_heybodycam.py
 
 echo "script/dataset/prepare_dataset.sh"
 
@@ -43,9 +43,10 @@ fi
 
 # speed volume augumentation
 # 如果配置文件 speed_volume_on = False，将不会进行 augumentation
-if [ $stage -le 4 ];then
-	python ../dataset_augmentation/speed_volume_augumentation.py --config_file $config_file || exit 1
-fi
+# 最新代码不在离线生成语音，直接在线语音增强
+# if [ $stage -le 4 ];then
+# 	 python ../dataset_augmentation/speed_volume_augumentation.py --config_file $config_file || exit 1
+# fi
 
 # preload data
 if [ $stage -le 5 ];then

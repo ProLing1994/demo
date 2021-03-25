@@ -104,13 +104,12 @@ def data_split(config_file):
     total_data_files = []                 # {'label': [], 'file': [], 'mode': []}
 
     # Look through all the subfolders to find audio samples
-    search_path = os.path.join(cfg.general.data_dir, '*', '*.wav')
-    path_list = glob.glob(search_path)
+    path_list = glob.glob(os.path.join(cfg.general.data_dir, '*', '*.wav'))
+    path_list += glob.glob(os.path.join(cfg.general.data_dir, '*/*', '*.wav'))
     if 'sub_data_dir' in cfg.general:
         assert type(cfg.general.sub_data_dir) == type(list())
         for sub_data_dir in cfg.general.sub_data_dir:
-            sub_search_path = os.path.join(sub_data_dir, '*', '*.wav')
-            path_list += glob.glob(sub_search_path)
+            path_list += glob.glob(os.path.join(sub_data_dir, '*', '*.wav'))
 
     for wav_path in tqdm(path_list):
         _, word = os.path.split(os.path.dirname(wav_path))
@@ -137,7 +136,7 @@ def data_split(config_file):
             unknown_files.append({'label': word, 'file': wav_path, 'mode':set_index})
 
     if not all_labels_set:
-        raise Exception('No .wavs found at ' + search_path)
+        raise Exception('No .wavs found')
 
     for index, wanted_word in enumerate(positive_label):
         if wanted_word not in all_labels_set:

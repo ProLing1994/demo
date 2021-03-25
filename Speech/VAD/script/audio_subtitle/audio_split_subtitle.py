@@ -214,6 +214,9 @@ def merge_srt(args, srt_list):
             if '»' in str_item['srt']:
                 srt_failed_list.append(str_item)
                 continue
+            if '♪' in str_item['srt']:
+                srt_failed_list.append(str_item)
+                continue
         else:
             raise Exception("[ERROR:] Unknow language, please check!")
 
@@ -373,8 +376,8 @@ def audio_split_subtitle(args):
 
 def main():
     parser = argparse.ArgumentParser(description="Audio Split Using Subtitle")
-    parser.add_argument('--audio_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/original_dataset/Underwater/Underwater.wav") 
-    parser.add_argument('--subtitle_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/original_dataset/Underwater/Underwater.srt") 
+    parser.add_argument('--audio_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/original_dataset/ThinkLikeaDog/ThinkLikeaDog.wav") 
+    parser.add_argument('--subtitle_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/original_dataset/ThinkLikeaDog/ThinkLikeaDog.srt") 
     parser.add_argument('--output_dir', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/subtitle_result/")
     parser.add_argument('--language', type=str, choices=["Chinese", "English"], default="English")
     parser.add_argument('--file_encoding', type=str, choices=["gbk", "utf-8", "gb2312"], default="utf-8")

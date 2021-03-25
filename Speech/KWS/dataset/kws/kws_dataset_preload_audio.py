@@ -68,10 +68,9 @@ class SpeechDataset(Dataset):
         self.background_volume = cfg.dataset.augmentation.background_volume
         self.time_shift_ms = cfg.dataset.augmentation.time_shift_ms
         self.time_shift_multiple = cfg.dataset.augmentation.time_shift_multiple
-        self.possitive_speed_list = cfg.dataset.augmentation.possitive_speed.split(
-            ',')
-        self.possitive_volume_list = cfg.dataset.augmentation.possitive_volume.split(
-            ',')
+        self.speed_list = cfg.dataset.augmentation.speed
+        self.volume_list = cfg.dataset.augmentation.volume
+        self.pitch_list = cfg.dataset.augmentation.pitch 
 
         self.augmentation_spec_on = cfg.dataset.augmentation.spec_on
         self.F = cfg.dataset.augmentation.F
@@ -115,8 +114,7 @@ class SpeechDataset(Dataset):
                 pass
 
         filename = filename.split('.')[0] + '.wav'
-        librosa.output.write_wav(os.path.join(
-            out_folder, filename), data, sr=self.sample_rate)
+        librosa.output.write_wav(os.path.join(out_folder, filename), data, sr=self.sample_rate)
 
     def audio_preprocess(self, data):
         # check
@@ -134,6 +132,21 @@ class SpeechDataset(Dataset):
             audio_data = self.audio_processor.compute_fbanks_cpu(data)
         return audio_data
 
+    def dataset_alignment(self, data):
+        # alignment data
+        if len(data) < self.desired_samples:
+            data_length = len(data)
+            data_offset = np.random.randint(0, self.desired_samples - data_length)
+            data = np.pad(data, (data_offset, 0), "constant")
+            data = np.pad(data, (0, self.desired_samples - data_length - data_offset), "constant")
+
+        if len(data) > self.desired_samples:
+            data_offset = np.random.randint(0, len(data) - self.desired_samples)
+            data = data[data_offset:(data_offset + self.desired_samples)]
+
+        assert len(data) == self.desired_samples, "[ERROR:] Something wronge about audio length, please check"
+        return data
+
     def dataset_add_noise(self, data, bool_silence_label=False):
         # add noise
         background_clipped = np.zeros(self.desired_samples)
@@ -144,14 +157,11 @@ class SpeechDataset(Dataset):
             background_samples = self.background_data[background_index]
             assert len(background_samples) >= self.desired_samples, "[ERROR:] Background sample is too short! Need more than {} samples but only {} were found".format(
                 self.desired_samples, len(background_samples))
-            background_offset = np.random.randint(
-                0, len(background_samples) - self.desired_samples - 1)
-            background_clipped = background_samples[background_offset:(
-                background_offset + self.desired_samples)]
+            background_offset = np.random.randint(0, len(background_samples) - self.desired_samples - 1)
+            background_clipped = background_samples[background_offset:(background_offset + self.desired_samples)]
 
             if np.random.uniform(0, 1) < self.background_frequency or bool_silence_label:
-                background_volume = np.random.uniform(
-                    0, self.background_volume)
+                background_volume = np.random.uniform(0, self.background_volume)
 
         data = background_volume * background_clipped + data
 
@@ -159,10 +169,22 @@ class SpeechDataset(Dataset):
         data = np.clip(data, -1.0, 1.0)
         return data
 
-    def dataset_augmentation_volume_speed(self):
-        possitive_speed = random.choice(self.possitive_speed_list)
-        possitive_volume = random.choice(self.possitive_volume_list)
-        return possitive_speed, possitive_volume
+    def dataset_augmentation_volume_speed(self, data):
+        speed = np.random.uniform(self.speed_list[0], self.speed_list[1])  
+        volume = np.random.uniform(self.volume_list[0], self.volume_list[1])  
+        pitch = np.random.randint(self.pitch_list[0], self.pitch_list[1])  
+        
+        # speed > 1, 加快速度
+        # speed < 1, 放慢速度
+        data = librosa.effects.time_stretch(data, speed)
+
+        # 音量大小调节
+        data = data * volume
+
+        # 音调调节
+        data = librosa.effects.pitch_shift(data, sr=self.sample_rate, n_steps=pitch)
+
+        return data
 
     def dataset_augmentation_waveform(self, data, audio_label):
         # add time_shift
@@ -174,14 +196,19 @@ class SpeechDataset(Dataset):
             time_shift_samples *= self.time_shift_multiple
 
         if time_shift_samples > 0:
-            time_shift_amount = np.random.randint(
-                -time_shift_samples, time_shift_samples)
+            time_shift_amount = np.random.randint(-time_shift_samples, time_shift_samples)
 
         time_shift_left = - min(0, time_shift_amount)
         time_shift_right = max(0, time_shift_amount)
         data = np.pad(data, (time_shift_left, time_shift_right), "constant")
-        data = data[:len(
-            data) - time_shift_left] if time_shift_left else data[time_shift_right:]
+        data = data[:len(data) - time_shift_left] if time_shift_left else data[time_shift_right:]
+
+        # data augmentation
+        if self.augmentation_speed_volume_on:
+            data = self.dataset_augmentation_volume_speed(data)
+        
+        # alignment data
+        data = self.dataset_alignment(data) 
 
         # add noise
         data = self.dataset_add_noise(data)
@@ -215,42 +242,15 @@ class SpeechDataset(Dataset):
         else:
             audio_label_idx = self.label_index[audio_label]
 
-        # data augmentation
-        possitive_speed = '1.0'
-        possitive_volume = '1.0'
-        if self.augmentation_on and self.augmentation_speed_volume_on:
-            possitive_speed, possitive_volume = self.dataset_augmentation_volume_speed()
-
         # load data
-        if audio_label not in self.positive_label_list or (possitive_speed == '1.0' and possitive_volume == '1.0'):
-            input_dir = os.path.join(self.input_dir, audio_label)
-            data, filename = load_preload_audio(audio_file, index, audio_label, input_dir)
-        else:
-            input_dir = os.path.join(self.input_dir, "../augumentation/", audio_label + '_speed_{}_volume_{}'.format(
-                "_".join(possitive_speed.split('.')), "_".join(possitive_volume.split('.'))))
-            data, filename = load_preload_audio(audio_file, index, audio_label, input_dir, refilename=False)
+        input_dir = os.path.join(self.input_dir, audio_label)
+        data, filename = load_preload_audio(audio_file, index, audio_label, input_dir)
         assert len(data) != 0, "[ERROR:] Something wronge about audio length, please check"
         # print('Load data Time: {}'.format((time.time() - begin_t) * 1.0))
         # begin_t = time.time()
-
+        
         # alignment data
-        # data_length = len(data)
-        # data = np.pad(data, (max(0, (self.desired_samples - data_length)//2), 0), "constant")
-        # data = np.pad(data, (0, max(0, (self.desired_samples - data_length + 1)//2)), "constant")
-        if len(data) < self.desired_samples:
-            data_length = len(data)
-            data_offset = np.random.randint(0, self.desired_samples - data_length)
-            data = np.pad(data, (data_offset, 0), "constant")
-            data = np.pad(data, (0, self.desired_samples - data_length - data_offset), "constant")
-
-        if len(data) > self.desired_samples:
-            data_offset = np.random.randint(0, len(data) - self.desired_samples)
-            data = data[data_offset:(data_offset + self.desired_samples)]
-
-        assert len(data) == self.desired_samples, "[ERROR:] Something wronge about audio length, please check"
-
-        if self.save_audio_inputs_bool:
-            self.save_audio(data, audio_label, filename)
+        data = self.dataset_alignment(data)
 
         # data augmentation
         if audio_label == SILENCE_LABEL:
@@ -259,6 +259,9 @@ class SpeechDataset(Dataset):
             data = self.dataset_augmentation_waveform(data, audio_label)
         # print('Data augmentation Time: {}'.format((time.time() - begin_t) * 1.0))
         # begin_t = time.time()
+
+        if self.save_audio_inputs_bool:
+            self.save_audio(data, audio_label, filename)
 
         # audio preprocess, get mfcc data
         data = self.audio_preprocess(data)

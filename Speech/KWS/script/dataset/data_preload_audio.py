@@ -225,7 +225,8 @@ def main():
 
     preload_background_audio(args)
 
-    preload_augumentation_audio(args)
+    # 最新代码不在离线生成语音，直接在线语音增强
+    # preload_augumentation_audio(args)
     print("[Done] Data Preload")
 
 

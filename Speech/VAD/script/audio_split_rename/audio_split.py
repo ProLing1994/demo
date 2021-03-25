@@ -4,8 +4,8 @@ import os
 import pandas as pd
 
 parser = argparse.ArgumentParser(description="Audio Split Using Auditok")
-parser.add_argument('--audio_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/original_dataset/AHiddenLife/AHiddenLife.wav")
-parser.add_argument('--output_dir', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/original_dataset/AHiddenLife/")
+parser.add_argument('--audio_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/original_dataset/ThinkLikeaDog/ThinkLikeaDog.wav")
+parser.add_argument('--output_dir', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/original_dataset/ThinkLikeaDog/")
 # parser.add_argument('--output_format', type=str, default="RM_ROOM_Mandarin_S{:0>3d}M{}P{:0>5d}.wav")
 # parser.add_argument('--output_format', type=str, default="RM_ROOM_Mandarin_8K_iso_S{:0>3d}T{}P{:0>5d}.wav")
 # parser.add_argument('--output_format', type=str, default="RM_KWS_XIAORUI_{}_S{:0>3d}M{:0>1d}D{:0>2d}T{:0>3d}.wav")
