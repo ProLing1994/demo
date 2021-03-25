@@ -190,6 +190,17 @@ class SpeechDataset(Dataset):
         return data
 
     def dataset_augmentation_waveform(self, data, audio_label):
+        # data augmentation
+        if self.augmentation_speed_volume_on:
+            data = self.dataset_augmentation_volume_speed(data)
+        
+        # data augmentation
+        if self.augmentation_pitch_on:
+            data = self.dataset_augmentation_pitch(data)
+
+        # alignment data
+        data = self.dataset_alignment(data) 
+
         # add time_shift
         time_shift_amount = 0
 
@@ -205,17 +216,6 @@ class SpeechDataset(Dataset):
         time_shift_right = max(0, time_shift_amount)
         data = np.pad(data, (time_shift_left, time_shift_right), "constant")
         data = data[:len(data) - time_shift_left] if time_shift_left else data[time_shift_right:]
-
-        # data augmentation
-        if self.augmentation_speed_volume_on:
-            data = self.dataset_augmentation_volume_speed(data)
-        
-        # data augmentation
-        if self.augmentation_pitch_on:
-            data = self.dataset_augmentation_pitch(data)
-
-        # alignment data
-        data = self.dataset_alignment(data) 
 
         # add noise
         data = self.dataset_add_noise(data)
@@ -255,9 +255,6 @@ class SpeechDataset(Dataset):
         assert len(data) != 0, "[ERROR:] Something wronge about audio length, please check"
         # print('Load data Time: {}'.format((time.time() - begin_t) * 1.0))
         # begin_t = time.time()
-        
-        # alignment data
-        data = self.dataset_alignment(data)
 
         # data augmentation
         if audio_label == SILENCE_LABEL:
