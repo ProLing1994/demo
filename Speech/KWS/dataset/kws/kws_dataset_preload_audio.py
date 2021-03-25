@@ -261,6 +261,8 @@ class SpeechDataset(Dataset):
             data = self.dataset_add_noise(data, bool_silence_label=True)
         elif self.augmentation_on:
             data = self.dataset_augmentation_waveform(data, audio_label)
+        else:
+            data = self.dataset_alignment(data)
         # print('Data augmentation Time: {}'.format((time.time() - begin_t) * 1.0))
         # begin_t = time.time()
 
