@@ -190,6 +190,8 @@ __C.dataset.augmentation.speed = [0.9, 1.1]
 __C.dataset.augmentation.volume = [0.4, 1.6]
 
 # How pitch the audio should be.
+# __C.dataset.augmentation.pitch_on = True
+__C.dataset.augmentation.pitch_on = False
 __C.dataset.augmentation.pitch = [-5, 5]
 
 # based on audio spectrum: on

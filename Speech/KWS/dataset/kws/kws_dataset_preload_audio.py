@@ -64,6 +64,7 @@ class SpeechDataset(Dataset):
 
         self.augmentation_on = cfg.dataset.augmentation.on and augmentation_on
         self.augmentation_speed_volume_on = cfg.dataset.augmentation.speed_volume_on
+        self.augmentation_pitch_on = cfg.dataset.augmentation.pitch_on
         self.background_frequency = cfg.dataset.augmentation.background_frequency
         self.background_volume = cfg.dataset.augmentation.background_volume
         self.time_shift_ms = cfg.dataset.augmentation.time_shift_ms
@@ -169,10 +170,16 @@ class SpeechDataset(Dataset):
         data = np.clip(data, -1.0, 1.0)
         return data
 
+    def dataset_augmentation_pitch(self, data):
+        pitch = np.random.randint(self.pitch_list[0], self.pitch_list[1])  
+        
+        # 音调调节
+        data = librosa.effects.pitch_shift(data, sr=self.sample_rate, n_steps=pitch)
+        return data
+
     def dataset_augmentation_volume_speed(self, data):
         speed = np.random.uniform(self.speed_list[0], self.speed_list[1])  
         volume = np.random.uniform(self.volume_list[0], self.volume_list[1])  
-        pitch = np.random.randint(self.pitch_list[0], self.pitch_list[1])  
         
         # speed > 1, 加快速度
         # speed < 1, 放慢速度
@@ -180,10 +187,6 @@ class SpeechDataset(Dataset):
 
         # 音量大小调节
         data = data * volume
-
-        # 音调调节
-        data = librosa.effects.pitch_shift(data, sr=self.sample_rate, n_steps=pitch)
-
         return data
 
     def dataset_augmentation_waveform(self, data, audio_label):
@@ -207,6 +210,10 @@ class SpeechDataset(Dataset):
         if self.augmentation_speed_volume_on:
             data = self.dataset_augmentation_volume_speed(data)
         
+        # data augmentation
+        if self.augmentation_pitch_on:
+            data = self.dataset_augmentation_pitch(data)
+
         # alignment data
         data = self.dataset_alignment(data) 
 
