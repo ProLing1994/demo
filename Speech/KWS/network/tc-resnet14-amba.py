@@ -51,7 +51,6 @@ class SpeechResModel(nn.Module):
     # tc-resnet14: https://arxiv.org/abs/1904.03814
     def __init__(self, num_classes, image_height, image_weidth, width_multiplier=1.5):
         super().__init__()
-
         del image_height
 
         # init

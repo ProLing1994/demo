@@ -201,7 +201,8 @@ class OnlineAudio:
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_2_5_tc-resnet14-dropout_kd_02202021/kws_config_xiaorui.py"     # tc-resnet14-kd best 1/0.8/0.75/30/800
 
         # activate bwc
-        config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_1_res15_fbankcpu_03222021/kws_config_activatebwc.py"     # res15 1/0.8/0.75/30/800
+        # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_1_res15_fbankcpu_03222021/kws_config_activatebwc.py"     # res15 1/0.8/0.75/30/800
+        config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_3_res15_fbankcpu_03222021/kws_config_activatebwc_api.py" # res15 1/0.5/0.75/30/800
 
         # pretrain
         # config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_pretrain_12102020/kws_config_pretrain.py"                                # best 1/0.8/0.5/30/800, xiaorui\xiaoya\xiaodu\xiaoyu

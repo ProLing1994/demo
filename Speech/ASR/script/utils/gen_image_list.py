@@ -6,7 +6,7 @@ import pandas as pd
 import sys
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/ASR')
-from impl.asr_data_loader_cimpl import WaveLoader
+from impl.asr_data_loader_pyimpl import WaveLoader
 from impl.asr_feature_cimpl import Feature
 from impl.asr_decode_cimpl import Decode
 
@@ -61,9 +61,9 @@ def gen_image_list(args):
             assert feature_data.max() <= 255
             assert feature_data.min() >= 0
             output_path = os.path.join(args.output_folder, wave_list[idx].split('.')[0] + '_' + str(times * window_stride_samples) + '.jpg')
-            # output_path = os.path.join(args.output_folder, wave_list[idx].split('.')[0] + '_' + str(times * window_stride_samples) + '.png')
-            # print(output_path)
-            # feature_data = feature_data.T
+            
+            if args.transpose:
+                feature_data = feature_data.T
             cv2.imwrite(output_path, feature_data)
 
 if __name__ == "__main__":
@@ -73,7 +73,8 @@ if __name__ == "__main__":
     # default_audio_folder = "/home/huanyuan/share/audio_data/第三批数据/闹市场景/"
     # default_output_folder = "/home/huanyuan/share/audio_data/第三批数据/闹市场景/image_296_64"
     # default_CHW_params = "1,296,64"
-
+    # default_transpose = False
+    
     # default_audio_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/"
     # default_output_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/image_296_56"
     # default_audio_folder = "/home/huanyuan/share/audio_data/第三批数据/闹市场景/"
@@ -81,23 +82,36 @@ if __name__ == "__main__":
     # default_audio_folder = "/home/huanyuan/share/audio_data/"
     # default_output_folder = "/home/huanyuan/share/audio_data/image_296_56"
     # default_CHW_params = "1,296,56"
+    # default_transpose = False
 
+    # kws: xiaorui
     # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/xiaorui/"
-    default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/xiaorui_long/"
+    # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/xiaorui_long/"
     # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/other/"
-    default_output_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/image_196_64"
+    # default_output_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/image_196_64"
     # default_output_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/image_64_196"
+    # default_CHW_params = "1,196,64"
+    # default_transpose = False
+
+    # kws: activatebwc
+    # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_activatebwc/activatebwc/"
+    # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_activatebwc/activatebwc_long/"
+    # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_activatebwc/other/"
+    default_output_folder = "/home/huanyuan/share/audio_data/weakup_activatebwc/image_64_196"
     default_CHW_params = "1,196,64"
+    default_transpose = True
 
     # # english:
     # default_audio_folder = "/home/huanyuan/share/audio_data/english_wav/"
     # default_output_folder = "/home/huanyuan/share/audio_data/english_wav/image_296_64"
     # default_CHW_params = "1,296,64"
+    # default_transpose = False
 
     parser = argparse.ArgumentParser(description='Streamax ASR Demo Engine')
     parser.add_argument('-i', '--audio_folder', type=str, default=default_audio_folder)
     parser.add_argument('-o', '--output_folder', type=str, default=default_output_folder)
     parser.add_argument('--CHW_params', type=str, default=default_CHW_params)
+    parser.add_argument('--transpose', action='store_true', default=default_transpose)
     args = parser.parse_args()
 
     gen_image_list(args)

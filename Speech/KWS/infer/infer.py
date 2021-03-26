@@ -170,6 +170,8 @@ def infer(config_file, epoch_num, dataset_mode, add_noise_on, timeshift_ms, aver
 
     # init 
     num_classes = cfg.dataset.label.num_classes
+    positive_label_together = cfg.dataset.label.positive_label_together
+    negative_label_together = cfg.dataset.label.negative_label_together
 
     # load prediction model
     model = kws_load_model(cfg.general.save_dir, int(cfg.general.gpu_ids), epoch_num)
@@ -177,7 +179,15 @@ def infer(config_file, epoch_num, dataset_mode, add_noise_on, timeshift_ms, aver
     net.eval()
 
     # load label index 
-    label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
+    # label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
+    if positive_label_together:
+        positive_label_together_label_list = cfg.dataset.label.positive_label_together_label
+        label_index = load_label_index(positive_label_together_label_list, cfg.dataset.label.negative_label)
+    elif negative_label_together:
+        negative_label_together_label_list = cfg.dataset.label.negative_label_together_label
+        label_index = load_label_index(cfg.dataset.label.positive_label, negative_label_together_label_list)
+    else:
+        label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
 
     # load data 
     data_pd = pd.read_csv(cfg.general.data_csv_path)
@@ -197,7 +207,13 @@ def infer(config_file, epoch_num, dataset_mode, add_noise_on, timeshift_ms, aver
         results_dict['file'] = data_file_list[audio_idx]
         results_dict['mode'] = data_mode_list[audio_idx]
         results_dict['label'] = data_label_list[audio_idx]
-        results_dict['label_idx'] = label_index[results_dict['label']]
+        if negative_label_together:
+            if results_dict['label'] in cfg.dataset.label.negative_label:
+                results_dict['label_idx'] = label_index[cfg.dataset.label.negative_label_together_label[0]]
+            else:
+                results_dict['label_idx'] = label_index[results_dict['label']]
+        else:
+            results_dict['label_idx'] = label_index[results_dict['label']]
         assert results_dict['mode']  == dataset_mode, "[ERROR:] Something wronge about mode, please check"
 
         score_list = longterm_audio_predict(cfg, net, audio_idx, results_dict['file'], results_dict['mode'], results_dict['label'], results_dict['label_idx'], 
@@ -247,7 +263,8 @@ def main():
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaoyu.py", help='config file')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py", help='config file')
-    parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py", help='config file')
+    # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py", help='config file')
+    parser.add_argument('--input', type=str, default="/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_3_res15_fbankcpu_03222021/kws_config_activatebwc_dataset_1_3.py", help='config file')
     parser.add_argument('--mode', type=str, default=default_mode)
     parser.add_argument('--epoch', type=int, default=default_model_epoch)
     parser.add_argument('--add_noise_on', type=bool, default=default_add_noise_on)

@@ -106,13 +106,17 @@ def data_split(config_file):
     # Look through all the subfolders to find audio samples
     path_list = glob.glob(os.path.join(cfg.general.data_dir, '*', '*.wav'))
     path_list += glob.glob(os.path.join(cfg.general.data_dir, '*/*', '*.wav'))
+    path_list += glob.glob(os.path.join(cfg.general.data_dir, '*/*/*', '*.wav'))
+    path_list += glob.glob(os.path.join(cfg.general.data_dir, '*/*/*/*', '*.wav'))
+    path_list += glob.glob(os.path.join(cfg.general.data_dir, '*/*/*/*/*', '*.wav'))
     if 'sub_data_dir' in cfg.general:
         assert type(cfg.general.sub_data_dir) == type(list())
         for sub_data_dir in cfg.general.sub_data_dir:
             path_list += glob.glob(os.path.join(sub_data_dir, '*', '*.wav'))
 
     for wav_path in tqdm(path_list):
-        _, word = os.path.split(os.path.dirname(wav_path))
+        # _, word = os.path.split(os.path.dirname(wav_path))
+        word = wav_path.replace(cfg.general.data_dir, '').split('/')[0]
         word = word.lower()
 
         # Treat the '_background_noise_' folder as a special case, since we expect

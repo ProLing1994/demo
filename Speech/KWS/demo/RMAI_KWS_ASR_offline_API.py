@@ -24,8 +24,10 @@ output_time_ms = 3000
 
 feature_freq = 64                       # 计算特征维度
 kws_feature_time = 196                  # kws 网络特征时间维度
-kws_stride_feature_time = 10            # kws 每间隔 10 个 feature_time 进行一次检索
-kws_detection_threshold = 0.8           # kws 检测阈值 0.8
+# kws_stride_feature_time = 10           # kws 每间隔 10 个 feature_time 进行一次检索
+# kws_detection_threshold = 0.8           # kws 检测阈值 0.8
+kws_stride_feature_time = 30           # kws 每间隔 10 个 feature_time 进行一次检索
+kws_detection_threshold = 0.5           # kws 检测阈值 0.8
 kws_detection_number_threshold = 0.5    # kws 计数阈值 0.5
 kws_suppression_counter = 3             # kws 激活后抑制时间 3s
 
@@ -50,18 +52,33 @@ audio_data_container_np = np.array([])
 
 bool_weakup = False
 counter_weakup = 0
-
 counter_asr = 0
+bool_output_wave = True
 
 # argparse
+# xiaorui
 # default_kws_model_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_xiaorui_res15/res15_03162011.caffemodel"
 # default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_xiaorui_res15/res15_03162011.prototxt"
 # default_kws_net_input_name = "blob1"
 # default_kws_net_output_name = "Softmax"
 # default_kws_chw_params = "1,196,64"
 # default_kws_transpose = False
-default_kws_model_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_xiaorui_tc_resnet14/tc_resnet14_amba_031920221.caffemodel"
-default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_xiaorui_tc_resnet14/tc_resnet14_amba_031920221.prototxt"
+# default_kws_model_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_xiaorui_tc_resnet14/tc_resnet14_amba_031920221.caffemodel"
+# default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_xiaorui_tc_resnet14/tc_resnet14_amba_031920221.prototxt"
+# default_kws_net_input_name = "data"
+# default_kws_net_output_name = "Softmax"
+# default_kws_chw_params = "1,64,196"
+# default_kws_transpose = True
+
+# activatebwc
+# default_kws_model_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_activatebwc_res15/res15_03252011.caffemodel"
+# default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_activatebwc_res15/res15_03252011.prototxt"
+# default_kws_net_input_name = "blob1"
+# default_kws_net_output_name = "Softmax"
+# default_kws_chw_params = "1,196,64"
+# default_kws_transpose = False
+default_kws_model_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_03262021.caffemodel"
+default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_03262021.prototxt"
 default_kws_net_input_name = "data"
 default_kws_net_output_name = "Softmax"
 default_kws_chw_params = "1,64,196"
@@ -76,8 +93,9 @@ default_asr_bpe = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/englis
 
 # default_input_wav = "/home/huanyuan/share/audio_data/english_wav/1-0127-asr_16k.wav"
 # default_input_wav = "/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_training_60_001.wav"
-default_input_wav = "/mnt/huanyuan/data/speech/Recording_sample/iphone/test-kws-asr.wav"
-default_output_folder = "/mnt/huanyuan/data/speech/Recording_sample/demo_kws_asr_online_api/{}".format(datetime.now())
+# default_input_wav = "/mnt/huanyuan/data/speech/Recording_sample/iphone/test-kws-asr.wav"
+default_input_wav = "/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_validation_60_001.wav"
+default_output_folder = "/mnt/huanyuan/data/speech/Recording_sample/demo_kws_asr_online_api/{}".format('-'.join('-'.join(str(datetime.now()).split('.')[0].split(' ')).split(':')))
 default_gpu = True
 
 parser = argparse.ArgumentParser(description='Streamax KWS ASR offine Engine')
@@ -202,10 +220,11 @@ def run_kws_asr(audio_data):
             bool_weakup = True
 
             # save audio
-            wave_loader = WaveLoader(sample_rate)
-            wave_loader.save_data(np.array(output_audio_list), os.path.join(args.output_folder, "kws_{:0>4d}.wav".format(output_kws_id)))
-            # wave_loader.save_data(np.array(output_audio_list), os.path.join(args.output_folder, "kws_start_time_{}.wav".format(output_audio_time)))
-            output_kws_id += 1
+            if bool_output_wave:
+                wave_loader = WaveLoader(sample_rate)
+                date_time = '-'.join('-'.join(str(datetime.now()).split('.')[0].split(' ')).split(':'))
+                wave_loader.save_data(np.array(output_audio_list), os.path.join(args.output_folder, "Weakup_{}_{:0>4d}.wav".format(date_time, output_kws_id)))
+                output_kws_id += 1
     else:
         counter_weakup += 1
         if counter_weakup == kws_suppression_counter:
@@ -218,10 +237,6 @@ def run_kws_asr(audio_data):
             result_string, control_command_string, _ = run_asr()
             print("[Information:] kws asr outKeyword: ", result_string)
             # print("[Information:] kws asr outKeyword: ", control_command_string)
-            # if result_string != "":
-            # wave_loader = WaveLoader(sample_rate)
-            # wave_loader.save_data(np.array(output_audio_list), 
-            #                     os.path.join(args.output_folder, "kws_asr_start_time_{}_{}.wav".format(output_audio_time, "_".join(result_string.split(" ")))))
 
     # 方案二：进行 asr 检测，间隔一定时长
     # asr
@@ -237,10 +252,6 @@ def run_kws_asr(audio_data):
         result_string, _, not_control_command_string = run_asr()
         print("[Information:] asr outKeyword: ", result_string)
         # print("[Information:] asr outKeyword: ", not_control_command_string)
-        # if result_string != "":
-        # wave_loader = WaveLoader(sample_rate)
-        # wave_loader.save_data(np.array(output_audio_list), 
-        #                     os.path.join(args.output_folder, "asr_start_time_{}_{}.wav".format(output_audio_time, "_".join(result_string.split(" ")))))
 
 
 def kws_asr_init():
