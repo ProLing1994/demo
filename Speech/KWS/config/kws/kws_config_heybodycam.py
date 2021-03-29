@@ -14,16 +14,16 @@ __C.general.data_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experi
 __C.general.sub_data_dir = []
 
 # data version
-__C.general.version = "2.1"
+__C.general.version = "2.2"
 
 # data date
-__C.general.date = "03232021"
+__C.general.date = "03262021"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_2.1_03232021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_2.2_03262021/total_data_files.csv"
 
 # background noise path
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_2.1_03232021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_2.2_03262021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = False
@@ -137,13 +137,13 @@ __C.dataset.label.negative_label_together = True
 __C.dataset.label.negative_label_together_label = ["negative"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
 __C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[1]
-__C.dataset.label.ignore_label = ["activatebwc"]
+__C.dataset.label.ignore_label = [""]
 __C.dataset.label.label_list = __C.dataset.label.negative_label + __C.dataset.label.positive_label
 __C.dataset.label.num_classes = 2
 
 # label percentage
 __C.dataset.label.silence_percentage = 20.0      # 20%
-__C.dataset.label.unknown_percentage = 500.0       # 500%
+__C.dataset.label.unknown_percentage = 1000.0       # 500%
 
 # difficult sample mining
 __C.dataset.label.difficult_sample_mining = False
@@ -191,6 +191,8 @@ __C.dataset.augmentation.speed = [0.9, 1.1]
 __C.dataset.augmentation.volume = [0.4, 1.6]
 
 # How pitch the audio should be.
+# __C.dataset.augmentation.pitch_on = True
+__C.dataset.augmentation.pitch_on = False
 __C.dataset.augmentation.pitch = [-5, 5]
 
 # based on audio spectrum: on

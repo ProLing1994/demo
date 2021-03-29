@@ -54,7 +54,7 @@ def load_srt(args, srt_file):
             continue
         else:
             if 'srt' in srt_dict:
-                srt_dict['srt'] += " ".join(items)
+                srt_dict['srt'] += " " + " ".join(items)
             else:
                 srt_dict['srt'] = " ".join(items)
     
@@ -120,6 +120,7 @@ def clean_srt_english(srt):
     srt = srt.replace('"', ' ')
     srt = srt.replace('=', ' ')
     srt = srt.replace('>', ' ')
+    srt = srt.replace('&', ' ')
     srt = srt.replace('%', ' percent ')
     srt = re.sub(' +', ' ', srt)
     srt = re.sub(r'\(.*\)', '', srt)
@@ -376,8 +377,8 @@ def audio_split_subtitle(args):
 
 def main():
     parser = argparse.ArgumentParser(description="Audio Split Using Subtitle")
-    parser.add_argument('--audio_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/original_dataset/ThinkLikeaDog/ThinkLikeaDog.wav") 
-    parser.add_argument('--subtitle_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/original_dataset/ThinkLikeaDog/ThinkLikeaDog.srt") 
+    parser.add_argument('--audio_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/original_dataset/AHiddenLife/AHiddenLife.wav") 
+    parser.add_argument('--subtitle_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/original_dataset/AHiddenLife/AHiddenLife.srt") 
     parser.add_argument('--output_dir', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/subtitle_result/")
     parser.add_argument('--language', type=str, choices=["Chinese", "English"], default="English")
     parser.add_argument('--file_encoding', type=str, choices=["gbk", "utf-8", "gb2312"], default="utf-8")
