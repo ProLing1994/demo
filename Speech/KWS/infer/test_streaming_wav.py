@@ -216,8 +216,8 @@ def main():
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
     
     # activatebwc
-    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_training_60_001.wav",
-                                "/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_validation_60_001.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_training_60_001.wav",
+    #                             "/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_validation_60_001.wav"]
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_testing_3600_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
@@ -282,10 +282,7 @@ def main():
     #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_007.wav",
     #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_008.wav",
     #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_in_test_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_009.wav"]
-    # default_input_wav_list = ["/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_001.wav",
-    #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_002.wav",
-    #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_003.wav",
-    #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_004.wav",
+    # default_input_wav_list = ["/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_004.wav",
     #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_005.wav",
     #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_006.wav",
     #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_007.wav",
@@ -293,13 +290,17 @@ def main():
     #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_009.wav",
     #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_010.wav",
     #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_011.wav"]
-    # default_input_wav_list = ["/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_012.wav",
-    #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_013.wav",
-    #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_014.wav",
-    #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_015.wav",
-    #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_016.wav",
-    #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_017.wav",
-    #                             "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_018.wav"]
+    default_input_wav_list = ["/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_001.wav",
+                                "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_002.wav",
+                                "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_003.wav",
+                                "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_012.wav",
+                                "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_013.wav",
+                                "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_014.wav",
+                                "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_015.wav",
+                                "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_016.wav",
+                                "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_017.wav",
+                                "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_018.wav",
+                                "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_background_noise_019.wav"]
 
     # mode 1: from csv
     default_csv_path = "/mnt/huanyuan/data/speech/Recording_sample/Real_vehicle_sample/20201218/Real_vehicle_sample_20201218.csv"
@@ -312,7 +313,7 @@ def main():
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_2_label_xiaoyu.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py"
-    default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py"
+    # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_heybodycam.py"
 
     # align config file
@@ -324,7 +325,7 @@ def main():
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_11_res15_narrow_kd_12162020/kws_config_xiaorui_difficult_sample_mining.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_2_5_tc-resnet14-dropout_kd_02202021/kws_config_xiaorui.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_3_1_res15_fbankcpu_03112021/kws_config_xiaorui.py"
-    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_1_tc-resnet14-amba_fbankcpu_kd_03222021/kws_config_activatebwc.py"
+    default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_5_res15_fbankcpu_03222021/kws_config_activatebwc.py"
 
     parser = argparse.ArgumentParser(description='Streamax KWS Testing Engine')
     parser.add_argument('--mode', type=str, default=default_mode)

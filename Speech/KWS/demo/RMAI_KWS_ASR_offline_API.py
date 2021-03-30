@@ -23,11 +23,12 @@ window_stride_ms = 1000                 # 每次间隔 1s 时间
 output_time_ms = 3000
 
 feature_freq = 64                       # 计算特征维度
-kws_feature_time = 196                  # kws 网络特征时间维度
-# kws_stride_feature_time = 10           # kws 每间隔 10 个 feature_time 进行一次检索
+# kws_feature_time = 196                  # kws 网络特征时间维度
+# kws_stride_feature_time = 10            # kws 每间隔 10 个 feature_time 进行一次检索
 # kws_detection_threshold = 0.8           # kws 检测阈值 0.8
-kws_stride_feature_time = 30           # kws 每间隔 10 个 feature_time 进行一次检索
-kws_detection_threshold = 0.5           # kws 检测阈值 0.8
+kws_feature_time = 196                  # kws 网络特征时间维度
+kws_stride_feature_time = 30            # kws 每间隔 30 个 feature_time 进行一次检索
+kws_detection_threshold = 0.5           # kws 检测阈值 0.5
 kws_detection_number_threshold = 0.5    # kws 计数阈值 0.5
 kws_suppression_counter = 3             # kws 激活后抑制时间 3s
 
@@ -55,6 +56,10 @@ counter_weakup = 0
 counter_asr = 0
 bool_output_wave = True
 
+# on-off
+bool_do_asr = True
+bool_do_kws_weakup = True
+
 # argparse
 # xiaorui
 # default_kws_model_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_xiaorui_res15/res15_03162011.caffemodel"
@@ -71,18 +76,28 @@ bool_output_wave = True
 # default_kws_transpose = True
 
 # activatebwc
-# default_kws_model_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_activatebwc_res15/res15_03252011.caffemodel"
-# default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_activatebwc_res15/res15_03252011.prototxt"
+# default_kws_model_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_activatebwc_res15/res15_1_4_03292021.caffemodel"
+# default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_activatebwc_res15/res15_1_4_03292021.prototxt"
+default_kws_model_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_activatebwc_res15/res15_1_5_03302021.caffemodel"
+default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_activatebwc_res15/res15_1_5_03302021.prototxt"
+default_kws_net_input_name = "blob1"
+default_kws_net_output_name = "Softmax"
+default_kws_chw_params = "1,196,64"
+default_kws_transpose = False
+# default_kws_model_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_03262021.caffemodel"
+# default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_03262021.prototxt"
+# default_kws_net_input_name = "data"
+# default_kws_net_output_name = "Softmax"
+# default_kws_chw_params = "1,64,196"
+# default_kws_transpose = True
+
+# heybodycam
+# default_kws_model_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_heybodycam_res15/res15_1_2_03292021.caffemodel"
+# default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_heybodycam_res15/res15_1_2_03292021.prototxt"
 # default_kws_net_input_name = "blob1"
 # default_kws_net_output_name = "Softmax"
-# default_kws_chw_params = "1,196,64"
+# default_kws_chw_params = "1,146,64"
 # default_kws_transpose = False
-default_kws_model_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_03262021.caffemodel"
-default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_03262021.prototxt"
-default_kws_net_input_name = "data"
-default_kws_net_output_name = "Softmax"
-default_kws_chw_params = "1,64,196"
-default_kws_transpose = True
 
 default_asr_model_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/english_0202_better.caffemodel"
 default_asr_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/english_0202_mark.prototxt"
@@ -95,6 +110,7 @@ default_asr_bpe = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/englis
 # default_input_wav = "/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_training_60_001.wav"
 # default_input_wav = "/mnt/huanyuan/data/speech/Recording_sample/iphone/test-kws-asr.wav"
 default_input_wav = "/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_validation_60_001.wav"
+# default_input_wav = "/mnt/huanyuan/model/test_straming_wav/heybodycam_03232021_validation_60_001.wav"
 default_output_folder = "/mnt/huanyuan/data/speech/Recording_sample/demo_kws_asr_online_api/{}".format('-'.join('-'.join(str(datetime.now()).split('.')[0].split(' ')).split(':')))
 default_gpu = True
 
@@ -131,6 +147,9 @@ def model_init(prototxt, model, net_input_name, CHW_params, use_gpu=False):
 
 
 def run_kws():
+    if not bool_do_kws_weakup:
+        return False
+
     kws_stride_times = int((feature_data_container_np.shape[0] - kws_feature_time) * 1.0 / kws_stride_feature_time) + 1
 
     detected_number = 0
@@ -154,6 +173,9 @@ def run_kws():
 
 
 def run_asr():
+    if not bool_do_asr:
+        return "bool_do_asr = False", "", ""
+
     feature_data_asr = feature_data_container_np.astype(np.float32)
     asr_net.blobs[args.asr_net_input_name].data[...] = np.expand_dims(feature_data_asr, axis=0)
 

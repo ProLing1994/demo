@@ -28,9 +28,9 @@ def find_over_long_audio():
 
 
 if __name__ == "__main__":
-    default_input_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/activatebwc/"
+    default_input_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/heybodycam/"
     default_output_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/special_case/over_long/"
-    default_threshold = '2.5'
+    default_threshold = '1.0'
     
     parser = argparse.ArgumentParser(description='Streamax KWS Engine')
     parser.add_argument('--input_dir', type=str, default=default_input_dir)

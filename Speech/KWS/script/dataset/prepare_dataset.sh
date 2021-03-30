@@ -18,8 +18,8 @@ stage=1
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaoyu.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaorui.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py
-config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py
-# config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_heybodycam.py
+# config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py
+config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_heybodycam.py
 
 echo "script/dataset/prepare_dataset.sh"
 

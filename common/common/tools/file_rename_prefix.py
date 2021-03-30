@@ -2,8 +2,8 @@ import glob
 import os
 
 if __name__ == '__main__':
-    input_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/bwc/"
-    file_format = 'RM_KWS_ACTIVATEBWC_bwc_'
+    input_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/activate/"
+    file_format = 'RM_KWS_ACTIVATEBWC_activate_'
     file_type = ".wav"
 
     file_list = glob.glob(os.path.join(input_dir, '*' + file_type))

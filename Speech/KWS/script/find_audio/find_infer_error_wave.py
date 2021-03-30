@@ -4,6 +4,10 @@ import pandas as pd
 import shutil
 
 def find_error_wave():
+    # mkdir
+    if not os.path.exists(args.output_dir):
+        os.makedirs(args.output_dir)
+
     csv_pd = pd.read_csv(args.csv_path)
     for _, row in csv_pd.iterrows():
         if row['prob_1'] <= float(args.threshold) and row['label'] == args.label:
@@ -13,8 +17,8 @@ def find_error_wave():
             shutil.copy(input_path, output_path)
 
 if __name__ == "__main__":
-    default_csv_path = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_3_res15_fbankcpu_03222021/dataset_1.2_infer_longterm_validation_augmentation_False_mean.csv"
-    default_output_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_3_res15_fbankcpu_03222021/wrong_wave/"
+    default_csv_path = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_5_res15_fbankcpu_03222021/dataset_1_4_infer_longterm_validation_augmentation_False_mean.csv"
+    default_output_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_5_res15_fbankcpu_03222021/wrong_wave/"
     default_label = "activatebwc"
     default_threshold = '0.5'
     
