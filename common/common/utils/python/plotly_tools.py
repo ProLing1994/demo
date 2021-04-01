@@ -57,6 +57,16 @@ def plot_loss2d(log_file, out_file, name=['train_loss', 'test_loss'], display='D
     plot_losses(log_file, out_file, display, loss_names, legends, colors)
 
 
+def plot_loss4d(log_file, out_file, name=['model_0_train_loss', 'model_1_train_loss', 'model_0_eval_loss', 'model_1_eval_loss'], display='Dice loss'):
+    """
+    For the consideration of compatibility.
+    """
+    loss_names = name
+    legends = name
+    colors = ['rgb(255, 0, 0)', 'rgb(255, 127, 0)', 'rgb(0, 0, 255)', 'rgb(0, 127, 255)']
+    plot_losses(log_file, out_file, display, loss_names, legends, colors)
+
+
 def plot_losses(log_file, out_file, display, loss_names, legends, colors=None, batch_word ='batch'):
     """
     Plot loss curve from the data in log_file

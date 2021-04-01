@@ -17,7 +17,7 @@ from tqdm import tqdm
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from common.common.utils.python.train_tools import EpochConcateSampler
 from common.common.utils.python.file_tools import load_module_from_disk
-from common.common.utils.python.plotly_tools import plot_loss2d, plot_loss
+from common.common.utils.python.plotly_tools import plot_loss4d, plot_loss2d, plot_loss
 
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/KWS')
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
@@ -137,6 +137,16 @@ def loss_fn_kd(cfg, original_scores, teacher_scores, loss):
 
     return KD_loss
 
+def loss_kl(original_scores, teacher_scores):
+    """
+    Compute the knowledge-distillation (KD) loss given outputs, labels.
+    "Hyperparameters": temperature and alpha
+
+    NOTE: the KL Divergence for PyTorch comparing the softmaxs of teacher
+    and student expects the input tensor to be log probabilities! See Issue #2
+    """
+    KL_loss = nn.KLDivLoss(reduction='batchmean')(F.log_softmax(original_scores, dim=1), F.softmax(teacher_scores, dim=1))
+    return KL_loss
 
 def worker_init(worker_idx):
     """
@@ -286,19 +296,33 @@ def plot_tool(cfg, log_file):
     """
     train_loss_file = os.path.join(cfg.general.save_dir, 'train_loss.html')
     train_accuracy_file = os.path.join(cfg.general.save_dir, 'train_accuracy.html')
-    if cfg.general.is_test:
-        plot_loss2d(log_file, train_loss_file, name=['train_loss', 'eval_loss'],
-                    display='Training/Validation Loss ({})'.format(cfg.loss.name))
-        plot_loss2d(log_file, train_accuracy_file, name=['train_accuracy', 'eval_accuracy'],
-                    display='Training/Validation Accuracy ({})'.format(cfg.loss.name))
+    if cfg.deep_mutual_learning.on:
+        # Deep Mutual Learning
+        if cfg.general.is_test:
+            plot_loss4d(log_file, train_loss_file, name=['model_0_train_loss', 'model_1_train_loss', 'model_0_eval_loss', 'model_1_eval_loss'],
+                        display='Training/Validation Loss ({})'.format(cfg.loss.name))
+            plot_loss4d(log_file, train_accuracy_file, name=['model_0_train_accuracy', 'model_1_eval_accuracy', 'model_0_eval_accuracy', 'model_1_eval_accuracy'],
+                        display='Training/Validation Accuracy ({})'.format(cfg.loss.name))
+        else:
+            plot_loss2d(log_file, train_loss_file, name=['model_0_train_loss', 'model_1_train_loss'],
+                        display='Training/Validation Loss ({})'.format(cfg.loss.name))
+            plot_loss2d(log_file, train_accuracy_file, name=['model_0_train_accuracy', 'model_1_eval_accuracy'],
+                        display='Training/Validation Accuracy ({})'.format(cfg.loss.name))
+
     else:
-        plot_loss(log_file, train_loss_file, name='train_loss',
-                display='Training Loss ({})'.format(cfg.loss.name))
-        plot_loss(log_file, train_accuracy_file, name='train_accuracy',
-                display='Training Accuracy ({})'.format(cfg.loss.name))
+        if cfg.general.is_test:
+            plot_loss2d(log_file, train_loss_file, name=['train_loss', 'eval_loss'],
+                        display='Training/Validation Loss ({})'.format(cfg.loss.name))
+            plot_loss2d(log_file, train_accuracy_file, name=['train_accuracy', 'eval_accuracy'],
+                        display='Training/Validation Accuracy ({})'.format(cfg.loss.name))
+        else:
+            plot_loss(log_file, train_loss_file, name='train_loss',
+                    display='Training Loss ({})'.format(cfg.loss.name))
+            plot_loss(log_file, train_accuracy_file, name='train_accuracy',
+                    display='Training Accuracy ({})'.format(cfg.loss.name))
 
 
-def save_checkpoint(net, optimizer, epoch_idx, batch_idx, cfg, config_file):
+def save_checkpoint(net, optimizer, epoch_idx, batch_idx, cfg, config_file, output_folder_name='checkpoints'):
     """
     save model and parameters into a checkpoint file (.pth)
     :param net: the network object
@@ -310,7 +334,7 @@ def save_checkpoint(net, optimizer, epoch_idx, batch_idx, cfg, config_file):
     :return: None
     """
     chk_folder = os.path.join(cfg.general.save_dir,
-                              'checkpoints', 'chk_{}'.format(epoch_idx))
+                              output_folder_name, 'chk_{}'.format(epoch_idx))
     if not os.path.isdir(chk_folder):
         os.makedirs(chk_folder)
     filename = os.path.join(chk_folder, 'parameter.pkl')

@@ -11,6 +11,7 @@ from utils.train_tools import *
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from common.common.utils.python.logging_helpers import setup_logger
 
+
 def test(cfg, net, loss_func, epoch_idx, batch_idx, logger, test_data_loader, mode='eval'):
     """
     :param cfg:                config contain data set information
@@ -61,8 +62,8 @@ def train(config_file, training_mode):
 
     # check
     assert cfg.general.data_parallel_mode == 0, "[ERROR] If you want DistributedDataParallel, please run train_dpp.py"
-    assert not cfg.deep_mutual_learning.on, "[ERROR] If you  want Deep Mutual Learning, please run train_dml.py"
-
+    assert cfg.deep_mutual_learning.on, "[ERROR] If you do not want Deep Mutual Learning, please run train.py"
+    assert cfg.deep_mutual_learning.model_num == 2,  "[ERROR] Onlu support model_num: 2"
     # clean the existing folder if the user want to train from scratch
     setup_workshop(cfg)
 
@@ -73,11 +74,16 @@ def train(config_file, training_mode):
     log_file = os.path.join(cfg.general.save_dir, 'logging', 'train_log.txt')
     logger = setup_logger(log_file, 'kws_train')
 
-    # define network
-    net = import_network(cfg, cfg.net.model_name, cfg.net.class_name)
+    net_list = []
+    optimizer_list = []
+    for i in range(cfg.deep_mutual_learning.model_num):
+        # define network
+        net = import_network(cfg, cfg.net.model_name, cfg.net.class_name)
+        net_list.append(net)
 
-    # set training optimizer, learning rate scheduler
-    optimizer = set_optimizer(cfg, net)
+        # set training optimizer, learning rate scheduler
+        optimizer = set_optimizer(cfg, net)
+        optimizer_list.append(optimizer)
 
     # define loss function
     loss_func = define_loss_function(cfg)
@@ -85,34 +91,18 @@ def train(config_file, training_mode):
     # load checkpoint if finetune_on == True or resume epoch > 0
     if cfg.general.finetune_on == True:
         # fintune, Load model, reset learning rate
-        last_save_epoch, start_batch = load_checkpoint(cfg.general.finetune_epoch, net,
-                                                        cfg.general.finetune_model_dir, 
-                                                        sub_folder_name='pretrain_model')
+        for i in range(cfg.deep_mutual_learning.model_num):
+            last_save_epoch, start_batch = load_checkpoint(cfg.general.finetune_epoch, net_list[i],
+                                                            cfg.general.finetune_model_dir, 
+                                                            sub_folder_name='pretrain_model_{}'.format(i))
         start_epoch, last_save_epoch, start_batch = 0, 0, 0
-    elif cfg.general.resume_epoch >= 0:
-        # resume, Load the model, continue the previous learning rate
-        last_save_epoch, start_batch = load_checkpoint(cfg.general.resume_epoch, net,
-                                                        cfg.general.save_dir, 
-                                                        optimizer=optimizer)
-        start_epoch = last_save_epoch
     else:
         start_epoch, last_save_epoch, start_batch = 0, 0, 0
-
-    # knowledge distillation
-    if cfg.knowledge_distillation.on:
-        msg = 'Knowledge Distillation: {} -> {}'.format(cfg.knowledge_distillation.teacher_model_name, cfg.net.model_name)
-        logger.info(msg)
-
-        teacher_model = import_network(cfg, model_name=cfg.knowledge_distillation.teacher_model_name)
-        _, _ = load_checkpoint(cfg.knowledge_distillation.epoch, teacher_model,
-                                    cfg.knowledge_distillation.teacher_model_dir)
-        teacher_model.eval()
 
     # get training data set and test data set
     train_dataloader, len_dataset = generate_dataset(cfg, 'training', training_mode)
     if cfg.general.is_test:
         eval_validation_dataloader = generate_test_dataset(cfg, 'validation', training_mode=training_mode)
-        # eval_train_dataloader = generate_test_dataset(cfg, 'training')
 
     msg = 'Training dataset number: {}'.format(len_dataset)
     logger.info(msg)
@@ -124,17 +114,10 @@ def train(config_file, training_mode):
     data_iter = iter(train_dataloader)
     batch_idx = start_batch
 
-    # # save model 
-    # os.makedirs('/mnt/huanyuan/model/kws_xiaorui_12162020_test/checkpoints/chk_1/')
-    # torch.save(net.cpu().module.state_dict(), '/mnt/huanyuan/model/kws_xiaorui_12162020_test/checkpoints/chk_1/net_parameter.pth')
-
     # loop over batches
     for i in range(batch_number):
 
-        net.train()
         begin_t = time.time()
-        optimizer.zero_grad()
-
         epoch_idx = start_epoch + i * cfg.train.batch_size // len_dataset
         batch_idx += 1
 
@@ -142,31 +125,45 @@ def train(config_file, training_mode):
 
         # save training images for visualization
         if cfg.debug.save_inputs:
-            save_intermediate_results(
-                cfg, "training", epoch_idx, inputs, labels, indexs)
+            save_intermediate_results(cfg, "training", epoch_idx, inputs, labels, indexs)
 
         inputs, labels = inputs.cuda(), labels.cuda()
 
-        scores = net(inputs)
-        scores = scores.view(scores.size()[0], scores.size()[1])
-        loss = loss_func(scores, labels)
-        if cfg.knowledge_distillation.on:
-            teacher_model.eval()
-            teacher_scores = teacher_model(inputs)
-            loss = loss_fn_kd(cfg, scores, teacher_scores, loss)
-        loss.backward()
-        optimizer.step()
+        scores_list = []
+        for i in range(cfg.deep_mutual_learning.model_num):
+            net_list[i].train()
+            scores = net_list[i](inputs)
+            scores = scores.view(scores.size()[0], scores.size()[1])
+            scores_list.append(scores)
+        
+        for i in range(cfg.deep_mutual_learning.model_num):
+            scores = net_list[i](inputs)
+            scores = scores.view(scores.size()[0], scores.size()[1])
+            ce_loss = loss_func(scores, labels)
 
-        # caltulate accuracy
-        pred_y = torch.max(scores, 1)[1].cpu().data.numpy()
-        accuracy = float((pred_y == labels.cpu().data.numpy()).astype(
-            int).sum()) / float(labels.size(0))
+            kl_loss = 0
+            for j in range(cfg.deep_mutual_learning.model_num):
+                if i != j:
+                    kl_loss += loss_kl(scores, scores_list[j])
 
-        # print training information
-        sample_duration = (time.time() - begin_t) * 1.0 / cfg.train.batch_size
-        msg = 'epoch: {}, batch: {}, train_accuracy: {:.4f}, train_loss: {:.4f}, time: {:.4f} s/vol' \
-            .format(epoch_idx, batch_idx, accuracy, loss.item(), sample_duration)
-        logger.info(msg)
+            # NOTE: DML loss
+            loss = ce_loss + kl_loss / (cfg.deep_mutual_learning.model_num - 1)
+
+            # compute gradients and update adam
+            optimizer_list[i].zero_grad()
+            loss.backward()
+            optimizer_list[i].step()
+
+            # caltulate accuracy
+            pred_y = torch.max(scores, 1)[1].cpu().data.numpy()
+            accuracy = float((pred_y == labels.cpu().data.numpy()).astype(
+                int).sum()) / float(labels.size(0))
+
+            # print training information
+            sample_duration = (time.time() - begin_t) * 1.0 / cfg.train.batch_size
+            msg = 'epoch: {}, batch: {}, model_{}_train_accuracy: {:.4f}, model_{}_train_loss: {:.4f}, time: {:.4f} s/vol' \
+                .format(epoch_idx, batch_idx, i, accuracy, i, loss.item(), sample_duration)
+            logger.info(msg)
 
         if (batch_idx % cfg.train.plot_snapshot) == 0:
             plot_tool(cfg, log_file)
@@ -176,13 +173,12 @@ def train(config_file, training_mode):
                 last_save_epoch = epoch_idx
 
                 # save training model
-                save_checkpoint(net, optimizer, epoch_idx,
-                                batch_idx, cfg, config_file)
+                for i in range(cfg.deep_mutual_learning.model_num):
+                    save_checkpoint(net_list[i], optimizer_list[i], epoch_idx, batch_idx, cfg, config_file, output_folder_name='checkpoints_{}'.format(i))
 
                 if cfg.general.is_test:
-                    test(cfg, net, loss_func, epoch_idx, batch_idx,
-                         logger, eval_validation_dataloader, mode='eval')
-                    # test(cfg, net, loss_func, epoch_idx, batch_idx, logger, eval_train_dataloader, mode='eval')
+                    for i in range(cfg.deep_mutual_learning.model_num):
+                        test(cfg, net_list[i], loss_func, epoch_idx, batch_idx, logger, eval_validation_dataloader, mode='model_{}_eval'.format(i))
 
 
 def main():

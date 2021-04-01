@@ -14,19 +14,19 @@ __C.general.data_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experi
 __C.general.sub_data_dir = []
 
 # data version
-__C.general.version = "1.4"
+__C.general.version = "1.5"
 
 # data date
-__C.general.date = "03292021"
+__C.general.date = "03312021"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_1.4_03292021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_1.5_03312021/total_data_files.csv"
 
 # background noise path
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_1.4_03292021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_1.5_03312021/background_noise_files.csv"
 
 # test after save pytorch model
-__C.general.is_test = False
+__C.general.is_test = True
 
 # the output of training models and logging files
 # __C.general.save_dir = "/mnt/huanyuan/model/kws_english_test"
@@ -88,6 +88,20 @@ __C.knowledge_distillation.temperature = 6
 
 
 ##################################
+# Deep Mutual Learning parameters
+##################################
+
+__C.deep_mutual_learning = {}
+
+# Deep Mutual Learning: on
+# DML: https://arxiv.org/abs/1706.00384
+__C.deep_mutual_learning.on = False
+
+# model number
+__C.deep_mutual_learning.model_num = 2
+
+
+##################################
 # data set parameters
 ##################################
 
@@ -145,8 +159,8 @@ __C.dataset.label.label_list = __C.dataset.label.negative_label + __C.dataset.la
 __C.dataset.label.num_classes = 2
 
 # label percentage
-__C.dataset.label.silence_percentage = 20.0      # 20%
-__C.dataset.label.unknown_percentage = 1000.0       # 1000%
+__C.dataset.label.silence_percentage = 25.0         # 25%
+__C.dataset.label.unknown_percentage = 2000.0       # 2000%
 
 # difficult sample mining
 __C.dataset.label.difficult_sample_mining = False
@@ -266,14 +280,14 @@ __C.train.num_epochs = 1
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 1024
 # __C.train.batch_size = 128
-__C.train.batch_size = 64
+# __C.train.batch_size = 64
 # __C.train.batch_size = 16
-# __C.train.batch_size = 1
+__C.train.batch_size = 1
 
 # the number of threads for IO
-__C.train.num_threads = 64
+# __C.train.num_threads = 64
 # __C.train.num_threads = 16
-# __C.train.num_threads = 1
+__C.train.num_threads = 1
 
 # the number of batches to update loss curve
 __C.train.plot_snapshot = 5

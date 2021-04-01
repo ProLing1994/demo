@@ -61,6 +61,7 @@ def train(config_file, local_rank, training_mode):
 
     # check 
     assert cfg.general.data_parallel_mode == 1, "[ERROR] If you want DataParallel, please run train.py"
+    assert not cfg.deep_mutual_learning.on, "[ERROR] If you  want Deep Mutual Learning, please run train_dml.py"
 
     # clean the existing folder if the user want to train from scratch
     setup_workshop(cfg)
