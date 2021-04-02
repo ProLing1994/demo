@@ -40,7 +40,7 @@ def decode_sliding_window(args, wave_data, window_size_samples, window_stride_sa
         # print(audio_data[:10])
 
         # cal feature
-        feature = Feature(window_size_samples, int(args.CHW_params.split(",")[2]))
+        feature = Feature(sample_rate, window_size_samples/sample_rate, int(args.CHW_params.split(",")[2]))
         feature.get_mel_int_feature(audio_data, len(audio_data))
         feature_data = feature.copy_mfsc_feature_int_to()
         # print(np.expand_dims(feature_data, axis=0).shape)

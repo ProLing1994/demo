@@ -11,7 +11,7 @@ from ASR.impl.asr_feature_pyimpl import Feature
 def cal_feature_1s(wave_data, times):
     audio_data = wave_data[times * int(window_stride_samples): times * int(window_stride_samples) + int(window_size_samples)]
     # print(audio_data)
-    feature = Feature(window_size_samples, int(feature_freq))
+    feature = Feature(sample_rate, window_size_samples/sample_rate, int(feature_freq))
     feature.get_mel_int_feature(audio_data, len(audio_data))
     feature_data = feature.copy_mfsc_feature_int_to()
     return feature_data
@@ -19,7 +19,7 @@ def cal_feature_1s(wave_data, times):
 def cal_feature_2s(wave_data, times):
     audio_data = wave_data[times * int(window_stride_samples): times * int(window_stride_samples) + int(window_size_samples) * 2]
     # print(audio_data)
-    feature = Feature(window_size_samples * 2, int(feature_freq))
+    feature = Feature(sample_rate,(window_size_samples * 2)/sample_rate, int(feature_freq))
     feature.get_mel_int_feature(audio_data, len(audio_data))
     feature_data = feature.copy_mfsc_feature_int_to()
     return feature_data
@@ -27,7 +27,7 @@ def cal_feature_2s(wave_data, times):
 def cal_feature_retain(wave_data, times):
     audio_data = wave_data[times * int(window_stride_samples) - (int(window_size_samples_retain) - int(window_size_samples)): times * int(window_stride_samples) + int(window_size_samples)]
     # print(audio_data)
-    feature = Feature(window_size_samples_retain, int(feature_freq))
+    feature = Feature(sample_rate, window_size_samples_retain/sample_rate, int(feature_freq))
     feature.get_mel_int_feature(audio_data, len(audio_data))
     feature_data = feature.copy_mfsc_feature_int_to()
     return feature_data
@@ -99,7 +99,7 @@ if __name__ == "__main__":0
     kws_feature_time = 196
     kws_stride_feature_time = 10            # kws 每间隔 10 个 feature_time 进行一次检索
     kws_detection_threshold = 0.8           # kws 检测阈值 0.8
-    kws_detection_number_threshold = 0.5   # kws 计数阈值 0.5
+    kws_detection_number_threshold = 0.5    # kws 计数阈值 0.5
 
     # init 
     window_size_samples = int(sample_rate * window_size_ms / 1000)

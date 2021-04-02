@@ -27,8 +27,6 @@ def augmentation_test(config_file, output_dir):
     feature_bin_count = cfg.dataset.feature_bin_count
 
     desired_samples = int(sample_rate * clip_duration_ms / 1000)
-    window_size_samples = int(sample_rate * window_size_ms / 1000)
-    window_stride_samples = int(sample_rate * window_stride_ms / 1000)
 
     # data index
     label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
@@ -42,9 +40,9 @@ def augmentation_test(config_file, output_dir):
 
     # init AudioPreprocessor
     audio_processor = AudioPreprocessor(sr=sample_rate, 
-                            n_dct_filters=feature_bin_count, 
-                            win_length =window_size_samples, 
-                            hop_length=window_stride_samples)
+                            n_mels=feature_bin_count, 
+                            winlen=window_size_ms / 1000, 
+                            winstep=window_stride_ms / 1000)
 
     background_data = load_background_noise(cfg)
 

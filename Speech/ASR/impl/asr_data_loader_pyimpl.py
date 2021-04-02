@@ -24,5 +24,7 @@ class WaveLoader(object):
         return self.data.shape[0] / self.sample_rate
 
     def to_numpy(self):
-        return self.data * pow(2,15)
+        data = self.data * pow(2,15)
+        data = data.astype(int)
+        return data
 

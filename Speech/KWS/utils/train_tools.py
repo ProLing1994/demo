@@ -301,7 +301,7 @@ def plot_tool(cfg, log_file):
         if cfg.general.is_test:
             plot_loss4d(log_file, train_loss_file, name=['model_0_train_loss', 'model_1_train_loss', 'model_0_eval_loss', 'model_1_eval_loss'],
                         display='Training/Validation Loss ({})'.format(cfg.loss.name))
-            plot_loss4d(log_file, train_accuracy_file, name=['model_0_train_accuracy', 'model_1_eval_accuracy', 'model_0_eval_accuracy', 'model_1_eval_accuracy'],
+            plot_loss4d(log_file, train_accuracy_file, name=['model_0_train_accuracy', 'model_1_train_accuracy', 'model_0_eval_accuracy', 'model_1_eval_accuracy'],
                         display='Training/Validation Accuracy ({})'.format(cfg.loss.name))
         else:
             plot_loss2d(log_file, train_loss_file, name=['model_0_train_loss', 'model_1_train_loss'],

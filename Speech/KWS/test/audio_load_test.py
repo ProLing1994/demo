@@ -4,10 +4,12 @@ import pyaudio
 import wave
 
 if __name__ == "__main__":
-    input_wav = "/home/huanyuan/temp/RM_KWS_XIAORUI_xiaorui_S001M1D00T001_1004.wav"
+    input_wav = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/RM_KWS_NIHAOXIAOAN_nihaoxiaoan_S009M1D30T1.wav"
+    output_wav = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/RM_KWS_NIHAOXIAOAN_nihaoxiaoan_S009M1D30T1_8k.wav"
     # input_wav = "/home/huanyuan/temp/RM_KWS_XIAORUI_xiaorui_S001M1D00T001_1010.wav"
     # input_wav = "/home/huanyuan/temp/RM_KWS_XIAORUI_xiaorui_S001M1D00T001_1016.wav"
-    audio_data = librosa.core.load(input_wav, sr=16000)[0]
+    audio_data = librosa.core.load(input_wav, sr=8000)[0]
+    librosa.output.write_wav(output_wav, audio_data, sr=8000) 
     print(audio_data)
     # wf = wave.open(input_wav, 'rb')
     

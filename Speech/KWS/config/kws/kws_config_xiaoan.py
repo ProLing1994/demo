@@ -10,34 +10,26 @@ cfg = __C
 
 __C.general = {}
 
-__C.general.data_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/"
+__C.general.data_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/"
 __C.general.sub_data_dir = []
 
 # data version
-__C.general.version = "1.5"
+__C.general.version = "1.0"
 
 # data date
-__C.general.date = "03312021"
+__C.general.date = "04012021"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_1.5_03312021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.0_04012021/total_data_files.csv"
 
 # background noise path
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_1.5_03312021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.0_04012021/background_noise_files.csv"
 
 # test after save pytorch model
-__C.general.is_test = False
+__C.general.is_test = True
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws_english_test"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_0_res15_fbankcpu_03222021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_1_res15_fbankcpu_03222021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_2_res15_fbankcpu_03222021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_3_res15_fbankcpu_03222021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_4_res15_fbankcpu_03222021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_5_res15_fbankcpu_03222021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_1_tc-resnet14-amba_fbankcpu_kd_03222021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_2_tc-resnet14-amba_fbankcpu_kd_03222021/"
+__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoan_test"
 
 # finetune model
 __C.general.finetune_on = False
@@ -96,7 +88,7 @@ __C.deep_mutual_learning = {}
 
 # Deep Mutual Learning: on
 # DML: https://arxiv.org/abs/1706.00384
-__C.deep_mutual_learning.on = True
+__C.deep_mutual_learning.on = False
 
 # model number
 __C.deep_mutual_learning.model_num = 2
@@ -112,10 +104,11 @@ __C.dataset = {}
 __C.dataset.input_channel = 1
 
 # Number of audio samples per second
-__C.dataset.sample_rate = 16000
+# __C.dataset.sample_rate = 16000
+__C.dataset.sample_rate = 8000
 
 # Length of each audio clip to be analyzed
-__C.dataset.clip_duration_ms = 2000
+__C.dataset.clip_duration_ms = 1500
 
 # Duration of frequency analysis window
 # __C.dataset.window_size_ms = 30.0
@@ -132,11 +125,14 @@ __C.dataset.preprocess = "fbank_cpu"
 
 # How many bins to use for the MFCC fingerprint
 # __C.dataset.feature_bin_count = 40
-__C.dataset.feature_bin_count = 64
+__C.dataset.feature_bin_count = 48
+# __C.dataset.feature_bin_count = 64
 
 # input size of training data (w, h), unit: voxel
 # __C.dataset.data_size = [40, 201]
-__C.dataset.data_size = [64, 196]
+# __C.dataset.data_size = [64, 196]
+# __C.dataset.data_size = [64, 146]
+__C.dataset.data_size = [48, 146]
 
 
 ##################################
@@ -146,9 +142,9 @@ __C.dataset.data_size = [64, 196]
 __C.dataset.label = {}
 
 # label
-__C.dataset.label.positive_label = ["activatebwc"]
+__C.dataset.label.positive_label = ["xiaoanxiaoan_8k", "xiaoanxiaoan_16k"]
 __C.dataset.label.positive_label_chinese_name_list = [""]
-__C.dataset.label.positive_label_together = False
+__C.dataset.label.positive_label_together = True
 __C.dataset.label.positive_label_together_label = ["positive"]
 __C.dataset.label.negative_label = ["_silence_", "_unknown_"]
 __C.dataset.label.negative_label_together = True
@@ -160,14 +156,13 @@ __C.dataset.label.label_list = __C.dataset.label.negative_label + __C.dataset.la
 __C.dataset.label.num_classes = 2
 
 # label percentage
-__C.dataset.label.silence_percentage = 25.0         # 25%
+__C.dataset.label.silence_percentage = 100.0        # 100%
 __C.dataset.label.unknown_percentage = 2000.0       # 2000%
 
 # difficult sample mining
 __C.dataset.label.difficult_sample_mining = False
 __C.dataset.label.difficult_sample_percentage = 200.0     # 200% per dir
-__C.dataset.label.difficult_sample_mining_dir = ["/mnt/huanyuan/data/speech/kws/difficult_sample_mining/difficult_sample_mining_11122020/clean_audio/",
-                                                 "/mnt/huanyuan/data/speech/kws/difficult_sample_mining/difficult_sample_mining_12212020/audio/"]
+__C.dataset.label.difficult_sample_mining_dir = [""]
 
 # trian/validation/test percentage
 __C.dataset.label.validation_percentage = 15.0  # 15%
@@ -182,8 +177,8 @@ __C.dataset.label.testing_percentage = 0.0     # 0%
 __C.dataset.augmentation = {}
 
 # based on audio waveform: on
-__C.dataset.augmentation.on = True
-# __C.dataset.augmentation.on = False
+# __C.dataset.augmentation.on = True
+__C.dataset.augmentation.on = False
 
 # How many of the training samples have background noise mixed in.
 __C.dataset.augmentation.background_frequency = 0.8
@@ -199,8 +194,8 @@ __C.dataset.augmentation.time_shift_multiple = 10
 # __C.dataset.augmentation.time_shift_multiple = 5
 
 # based on audio waveform: on.
-__C.dataset.augmentation.speed_volume_on = True
-# __C.dataset.augmentation.speed_volume_on = False
+# __C.dataset.augmentation.speed_volume_on = True
+__C.dataset.augmentation.speed_volume_on = False
 
 # How fast the audio should be.
 __C.dataset.augmentation.speed = [0.9, 1.1]
@@ -214,8 +209,8 @@ __C.dataset.augmentation.pitch_on = False
 __C.dataset.augmentation.pitch = [-5, 5]
 
 # based on audio spectrum: on
-__C.dataset.augmentation.spec_on = True
-# __C.dataset.augmentation.spec_on = False
+# __C.dataset.augmentation.spec_on = True
+__C.dataset.augmentation.spec_on = False
 __C.dataset.augmentation.F = 5
 __C.dataset.augmentation.T = 20
 __C.dataset.augmentation.num_masks = 1
@@ -247,7 +242,7 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'cnn-trad-pool2'
 # __C.net.model_name = 'cnn-one-fstride1'
 # __C.net.model_name = 'cnn-tpool2'
-# __C.net.model_name = 'res15'
+__C.net.model_name = 'res15'
 # __C.net.model_name = 'res15-narrow'
 # __C.net.model_name = 'res15-narrow-amba'
 # __C.net.model_name = 'res15-narrow-novt'
@@ -259,7 +254,7 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'crnn-attention'
 # __C.net.model_name = 'tc-resnet8'
 # __C.net.model_name = 'tc-resnet14'
-__C.net.model_name = 'tc-resnet14-amba'
+# __C.net.model_name = 'tc-resnet14-amba'
 # __C.net.model_name = 'tc-resnet8-dropout'
 # __C.net.model_name = 'tc-resnet14-dropout'
 # __C.net.model_name = 'tc-resnet18-dropout'
@@ -274,22 +269,21 @@ __C.train = {}
 # __C.train.num_epochs = 16000
 # __C.train.num_epochs = 8000
 # __C.train.num_epochs = 4000
-# __C.train.num_epochs = 1000
+# __C.train.num_epochs = 100
 __C.train.num_epochs = 1
 
 # the number of samples in a batch
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 1024
-# __C.train.batch_size = 512
 # __C.train.batch_size = 128
-# __C.train.batch_size = 64
+__C.train.batch_size = 64
 # __C.train.batch_size = 16
-__C.train.batch_size = 1
+# __C.train.batch_size = 1
 
 # the number of threads for IO
-# __C.train.num_threads = 64
+__C.train.num_threads = 64
 # __C.train.num_threads = 16
-__C.train.num_threads = 1
+# __C.train.num_threads = 1
 
 # the number of batches to update loss curve
 __C.train.plot_snapshot = 5
@@ -340,8 +334,8 @@ __C.train.betas = (0.9, 0.999)
 __C.debug = {}
 
 # whether to save input images
-# __C.debug.save_inputs = True
-__C.debug.save_inputs = False
+__C.debug.save_inputs = True
+# __C.debug.save_inputs = False
 
 # the number of processing for save input images
 __C.debug.num_processing = 64

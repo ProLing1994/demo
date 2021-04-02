@@ -271,10 +271,12 @@ namespace ASR
         mel_filter_init();
     }
 
-    Feature::Feature(int data_len_samples, int feature_freq)
+    Feature::Feature(int data_len_samples, int sample_rate, int n_fft, int feature_freq)
     {
         Feature_Options_S feature_options;
         feature_options.data_len_samples = data_len_samples;
+        feature_options.sample_rate = sample_rate;
+        feature_options.n_fft = n_fft;
         feature_options.feature_freq = feature_freq;
 
         m_feature_options = Feature_Options_S(feature_options);

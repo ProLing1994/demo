@@ -51,16 +51,14 @@ class SpeechDataset(Dataset):
     self.time_shift_ms = cfg.dataset.augmentation.time_shift_ms
 
     self.desired_samples = int(self.sample_rate * self.clip_duration_ms / 1000)
-    self.window_size_samples = int(self.sample_rate * self.window_size_ms / 1000)
-    self.window_stride_samples = int(self.sample_rate * self.window_stride_ms / 1000)
     self.time_shift_samples =int(self.sample_rate * self.time_shift_ms / 1000)
     self.background_data = [librosa.core.load(row.file, sr=self.sample_rate)[0] for idx, row in background_data_pd.iterrows()]
 
     self.audio_preprocess_type = cfg.dataset.preprocess
     self.audio_processor = AudioPreprocessor(sr=self.sample_rate, 
-                                            n_dct_filters=self.feature_bin_count, 
-                                            win_length =self.window_size_samples, 
-                                            hop_length=self.window_stride_samples)
+                                            n_mels=self.feature_bin_count, 
+                                            winlen=self.window_size_ms / 1000, 
+                                            winstep=self.window_stride_ms / 1000)
 
   def __len__(self):
     """ get the number of images in this dataset """

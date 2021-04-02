@@ -7,7 +7,8 @@ import sys
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/ASR')
 from impl.asr_data_loader_pyimpl import WaveLoader
-from impl.asr_feature_cimpl import Feature
+# from impl.asr_feature_cimpl import Feature
+from impl.asr_feature_pyimpl import Feature
 from impl.asr_decode_cimpl import Decode
 
 
@@ -49,7 +50,7 @@ def gen_image_list(args):
 
             # cal feature
             # feature = Feature()
-            feature = Feature(window_size_samples, int(args.CHW_params.split(",")[2]))
+            feature = Feature(sample_rate, window_size_samples/sample_rate, int(args.CHW_params.split(",")[2]))
             feature.get_mel_int_feature(audio_data, len(audio_data))
             feature_data = feature.copy_mfsc_feature_int_to()
             print(np.expand_dims(feature_data, axis=0).shape)

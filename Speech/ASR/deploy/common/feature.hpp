@@ -76,7 +76,7 @@ namespace ASR
     public:
 		Feature();
 		Feature(const Feature_Options_S &feature_options);
-        Feature(int data_len_samples, int feature_freq);
+        Feature(int data_len_samples, int sample_rate, int n_fft, int feature_freq);
 		~Feature();
 
         inline int data_mat_time() const { return m_feature_options.data_mat_time; } 

@@ -18,8 +18,9 @@ stage=1
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaoyu.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaorui.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py
-config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py
+# config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_heybodycam.py
+config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan.py
 
 echo "script/dataset/prepare_dataset.sh"
 
@@ -36,14 +37,14 @@ if [ $stage -le 2 ];then
 fi
 
 # prepare align dataset, clean the dataset according to the alignment results
-# 如果文件夹下不存在 kaldi_type，则不进行 update_dataset
+# 如果文件夹下不存在 kaldi_type，则不进行 update_dataset，kaldi_type 由工具 dataset_align/dataset_align.sh 产生
 if [ $stage -le 3 ];then
 	python update_dataset.py --config_file $config_file || exit 1
 fi
 
 # speed volume augumentation
-# 如果配置文件 speed_volume_on = False，将不会进行 augumentation
-# 最新代码不在离线生成语音，直接在线语音增强
+# old：如果配置文件 speed_volume_on = False，将不会进行 augumentation
+# 最新代码不再离线生成语音，直接在线语音增强，故此段代码失效
 # if [ $stage -le 4 ];then
 # 	 python ../dataset_augmentation/speed_volume_augumentation.py --config_file $config_file || exit 1
 # fi

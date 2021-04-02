@@ -99,22 +99,21 @@ def add_time_mask(spec, T=40, num_masks=1, replace_with_zero=False, static=False
     return spec
 
 class AudioPreprocessor(object):
-    def __init__(self, sr=16000, data_len_samples=48000,n_dct_filters=40, n_mels=40, f_max=4000, f_min=20, win_length =480, hop_length=160, winlen=0.032, winstep=0.010):
+    def __init__(self, sr=16000, n_mels=40, n_dct_filters=40, f_max=4000, f_min=20, winlen=0.032, winstep=0.010, data_length=2):
         super().__init__()
         self.sr = sr
-        self.data_len_samples = data_len_samples
-        self.n_dct_filters = n_dct_filters
         self.n_mels = n_mels
+        self.n_dct_filters = n_dct_filters
         self.f_max = f_max if f_max is not None else sr // 2
-        self.f_min = f_min
-        self.win_length = win_length 
-        self.hop_length = hop_length
+        self.f_min = f_min        
         self.winlen = winlen
         self.winstep = winstep
+        self.win_length = int(self.sr * self.winlen)
+        self.hop_length = int(self.sr * self.winstep)
+        self.data_length = data_length
 
-        self.dct_filters = librosa.filters.dct(self.n_dct_filters, n_mels)
-        self.pcen_transform = pcen.StreamingPCENTransform(
-            n_mels=n_mels, n_fft=win_length , hop_length=hop_length, trainable=True)
+        self.dct_filters = librosa.filters.dct(self.n_dct_filters, self.n_mels)
+        self.pcen_transform = pcen.StreamingPCENTransform(n_mels=self.n_mels, n_fft=self.win_length, hop_length=self.hop_length, trainable=True)
 
     def compute_mfccs(self, data):
         data = librosa.feature.melspectrogram(
@@ -126,8 +125,7 @@ class AudioPreprocessor(object):
             fmin=self.f_min,
             fmax=self.f_max)
         data[data > 0] = np.log(data[data > 0])
-        data = [np.matmul(self.dct_filters, x)
-                for x in np.split(data, data.shape[1], axis=1)]
+        data = [np.matmul(self.dct_filters, x) for x in np.split(data, data.shape[1], axis=1)]
         data = np.array(data, order="F").astype(np.float32)
         return data
 
@@ -159,7 +157,7 @@ class AudioPreprocessor(object):
         # print(data[:10])
         
         # compute fbank cpu
-        featurefbanks_cpu = Feature(data_len_samples=self.data_len_samples, feature_freq=self.n_dct_filters, winlen=self.winlen , winstep=self.winstep)
+        featurefbanks_cpu = Feature(sample_rate=self.sr, data_length=self.data_length, feature_freq=self.n_mels, winlen=self.winlen , winstep=self.winstep)
         featurefbanks_cpu.get_mel_int_feature(data, len(data))
         feature_data = featurefbanks_cpu.copy_mfsc_feature_int_to()
         return feature_data

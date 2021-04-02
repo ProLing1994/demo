@@ -171,7 +171,7 @@ def run_kws_asr(audio_data):
     # print("[Information:] Audio length: ", len(audio_data), len(audio_data_container_np))
 
     # 计算特征
-    feature = Feature(len(audio_data), int(feature_freq))
+    feature = Feature(sample_rate, len(audio_data)/sample_rate, int(feature_freq))
     feature.get_mel_int_feature(audio_data, len(audio_data))
     feature_data = feature.copy_mfsc_feature_int_to()
     # print("[Information:] Feature shape: ", feature_data.shape)

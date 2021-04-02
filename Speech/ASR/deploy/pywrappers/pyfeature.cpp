@@ -7,9 +7,9 @@ namespace ASR
         return new Feature();
     }
 
-    void *Feature_create_samples(int data_len_samples, int feature_freq)
+    void *Feature_create_samples(int data_len_samples, int sample_rate, int n_fft, int feature_freq)
     {
-        return new Feature(data_len_samples, feature_freq);
+        return new Feature(data_len_samples, sample_rate, n_fft, feature_freq);
     }
 
     void Feature_delete(void* feature)

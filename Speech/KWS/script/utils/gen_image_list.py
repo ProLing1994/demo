@@ -8,6 +8,7 @@ import sys
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/ASR')
 from impl.asr_data_loader_pyimpl import WaveLoader
 from impl.asr_feature_cimpl import Feature
+# from impl.asr_feature_pyimpl import Feature
 from impl.asr_decode_cimpl import Decode
 
 
@@ -47,9 +48,14 @@ def gen_image_list(args):
 
             audio_data = wave_data[times * int(window_stride_samples): times * int(window_stride_samples) + int(window_size_samples)]
 
+            audio_data_list = audio_data.tolist()
+            while len(audio_data_list) < window_size_samples:
+                audio_data_list.append(0.0)
+            audio_data = np.array(audio_data_list)
+            
             # cal feature
             # feature = Feature()
-            feature = Feature(window_size_samples, int(args.CHW_params.split(",")[2]))
+            feature = Feature(sample_rate, window_size_samples/sample_rate, int(args.CHW_params.split(",")[2]))
             feature.get_mel_int_feature(audio_data, len(audio_data))
             feature_data = feature.copy_mfsc_feature_int_to()
             print(np.expand_dims(feature_data, axis=0).shape)
@@ -94,10 +100,11 @@ if __name__ == "__main__":
     # default_transpose = False
 
     # kws: activatebwc
-    # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_activatebwc/activatebwc/"
+    default_audio_folder = "/home/huanyuan/share/audio_data/weakup_activatebwc/activatebwc/"
     # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_activatebwc/activatebwc_long/"
     # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_activatebwc/other/"
-    default_output_folder = "/home/huanyuan/share/audio_data/weakup_activatebwc/image_64_196"
+    # default_output_folder = "/home/huanyuan/share/audio_data/weakup_activatebwc/image_64_196"
+    default_output_folder = "/home/huanyuan/share/audio_data/weakup_activatebwc/temp/"
     default_CHW_params = "1,196,64"
     default_transpose = True
 

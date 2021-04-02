@@ -11,6 +11,7 @@ from utils.train_tools import *
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from common.common.utils.python.logging_helpers import setup_logger
 
+from torch.autograd import Variable
 
 def test(cfg, net, loss_func, epoch_idx, batch_idx, logger, test_data_loader, mode='eval'):
     """
@@ -96,6 +97,14 @@ def train(config_file, training_mode):
                                                             cfg.general.finetune_model_dir, 
                                                             sub_folder_name='pretrain_model_{}'.format(i))
         start_epoch, last_save_epoch, start_batch = 0, 0, 0
+    elif cfg.general.resume_epoch >= 0:
+        # resume, Load the model, continue the previous learning rate
+        for i in range(cfg.deep_mutual_learning.model_num):
+            last_save_epoch, start_batch = load_checkpoint(cfg.general.resume_epoch, net_list[i],
+                                                            cfg.general.save_dir, 
+                                                            optimizer=optimizer,
+                                                            sub_folder_name='checkpoints_{}'.format(i))
+        start_epoch = last_save_epoch
     else:
         start_epoch, last_save_epoch, start_batch = 0, 0, 0
 
@@ -137,17 +146,17 @@ def train(config_file, training_mode):
             scores_list.append(scores)
         
         for i in range(cfg.deep_mutual_learning.model_num):
-            scores = net_list[i](inputs)
-            scores = scores.view(scores.size()[0], scores.size()[1])
-            ce_loss = loss_func(scores, labels)
+            ce_loss = loss_func(scores_list[i], labels)
 
-            kl_loss = 0
+            dml_loss = 0
             for j in range(cfg.deep_mutual_learning.model_num):
                 if i != j:
-                    kl_loss += loss_kl(scores, scores_list[j])
+                    # 产生新的 Variable，不进行反向传播，阻断另一个模型计算的梯度，放置复用
+                    # dml_loss += loss_kl(scores_list[i], Variable(scores_list[j]))
+                    dml_loss += loss_kl(scores_list[i], (scores_list[j].detach()))
 
             # NOTE: DML loss
-            loss = ce_loss + kl_loss / (cfg.deep_mutual_learning.model_num - 1)
+            loss = ce_loss + dml_loss / (cfg.deep_mutual_learning.model_num - 1)
 
             # compute gradients and update adam
             optimizer_list[i].zero_grad()
@@ -155,9 +164,8 @@ def train(config_file, training_mode):
             optimizer_list[i].step()
 
             # caltulate accuracy
-            pred_y = torch.max(scores, 1)[1].cpu().data.numpy()
-            accuracy = float((pred_y == labels.cpu().data.numpy()).astype(
-                int).sum()) / float(labels.size(0))
+            pred_y = torch.max(scores_list[i], 1)[1].cpu().data.numpy()
+            accuracy = float((pred_y == labels.cpu().data.numpy()).astype(int).sum()) / float(labels.size(0))
 
             # print training information
             sample_duration = (time.time() - begin_t) * 1.0 / cfg.train.batch_size

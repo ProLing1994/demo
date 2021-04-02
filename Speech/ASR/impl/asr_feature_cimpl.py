@@ -18,7 +18,7 @@ def __load_c_functions():
     lib.Feature_create.restype = ctypes.c_void_p
     fun_dict['Feature_create'] = lib.Feature_create
 
-    lib.Feature_create_samples.argtypes = [ctypes.c_int, ctypes.c_int]
+    lib.Feature_create_samples.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int]
     lib.Feature_create_samples.restype = ctypes.c_void_p
     fun_dict['Feature_create_samples'] = lib.Feature_create_samples
 
@@ -98,10 +98,19 @@ def call_func(func_name, *args):
 
 class Feature(object):
     """ feature python wrapper """
-    def __init__(self, data_len_samples=48000, feature_freq=48):
-        data_len_samples = ctypes.c_int(data_len_samples)
+    def __init__(self, sample_rate=16000, data_length=3, feature_freq=48):
+        if sample_rate == 16000:
+            n_fft = 512
+        elif sample_rate == 8000:  
+            n_fft = 256 
+        else:
+            raise Exception("[ERROR: ] Unknow sample_rate")
+
+        data_len_samples = ctypes.c_int(int(sample_rate * data_length))
+        sample_rate = ctypes.c_int(sample_rate)
+        n_fft = ctypes.c_int(n_fft)
         feature_freq = ctypes.c_int(feature_freq)
-        self.ptr = call_func('Feature_create_samples', data_len_samples, feature_freq)
+        self.ptr = call_func('Feature_create_samples', data_len_samples, sample_rate, n_fft, feature_freq)
 
     def __del__(self):
         call_func('Feature_delete', self.ptr)

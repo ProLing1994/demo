@@ -31,7 +31,11 @@ class SpeechDataset(Dataset):
         self.positive_label_together = cfg.dataset.label.positive_label_together
         self.negative_label_together = cfg.dataset.label.negative_label_together
 
-        if self.positive_label_together:
+        if self.positive_label_together and self.negative_label_together:
+            self.positive_label_together_label_list = cfg.dataset.label.positive_label_together_label
+            self.negative_label_together_label_list = cfg.dataset.label.negative_label_together_label
+            self.label_index = load_label_index(self.positive_label_together_label_list, self.negative_label_together_label_list)
+        elif self.positive_label_together:
             self.positive_label_together_label_list = cfg.dataset.label.positive_label_together_label
             self.label_index = load_label_index(self.positive_label_together_label_list, cfg.dataset.label.negative_label)
         elif self.negative_label_together:
@@ -80,22 +84,16 @@ class SpeechDataset(Dataset):
 
         self.desired_samples = int(
             self.sample_rate * self.clip_duration_ms / 1000)
-        self.window_size_samples = int(
-            self.sample_rate * self.window_size_ms / 1000)
-        self.window_stride_samples = int(
-            self.sample_rate * self.window_stride_ms / 1000)
         self.time_shift_samples = int(
             self.sample_rate * self.time_shift_ms / 1000)
         self.background_data = load_background_noise(cfg)
 
         self.audio_preprocess_type = cfg.dataset.preprocess
         self.audio_processor = AudioPreprocessor(sr=self.sample_rate,
-                                                 n_dct_filters=self.feature_bin_count,
-                                                 win_length=self.window_size_samples,
-                                                 hop_length=self.window_stride_samples,
-                                                 data_len_samples = self.desired_samples,
+                                                 n_mels=self.feature_bin_count,
                                                  winlen=self.window_size_ms / 1000, 
-                                                 winstep=self.window_stride_ms / 1000)
+                                                 winstep=self.window_stride_ms / 1000,
+                                                 data_length = self.clip_duration_ms / 1000)
 
         self.save_audio_inputs_bool = cfg.debug.save_inputs
         self.save_audio_inputs_dir = cfg.general.save_dir

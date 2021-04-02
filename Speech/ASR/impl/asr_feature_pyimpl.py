@@ -136,8 +136,8 @@ def gen_fbank_feature(signal, sample_rate=16000, winlen=0.025, winstep=0.01,
 
 class Feature(object):
     """ feature python wrapper """
-    def __init__(self, data_len_samples=48000, feature_freq=48, sample_rate=16000, winlen=0.032, winstep=0.010, scale_num=10):
-        self.data_len_samples = data_len_samples
+    def __init__(self, sample_rate=16000, data_length=3, feature_freq=48, winlen=0.032, winstep=0.010, scale_num=10):
+        self.data_len_samples = sample_rate * data_length
         self.feature_freq = feature_freq
         self.sample_rate = sample_rate
         self.winlen = winlen

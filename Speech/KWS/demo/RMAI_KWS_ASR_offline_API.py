@@ -27,8 +27,8 @@ feature_freq = 64                       # 计算特征维度
 # kws_stride_feature_time = 10            # kws 每间隔 10 个 feature_time 进行一次检索
 # kws_detection_threshold = 0.8           # kws 检测阈值 0.8
 kws_feature_time = 196                  # kws 网络特征时间维度
-kws_stride_feature_time = 30            # kws 每间隔 30 个 feature_time 进行一次检索
-kws_detection_threshold = 0.5           # kws 检测阈值 0.5
+kws_stride_feature_time = 10            # kws 每间隔 30 个 feature_time 进行一次检索
+kws_detection_threshold = 0.7           # kws 检测阈值 0.7
 kws_detection_number_threshold = 0.5    # kws 计数阈值 0.5
 kws_suppression_counter = 3             # kws 激活后抑制时间 3s
 
@@ -78,18 +78,18 @@ bool_do_kws_weakup = True
 # activatebwc
 # default_kws_model_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_activatebwc_res15/res15_1_4_03292021.caffemodel"
 # default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_activatebwc_res15/res15_1_4_03292021.prototxt"
-default_kws_model_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_activatebwc_res15/res15_1_5_03302021.caffemodel"
-default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_activatebwc_res15/res15_1_5_03302021.prototxt"
-default_kws_net_input_name = "blob1"
-default_kws_net_output_name = "Softmax"
-default_kws_chw_params = "1,196,64"
-default_kws_transpose = False
-# default_kws_model_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_03262021.caffemodel"
-# default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_03262021.prototxt"
-# default_kws_net_input_name = "data"
+# default_kws_model_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_activatebwc_res15/res15_1_5_03302021.caffemodel"
+# default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_activatebwc_res15/res15_1_5_03302021.prototxt"
+# default_kws_net_input_name = "blob1"
 # default_kws_net_output_name = "Softmax"
-# default_kws_chw_params = "1,64,196"
-# default_kws_transpose = True
+# default_kws_chw_params = "1,196,64"
+# default_kws_transpose = False
+default_kws_model_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_2_2_04012021.caffemodel"
+default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_2_2_04012021.prototxt"
+default_kws_net_input_name = "data"
+default_kws_net_output_name = "Softmax"
+default_kws_chw_params = "1,64,196"
+default_kws_transpose = True
 
 # heybodycam
 # default_kws_model_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_heybodycam_res15/res15_1_2_03292021.caffemodel"
@@ -214,7 +214,7 @@ def run_kws_asr(audio_data):
     # print("[Information:] Audio length: ", len(audio_data), len(audio_data_container_np))
 
     # 计算特征
-    feature = Feature(len(audio_data), int(feature_freq))
+    feature = Feature(sample_rate, len(audio_data)/sample_rate, int(feature_freq))
     feature.get_mel_int_feature(audio_data, len(audio_data))
     feature_data = feature.copy_mfsc_feature_int_to()
     # print("[Information:] Feature shape: ", feature_data.shape)

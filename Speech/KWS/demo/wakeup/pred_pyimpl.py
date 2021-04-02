@@ -109,14 +109,12 @@ def audio_preprocess(cfg, data):
     window_stride_ms = cfg.dataset.window_stride_ms
     feature_bin_count = cfg.dataset.feature_bin_count
     desired_samples = int(sample_rate * clip_duration_ms / 1000)
-    window_size_samples = int(sample_rate * window_size_ms / 1000)
-    window_stride_samples = int(sample_rate * window_stride_ms / 1000)
 
     # init audio_processor
     audio_processor = AudioPreprocessor(sr=sample_rate, 
-                                        n_dct_filters=feature_bin_count, 
-                                        win_length =window_size_samples, 
-                                        hop_length=window_stride_samples)
+                                        n_mels=feature_bin_count, 
+                                        winlen=self.window_size_ms / 1000, 
+                                        winstep=self.window_stride_ms / 1000)
 
     # check 
     assert audio_preprocess_type in ["mfcc", "pcen", "fbank"], "[ERROR:] Audio preprocess type is wronge, please check"
