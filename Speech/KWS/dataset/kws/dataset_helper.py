@@ -99,10 +99,11 @@ def add_time_mask(spec, T=40, num_masks=1, replace_with_zero=False, static=False
     return spec
 
 class AudioPreprocessor(object):
-    def __init__(self, sr=16000, n_mels=40, n_dct_filters=40, f_max=4000, f_min=20, winlen=0.032, winstep=0.010, data_length=2):
+    def __init__(self, sr=16000, n_mels=40, nfilt=40, n_dct_filters=40, f_max=4000, f_min=20, winlen=0.032, winstep=0.010, data_length=2):
         super().__init__()
         self.sr = sr
         self.n_mels = n_mels
+        self.nfilt = nfilt
         self.n_dct_filters = n_dct_filters
         self.f_max = f_max if f_max is not None else sr // 2
         self.f_min = f_min        
@@ -157,7 +158,7 @@ class AudioPreprocessor(object):
         # print(data[:10])
         
         # compute fbank cpu
-        featurefbanks_cpu = Feature(sample_rate=self.sr, data_length=self.data_length, feature_freq=self.n_mels, winlen=self.winlen , winstep=self.winstep)
+        featurefbanks_cpu = Feature(sample_rate=self.sr, data_length=self.data_length, feature_freq=self.n_mels, nfilt=self.nfilt, winlen=self.winlen , winstep=self.winstep)
         featurefbanks_cpu.get_mel_int_feature(data, len(data))
         feature_data = featurefbanks_cpu.copy_mfsc_feature_int_to()
         return feature_data

@@ -58,6 +58,14 @@ def main():
                 spk = file_name.strip().split('_')[-1].split('.')[0][:6]
                 device = file_name.strip().split('_')[-1].split('.')[0][6:9]
                 text = file_name.strip().split('_')[-1].split('.')[0][9:]
+            elif "RM_KWS_NIHAOXIAOAN_" in file_name:
+                spk = file_name.strip().split('_')[-1].split('.')[0][:6]
+                device = file_name.strip().split('_')[-1].split('.')[0][6:9]
+                text = file_name.strip().split('_')[-1].split('.')[0][9:]
+            elif "RM_KWS_XIAOAN_" in file_name:
+                spk = file_name.strip().split('_')[-1].split('.')[0][:6]
+                device = file_name.strip().split('_')[-1].split('.')[0][6:9]
+                text = file_name.strip().split('_')[-1].split('.')[0][9:]
             else:
                 raise Exception('[ERROR] Unknow file_name: {}, please check!'.format(file_name))
             

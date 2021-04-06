@@ -61,6 +61,7 @@ class SpeechDataset(Dataset):
         self.window_size_ms = cfg.dataset.window_size_ms
         self.window_stride_ms = cfg.dataset.window_stride_ms
         self.feature_bin_count = cfg.dataset.feature_bin_count
+        self.nfilt = cfg.dataset.nfilt
 
         self.input_channel = cfg.dataset.input_channel
         self.data_size_h = cfg.dataset.data_size[1]
@@ -91,6 +92,7 @@ class SpeechDataset(Dataset):
         self.audio_preprocess_type = cfg.dataset.preprocess
         self.audio_processor = AudioPreprocessor(sr=self.sample_rate,
                                                  n_mels=self.feature_bin_count,
+                                                 nfilt=self.nfilt,
                                                  winlen=self.window_size_ms / 1000, 
                                                  winstep=self.window_stride_ms / 1000,
                                                  data_length = self.clip_duration_ms / 1000)

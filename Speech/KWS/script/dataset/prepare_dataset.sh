@@ -20,7 +20,8 @@ stage=1
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_heybodycam.py
-config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan.py
+# config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan8k.py
+config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan16k.py
 
 echo "script/dataset/prepare_dataset.sh"
 

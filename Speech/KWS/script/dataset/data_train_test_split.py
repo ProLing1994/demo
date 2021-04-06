@@ -113,10 +113,16 @@ def data_split(config_file):
         assert type(cfg.general.sub_data_dir) == type(list())
         for sub_data_dir in cfg.general.sub_data_dir:
             path_list += glob.glob(os.path.join(sub_data_dir, '*', '*.wav'))
+            path_list += glob.glob(os.path.join(sub_data_dir, '*/*', '*.wav'))
+            path_list += glob.glob(os.path.join(sub_data_dir, '*/*/*', '*.wav'))
 
     for wav_path in tqdm(path_list):
-        # _, word = os.path.split(os.path.dirname(wav_path))
-        word = wav_path.replace(cfg.general.data_dir, '').split('/')[0]
+        # gen word
+        word_path = wav_path.replace(cfg.general.data_dir, '')
+        if 'sub_data_dir' in cfg.general:
+            for sub_data_dir in cfg.general.sub_data_dir:
+                word_path = word_path.replace(sub_data_dir, '')
+        word = word_path.split('/')[0]
         word = word.lower()
 
         # Treat the '_background_noise_' folder as a special case, since we expect

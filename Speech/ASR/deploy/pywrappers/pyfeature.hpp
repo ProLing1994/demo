@@ -18,7 +18,7 @@ namespace ASR
     int Feature_feature_freq(void *feature);
     int Feature_check_data_length(void *feature, int data_len_samples);
     void Feature_get_mel_feature(void *feature, short *pdata, int data_len_samples);
-    void Feature_get_mel_int_feature(void *feature, short *pdata, int data_len_samples);
+    void Feature_get_mel_int_feature(void *feature, short *pdata, int data_len_samples, int mel_filter=64);
     void Feature_copy_mfsc_feature_to(void *feature, float *feature_data);
     void Feature_copy_mfsc_feature_int_to(void *feature, unsigned char *feature_data);
 } // namespace ASR

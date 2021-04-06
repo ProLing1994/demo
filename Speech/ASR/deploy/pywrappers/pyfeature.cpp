@@ -48,10 +48,10 @@ namespace ASR
         obj->get_mel_feature(pdata, data_len_samples);
     }
 
-    void Feature_get_mel_int_feature(void *feature, short *pdata, int data_len_samples)
+    void Feature_get_mel_int_feature(void *feature, short *pdata, int data_len_samples, int mel_filter)
     {
         Feature* obj = static_cast<Feature*>(feature);
-        obj->get_mel_int_feature(pdata, data_len_samples);
+        obj->get_mel_int_feature(pdata, data_len_samples, mel_filter);
     }
 
     void Feature_copy_mfsc_feature_to(void *feature, float *feature_data)

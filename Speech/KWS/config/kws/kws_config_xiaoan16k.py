@@ -11,25 +11,26 @@ cfg = __C
 __C.general = {}
 
 __C.general.data_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/"
-__C.general.sub_data_dir = []
+__C.general.sub_data_dir = ["/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experimental_dataset/XiaoYuDataset/",
+                            "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/XiaoRuiDataset/"]
 
 # data version
-__C.general.version = "1.0"
+__C.general.version = "2.0"
 
 # data date
-__C.general.date = "04012021"
+__C.general.date = "04062021"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.0_04012021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_2.0_04062021/total_data_files.csv"
 
 # background noise path
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.0_04012021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_2.0_04062021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoan_test"
+__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoan16k_test"
 
 # finetune model
 __C.general.finetune_on = False
@@ -104,8 +105,8 @@ __C.dataset = {}
 __C.dataset.input_channel = 1
 
 # Number of audio samples per second
-# __C.dataset.sample_rate = 16000
-__C.dataset.sample_rate = 8000
+__C.dataset.sample_rate = 16000
+# __C.dataset.sample_rate = 8000
 
 # Length of each audio clip to be analyzed
 __C.dataset.clip_duration_ms = 1500
@@ -125,14 +126,17 @@ __C.dataset.preprocess = "fbank_cpu"
 
 # How many bins to use for the MFCC fingerprint
 # __C.dataset.feature_bin_count = 40
-__C.dataset.feature_bin_count = 48
-# __C.dataset.feature_bin_count = 64
+# __C.dataset.feature_bin_count = 48
+__C.dataset.feature_bin_count = 64
+
+# How many nfilt to use for the Mel feature, only support preprocess=fbank_cpu
+__C.dataset.nfilt = 64
 
 # input size of training data (w, h), unit: voxel
 # __C.dataset.data_size = [40, 201]
 # __C.dataset.data_size = [64, 196]
-# __C.dataset.data_size = [64, 146]
-__C.dataset.data_size = [48, 146]
+__C.dataset.data_size = [64, 146]
+# __C.dataset.data_size = [48, 146]
 
 
 ##################################
@@ -142,16 +146,16 @@ __C.dataset.data_size = [48, 146]
 __C.dataset.label = {}
 
 # label
-__C.dataset.label.positive_label = ["xiaoanxiaoan_8k", "xiaoanxiaoan_16k"]
+__C.dataset.label.positive_label = ["xiaoanxiaoan_16k"]
 __C.dataset.label.positive_label_chinese_name_list = [""]
-__C.dataset.label.positive_label_together = True
+__C.dataset.label.positive_label_together = False
 __C.dataset.label.positive_label_together_label = ["positive"]
 __C.dataset.label.negative_label = ["_silence_", "_unknown_"]
 __C.dataset.label.negative_label_together = True
 __C.dataset.label.negative_label_together_label = ["negative"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
 __C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[1]
-__C.dataset.label.ignore_label = [""]
+__C.dataset.label.ignore_label = ["kaldi_cut_keyword", "xiaoanxiaoan_8k", 'nihaoxiaoan_8k']
 __C.dataset.label.label_list = __C.dataset.label.negative_label + __C.dataset.label.positive_label
 __C.dataset.label.num_classes = 2
 

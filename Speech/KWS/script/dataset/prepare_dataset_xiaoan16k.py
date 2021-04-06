@@ -19,5 +19,5 @@ def get_hash_name(file_name):
     elif "RM_KWS_NIHAOXIAOAN_nihaoxiaoan_" in file_name:
         hash_name = file_name.strip().split('_')[-1].split('.')[0][:6]
     else:
-        hash_name = file_name.strip().split('.')[0].split('_')[0]
+        hash_name = file_name.strip().split('.')[0]
     return hash_name

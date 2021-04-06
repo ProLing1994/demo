@@ -16,10 +16,15 @@ from utils.train_tools import *
 
 def ase_feature_test(args):
     # init 
-    sample_rate = 8000
+    sample_rate = 16000
+    feature_length = 64
+    nfilt = 64
+    # sample_rate = 8000
+    # feature_length = 48
+    # nfilt = 48
+    
     window_size_ms = 2000
     window_stride_ms = 2000
-    feature_length = 48
     window_size_samples = int(sample_rate * window_size_ms / 1000)
     window_stride_samples = int(sample_rate * window_stride_ms / 1000)
 
@@ -49,7 +54,7 @@ def ase_feature_test(args):
 
             # cal feature
             # cimpl
-            feature_cimpl = ASR.impl.asr_feature_cimpl.Feature(sample_rate, window_size_samples/sample_rate, feature_length)
+            feature_cimpl = ASR.impl.asr_feature_cimpl.Feature(sample_rate, window_size_samples/sample_rate, feature_freq=feature_length, nfilt=nfilt)
             feature_cimpl.get_mel_int_feature(audio_data, len(audio_data))
             feature_data_cimpl = feature_cimpl.copy_mfsc_feature_int_to()
             # print(np.expand_dims(feature_data_cimpl, axis=0).shape)
@@ -61,7 +66,7 @@ def ase_feature_test(args):
             assert feature_data_cimpl.min() >= 0
 
             # pyimpl
-            feature_pyimpl = ASR.impl.asr_feature_pyimpl.Feature(sample_rate, window_size_samples/sample_rate, feature_length)
+            feature_pyimpl = ASR.impl.asr_feature_pyimpl.Feature(sample_rate, window_size_samples/sample_rate, feature_freq=feature_length, nfilt=nfilt)
             feature_pyimpl.get_mel_int_feature(audio_data, len(audio_data))
             feature_data_pyimpl = feature_pyimpl.copy_mfsc_feature_int_to()
             # print(np.expand_dims(feature_data_pyimpl, axis=0).shape)

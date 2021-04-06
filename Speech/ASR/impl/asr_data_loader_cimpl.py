@@ -84,7 +84,8 @@ def call_func(func_name, *args):
 class WaveLoader(object):
   """ wav loader python wrapper """
 
-  def __init__(self):
+  def __init__(self, sample_rate=16000):
+    del sample_rate
     self.ptr = call_func('Wave_Data_create')
 
   def __del__(self):
