@@ -6,8 +6,8 @@ import pandas as pd
 import sys
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-# from ASR.impl.asr_data_loader_cimpl import WaveLoader
-from ASR.impl.asr_data_loader_pyimpl import WaveLoader
+from ASR.impl.asr_data_loader_cimpl import WaveLoader
+# from ASR.impl.asr_data_loader_pyimpl import WaveLoader
 import ASR.impl.asr_feature_cimpl
 import ASR.impl.asr_feature_pyimpl
 
@@ -78,16 +78,17 @@ def ase_feature_test(args):
             assert feature_data_pyimpl.min() >= 0
 
             print("cimpl == pympl:", (feature_data_cimpl == feature_data_pyimpl).all())
-            plot_spectrogram(feature_data_cimpl.T, os.path.join(args.output_dir, 'fbank_cimply.png'))
-            plot_spectrogram(feature_data_pyimpl.T, os.path.join(args.output_dir, 'fbank_pymply.png'))
+            # plot_spectrogram(feature_data_cimpl.T, os.path.join(args.output_dir, 'fbank_cimply.png'))
+            # plot_spectrogram(feature_data_pyimpl.T, os.path.join(args.output_dir, 'fbank_pymply.png'))
             # print()
             # assert (feature_data_cimpl == feature_data_pyimpl).all()
 
 if __name__ == "__main__":
     # chinese:
     # default_audio_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/"
-    default_audio_folder = "/home/huanyuan/share/audio_data/第三批数据/闹市场景/"
+    # default_audio_folder = "/home/huanyuan/share/audio_data/第三批数据/闹市场景/"
     # default_audio_folder = "/home/huanyuan/share/audio_data/"
+    default_audio_folder = "/home/huanyuan/share/audio_data/weakup_activatebwc/test"
 
     # # english:
     # default_audio_folder = "/home/huanyuan/share/audio_data/english_wav/"

@@ -116,7 +116,8 @@ default_asr_bpe = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/englis
 # default_input_wav = "/mnt/huanyuan/data/speech/Recording_sample/iphone/test-kws-asr.wav"
 # default_input_wav = "/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_validation_60_001.wav"
 # default_input_wav = "/mnt/huanyuan/model/test_straming_wav/heybodycam_03232021_validation_60_001.wav"
-default_input_wav = "/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation.wav"
+# default_input_wav = "/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation.wav"
+default_input_wav = "/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation_180.wav"
 default_output_folder = "/mnt/huanyuan/data/speech/Recording_sample/demo_kws_asr_online_api/{}".format('-'.join('-'.join(str(datetime.now()).split('.')[0].split(' ')).split(':')))
 default_gpu = True
 
@@ -194,13 +195,13 @@ def run_kws():
         if detected_number >= kws_stride_times * kws_detection_number_threshold:
             bool_find_kws = True
     
-    # return 
     if bool_find_kws:
-        return True, kws_score_list
+        kws_container_np = np.array([])
+    else:
+        # 存储一定时间的 kws 结果，用于后续滑窗获得结果
+        kws_container_np = np.array(kws_score_list)
 
-    # 存储一定时间的 kws 结果，用于后续滑窗获得结果
-    kws_container_np = np.array(kws_score_list)
-    return False, kws_score_list
+    return bool_find_kws, kws_score_list
 
 
 def run_asr():
@@ -352,6 +353,7 @@ def KWS_ASR_offine():
     # init
     kws_asr_init()
     bool_output_csv = True
+    # bool_output_csv = False
     csv_original_scores = []
     csv_found_words = []
 

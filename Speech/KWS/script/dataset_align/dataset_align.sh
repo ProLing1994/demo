@@ -34,13 +34,15 @@ keyword_chinese_output="小,锐,小#,锐#"
 # keyword_chinese_output="小,乐,小#,乐#"
 
 # xiaoan
-# # data_set=/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/NiHaoXiaoAn_04012021/
+# data_set=/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/NiHaoXiaoAn_04012021/
 # data_set=/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/NiHaoXiaoAn_04062021/
+# data_set=/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/NiHaoXiaoAn_04072021/
 # keyword="nihaoxiaoan_16k"
 # keyword_chinese="你 好 小 安"
 # keyword_chinese_output="你,好,小,安"
 # data_set=/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_04012021/
-data_set=/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_04062021/
+# data_set=/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_04062021/
+data_set=/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_04072021/
 keyword="xiaoanxiaoan_16k"
 keyword_chinese="小 安 小 安"
 keyword_chinese_output="小,安,小#,安#"

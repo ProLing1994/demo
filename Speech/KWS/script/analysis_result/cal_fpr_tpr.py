@@ -163,7 +163,7 @@ if __name__ == "__main__":
 
     # activatebwc
     cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation.csv",
-                "/mnt/huanyuan/data/speech/Recording_sample/demo_kws_asr_online_api/2021-04-07-19-29-27/found_words.csv",
+                "/mnt/huanyuan/data/speech/Recording_sample/demo_kws_asr_online_api/2021-04-08-13-21-51/found_words.csv",
                 "activatebwc",
                 bool_write_audio)
 
