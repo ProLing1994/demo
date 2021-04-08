@@ -90,6 +90,20 @@ def straming_dataset_generator(input_dir, output_path, nosed_csv, config_file, a
             audio_dict['file'] = row['file']
             audio_dict['label'] = UNKNOWN_WORD_LABEL
             audio_list.append(audio_dict)
+    elif mode == 3:
+        print("Generator Straming Dataset From Config File")
+        # init 
+        start_idx = 0
+
+        data_pd = pd.read_csv(cfg.general.data_csv_path)
+        data_pd = data_pd[data_pd['mode'] == audio_mode]
+        for _, row in data_pd.iterrows():
+            audio_dict = {}
+            audio_dict['file'] = row['file']
+            audio_dict['label'] = row['label']
+            audio_list.append(audio_dict)
+            label_list.append(row['label'])
+        label_list = list(set(label_list))
     else:
         pass
 
@@ -137,7 +151,7 @@ def straming_dataset_generator(input_dir, output_path, nosed_csv, config_file, a
             data_index = np.random.randint(len(audio_list))
             found_data = audio_list[data_index]['file']
             found_label = audio_list[data_index]['label']
-        elif mode == 2:
+        elif mode == 2 or mode == 3:
             data_index = start_idx
             if data_index >= len(audio_list):
                 break
@@ -175,13 +189,14 @@ def main():
     # 0: from config file
     # 1: from folder 
     # 2: from unused csv 
-    default_mode = 0    # [0, 1, 2]
+    # 3: from config file, not shuffle
+    default_mode = 3    # [0, 1, 2]
 
     default_add_noise_on = False    # [True, False]
 
-    # only for mode==0, support for ['training','validation','testing']
+    # only for mode==0/3, support for ['training','validation','testing']
     default_audio_mode = 'validation'
-    default_output_path_list = ['/mnt/huanyuan/model/test_straming_wav/heybodycam_03232021_validation_60_001.wav']
+    default_output_path_list = ['/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation.wav']
 
     # only for mode==1, from folder
     # default_input_dir = '/mnt/huanyuan/data/speech/kws/weiboyulu/dataset'
@@ -256,8 +271,8 @@ def main():
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_pretrain.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaorui.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_all_pretrain.py"
-    # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py"
-    default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_heybodycam.py"
+    default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py"
+    # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_heybodycam.py"
 
     parser = argparse.ArgumentParser(description="Prepare XiaoYu Dataset")
     parser.add_argument('--input_dir', type=str, default=default_input_dir)
@@ -267,12 +282,12 @@ def main():
     parser.add_argument('--add_noise_on', type=bool, default=default_add_noise_on)
     parser.add_argument('--mode', type=int, default=default_mode)
     parser.add_argument('--audio_mode', type=str, default=default_audio_mode)
-    # parser.add_argument('--test_duration_seconds', type=int, default=43200) # 12 hours
+    parser.add_argument('--test_duration_seconds', type=int, default=43200) # 12 hours
     # parser.add_argument('--test_duration_seconds', type=int, default=21600) # 6 hours
     # parser.add_argument('--test_duration_seconds', type=int, default=7200) # 2 hours
     # parser.add_argument('--test_duration_seconds', type=int, default=3600) # 1 hours
-    parser.add_argument('--test_duration_seconds', type=int, default=60) # 1 minute
-    parser.add_argument('--word_gap_ms', type=int, default=3000)
+    # parser.add_argument('--test_duration_seconds', type=int, default=60) # 1 minute
+    parser.add_argument('--word_gap_ms', type=int, default=2000)
     # parser.add_argument('--word_gap_ms', type=int, default=1000)
     args = parser.parse_args()
     

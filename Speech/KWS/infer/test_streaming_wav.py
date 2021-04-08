@@ -116,9 +116,9 @@ def test(in_args):
         desired_samples, len(audio_data))
 
     audio_data_offset = 0
-    original_scores = [] 
-    final_scores = [] 
-    all_found_words = []
+    csv_original_scores = [] 
+    csv_final_scores = [] 
+    csv_found_words = []
 
     # record time
     start = time.perf_counter()
@@ -149,7 +149,7 @@ def test(in_args):
             all_found_words_dict['label'] = positive_label[0]
             all_found_words_dict['start_time'] = recognize_element.start_time
             all_found_words_dict['end_time'] = recognize_element.end_time + clip_duration_ms
-            all_found_words.append(all_found_words_dict)
+            csv_found_words.append(all_found_words_dict)
             print('Find words: label:{}, start time:{}, end time:{}, response time: {:.2f}s'.format(
                 all_found_words_dict['label'], all_found_words_dict['start_time'], all_found_words_dict['end_time'], recognize_element.response_time))
 
@@ -160,8 +160,8 @@ def test(in_args):
                 output_wav = audio_data[start_time: end_time]
                 librosa.output.write_wav(output_path, output_wav, sr=sample_rate)
 
-        original_scores.append({'start_time':current_time_ms, 'score':",".join([str(output_score[0][idx]) for idx in range(output_score.shape[1])])})
-        final_scores.append({'start_time':current_time_ms, 'score':recognize_element.score})
+        csv_original_scores.append({'start_time':current_time_ms, 'score':",".join([str(output_score[0][idx]) for idx in range(output_score.shape[1])])})
+        csv_final_scores.append({'start_time':current_time_ms, 'score':recognize_element.score})
 
         # time ++ 
         audio_data_offset += timeshift_samples
@@ -171,16 +171,16 @@ def test(in_args):
     print('Running time: {:.2f} Seconds'.format(end - start))
     print('Model predict numbers: {}, average time: {:.3f}s'.format(len(model_predict_time_list), np.array(model_predict_time_list).sum() / len(model_predict_time_list)))
 
-    found_words_pd = pd.DataFrame(all_found_words)
+    found_words_pd = pd.DataFrame(csv_found_words)
     found_words_pd.to_csv(os.path.join(output_dir, 'found_words.csv'), index=False)
-    original_scores_pd = pd.DataFrame(original_scores)
+    original_scores_pd = pd.DataFrame(csv_original_scores)
     original_scores_pd.to_csv(os.path.join(output_dir, 'original_scores.csv'), index=False)
-    final_scores_pd = pd.DataFrame(final_scores)
+    final_scores_pd = pd.DataFrame(csv_final_scores)
     final_scores_pd.to_csv(os.path.join(output_dir, 'final_scores.csv'), index=False)
     
     # show result
     # [TO DO]：画图在多进程中会挂掉，目前在生成结果之后，再单独画图
-    # show_score_line(input_wav.split('.')[0] + '.csv', os.path.join(output_dir, 'original_scores.csv'), positive_label[0])
+    # show_score_line(input_wav.split('.')[0] + '.csv', os.path.join(output_dir, 'csv_original_scores.csv'), positive_label[0])
     # show_score_line(input_wav.split('.')[0] + '.csv', os.path.join(output_dir, 'mean_scores.csv'), positive_label[0])
 
     # cal_fpr_tpr(input_wav.split('.')[0] + '.csv', os.path.join(output_dir, 'found_words.csv'),  positive_label[0], bool_write_audio)
@@ -227,10 +227,11 @@ def main():
     #                             "/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_validation_60_001.wav"]
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_testing_3600_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
+    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation.wav"]
 
     # heybodycam
-    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/heybodycam_03232021_training_60_001.wav",
-                                "/mnt/huanyuan/model/test_straming_wav/heybodycam_03232021_validation_60_001.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/heybodycam_03232021_training_60_001.wav",
+    #                             "/mnt/huanyuan/model/test_straming_wav/heybodycam_03232021_validation_60_001.wav"]
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_testing_3600_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
@@ -310,7 +311,7 @@ def main():
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_2_label_xiaoyu.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py"
-    default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py"
+    # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_heybodycam.py"
 
     # align config file
@@ -322,7 +323,9 @@ def main():
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_11_res15_narrow_kd_12162020/kws_config_xiaorui_difficult_sample_mining.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_2_5_tc-resnet14-dropout_kd_02202021/kws_config_xiaorui.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_3_1_res15_fbankcpu_03112021/kws_config_xiaorui.py"
-    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_5_res15_fbankcpu_03222021/kws_config_activatebwc.py"
+    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_5_res15_fbankcpu_03222021/kws_config_activatebwc_api.py"
+    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_2_tc-resnet14-amba_fbankcpu_kd_03222021/kws_config_activatebwc_api.py"
+    default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_4_tc-resnet14-amba_fbankcpu_kd_04012021/kws_config_activatebwc_api.py"
 
     parser = argparse.ArgumentParser(description='Streamax KWS Testing Engine')
     parser.add_argument('--mode', type=str, default=default_mode)

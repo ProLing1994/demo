@@ -17,7 +17,7 @@ from dataset.kws.dataset_helper import SILENCE_LABEL, UNKNOWN_WORD_LABEL
 def plot_roc(fpr, tpr, color, linestyle, label):
     plt.plot(fpr, tpr, color = color,  linewidth=1.0, linestyle=linestyle, marker = 'o', label = label)
     plt.legend(loc=4)
-    plt.xlim([0.0, 0.1])
+    plt.xlim([0.0, 0.2])
     plt.ylim([0.9, 1.01])
     plt.xlabel('Flase Positive Rate')
     plt.ylabel('True Positive Rate')
@@ -156,16 +156,16 @@ def main():
     # name_list = ["res15-validation", "edge-speech-nets", "tc-resnet8", "tc-resnet14", "tc-resnet8-dropout", "tc-resnet14-dropout"]
     # label_list = ['_silence_', '_unknown_', "yes", "no", "up", "down", "left", "right", "on", "off", "stop", "go"]
     # show_roc(csv_list, color_list, linestyle_list, name_list, label_list)
-    csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_5_res15_fbankcpu_03222021/dataset_1_4_infer_longterm_validation_augmentation_False_mean.csv",
-                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_5_res15_fbankcpu_03222021/dataset_1_5_infer_longterm_validation_augmentation_False_mean.csv",
-                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_2_tc-resnet14-amba_fbankcpu_kd_03222021/dataset_1_4_infer_longterm_validation_augmentation_False_mean.csv",
-                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_2_tc-resnet14-amba_fbankcpu_kd_03222021/dataser_1_5_infer_longterm_validation_augmentation_False_mean.csv",
-                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_heybodycam_1_3_res15_fbankcpu_15_03222021/dataset_2_3_infer_longterm_validation_augmentation_False_mean.csv"]
-    color_list = ["r", "r", "g", "g", "b"]
-    linestyle_list = ["-", "--", "-", "--", "-"]
-    name_list = ["activatebwc-res15(1.5)-dataset(1.4)", "activatebwc-res15(1.5)-dataset(1.5)", "activatebwc-tcresnet14(2.2)-dataset(1.4)", "activatebwc-tcresnet14(2.2)-dataset(1.5)", "heybodycam-res15(1.3)-dataset(2.3)"]
-    label_list = ['_unknown_', 'activatebwc']
-    show_roc(csv_list, color_list, linestyle_list, name_list, label_list)
+    # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_5_res15_fbankcpu_03222021/dataset_1_4_infer_longterm_validation_augmentation_False_mean.csv",
+    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_5_res15_fbankcpu_03222021/dataset_1_5_infer_longterm_validation_augmentation_False_mean.csv",
+    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_2_tc-resnet14-amba_fbankcpu_kd_03222021/dataset_1_4_infer_longterm_validation_augmentation_False_mean.csv",
+    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_2_tc-resnet14-amba_fbankcpu_kd_03222021/dataser_1_5_infer_longterm_validation_augmentation_False_mean.csv",
+    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_heybodycam_1_3_res15_fbankcpu_15_03222021/dataset_2_3_infer_longterm_validation_augmentation_False_mean.csv"]
+    # color_list = ["r", "r", "g", "g", "b"]
+    # linestyle_list = ["-", "--", "-", "--", "-"]
+    # name_list = ["activatebwc-res15(1.5)-dataset(1.4)", "activatebwc-res15(1.5)-dataset(1.5)", "activatebwc-tcresnet14(2.2)-dataset(1.4)", "activatebwc-tcresnet14(2.2)-dataset(1.5)", "heybodycam-res15(1.3)-dataset(2.3)"]
+    # label_list = ['_unknown_', 'activatebwc']
+    # show_roc(csv_list, color_list, linestyle_list, name_list, label_list)
     # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_5_res15_fbankcpu_03222021/dataset_1_4_infer_longterm_validation_augmentation_False_mean.csv",
     #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_heybodycam_1_3_res15_fbankcpu_15_03222021/dataset_2_3_infer_longterm_validation_augmentation_False_mean.csv"]
     # color_list = ["r", "g"]
@@ -173,6 +173,17 @@ def main():
     # name_list = ["activatebwc-res15(1.5)-dataset(1.4)", "heybodycam-res15(1.3)-dataset(2.3)"]
     # label_list = ['_unknown_', 'activatebwc']
     # show_roc(csv_list, color_list, linestyle_list, name_list, label_list)
+    csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_2_tc-resnet14-amba_fbankcpu_kd_03222021/dataset_1_4_infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_2_tc-resnet14-amba_fbankcpu_kd_03222021/dataser_1_5_infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_3_tc-resnet14-amba_fbankcpu_dml_04012021/dataset_1_5_1s_checkpoints_0_infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_3_tc-resnet14-amba_fbankcpu_dml_04012021/dataset_1_5_1s_checkpoints_1_infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_4_tc-resnet14-amba_fbankcpu_kd_04012021/dataset_1_5_1s_infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_6_res15_fbankcpu_03222021/dataset_1_5_1s_infer_longterm_validation_augmentation_False_mean.csv"]
+    color_list = ["r", "r", "g", "g", "b", "b"]
+    linestyle_list = ["-", "--", "-", "--", "-", "--"]
+    name_list = ["activatebwc-tcresnet14(2.2-kd)-dataset(1.4)", "activatebwc-tcresnet14(2.2-kd)-dataset(1.5)", "activatebwc-tcresnet14(2.3-dml-0)-dataset(1.5)", "activatebwc-tcresnet14(2.3-dml-1)-dataset(1.5)", "activatebwc-tcresnet14(2.4-kd)-dataset(1.5)", "activatebwc-res15(1.6)-dataset(1.5)"]
+    label_list = ['_unknown_', 'activatebwc']
+    show_roc(csv_list, color_list, linestyle_list, name_list, label_list)
 
 if __name__ == "__main__":
     main()

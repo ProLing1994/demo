@@ -8,14 +8,12 @@ import re
 
 from tqdm import tqdm
 
-# encode_type_dict = {'UTF-8-SIG': "utf-8", 'GB2312': "gbk"}
-
-# def detect_encoding(path):
-#     with open(path, 'rb') as file:
-#         data = file.read(20000)
-#         dicts = chardet.detect(data)
-#     return dicts['encoding']
-
+def is_chinese(uchar):
+    """判断一个unicode是否是汉字"""
+    if uchar >= u'\u4e00' and uchar<=u'\u9fa5':
+            return True
+    else:
+            return False
 
 # read file
 def read_file_gen(file_path, encoding="utf-8", to_be_split=" "):
@@ -106,6 +104,14 @@ def clean_srt_chinese(srt):
 
 
 def clean_srt_english(srt):
+    # remove chinese
+    chinese_idx_list = []
+    for idx in range(len(srt)):
+        if is_chinese(srt[idx]):
+            chinese_idx_list.append(idx)
+    if len(chinese_idx_list):
+        srt = srt.replace(srt[chinese_idx_list[0]: chinese_idx_list[-1] + 1], ' ')
+
     srt = srt.replace('<i>', ' ')
     srt = srt.replace('</i>', ' ')
     srt = srt.replace('?', ' ')
@@ -115,6 +121,16 @@ def clean_srt_english(srt):
     srt = srt.replace(':', ' ')
     srt = srt.replace(';', ' ')
     srt = srt.replace('-', ' ')
+    srt = srt.replace('·', ' ')
+    srt = srt.replace('，', ' ')
+    srt = srt.replace('、', ' ')
+    srt = srt.replace('？', ' ')
+    srt = srt.replace('！', ' ')
+    srt = srt.replace('（', ' ')
+    srt = srt.replace('）', ' ')
+    srt = srt.replace('〝', ' ')
+    srt = srt.replace('〞', ' ')
+    srt = srt.replace('…', ' ')
     srt = srt.replace('《', ' ')
     srt = srt.replace('》', ' ')
     srt = srt.replace('"', ' ')
@@ -132,7 +148,7 @@ def clean_srt_english(srt):
     srt = re.sub(r'♪.*♪', '', srt)
     srt = re.sub(r'¶.*¶', '', srt)
 
-    srt = srt.lstrip().rstrip()
+    srt = srt.lstrip().rstrip().strip()
     return srt
 
 
@@ -377,8 +393,8 @@ def audio_split_subtitle(args):
 
 def main():
     parser = argparse.ArgumentParser(description="Audio Split Using Subtitle")
-    parser.add_argument('--audio_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/original_dataset/AHiddenLife/AHiddenLife.wav") 
-    parser.add_argument('--subtitle_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/original_dataset/AHiddenLife/AHiddenLife.srt") 
+    parser.add_argument('--audio_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/哪吒.wav") 
+    parser.add_argument('--subtitle_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/Fatale.2021.1080p.Bluray.DTS.X264-EVO_1617347319189.srt") 
     parser.add_argument('--output_dir', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/subtitle_result/")
     parser.add_argument('--language', type=str, choices=["Chinese", "English"], default="English")
     parser.add_argument('--file_encoding', type=str, choices=["gbk", "utf-8", "gb2312"], default="utf-8")

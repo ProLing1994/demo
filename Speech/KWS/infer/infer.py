@@ -158,7 +158,7 @@ def longterm_audio_predict(cfg, net, audio_idx, audio_file, audio_mode, audio_la
     return score_list
 
 
-def infer(config_file, epoch_num, dataset_mode, add_noise_on, timeshift_ms, average_window_duration_ms, result_mode):
+def infer(args, config_file, epoch_num, dataset_mode, add_noise_on, timeshift_ms, average_window_duration_ms, result_mode):
     """
     模型推理，通过滑窗的方式测试每一小段音频数据，随后进行后处理操作
     """
@@ -174,7 +174,7 @@ def infer(config_file, epoch_num, dataset_mode, add_noise_on, timeshift_ms, aver
     negative_label_together = cfg.dataset.label.negative_label_together
 
     # load prediction model
-    model = kws_load_model(cfg.general.save_dir, int(cfg.general.gpu_ids), epoch_num)
+    model = kws_load_model(cfg.general.save_dir, int(cfg.general.gpu_ids), epoch_num, args.sub_folder_name)
     net = model['prediction']['net']
     net.eval()
 
@@ -253,9 +253,12 @@ def main():
 
     default_mode = "validation"     # ["testing,validation,training"]
     default_model_epoch = -1
+    default_model_sub_folder_name = "checkpoints"
     default_add_noise_on = False    # [True,False]
-    default_timeshift_ms = 30       # [30]
-    default_average_window_duration_ms = 800                   # [800, 1500] only for mode: average_duration_ms/double_edge_triggered_detecting
+    # default_timeshift_ms = 30       # [30]
+    # default_average_window_duration_ms = 800                   # [800, 1500] only for mode: average_duration_ms/double_edge_triggered_detecting
+    default_timeshift_ms = 100       # [30, 100]
+    default_average_window_duration_ms = 1000                   # [800, 1000, 1500] only for mode: average_duration_ms/double_edge_triggered_detecting
     default_result_mode = 'mean'     # ['min','mean','max', 'average_duration_ms'] align：["double_edge_triggered_detecting"]
     
     parser = argparse.ArgumentParser(description='Streamax KWS Infering Engine')
@@ -267,6 +270,7 @@ def main():
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_heybodycam.py", help='config file')
     parser.add_argument('--mode', type=str, default=default_mode)
     parser.add_argument('--epoch', type=int, default=default_model_epoch)
+    parser.add_argument('--sub_folder_name', type=str, default=default_model_sub_folder_name)
     parser.add_argument('--add_noise_on', type=bool, default=default_add_noise_on)
     parser.add_argument('--timeshift_ms', type=int, default=default_timeshift_ms)
     parser.add_argument('--average_window_duration_ms', type=int, default=default_average_window_duration_ms)
@@ -275,7 +279,7 @@ def main():
 
     mode_list = args.mode.strip().split(',')
     for mode_type in mode_list:
-        infer(args.input, args.epoch, mode_type, args.add_noise_on, args.timeshift_ms, args.average_window_duration_ms, args.result_mode)
+        infer(args, args.input, args.epoch, mode_type, args.add_noise_on, args.timeshift_ms, args.average_window_duration_ms, args.result_mode)
 
 
 if __name__ == "__main__":

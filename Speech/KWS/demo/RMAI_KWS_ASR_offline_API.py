@@ -2,6 +2,7 @@ import argparse
 from datetime import datetime
 import numpy as np
 import os
+import pandas as pd
 import sys
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
@@ -20,22 +21,19 @@ import caffe
 sample_rate = 16000
 window_size_ms = 1000                   # 每次送入 1s 数据
 window_stride_ms = 1000                 # 每次间隔 1s 时间
-output_time_ms = 3000
+total_time_ms = 3000                    # 算法处理时长 3s 时间
 
 feature_freq = 64                       # 计算特征维度
-# kws_feature_time = 196                  # kws 网络特征时间维度
-# kws_stride_feature_time = 10            # kws 每间隔 10 个 feature_time 进行一次检索
-# kws_detection_threshold = 0.8           # kws 检测阈值 0.8
 kws_feature_time = 196                  # kws 网络特征时间维度
-kws_stride_feature_time = 10            # kws 每间隔 30 个 feature_time 进行一次检索
-kws_detection_threshold = 0.7           # kws 检测阈值 0.7
+kws_stride_feature_time = 10            # kws 每间隔 10 个 feature_time 进行一次检索, 对应滑窗 100 ms
+kws_detection_threshold = 0.5           # kws 检测阈值 0.5
 kws_detection_number_threshold = 0.5    # kws 计数阈值 0.5
 kws_suppression_counter = 3             # kws 激活后抑制时间 3s
 
 asr_feature_time = 296                  # asr 网络特征时间维度，与语音特征容器长度相同
 asr_suppression_counter = 2             # asr 激活后抑制时间，间隔 2s 执行一次 asr 检测
 
-data_container_ms = 100                 # 语音数据容器中，装有音频数据 100 ms
+audio_container_ms = 100                # 语音数据容器中，装有音频数据 100 ms
 feature_container_time = 296            # 语音特征容器中，装有时间维度 296
 feature_remove_after_time = 6           # 为保证特征一致，拼接特征需要丢弃最后的时间维度 6
 feature_remove_before_time = 100        # 为保证特征一致，拼接特征需要丢弃之前的时间维度 100
@@ -43,24 +41,27 @@ feature_remove_before_time = 100        # 为保证特征一致，拼接特征�
 # init 
 window_size_samples = int(sample_rate * window_size_ms / 1000)
 window_stride_samples = int(sample_rate * window_stride_ms / 1000)
-window_container_samples = int(sample_rate * data_container_ms / 1000)
-output_time_samples = int(sample_rate * output_time_ms / 1000)
+window_container_samples = int(sample_rate * audio_container_ms / 1000)
+total_time_samples = int(sample_rate * total_time_ms / 1000)
 
 # container
-output_audio_list = []
-feature_data_container_np = np.array([])
+output_wave_list = []
 audio_data_container_np = np.array([])
+feature_data_container_np = np.array([])
+kws_container_np = np.array([])         # kws 结构容器中，用于滑窗输出结果
 
 bool_weakup = False
 counter_weakup = 0
 counter_asr = 0
-bool_output_wave = True
 
 # on-off
 bool_do_asr = True
 bool_do_kws_weakup = True
+bool_output_wave = True
+bool_output_csv = False
 
 # argparse
+# kws
 # xiaorui
 # default_kws_model_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_xiaorui_res15/res15_03162011.caffemodel"
 # default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_xiaorui_res15/res15_03162011.prototxt"
@@ -84,8 +85,11 @@ bool_do_kws_weakup = True
 # default_kws_net_output_name = "Softmax"
 # default_kws_chw_params = "1,196,64"
 # default_kws_transpose = False
-default_kws_model_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_2_2_04012021.caffemodel"
-default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_2_2_04012021.prototxt"
+# default_kws_model_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_2_2_04012021.caffemodel"
+# default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_2_2_04012021.prototxt"
+default_kws_model_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_2_4_04012021.caffemodel"
+default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_2_4_04012021.prototxt"
+default_kws_label = "activatebwc"
 default_kws_net_input_name = "data"
 default_kws_net_output_name = "Softmax"
 default_kws_chw_params = "1,64,196"
@@ -99,6 +103,7 @@ default_kws_transpose = True
 # default_kws_chw_params = "1,146,64"
 # default_kws_transpose = False
 
+# asr
 default_asr_model_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/english_0202_better.caffemodel"
 default_asr_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/english_0202_mark.prototxt"
 default_asr_net_input_name = "data"
@@ -109,8 +114,9 @@ default_asr_bpe = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/englis
 # default_input_wav = "/home/huanyuan/share/audio_data/english_wav/1-0127-asr_16k.wav"
 # default_input_wav = "/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_training_60_001.wav"
 # default_input_wav = "/mnt/huanyuan/data/speech/Recording_sample/iphone/test-kws-asr.wav"
-default_input_wav = "/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_validation_60_001.wav"
+# default_input_wav = "/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_validation_60_001.wav"
 # default_input_wav = "/mnt/huanyuan/model/test_straming_wav/heybodycam_03232021_validation_60_001.wav"
+default_input_wav = "/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation.wav"
 default_output_folder = "/mnt/huanyuan/data/speech/Recording_sample/demo_kws_asr_online_api/{}".format('-'.join('-'.join(str(datetime.now()).split('.')[0].split(' ')).split(':')))
 default_gpu = True
 
@@ -118,6 +124,7 @@ parser = argparse.ArgumentParser(description='Streamax KWS ASR offine Engine')
 parser.add_argument('--input_wav', type=str, default=default_input_wav)
 parser.add_argument('--kws_model_path', type=str, default=default_kws_model_path)
 parser.add_argument('--kws_prototxt_path', type=str, default=default_kws_prototxt_path)
+parser.add_argument('--kws_label', type=str, default=default_kws_label)
 parser.add_argument('--kws_net_input_name', type=str, default=default_kws_net_input_name)
 parser.add_argument('--kws_net_output_name', type=str, default=default_kws_net_output_name)
 parser.add_argument('--kws_chw_params', type=str, default=default_kws_chw_params)
@@ -147,12 +154,18 @@ def model_init(prototxt, model, net_input_name, CHW_params, use_gpu=False):
 
 
 def run_kws():
+    # 采用滑窗的方式判断是否触发 kws
+    # 否则直接在 1s 内直接查找 kws，会漏掉起始和结尾点，造成漏唤醒
+    global kws_container_np
+
+    # init
+    kws_score_list = []
+
     if not bool_do_kws_weakup:
-        return False
+        return False, kws_score_list
 
+    # 滑窗，模型前传
     kws_stride_times = int((feature_data_container_np.shape[0] - kws_feature_time) * 1.0 / kws_stride_feature_time) + 1
-
-    detected_number = 0
     for times in range(kws_stride_times):
         feature_data_kws = feature_data_container_np[times * int(kws_stride_feature_time): times * int(kws_stride_feature_time) + int(kws_feature_time),:]
         feature_data_kws = feature_data_kws.astype(np.float32)
@@ -162,14 +175,32 @@ def run_kws():
 
         net_output = kws_net.forward()[args.kws_net_output_name]
         net_output = np.squeeze(net_output)
+        kws_score_list.append(net_output.copy())
         # print(times, feature_data_kws.shape, net_output)
 
-        if net_output[-1] > kws_detection_threshold:
-            detected_number += 1
+    # 如果有保留的 kws 结果，进行拼接
+    kws_score_np = np.array(kws_score_list)
+    if len(kws_container_np):
+        kws_score_np = np.concatenate((kws_container_np, kws_score_np), axis=0)
+    
+    bool_find_kws = False
+    for kws_idx in range(len(kws_score_np) + 1 - kws_stride_times):
+        # 滑窗，获得后处理结果
+        detected_number = 0 
+        for kws_times in range(kws_stride_times):
+            if kws_score_np[kws_idx + kws_times][-1] > kws_detection_threshold:
+                detected_number += 1
 
-    if detected_number >= kws_stride_times * kws_detection_number_threshold:
-        return True
-    return False
+        if detected_number >= kws_stride_times * kws_detection_number_threshold:
+            bool_find_kws = True
+    
+    # return 
+    if bool_find_kws:
+        return True, kws_score_list
+
+    # 存储一定时间的 kws 结果，用于后续滑窗获得结果
+    kws_container_np = np.array(kws_score_list)
+    return False, kws_score_list
 
 
 def run_asr():
@@ -196,14 +227,14 @@ def run_asr():
 def run_kws_asr(audio_data):
     global audio_data_container_np, feature_data_container_np
     global bool_weakup, counter_weakup, counter_asr
-    global output_audio_list, output_audio_time, output_kws_id
+    global output_wave_list, output_kws_id, sliding_window_start_time_ms, csv_original_scores, csv_found_words
 
     # 加载音频数据，用于打印输出
-    if len(output_audio_list) < output_time_samples:
-        output_audio_list.extend(audio_data)
+    if len(output_wave_list) < total_time_samples:
+        output_wave_list.extend(audio_data)
     else:
-        output_audio_list = output_audio_list[window_size_samples:]
-        output_audio_list.extend(audio_data)
+        output_wave_list = output_wave_list[window_size_samples:]
+        output_wave_list.extend(audio_data)
 
     # 如果有保留的音频数据，进行拼接
     if len(audio_data_container_np):
@@ -235,18 +266,30 @@ def run_kws_asr(audio_data):
     # 方案一：进行 kws 唤醒词检测，若检测到唤醒词，未来三秒进行 asr 检测
     # kws
     if not bool_weakup:
-        bool_find_kws = run_kws()
+        bool_find_kws, kws_score_list = run_kws()
 
         if bool_find_kws:
             print("[Information:] Find Kws Weakup")
             bool_weakup = True
 
             # save audio
-            if bool_output_wave:
+            if bool_output_wave and bool_output_csv:
+                output_path = os.path.join(args.output_folder, 'label_{}_starttime_{}.wav'.format(args.kws_label, int(sliding_window_start_time_ms)))
+                wave_loader = WaveLoader(sample_rate)
+                wave_loader.save_data(np.array(output_wave_list), output_path)
+
+                csv_found_words.append({'label':args.kws_label, 'start_time':int(sliding_window_start_time_ms), 'end_time': int(sliding_window_start_time_ms + total_time_ms)})
+                
+            elif bool_output_wave:
                 wave_loader = WaveLoader(sample_rate)
                 date_time = '-'.join('-'.join(str(datetime.now()).split('.')[0].split(' ')).split(':'))
-                wave_loader.save_data(np.array(output_audio_list), os.path.join(args.output_folder, "Weakup_{}_{:0>4d}.wav".format(date_time, output_kws_id)))
+                wave_loader.save_data(np.array(output_wave_list), os.path.join(args.output_folder, "Weakup_{}_{:0>4d}.wav".format(date_time, output_kws_id)))
                 output_kws_id += 1
+
+        if bool_output_csv:
+            for idx in range(len(kws_score_list) - 1):
+                csv_original_scores.append({'start_time':sliding_window_start_time_ms + idx * kws_stride_feature_time * 10, 'score':",".join([str(kws_score_list[idx][idy]) for idy in range(kws_score_list[idx].shape[0])])})
+
     else:
         counter_weakup += 1
         if counter_weakup == kws_suppression_counter:
@@ -259,6 +302,11 @@ def run_kws_asr(audio_data):
             result_string, control_command_string, _ = run_asr()
             print("[Information:] kws asr outKeyword: ", result_string)
             # print("[Information:] kws asr outKeyword: ", control_command_string)
+        
+        if bool_output_csv:
+            _, kws_score_list = run_kws()
+            for idx in range(len(kws_score_list) - 1):
+                csv_original_scores.append({'start_time':sliding_window_start_time_ms + idx * kws_stride_feature_time * 10, 'score':",".join([str(kws_score_list[idx][idy]) for idy in range(kws_score_list[idx].shape[0])])})
 
     # 方案二：进行 asr 检测，间隔一定时长
     # asr
@@ -298,10 +346,14 @@ def kws_asr_init():
 
 
 def KWS_ASR_offine():
-    global output_audio_time
+    global sliding_window_start_time_ms, csv_original_scores, csv_found_words
+    global bool_output_csv
 
     # init
     kws_asr_init()
+    bool_output_csv = True
+    csv_original_scores = []
+    csv_found_words = []
 
     # load wave
     wave_loader = WaveLoader(sample_rate)
@@ -317,9 +369,14 @@ def KWS_ASR_offine():
         # print("[Information:] Audio data stram: {} - {}, length: {} ".format((times * int(window_stride_samples))/sample_rate, (times * int(window_stride_samples) + int(window_size_samples))/sample_rate, len(audio_data)))
         print("[Information:] Audio data stram: {} - {}, length: {} ".format((times * int(window_stride_samples)), (times * int(window_stride_samples) + int(window_size_samples)), len(audio_data)))
 
-        output_audio_time = ((times - 2) * int(window_stride_samples)) / sample_rate
+        sliding_window_start_time_ms = (((times - 2) * int(window_stride_samples)) / sample_rate) * 1000
         run_kws_asr(audio_data)
-
+    
+    if bool_output_csv:
+        csv_original_scores_pd = pd.DataFrame(csv_original_scores)
+        csv_original_scores_pd.to_csv(os.path.join(args.output_folder, 'original_scores.csv'), index=False)
+        csv_found_words_pd = pd.DataFrame(csv_found_words)
+        csv_found_words_pd.to_csv(os.path.join(args.output_folder, 'found_words.csv'), index=False)
 
 if __name__ == "__main__":
     # 实现功能：语音唤醒 weakup 和关键词检索 asr 共同工作，目的是共用一套特征，节约资源

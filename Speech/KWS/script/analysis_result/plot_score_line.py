@@ -286,7 +286,7 @@ if __name__ == "__main__":
     #                 "positive", positive_label_idx=positive_label_idx)
 
     # activatebwc
-    model_name = "kws_activatebwc_2_2_tc-resnet14-amba_fbankcpu_kd_03222021"
+    model_name = "kws_activatebwc_2_4_tc-resnet14-amba_fbankcpu_kd_04012021"
     threshold = "0.8"
     positive_label_idx = "1"
     show_score_line("/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_training_60_001.csv",

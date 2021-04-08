@@ -29,15 +29,18 @@ __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_da
 __C.general.is_test = False
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws_english_test"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws_english_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_0_res15_fbankcpu_03222021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_1_res15_fbankcpu_03222021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_2_res15_fbankcpu_03222021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_3_res15_fbankcpu_03222021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_4_res15_fbankcpu_03222021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_5_res15_fbankcpu_03222021/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_6_res15_fbankcpu_03222021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_1_tc-resnet14-amba_fbankcpu_kd_03222021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_2_tc-resnet14-amba_fbankcpu_kd_03222021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_3_tc-resnet14-amba_fbankcpu_dml_04012021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_4_tc-resnet14-amba_fbankcpu_kd_04012021/"
 
 # finetune model
 __C.general.finetune_on = False
@@ -130,9 +133,13 @@ __C.dataset.window_stride_ms = 10.0
 # __C.dataset.preprocess = "mfcc"
 __C.dataset.preprocess = "fbank_cpu"
 
-# How many bins to use for the MFCC fingerprint
+# How many bins to use for the Mel feature
 # __C.dataset.feature_bin_count = 40
+# __C.dataset.feature_bin_count = 48
 __C.dataset.feature_bin_count = 64
+
+# How many nfilt to use for the Mel feature, only support preprocess=fbank_cpu
+__C.dataset.nfilt = 64
 
 # input size of training data (w, h), unit: voxel
 # __C.dataset.data_size = [40, 201]

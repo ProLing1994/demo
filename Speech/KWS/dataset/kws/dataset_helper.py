@@ -13,10 +13,12 @@ UNKNOWN_WORD_LABEL = '_unknown_'
 BACKGROUND_NOISE_DIR_NAME = '_background_noise_'
 
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/KWS/script/dataset_align')
+# sys.path.insert(0, '/yuanhuan/code/demo/Speech/KWS/script/dataset_align')
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS/script/dataset_align')
 from src.utils.file_tool import read_file_gen
 
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
+# sys.path.insert(0, '/yuanhuan/code/demo/Speech')
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 from ASR.impl.asr_feature_pyimpl import Feature
 

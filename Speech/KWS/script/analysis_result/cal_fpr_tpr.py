@@ -86,33 +86,33 @@ def cal_fpr_tpr(src_csv, pst_csv, positive_label, bool_write_audio):
         if not os.path.exists(output_dir):    
             os.makedirs(output_dir)
 
-    print()
-    for fn_case in fn_list:
-        print("[FN] {}".format(fn_case))
+        print()
+        for fn_case in fn_list:
+            print("[FN] {}".format(fn_case))
 
-        if bool_write_audio:
-            output_subdir = os.path.join(output_dir, 'fn')
-            if not os.path.exists(output_subdir):    
-                os.makedirs(output_subdir)
-            output_path = os.path.join(output_subdir, 'label_{}_starttime_{}.wav'.format(fn_case['label'], fn_case['start_time']))
-            start_time = int(sample_rate * fn_case['start_time'] / 1000)
-            end_time = int(sample_rate * fn_case['end_time'] / 1000)
-            output_wav = audio_data[start_time: end_time]
-            librosa.output.write_wav(output_path, output_wav, sr=sample_rate)
+            if bool_write_audio:
+                output_subdir = os.path.join(output_dir, 'fn')
+                if not os.path.exists(output_subdir):    
+                    os.makedirs(output_subdir)
+                output_path = os.path.join(output_subdir, 'label_{}_starttime_{}.wav'.format(fn_case['label'], fn_case['start_time']))
+                start_time = int(sample_rate * fn_case['start_time'] / 1000)
+                end_time = int(sample_rate * fn_case['end_time'] / 1000)
+                output_wav = audio_data[start_time: end_time]
+                librosa.output.write_wav(output_path, output_wav, sr=sample_rate)
 
-    print()
-    for fp_case in fp_list:
-        print("[FP] {}".format(fp_case))
+        print()
+        for fp_case in fp_list:
+            print("[FP] {}".format(fp_case))
 
-        if bool_write_audio:
-            output_subdir = os.path.join(output_dir, 'fp')
-            if not os.path.exists(output_subdir):    
-                os.makedirs(output_subdir)
-            output_path = os.path.join(output_subdir, 'label_{}_starttime_{}.wav'.format(fp_case['label'], fp_case['start_time']))
-            start_time = int(sample_rate * fp_case['start_time'] / 1000)
-            end_time = int(sample_rate * fp_case['end_time'] / 1000)
-            output_wav = audio_data[start_time: end_time]
-            librosa.output.write_wav(output_path, output_wav, sr=sample_rate)
+            if bool_write_audio:
+                output_subdir = os.path.join(output_dir, 'fp')
+                if not os.path.exists(output_subdir):    
+                    os.makedirs(output_subdir)
+                output_path = os.path.join(output_subdir, 'label_{}_starttime_{}.wav'.format(fp_case['label'], fp_case['start_time']))
+                start_time = int(sample_rate * fp_case['start_time'] / 1000)
+                end_time = int(sample_rate * fp_case['end_time'] / 1000)
+                output_wav = audio_data[start_time: end_time]
+                librosa.output.write_wav(output_path, output_wav, sr=sample_rate)
 
     # find unmatched detection result
     unmatched_list = []
@@ -135,6 +135,7 @@ def cal_fpr_tpr(src_csv, pst_csv, positive_label, bool_write_audio):
 
 if __name__ == "__main__":
     bool_write_audio = True
+    # bool_write_audio = False
     model_name = "kws_xiaorui_3_3_tc-resnet14-amba_fbankcpu_kd_03112021"
     threshold = "0.8"
 
@@ -145,10 +146,10 @@ if __name__ == "__main__":
     #             bool_write_audio)
 
     # xiaorui
-    cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_validation_3600_001.csv",
-                "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaorui_12162020_validation_3600_001_threshold_{}/found_words.csv".format(model_name, "_".join(threshold.split('.'))),
-                "xiaorui",
-                bool_write_audio)
+    # cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_validation_3600_001.csv",
+    #             "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaorui_12162020_validation_3600_001_threshold_{}/found_words.csv".format(model_name, "_".join(threshold.split('.'))),
+    #             "xiaorui",
+    #             bool_write_audio)
     # cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_validation_3600_001.csv",
     #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_2_5_tc-resnet14-dropout_kd_02202021/test_straming_wav/xiaorui_12162020_validation_3600_001_thresholds/method_mode_1/threshold_0_95_0_9/found_words.csv",
     #             "xiaorui",
@@ -159,6 +160,12 @@ if __name__ == "__main__":
     #             "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaole_11252020_testing_3600_001_threshold_0_95/found_words.csv".format(model_name),
     #             "xiaole",
     #             bool_write_audio)
+
+    # activatebwc
+    cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation.csv",
+                "/mnt/huanyuan/data/speech/Recording_sample/demo_kws_asr_online_api/2021-04-07-19-29-27/found_words.csv",
+                "activatebwc",
+                bool_write_audio)
 
     # # positive
     # cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/pretrain_1_1_12212020_validation_3600_001.csv",

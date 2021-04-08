@@ -14,12 +14,14 @@ import torch.nn.functional as F
 from tqdm import tqdm
 
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo')
+# sys.path.insert(0, '/yuanhuan/code/demo')
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from common.common.utils.python.train_tools import EpochConcateSampler
 from common.common.utils.python.file_tools import load_module_from_disk
 from common.common.utils.python.plotly_tools import plot_loss4d, plot_loss2d, plot_loss
 
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/KWS')
+# sys.path.insert(0, '/yuanhuan/code/demo/Speech/KWS')
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from utils.loss import FocalLoss
 from dataset.kws.dataset_helper import SILENCE_LABEL

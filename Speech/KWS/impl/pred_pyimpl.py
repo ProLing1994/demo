@@ -14,7 +14,7 @@ from utils.pred_helpers import last_checkpoint
 from dataset.kws.dataset_helper import *
 
 
-def load_model(model_folder, epoch):
+def load_model(model_folder, epoch, sub_folder_name='checkpoints'):
     """
     :param model_folder:           The folder containing models
     :param epoch:                  The epoch of the model
@@ -22,12 +22,10 @@ def load_model(model_folder, epoch):
       model_dict:                  The loaded pytorch model
     """
     if epoch < 0:
-        last_checkpoint_folder = last_checkpoint(os.path.join(model_folder,
-                                                              'checkpoints'))
+        last_checkpoint_folder = last_checkpoint(os.path.join(model_folder, sub_folder_name))
         params_file = os.path.join(last_checkpoint_folder, 'parameter.pkl')
     else:
-        params_file = os.path.join(model_folder, 'checkpoints', 'chk_{}'.format(
-            epoch), 'parameter.pkl')
+        params_file = os.path.join(model_folder, sub_folder_name, 'chk_{}'.format(epoch), 'parameter.pkl')
 
     if not os.path.isfile(params_file):
         print('{} params file not found.'.format(params_file))
@@ -57,11 +55,12 @@ def load_model(model_folder, epoch):
     return model_dict
 
 
-def kws_load_model(model_folder, gpu_id, epoch):
+def kws_load_model(model_folder, gpu_id, epoch, sub_folder_name='checkpoints'):
     """ Load pytorch model for kws
     :param model_folder:           The folder containing pytorch models
     :param gpu_id:                 The ID of the gpu to run model
     :param epoch:                  The epoch of the model
+    :param sub_folder_name:        The subpath of the model
     :return:
       model:                       The loaded pytorch model
     """
@@ -72,7 +71,7 @@ def kws_load_model(model_folder, gpu_id, epoch):
     assert torch.cuda.is_available(), 'CUDA is not available.'
 
     model = dict()
-    model['prediction'] = load_model(model_folder, epoch)
+    model['prediction'] = load_model(model_folder, epoch, sub_folder_name)
     model['gpu_id'] = gpu_id
 
     # switch back to the default gpu
@@ -137,11 +136,13 @@ def audio_preprocess(cfg, data):
     window_size_ms = cfg.dataset.window_size_ms
     window_stride_ms = cfg.dataset.window_stride_ms
     feature_bin_count = cfg.dataset.feature_bin_count
+    nfilt = cfg.dataset.nfilt
     desired_samples = int(sample_rate * clip_duration_ms / 1000)
 
     # init audio_processor
     audio_processor = AudioPreprocessor(sr=sample_rate, 
                                         n_mels=feature_bin_count, 
+                                        nfilt=nfilt,
                                         winlen=window_size_ms / 1000, 
                                         winstep=window_stride_ms / 1000,
                                         data_length=clip_duration_ms / 1000)

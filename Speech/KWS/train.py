@@ -4,10 +4,12 @@ import time
 from tqdm import tqdm
 
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/KWS')
+# sys.path.insert(0, '/yuanhuan/code/demo/Speech/KWS')
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from utils.train_tools import *
 
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo')
+# sys.path.insert(0, '/yuanhuan/code/demo')
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from common.common.utils.python.logging_helpers import setup_logger
 
