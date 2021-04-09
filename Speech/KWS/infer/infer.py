@@ -179,8 +179,11 @@ def infer(args, config_file, epoch_num, dataset_mode, add_noise_on, timeshift_ms
     net.eval()
 
     # load label index 
-    # label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
-    if positive_label_together:
+    if positive_label_together and negative_label_together:
+        positive_label_together_label_list = cfg.dataset.label.positive_label_together_label
+        negative_label_together_label_list = cfg.dataset.label.negative_label_together_label
+        label_index = load_label_index(positive_label_together_label_list, negative_label_together_label_list)
+    elif positive_label_together:
         positive_label_together_label_list = cfg.dataset.label.positive_label_together_label
         label_index = load_label_index(positive_label_together_label_list, cfg.dataset.label.negative_label)
     elif negative_label_together:
@@ -207,11 +210,11 @@ def infer(args, config_file, epoch_num, dataset_mode, add_noise_on, timeshift_ms
         results_dict['file'] = data_file_list[audio_idx]
         results_dict['mode'] = data_mode_list[audio_idx]
         results_dict['label'] = data_label_list[audio_idx]
-        if negative_label_together:
-            if results_dict['label'] in cfg.dataset.label.negative_label:
-                results_dict['label_idx'] = label_index[cfg.dataset.label.negative_label_together_label[0]]
-            else:
-                results_dict['label_idx'] = label_index[results_dict['label']]
+
+        if positive_label_together and results_dict['label'] in cfg.dataset.label.positive_label:
+            results_dict['label_idx'] = label_index[positive_label_together_label_list[0]]
+        elif negative_label_together and results_dict['label'] in cfg.dataset.label.negative_label:
+            results_dict['label_idx'] = label_index[negative_label_together_label_list[0]]
         else:
             results_dict['label_idx'] = label_index[results_dict['label']]
         assert results_dict['mode']  == dataset_mode, "[ERROR:] Something wronge about mode, please check"
@@ -266,8 +269,10 @@ def main():
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaoyu.py", help='config file')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py", help='config file')
-    parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py", help='config file')
+    # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py", help='config file')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_heybodycam.py", help='config file')
+    # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan8k.py", help='config file')
+    parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan16k.py", help='config file')
     parser.add_argument('--mode', type=str, default=default_mode)
     parser.add_argument('--epoch', type=int, default=default_model_epoch)
     parser.add_argument('--sub_folder_name', type=str, default=default_model_sub_folder_name)

@@ -142,26 +142,31 @@ class SpeechDataset(Dataset):
             data_offset = np.random.randint(0, len(data) - self.desired_samples)
             data = data[data_offset:(data_offset + self.desired_samples)]
 
-        assert len(data) == self.desired_samples, "[ERROR:] Something wronge about audio length, please check"
+        assert len(data) == self.desired_samples, "[ERROR:] Something wronge with audio length, please check"
         return data
 
     def dataset_add_noise(self, data, bool_silence_label=False):
+        assert len(self.background_data) > 0, "[ERROR:] Something wronge with background data, please check"
+
         # add noise
         background_clipped = np.zeros(self.desired_samples)
         background_volume = 0
 
-        if len(self.background_data) > 0 and self.background_frequency > 0:
-            background_index = np.random.randint(len(self.background_data))
-            background_samples = self.background_data[background_index]
-            assert len(background_samples) >= self.desired_samples, "[ERROR:] Background sample is too short! Need more than {} samples but only {} were found".format(
-                self.desired_samples, len(background_samples))
-            background_offset = np.random.randint(0, len(background_samples) - self.desired_samples - 1)
-            background_clipped = background_samples[background_offset:(background_offset + self.desired_samples)]
+        if self.background_frequency > 0:
+            background_idx = np.random.randint(len(self.background_data))
+            background_sample = self.background_data[background_idx]
+            assert len(background_sample) >= self.desired_samples, "[ERROR:] Background sample is too short! Need more than {} samples but only {} were found".format(
+                self.desired_samples, len(background_sample))
+            background_offset = np.random.randint(0, len(background_sample) - self.desired_samples - 1)
+            background_clipped = background_sample[background_offset:(background_offset + self.desired_samples)]
 
-            if np.random.uniform(0, 1) < self.background_frequency or bool_silence_label:
-                background_volume = np.random.uniform(0, self.background_volume)
+        if np.random.uniform(0, 1) < self.background_frequency or bool_silence_label:
+            background_volume = np.random.uniform(0, self.background_volume)
 
-        data = background_volume * background_clipped + data
+        data_min_value = min(data.max(), abs(data.min()))
+        background_min_value = min((background_volume * background_clipped).max(), abs((background_volume * background_clipped).min()))
+        if background_min_value < data_min_value or bool_silence_label:
+            data = background_volume * background_clipped + data
 
         # data clip
         data = np.clip(data, -1.0, 1.0)

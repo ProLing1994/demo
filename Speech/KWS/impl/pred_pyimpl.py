@@ -139,6 +139,8 @@ def load_background_noise_lmdb(cfg):
 
 
 def dataset_add_noise(cfg, data, background_data, bool_silence_label=False):
+    assert len(background_data) > 0, "[ERROR:] Something wronge with background data, please check"
+
     # init 
     background_frequency = cfg.dataset.augmentation.background_frequency
     background_volume = cfg.dataset.augmentation.background_volume
@@ -147,20 +149,21 @@ def dataset_add_noise(cfg, data, background_data, bool_silence_label=False):
     background_clipped = np.zeros(len(data))
     background_volume_clipped = 0
 
-    if len(background_data) > 0 and background_frequency > 0:
+    if background_frequency > 0:
         background_index = np.random.randint(len(background_data))
         background_samples = background_data[background_index]
         assert len(background_samples) >= len(data), \
             "[ERROR:] Background sample is too short! Need more than {} samples but only {} were found".format(len(data), len(background_samples))
-        background_offset = np.random.randint(
-            0, len(background_samples) - len(data) - 1)
-        background_clipped = background_samples[background_offset:(
-            background_offset + len(data))]
+        background_offset = np.random.randint(0, len(background_samples) - len(data) - 1)
+        background_clipped = background_samples[background_offset:(background_offset + len(data))]
             
-        if np.random.uniform(0, 1) < background_frequency or bool_silence_label:
-            background_volume_clipped = np.random.uniform(0, background_volume)
+    if np.random.uniform(0, 1) < background_frequency or bool_silence_label:
+        background_volume_clipped = np.random.uniform(0, background_volume)
 
-    data = background_volume_clipped * background_clipped + data 
+    data_min_value = min(data.max(), abs(data.min()))
+    background_min_value = min((background_volume * background_clipped).max(), abs((background_volume * background_clipped).min()))
+    if background_min_value < data_min_value or bool_silence_label:
+        data = background_volume_clipped * background_clipped + data 
 
     # data clip 
     data = np.clip(data, -1.0, 1.0) 
