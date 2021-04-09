@@ -7,7 +7,7 @@ import torch.nn.functional as F
 from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
-from impl.pred_pyimpl import kws_load_model, load_background_noise, dataset_add_noise, model_predict
+from impl.pred_pyimpl import kws_load_model, load_background_noise, load_preload_audio, dataset_add_noise, model_predict
 from impl.recognizer_pyimpl import DoubleEdgeDetecting
 from dataset.kws.dataset_helper import *
 from utils.train_tools import *
@@ -121,7 +121,7 @@ def longterm_audio_predict(cfg, net, audio_idx, audio_file, audio_mode, audio_la
     desired_samples = int(sample_rate * clip_duration_ms / 1000)
 
     # load data
-    data, filename = load_preload_audio(audio_file, audio_idx, audio_label, input_dir)
+    data, _ = load_preload_audio(audio_file, audio_idx, audio_label, input_dir)
 
     # alignment data
     data_length = len(data)

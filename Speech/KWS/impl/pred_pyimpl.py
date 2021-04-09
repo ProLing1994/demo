@@ -1,5 +1,6 @@
 import importlib
-import librosa
+# import librosa
+import lmdb
 import os
 import pandas as pd
 import pickle
@@ -90,6 +91,50 @@ def load_background_noise(cfg):
         f = open(os.path.join(input_dir, filename), 'rb')
         background_data.append(pickle.load(f))
         f.close()
+    return background_data
+
+
+def load_preload_audio(audio_file, audio_idx, audio_label, input_dir, refilename=True):
+    # load data
+    if refilename:
+        if audio_label == SILENCE_LABEL:
+            filename = audio_label + '_' + str(audio_idx) + '.txt'
+        else:
+            filename = os.path.basename(os.path.dirname(audio_file)) + '_' + os.path.basename(audio_file).split('.')[0] + '.txt'
+    else:
+        filename =  os.path.basename(audio_file).split('.')[0] + '.txt'
+
+    file_path_list = glob.glob(os.path.join(input_dir, '*' + filename).encode('utf-8'))
+    assert len(file_path_list) == 1, "{} {}".format(len(file_path_list), os.path.join(input_dir, '*' + filename).encode('utf-8'))
+    f = open(file_path_list[0], 'rb')
+    data = pickle.load(f)
+    f.close()
+    return data, filename
+
+    
+def load_lmdb_env(lmdb_path):
+    lmdb_env = lmdb.open(lmdb_path, readonly=True, lock=False, readahead=False, meminit=False)
+    return lmdb_env
+
+
+def read_audio_lmdb(env, key):
+    with env.begin(write=False) as txn:
+        buf = txn.get(key.encode())
+    audio_data = np.frombuffer(buf, dtype=np.float32)
+    return audio_data
+
+
+def load_background_noise_lmdb(cfg):
+    # load noise data
+    # init 
+    background_data_pd = pd.read_csv(cfg.general.background_data_path)
+    background_data_lmdb_path = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset_audio_lmdb', '{}.lmdb'.format(BACKGROUND_NOISE_DIR_NAME))
+    background_data = []
+
+    background_data_lmdb_env = lmdb.open(background_data_lmdb_path, readonly=True, lock=False, readahead=False, meminit=False)
+    for _, row in background_data_pd.iterrows():
+        file_path = row.file
+        background_data.append(read_audio_lmdb(background_data_lmdb_env, file_path))
     return background_data
 
 

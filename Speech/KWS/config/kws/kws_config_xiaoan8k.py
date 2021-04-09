@@ -30,7 +30,7 @@ __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset
 __C.general.is_test = True
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoan8k_test"
+__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoan8k_test_lmdb"
 
 # finetune model
 __C.general.finetune_on = False
@@ -339,8 +339,8 @@ __C.train.betas = (0.9, 0.999)
 __C.debug = {}
 
 # whether to save input images
-# __C.debug.save_inputs = True
-__C.debug.save_inputs = False
+__C.debug.save_inputs = True
+# __C.debug.save_inputs = False
 
 # the number of processing for save input images
 __C.debug.num_processing = 64

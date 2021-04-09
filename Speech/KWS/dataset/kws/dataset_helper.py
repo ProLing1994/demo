@@ -35,24 +35,6 @@ def load_label_index(positive_label, negative_label):
     return label_index
 
 
-def load_preload_audio(audio_file, audio_idx, audio_label, input_dir, refilename=True):
-    # load data
-    if refilename:
-        if audio_label == SILENCE_LABEL:
-            filename = audio_label + '_' + str(audio_idx) + '.txt'
-        else:
-            filename = os.path.basename(os.path.dirname(audio_file)) + '_' + os.path.basename(audio_file).split('.')[0] + '.txt'
-    else:
-        filename =  os.path.basename(audio_file).split('.')[0] + '.txt'
-
-    file_path_list = glob.glob(os.path.join(input_dir, '*' + filename).encode('utf-8'))
-    assert len(file_path_list) == 1, "{} {}".format(len(file_path_list), os.path.join(input_dir, '*' + filename).encode('utf-8'))
-    f = open(file_path_list[0], 'rb')
-    data = pickle.load(f)
-    f.close()
-    return data, filename
-
-
 def add_frequence_mask(spec, F=27, num_masks=1, replace_with_zero=False, static=False):
     num_mel_channels = spec.shape[1]
 

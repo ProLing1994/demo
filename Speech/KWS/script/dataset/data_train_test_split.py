@@ -155,7 +155,7 @@ def data_split(config_file):
     
     total_data_files.extend(positive_data_files)
     # silence and unknowns samples
-    silence_wav_path = ''
+    silence_name_format = SILENCE_LABEL + '{}_{}' # _silence_mode_idx
     random.shuffle(unknown_files)
     for set_index in ['validation', 'testing', 'training']:
         set_size = np.array([x['mode'] == set_index for x in positive_data_files]).astype(int).sum()
@@ -163,8 +163,8 @@ def data_split(config_file):
         # silence samples
         if 'silence_percentage' in cfg.dataset.label:
             silence_size = int(math.ceil(set_size * silence_percentage / 100))
-            for _ in range(silence_size):
-                silence_wav = {'label': SILENCE_LABEL, 'file': silence_wav_path, 'mode':set_index}
+            for idx in range(silence_size):
+                silence_wav = {'label': SILENCE_LABEL, 'file': silence_name_format.format(set_index, idx), 'mode':set_index}
                 silence_files.append(silence_wav)
                 total_data_files.append(silence_wav)
 

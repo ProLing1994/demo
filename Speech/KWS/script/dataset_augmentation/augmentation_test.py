@@ -8,7 +8,7 @@ from tqdm import tqdm
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from utils.train_tools import *
 from dataset.kws.dataset_helper import *
-from impl.pred_pyimpl import load_background_noise, dataset_add_noise
+from impl.pred_pyimpl import load_background_noise, load_preload_audio, dataset_add_noise
 
 def augmentation_test(config_file, output_dir):
     # mkdirs 

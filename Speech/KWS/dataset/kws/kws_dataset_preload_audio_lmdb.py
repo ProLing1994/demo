@@ -12,7 +12,7 @@ import torch
 from torch.utils.data import Dataset
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
-from impl.pred_pyimpl import load_background_noise, load_preload_audio
+from impl.pred_pyimpl import load_lmdb_env, read_audio_lmdb, load_background_noise_lmdb
 from dataset.kws.dataset_helper import *
 
 class SpeechDataset(Dataset):
@@ -43,17 +43,19 @@ class SpeechDataset(Dataset):
         else:
             self.label_index = load_label_index(self.positive_label_list, cfg.dataset.label.negative_label)
 
-        # load data
+        # load data pandas
         data_pd = pd.read_csv(cfg.general.data_csv_path, encoding='utf_8_sig')
-        background_data_pd = pd.read_csv(cfg.general.background_data_path, encoding='utf_8_sig')
 
         self.mode_type = mode
         self.data_pd = data_pd[data_pd['mode'] == mode]
-        self.input_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(
-            cfg.general.version, cfg.general.date), 'dataset_audio', mode)
         self.data_file_list = self.data_pd['file'].tolist()
         self.data_mode_list = self.data_pd['mode'].tolist()
         self.data_label_list = self.data_pd['label'].tolist()
+
+        # lmdb
+        self.lmdb_path = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset_audio_lmdb', '{}.lmdb'.format(mode))
+        self.lmdb_env = load_lmdb_env(self.lmdb_path)
+        self.background_data = load_background_noise_lmdb(cfg)
 
         self.sample_rate = cfg.dataset.sample_rate
         self.clip_duration_ms = cfg.dataset.clip_duration_ms
@@ -82,11 +84,8 @@ class SpeechDataset(Dataset):
         self.T = cfg.dataset.augmentation.T
         self.num_masks = cfg.dataset.augmentation.num_masks
 
-        self.desired_samples = int(
-            self.sample_rate * self.clip_duration_ms / 1000)
-        self.time_shift_samples = int(
-            self.sample_rate * self.time_shift_ms / 1000)
-        self.background_data = load_background_noise(cfg)
+        self.desired_samples = int(self.sample_rate * self.clip_duration_ms / 1000)
+        self.time_shift_samples = int(self.sample_rate * self.time_shift_ms / 1000)
 
         self.audio_preprocess_type = cfg.dataset.preprocess
         self.audio_processor = AudioPreprocessor(sr=self.sample_rate,
@@ -103,7 +102,7 @@ class SpeechDataset(Dataset):
         """ get the number of images in this dataset """
         return len(self.data_file_list)
 
-    def save_audio(self, data, audio_label, filename):
+    def save_audio(self, data, audio_label, audio_file):
         out_folder = os.path.join(
             self.save_audio_inputs_dir, self.mode_type + '_audio', audio_label)
 
@@ -112,8 +111,7 @@ class SpeechDataset(Dataset):
                 os.makedirs(out_folder)
             except:
                 pass
-
-        filename = filename.split('.')[0] + '.wav'
+        filename = os.path.basename(audio_file)
         librosa.output.write_wav(os.path.join(out_folder, filename), data, sr=self.sample_rate)
 
     def audio_preprocess(self, data):
@@ -222,10 +220,8 @@ class SpeechDataset(Dataset):
 
     def dataset_augmentation_spectrum(self, audio_data):
         # add SpecAugment
-        audio_data = add_frequence_mask(
-            audio_data, F=self.F, num_masks=self.num_masks, replace_with_zero=True)
-        audio_data = add_time_mask(
-            audio_data, T=self.T, num_masks=self.num_masks, replace_with_zero=True)
+        audio_data = add_frequence_mask(audio_data, F=self.F, num_masks=self.num_masks, replace_with_zero=True)
+        audio_data = add_time_mask(audio_data, T=self.T, num_masks=self.num_masks, replace_with_zero=True)
         return audio_data
 
     def __getitem__(self, index):
@@ -249,8 +245,8 @@ class SpeechDataset(Dataset):
             audio_label_idx = self.label_index[audio_label]
 
         # load data
-        input_dir = os.path.join(self.input_dir, audio_label)
-        data, filename = load_preload_audio(audio_file, index, audio_label, input_dir)
+        # data, filename = load_preload_audio(audio_file, index, audio_label, input_dir)
+        data = read_audio_lmdb(self.lmdb_env, audio_file)
         assert len(data) != 0, "[ERROR:] Something wronge about audio length, please check"
         # print('Load data Time: {}'.format((time.time() - begin_t) * 1.0))
         # begin_t = time.time()
@@ -266,7 +262,7 @@ class SpeechDataset(Dataset):
         # begin_t = time.time()
 
         if self.save_audio_inputs_bool:
-            self.save_audio(data, audio_label, filename)
+            self.save_audio(data, audio_label, audio_file)
 
         # audio preprocess, get mfcc data
         data = self.audio_preprocess(data)

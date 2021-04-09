@@ -26,15 +26,14 @@ sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from utils.loss import FocalLoss
 from dataset.kws.dataset_helper import SILENCE_LABEL
 from dataset.kws.kws_dataset_align_preload_audio import SpeechDatasetAlign
-from dataset.kws.kws_dataset_preload_audio import SpeechDataset
+from dataset.kws.kws_dataset_preload_audio_lmdb import SpeechDataset
 
 def load_cfg_file(config_file):
     """
     :param config_file:  configure file path
     :return: cfg:        configuration file module
     """
-    assert os.path.isfile(
-        config_file), 'Config not found: {}'.format(config_file)
+    assert os.path.isfile(config_file), 'Config not found: {}'.format(config_file)
     cfg = load_module_from_disk(config_file)
     cfg = cfg.cfg
 

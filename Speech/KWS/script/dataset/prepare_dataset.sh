@@ -26,33 +26,42 @@ config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan16k.
 echo "script/dataset/prepare_dataset.sh"
 
 # train test dataset split 
+# 功能：训练集、测试集划分
 if [ $stage -le 1 ];then
 	python data_train_test_split.py -i $config_file || exit 1
 fi
 
 # add mining difficult sample
-# 如果配置文件 difficult_sample_mining = False，将不会添加到 total_data_files.csv
+# 功能：添加困难挖掘样本
+# 如果 config 配置文件参数：difficult_sample_mining = False，对应样本将不会添加到 total_data_files.csv
 if [ $stage -le 2 ];then
 	python ../mining_difficult_sample/data_train_test_split_mining_difficult_sample.py \
 			--config_file $config_file || exit 1
 fi
 
 # prepare align dataset, clean the dataset according to the alignment results
-# 如果文件夹下不存在 kaldi_type，则不进行 update_dataset，kaldi_type 由工具 dataset_align/dataset_align.sh 产生
+# 功能：产生对齐数据，依赖文件夹下 kaldi_type 文件，该功能非必须
+# kaldi_type 文件由工具 dataset_align/dataset_align.sh 产生
+# 如果文件夹下不存在 kaldi_type，则不进行 update_dataset
 if [ $stage -le 3 ];then
 	python update_dataset.py --config_file $config_file || exit 1
 fi
 
 # speed volume augumentation
-# old：如果配置文件 speed_volume_on = False，将不会进行 augumentation
-# 最新代码不再离线生成语音，直接在线语音增强，故此段代码失效
+# 功能：为加快模型训练速度，离线数据增强
+# old：离线增强，对正样本进行离线增强，如果配置文件 speed_volume_on = False，将不会进行 augumentation
+# new: 在线增强，对正负样本进行在线语音增强，此段代码失效
 # if [ $stage -le 4 ];then
 # 	 python ../dataset_augmentation/speed_volume_augumentation.py --config_file $config_file || exit 1
 # fi
 
 # preload data
+# 功能：为加快模型训练速度，预先加载数据
+# old：为加快模型训练速度，保存音频文件为二进制文件
+# new：为进一步加快模型训练速度，保存音频文件为lmdb格式文件
 if [ $stage -le 5 ];then
-	python data_preload_audio.py --config_file $config_file || exit 1
+	# python data_preload_audio.py --config_file $config_file || exit 1
+	python data_preload_audio_lmdb.py --config_file $config_file || exit 1
 fi
 
 # analysis dataset

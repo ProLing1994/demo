@@ -13,7 +13,7 @@ from torch.utils.data import Dataset
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from dataset.kws.dataset_helper import *
-from impl.pred_pyimpl import load_background_noise
+from impl.pred_pyimpl import load_background_noise, load_preload_audio
 
 class SpeechDatasetAlign(Dataset):
   """
