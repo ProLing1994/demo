@@ -37,11 +37,13 @@ def test(in_args):
     positive_label = cfg.dataset.label.positive_label
     positive_label_together = cfg.dataset.label.positive_label_together
     negative_label_together = cfg.dataset.label.negative_label_together
-    assert len(positive_label) == 1, "We only support one positive label yet"
 
     # load label index 
-    # label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
-    if positive_label_together:
+    if positive_label_together and negative_label_together:
+        positive_label_together_label_list = cfg.dataset.label.positive_label_together_label
+        negative_label_together_label_list = cfg.dataset.label.negative_label_together_label
+        label_index = load_label_index(positive_label_together_label_list, negative_label_together_label_list)
+    elif positive_label_together:
         positive_label_together_label_list = cfg.dataset.label.positive_label_together_label
         label_index = load_label_index(positive_label_together_label_list, cfg.dataset.label.negative_label)
     elif negative_label_together:
@@ -50,11 +52,17 @@ def test(in_args):
     else:
         label_index = load_label_index(cfg.dataset.label.positive_label, cfg.dataset.label.negative_label)
 
+    if positive_label_together:
+        positove_lable_index = label_index[cfg.dataset.label.positive_label_together_label[0]]
+    else:
+        assert len(positive_label) == 1, "We only support one positive label yet"
+        positove_lable_index = label_index[positive_label[0]]
+
     recognize_element = RecognizeResult()
     if cfg.test.method_mode == 0:
         recognize_commands = RecognizeCommands(
             labels=label_list,
-            positove_lable_index = label_index[positive_label[0]],
+            positove_lable_index = positove_lable_index,
             average_window_duration_ms=cfg.test.average_window_duration_ms,
             detection_threshold=cfg.test.detection_threshold,
             suppression_ms=cfg.test.suppression_ms,
@@ -62,7 +70,7 @@ def test(in_args):
     elif cfg.test.method_mode == 1:
         recognize_commands = RecognizeCommandsCountNumber(
             labels=label_list,
-            positove_lable_index = label_index[positive_label[0]],
+            positove_lable_index = positove_lable_index,
             average_window_duration_ms=cfg.test.average_window_duration_ms,
             detection_threshold=cfg.test.detection_threshold,
             detection_number_threshold=cfg.test.detection_number_threshold,
@@ -71,7 +79,7 @@ def test(in_args):
     elif cfg.test.method_mode == 2:
         recognize_commands = RecognizeCommandsAlign(
             labels=label_list,
-            positove_lable_index = label_index[positive_label[0]],
+            positove_lable_index = positove_lable_index,
             average_window_duration_ms=cfg.test.average_window_duration_ms,
             detection_threshold_low=cfg.test.detection_threshold_low,
             detection_threshold_high=cfg.test.detection_threshold_high,
@@ -222,12 +230,24 @@ def main():
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaole_11252020_testing_3600_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
     
+    # xiaoan8k
+    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_training_60.wav",
+                                "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_validation_60.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_testing_3600_001.wav",
+    #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
+
+    # xiaoa16k
+    default_input_wav_list = ['/mnt/huanyuan/model/test_straming_wav/xiaoan16k_2_1_04082021_training_60.wav',
+                                '/mnt/huanyuan/model/test_straming_wav/xiaoan16k_2_1_04082021_validation_60.wav']
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_testing_3600_001.wav",
+    #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
+
     # activatebwc
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_training_60_001.wav",
     #                             "/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_validation_60_001.wav"]
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_testing_3600_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
-    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation.wav"]
 
     # heybodycam
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/heybodycam_03232021_training_60_001.wav",
@@ -313,6 +333,8 @@ def main():
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_heybodycam.py"
+    # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan8k.py"
+    default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan16k.py"
 
     # align config file
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaoyu.py"
@@ -325,7 +347,7 @@ def main():
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_3_1_res15_fbankcpu_03112021/kws_config_xiaorui.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_5_res15_fbankcpu_03222021/kws_config_activatebwc_api.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_2_tc-resnet14-amba_fbankcpu_kd_03222021/kws_config_activatebwc_api.py"
-    default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_4_tc-resnet14-amba_fbankcpu_kd_04012021/kws_config_activatebwc_api.py"
+    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_4_tc-resnet14-amba_fbankcpu_kd_04012021/kws_config_activatebwc_api.py"
 
     parser = argparse.ArgumentParser(description='Streamax KWS Testing Engine')
     parser.add_argument('--mode', type=str, default=default_mode)

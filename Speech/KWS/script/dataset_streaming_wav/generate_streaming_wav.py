@@ -196,7 +196,7 @@ def main():
 
     # only for mode==0/3, support for ['training','validation','testing']
     default_audio_mode = 'validation'
-    default_output_path_list = ['/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation_180.wav']
+    default_output_path_list = ['/mnt/huanyuan/model/test_straming_wav/xiaoan16k_2_1_04082021_validation_60.wav']
 
     # only for mode==1, from folder
     # default_input_dir = '/mnt/huanyuan/data/speech/kws/weiboyulu/dataset'
@@ -271,8 +271,10 @@ def main():
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_pretrain.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaorui.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_all_pretrain.py"
-    default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py"
+    # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_heybodycam.py"
+    # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan8k.py"
+    default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan16k.py"
 
     parser = argparse.ArgumentParser(description="Prepare XiaoYu Dataset")
     parser.add_argument('--input_dir', type=str, default=default_input_dir)
@@ -286,11 +288,11 @@ def main():
     # parser.add_argument('--test_duration_seconds', type=int, default=21600) # 6 hours
     # parser.add_argument('--test_duration_seconds', type=int, default=7200) # 2 hours
     # parser.add_argument('--test_duration_seconds', type=int, default=3600) # 1 hours
-    parser.add_argument('--test_duration_seconds', type=int, default=180) # 3 minute
-    # parser.add_argument('--test_duration_seconds', type=int, default=60) # 1 minute
-    # parser.add_argument('--word_gap_ms', type=int, default=2000)
+    # parser.add_argument('--test_duration_seconds', type=int, default=180) # 3 minute
+    parser.add_argument('--test_duration_seconds', type=int, default=60) # 1 minute
+    parser.add_argument('--word_gap_ms', type=int, default=2000)
     # parser.add_argument('--word_gap_ms', type=int, default=1000)
-    parser.add_argument('--word_gap_ms', type=int, default=100)
+    # parser.add_argument('--word_gap_ms', type=int, default=100)
     args = parser.parse_args()
     
     for output_path in args.output_path_list:

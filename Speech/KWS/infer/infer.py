@@ -7,7 +7,7 @@ import torch.nn.functional as F
 from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
-from impl.pred_pyimpl import kws_load_model, load_background_noise, load_preload_audio, dataset_add_noise, model_predict
+from impl.pred_pyimpl import kws_load_model, load_lmdb_env, read_audio_lmdb, load_background_noise_lmdb, dataset_add_noise, model_predict
 from impl.recognizer_pyimpl import DoubleEdgeDetecting
 from dataset.kws.dataset_helper import *
 from utils.train_tools import *
@@ -109,7 +109,7 @@ def longterm_audio_post_processing(cfg, score_list, audio_label_idx, result_mode
     return pred, average_scores
 
 
-def longterm_audio_predict(cfg, net, audio_idx, audio_file, audio_mode, audio_label, audio_label_idx, background_data, add_noise_on, timeshift_ms, align_bool):
+def longterm_audio_predict(cfg, net, lmdb_env, audio_file, audio_mode, audio_label, audio_label_idx, background_data, add_noise_on, timeshift_ms, align_bool):
     """
     加载语音，前向传播预测结果
     """
@@ -121,7 +121,7 @@ def longterm_audio_predict(cfg, net, audio_idx, audio_file, audio_mode, audio_la
     desired_samples = int(sample_rate * clip_duration_ms / 1000)
 
     # load data
-    data, _ = load_preload_audio(audio_file, audio_idx, audio_label, input_dir)
+    data = read_audio_lmdb(lmdb_env, audio_file)
 
     # alignment data
     data_length = len(data)
@@ -139,7 +139,8 @@ def longterm_audio_predict(cfg, net, audio_idx, audio_file, audio_mode, audio_la
     if audio_label == SILENCE_LABEL or add_noise_on:
         data = dataset_add_noise(cfg, data, background_data, bool_silence_label=True)
 
-    # data list
+    # gen data list
+    # 基于滑窗的方式，获得数据列表
     data_list = []
     if len(data) > desired_samples:
         timeshift_samples = int(sample_rate * timeshift_ms / 1000)
@@ -199,8 +200,12 @@ def infer(args, config_file, epoch_num, dataset_mode, add_noise_on, timeshift_ms
     data_mode_list = data_pd_mode['mode'].tolist()
     data_label_list = data_pd_mode['label'].tolist()
 
+    # lmdb
+    lmdb_path = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset_audio_lmdb', '{}.lmdb'.format(dataset_mode))
+    lmdb_env = load_lmdb_env(lmdb_path)
+
     # load background noise
-    background_data = load_background_noise(cfg)
+    background_data = load_background_noise_lmdb(cfg)
 
     results_list = []
     preds = []
@@ -219,7 +224,7 @@ def infer(args, config_file, epoch_num, dataset_mode, add_noise_on, timeshift_ms
             results_dict['label_idx'] = label_index[results_dict['label']]
         assert results_dict['mode']  == dataset_mode, "[ERROR:] Something wronge about mode, please check"
 
-        score_list = longterm_audio_predict(cfg, net, audio_idx, results_dict['file'], results_dict['mode'], results_dict['label'], results_dict['label_idx'], 
+        score_list = longterm_audio_predict(cfg, net, lmdb_env, results_dict['file'], results_dict['mode'], results_dict['label'], results_dict['label_idx'], 
                                             background_data, add_noise_on, timeshift_ms, align_bool)
         
         if align_bool:

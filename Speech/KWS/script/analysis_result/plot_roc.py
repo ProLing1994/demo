@@ -24,16 +24,16 @@ def plot_roc(fpr, tpr, color, linestyle, label):
     plt.title('Receiver Operating Characteristic')
 
 
-def show_roc_per_class(csv_list, color_list, linestyle_list, label_list):
+def show_roc_per_class(csv_list, color_list, linestyle_list, label_num, ignore_num):
     csv_path = csv_list[0]
     data_pd = pd.read_csv(csv_path)
         
     mean_fpr = np.linspace(0, 1, 250)
     mean_tpr = 0.0
-    for class_idx in range(len(label_list)):
+    for class_idx in range(label_num):
         
         # support for positive label
-        if label_list[class_idx] == SILENCE_LABEL or label_list[class_idx] == UNKNOWN_WORD_LABEL:
+        if class_idx < ignore_num:
             continue
 
         # load labels/scores
@@ -48,19 +48,15 @@ def show_roc_per_class(csv_list, color_list, linestyle_list, label_list):
         plot_roc(mean_fpr, np.interp(mean_fpr, fpr, tpr), color_list[class_idx], linestyle_list[class_idx], class_idx)
         mean_tpr += np.interp(mean_fpr, fpr, tpr)
         # mean_tpr[0] = 0.0  # 初始处为0
-    
-    ignore_num = 0
-    ignore_num += 1 if SILENCE_LABEL in label_list else 0
-    ignore_num += 1 if UNKNOWN_WORD_LABEL in label_list else 0
 
-    mean_tpr /= (len(label_list) - ignore_num)
+    mean_tpr /= (label_num - ignore_num)
     mean_tpr[-1] = 1.0
     
     plot_roc(mean_fpr, mean_tpr, "c", "--", "mean")
     plt.show()
 
 
-def show_roc(csv_list, color_list, linestyle_list, name_list, label_list):
+def show_roc(csv_list, color_list, linestyle_list, name_list, label_num, ignore_num):
 
     plt.figure()
 
@@ -71,10 +67,10 @@ def show_roc(csv_list, color_list, linestyle_list, name_list, label_list):
         mean_fpr = np.linspace(0, 1, 250)
         mean_tpr = 0.0
 
-        for class_idx in range(len(label_list)):
+        for class_idx in range(label_num):
             
             # support for positive label
-            if label_list[class_idx] == SILENCE_LABEL or label_list[class_idx] == UNKNOWN_WORD_LABEL:
+            if class_idx < ignore_num:
                 continue
 
             # load labels/scores
@@ -88,12 +84,8 @@ def show_roc(csv_list, color_list, linestyle_list, name_list, label_list):
             fpr, tpr, thresholds = get_fpr_tpr(labels, scores)
             mean_tpr += np.interp(mean_fpr, fpr, tpr)
             mean_tpr[0] = 0.0  # 初始处为0
-        
-        ignore_num = 0
-        ignore_num += 1 if SILENCE_LABEL in label_list else 0
-        ignore_num += 1 if UNKNOWN_WORD_LABEL in label_list else 0
 
-        mean_tpr /= (len(label_list) - ignore_num)
+        mean_tpr /= (label_num - ignore_num)
         mean_tpr[-1] = 1.0
         auc = get_auc(mean_fpr, mean_tpr)
         plot_roc(mean_fpr, mean_tpr, color_list[idx], linestyle_list[idx], name_list[idx] + " (auc: {:.3f})".format(auc))
@@ -106,31 +98,36 @@ def main():
     # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_res15_10232020/infer_validation_augmentation_False.csv"]
     # color_list =  ["r", "r", "r", "g", "g", "g", "b", "b", "b", "y", "y", "y"]
     # linestyle_list =  ["-", "--", ":", "-", "--", ":", "-", "--", ":", "-", "--", ":"]
-    # label_list = ['_silence_', '_unknown_', "yes", "no", "up", "down", "left", "right", "on", "off", "stop", "go"]
-    # show_roc_per_class(csv_list, color_list, linestyle_list, label_list)
+    # label_num = 12
+    # ignore_num= 2
+    # show_roc_per_class(csv_list, color_list, linestyle_list, label_num, ignore_num)
 
     # xiaoyu： 3 label
     # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/infer_longterm_validation_augmentation_False_min.csv"]
     # color_list =  ["r", "g", "b"]
     # linestyle_list =  ["-", "-", "-"]
-    # label_list = ['_silence_', '_unknown_', 'xiaorui']
-    # show_roc_per_class(csv_list, color_list, linestyle_list, label_list)
+    # label_num = 3
+    # ignore_num= 2
+    # show_roc_per_class(csv_list, color_list, linestyle_list, label_num, ignore_num)
 
     # xiaoyu: 2 label 
     # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoyu7_0_timeshift_spec_on_res15_11192020/infer_longterm_average_validation_augmentation_False.csv"]
     # color_list =  ["r", "g", "b"]
     # linestyle_list =  ["-", "-", "-"]
-    # label_list = ['_unknown_', 'xiaoyu']
-    # show_roc_per_class(csv_list, color_list, linestyle_list, label_list)
+    # label_num = 2
+    # ignore_num= 1
+    # show_roc_per_class(csv_list, color_list, linestyle_list, label_num, ignore_num)
 
     # activatebwc: 2 label 
     # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_5_res15_fbankcpu_03222021/dataset_1_4_infer_longterm_validation_augmentation_False_mean.csv"]
     # color_list =  ["r", "g", "b"]
     # linestyle_list =  ["-", "-", "-"]
-    # label_list = ['_unknown_', 'activatebwc']
-    # show_roc_per_class(csv_list, color_list, linestyle_list, label_list)
+    # label_num = 2
+    # ignore_num= 1
+    # show_roc_per_class(csv_list, color_list, linestyle_list, label_num, ignore_num)
 
     # mutil_label
+    # tf_speech_commands
     # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_10212020_le-4/infer_validation_augmentation_False.csv",
     #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_cnn-tpool2_10222020/infer_validation_augmentation_False.csv",
     #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_cnn-one-fstride1_10222020/infer_validation_augmentation_False.csv",
@@ -143,8 +140,11 @@ def main():
     # name_list = ["cnn-trad-pool2-validation", "cnn-tpool2-validation", "cnn-one-fstride1-validation",
     #             "res15-validation","res15-narrow-validation",
     #             "res8-validation","res8-narrow-validation"]
-    # label_list = ['_silence_', '_unknown_', "yes", "no", "up", "down", "left", "right", "on", "off", "stop", "go"]
-    # show_roc(csv_list, color_list, linestyle_list, name_list, label_list)
+    # label_num = 12
+    # ignore_num= 2
+    # show_roc(csv_list, color_list, linestyle_list, name_list, label_num, ignore_num)
+
+    # tf_speech_commands
     # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_res15_10232020/infer_longterm_validation_augmentation_False_mean.csv",
     #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_1_edge-speech-nets_02042021/infer_longterm_validation_augmentation_False_mean.csv",
     #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_2_tc-resnet8_02192021/infer_longterm_validation_augmentation_False_mean.csv",
@@ -154,8 +154,11 @@ def main():
     # color_list = ["y", "r", "g", "b", "g", "b"]
     # linestyle_list = ["-", "-", "-", "-", "--", "--"]
     # name_list = ["res15-validation", "edge-speech-nets", "tc-resnet8", "tc-resnet14", "tc-resnet8-dropout", "tc-resnet14-dropout"]
-    # label_list = ['_silence_', '_unknown_', "yes", "no", "up", "down", "left", "right", "on", "off", "stop", "go"]
-    # show_roc(csv_list, color_list, linestyle_list, name_list, label_list)
+    # label_num = 12
+    # ignore_num= 2
+    # show_roc(csv_list, color_list, linestyle_list, name_list, label_num, ignore_num)
+
+    # activatebwc: 2 label 
     # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_5_res15_fbankcpu_03222021/dataset_1_4_infer_longterm_validation_augmentation_False_mean.csv",
     #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_5_res15_fbankcpu_03222021/dataset_1_5_infer_longterm_validation_augmentation_False_mean.csv",
     #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_2_tc-resnet14-amba_fbankcpu_kd_03222021/dataset_1_4_infer_longterm_validation_augmentation_False_mean.csv",
@@ -164,26 +167,19 @@ def main():
     # color_list = ["r", "r", "g", "g", "b"]
     # linestyle_list = ["-", "--", "-", "--", "-"]
     # name_list = ["activatebwc-res15(1.5)-dataset(1.4)", "activatebwc-res15(1.5)-dataset(1.5)", "activatebwc-tcresnet14(2.2)-dataset(1.4)", "activatebwc-tcresnet14(2.2)-dataset(1.5)", "heybodycam-res15(1.3)-dataset(2.3)"]
-    # label_list = ['_unknown_', 'activatebwc']
-    # show_roc(csv_list, color_list, linestyle_list, name_list, label_list)
-    # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_5_res15_fbankcpu_03222021/dataset_1_4_infer_longterm_validation_augmentation_False_mean.csv",
-    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_heybodycam_1_3_res15_fbankcpu_15_03222021/dataset_2_3_infer_longterm_validation_augmentation_False_mean.csv"]
-    # color_list = ["r", "g"]
-    # linestyle_list = ["-", "--"]
-    # name_list = ["activatebwc-res15(1.5)-dataset(1.4)", "heybodycam-res15(1.3)-dataset(2.3)"]
-    # label_list = ['_unknown_', 'activatebwc']
-    # show_roc(csv_list, color_list, linestyle_list, name_list, label_list)
-    csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_2_tc-resnet14-amba_fbankcpu_kd_03222021/dataset_1_4_infer_longterm_validation_augmentation_False_mean.csv",
-                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_2_tc-resnet14-amba_fbankcpu_kd_03222021/dataser_1_5_infer_longterm_validation_augmentation_False_mean.csv",
-                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_3_tc-resnet14-amba_fbankcpu_dml_04012021/dataset_1_5_1s_checkpoints_0_infer_longterm_validation_augmentation_False_mean.csv",
-                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_3_tc-resnet14-amba_fbankcpu_dml_04012021/dataset_1_5_1s_checkpoints_1_infer_longterm_validation_augmentation_False_mean.csv",
-                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_4_tc-resnet14-amba_fbankcpu_kd_04012021/dataset_1_5_1s_infer_longterm_validation_augmentation_False_mean.csv",
-                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_6_res15_fbankcpu_03222021/dataset_1_5_1s_infer_longterm_validation_augmentation_False_mean.csv"]
-    color_list = ["r", "r", "g", "g", "b", "b"]
-    linestyle_list = ["-", "--", "-", "--", "-", "--"]
-    name_list = ["activatebwc-tcresnet14(2.2-kd)-dataset(1.4)", "activatebwc-tcresnet14(2.2-kd)-dataset(1.5)", "activatebwc-tcresnet14(2.3-dml-0)-dataset(1.5)", "activatebwc-tcresnet14(2.3-dml-1)-dataset(1.5)", "activatebwc-tcresnet14(2.4-kd)-dataset(1.5)", "activatebwc-res15(1.6)-dataset(1.5)"]
-    label_list = ['_unknown_', 'activatebwc']
-    show_roc(csv_list, color_list, linestyle_list, name_list, label_list)
+    # label_num = 2
+    # ignore_num= 1
+    # show_roc(csv_list, color_list, linestyle_list, name_list, label_num, ignore_num)
+
+    # xiaoan: 2 label 
+    csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_0_res15_fbankcpu_04062021/dataset_1_0_infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan16k_1_0_res15_fbankcpu_04062021/dataset_2_0_infer_longterm_validation_augmentation_False_mean.csv"]
+    color_list = ["r", "b"]
+    linestyle_list = ["-", "-"]
+    name_list = ["xiaoan8k-res15(1.0)--dataset(1.0)", "xiaoan16k-res15(1.0)--dataset(2.0)"]
+    label_num = 2
+    ignore_num= 1
+    show_roc(csv_list, color_list, linestyle_list, name_list, label_num, ignore_num)
 
 if __name__ == "__main__":
     main()

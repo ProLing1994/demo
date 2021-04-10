@@ -15,28 +15,22 @@ __C.general.sub_data_dir = ["/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experi
                             "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/XiaoRuiDataset/"]
 
 # data version
-# __C.general.version = "2.0"
-__C.general.version = "2.1"
+__C.general.version = "3.0"
 
 # data date
-# __C.general.date = "04062021"
-__C.general.date = "04082021"
+__C.general.date = "04102021"
 
 # data path
-# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_2.0_04062021/total_data_files.csv"
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_2.1_04082021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_3.0_04102021/total_data_files.csv"
 
 # background noise path
-# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_2.0_04062021/background_noise_files.csv"
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_2.1_04082021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_3.0_04102021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoan16k_test"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan16k_1_0_res15_fbankcpu_04062021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan16k_1_1_res15_fbankcpu_04062021/"
+__C.general.save_dir = "/mnt/huanyuan/model/kws_nihaoxiaoan8k_test"
 
 # finetune model
 __C.general.finetune_on = False
@@ -111,8 +105,8 @@ __C.dataset = {}
 __C.dataset.input_channel = 1
 
 # Number of audio samples per second
-__C.dataset.sample_rate = 16000
-# __C.dataset.sample_rate = 8000
+# __C.dataset.sample_rate = 16000
+__C.dataset.sample_rate = 8000
 
 # Length of each audio clip to be analyzed
 __C.dataset.clip_duration_ms = 1500
@@ -130,19 +124,20 @@ __C.dataset.window_stride_ms = 10.0
 # __C.dataset.preprocess = "mfcc"
 __C.dataset.preprocess = "fbank_cpu"
 
-# How many bins to use for the MFCC fingerprint
+# How many bins to use for the Mel feature
 # __C.dataset.feature_bin_count = 40
-# __C.dataset.feature_bin_count = 48
-__C.dataset.feature_bin_count = 64
+__C.dataset.feature_bin_count = 48
+# __C.dataset.feature_bin_count = 64
 
 # How many nfilt to use for the Mel feature, only support preprocess=fbank_cpu
-__C.dataset.nfilt = 64
+__C.dataset.nfilt = 48
 
 # input size of training data (w, h), unit: voxel
 # __C.dataset.data_size = [40, 201]
 # __C.dataset.data_size = [64, 196]
-__C.dataset.data_size = [64, 146]
-# __C.dataset.data_size = [48, 146]
+# __C.dataset.data_size = [64, 151]
+# __C.dataset.data_size = [64, 146]
+__C.dataset.data_size = [48, 146]
 
 
 ##################################
@@ -152,16 +147,16 @@ __C.dataset.data_size = [64, 146]
 __C.dataset.label = {}
 
 # label
-__C.dataset.label.positive_label = ["xiaoanxiaoan_16k"]
+__C.dataset.label.positive_label = ["nihaoxiaoan_8k", "nihaoxiaoan_16k"]
 __C.dataset.label.positive_label_chinese_name_list = [""]
-__C.dataset.label.positive_label_together = False
+__C.dataset.label.positive_label_together = True
 __C.dataset.label.positive_label_together_label = ["positive"]
 __C.dataset.label.negative_label = ["_silence_", "_unknown_"]
 __C.dataset.label.negative_label_together = True
 __C.dataset.label.negative_label_together_label = ["negative"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
 __C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[1]
-__C.dataset.label.ignore_label = ["kaldi_cut_keyword", "xiaoanxiaoan_8k", 'nihaoxiaoan_8k']
+__C.dataset.label.ignore_label = ["kaldi_cut_keyword"]
 __C.dataset.label.label_list = __C.dataset.label.negative_label + __C.dataset.label.positive_label
 __C.dataset.label.num_classes = 2
 
@@ -344,8 +339,8 @@ __C.train.betas = (0.9, 0.999)
 __C.debug = {}
 
 # whether to save input images
-# __C.debug.save_inputs = True
-__C.debug.save_inputs = False
+__C.debug.save_inputs = True
+# __C.debug.save_inputs = False
 
 # the number of processing for save input images
 __C.debug.num_processing = 64
