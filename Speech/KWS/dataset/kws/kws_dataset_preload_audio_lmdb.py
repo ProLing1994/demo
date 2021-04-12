@@ -163,9 +163,9 @@ class SpeechDataset(Dataset):
         if np.random.uniform(0, 1) < self.background_frequency or bool_silence_label:
             background_volume = np.random.uniform(0, self.background_volume)
 
-        data_min_value = min(data.max(), abs(data.min()))
-        background_min_value = min((background_volume * background_clipped).max(), abs((background_volume * background_clipped).min()))
-        if background_min_value < data_min_value or bool_silence_label:
+        data_max_value = data.max()
+        background_max_value = (background_volume * background_clipped).max() * 0.8
+        if background_max_value < data_max_value or bool_silence_label:
             data = background_volume * background_clipped + data
 
         # data clip

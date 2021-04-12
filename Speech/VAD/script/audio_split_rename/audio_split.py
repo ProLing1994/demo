@@ -6,7 +6,8 @@ import pandas as pd
 parser = argparse.ArgumentParser(description="Audio Split Using Auditok")
 parser.add_argument('--audio_path', type=str, default='/mnt/huanyuan/data/TODO/01.wav')
 parser.add_argument('--output_dir', type=str, default='/mnt/huanyuan/data/TODO/')
-parser.add_argument('--output_format', type=str, default="RM_KWS_XIAORUI_{}_S{:0>3d}M{:0>1d}D{:0>2d}T{:0>3d}.wav")
+# parser.add_argument('--output_format', type=str, default="RM_KWS_XIAORUI_{}_S{:0>3d}M{:0>1d}D{:0>2d}T{:0>3d}.wav")
+parser.add_argument('--output_format', type=str, default="RM_MOVIE_{}_S{:0>4d}T{:0>3d}.wav")
 parser.add_argument('--min_dur', type=float, default=3.5)
 parser.add_argument('--max_dur', type=float, default=12)
 parser.add_argument('--max_silence', type=float, default=2.3)
@@ -38,10 +39,9 @@ if __name__ == "__main__":
 
     for region in audio_regions:
         audio_region_dict = {}
-        # output_name = args.output_format.format(
-        #     args.speaker, args.sex, idx)
-        output_name = args.output_format.format(
-            args.text, args.speaker, args.sex, args.distance, idx)
+        # output_name = args.output_format.format(args.speaker, args.sex, idx)
+        # output_name = args.output_format.format(args.text, args.speaker, args.sex, args.distance, idx)
+        output_name = args.output_format.format(os.path.basename(audio_path).split('.')[0], args.speaker, idx)
         filename = region.save(os.path.join(output_path, output_name))
         audio_region_dict['audio_region'] = output_name.split('.')[0]
         audio_region_dict['state'] = 'N'

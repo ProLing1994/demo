@@ -237,8 +237,20 @@ def main():
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
     # xiaoa16k
-    default_input_wav_list = ['/mnt/huanyuan/model/test_straming_wav/xiaoan16k_2_1_04082021_training_60.wav',
-                                '/mnt/huanyuan/model/test_straming_wav/xiaoan16k_2_1_04082021_validation_60.wav']
+    # default_input_wav_list = ['/mnt/huanyuan/model/test_straming_wav/xiaoan16k_2_1_04082021_training_60.wav',
+    #                             '/mnt/huanyuan/model/test_straming_wav/xiaoan16k_2_1_04082021_validation_60.wav']
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_testing_3600_001.wav",
+    #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
+
+    # nihaoxiaoan8k
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/nihaoxiaoan8k_3_0_04102021_training_60.wav",
+    #                             "/mnt/huanyuan/model/test_straming_wav/nihaoxiaoan8k_3_0_04102021_validation_60.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_testing_3600_001.wav",
+    #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
+
+    # nihaoxiaoan16k
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/nihaoxiaoan16k_4_0_04102021_training_60.wav",
+    #                             "/mnt/huanyuan/model/test_straming_wav/nihaoxiaoan16k_4_0_04102021_validation_60.wav"]
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_testing_3600_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
@@ -334,7 +346,9 @@ def main():
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_heybodycam.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan8k.py"
-    default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan16k.py"
+    # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan16k.py"
+    # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_nihaoxiaoan8k.py"
+    # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_nihaoxiaoan16k.py"
 
     # align config file
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaoyu.py"
@@ -348,6 +362,7 @@ def main():
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_5_res15_fbankcpu_03222021/kws_config_activatebwc_api.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_2_tc-resnet14-amba_fbankcpu_kd_03222021/kws_config_activatebwc_api.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_4_tc-resnet14-amba_fbankcpu_kd_04012021/kws_config_activatebwc_api.py"
+    default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_1_res15_fbankcpu_04062021/kws_config_xiaoan8k_api.py"
 
     parser = argparse.ArgumentParser(description='Streamax KWS Testing Engine')
     parser.add_argument('--mode', type=str, default=default_mode)

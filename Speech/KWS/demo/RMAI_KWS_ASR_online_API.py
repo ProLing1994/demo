@@ -27,7 +27,7 @@ class OnlineAudio:
     audio_queue_wakeup = Queue()
     event = Event() 
     
-    def __init__(self, chunk=1600, format=pyaudio.paInt16, channels=1, rate=16000):
+    def __init__(self, chunk=int(RMAI_KWS_ASR_offline_API.sample_rate/10), format=pyaudio.paInt16, channels=1, rate=int(RMAI_KWS_ASR_offline_API.sample_rate)):
         self._chunk = chunk
         self._format = format
         self._channels = channels
@@ -55,9 +55,9 @@ class OnlineAudio:
         进程：监听本地音乐
         """
         print("[Init:] Listen")
-        wave_path = "/mnt/huanyuan/data/speech/Recording_sample/iphone/test-kws-asr.wav"
+        # wave_path = "/mnt/huanyuan/data/speech/Recording_sample/iphone/test-kws-asr.wav"
         # wave_path = "/home/huanyuan/share/audio_data/english_wav/1-0127-asr_16k.wav"
-        # wave_path = "/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_training_60_001.wav"
+        wave_path = "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_validation_60.wav"
     
         # 打开音频流，output=True 表示音频输出
         pyaudio_play = pyaudio.PyAudio()

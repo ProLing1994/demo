@@ -30,7 +30,8 @@ __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset
 __C.general.is_test = True
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws_nihaoxiaoan16k_test"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws_nihaoxiaoan16k_test"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_nihaoxiaoan16k_1_0_res15_fbankcpu_04102021/"
 
 # finetune model
 __C.general.finetune_on = False
