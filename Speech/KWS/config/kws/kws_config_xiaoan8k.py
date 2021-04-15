@@ -38,9 +38,10 @@ __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset
 __C.general.is_test = True
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoan8k_test"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoan8k_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_0_res15_fbankcpu_04062021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_1_res15_fbankcpu_04062021/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_2_res15_fbankcpu_041262021/"
 
 # finetune model
 __C.general.finetune_on = False
@@ -270,6 +271,7 @@ __C.net.model_name = 'res15'
 # __C.net.model_name = 'tc-resnet8'
 # __C.net.model_name = 'tc-resnet14'
 # __C.net.model_name = 'tc-resnet14-amba'
+# __C.net.model_name = 'tc-resnet14-amba-1-5s'
 # __C.net.model_name = 'tc-resnet8-dropout'
 # __C.net.model_name = 'tc-resnet14-dropout'
 # __C.net.model_name = 'tc-resnet18-dropout'
@@ -291,14 +293,14 @@ __C.train.num_epochs = 1
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 1024
 # __C.train.batch_size = 128
-__C.train.batch_size = 64
+# __C.train.batch_size = 64
 # __C.train.batch_size = 16
-# __C.train.batch_size = 1
+__C.train.batch_size = 1
 
 # the number of threads for IO
-__C.train.num_threads = 64
+# __C.train.num_threads = 64
 # __C.train.num_threads = 16
-# __C.train.num_threads = 1
+__C.train.num_threads = 1
 
 # the number of batches to update loss curve
 __C.train.plot_snapshot = 5
@@ -349,8 +351,8 @@ __C.train.betas = (0.9, 0.999)
 __C.debug = {}
 
 # whether to save input images
-__C.debug.save_inputs = True
-# __C.debug.save_inputs = False
+# __C.debug.save_inputs = True
+__C.debug.save_inputs = False
 
 # the number of processing for save input images
 __C.debug.num_processing = 64

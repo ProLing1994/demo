@@ -6,6 +6,8 @@ from thop import profile
 from thop import clever_format
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 
+def count_parameters(model):
+    return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
 def main():
     batch_size = 1
@@ -38,7 +40,10 @@ def main():
     flops, params = profile(net, inputs=(input, ))
     flops, params = clever_format([flops, params], "%.3f")
     print("par.: ", params)
-    print("Mult.:", flops)
+    print("Mult.: ", flops)
+
+    params_num = count_parameters(net)
+    print("par.:  {}K".format(params_num/1000.0))
 
 if __name__ == "__main__":
     main()
