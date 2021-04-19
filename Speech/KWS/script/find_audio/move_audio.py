@@ -34,9 +34,9 @@ def move_audio():
 
 
 if __name__ == "__main__":
-    default_input_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_5_res15_fbankcpu_03222021/test_straming_wav/ADkit_weiboyulu/"
-    default_output_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/Adkit_record_03312021/adkit_record/"
-    default_output_folder_name = "ADkit_weiboyulu"
+    default_input_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_2_res15_fbankcpu_041262021/test_straming_wav/QingTingFM/"
+    default_output_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/QingTingFM_04152021/"
+    default_output_folder_name = "qingtingfm_record"
     
     parser = argparse.ArgumentParser(description='Streamax KWS Engine')
     parser.add_argument('--input_dir', type=str, default=default_input_dir)

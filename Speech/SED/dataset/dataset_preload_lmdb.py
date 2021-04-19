@@ -1,5 +1,3 @@
-import librosa
-import multiprocessing
 import numpy as np
 import os
 import sys
@@ -11,9 +9,10 @@ import torch
 
 from torch.utils.data import Dataset
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
-from impl.pred_pyimpl import load_lmdb_env, read_audio_lmdb, load_background_noise_lmdb
-from dataset.kws.dataset_helper import *
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech/SED')
+from utils.folder_tools import *
+from utils.lmdb_tools import *
+from dataset.dataset_helper import *
 
 class SpeechDataset(Dataset):
     """
@@ -24,38 +23,18 @@ class SpeechDataset(Dataset):
         # init
         super().__init__()
 
-        # data index
-        self.positive_label_list = cfg.dataset.label.positive_label
-        self.negative_label_list = cfg.dataset.label.negative_label
-        self.positive_label_together = cfg.dataset.label.positive_label_together
-        self.negative_label_together = cfg.dataset.label.negative_label_together
-
-        if self.positive_label_together and self.negative_label_together:
-            self.positive_label_together_label_list = cfg.dataset.label.positive_label_together_label
-            self.negative_label_together_label_list = cfg.dataset.label.negative_label_together_label
-            self.label_index = load_label_index(self.positive_label_together_label_list, self.negative_label_together_label_list)
-        elif self.positive_label_together:
-            self.positive_label_together_label_list = cfg.dataset.label.positive_label_together_label
-            self.label_index = load_label_index(self.positive_label_together_label_list, cfg.dataset.label.negative_label)
-        elif self.negative_label_together:
-            self.negative_label_together_label_list = cfg.dataset.label.negative_label_together_label
-            self.label_index = load_label_index(self.positive_label_list, self.negative_label_together_label_list)
-        else:
-            self.label_index = load_label_index(self.positive_label_list, cfg.dataset.label.negative_label)
-
         # load data pandas
         data_pd = pd.read_csv(cfg.general.data_csv_path, encoding='utf_8_sig')
 
         self.mode_type = mode
-        self.data_pd = data_pd[data_pd['mode'] == mode]
+        self.data_pd = data_pd[data_pd['mode'] == self.mode_type]
         self.data_file_list = self.data_pd['file'].tolist()
         self.data_mode_list = self.data_pd['mode'].tolist()
         self.data_label_list = self.data_pd['label'].tolist()
 
         # lmdb
-        self.lmdb_path = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset_audio_lmdb', '{}.lmdb'.format(mode))
+        self.lmdb_path = os.path.join(cfg.general.data_dir, '../experimental_dataset/dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset_audio_lmdb', '{}.lmdb'.format(mode))
         self.lmdb_env = load_lmdb_env(self.lmdb_path)
-        self.background_data = load_background_noise_lmdb(cfg)
 
         self.sample_rate = cfg.dataset.sample_rate
         self.clip_duration_ms = cfg.dataset.clip_duration_ms
@@ -69,14 +48,15 @@ class SpeechDataset(Dataset):
         self.data_size_w = cfg.dataset.data_size[0]
 
         self.augmentation_on = cfg.dataset.augmentation.on and augmentation_on
-        self.augmentation_speed_volume_on = cfg.dataset.augmentation.speed_volume_on
-        self.augmentation_pitch_on = cfg.dataset.augmentation.pitch_on
         self.background_frequency = cfg.dataset.augmentation.background_frequency
         self.background_volume = cfg.dataset.augmentation.background_volume
         self.time_shift_ms = cfg.dataset.augmentation.time_shift_ms
-        self.time_shift_multiple = cfg.dataset.augmentation.time_shift_multiple
+
+        self.augmentation_speed_volume_on = cfg.dataset.augmentation.speed_volume_on
         self.speed_list = cfg.dataset.augmentation.speed
         self.volume_list = cfg.dataset.augmentation.volume
+
+        self.augmentation_pitch_on = cfg.dataset.augmentation.pitch_on
         self.pitch_list = cfg.dataset.augmentation.pitch 
 
         self.augmentation_spec_on = cfg.dataset.augmentation.spec_on
@@ -95,29 +75,27 @@ class SpeechDataset(Dataset):
                                                  winstep=self.window_stride_ms / 1000,
                                                  data_length = self.clip_duration_ms / 1000)
 
-        self.save_audio_inputs_bool = cfg.debug.save_inputs
-        self.save_audio_inputs_dir = cfg.general.save_dir
+        self.save_audio_bool = cfg.debug.save_inputs
+        self.save_audio_dir = cfg.general.save_dir
 
     def __len__(self):
         """ get the number of images in this dataset """
         return len(self.data_file_list)
 
     def save_audio(self, data, audio_label, audio_file):
-        out_folder = os.path.join(
-            self.save_audio_inputs_dir, self.mode_type + '_audio', audio_label)
+        out_folder = os.path.join(self.save_audio_dir, self.mode_type + '_audio', str(audio_label))
 
-        if not os.path.isdir(out_folder):
-            try:
-                os.makedirs(out_folder)
-            except:
-                pass
+        try:
+            create_folder(out_folder)
+        except:
+            pass
         filename = os.path.basename(audio_file)
         librosa.output.write_wav(os.path.join(out_folder, filename), data, sr=self.sample_rate)
 
     def audio_preprocess(self, data):
         # check
-        assert self.audio_preprocess_type in [
-            "mfcc", "pcen", "fbank", "fbank_cpu"], "[ERROR:] Audio preprocess type is wronge, please check"
+        assert self.audio_preprocess_type in ["mfcc", "pcen", "fbank", "fbank_cpu"], \
+            "[ERROR:] Audio preprocess type is wronge, please check"
 
         # preprocess
         if self.audio_preprocess_type == "mfcc":
@@ -211,9 +189,6 @@ class SpeechDataset(Dataset):
 
         # Time shift enhancement multiple of negative samples
         time_shift_samples = self.time_shift_samples
-        if audio_label == UNKNOWN_WORD_LABEL:
-            time_shift_samples *= self.time_shift_multiple
-
         if time_shift_samples > 0:
             time_shift_amount = np.random.randint(-time_shift_samples, time_shift_samples)
             time_shift_left = -min(0, time_shift_amount)
@@ -243,32 +218,21 @@ class SpeechDataset(Dataset):
         # print('Init Time: {}'.format((time.time() - begin_t) * 1.0))
         # begin_t = time.time()
 
-        # load label idx
-        if self.positive_label_together and audio_label in self.positive_label_list:
-            audio_label_idx = self.label_index[self.positive_label_together_label_list[0]]
-        elif self.negative_label_together and audio_label in self.negative_label_list:
-            audio_label_idx = self.label_index[self.negative_label_together_label_list[0]]
-        else:
-            audio_label_idx = self.label_index[audio_label]
-
         # load data
-        # data, filename = load_preload_audio(audio_file, index, audio_label, input_dir)
         data = read_audio_lmdb(self.lmdb_env, audio_file)
         assert len(data) != 0, "[ERROR:] Something wronge about load data, please check"
         # print('Load data Time: {}'.format((time.time() - begin_t) * 1.0))
         # begin_t = time.time()
 
         # data augmentation
-        if audio_label == SILENCE_LABEL:
-            data = self.dataset_add_noise(data, bool_silence_label=True)
-        elif self.augmentation_on:
+        if self.augmentation_on:
             data = self.dataset_augmentation_waveform(data, audio_label)
         else:
             data = self.dataset_alignment(data)
         # print('Data augmentation Time: {}'.format((time.time() - begin_t) * 1.0))
         # begin_t = time.time()
 
-        if self.save_audio_inputs_bool:
+        if self.save_audio_bool:
             self.save_audio(data, audio_label, audio_file)
 
         # audio preprocess, get mfcc data
@@ -282,7 +246,7 @@ class SpeechDataset(Dataset):
         # To tensor
         data_tensor = torch.from_numpy(np.expand_dims(data, axis=0))
         data_tensor = data_tensor.float()
-        label_tensor = torch.tensor(audio_label_idx)
+        label_tensor = torch.tensor(audio_label)
 
         # check tensor
         assert data_tensor.shape[0] == self.input_channel

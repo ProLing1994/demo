@@ -138,8 +138,8 @@ default_asr_bpe = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/englis
 # default_input_wav = "/home/huanyuan/share/audio_data/english_wav/1-0127-asr_16k.wav"
 # default_input_wav = "/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation_180.wav"
 # default_input_wav = "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_validation_60.wav"
-# default_input_wav = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/activatebwc_danbin_场景一_30_180.wav"
-default_input_wav = "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/test-kws-asr_0001.wav"
+default_input_wav = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/activatebwc_danbin_场景二_0001_17_180.wav"
+# default_input_wav = "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/test-kws-asr_0001.wav"
 default_output_folder = "/mnt/huanyuan/data/speech/Recording_sample/demo_kws_asr_online_api/{}".format('-'.join('-'.join(str(datetime.now()).split('.')[0].split(' ')).split(':')))
 default_gpu = True
 

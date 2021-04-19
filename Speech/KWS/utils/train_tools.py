@@ -334,8 +334,7 @@ def save_checkpoint(net, optimizer, epoch_idx, batch_idx, cfg, config_file, outp
     :param config_file: the configuration file path
     :return: None
     """
-    chk_folder = os.path.join(cfg.general.save_dir,
-                              output_folder_name, 'chk_{}'.format(epoch_idx))
+    chk_folder = os.path.join(cfg.general.save_dir, output_folder_name, 'chk_{}'.format(epoch_idx))
     if not os.path.isdir(chk_folder):
         os.makedirs(chk_folder)
     filename = os.path.join(chk_folder, 'parameter.pkl')

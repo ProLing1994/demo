@@ -17,22 +17,26 @@ __C.general.sub_data_dir = ["/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experi
 # data version
 # __C.general.version = "1.0"
 # __C.general.version = "1.1"
-__C.general.version = "1.2"
+# __C.general.version = "1.2"
+__C.general.version = "1.3"
 
 # data date
 # __C.general.date = "04062021"
 # __C.general.date = "04082021"
-__C.general.date = "04122021"
+# __C.general.date = "04122021"
+__C.general.date = "04152021"
 
 # data path
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.0_04062021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.1_04082021/total_data_files.csv"
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.2_04122021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.2_04122021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.3_04152021/total_data_files.csv"
 
 # background noise path
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.0_04062021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.1_04082021/background_noise_files.csv"
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.2_04122021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.2_04122021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.3_04152021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True

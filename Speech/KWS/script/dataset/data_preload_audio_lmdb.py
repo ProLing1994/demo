@@ -49,8 +49,7 @@ def general_lmdb(cfg, lmdb_path, data_pd):
     env = lmdb.open(lmdb_path, map_size=data_size * 10)
     txn = env.begin(write=True)
 
-    for idx, row in tqdm(data_pd.iterrows()):
-        print(' Done : [{}/{}]'.format(idx, len(file_list)), end='\r')
+    for idx, row in tqdm(data_pd.iterrows(), total=len(label_list)):
         file_path = row['file']
         file_label = row['label']
 
