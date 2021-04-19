@@ -254,5 +254,5 @@ class SpeechDataset(Dataset):
         assert data_tensor.shape[2] == self.data_size_w
 
         # print
-        # print(audio_label, label_tensor)
+        print(audio_file, audio_label)
         return data_tensor, label_tensor, index

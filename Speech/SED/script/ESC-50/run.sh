@@ -1,6 +1,6 @@
 #!/bin/bash
 
-stage=2
+stage=0
 
 echo "script/ESC-50/run.sh"
 

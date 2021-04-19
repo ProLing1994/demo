@@ -104,8 +104,12 @@ def fbank(signal, sample_rate=16000, winlen=0.025, winstep=0.01,
     fb = get_filterbanks(nfilt, nfft, sample_rate, lowfreq, highfreq)
     if(sample_rate == 8000):
         fb = fb[:, :128]
-    else:
+    elif(sample_rate == 16000):
         fb = fb[:, :256]
+    elif(sample_rate == 32000):
+        fb = fb[:, :512]
+    else:
+        raise Exception("[ERROR] Unknow sample rate: {}/[8000, 16000, 32000]".format(self.sample_rate))
     feat = np.dot(pspec, fb.T) # compute the filterbank energies
     feat = np.where(feat == 0, np.finfo(float).eps, feat) # if feat is zero, we get problems with log
     return feat, energy
@@ -137,19 +141,21 @@ def gen_fbank_feature(signal, sample_rate=16000, winlen=0.025, winstep=0.01,
 class Feature(object):
     """ feature python wrapper """
     def __init__(self, sample_rate=16000, data_length=3, feature_freq=48, nfilt=64, winlen=0.032, winstep=0.010, scale_num=10):
-        self.data_len_samples = sample_rate * data_length
+        self.data_len_samples = int(sample_rate * data_length)
         self.feature_freq = feature_freq
         self.nfilt = nfilt
         self.sample_rate = sample_rate
         self.winlen = winlen
         self.winstep = winstep
         self.scale_num = scale_num
-        if self.sample_rate == 16000:
+        if self.sample_rate == 32000:
+            self.nfft = 1024
+        elif self.sample_rate == 16000:
             self.nfft = 512
         elif self.sample_rate == 8000:  
             self.nfft = 256  
         else:
-            raise Exception("[ERROR] Unknow sample rate: {}/[8000, 16000]".format(self.sample_rate))
+            raise Exception("[ERROR] Unknow sample rate: {}/[8000, 16000, 32000]".format(self.sample_rate))
 
     def __del__(self):
         pass

@@ -68,7 +68,8 @@ class EvaluateSampler(object):
         """
         Evaluate sampler. Generate batch meta for evaluation.
         """
-        self.batch_size = cfg.train.batch_size
+        # self.batch_size = cfg.train.batch_size
+        self.batch_size = 16
         self.audios_num = len(data_set)
 
     def __iter__(self):

@@ -111,8 +111,8 @@ class AudioPreprocessor(object):
         data = data.reshape(-1, 40)
         return data
 
-    def compute_fbanks_cpu(self, data):
         # data to numpy
+    def compute_fbanks_cpu(self, data):
         data = data * pow(2,15)
         data = data.astype(int)
         # print(data[:10])

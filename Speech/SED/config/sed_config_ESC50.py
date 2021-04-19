@@ -30,14 +30,12 @@ __C.general.is_test = True
 
 # the output of training models and logging files
 # __C.general.save_dir = "/mnt/huanyuan/model/sed_test"
-# __C.general.save_dir = "/mnt/huanyuan/model/sed_test_finetune"
-# __C.general.save_dir = "/mnt/huanyuan/model/sed_test_finetune_augumentation"
-__C.general.save_dir = "/mnt/huanyuan/model/sed_test_finetune_augumentation_mix_up"
+__C.general.save_dir = "/mnt/huanyuan/model/sed_test_index"
 
 # finetune model
-__C.general.finetune_on = True
-__C.general.finetune_model_dir = "/mnt/huanyuan/model/sed_test/"
-__C.general.finetune_epoch = 5
+__C.general.finetune_on = False
+__C.general.finetune_model_dir = ""
+__C.general.finetune_epoch = 0
 
 # set certain epoch to continue training, set -1 to train from scratch
 __C.general.resume_epoch = -1
@@ -75,10 +73,10 @@ __C.dataset.window_size_ms = 32.0
 __C.dataset.window_stride_ms = 10.0
 
 # How the spectrogram is processed to produce features, support ["mfcc", "pcen", "fbank", "fbank"]
-__C.dataset.preprocess = "fbank"
+# __C.dataset.preprocess = "fbank"
 # __C.dataset.preprocess = "pcen"
 # __C.dataset.preprocess = "mfcc"
-# __C.dataset.preprocess = "fbank_cpu"
+__C.dataset.preprocess = "fbank_cpu"
 
 # How many bins to use for the Mel feature
 __C.dataset.feature_bin_count = 64
@@ -90,7 +88,8 @@ __C.dataset.nfilt = 64
 __C.dataset.input_channel = 1
 
 # input size of training data (w, h), unit: voxel
-__C.dataset.data_size = [64, 501]
+# __C.dataset.data_size = [64, 501]
+__C.dataset.data_size = [64, 496]
 
 ##################################
 # label parameters
@@ -146,7 +145,8 @@ __C.dataset.augmentation.T = 20
 __C.dataset.augmentation.num_masks = 1
 
 # minx up
-__C.dataset.augmentation.mix_up_on = True
+# __C.dataset.augmentation.mix_up_on = True
+__C.dataset.augmentation.mix_up_on = False
 __C.dataset.augmentation.mix_up_frequency = 0.5
 
 ####################################

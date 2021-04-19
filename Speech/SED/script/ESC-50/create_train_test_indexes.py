@@ -30,7 +30,7 @@ def create_indexes(args):
         data_list.append({'label': wav_label, 'file': wav_path, 'mode':'training'})
 
     for idx in range(len(test_data_list)):
-        wav_path = train_data_list[idx]
+        wav_path = test_data_list[idx]
         wav_name = os.path.basename(wav_path)
         wav_label = wav_name.split('.')[0].split('-')[-1]
         data_list.append({'label': wav_label, 'file': wav_path, 'mode':'testing'})
