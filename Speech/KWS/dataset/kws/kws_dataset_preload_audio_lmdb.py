@@ -163,7 +163,8 @@ class SpeechDataset(Dataset):
         background_offset = np.random.randint(0, len(background_sample) - self.desired_samples - 1)
         background_clipped = background_sample[background_offset:(background_offset + self.desired_samples)]
 
-        if np.random.uniform(0, 1) < self.background_frequency or bool_silence_label:
+        # if np.random.uniform(0, 1) < self.background_frequency or bool_silence_label:
+        if np.random.uniform(0, 1) < self.background_frequency:
             background_volume = np.random.uniform(0, self.background_volume)
 
         data_max_value = data.max()

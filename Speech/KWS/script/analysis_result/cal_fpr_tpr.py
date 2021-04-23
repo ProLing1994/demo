@@ -40,16 +40,20 @@ def cal_fpr_tpr(src_csv, pst_csv, positive_label, bool_write_audio):
         row_idx = src_list[idx]
 
         # y_true_idx
-        y_true_idx = 1 if row_idx['label'] == positive_label else 0
+        # y_true_idx = 1 if row_idx['label'] == positive_label else 0
+        y_true_idx = 1 if row_idx['label'] in positive_label else 0
         y_true.append(y_true_idx)
 
         # y_pred_idx 
         y_pred_idx = 0
         for idy in range(len(pst_list)):
             row_idy = pst_list[idy]
-            if (row_idx['start_time'] > row_idy['start_time'] and row_idx['start_time'] < row_idy['end_time'] and row_idy['label'] == positive_label) \
-                or (row_idx['end_time'] > row_idy['start_time'] and row_idx['end_time'] < row_idy['end_time'] and row_idy['label'] == positive_label) \
-                or (row_idx['start_time'] < row_idy['start_time'] and row_idx['end_time'] > row_idy['end_time'] and row_idy['label'] == positive_label):
+            # if (row_idx['start_time'] > row_idy['start_time'] and row_idx['start_time'] < row_idy['end_time'] and row_idy['label'] == positive_label) \
+            #     or (row_idx['end_time'] > row_idy['start_time'] and row_idx['end_time'] < row_idy['end_time'] and row_idy['label'] == positive_label) \
+            #     or (row_idx['start_time'] < row_idy['start_time'] and row_idx['end_time'] > row_idy['end_time'] and row_idy['label'] == positive_label):
+            if (row_idx['start_time'] > row_idy['start_time'] and row_idx['start_time'] < row_idy['end_time'] and row_idy['label'] in positive_label) \
+                or (row_idx['end_time'] > row_idy['start_time'] and row_idx['end_time'] < row_idy['end_time'] and row_idy['label'] in positive_label) \
+                or (row_idx['start_time'] < row_idy['start_time'] and row_idx['end_time'] > row_idy['end_time'] and row_idy['label'] in positive_label):
                 if y_pred_idx == 0 and row_idy['matched'] == 0:
                     row_idy['matched'] = 1
                     y_pred_idx = 1
@@ -161,11 +165,18 @@ if __name__ == "__main__":
     #             "xiaole",
     #             bool_write_audio)
 
-    # activatebwc
-    cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation.csv",
-                "/mnt/huanyuan/data/speech/Recording_sample/demo_kws_asr_online_api/2021-04-08-13-21-51/found_words.csv",
-                "activatebwc",
+    # xiaoan8k
+    cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_3_04152021_validation.csv",
+                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_3_tc-resnet14-amba_fbankcpu_kd_041262021/test_straming_wav/xiaoan8k_1_3_04152021_validation_threshold_0_5/found_words.csv",
+                # "/mnt/huanyuan/data/speech/Recording_sample/demo_kws_asr_online_api/2021-04-20-18-54-31/found_words - 副本.csv",
+                ["xiaoanxiaoan_8k", "xiaoanxiaoan_16k"],
                 bool_write_audio)
+
+    # # activatebwc
+    # cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation.csv",
+    #             "/mnt/huanyuan/data/speech/Recording_sample/demo_kws_asr_online_api/2021-04-08-13-21-51/found_words.csv",
+    #             "activatebwc",
+    #             bool_write_audio)
 
     # # positive
     # cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/pretrain_1_1_12212020_validation_3600_001.csv",

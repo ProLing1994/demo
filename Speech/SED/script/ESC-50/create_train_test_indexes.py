@@ -15,6 +15,12 @@ def create_indexes(args):
     train_folder = os.path.join(cfg.general.data_dir, 'train')
     test_folder = os.path.join(cfg.general.data_dir, 'test')
     data_list = []         # {'label': [], 'file': [], 'mode': []}
+    
+    # test_list.csv
+    test_lable = {}        # {'file': 'label'}
+    test_list_pd = pd.read_csv(os.path.join(cfg.general.data_dir, 'test_list.csv'))
+    for _, row in test_list_pd.iterrows():
+        test_lable[row['file']] = row['label']
 
     # create folder 
     output_dir = os.path.join(cfg.general.data_dir, '../experimental_dataset/dataset_{}_{}'.format(cfg.general.version, cfg.general.date))
@@ -32,7 +38,7 @@ def create_indexes(args):
     for idx in range(len(test_data_list)):
         wav_path = test_data_list[idx]
         wav_name = os.path.basename(wav_path)
-        wav_label = wav_name.split('.')[0].split('-')[-1]
+        wav_label = test_lable['test/{}'.format(wav_name)]
         data_list.append({'label': wav_label, 'file': wav_path, 'mode':'testing'})
 
     data_pd = pd.DataFrame(data_list)

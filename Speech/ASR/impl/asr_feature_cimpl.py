@@ -18,7 +18,7 @@ def __load_c_functions():
     lib.Feature_create.restype = ctypes.c_void_p
     fun_dict['Feature_create'] = lib.Feature_create
 
-    lib.Feature_create_samples.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int]
+    lib.Feature_create_samples.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int]
     lib.Feature_create_samples.restype = ctypes.c_void_p
     fun_dict['Feature_create_samples'] = lib.Feature_create_samples
 
@@ -46,7 +46,7 @@ def __load_c_functions():
     lib.Feature_get_mel_feature.restype = None
     fun_dict['Feature_get_mel_feature'] = lib.Feature_get_mel_feature
 
-    lib.Feature_get_mel_int_feature.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_short), ctypes.c_int, ctypes.c_int]
+    lib.Feature_get_mel_int_feature.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_short), ctypes.c_int]
     lib.Feature_get_mel_int_feature.restype = None
     fun_dict['Feature_get_mel_int_feature'] = lib.Feature_get_mel_int_feature
 
@@ -106,13 +106,12 @@ class Feature(object):
         else:
             raise Exception("[ERROR: ] Unknow sample_rate")
 
-        self.nfilt = nfilt
-
         data_len_samples = ctypes.c_int(int(sample_rate * data_length))
         sample_rate = ctypes.c_int(sample_rate)
         n_fft = ctypes.c_int(n_fft)
+        nfilt = ctypes.c_int(nfilt)
         feature_freq = ctypes.c_int(feature_freq)
-        self.ptr = call_func('Feature_create_samples', data_len_samples, sample_rate, n_fft, feature_freq)
+        self.ptr = call_func('Feature_create_samples', data_len_samples, sample_rate, n_fft, nfilt, feature_freq)
 
     def __del__(self):
         call_func('Feature_delete', self.ptr)
@@ -144,9 +143,7 @@ class Feature(object):
         data_ptr = data.ctypes.data_as(ctypes.POINTER(ctypes.c_short))
 
         data_len_samples = ctypes.c_int(data_len_samples)
-
-        mel_filter = ctypes.c_int(self.nfilt)
-        call_func('Feature_get_mel_int_feature', self.ptr, data_ptr, data_len_samples, mel_filter)
+        call_func('Feature_get_mel_int_feature', self.ptr, data_ptr, data_len_samples)
         return 
 
     def copy_mfsc_feature_to(self):

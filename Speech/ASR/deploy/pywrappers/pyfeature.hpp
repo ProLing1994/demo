@@ -11,14 +11,14 @@ extern "C"
 namespace ASR
 {
     void *Feature_create();
-    void *Feature_create_samples(int data_len_samples, int sample_rate, int n_fft, int feature_freq);
+    void *Feature_create_samples(int data_len_samples, int sample_rate, int n_fft, int nfilt, int feature_freq);
     void Feature_delete(void *feature);
     int Feature_data_mat_time(void *feature);
     int Feature_feature_time(void *feature);
     int Feature_feature_freq(void *feature);
     int Feature_check_data_length(void *feature, int data_len_samples);
     void Feature_get_mel_feature(void *feature, short *pdata, int data_len_samples);
-    void Feature_get_mel_int_feature(void *feature, short *pdata, int data_len_samples, int mel_filter=64);
+    void Feature_get_mel_int_feature(void *feature, short *pdata, int data_len_samples);
     void Feature_copy_mfsc_feature_to(void *feature, float *feature_data);
     void Feature_copy_mfsc_feature_int_to(void *feature, unsigned char *feature_data);
 } // namespace ASR

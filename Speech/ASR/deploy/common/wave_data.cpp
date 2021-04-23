@@ -8,10 +8,8 @@
 
 namespace ASR
 {
-    Wave_Data::Wave_Data()
-    {
-        m_wave_data = Wave_Data_S();
-    }
+    Wave_Data::Wave_Data():
+        m_wave_data() {}
 
     Wave_Data::~Wave_Data()
     {
@@ -30,12 +28,13 @@ namespace ASR
             return -1;
         }
         fread(&wav_head, sizeof(struct Wave_File_Head_S), 1, fp); //read wavehead
+        fclose(fp);
 
         // check
-        if(wav_head.channel != 1 || wav_head.sample_rate != 16000 || wav_head.bit_per_sample != 16 )  
+        if(wav_head.channel != 1 || wav_head.bit_per_sample != 16 )  
         {
-            printf("[ERROR:] %s, %d: Read wav failed!!, only support channel == %d/1, sample_rate == %d/16000, bit_per_sample == %d/16.\n", \
-                    __FUNCTION__, __LINE__, wav_head.channel, wav_head.sample_rate, wav_head.bit_per_sample);
+            printf("[ERROR:] %s, %d: Read wav failed!!, only support channel == %d/1, bit_per_sample == %d/16.\n", \
+                    __FUNCTION__, __LINE__, wav_head.channel, wav_head.bit_per_sample);
             return -1;
         }
         

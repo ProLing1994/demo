@@ -7,9 +7,9 @@ namespace ASR
         return new Feature();
     }
 
-    void *Feature_create_samples(int data_len_samples, int sample_rate, int n_fft, int feature_freq)
+    void *Feature_create_samples(int data_len_samples, int sample_rate, int n_fft, int nfilt, int feature_freq)
     {
-        return new Feature(data_len_samples, sample_rate, n_fft, feature_freq);
+        return new Feature(data_len_samples, sample_rate, n_fft, nfilt, feature_freq);
     }
 
     void Feature_delete(void* feature)
@@ -48,10 +48,10 @@ namespace ASR
         obj->get_mel_feature(pdata, data_len_samples);
     }
 
-    void Feature_get_mel_int_feature(void *feature, short *pdata, int data_len_samples, int mel_filter)
+    void Feature_get_mel_int_feature(void *feature, short *pdata, int data_len_samples)
     {
         Feature* obj = static_cast<Feature*>(feature);
-        obj->get_mel_int_feature(pdata, data_len_samples, mel_filter);
+        obj->get_mel_int_feature(pdata, data_len_samples);
     }
 
     void Feature_copy_mfsc_feature_to(void *feature, float *feature_data)

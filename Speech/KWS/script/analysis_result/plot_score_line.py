@@ -286,8 +286,8 @@ if __name__ == "__main__":
     #                 ["positive"], positive_label_idx=positive_label_idx)
 
     # # xiaoan8k
-    model_name = "kws_xiaoan8k_1_2_res15_fbankcpu_041262021"
-    threshold = "0.3"
+    model_name = "kws_xiaoan8k_2_1_tc-resnet14-amba_fbankcpu_kd_041262021"
+    threshold = "0.8"
     positive_label_idx = "1"
     show_score_line("/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_training_60.csv",
                     "/mnt/huanyuan/model/model_10_30_25_21/model/{}/test_straming_wav/xiaoan8k_1_1_04082021_training_60_threshold_{}/final_scores.csv".format(model_name, "_".join(threshold.split('.'))),

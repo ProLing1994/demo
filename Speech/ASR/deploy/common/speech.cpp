@@ -317,7 +317,7 @@ namespace ASR
         }
 
         // get feature
-        m_feature->get_featuer_slides_window(pdata, data_len_samples, 48);
+        m_feature->get_featuer_slides_window(pdata, data_len_samples);
 
         for (int i = 0; i < m_feature->data_mat_time() - m_feature->feature_time(); i = i + m_feature->time_step_ms())
         {

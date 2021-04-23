@@ -17,3 +17,6 @@ fi
 if [ $stage -le 2 ];then
 	python data_preload_lmdb.py preload_audio_lmdb -i $config_file || exit 1
 fi
+
+# train
+# 功能：训练模型，执行 train.py

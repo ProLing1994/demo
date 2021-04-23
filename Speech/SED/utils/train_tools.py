@@ -11,7 +11,8 @@ import torch
 
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/SED')
+sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/SED')
+# sys.path.insert(0, '/home/huanyuan/code/demo/Speech/SED')
 from utils.optimizer_tools import *
 from utils.sampler_tools import *
 from dataset.dataset_preload_lmdb import SpeechDataset
@@ -123,7 +124,7 @@ def generate_test_dataset(cfg, mode='testing', augmentation_on=False):
     data_loader = torch.utils.data.DataLoader(dataset=data_set, 
                                                 batch_sampler=data_sampler, 
                                                 num_workers=cfg.train.num_threads, 
-                                                pin_memory=True)
+                                                pin_memory=False)
     return data_loader
     
 def save_checkpoint(net, optimizer, sampler, epoch_idx, iteration, cfg, config_file, output_folder_name='checkpoints'):

@@ -14,11 +14,9 @@ from impl.asr_decode_cimpl import Decode
 
 def gen_image_list(args):
     # init 
-    sample_rate = 16000
-    # window_size_ms = 3000
-    # window_stride_ms = 3000
-    window_size_ms = 2000
-    window_stride_ms = 2000
+    sample_rate = args.sample_rate
+    window_size_ms = args.window_size_ms
+    window_stride_ms = args.window_stride_ms
     window_size_samples = int(sample_rate * window_size_ms / 1000)
     window_stride_samples = int(sample_rate * window_stride_ms / 1000)
 
@@ -54,7 +52,6 @@ def gen_image_list(args):
             audio_data = np.array(audio_data_list)
             
             # cal feature
-            # feature = Feature()
             feature = Feature(sample_rate, window_size_samples/sample_rate, int(args.CHW_params.split(",")[2]))
             feature.get_mel_int_feature(audio_data, len(audio_data))
             feature_data = feature.copy_mfsc_feature_int_to()
@@ -90,29 +87,39 @@ if __name__ == "__main__":
     # default_CHW_params = "1,296,56"
     # default_transpose = False
 
-    # kws: xiaorui
+    # # kws: xiaorui
     # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/xiaorui/"
     # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/xiaorui_long/"
     # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/other/"
     # default_output_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/image_196_64"
-    # default_output_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/image_64_196"
     # default_CHW_params = "1,196,64"
     # default_transpose = False
+    # # default_output_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/image_64_196"
+    # # default_CHW_params = "1,196,64"
+    # # default_transpose = True
 
-    # kws: activatebwc
-    default_audio_folder = "/home/huanyuan/share/audio_data/weakup_activatebwc/activatebwc/"
-    # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_activatebwc/activatebwc_long/"
-    # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_activatebwc/other/"
-    # default_output_folder = "/home/huanyuan/share/audio_data/weakup_activatebwc/image_64_196"
-    default_output_folder = "/home/huanyuan/share/audio_data/weakup_activatebwc/temp/"
-    default_CHW_params = "1,196,64"
-    default_transpose = True
+    # # kws: activatebwc
+    # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_activatebwc/activatebwc/"
+    # # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_activatebwc/activatebwc_long/"
+    # # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_activatebwc/other/"
+    # # default_output_folder = "/home/huanyuan/share/audio_data/weakup_activatebwc/image_64_196"
+    # default_output_folder = "/home/huanyuan/share/audio_data/weakup_activatebwc/temp/"
+    # default_CHW_params = "1,196,64"
+    # default_transpose = True
 
     # # english:
     # default_audio_folder = "/home/huanyuan/share/audio_data/english_wav/"
     # default_output_folder = "/home/huanyuan/share/audio_data/english_wav/image_296_64"
     # default_CHW_params = "1,296,64"
     # default_transpose = False
+
+    # kws: xiaoan8k
+    default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaoan8k/xiaoan8k/"
+    # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaoan8k/xiaoan8k_long/"
+    # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaoan8k/other/"
+    default_output_folder = "/home/huanyuan/share/audio_data/weakup_xiaoan8k/image_48_146/"
+    default_CHW_params = "1,146,48"
+    default_transpose = True
 
     parser = argparse.ArgumentParser(description='Streamax ASR Demo Engine')
     parser.add_argument('-i', '--audio_folder', type=str, default=default_audio_folder)
@@ -121,4 +128,13 @@ if __name__ == "__main__":
     parser.add_argument('--transpose', action='store_true', default=default_transpose)
     args = parser.parse_args()
 
+    # 16k & 2s
+    # args.sample_rate = 16000
+    # args.window_size_ms = 2000
+    # args.window_stride_ms = 2000
+
+    # 8k & 1.5s
+    args.sample_rate = 8000
+    args.window_size_ms = 1500
+    args.window_stride_ms = 1500
     gen_image_list(args)

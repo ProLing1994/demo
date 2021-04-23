@@ -7,7 +7,9 @@ import sys
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 from ASR.impl.asr_data_loader_pyimpl import WaveLoader
-from ASR.impl.asr_feature_pyimpl import Feature
+# from ASR.impl.asr_data_loader_cimpl import WaveLoader
+# from ASR.impl.asr_feature_pyimpl import Feature
+from ASR.impl.asr_feature_cimpl import Feature
 import ASR.impl.asr_decode_cimpl as Decode_C
 import ASR.impl.asr_decode_pyimpl as Decode_Python
 
@@ -23,25 +25,25 @@ window_stride_ms = 1000                 # 每次间隔 1s 时间
 total_time_ms = 3000                    # 算法处理时长 3s 时间
 
 # kws
-# activate bwc
-sample_rate = 16000
-feature_freq = 64                       # 计算特征维度
-nfilt = 64                              # 计算特征中，Mel 滤波器个数
-kws_feature_time = 196                  # kws 网络特征时间维度
-kws_stride_feature_time = 10            # kws 每间隔 10 个 feature_time 进行一次检索, 对应滑窗 100 ms
-kws_detection_threshold = 0.5           # kws 检测阈值 0.5
-kws_detection_number_threshold = 0.5    # kws 计数阈值 0.5
-kws_suppression_counter = 3             # kws 激活后抑制时间 3s
+# # activate bwc
+# sample_rate = 16000
+# feature_freq = 64                       # 计算特征维度
+# nfilt = 64                              # 计算特征中，Mel 滤波器个数
+# kws_feature_time = 196                  # kws 网络特征时间维度
+# kws_stride_feature_time = 10            # kws 每间隔 10 个 feature_time 进行一次检索, 对应滑窗 100 ms
+# kws_detection_threshold = 0.5           # kws 检测阈值 0.5
+# kws_detection_number_threshold = 0.5    # kws 计数阈值 0.5
+# kws_suppression_counter = 3             # kws 激活后抑制时间 3s
 
 # # xiaoan8k/nihaoxiaoan8k
-# sample_rate = 8000
-# feature_freq = 48                       # 计算特征维度
-# nfilt = 48                              # 计算特征中，Mel 滤波器个数
-# kws_feature_time = 146                  # kws 网络特征时间维度
-# kws_stride_feature_time = 30            # kws 每间隔 10 个 feature_time 进行一次检索, 对应滑窗 300 ms
-# kws_detection_threshold = 0.5           # kws 检测阈值 0.5
-# kws_detection_number_threshold = 0.3    # kws 计数阈值 0.3
-# kws_suppression_counter = 2             # kws 激活后抑制时间 2s
+sample_rate = 8000
+feature_freq = 48                       # 计算特征维度
+nfilt = 48                              # 计算特征中，Mel 滤波器个数
+kws_feature_time = 146                  # kws 网络特征时间维度
+kws_stride_feature_time = 10            # kws 每间隔 10 个 feature_time 进行一次检索, 对应滑窗 100 ms
+kws_detection_threshold = 0.5           # kws 检测阈值 0.5
+kws_detection_number_threshold = 0.3    # kws 计数阈值 0.3
+kws_suppression_counter = 3             # kws 激活后抑制时间 3s
 
 # asr
 asr_feature_time = 296                  # asr 网络特征时间维度，与语音特征容器长度相同
@@ -69,8 +71,8 @@ counter_weakup = 0
 counter_asr = 0
 
 # on-off
-bool_do_asr = True
-# bool_do_asr = False
+# bool_do_asr = True
+bool_do_asr = False
 bool_do_kws_weakup = True
 bool_output_wave = True
 bool_output_csv = False
@@ -101,13 +103,13 @@ bool_output_csv = False
 # default_kws_net_output_name = "Softmax"
 # default_kws_chw_params = "1,196,64"
 # default_kws_transpose = False
-default_kws_model_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_2_4_04012021.caffemodel"
-default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_2_4_04012021.prototxt"
-default_kws_label = "activatebwc"
-default_kws_net_input_name = "data"
-default_kws_net_output_name = "Softmax"
-default_kws_chw_params = "1,64,196"
-default_kws_transpose = True
+# default_kws_model_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_2_4_04012021.caffemodel"
+# default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_2_4_04012021.prototxt"
+# default_kws_label = "activatebwc"
+# default_kws_net_input_name = "data"
+# default_kws_net_output_name = "Softmax"
+# default_kws_chw_params = "1,64,196"
+# default_kws_transpose = True
 
 # xiaoan8k
 # default_kws_model_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_xiaoan8k_res15/res15_1_1_04062021.caffemodel"
@@ -117,6 +119,13 @@ default_kws_transpose = True
 # default_kws_net_output_name = "Softmax"
 # default_kws_chw_params = "1,146,48"
 # default_kws_transpose = False
+default_kws_model_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_xiaoan8k_tc_resnet14/tc_resnet14_2_2_04162021.caffemodel"
+default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_xiaoan8k_tc_resnet14/tc_resnet14_2_2_04162021.prototxt"
+default_kws_label = "xiaoan8k"
+default_kws_net_input_name = "data"
+default_kws_net_output_name = "Softmax"
+default_kws_chw_params = "1,48,146"
+default_kws_transpose = True
 
 # nihaoxiaoan8k
 # default_kws_model_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_nihaoxiaoan8k_res15/res15_1_0_04102021.caffemodel"
@@ -135,11 +144,16 @@ default_asr_net_output_name = "conv39"
 default_asr_chw_params = "1,296,64"
 default_asr_bpe = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/english_bpe.txt"
 
+# activatbwc16k
 # default_input_wav = "/home/huanyuan/share/audio_data/english_wav/1-0127-asr_16k.wav"
 # default_input_wav = "/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation_180.wav"
-# default_input_wav = "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_validation_60.wav"
-default_input_wav = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/activatebwc_danbin_场景二_0001_17_180.wav"
-# default_input_wav = "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/test-kws-asr_0001.wav"
+# default_input_wav = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/办公室场景/activatebwc_danbin_办公室场景_场景二_17_180.wav"
+# default_input_wav = "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_test-kws-asr_0001.wav"
+
+# xiaoan8k
+default_input_wav = "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_validation_60.wav"
+# default_input_wav = "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_3_04152021_validation.wav"
+
 default_output_folder = "/mnt/huanyuan/data/speech/Recording_sample/demo_kws_asr_online_api/{}".format('-'.join('-'.join(str(datetime.now()).split('.')[0].split(' ')).split(':')))
 default_gpu = True
 
@@ -192,6 +206,7 @@ def run_kws():
     for times in range(kws_stride_times):
         feature_data_kws = feature_data_container_np[times * int(kws_stride_feature_time): times * int(kws_stride_feature_time) + int(kws_feature_time),:]
         feature_data_kws = feature_data_kws.astype(np.float32)
+        # print(feature_data_kws)
         if args.kws_transpose:
             feature_data_kws = feature_data_kws.T
         kws_net.blobs[args.kws_net_input_name].data[...] = np.expand_dims(feature_data_kws, axis=0)
@@ -200,6 +215,7 @@ def run_kws():
         net_output = np.squeeze(net_output)
         kws_score_list.append(net_output.copy())
         # print(times, feature_data_kws.shape, net_output)
+        # print(net_output)
 
     # 如果有保留的 kws 结果，进行拼接
     kws_score_np = np.array(kws_score_list)
@@ -392,6 +408,7 @@ def KWS_ASR_offine():
         audio_data = wave_data[times * int(window_stride_samples): times * int(window_stride_samples) + int(window_size_samples)]
         # print("[Information:] Audio data stram: {} - {}, length: {} ".format((times * int(window_stride_samples))/sample_rate, (times * int(window_stride_samples) + int(window_size_samples))/sample_rate, len(audio_data)))
         print("[Information:] Audio data stram: {} - {}, length: {} ".format((times * int(window_stride_samples)), (times * int(window_stride_samples) + int(window_size_samples)), len(audio_data)))
+        # print(audio_data)
 
         sliding_window_start_time_ms = (((times - 2) * int(window_stride_samples)) / sample_rate) * 1000
         run_kws_asr(audio_data)

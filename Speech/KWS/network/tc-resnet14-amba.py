@@ -86,7 +86,7 @@ class SpeechResModel(nn.Module):
     def forward(self, x):
         # x = x.permute(0, 2, 3, 1).contiguous()                          # shape: (batch, 1, 40, 201) ->  shape: (batch, 40, 201, 1) 
         x = x.permute(0, 3, 2, 1).contiguous()                          # shape: (batch, 1, 201, 40) ->  shape: (batch, 40, 201, 1) 
-        out = self.relu(self.conv1(x))                                # shape: (batch, 40, 201, 1) -> shape: (batch, 24, 201, 1)
+        out = self.relu(self.conv1(x))                                  # shape: (batch, 40, 201, 1) -> shape: (batch, 24, 201, 1)
         out = self.layer1_1(out)                                        # shape: (batch, 24, 201, 1) -> shape: (batch, 36, 100, 1)
         out = self.layer1_2(out)                                        # shape: (batch, 36, 101, 1) -> shape: (batch, 36, 101, 1)
         out = self.layer2_1(out)                                        # shape: (batch, 36, 101, 1) -> shape: (batch, 48, 51, 1)
