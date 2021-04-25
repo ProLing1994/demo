@@ -11,6 +11,7 @@ from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from utils.train_tools import *
+from utils.folder_tools import *
 from dataset.kws.dataset_helper import *
 from impl.pred_pyimpl import kws_load_model, model_predict
 from impl.recognizer_pyimpl import RecognizeResult, RecognizeCommands, RecognizeCommandsCountNumber, RecognizeCommandsAlign
@@ -18,10 +19,10 @@ from script.analysis_result.plot_score_line import show_score_line
 from script.analysis_result.cal_fpr_tpr import cal_fpr_tpr
 
 
-# def test(input_wav, args):
-def test(in_args):
-    input_wav = in_args[0]
-    args = in_args[1]
+def test(input_wav, args):
+# def test(in_args):
+#     input_wav = in_args[0]
+#     args = in_args[1]
 
     print("Do wave:{}, begin!!!".format(input_wav))
 
@@ -99,8 +100,11 @@ def test(in_args):
                                     os.path.basename(input_wav).split('.')[0] + '_threshold_{}'.format('_'.join(str(cfg.test.detection_threshold).split('.'))))
     elif args.mode == "2":
         output_subfolder_path = (os.path.dirname(input_wav) + '/').replace(args.input_folder, '')
+        # output_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', 
+        #                             args.output_subfolder_name, output_subfolder_path, 
+        #                             os.path.basename(input_wav).split('.')[0] + '_threshold_{}'.format('_'.join(str(cfg.test.detection_threshold).split('.'))))
         output_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', 
-                                    args.input_folder_name, output_subfolder_path, 
+                                    args.output_subfolder_name, os.path.basename(input_wav).split('_')[1].split('-')[0], output_subfolder_path, 
                                     os.path.basename(input_wav).split('.')[0] + '_threshold_{}'.format('_'.join(str(cfg.test.detection_threshold).split('.'))))
     else:
         raise Exception("[ERROR:] Unknow mode, please check!")
@@ -205,7 +209,7 @@ def main():
     # 0: from input_wav_list
     # 1: from csv
     # 2: from folder
-    default_mode = "0"    # ["0", "1" ,"2"]
+    default_mode = "2"    # ["0", "1" ,"2"]
 
     # mode 0: from input_wav_list
     # test
@@ -332,11 +336,15 @@ def main():
     # mode 2: from folder
     # difficult sample mining
     # default_input_folder = "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/"
-    # default_input_folder_name = "Jabra_510"
+    # default_output_subfolder_name = "Jabra_510"
     # default_input_folder = "/mnt/huanyuan/data/speech/Recording_sample/Real_vehicle_sample/Original/"
-    # default_input_folder_name = "Real_vehicle_sample_Original"
-    default_input_folder = "/mnt/huanyuan/data/speech/Recording_sample/ADkit/weiboyulu/"
-    default_input_folder_name = "ADkit_weiboyulu"
+    # default_output_subfolder_name = "Real_vehicle_sample_Original"
+    # default_input_folder = "/mnt/huanyuan/data/speech/Recording_sample/ADkit/weiboyulu/"
+    # default_output_subfolder_name = "ADkit_weiboyulu"
+    default_input_folder = "/mnt/huanyuan/data/speech/kws/lenovo/experimental_dataset/LenovoDataset_11242020/other/"
+    default_output_subfolder_name = "Dataset_Lenovo_xiaole/other/"
+    # default_input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/第二批数据_0425/安静场景/"
+    # default_output_subfolder_name = "Activatebwc_test"
 
     # config file
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
@@ -365,8 +373,8 @@ def main():
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_4_tc-resnet14-amba_fbankcpu_kd_04012021/kws_config_activatebwc_api.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_1_res15_fbankcpu_04062021/kws_config_xiaoan8k_api.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_2_res15_fbankcpu_041262021/kws_config_xiaoan8k_api.py"
-    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_2_tc-resnet14-amba_fbankcpu_kd_041262021/kws_config_xiaoan8k_api.py"
-    default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_3_tc-resnet14-amba_fbankcpu_kd_041262021/kws_config_xiaoan8k_api.py"
+    default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_2_tc-resnet14-amba_fbankcpu_kd_041262021/kws_config_xiaoan8k_api.py"
+    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_3_tc-resnet14-amba_fbankcpu_kd_041262021/kws_config_xiaoan8k_api.py"
 
     parser = argparse.ArgumentParser(description='Streamax KWS Testing Engine')
     parser.add_argument('--mode', type=str, default=default_mode)
@@ -375,7 +383,7 @@ def main():
     parser.add_argument('--type', type=str, default=default_type)
     parser.add_argument('--bool_noise_reduction', action='store_true', default=default_bool_noise_reduction)
     parser.add_argument('--input_folder', type=str, default=default_input_folder)
-    parser.add_argument('--input_folder_name', type=str, default=default_input_folder_name)
+    parser.add_argument('--output_subfolder_name', type=str, default=default_output_subfolder_name)
     parser.add_argument('--config_file', type=str, default=default_config_file)
     args = parser.parse_args()
 
@@ -410,25 +418,21 @@ def main():
         # for _, row in dataset_pd.iterrows():
         #     test(row['path'], args)
     elif str(args.mode) == "2":
-        file_list = glob.glob(os.path.join(args.input_folder, '*' + ".wav"))
-        file_list += glob.glob(os.path.join(args.input_folder, '*/*' + ".wav"))
-        file_list += glob.glob(os.path.join(args.input_folder, '*/*/*' + ".wav"))
-        file_list += glob.glob(os.path.join(args.input_folder, '*/*/*/*' + ".wav"))
-        file_list += glob.glob(os.path.join(args.input_folder, '*/*/*/*/*' + ".wav"))
+        file_list = get_sub_filepaths_suffix(args.input_folder)
         file_list.sort()
 
-        in_params = []
-        for file_path in file_list:
-            in_args = [file_path, args]
-            in_params.append(in_args)
-
-        p = multiprocessing.Pool(3)
-        out = p.map(test, in_params)
-        p.close()
-        p.join()
-
+        # in_params = []
         # for file_path in file_list:
-        #     test(file_path, args)
+        #     in_args = [file_path, args]
+        #     in_params.append(in_args)
+
+        # p = multiprocessing.Pool(3)
+        # out = p.map(test, in_params)
+        # p.close()
+        # p.join()
+
+        for file_path in file_list:
+            test(file_path, args)
     else:
         raise Exception("[ERROR:] Unknow mode, please check!")
 

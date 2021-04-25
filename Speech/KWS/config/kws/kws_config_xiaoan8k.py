@@ -47,9 +47,11 @@ __C.general.is_test = True
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_1_res15_fbankcpu_04062021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_2_res15_fbankcpu_041262021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_3_res15_fbankcpu_041262021/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_4_res15_fbankcpu_64_041262021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_1_tc-resnet14-amba_fbankcpu_kd_041262021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_2_tc-resnet14-amba_fbankcpu_kd_041262021/"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_3_tc-resnet14-amba_fbankcpu_kd_041262021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_3_tc-resnet14-amba_fbankcpu_kd_041262021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_4_tc-resnet14-amba_fbankcpu_64_kd_041262021/"
 
 # finetune model
 __C.general.finetune_on = False
@@ -145,18 +147,19 @@ __C.dataset.preprocess = "fbank_cpu"
 
 # How many bins to use for the Mel feature
 # __C.dataset.feature_bin_count = 40
-__C.dataset.feature_bin_count = 48
-# __C.dataset.feature_bin_count = 64
+# __C.dataset.feature_bin_count = 48
+__C.dataset.feature_bin_count = 64
 
 # How many nfilt to use for the Mel feature, only support preprocess=fbank_cpu
-__C.dataset.nfilt = 48
+# __C.dataset.nfilt = 48
+__C.dataset.nfilt = 64
 
 # input size of training data (w, h), unit: voxel
 # __C.dataset.data_size = [40, 201]
 # __C.dataset.data_size = [64, 196]
 # __C.dataset.data_size = [64, 151]
-# __C.dataset.data_size = [64, 146]
-__C.dataset.data_size = [48, 146]
+__C.dataset.data_size = [64, 146]
+# __C.dataset.data_size = [48, 146]
 
 
 ##################################
@@ -266,7 +269,7 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'cnn-trad-pool2'
 # __C.net.model_name = 'cnn-one-fstride1'
 # __C.net.model_name = 'cnn-tpool2'
-# __C.net.model_name = 'res15'
+__C.net.model_name = 'res15'
 # __C.net.model_name = 'res15-narrow'
 # __C.net.model_name = 'res15-narrow-amba'
 # __C.net.model_name = 'res15-narrow-novt'
@@ -279,7 +282,7 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'tc-resnet8'
 # __C.net.model_name = 'tc-resnet14'
 # __C.net.model_name = 'tc-resnet14-amba'
-__C.net.model_name = 'tc-resnet14-amba-1-5s'
+# __C.net.model_name = 'tc-resnet14-amba-1-5s'
 # __C.net.model_name = 'tc-resnet8-dropout'
 # __C.net.model_name = 'tc-resnet14-dropout'
 # __C.net.model_name = 'tc-resnet18-dropout'

@@ -25,25 +25,27 @@ window_stride_ms = 1000                 # 每次间隔 1s 时间
 total_time_ms = 3000                    # 算法处理时长 3s 时间
 
 # kws
-# # activate bwc
-# sample_rate = 16000
-# feature_freq = 64                       # 计算特征维度
-# nfilt = 64                              # 计算特征中，Mel 滤波器个数
-# kws_feature_time = 196                  # kws 网络特征时间维度
-# kws_stride_feature_time = 10            # kws 每间隔 10 个 feature_time 进行一次检索, 对应滑窗 100 ms
-# kws_detection_threshold = 0.5           # kws 检测阈值 0.5
-# kws_detection_number_threshold = 0.5    # kws 计数阈值 0.5
-# kws_suppression_counter = 3             # kws 激活后抑制时间 3s
-
-# # xiaoan8k/nihaoxiaoan8k
-sample_rate = 8000
-feature_freq = 48                       # 计算特征维度
-nfilt = 48                              # 计算特征中，Mel 滤波器个数
-kws_feature_time = 146                  # kws 网络特征时间维度
+# activate bwc
+sample_rate = 16000
+feature_freq = 64                       # 计算特征维度
+nfilt = 64                              # 计算特征中，Mel 滤波器个数
+kws_feature_time = 196                  # kws 网络特征时间维度
 kws_stride_feature_time = 10            # kws 每间隔 10 个 feature_time 进行一次检索, 对应滑窗 100 ms
 kws_detection_threshold = 0.5           # kws 检测阈值 0.5
-kws_detection_number_threshold = 0.3    # kws 计数阈值 0.3
-kws_suppression_counter = 3             # kws 激活后抑制时间 3s
+kws_detection_number_threshold = 0.5    # kws 计数阈值 0.5
+# kws_suppression_counter = 3             # kws 激活后抑制时间 3s
+# kws_suppression_counter = 2             # kws 激活后抑制时间 2s
+kws_suppression_counter = 1             # kws 激活后抑制时间 1s
+
+# # # xiaoan8k/nihaoxiaoan8k
+# sample_rate = 8000
+# feature_freq = 48                       # 计算特征维度
+# nfilt = 48                              # 计算特征中，Mel 滤波器个数
+# kws_feature_time = 146                  # kws 网络特征时间维度
+# kws_stride_feature_time = 10            # kws 每间隔 10 个 feature_time 进行一次检索, 对应滑窗 100 ms
+# kws_detection_threshold = 0.5           # kws 检测阈值 0.5
+# kws_detection_number_threshold = 0.3    # kws 计数阈值 0.3
+# kws_suppression_counter = 3             # kws 激活后抑制时间 3s
 
 # asr
 asr_feature_time = 296                  # asr 网络特征时间维度，与语音特征容器长度相同
@@ -103,13 +105,13 @@ bool_output_csv = False
 # default_kws_net_output_name = "Softmax"
 # default_kws_chw_params = "1,196,64"
 # default_kws_transpose = False
-# default_kws_model_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_2_4_04012021.caffemodel"
-# default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_2_4_04012021.prototxt"
-# default_kws_label = "activatebwc"
-# default_kws_net_input_name = "data"
-# default_kws_net_output_name = "Softmax"
-# default_kws_chw_params = "1,64,196"
-# default_kws_transpose = True
+default_kws_model_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_2_4_04012021.caffemodel"
+default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_2_4_04012021.prototxt"
+default_kws_label = "activatebwc"
+default_kws_net_input_name = "data"
+default_kws_net_output_name = "Softmax"
+default_kws_chw_params = "1,64,196"
+default_kws_transpose = True
 
 # xiaoan8k
 # default_kws_model_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_xiaoan8k_res15/res15_1_1_04062021.caffemodel"
@@ -119,13 +121,13 @@ bool_output_csv = False
 # default_kws_net_output_name = "Softmax"
 # default_kws_chw_params = "1,146,48"
 # default_kws_transpose = False
-default_kws_model_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_xiaoan8k_tc_resnet14/tc_resnet14_2_2_04162021.caffemodel"
-default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_xiaoan8k_tc_resnet14/tc_resnet14_2_2_04162021.prototxt"
-default_kws_label = "xiaoan8k"
-default_kws_net_input_name = "data"
-default_kws_net_output_name = "Softmax"
-default_kws_chw_params = "1,48,146"
-default_kws_transpose = True
+# default_kws_model_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_xiaoan8k_tc_resnet14/tc_resnet14_2_2_04162021.caffemodel"
+# default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_xiaoan8k_tc_resnet14/tc_resnet14_2_2_04162021.prototxt"
+# default_kws_label = "xiaoan8k"
+# default_kws_net_input_name = "data"
+# default_kws_net_output_name = "Softmax"
+# default_kws_chw_params = "1,48,146"
+# default_kws_transpose = True
 
 # nihaoxiaoan8k
 # default_kws_model_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_nihaoxiaoan8k_res15/res15_1_0_04102021.caffemodel"
@@ -144,21 +146,32 @@ default_asr_net_output_name = "conv39"
 default_asr_chw_params = "1,296,64"
 default_asr_bpe = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/english_bpe.txt"
 
+# test_mode
+# 0: input_wav
+# 1: input folder
+default_test_mode = 1
+
+# input_Wav
 # activatbwc16k
 # default_input_wav = "/home/huanyuan/share/audio_data/english_wav/1-0127-asr_16k.wav"
 # default_input_wav = "/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation_180.wav"
-# default_input_wav = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/办公室场景/activatebwc_danbin_办公室场景_场景二_17_180.wav"
 # default_input_wav = "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_test-kws-asr_0001.wav"
+default_input_wav = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/第二批数据_0425/安静场景/场景一/RM_KWS_ACTIVATEBWC_asr_S001M1D00T1_20.wav"
 
 # xiaoan8k
-default_input_wav = "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_validation_60.wav"
+# default_input_wav = "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_validation_60.wav"
 # default_input_wav = "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_3_04152021_validation.wav"
+
+# input_folder
+default_input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/第二批数据_0425/安静场景/场景一/"
 
 default_output_folder = "/mnt/huanyuan/data/speech/Recording_sample/demo_kws_asr_online_api/{}".format('-'.join('-'.join(str(datetime.now()).split('.')[0].split(' ')).split(':')))
 default_gpu = True
 
 parser = argparse.ArgumentParser(description='Streamax KWS ASR offine Engine')
+parser.add_argument('--test_mode', type=int, default=default_test_mode)
 parser.add_argument('--input_wav', type=str, default=default_input_wav)
+parser.add_argument('--input_folder', type=str, default=default_input_folder)
 parser.add_argument('--kws_model_path', type=str, default=default_kws_model_path)
 parser.add_argument('--kws_prototxt_path', type=str, default=default_kws_prototxt_path)
 parser.add_argument('--kws_label', type=str, default=default_kws_label)
@@ -266,7 +279,7 @@ def run_asr():
 def run_kws_asr(audio_data):
     global audio_data_container_np, feature_data_container_np
     global bool_weakup, counter_weakup, counter_asr
-    global output_wave_list, output_kws_id, sliding_window_start_time_ms, csv_original_scores, csv_found_words
+    global output_wave_list, output_kws_id, sliding_window_start_time_ms, csv_original_scores, csv_found_words, subfolder_name
 
     # 加载音频数据，用于打印输出
     if len(output_wave_list) < total_time_samples:
@@ -313,7 +326,7 @@ def run_kws_asr(audio_data):
 
             # save audio
             if bool_output_wave and bool_output_csv:
-                output_path = os.path.join(args.output_folder, 'label_{}_starttime_{}.wav'.format(args.kws_label, int(sliding_window_start_time_ms)))
+                output_path = os.path.join(args.output_folder, subfolder_name, 'label_{}_starttime_{}.wav'.format(args.kws_label, int(sliding_window_start_time_ms)))
                 wave_loader = WaveLoader(sample_rate)
                 wave_loader.save_data(np.array(output_wave_list), output_path)
 
@@ -385,7 +398,7 @@ def kws_asr_init():
 
 
 def KWS_ASR_offine():
-    global sliding_window_start_time_ms, csv_original_scores, csv_found_words
+    global sliding_window_start_time_ms, csv_original_scores, csv_found_words, subfolder_name
     global bool_output_csv
 
     # init
@@ -394,6 +407,7 @@ def KWS_ASR_offine():
     # bool_output_csv = False
     csv_original_scores = []
     csv_found_words = []
+    subfolder_name = ''
 
     # load wave
     wave_loader = WaveLoader(sample_rate)
@@ -406,7 +420,6 @@ def KWS_ASR_offine():
 
         # get audio data
         audio_data = wave_data[times * int(window_stride_samples): times * int(window_stride_samples) + int(window_size_samples)]
-        # print("[Information:] Audio data stram: {} - {}, length: {} ".format((times * int(window_stride_samples))/sample_rate, (times * int(window_stride_samples) + int(window_size_samples))/sample_rate, len(audio_data)))
         print("[Information:] Audio data stram: {} - {}, length: {} ".format((times * int(window_stride_samples)), (times * int(window_stride_samples) + int(window_size_samples)), len(audio_data)))
         # print(audio_data)
 
@@ -419,9 +432,61 @@ def KWS_ASR_offine():
         csv_found_words_pd = pd.DataFrame(csv_found_words)
         csv_found_words_pd.to_csv(os.path.join(args.output_folder, 'found_words.csv'), index=False)
 
+
+def KWS_ASR_offine_perfolder():
+    global sliding_window_start_time_ms, csv_original_scores, csv_found_words, subfolder_name
+    global bool_output_csv
+
+    # init
+    kws_asr_init()
+    bool_output_csv = True
+    # bool_output_csv = False
+    wave_list = os.listdir(args.input_folder)
+    wave_list.sort()
+
+    for idx in range(len(wave_list)):
+        wave_path = os.path.join(args.input_folder, wave_list[idx])
+        subfolder_name = os.path.basename(wave_path).split('.')[0]
+    
+        # mkdir
+        output_path = os.path.join(args.output_folder, subfolder_name)
+        if not os.path.exists(output_path):
+            os.makedirs(output_path)
+
+        # init 
+        csv_original_scores = []
+        csv_found_words = []
+
+        # load wave
+        wave_loader = WaveLoader(sample_rate)
+        wave_loader.load_data(wave_path)
+        wave_data = wave_loader.to_numpy()
+
+        # sliding window
+        windows_times = int((len(wave_data) - window_size_samples) * 1.0 / window_stride_samples) + 1
+        for times in range(windows_times):
+
+            # get audio data
+            audio_data = wave_data[times * int(window_stride_samples): times * int(window_stride_samples) + int(window_size_samples)]
+            print("[Information:] Audio data stram: {} - {}, length: {} ".format((times * int(window_stride_samples)), (times * int(window_stride_samples) + int(window_size_samples)), len(audio_data)))
+            # print(audio_data)
+
+            sliding_window_start_time_ms = (((times - 2) * int(window_stride_samples)) / sample_rate) * 1000
+            run_kws_asr(audio_data)
+        
+        if bool_output_csv:
+            csv_original_scores_pd = pd.DataFrame(csv_original_scores)
+            csv_original_scores_pd.to_csv(os.path.join(args.output_folder, subfolder_name, 'original_scores.csv'), index=False)
+            csv_found_words_pd = pd.DataFrame(csv_found_words)
+            csv_found_words_pd.to_csv(os.path.join(args.output_folder, subfolder_name, 'found_words.csv'), index=False)
+
 if __name__ == "__main__":
     # 实现功能：语音唤醒 weakup 和关键词检索 asr 共同工作，目的是共用一套特征，节约资源
     # 方案一：实现 weakup + asr 
     # 方案二：在无 weakup 的情况下，实现 asr
     
-    KWS_ASR_offine()
+    if args.test_mode == 0:
+        KWS_ASR_offine()
+    elif args.test_mode == 1:
+        KWS_ASR_offine_perfolder()
+        
