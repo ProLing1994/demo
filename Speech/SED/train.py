@@ -143,7 +143,7 @@ def train(args):
         begin_t = time.time()
 
         inputs, labels = inputs.cuda(), labels.cuda()
-        # print(labels)
+        print(labels.cpu().data.sort())
 
         # mix up
         if cfg.dataset.augmentation.mix_up_on and  np.random.uniform(0, 1) < cfg.dataset.augmentation.mix_up_frequency:

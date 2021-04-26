@@ -29,8 +29,7 @@ __C.general.background_data_path = ""
 __C.general.is_test = True
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan/model/sed_test"
-__C.general.save_dir = "/mnt/huanyuan/model/sed_test_index"
+__C.general.save_dir = "/mnt/huanyuan/model/sed_test"
 
 # finetune model
 __C.general.finetune_on = False
@@ -165,6 +164,16 @@ __C.loss.obj_weight = None
 
 # the gamma parameter in focal loss
 __C.loss.focal_gamma = 2
+
+####################################
+# training sampler
+####################################
+
+__C.sampler = {}
+
+# the sampler name, support ['none','balanced']
+__C.sampler.name = 'none'
+# __C.sampler.name = 'balanced'
 
 #####################################
 # net

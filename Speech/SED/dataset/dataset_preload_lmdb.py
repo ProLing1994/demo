@@ -31,6 +31,9 @@ class SpeechDataset(Dataset):
         self.data_file_list = self.data_pd['file'].tolist()
         self.data_mode_list = self.data_pd['mode'].tolist()
         self.data_label_list = self.data_pd['label'].tolist()
+        self.data_label_np = np.array(self.data_label_list)
+        self.classes_num = cfg.dataset.label.num_classes 
+        assert self.classes_num == self.data_label_np.max() + 1
 
         # lmdb
         self.lmdb_path = os.path.join(cfg.general.data_dir, '../experimental_dataset/dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset_audio_lmdb', '{}.lmdb'.format(mode))
@@ -81,6 +84,22 @@ class SpeechDataset(Dataset):
     def __len__(self):
         """ get the number of images in this dataset """
         return len(self.data_file_list)
+
+    def samples_num_per_class(self):
+        # init
+        samples_num_per_class = []
+
+        for idx in range(self.classes_num):
+            samples_num_per_class.append(len(self.data_label_np[self.data_label_np == idx]))
+        return samples_num_per_class
+
+    def indexes_per_class(self):
+        # init
+        indexes_per_class = []
+
+        for idx in range(self.classes_num):
+            indexes_per_class.append(np.where(self.data_label_np == idx)[0])
+        return indexes_per_class
 
     def save_audio(self, data, audio_label, audio_file):
         out_folder = os.path.join(self.save_audio_dir, self.mode_type + '_audio', str(audio_label))

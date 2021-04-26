@@ -103,7 +103,12 @@ def generate_dataset(cfg, mode):
         "[ERROR:] Unknow mode: {}".format(mode)
 
     data_set = SpeechDataset(cfg=cfg, mode=mode)
-    data_sampler = TrainSampler(data_set, cfg)
+    if cfg.sampler.name == 'none':
+        data_sampler = TrainSampler(data_set, cfg)
+    elif cfg.sampler.name == 'balanced':
+        data_sampler = BalancedTrainSampler(data_set, cfg)
+    else:
+        raise Exception("[ERROR:] Unknow data sampler mode, please check!")
     data_loader = torch.utils.data.DataLoader(dataset=data_set, 
                                                 batch_sampler=data_sampler, 
                                                 num_workers=cfg.train.num_threads, 
