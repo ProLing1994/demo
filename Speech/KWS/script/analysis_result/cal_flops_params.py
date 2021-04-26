@@ -13,7 +13,7 @@ def main():
     batch_size = 1
     in_channels = 1
     image_height = 146
-    image_weidth = 48
+    image_weidth = 64
     num_classes = 2
 
     # net_name = "crnn-attention"

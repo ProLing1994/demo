@@ -1,3 +1,4 @@
+import numpy as np
 import sklearn.metrics
 
 
@@ -16,6 +17,13 @@ def get_auc(fpr, tpr):
     return auc
 
 def get_confusion_matrix(y_true, y_pred):
+    if y_true == y_pred:
+        y_true = np.array(y_true)
+        tn = len(y_true[y_true==0])
+        fp = 0
+        fn = 0
+        tp = len(y_true[y_true==1])
+        return tn, fp, fn, tp
     tn, fp, fn, tp = sklearn.metrics.confusion_matrix(y_true, y_pred).ravel()
     return tn, fp, fn, tp
 
@@ -26,10 +34,14 @@ def get_accuracy(tn, fp, fn, tp):
 
 
 def get_tpr(tn, fp, fn, tp):
+    if (tp+fn) == 0:
+        return 0
     tpr = tp/(tp+fn)
     return tpr
 
 
 def get_fpr(tn, fp, fn, tp):
+    if (fp+tn) == 0:
+        return 0
     fpr = fp/(fp+tn)
     return fpr

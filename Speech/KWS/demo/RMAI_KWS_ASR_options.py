@@ -23,9 +23,10 @@ __C.general.kws_feature_time = 196                  # kws 网络特征时间维�
 __C.general.kws_stride_feature_time = 10            # kws 每间隔 10 个 feature_time 进行一次检索, 对应滑窗 100 ms
 __C.general.kws_detection_threshold = 0.5           # kws 检测阈值 0.5
 __C.general.kws_detection_number_threshold = 0.5    # kws 计数阈值 0.5
+# __C.general.kws_detection_number_threshold = 0.3    # kws 计数阈值 0.3
 # __C.general.kws_suppression_counter = 3             # kws 激活后抑制时间 3s
-# __C.general.kws_suppression_counter = 2             # kws 激活后抑制时间 2s
-__C.general.kws_suppression_counter = 1             # kws 激活后抑制时间 1s
+__C.general.kws_suppression_counter = 2             # kws 激活后抑制时间 2s
+# __C.general.kws_suppression_counter = 1             # kws 激活后抑制时间 1s
 
 # # # xiaoan8k/nihaoxiaoan8k
 # __C.general.sample_rate = 8000

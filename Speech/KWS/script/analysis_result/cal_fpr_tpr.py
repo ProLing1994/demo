@@ -14,7 +14,16 @@ def cal_fpr_tpr(src_csv, pst_csv, positive_label, bool_write_audio):
         pst_pd = pd.read_csv(pst_csv)
     except BaseException:
         print("Empty csv: {}".format(pst_csv))
-        return 
+        tn = len(src_pd[src_pd['label']!=positive_label])
+        fp = 0 
+        fn = len(src_pd[src_pd['label']==positive_label])
+        tp = 0
+        accuracy = get_accuracy(tn, fp, fn, tp)
+        tpr = get_tpr(tn, fp, fn, tp)
+        fpr = get_fpr(tn, fp, fn, tp)
+        print("[Ground Truth] Accuracy:{:.2f}%({}/{}), Tpr:{:.2f}%({}/{}), Fpr:{:.2f}%({}/{})".format(accuracy*100, tp+tn, (tp+fp+tn+fn), tpr*100, tp, tp+fn, fpr*100, fp, fp+tn))
+        print("[Confusion Matrix] \n[{}, {} \n {}, {}]".format(tp, fn, fp, tn))
+        return tn, fp, fn, tp
 
     src_list = []
     for _, row in src_pd.iterrows():
@@ -135,8 +144,52 @@ def cal_fpr_tpr(src_csv, pst_csv, positive_label, bool_write_audio):
 
     for unmatched_case in unmatched_list:
         print("[Unmatched] {}".format(unmatched_case))
-   
+    return tn, fp, fn, tp
 
+
+def cal_fpr_tpr_per_folder(src_folder, pst_folder, file_format_list, positive_label, bool_write_audio):
+    file_list = os.listdir(src_folder)
+    file_list.sort()
+
+    total_tn, total_fp, total_fn, total_tp = 0, 0, 0, 0
+    for idx in range(len(file_list)):
+        file_name = file_list[idx]
+
+        if not file_name.endswith('.wav'):
+            continue
+            
+        # satisfy file_format
+        bool_satisfy_file_format = True
+        for file_format in file_format_list:
+            if file_format not in file_name:
+                bool_satisfy_file_format = False
+        if not bool_satisfy_file_format:
+            continue
+
+        file_path = os.path.join(src_folder, file_name)
+        src_csv = file_path.replace('.wav', '.csv')
+        pst_csv = os.path.join(pst_folder, file_name.split('.')[0], 'found_words.csv')
+        
+        print("[Information] csv: {}".format(src_csv))
+        tn, fp, fn, tp = cal_fpr_tpr(src_csv,
+                                    pst_csv,
+                                    positive_label,
+                                    bool_write_audio)
+        
+        total_tn += tn
+        total_fp += fp
+        total_fn += fn
+        total_tp += tp
+        print()
+
+    total_accuracy = get_accuracy(total_tn, total_fp, total_fn, total_tp)
+    total_tpr = get_tpr(total_tn, total_fp, total_fn, total_tp)
+    total_fpr = get_fpr(total_tn, total_fp, total_fn, total_tp)
+    print("[Ground Truth] Total Accuracy:{:.2f}%({}/{}), Tpr:{:.2f}%({}/{}), Fpr:{:.2f}%({}/{})".format(\
+            total_accuracy*100, total_tp+total_tn, (total_tp+total_fp+total_tn+total_fn), total_tpr*100, total_tp, \
+            total_tp+total_fn, total_fpr*100, total_fp, total_fp+total_tn))
+    print("[Confusion Matrix] \n[{}, {} \n {}, {}]".format(total_tp, total_fn, total_fp, total_tn))
+                                    
 if __name__ == "__main__":
     bool_write_audio = True
     # bool_write_audio = False
@@ -165,18 +218,28 @@ if __name__ == "__main__":
     #             "xiaole",
     #             bool_write_audio)
 
-    # xiaoan8k
-    cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_3_04152021_validation.csv",
-                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_3_tc-resnet14-amba_fbankcpu_kd_041262021/test_straming_wav/xiaoan8k_1_3_04152021_validation_threshold_0_5/found_words.csv",
-                # "/mnt/huanyuan/data/speech/Recording_sample/demo_kws_asr_online_api/2021-04-20-18-54-31/found_words - 副本.csv",
-                ["xiaoanxiaoan_8k", "xiaoanxiaoan_16k"],
-                bool_write_audio)
+    # # xiaoan8k
+    # cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_3_04152021_validation.csv",
+    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_3_tc-resnet14-amba_fbankcpu_kd_041262021/test_straming_wav/xiaoan8k_1_3_04152021_validation_threshold_0_5/found_words.csv",
+    #             # "/mnt/huanyuan/data/speech/Recording_sample/demo_kws_asr_online_api/2021-04-20-18-54-31/found_words - 副本.csv",
+    #             ["xiaoanxiaoan_8k", "xiaoanxiaoan_16k"],
+    #             bool_write_audio)
 
-    # # activatebwc
+    # activatebwc
     # cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation.csv",
     #             "/mnt/huanyuan/data/speech/Recording_sample/demo_kws_asr_online_api/2021-04-08-13-21-51/found_words.csv",
     #             "activatebwc",
     #             bool_write_audio)
+    # cal_fpr_tpr("/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/安静场景/场景一/RM_KWS_ACTIVATEBWC_ovweseas_asr_S010M0D00T1.csv",
+    #             "/mnt/huanyuan/data/speech/Recording_sample/demo_kws_asr_online_api/2021-04-25-14-53-09/RM_KWS_ACTIVATEBWC_ovweseas_asr_S010M0D00T1/found_words.csv",
+    #             "activatebwc",
+    #             bool_write_audio)
+    cal_fpr_tpr_per_folder("/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/办公室场景/场景二/",
+                            "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_4_tc-resnet14-amba_fbankcpu_kd_04012021/test_straming_wav/海外同事录制_0425/阈值_05_03/办公室场景/场景二",
+                            ["RM_KWS_ACTIVATEBWC_ovweseas_ori_", "M1"],
+                            # ["RM_KWS_ACTIVATEBWC_ovweseas_asr_", "M0"],
+                            "activatebwc",
+                            bool_write_audio)
 
     # # positive
     # cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/pretrain_1_1_12212020_validation_3600_001.csv",

@@ -86,14 +86,14 @@ default_test_mode = 1
 # default_input_wav = "/home/huanyuan/share/audio_data/english_wav/1-0127-asr_16k.wav"
 # default_input_wav = "/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation_180.wav"
 # default_input_wav = "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_test-kws-asr_0001.wav"
-default_input_wav = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/第二批数据_0425/安静场景/场景一/RM_KWS_ACTIVATEBWC_asr_S001M1D00T1_20.wav"
+default_input_wav = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/安静场景/场景一/RM_KWS_ACTIVATEBWC_ovweseas_ori_S010M0D00T2.wav"
 
 # xiaoan8k
 # default_input_wav = "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_validation_60.wav"
 # default_input_wav = "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_3_04152021_validation.wav"
 
 # input_folder
-default_input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/第二批数据_0425/安静场景/场景一/"
+default_input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/办公室场景/场景一/"
 
 default_output_folder = "/mnt/huanyuan/data/speech/Recording_sample/demo_kws_asr_online_api/{}".format('-'.join('-'.join(str(datetime.now()).split('.')[0].split(' ')).split(':')))
 default_gpu = True
@@ -372,6 +372,9 @@ def KWS_ASR_offine_perfolder():
     wave_list.sort()
 
     for idx in range(len(wave_list)):
+        if not wave_list[idx].endswith('.wav'):
+            continue
+
         wave_path = os.path.join(args.input_folder, wave_list[idx])
 
         # init 
