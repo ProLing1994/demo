@@ -143,12 +143,13 @@ def train(args):
         begin_t = time.time()
 
         inputs, labels = inputs.cuda(), labels.cuda()
-        print(labels.cpu().data.sort())
+        # print(labels.cpu().data.sort())
 
         # mix up
-        if cfg.dataset.augmentation.mix_up_on and  np.random.uniform(0, 1) < cfg.dataset.augmentation.mix_up_frequency:
+        bool_mix_up = np.random.uniform(0, 1) < cfg.dataset.augmentation.mix_up_frequency
+        if cfg.dataset.augmentation.mix_up_on and bool_mix_up:
             net.train()
-            inputs, targets_a, targets_b, lam = mixup_data(inputs, labels)
+            inputs, targets_a, targets_b, lam = mixup_data(inputs, labels, cfg.dataset.augmentation.mix_up_alpha)
             scores = net(inputs)
             scores = scores.view(scores.size()[0], scores.size()[1])
             loss = mixup_criterion(loss_func, scores, targets_a, targets_b, lam)
@@ -164,7 +165,13 @@ def train(args):
 
         # caltulate accuracy
         pred_y = torch.max(scores, 1)[1].cpu().data.numpy()
-        accuracy = float((pred_y == labels.cpu().data.numpy()).astype(int).sum()) / float(labels.size(0))
+        if cfg.dataset.augmentation.mix_up_on and bool_mix_up:
+            if lam >= 0.5:
+                accuracy = float((pred_y == targets_a.cpu().data.numpy()).astype(int).sum()) / float(targets_a.size(0))
+            else:
+                accuracy = float((pred_y == targets_b.cpu().data.numpy()).astype(int).sum()) / float(targets_b.size(0))
+        else:
+            accuracy = float((pred_y == labels.cpu().data.numpy()).astype(int).sum()) / float(labels.size(0))
 
         # information
         sample_duration = (time.time() - begin_t) * 1.0

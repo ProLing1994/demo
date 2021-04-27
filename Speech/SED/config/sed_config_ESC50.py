@@ -107,8 +107,8 @@ __C.dataset.label.num_classes = 50
 __C.dataset.augmentation = {}
 
 # based on audio waveform: on
-__C.dataset.augmentation.on = True
-# __C.dataset.augmentation.on = False
+# __C.dataset.augmentation.on = True
+__C.dataset.augmentation.on = False
 
 # How many of the training samples have background noise mixed in.
 __C.dataset.augmentation.background_frequency = -1
@@ -117,11 +117,11 @@ __C.dataset.augmentation.background_frequency = -1
 __C.dataset.augmentation.background_volume = -1
 
 # Range to randomly shift the training audio by in time(ms).
-__C.dataset.augmentation.time_shift_ms = -1
+__C.dataset.augmentation.time_shift_ms = 1000.0
 
 # based on audio waveform: on.
-__C.dataset.augmentation.speed_volume_on = True
-# __C.dataset.augmentation.speed_volume_on = False
+# __C.dataset.augmentation.speed_volume_on = True
+__C.dataset.augmentation.speed_volume_on = False
 
 # How fast the audio should be.
 __C.dataset.augmentation.speed = [0.9, 1.1]
@@ -135,8 +135,8 @@ __C.dataset.augmentation.pitch_on = False
 __C.dataset.augmentation.pitch = [-5, 5]
 
 # based on audio spectrum: on
-__C.dataset.augmentation.spec_on = True
-# __C.dataset.augmentation.spec_on = False
+# __C.dataset.augmentation.spec_on = True
+__C.dataset.augmentation.spec_on = False
 
 # spectrum augmentation
 __C.dataset.augmentation.F = 5
@@ -144,9 +144,10 @@ __C.dataset.augmentation.T = 20
 __C.dataset.augmentation.num_masks = 1
 
 # minx up
-# __C.dataset.augmentation.mix_up_on = True
-__C.dataset.augmentation.mix_up_on = False
-__C.dataset.augmentation.mix_up_frequency = 0.5
+__C.dataset.augmentation.mix_up_on = True
+# __C.dataset.augmentation.mix_up_on = False
+__C.dataset.augmentation.mix_up_frequency = 1.0
+__C.dataset.augmentation.mix_up_alpha = 0.5
 
 ####################################
 # training lossd
@@ -203,8 +204,8 @@ __C.train.num_epochs = 1
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 1024
 # __C.train.batch_size = 128
-__C.train.batch_size = 64
-# __C.train.batch_size = 16
+# __C.train.batch_size = 64
+__C.train.batch_size = 16
 # __C.train.batch_size = 1
 
 # the number of threads for IO

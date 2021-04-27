@@ -9,6 +9,7 @@ import torch
 
 from torch.utils.data import Dataset
 
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/SED')
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/SED')
 from utils.folder_tools import *
 from utils.lmdb_tools import *

@@ -87,7 +87,8 @@ class FocalLoss(nn.Module):
 def mixup_data(x, y, alpha=1.0, use_cuda=True):
     '''Returns mixed inputs, pairs of targets, and lambda'''
     if alpha > 0:
-        lam = np.random.uniform(0.2, 0.8)
+        # lam = np.random.uniform(0.2, 0.8)
+        lam = np.random.beta(alpha, alpha)
     else:
         lam = 1
 

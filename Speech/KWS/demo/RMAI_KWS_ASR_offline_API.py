@@ -8,8 +8,8 @@ import sys
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 from ASR.impl.asr_data_loader_pyimpl import WaveLoader
 # from ASR.impl.asr_data_loader_cimpl import WaveLoader
-# from ASR.impl.asr_feature_pyimpl import Feature
-from ASR.impl.asr_feature_cimpl import Feature
+from ASR.impl.asr_feature_pyimpl import Feature
+# from ASR.impl.asr_feature_cimpl import Feature
 import ASR.impl.asr_decode_cimpl as Decode_C
 import ASR.impl.asr_decode_pyimpl as Decode_Python
 import KWS.demo.RMAI_KWS_ASR_options as cfg
