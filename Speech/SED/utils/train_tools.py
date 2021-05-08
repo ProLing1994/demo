@@ -11,8 +11,8 @@ import torch
 
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/SED')
-# sys.path.insert(0, '/home/huanyuan/code/demo/Speech/SED')
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/SED')
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech/SED')
 from utils.optimizer_tools import *
 from utils.sampler_tools import *
 from dataset.dataset_preload_lmdb import SpeechDataset

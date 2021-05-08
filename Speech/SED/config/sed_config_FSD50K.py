@@ -10,17 +10,17 @@ cfg = __C
 
 __C.general = {}
 
-__C.general.data_dir = "/mnt/huanyuan/data/speech/sed/sound_classification_50/original_dataset/"
+__C.general.data_dir = "/mnt/huanyuan/data/speech/sed/FSD50K/original_dataset/"
 __C.general.sub_data_dir = []
 
 # data version
 __C.general.version = "1.0"
 
 # data date
-__C.general.date = "04152021"
+__C.general.date = "05072021"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/sed/sound_classification_50/experimental_dataset/dataset_1.0_04152021/train_test_dataset.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/sed/FSD50K/experimental_dataset/dataset_1.0_05072021/train_test_dataset.csv"
 
 # background noise path
 __C.general.background_data_path = ""

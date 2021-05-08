@@ -192,7 +192,6 @@ def cal_fpr_tpr_per_folder(src_folder, pst_folder, file_format_list, positive_la
                                     
 if __name__ == "__main__":
     bool_write_audio = True
-    # bool_write_audio = False
     model_name = "kws_xiaorui_3_3_tc-resnet14-amba_fbankcpu_kd_03112021"
     threshold = "0.8"
 
@@ -219,25 +218,33 @@ if __name__ == "__main__":
     #             bool_write_audio)
 
     # # xiaoan8k
-    cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_3_04152021_validation.csv",
-                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_4_tc-resnet14-amba_fbankcpu_64_kd_041262021/test_straming_wav/xiaoan8k_1_3_04152021_validation_threshold_0_5/found_words.csv",
-                # "/mnt/huanyuan/data/speech/Recording_sample/demo_kws_asr_online_api/2021-04-20-18-54-31/found_words - 副本.csv",
-                ["xiaoanxiaoan_8k", "xiaoanxiaoan_16k"],
-                bool_write_audio)
+    # cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_3_04152021_validation.csv",
+    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_4_tc-resnet14-amba_fbankcpu_64_kd_041262021/test_straming_wav/xiaoan8k_1_3_04152021_validation_threshold_0_5/found_words.csv",
+    #             # "/mnt/huanyuan/data/speech/Recording_sample/demo_kws_asr_online_api/2021-04-20-18-54-31/found_words - 副本.csv",
+    #             ["xiaoanxiaoan_8k", "xiaoanxiaoan_16k"],
+    #             bool_write_audio)
+    cal_fpr_tpr_per_folder("/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/实车场景/处理音频/",
+                            "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_2_tc-resnet14-amba_fbankcpu_kd_041262021/test_straming_wav/实车录制_0427/阈值_05_03/实车场景/",
+                            # ["_adpro"],
+                            # ["_mic"],
+                            # ["danbin_ori"],
+                            ["danbin_asr"],
+                            "xiaoan8k",
+                            bool_write_audio)
 
-    # activatebwc
-    # cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation.csv",
-    #             "/mnt/huanyuan/data/speech/Recording_sample/demo_kws_asr_online_api/2021-04-08-13-21-51/found_words.csv",
-    #             "activatebwc",
-    #             bool_write_audio)
-    # cal_fpr_tpr("/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/安静场景/场景一/RM_KWS_ACTIVATEBWC_ovweseas_asr_S010M0D00T1.csv",
-    #             "/mnt/huanyuan/data/speech/Recording_sample/demo_kws_asr_online_api/2021-04-25-14-53-09/RM_KWS_ACTIVATEBWC_ovweseas_asr_S010M0D00T1/found_words.csv",
-    #             "activatebwc",
-    #             bool_write_audio)
-    # cal_fpr_tpr_per_folder("/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/办公室场景/场景二/",
-    #                         "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_4_tc-resnet14-amba_fbankcpu_kd_04012021/test_straming_wav/海外同事录制_0425/阈值_05_03/办公室场景/场景二",
-    #                         ["RM_KWS_ACTIVATEBWC_ovweseas_ori_", "M1"],
-    #                         # ["RM_KWS_ACTIVATEBWC_ovweseas_asr_", "M0"],
+    # # activatebwc
+    # # cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation.csv",
+    # #             "/mnt/huanyuan/data/speech/Recording_sample/demo_kws_asr_online_api/2021-04-08-13-21-51/found_words.csv",
+    # #             "activatebwc",
+    # #             bool_write_audio)
+    # # cal_fpr_tpr("/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/安静场景/场景一/RM_KWS_ACTIVATEBWC_ovweseas_asr_S010M0D00T1.csv",
+    # #             "/mnt/huanyuan/data/speech/Recording_sample/demo_kws_asr_online_api/2021-04-25-14-53-09/RM_KWS_ACTIVATEBWC_ovweseas_asr_S010M0D00T1/found_words.csv",
+    # #             "activatebwc",
+    # #             bool_write_audio)
+    # cal_fpr_tpr_per_folder("/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/路边场景/场景二/",
+    #                         "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_4_tc-resnet14-amba_fbankcpu_kd_04012021/test_straming_wav/海外同事录制_0425/阈值_05_03/路边场景/场景二",
+    #                         # ["RM_KWS_ACTIVATEBWC_ovweseas_ori_"],
+    #                         ["RM_KWS_ACTIVATEBWC_ovweseas_asr_"],
     #                         "activatebwc",
     #                         bool_write_audio)
 

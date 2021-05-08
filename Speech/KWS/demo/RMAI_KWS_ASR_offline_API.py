@@ -52,14 +52,14 @@ default_kws_net_output_name = "Softmax"
 default_kws_chw_params = "1,64,196"
 default_kws_transpose = True
 
-# xiaoan8k
-# default_kws_model_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_xiaoan8k_res15/res15_1_1_04062021.caffemodel"
-# default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_xiaoan8k_res15/res15_1_1_04062021.prototxt"
-# default_kws_label = "xiaoan8k"
-# default_kws_net_input_name = "blob1"
-# default_kws_net_output_name = "Softmax"
-# default_kws_chw_params = "1,146,48"
-# default_kws_transpose = False
+# # xiaoan8k
+# # default_kws_model_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_xiaoan8k_res15/res15_1_1_04062021.caffemodel"
+# # default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_xiaoan8k_res15/res15_1_1_04062021.prototxt"
+# # default_kws_label = "xiaoan8k"
+# # default_kws_net_input_name = "blob1"
+# # default_kws_net_output_name = "Softmax"
+# # default_kws_chw_params = "1,146,48"
+# # default_kws_transpose = False
 # default_kws_model_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_xiaoan8k_tc_resnet14/tc_resnet14_2_2_04162021.caffemodel"
 # default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_xiaoan8k_tc_resnet14/tc_resnet14_2_2_04162021.prototxt"
 # default_kws_label = "xiaoan8k"
@@ -86,14 +86,22 @@ default_test_mode = 1
 # default_input_wav = "/home/huanyuan/share/audio_data/english_wav/1-0127-asr_16k.wav"
 # default_input_wav = "/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation_180.wav"
 # default_input_wav = "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/Jabra_510_test-kws-asr_0001.wav"
-default_input_wav = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/安静场景/场景一/RM_KWS_ACTIVATEBWC_ovweseas_ori_S010M0D00T2.wav"
+# default_input_wav = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/安静场景/场景一/RM_KWS_ACTIVATEBWC_ovweseas_ori_S010M0D00T2.wav"
 
 # xiaoan8k
 # default_input_wav = "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_validation_60.wav"
 # default_input_wav = "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_3_04152021_validation.wav"
+# default_input_wav = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/自测_0412/安静场景/xiaoan_麦克风_场景二_31.wav"
+# default_input_wav = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/实车场景/处理音频/吴毅然_adpro.wav"
+default_input_wav = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/其他录音/adpro/B9P01D_20201113_231117_C02_Main_02_02.wav"
 
 # input_folder
-default_input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/办公室场景/场景一/"
+# default_input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/路边场景/场景二/"
+# default_input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/实车场景/处理音频/"
+# default_input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/其他录音/adpro/"
+# default_input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/其他录音/adpro-1/"
+default_input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/其他录音/adpro-2/"
+# default_input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/其他录音/test/"
 
 default_output_folder = "/mnt/huanyuan/data/speech/Recording_sample/demo_kws_asr_online_api/{}".format('-'.join('-'.join(str(datetime.now()).split('.')[0].split(' ')).split(':')))
 default_gpu = True
@@ -163,8 +171,9 @@ def run_kws():
 
     # 滑窗，模型前传
     kws_stride_times = int((feature_data_container_np.shape[0] - cfg.general.kws_feature_time) * 1.0 / cfg.general.kws_stride_feature_time) + 1
-    for times in range(kws_stride_times):
-        feature_data_kws = feature_data_container_np[times * int(cfg.general.kws_stride_feature_time): times * int(cfg.general.kws_stride_feature_time) + int(cfg.general.kws_feature_time),:]
+    for times in range(kws_stride_times - cfg.general.kws_overlap_detection_time):
+        start_times = times + cfg.general.kws_overlap_detection_time
+        feature_data_kws = feature_data_container_np[start_times * int(cfg.general.kws_stride_feature_time): start_times * int(cfg.general.kws_stride_feature_time) + int(cfg.general.kws_feature_time),:]
         feature_data_kws = feature_data_kws.astype(np.float32)
         # print(feature_data_kws)
         if args.kws_transpose:
@@ -289,7 +298,7 @@ def run_kws_asr(audio_data):
 
         if cfg.general.bool_output_csv:
             for idx in range(len(kws_score_list) - 1):
-                csv_original_scores.append({'start_time':sliding_window_start_time_ms + idx * cfg.general.kws_stride_feature_time * 10, 'score':",".join([str(kws_score_list[idx][idy]) for idy in range(kws_score_list[idx].shape[0])])})
+                csv_original_scores.append({'start_time':sliding_window_start_time_ms + (idx + cfg.general.kws_overlap_detection_time) * cfg.general.kws_stride_feature_time * 10, 'score':",".join([str(kws_score_list[idx][idy]) for idy in range(kws_score_list[idx].shape[0])])})
 
     else:
         counter_weakup += 1
@@ -307,7 +316,7 @@ def run_kws_asr(audio_data):
         if cfg.general.bool_output_csv:
             _, kws_score_list = run_kws()
             for idx in range(len(kws_score_list) - 1):
-                csv_original_scores.append({'start_time':sliding_window_start_time_ms + idx * cfg.general.kws_stride_feature_time * 10, 'score':",".join([str(kws_score_list[idx][idy]) for idy in range(kws_score_list[idx].shape[0])])})
+                csv_original_scores.append({'start_time':sliding_window_start_time_ms + (idx + cfg.general.kws_overlap_detection_time) * cfg.general.kws_stride_feature_time * 10, 'score':",".join([str(kws_score_list[idx][idy]) for idy in range(kws_score_list[idx].shape[0])])})
 
     # 方案二：进行 asr 检测，间隔一定时长
     # asr
@@ -362,6 +371,10 @@ def KWS_ASR_offine():
 
 
 def KWS_ASR_offine_perfolder():
+    global audio_data_container_np, feature_data_container_np
+    global bool_weakup, counter_weakup, counter_asr
+    global output_wave_list, output_kws_id
+    global kws_container_np
     global csv_original_scores, csv_found_words, subfolder_name
     global sliding_window_start_time_ms
 
@@ -374,6 +387,17 @@ def KWS_ASR_offine_perfolder():
     for idx in range(len(wave_list)):
         if not wave_list[idx].endswith('.wav'):
             continue
+        
+        # init
+        audio_data_container_np = np.array([])
+        feature_data_container_np = np.array([])
+        kws_container_np = np.array([])         # kws 结构容器中，用于滑窗输出结果
+        output_wave_list = []
+
+        bool_weakup = False
+        counter_weakup = 0
+        counter_asr = 0
+        output_kws_id = 1
 
         wave_path = os.path.join(args.input_folder, wave_list[idx])
 

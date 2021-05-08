@@ -190,13 +190,13 @@ def main():
     # 1: from folder 
     # 2: from unused csv 
     # 3: from config file, not shuffle
-    default_mode = 3    # [0, 1, 2, 3]
+    default_mode = 0    # [0, 1, 2, 3]
 
     default_add_noise_on = False    # [True, False]
 
     # only for mode==0/3, support for ['training','validation','testing']
-    default_audio_mode = 'validation'
-    default_output_path_list = ['/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_3_04152021_validation.wav']
+    default_audio_mode = 'training'
+    default_output_path_list = ['/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_training_60.wav']
 
     # only for mode==1, from folder
     # default_input_dir = '/mnt/huanyuan/data/speech/kws/weiboyulu/dataset'
@@ -266,14 +266,14 @@ def main():
     default_nosed_csv = ""
     
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
-    # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py"
+    default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_pretrain.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaorui.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_all_pretrain.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_heybodycam.py"
-    default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan8k.py"
+    # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan8k.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan16k.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_nihaoxiaoan8k.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_nihaoxiaoan16k.py"
@@ -286,12 +286,12 @@ def main():
     parser.add_argument('--add_noise_on', type=bool, default=default_add_noise_on)
     parser.add_argument('--mode', type=int, default=default_mode)
     parser.add_argument('--audio_mode', type=str, default=default_audio_mode)
-    parser.add_argument('--test_duration_seconds', type=int, default=43200) # 12 hours
+    # parser.add_argument('--test_duration_seconds', type=int, default=43200) # 12 hours
     # parser.add_argument('--test_duration_seconds', type=int, default=21600) # 6 hours
     # parser.add_argument('--test_duration_seconds', type=int, default=7200) # 2 hours
     # parser.add_argument('--test_duration_seconds', type=int, default=3600) # 1 hours
     # parser.add_argument('--test_duration_seconds', type=int, default=180) # 3 minute
-    # parser.add_argument('--test_duration_seconds', type=int, default=60) # 1 minute
+    parser.add_argument('--test_duration_seconds', type=int, default=60) # 1 minute
     # parser.add_argument('--word_gap_ms', type=int, default=3000)
     parser.add_argument('--word_gap_ms', type=int, default=2000)
     # parser.add_argument('--word_gap_ms', type=int, default=1000)

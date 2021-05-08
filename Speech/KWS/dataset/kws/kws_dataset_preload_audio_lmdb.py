@@ -11,6 +11,7 @@ import torch
 
 from torch.utils.data import Dataset
 
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/SED')
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from impl.pred_pyimpl import load_lmdb_env, read_audio_lmdb, load_background_noise_lmdb
 from dataset.kws.dataset_helper import *

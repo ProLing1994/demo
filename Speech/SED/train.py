@@ -159,6 +159,7 @@ def train(args):
             scores = scores.view(scores.size()[0], scores.size()[1])
             loss = loss_func(scores, labels)
 
+        # backward
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
