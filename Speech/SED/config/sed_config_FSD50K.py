@@ -97,7 +97,10 @@ __C.dataset.data_size = [64, 496]
 __C.dataset.label = {}
 
 # label
-__C.dataset.label.num_classes = 50
+__C.dataset.label.num_classes = 200
+
+# 多分类任务或者多标签任务, support ["multi_class", "multi_label"]
+__C.dataset.label.type = 'multi_label'
 
 ##################################
 # data augmentation parameters
@@ -110,11 +113,17 @@ __C.dataset.augmentation = {}
 # __C.dataset.augmentation.on = True
 __C.dataset.augmentation.on = False
 
+# based on audio waveform: on.
+__C.dataset.augmentation.background_noise_on = False
+
 # How many of the training samples have background noise mixed in.
 __C.dataset.augmentation.background_frequency = -1
 
 # How loud the background noise should be, between 0 and 1.
 __C.dataset.augmentation.background_volume = -1
+
+# based on audio waveform: on.
+__C.dataset.augmentation.time_shift_on = False
 
 # Range to randomly shift the training audio by in time(ms).
 __C.dataset.augmentation.time_shift_ms = 1000.0
@@ -144,8 +153,8 @@ __C.dataset.augmentation.T = 20
 __C.dataset.augmentation.num_masks = 1
 
 # minx up
-__C.dataset.augmentation.mix_up_on = True
-# __C.dataset.augmentation.mix_up_on = False
+# __C.dataset.augmentation.mix_up_on = True
+__C.dataset.augmentation.mix_up_on = False
 __C.dataset.augmentation.mix_up_frequency = 1.0
 # __C.dataset.augmentation.mix_up_alpha = 2.0
 __C.dataset.augmentation.mix_up_alpha = 0.5
@@ -156,9 +165,10 @@ __C.dataset.augmentation.mix_up_alpha = 0.5
 
 __C.loss = {}
 
-# the loss name, support ['softmax','focal']
-__C.loss.name = 'softmax'
+# the loss name, support ['softmax','focal', 'sigmoid']
+# __C.loss.name = 'softmax'
 # __C.loss.name = 'focal'
+__C.loss.name = 'sigmoid'
 
 # the weight matrix for each class in focal loss, including background class
 # __C.loss.obj_weight = np.array([[1/9, 0], [0, 8/9]])
@@ -262,8 +272,8 @@ __C.train.betas = (0.9, 0.999)
 __C.debug = {}
 
 # whether to save input images
-# __C.debug.save_inputs = True
-__C.debug.save_inputs = False
+__C.debug.save_inputs = True
+# __C.debug.save_inputs = False
 
 # the number of processing for save input images
 __C.debug.num_processing = 64

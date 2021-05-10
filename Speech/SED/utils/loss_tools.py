@@ -1,10 +1,14 @@
 import numpy as np
 import torch
+import sys
 
+from sklearn.metrics import average_precision_score
 from torch.autograd import Variable
 from torch import nn
 from torch.nn import functional as F
 
+sys.path.insert(0, '/home/huanyuan/code/demo/common')
+from common.utils.python.metrics_tools import *
 
 def define_loss_function(cfg):
     """ setup loss function
@@ -17,10 +21,23 @@ def define_loss_function(cfg):
         loss_func = FocalLoss(class_num=cfg.dataset.label.num_classes,
                               alpha=cfg.loss.obj_weight,
                               gamma=cfg.loss.focal_gamma)
+    elif cfg.loss.name == 'sigmoid':
+        loss_func = nn.BCEWithLogitsLoss()
     else:
         raise ValueError('Unsupported loss function.')
     return loss_func.cuda()
 
+
+def caltulate_accuracy(cfg, scores, labels):
+    if cfg.dataset.label.type == "multi_class":
+        pred_y = torch.max(scores, 1)[1]
+        accuracy = float((pred_y.detach().cpu().data.numpy() == labels.detach().cpu().data.numpy()).astype(int).sum()) / float(labels.size(0))
+    elif cfg.dataset.label.type == "multi_label":
+        pred_y_sigmoid = torch.sigmoid(scores)
+        accuracy = get_average_precision(labels.detach().cpu().numpy(), pred_y_sigmoid.detach().cpu().numpy())
+    else:
+        raise ValueError('Unsupported label type.')
+    return accuracy
 
 class FocalLoss(nn.Module):
     def __init__(self, class_num, alpha=None, gamma=2, size_average=True):
@@ -84,6 +101,7 @@ class FocalLoss(nn.Module):
             loss = batch_loss.sum()
         return loss
 
+
 def mixup_data(x, y, alpha=1.0, use_cuda=True):
     '''Returns mixed inputs, pairs of targets, and lambda'''
     if alpha > 0:
@@ -105,6 +123,7 @@ def mixup_data(x, y, alpha=1.0, use_cuda=True):
 
 def mixup_criterion(criterion, pred, y_a, y_b, lam):
     return lam * criterion(pred, y_a) + (1 - lam) * criterion(pred, y_b)
+
 
 def main():
     floss = FocalLoss(4)

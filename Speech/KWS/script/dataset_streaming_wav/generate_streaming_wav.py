@@ -195,8 +195,8 @@ def main():
     default_add_noise_on = False    # [True, False]
 
     # only for mode==0/3, support for ['training','validation','testing']
-    default_audio_mode = 'training'
-    default_output_path_list = ['/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_training_60.wav']
+    default_audio_mode = 'validation'
+    default_output_path_list = ['/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_validation_3600.wav']
 
     # only for mode==1, from folder
     # default_input_dir = '/mnt/huanyuan/data/speech/kws/weiboyulu/dataset'
@@ -289,9 +289,9 @@ def main():
     # parser.add_argument('--test_duration_seconds', type=int, default=43200) # 12 hours
     # parser.add_argument('--test_duration_seconds', type=int, default=21600) # 6 hours
     # parser.add_argument('--test_duration_seconds', type=int, default=7200) # 2 hours
-    # parser.add_argument('--test_duration_seconds', type=int, default=3600) # 1 hours
+    parser.add_argument('--test_duration_seconds', type=int, default=3600) # 1 hours
     # parser.add_argument('--test_duration_seconds', type=int, default=180) # 3 minute
-    parser.add_argument('--test_duration_seconds', type=int, default=60) # 1 minute
+    # parser.add_argument('--test_duration_seconds', type=int, default=60) # 1 minute
     # parser.add_argument('--word_gap_ms', type=int, default=3000)
     parser.add_argument('--word_gap_ms', type=int, default=2000)
     # parser.add_argument('--word_gap_ms', type=int, default=1000)

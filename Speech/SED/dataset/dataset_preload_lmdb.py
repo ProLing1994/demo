@@ -34,7 +34,8 @@ class SpeechDataset(Dataset):
         self.data_label_list = self.data_pd['label'].tolist()
         self.data_label_np = np.array(self.data_label_list)
         self.classes_num = cfg.dataset.label.num_classes 
-        assert self.classes_num == self.data_label_np.max() + 1
+        self.audio_label_type = cfg.dataset.label.type 
+        # assert self.classes_num == self.data_label_np.max() + 1
 
         # lmdb
         self.lmdb_path = os.path.join(cfg.general.data_dir, '../experimental_dataset/dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset_audio_lmdb', '{}.lmdb'.format(mode))
@@ -52,8 +53,12 @@ class SpeechDataset(Dataset):
         self.data_size_w = cfg.dataset.data_size[0]
 
         self.augmentation_on = cfg.dataset.augmentation.on and augmentation_on
+
+        self.augmentation_background_noise_on = cfg.dataset.augmentation.background_noise_on
         self.background_frequency = cfg.dataset.augmentation.background_frequency
         self.background_volume = cfg.dataset.augmentation.background_volume
+
+        self.augmentation_time_shift_on = cfg.dataset.augmentation.time_shift_on
         self.time_shift_ms = cfg.dataset.augmentation.time_shift_ms
 
         self.augmentation_speed_volume_on = cfg.dataset.augmentation.speed_volume_on
@@ -103,8 +108,8 @@ class SpeechDataset(Dataset):
         return indexes_per_class
 
     def save_audio(self, data, audio_label, audio_file):
-        out_folder = os.path.join(self.save_audio_dir, self.mode_type + '_audio', str(audio_label))
-
+        out_folder = os.path.join(self.save_audio_dir, self.mode_type + '_audio', str("_".join(str(audio_label).split('/'))))
+        
         try:
             create_folder(out_folder)
         except:
@@ -204,20 +209,22 @@ class SpeechDataset(Dataset):
         # alignment data
         data = self.dataset_alignment(data) 
 
-        # add time_shift
-        time_shift_amount = 0
+        # data augmentation
+        if self.augmentation_time_shift_on:
+            # add time_shift
+            time_shift_amount = 0
+            # Time shift enhancement multiple of negative samples
+            time_shift_samples = self.time_shift_samples
+            if time_shift_samples > 0:
+                time_shift_amount = np.random.randint(-time_shift_samples, time_shift_samples)
+                time_shift_left = -min(0, time_shift_amount)
+                time_shift_right = max(0, time_shift_amount)
+                data = np.pad(data, (time_shift_left, time_shift_right), "constant")
+                data = data[:len(data) - time_shift_left] if time_shift_left else data[time_shift_right:]
 
-        # Time shift enhancement multiple of negative samples
-        time_shift_samples = self.time_shift_samples
-        if time_shift_samples > 0:
-            time_shift_amount = np.random.randint(-time_shift_samples, time_shift_samples)
-            time_shift_left = -min(0, time_shift_amount)
-            time_shift_right = max(0, time_shift_amount)
-            data = np.pad(data, (time_shift_left, time_shift_right), "constant")
-            data = data[:len(data) - time_shift_left] if time_shift_left else data[time_shift_right:]
-
-        # add noise
-        data = self.dataset_add_noise(data)
+        # data augmentation: add noise
+        if self.augmentation_background_noise_on:
+            data = self.dataset_add_noise(data)
         return data
 
     def dataset_augmentation_spectrum(self, audio_data):
@@ -225,6 +232,19 @@ class SpeechDataset(Dataset):
         audio_data = add_frequence_mask(audio_data, F=self.F, num_masks=self.num_masks, replace_with_zero=True)
         audio_data = add_time_mask(audio_data, T=self.T, num_masks=self.num_masks, replace_with_zero=True)
         return audio_data
+
+    def gen_multi_class_multi_label(self, audio_label_id):
+        # check
+        assert self.audio_label_type in ["multi_class", "multi_label"], \
+            "[ERROR:] Audio label type is wronge, please check"
+        if self.audio_label_type == "multi_class":
+            return audio_label_id
+        elif self.audio_label_type == "multi_label":
+            audio_label = np.zeros(self.classes_num)
+            audio_label_id_list = str(audio_label_id).split('/')
+            for idx in range(len(audio_label_id_list)):
+                audio_label[int(audio_label_id_list[idx])] = 1.0
+            return audio_label 
 
     def __getitem__(self, index):
         """ get the item """
@@ -263,10 +283,14 @@ class SpeechDataset(Dataset):
         if self.augmentation_on and self.augmentation_spec_on:
             data = self.dataset_augmentation_spectrum(data)
 
+        # data label
+        audio_label = self.gen_multi_class_multi_label(audio_label)
+
         # To tensor
         data_tensor = torch.from_numpy(np.expand_dims(data, axis=0))
         data_tensor = data_tensor.float()
         label_tensor = torch.tensor(audio_label)
+        label_tensor = label_tensor.float()
 
         # check tensor
         assert data_tensor.shape[0] == self.input_channel

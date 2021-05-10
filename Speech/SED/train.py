@@ -14,6 +14,8 @@ from utils.loss_tools import *
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from common.common.utils.python.logging_helpers import setup_logger
 
+sys.path.insert(0, '/home/huanyuan/code/demo/common')
+from common.utils.python.metrics_tools import *
 
 def test(cfg, net, loss_func, epoch_idx, iteration, logger, test_data_loader, mode='eval'):
     """
@@ -37,12 +39,19 @@ def test(cfg, net, loss_func, epoch_idx, iteration, logger, test_data_loader, mo
         score = score.view(score.size()[0], score.size()[1])
         loss = loss_func(score, label)
 
-        scores.extend(torch.max(score, 1)[1].cpu().data.numpy())
+        if cfg.dataset.label.type == "multi_class":
+            scores.extend(torch.max(score, 1)[1].cpu().data.numpy())
+        elif cfg.dataset.label.type == "multi_label":
+            scores.extend(torch.sigmoid(score).cpu().data.numpy())
         labels.extend(label.cpu().data.numpy())
         losses.append(loss.item())
 
     # caltulate accuracy
-    accuracy = float((np.array(scores) == np.array(labels)).astype(int).sum()) / float(len(labels))
+    if cfg.dataset.label.type == "multi_class":
+        accuracy = float((np.array(scores) == np.array(labels)).astype(int).sum()) / float(len(labels))
+    elif cfg.dataset.label.type == "multi_label":
+        accuracy = get_average_precision(labels.detach().cpu().numpy(), scores.detach().cpu().numpy())
+    
     loss = np.array(losses).sum() / float(len(losses))
 
     msg = 'epoch: {}, batch: {}, {}_accuracy: {:.4f}, {}_loss: {:.4f}'.format(
@@ -147,7 +156,7 @@ def train(args):
 
         # mix up
         bool_mix_up = np.random.uniform(0, 1) < cfg.dataset.augmentation.mix_up_frequency
-        if cfg.dataset.augmentation.mix_up_on and bool_mix_up:
+        if cfg.dataset.augmentation.on and cfg.dataset.augmentation.mix_up_on and bool_mix_up:
             net.train()
             inputs, targets_a, targets_b, lam = mixup_data(inputs, labels, cfg.dataset.augmentation.mix_up_alpha)
             scores = net(inputs)
@@ -165,14 +174,13 @@ def train(args):
         optimizer.step()
 
         # caltulate accuracy
-        pred_y = torch.max(scores, 1)[1].cpu().data.numpy()
         if cfg.dataset.augmentation.mix_up_on and bool_mix_up:
             if lam >= 0.5:
-                accuracy = float((pred_y == targets_a.cpu().data.numpy()).astype(int).sum()) / float(targets_a.size(0))
+                accuracy = caltulate_accuracy(cfg, scores, targets_a)
             else:
-                accuracy = float((pred_y == targets_b.cpu().data.numpy()).astype(int).sum()) / float(targets_b.size(0))
+                accuracy = caltulate_accuracy(cfg, scores, targets_b)
         else:
-            accuracy = float((pred_y == labels.cpu().data.numpy()).astype(int).sum()) / float(labels.size(0))
+            accuracy = caltulate_accuracy(cfg, scores, labels)
 
         # information
         sample_duration = (time.time() - begin_t) * 1.0
@@ -195,7 +203,8 @@ if __name__ == '__main__':
     功能描述：模型训练和测试脚本
     """
     parser = argparse.ArgumentParser(description='Streamax KWS Training Engine')
-    parser.add_argument('-i', '--config_file', type=str, default='/home/huanyuan/code/demo/Speech/SED/config/sed_config_ESC50.py')
+    # parser.add_argument('-i', '--config_file', type=str, default='/home/huanyuan/code/demo/Speech/SED/config/sed_config_ESC50.py')
+    parser.add_argument('-i', '--config_file', type=str, default='/home/huanyuan/code/demo/Speech/SED/config/sed_config_FSD50K.py')
     args = parser.parse_args()
 
     train(args)

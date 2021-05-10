@@ -100,12 +100,12 @@ def test(in_args):
                                     os.path.basename(input_wav).split('.')[0] + '_threshold_{}'.format('_'.join(str(cfg.test.detection_threshold).split('.'))))
     elif args.mode == "2":
         output_subfolder_path = (os.path.dirname(input_wav) + '/').replace(args.input_folder, '')
-        # output_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', 
-        #                             args.output_subfolder_name, output_subfolder_path, 
-        #                             os.path.basename(input_wav).split('.')[0] + '_threshold_{}'.format('_'.join(str(cfg.test.detection_threshold).split('.'))))
         output_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', 
-                                    args.output_subfolder_name, os.path.basename(input_wav).split('_')[1].split('-')[0], output_subfolder_path, 
+                                    args.output_subfolder_name, output_subfolder_path, 
                                     os.path.basename(input_wav).split('.')[0] + '_threshold_{}'.format('_'.join(str(cfg.test.detection_threshold).split('.'))))
+        # output_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', 
+        #                             args.output_subfolder_name, os.path.basename(input_wav).split('_')[1].split('-')[0], output_subfolder_path, 
+        #                             os.path.basename(input_wav).split('.')[0] + '_threshold_{}'.format('_'.join(str(cfg.test.detection_threshold).split('.'))))
     else:
         raise Exception("[ERROR:] Unknow mode, please check!")
     if not os.path.exists(output_dir):    
@@ -209,7 +209,7 @@ def main():
     # 0: from input_wav_list
     # 1: from csv
     # 2: from folder
-    default_mode = "0"    # ["0", "1" ,"2"]
+    default_mode = "2"    # ["0", "1" ,"2"]
 
     # mode 0: from input_wav_list
     # test
@@ -224,10 +224,11 @@ def main():
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
     # xiaorui
-    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_training_60.wav",
-                                "/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_validation_60.wav"]
-    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_testing_3600_001.wav",
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_training_60.wav",
+    #                             "/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_validation_60.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_validation_3600.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
+    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_validation_3600.wav"]
 
     # xiaole
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaole_11252020_training_60_001.wav",
@@ -339,14 +340,14 @@ def main():
     # difficult sample mining
     # default_input_folder = "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/"
     # default_output_subfolder_name = "Jabra_510"
-    # default_input_folder = "/mnt/huanyuan/data/speech/Recording_sample/Real_vehicle_sample/Original/"
-    # default_output_subfolder_name = "Real_vehicle_sample_Original"
+    default_input_folder = "/mnt/huanyuan/data/speech/Recording_sample/Real_vehicle_sample/Original/"
+    default_output_subfolder_name = "Real_vehicle_sample_Original"
     # default_input_folder = "/mnt/huanyuan/data/speech/Recording_sample/ADkit/weiboyulu/"
     # default_output_subfolder_name = "ADkit_weiboyulu"
     # default_input_folder = "/mnt/huanyuan/data/speech/kws/lenovo/experimental_dataset/LenovoDataset_11242020/other/"
     # default_output_subfolder_name = "Dataset_Lenovo_xiaole/other/"
-    default_input_folder = "/mnt/huanyuan/data/speech/kws/lenovo/experimental_dataset/LenovoDataset_11242020/xiaole/"
-    default_output_subfolder_name = "Dataset_Lenovo_xiaole/xiaole/"
+    # default_input_folder = "/mnt/huanyuan/data/speech/kws/lenovo/experimental_dataset/LenovoDataset_11242020/xiaole/"
+    # default_output_subfolder_name = "Dataset_Lenovo_xiaole/xiaole/"
     # default_input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/第二批数据_0425/安静场景/"
     # default_output_subfolder_name = "Activatebwc_test"
     # default_input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/实车场景/处理音频/"

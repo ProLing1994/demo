@@ -261,11 +261,10 @@ def multiprocessing_save(args):
     bth_idx = args[5]
 
     image_idx = images[bth_idx].numpy().reshape((-1, images[bth_idx].numpy().shape[-1]))
-    label_idx = str(labels[bth_idx].numpy())
     index_idx = int(indexs[bth_idx])
 
     image_name_idx = str(data_pd['file'].tolist()[index_idx])
-    label_name_idx = str(data_pd['label'].tolist()[index_idx])
+    label_name_idx = str("_".join(str(data_pd['label'].tolist()[index_idx]).split('/')))
     output_dir = os.path.join(out_folder, label_name_idx)
 
     # mkdir
@@ -276,7 +275,7 @@ def multiprocessing_save(args):
         pass
 
     # plot spectrogram
-    filename = label_idx + '_' + os.path.basename(os.path.dirname(image_name_idx)) + '_' + os.path.basename(image_name_idx).split('.')[0] + '.jpg'
+    filename = os.path.basename(os.path.dirname(image_name_idx)) + '_' + os.path.basename(image_name_idx).split('.')[0] + '.jpg'
     plot_spectrogram(image_idx.T, os.path.join(output_dir, filename))
     print("Save Intermediate Results: {}".format(filename))
 
