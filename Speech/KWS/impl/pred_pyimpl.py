@@ -238,5 +238,5 @@ def model_predict(cfg, model, data):
     data_tensor = data_tensor.cuda()
     score = model(data_tensor.unsqueeze(0))
     score = F.softmax(score, dim=1)
-    score = score.cpu().data.numpy()
+    score = score.detach().cpu().data.numpy()
     return score

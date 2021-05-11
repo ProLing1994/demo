@@ -53,21 +53,17 @@ counter_weakup = 0
 counter_asr = 0
 
 # argparse
-# default_kws_model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "res15_03162011.caffemodel")
-# default_kws_prototxt_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "res15_03162011.prototxt")
-# default_kws_net_input_name = "blob1"
-# default_kws_net_output_name = "Softmax"
-# default_kws_chw_params = "1,196,64"
-# default_kws_transpose = False
-default_kws_model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "tc_resnet14_amba_031920221.caffemodel")
-default_kws_prototxt_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "tc_resnet14_amba_031920221.prototxt")
+# kws xiaorui
+default_kws_model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "kws_xiaorui16k_tc_resnet14_5_0_05112021.caffemodel")
+default_kws_prototxt_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "kws_xiaorui16k_tc_resnet14_5_0_05112021.prototxt")
 default_kws_net_input_name = "data"
-default_kws_net_output_name = "conv_blob23"
+default_kws_net_output_name = "Softmax"
 default_kws_chw_params = "1,64,196"
 default_kws_transpose = True
 
-default_asr_model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "english_0202_better.caffemodel")
-default_asr_prototxt_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "english_0202_mark.prototxt")
+# asr english
+default_asr_model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "asr_english_0202.caffemodel")
+default_asr_prototxt_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "asr_english_0202.prototxt")
 default_asr_net_input_name = "data"
 default_asr_net_output_name = "conv39"
 default_asr_chw_params = "1,296,64"
@@ -122,6 +118,7 @@ def run_kws():
 
         net_output = kws_net.forward()[args.kws_net_output_name]
         net_output = np.squeeze(net_output)
+        print(net_output)
         # print(times, feature_data_kws.shape, net_output)
 
         if net_output[-1] > kws_detection_threshold:

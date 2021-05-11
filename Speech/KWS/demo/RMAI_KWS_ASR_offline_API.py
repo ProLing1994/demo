@@ -44,13 +44,13 @@ output_kws_id = 1
 # default_kws_net_output_name = "Softmax"
 # default_kws_chw_params = "1,196,64"
 # default_kws_transpose = False
-default_kws_model_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_2_4_04012021.caffemodel"
-default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_2_4_04012021.prototxt"
-default_kws_label = "activatebwc"
-default_kws_net_input_name = "data"
-default_kws_net_output_name = "Softmax"
-default_kws_chw_params = "1,64,196"
-default_kws_transpose = True
+# default_kws_model_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_2_4_04012021.caffemodel"
+# default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_2_4_04012021.prototxt"
+# default_kws_label = "activatebwc"
+# default_kws_net_input_name = "data"
+# default_kws_net_output_name = "Softmax"
+# default_kws_chw_params = "1,64,196"
+# default_kws_transpose = True
 
 # # xiaoan8k
 # # default_kws_model_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_xiaoan8k_res15/res15_1_1_04062021.caffemodel"
@@ -62,13 +62,25 @@ default_kws_transpose = True
 # # default_kws_transpose = False
 # default_kws_model_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_xiaoan8k_tc_resnet14/tc_resnet14_2_2_04162021.caffemodel"
 # default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_xiaoan8k_tc_resnet14/tc_resnet14_2_2_04162021.prototxt"
-# default_kws_label = "xiaoan8k"
+default_kws_model_path = "/mnt/huanyuan/model/audio_model/novt_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_2_2_05112021.caffemodel"
+default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/novt_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_2_2_05112021.prototxt"
+default_kws_label = "xiaoan8k"
+default_kws_net_input_name = "data"
+default_kws_net_output_name = "Softmax"
+default_kws_chw_params = "1,48,146"
+default_kws_transpose = True
+
+# xiaorui
+# default_kws_model_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_xiaorui16k_tc_resnet14/kws_xiaorui16k_tc_resnet14_5_0_05112021.caffemodel"
+# default_kws_prototxt_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_xiaorui16k_tc_resnet14/kws_xiaorui16k_tc_resnet14_5_0_05112021.prototxt"
+# default_kws_label = "xiaorui"
 # default_kws_net_input_name = "data"
 # default_kws_net_output_name = "Softmax"
-# default_kws_chw_params = "1,48,146"
+# default_kws_chw_params = "1,64,196"
 # default_kws_transpose = True
 
 # asr
+# asr english
 default_asr_model_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/english_0202_better.caffemodel"
 default_asr_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/english_0202_mark.prototxt"
 default_asr_net_input_name = "data"
@@ -79,7 +91,7 @@ default_asr_bpe = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/englis
 # test_mode
 # 0: input_wav
 # 1: input_folder
-default_test_mode = 1
+default_test_mode = 0
 
 # input_Wav
 # activatbwc16k
@@ -89,11 +101,11 @@ default_test_mode = 1
 # default_input_wav = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/安静场景/场景一/RM_KWS_ACTIVATEBWC_ovweseas_ori_S010M0D00T2.wav"
 
 # xiaoan8k
-# default_input_wav = "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_validation_60.wav"
+default_input_wav = "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_validation_60.wav"
 # default_input_wav = "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_3_04152021_validation.wav"
 # default_input_wav = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/自测_0412/安静场景/xiaoan_麦克风_场景二_31.wav"
 # default_input_wav = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/实车场景/处理音频/吴毅然_adpro.wav"
-default_input_wav = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/其他录音/adpro/B9P01D_20201113_231117_C02_Main_02_02.wav"
+# default_input_wav = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/其他录音/adpro/B9P01D_20201113_231117_C02_Main_02_02.wav"
 
 # input_folder
 # default_input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/路边场景/场景二/"

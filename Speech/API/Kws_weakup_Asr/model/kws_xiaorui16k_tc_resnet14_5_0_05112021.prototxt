@@ -1,4 +1,4 @@
-name: "tc_resnet14_amba_031920221"
+name: "kws_xiaorui16k_tc_resnet14_5_0_05112021"
 input: "data"
 input_dim: 1
 input_dim: 1
@@ -20,6 +20,7 @@ layer {
   }
 }
 
+
 layer {
   name: "conv1"
   type: "Convolution"
@@ -28,10 +29,10 @@ layer {
   convolution_param {
     num_output: 24
     bias_term: false
-    pad_h: 1
-    pad_w: 0
-    kernel_h: 3
-    kernel_w: 1
+    pad: 1
+    pad: 0
+    kernel_size: 3
+    kernel_size: 1
     group: 1
     stride: 1
     weight_filler {
@@ -54,10 +55,10 @@ layer {
   convolution_param {
     num_output: 36
     bias_term: false
-    pad_h: 3
-    pad_w: 0
-    kernel_h: 7
-    kernel_w: 1
+    pad: 3
+    pad: 0
+    kernel_size: 7
+    kernel_size: 1
     group: 1
     stride: 2
     weight_filler {
@@ -99,10 +100,10 @@ layer {
   convolution_param {
     num_output: 36
     bias_term: false
-    pad_h: 3
-    pad_w: 0
-    kernel_h: 7
-    kernel_w: 1
+    pad: 3
+    pad: 0
+    kernel_size: 7
+    kernel_size: 1
     group: 1
     stride: 1
     weight_filler {
@@ -197,10 +198,10 @@ layer {
   convolution_param {
     num_output: 36
     bias_term: false
-    pad_h: 3
-    pad_w: 0
-    kernel_h: 7
-    kernel_w: 1
+    pad: 3
+    pad: 0
+    kernel_size: 7
+    kernel_size: 1
     group: 1
     stride: 1
     weight_filler {
@@ -242,10 +243,10 @@ layer {
   convolution_param {
     num_output: 36
     bias_term: false
-    pad_h: 3
-    pad_w: 0
-    kernel_h: 7
-    kernel_w: 1
+    pad: 3
+    pad: 0
+    kernel_size: 7
+    kernel_size: 1
     group: 1
     stride: 1
     weight_filler {
@@ -297,10 +298,10 @@ layer {
   convolution_param {
     num_output: 48
     bias_term: false
-    pad_h: 3
-    pad_w: 0
-    kernel_h: 7
-    kernel_w: 1
+    pad: 3
+    pad: 0
+    kernel_size: 7
+    kernel_size: 1
     group: 1
     stride: 2
     weight_filler {
@@ -342,10 +343,10 @@ layer {
   convolution_param {
     num_output: 48
     bias_term: false
-    pad_h: 3
-    pad_w: 0
-    kernel_h: 7
-    kernel_w: 1
+    pad: 3
+    pad: 0
+    kernel_size: 7
+    kernel_size: 1
     group: 1
     stride: 1
     weight_filler {
@@ -440,10 +441,10 @@ layer {
   convolution_param {
     num_output: 48
     bias_term: false
-    pad_h: 3
-    pad_w: 0
-    kernel_h: 7
-    kernel_w: 1
+    pad: 3
+    pad: 0
+    kernel_size: 7
+    kernel_size: 1
     group: 1
     stride: 1
     weight_filler {
@@ -485,10 +486,10 @@ layer {
   convolution_param {
     num_output: 48
     bias_term: false
-    pad_h: 3
-    pad_w: 0
-    kernel_h: 7
-    kernel_w: 1
+    pad: 3
+    pad: 0
+    kernel_size: 7
+    kernel_size: 1
     group: 1
     stride: 1
     weight_filler {
@@ -540,10 +541,10 @@ layer {
   convolution_param {
     num_output: 72
     bias_term: false
-    pad_h: 3
-    pad_w: 0
-    kernel_h: 7
-    kernel_w: 1
+    pad: 3
+    pad: 0
+    kernel_size: 7
+    kernel_size: 1
     group: 1
     stride: 2
     weight_filler {
@@ -585,10 +586,10 @@ layer {
   convolution_param {
     num_output: 72
     bias_term: false
-    pad_h: 3
-    pad_w: 0
-    kernel_h: 7
-    kernel_w: 1
+    pad: 3
+    pad: 0
+    kernel_size: 7
+    kernel_size: 1
     group: 1
     stride: 1
     weight_filler {
@@ -683,10 +684,10 @@ layer {
   convolution_param {
     num_output: 72
     bias_term: false
-    pad_h: 3
-    pad_w: 0
-    kernel_h: 7
-    kernel_w: 1
+    pad: 3
+    pad: 0
+    kernel_size: 7
+    kernel_size: 1
     group: 1
     stride: 1
     weight_filler {
@@ -728,10 +729,10 @@ layer {
   convolution_param {
     num_output: 72
     bias_term: false
-    pad_h: 3
-    pad_w: 0
-    kernel_h: 7
-    kernel_w: 1
+    pad: 3
+    pad: 0
+    kernel_size: 7
+    kernel_size: 1
     group: 1
     stride: 1
     weight_filler {
@@ -783,10 +784,10 @@ layer {
   convolution_param {
     num_output: 96
     bias_term: false
-    pad_h: 3
-    pad_w: 0
-    kernel_h: 7
-    kernel_w: 1
+    pad: 3
+    pad: 0
+    kernel_size: 7
+    kernel_size: 1
     group: 1
     stride: 2
     weight_filler {
@@ -828,10 +829,10 @@ layer {
   convolution_param {
     num_output: 96
     bias_term: false
-    pad_h: 3
-    pad_w: 0
-    kernel_h: 7
-    kernel_w: 1
+    pad: 3
+    pad: 0
+    kernel_size: 7
+    kernel_size: 1
     group: 1
     stride: 1
     weight_filler {
@@ -926,10 +927,10 @@ layer {
   convolution_param {
     num_output: 96
     bias_term: false
-    pad_h: 3
-    pad_w: 0
-    kernel_h: 7
-    kernel_w: 1
+    pad: 3
+    pad: 0
+    kernel_size: 7
+    kernel_size: 1
     group: 1
     stride: 1
     weight_filler {
@@ -971,10 +972,10 @@ layer {
   convolution_param {
     num_output: 96
     bias_term: false
-    pad_h: 3
-    pad_w: 0
-    kernel_h: 7
-    kernel_w: 1
+    pad: 3
+    pad: 0
+    kernel_size: 7
+    kernel_size: 1
     group: 1
     stride: 1
     weight_filler {
@@ -1026,10 +1027,10 @@ layer {
   convolution_param {
     num_output: 96
     bias_term: false
-    pad_h: 3
-    pad_w: 0
-    kernel_h: 7
-    kernel_w: 1
+    pad: 3
+    pad: 0
+    kernel_size: 7
+    kernel_size: 1
     group: 1
     stride: 2
     weight_filler {
@@ -1069,11 +1070,11 @@ layer {
   bottom: "relu_blob22"
   top: "conv_blob23"
   convolution_param {
-    num_output: 3
+    num_output: 2
     bias_term: false
     pad: 0
-    kernel_h: 7
-    kernel_w: 1
+    kernel_size: 7
+    kernel_size: 1
     group: 1
     stride: 1
     weight_filler {
@@ -1081,4 +1082,10 @@ layer {
     }
     dilation: 1
   }
+}
+layer {
+  name: "prob"
+  type: "Softmax"
+  bottom: "conv_blob23"
+  top: "Softmax"
 }

@@ -42,7 +42,14 @@ def get_fpr(tn, fp, fn, tp):
     fpr = fp/(fp+tn)
     return fpr
 
-def get_average_precision(y_true, y_pred):
-    average_precision = sklearn.metrics.average_precision_score(y_true=y_true.flatten(), y_score=y_pred.flatten(), average="macro")
+def get_average_precision(y_true, y_pred, average=None):
+    average_precision = sklearn.metrics.average_precision_score(y_true=y_true.flatten(), y_score=y_pred.flatten(), average=average)
     return average_precision
-    
+
+def get_roc_auc(y_true, y_pred, average=None):
+    auc = sklearn.metrics.roc_auc_score(y_true=y_true, y_score=y_pred, average=average)
+    return auc
+
+def get_precision_recall(y_true, y_pred):
+    precisions, recalls, thresholds = sklearn.metrics.precision_recall_curve(y_true, y_pred)
+    return precisions, recalls, thresholds

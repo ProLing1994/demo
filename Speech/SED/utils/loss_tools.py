@@ -2,13 +2,15 @@ import numpy as np
 import torch
 import sys
 
-from sklearn.metrics import average_precision_score
+from scipy import stats
+from sklearn import metrics
 from torch.autograd import Variable
 from torch import nn
 from torch.nn import functional as F
 
-sys.path.insert(0, '/home/huanyuan/code/demo/common')
-from common.utils.python.metrics_tools import *
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo')
+sys.path.insert(0, '/home/huanyuan/code/demo')
+from common.common.utils.python.metrics_tools import *
 
 def define_loss_function(cfg):
     """ setup loss function
@@ -28,16 +30,66 @@ def define_loss_function(cfg):
     return loss_func.cuda()
 
 
-def caltulate_accuracy(cfg, scores, labels):
+def caltulate_accuracy(cfg, output, target):
     if cfg.dataset.label.type == "multi_class":
-        pred_y = torch.max(scores, 1)[1]
-        accuracy = float((pred_y.detach().cpu().data.numpy() == labels.detach().cpu().data.numpy()).astype(int).sum()) / float(labels.size(0))
+        pred_y = torch.max(output, 1)[1]
+        accuracy = float((pred_y.detach().cpu().data.numpy() == target.detach().cpu().data.numpy()).astype(int).sum()) / float(target.size(0))
     elif cfg.dataset.label.type == "multi_label":
-        pred_y_sigmoid = torch.sigmoid(scores)
-        accuracy = get_average_precision(labels.detach().cpu().numpy(), pred_y_sigmoid.detach().cpu().numpy())
+        pred_y_sigmoid = torch.sigmoid(output)
+        accuracy = get_average_precision(target.detach().cpu().numpy(), pred_y_sigmoid.detach().cpu().numpy(), average="macro")
     else:
         raise ValueError('Unsupported label type.')
     return accuracy
+
+
+def d_prime(auc):
+    standard_normal = stats.norm()
+    d_prime = standard_normal.ppf(auc) * np.sqrt(2.0)
+    return d_prime
+    
+def calculate_stats(output, target):
+    """Calculate statistics including mAP, AUC, etc.
+
+    Args:
+      output: 2d array, (samples_num, classes_num)
+      target: 2d array, (samples_num, classes_num)
+
+    Returns:
+      stats: list of statistic of each class.
+    """
+
+    classes_num = target.shape[-1]
+    class_indices = range(classes_num)
+    stats = []
+
+    # Class-wise statistics
+    for k in class_indices:
+        # Average precision
+        avg_precision = get_average_precision(target[:, k], output[:, k], average=None)
+
+        # AUC
+        # auc = metrics.roc_auc_score(target[:, k], output[:, k], average=None)
+        auc = get_roc_auc(target[:, k], output[:, k], average=None)
+
+        # Precisions, recalls
+        # (precisions, recalls, thresholds) = metrics.precision_recall_curve(target[:, k], output[:, k])
+        (precisions, recalls, thresholds) = get_precision_recall(target[:, k], output[:, k])
+
+        # FPR, TPR
+        # (fpr, tpr, thresholds) = metrics.roc_curve(target[:, k], output[:, k])
+        (fpr, tpr, thresholds) = get_fpr_tpr(target[:, k], output[:, k])
+
+        save_every_steps = 1000     # Sample statistics to reduce size
+        dict = {'precisions': precisions[0::save_every_steps],
+                'recalls': recalls[0::save_every_steps],
+                'AP': avg_precision,
+                'fpr': fpr[0::save_every_steps],
+                'fnr': 1. - tpr[0::save_every_steps],
+                'auc': auc}
+        stats.append(dict)
+
+    return stats
+
 
 class FocalLoss(nn.Module):
     def __init__(self, class_num, alpha=None, gamma=2, size_average=True):

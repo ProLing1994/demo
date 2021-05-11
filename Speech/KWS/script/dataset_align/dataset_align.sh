@@ -13,7 +13,8 @@ stage=1
 # data_set=/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_12052020
 # data_set=/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_12082020
 # data_set=/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_12162020
-data_set=/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_03182021/
+# data_set=/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_03182021/
+data_set=/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_05102021/
 # data_set=/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/XiaoRuiDataset/
 keyword="xiaorui"
 keyword_chinese="小 锐 小 锐"
@@ -42,10 +43,10 @@ keyword_chinese_output="小,锐,小#,锐#"
 # keyword_chinese_output="你,好,小,安"
 # data_set=/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_04012021/
 # data_set=/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_04062021/
-data_set=/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_04072021/
-keyword="xiaoanxiaoan_16k"
-keyword_chinese="小 安 小 安"
-keyword_chinese_output="小,安,小#,安#"
+# data_set=/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_04072021/
+# keyword="xiaoanxiaoan_16k"
+# keyword_chinese="小 安 小 安"
+# keyword_chinese_output="小,安,小#,安#"
 
 # other 
 # data_set=/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/original_dataset/XiaoYuDataset_11032020/

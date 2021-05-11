@@ -27,9 +27,9 @@ def find_audio():
 
 
 if __name__ == "__main__":
-    default_input_dir = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_03182021/xiaorui/"
-    default_find_input_dir = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_03182021/kaldi_cut_keyword/xiaorui/"
-    default_output_dir = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_03182021/kaldi_cut_keyword/unuse/"
+    default_input_dir = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_05102021/xiaorui/"
+    default_find_input_dir = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_05102021/kaldi_cut_keyword/xiaorui/"
+    default_output_dir = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_05102021/kaldi_cut_keyword/unuse/"
     
     parser = argparse.ArgumentParser(description='Streamax KWS Engine')
     parser.add_argument('--input_dir', type=str, default=default_input_dir)

@@ -26,8 +26,8 @@ def change_type(args):
         os.system('sox {} -b 16 -e signed-integer {}'.format(temp_path, output_path))
 
 def main():
-    # default_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_04062021/xiaoanxiaoan_8k/"
-    # default_output_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_04062021/xiaoanxiaoan_8k_wav/"
+    default_input_dir = "/home/huanyuan/temp/wav/"
+    default_output_dir = "/home/huanyuan/temp/wav_out/"
     parser = argparse.ArgumentParser(description="")
     parser.add_argument('--input_dir', type=str, default=default_input_dir)
     parser.add_argument('--output_dir', type=str, default=default_output_dir)
