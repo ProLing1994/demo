@@ -15,8 +15,8 @@ sys.path.insert(0, '/home/huanyuan/code/demo')
 from common.common.utils.python.logging_helpers import setup_logger
 
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo')
-# # sys.path.insert(0, '/home/huanyuan/code/demo')
-# from common.common.utils.python.metrics_tools import *
+sys.path.insert(0, '/home/huanyuan/code/demo')
+from common.common.utils.python.metrics_tools import *
 
 def test(cfg, net, loss_func, epoch_idx, iteration, logger, test_data_loader, mode='eval'):
     """
@@ -41,10 +41,10 @@ def test(cfg, net, loss_func, epoch_idx, iteration, logger, test_data_loader, mo
         loss = loss_func(score, label)
 
         if cfg.dataset.label.type == "multi_class":
-            scores.append(torch.max(score, 1)[1].detach().cpu().data.numpy()[0])
+            scores.extend(torch.max(score, 1)[1].detach().cpu().data.numpy())
         elif cfg.dataset.label.type == "multi_label":
-            scores.append(torch.sigmoid(score).detach().cpu().data.numpy()[0])
-        labels.append(label.detach().cpu().data.numpy()[0])
+            scores.extend(torch.sigmoid(score).detach().cpu().data.numpy())
+        labels.extend(label.detach().cpu().data.numpy())
         losses.append(loss.item())
 
     loss = np.array(losses).sum() / float(len(losses))
@@ -54,12 +54,13 @@ def test(cfg, net, loss_func, epoch_idx, iteration, logger, test_data_loader, mo
         accuracy = float((np.array(scores) == np.array(labels)).astype(int).sum()) / float(len(labels))
         msg = 'epoch: {}, batch: {}, {}_accuracy: {:.4f}, {}_loss: {:.4f}'.format(epoch_idx, iteration, mode, accuracy, mode, loss)
     elif cfg.dataset.label.type == "multi_label":
+        accuracy = get_average_precision(np.array(labels), np.array(scores), 'macro')
         stats = calculate_stats(np.array(scores), np.array(labels))
         mAP = np.mean([stat['AP'] for stat in stats])
         mAUC = np.mean([stat['auc'] for stat in stats])
         dprime = d_prime(mAUC)
         msg = 'epoch: {}, batch: {}, {}_accuracy: {:.4f}, {}_mAP: {:.4f}, {}_mAUC: {:.4f}, {}_dprime: {:.4f}, {}_loss: {:.4f}' \
-            .format(epoch_idx, iteration, mode, mAP, mode, mAP, mode, mAUC, mode, dprime, mode, loss)
+            .format(epoch_idx, iteration, mode, accuracy, mode, mAP, mode, mAUC, mode, dprime, mode, loss)
 
     logger.info(msg)
 
@@ -128,9 +129,6 @@ def train(args):
     
     for _, (inputs, labels, indexs) in enumerate(train_dataloader): 
         epoch_idx = iteration * cfg.train.batch_size // len_dataset
-
-
-        test(cfg, net, loss_func, epoch_idx, iteration, logger, eval_validation_dataloader, mode='eval')
         
         # Save Model and test
         if epoch_idx % cfg.train.save_epochs == 0 and epoch_idx != last_save_epoch:
