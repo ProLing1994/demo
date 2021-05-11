@@ -14,10 +14,6 @@ from utils.loss_tools import *
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from common.common.utils.python.logging_helpers import setup_logger
 
-# # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo')
-# sys.path.insert(0, '/home/huanyuan/code/demo')
-# from common.common.utils.python.metrics_tools import *
-
 def test(cfg, net, loss_func, epoch_idx, iteration, logger, test_data_loader, mode='eval'):
     """
     :param cfg:                config contain data set information
@@ -46,20 +42,12 @@ def test(cfg, net, loss_func, epoch_idx, iteration, logger, test_data_loader, mo
         losses.append(loss.item())
 
     loss = np.array(losses).sum() / float(len(losses))
-
+    accuracy = calculate_accuracy(cfg, np.array(scores), np.array(labels))
     # caltulate accuracy
     if cfg.dataset.label.type == "multi_class":
-        # accuracy = float((np.array(scores) == np.array(labels)).astype(int).sum()) / float(len(labels))
-        accuracy = calculate_accuracy(cfg, np.array(scores), np.array(labels))
         msg = 'epoch: {}, batch: {}, {}_accuracy: {:.4f}, {}_loss: {:.4f}'.format(epoch_idx, iteration, mode, accuracy, mode, loss)
     elif cfg.dataset.label.type == "multi_label":
-        # accuracy = get_average_precision(np.array(labels), np.array(scores), 'macro')
-        accuracy = calculate_accuracy(cfg, np.array(scores), np.array(labels))
         mAP, mAUC, dprime = calculate_mAP_mAUC_dprime(np.array(scores), np.array(labels))
-        # stats = calculate_stats(np.array(scores), np.array(labels))
-        # mAP = np.mean([stat['AP'] for stat in stats])
-        # mAUC = np.mean([stat['auc'] for stat in stats])
-        # dprime = d_prime(mAUC)
         msg = 'epoch: {}, batch: {}, {}_accuracy: {:.4f}, {}_mAP: {:.4f}, {}_mAUC: {:.4f}, {}_dprime: {:.4f}, {}_loss: {:.4f}' \
             .format(epoch_idx, iteration, mode, accuracy, mode, mAP, mode, mAUC, mode, dprime, mode, loss)
 
@@ -121,6 +109,8 @@ def train(args):
 
     # last_save_epoch
     last_save_epoch = iteration * cfg.train.batch_size // len_dataset
+    # last_show_epoch
+    last_show_epoch = iteration * cfg.train.batch_size // len_dataset
 
     msg = 'Training dataset number: {}'.format(len_dataset)
     logger.info(msg)
@@ -128,6 +118,7 @@ def train(args):
     msg = 'Init Time: {}'.format((time.time() - begin_t) * 1.0)
     logger.info(msg)
     
+    # list init
     scores_list = []
     labels_list = []
     losses_list = []
@@ -194,9 +185,11 @@ def train(args):
         losses_list.append(loss.item())
 
         # information
-        if (iteration * cfg.train.batch_size) % len_dataset == 0:
+        print('epoch: {}, batch: {}'.format(epoch_idx, iteration), end='\r')
+        if epoch_idx != last_show_epoch:
+            last_show_epoch = epoch_idx
+    
             loss = np.array(losses_list).sum() / float(len(losses_list))
-            
             accuracy = calculate_accuracy(cfg, np.array(scores_list), np.array(labels_list))
             msg = 'epoch: {}, batch: {}, train_accuracy: {:.4f}, train_loss: {:.4f}' \
                 .format(epoch_idx, iteration, accuracy, loss)
@@ -205,6 +198,7 @@ def train(args):
             # visualization
             plot_tool(cfg, log_file)
             
+            # list init
             scores_list = []
             labels_list = []
             losses_list = []
