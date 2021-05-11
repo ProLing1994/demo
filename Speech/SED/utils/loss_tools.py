@@ -30,23 +30,43 @@ def define_loss_function(cfg):
     return loss_func.cuda()
 
 
-def caltulate_accuracy(cfg, output, target):
+def calculate_score_label(cfg, output, target):
     if cfg.dataset.label.type == "multi_class":
-        pred_y = torch.max(output, 1)[1]
-        accuracy = float((pred_y.detach().cpu().data.numpy() == target.detach().cpu().data.numpy()).astype(int).sum()) / float(target.size(0))
+        output = torch.max(output, 1)[1].detach().cpu().data.numpy()
+        target = target.detach().cpu().data.numpy()
     elif cfg.dataset.label.type == "multi_label":
-        pred_y_sigmoid = torch.sigmoid(output)
-        accuracy = get_average_precision(target.detach().cpu().numpy(), pred_y_sigmoid.detach().cpu().numpy(), average="macro")
+        output = torch.sigmoid(output).detach().cpu().data.numpy()
+        target = target.detach().cpu().data.numpy()
     else:
         raise ValueError('Unsupported label type.')
-    return accuracy
+    return output, target
 
+
+def calculate_accuracy(cfg, output, target):
+    if cfg.dataset.label.type == "multi_class":
+        accuracy = float((output == target).astype(int).sum()) / float(target.size(0))
+        return accuracy
+    elif cfg.dataset.label.type == "multi_label":
+        mAP = get_average_precision(target, output, average="macro")
+        return mAP
+    else:
+        raise ValueError('Unsupported label type.')
+
+
+def calculate_mAP_mAUC_dprime(output, target):
+    stats = calculate_stats(output, target)
+    mAP = np.mean([stat['AP'] for stat in stats])
+    mAUC = np.mean([stat['auc'] for stat in stats])
+    dprime = d_prime(mAUC)
+    return mAP, mAUC, dprime
+    
 
 def d_prime(auc):
     standard_normal = stats.norm()
     d_prime = standard_normal.ppf(auc) * np.sqrt(2.0)
     return d_prime
-    
+
+
 def calculate_stats(output, target):
     """Calculate statistics including mAP, AUC, etc.
 
@@ -68,15 +88,12 @@ def calculate_stats(output, target):
         avg_precision = get_average_precision(target[:, k], output[:, k], average=None)
 
         # AUC
-        # auc = metrics.roc_auc_score(target[:, k], output[:, k], average=None)
         auc = get_roc_auc(target[:, k], output[:, k], average=None)
 
         # Precisions, recalls
-        # (precisions, recalls, thresholds) = metrics.precision_recall_curve(target[:, k], output[:, k])
         (precisions, recalls, thresholds) = get_precision_recall(target[:, k], output[:, k])
 
         # FPR, TPR
-        # (fpr, tpr, thresholds) = metrics.roc_curve(target[:, k], output[:, k])
         (fpr, tpr, thresholds) = get_fpr_tpr(target[:, k], output[:, k])
 
         save_every_steps = 1000     # Sample statistics to reduce size
