@@ -4,6 +4,7 @@ import os
 import pyaudio
 from tqdm import tqdm
 import wave
+import shutil
 
 
 def write_wave(wave_frames, wave_output_path, framerate=16000):
@@ -34,6 +35,11 @@ def mutil_channel_audio_split(args):
 
     for idx in tqdm(range(len(file_list))):
         file_name = file_list[idx]
+
+        if file_name.endswith('.txt'):
+            input_txt_path = os.path.join(args.input_folder, file_name)
+            output_txt_path = os.path.join(args.output_folder, file_name)
+            shutil.copy(input_txt_path, output_txt_path)
 
         if not file_name.endswith('.wav'):
             continue
@@ -77,8 +83,8 @@ def mutil_channel_audio_split(args):
 def main():
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
-    args.input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/实车场景/"
-    args.output_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/实车场景/处理音频/"
+    args.input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_05132021/原始音频数据/0421/"
+    args.output_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_05132021/处理音频_0421/"
     args.sample_rate = 16000
     args.name_list = ['adpro', 'mic', 'danbin_ori', 'danbin_asr']
 

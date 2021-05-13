@@ -165,10 +165,11 @@ __C.dataset.augmentation.mix_up_alpha = 0.5
 
 __C.loss = {}
 
-# the loss name, support ['softmax','focal', 'sigmoid']
+# the loss name, support ['softmax','focal', 'sigmoid', 'sigmoid_focal_loss']
 # __C.loss.name = 'softmax'
 # __C.loss.name = 'focal'
-__C.loss.name = 'sigmoid'
+# __C.loss.name = 'sigmoid'
+__C.loss.name = 'sigmoid_focal_loss'
 
 # the weight matrix for each class in focal loss, including background class
 # __C.loss.obj_weight = np.array([[1/9, 0], [0, 8/9]])

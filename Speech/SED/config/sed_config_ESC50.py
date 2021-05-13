@@ -99,6 +99,9 @@ __C.dataset.label = {}
 # label
 __C.dataset.label.num_classes = 50
 
+# 多分类任务或者多标签任务, support ["multi_class", "multi_label"]
+__C.dataset.label.type = 'multi_class'
+
 ##################################
 # data augmentation parameters
 ##################################
@@ -110,11 +113,17 @@ __C.dataset.augmentation = {}
 # __C.dataset.augmentation.on = True
 __C.dataset.augmentation.on = False
 
+# based on audio waveform: on.
+__C.dataset.augmentation.background_noise_on = False
+
 # How many of the training samples have background noise mixed in.
 __C.dataset.augmentation.background_frequency = -1
 
 # How loud the background noise should be, between 0 and 1.
 __C.dataset.augmentation.background_volume = -1
+
+# based on audio waveform: on.
+__C.dataset.augmentation.time_shift_on = False
 
 # Range to randomly shift the training audio by in time(ms).
 __C.dataset.augmentation.time_shift_ms = 1000.0
@@ -157,8 +166,8 @@ __C.dataset.augmentation.mix_up_alpha = 0.5
 __C.loss = {}
 
 # the loss name, support ['softmax','focal']
-__C.loss.name = 'softmax'
-# __C.loss.name = 'focal'
+# __C.loss.name = 'softmax'
+__C.loss.name = 'focal'
 
 # the weight matrix for each class in focal loss, including background class
 # __C.loss.obj_weight = np.array([[1/9, 0], [0, 8/9]])

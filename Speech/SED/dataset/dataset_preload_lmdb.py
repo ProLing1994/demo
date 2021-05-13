@@ -32,10 +32,9 @@ class SpeechDataset(Dataset):
         self.data_file_list = self.data_pd['file'].tolist()
         self.data_mode_list = self.data_pd['mode'].tolist()
         self.data_label_list = self.data_pd['label'].tolist()
-        self.data_label_np = np.array(self.data_label_list)
+        self.audios_num = len(self.data_label_list)
         self.classes_num = cfg.dataset.label.num_classes 
         self.audio_label_type = cfg.dataset.label.type 
-        # assert self.classes_num == self.data_label_np.max() + 1
 
         # lmdb
         self.lmdb_path = os.path.join(cfg.general.data_dir, '../experimental_dataset/dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset_audio_lmdb', '{}.lmdb'.format(mode))
@@ -92,21 +91,51 @@ class SpeechDataset(Dataset):
         return len(self.data_file_list)
 
     def samples_num_per_class(self):
-        # init
-        samples_num_per_class = []
+        assert self.audio_label_type in ["multi_class", "multi_label"], \
+            "[ERROR:] Audio label type is wronge, please check"
 
-        for idx in range(self.classes_num):
-            samples_num_per_class.append(len(self.data_label_np[self.data_label_np == idx]))
-        return samples_num_per_class
+        if self.audio_label_type == "multi_class":
+            # init
+            samples_num_per_class = []
+            
+            data_label_np = np.array(self.data_label_list)
+            for idx in range(self.classes_num):
+                samples_num_per_class.append(len(data_label_np[data_label_np == idx]))
+            return samples_num_per_class
+        elif self.audio_label_type == "multi_label":
+            targets = np.zeros((self.audios_num, self.classes_num))
+
+            # update targets
+            for audio_idx in range(self.audios_num):
+                audio_label_id_list = str(self.data_label_list[audio_idx]).split('/')
+                for label_id_idx in range(len(audio_label_id_list)):
+                    targets[audio_idx][int(audio_label_id_list[label_id_idx])] = 1.0
+            return np.sum(targets, axis=0)
 
     def indexes_per_class(self):
+        assert self.audio_label_type in ["multi_class", "multi_label"], \
+            "[ERROR:] Audio label type is wronge, please check"
+        
         # init
         indexes_per_class = []
 
-        for idx in range(self.classes_num):
-            indexes_per_class.append(np.where(self.data_label_np == idx)[0])
-        return indexes_per_class
+        if self.audio_label_type == "multi_class":
+            data_label_np = np.array(self.data_label_list)
+            for idx in range(self.classes_num):
+                indexes_per_class.append(np.where(data_label_np == idx)[0])
+        elif self.audio_label_type == "multi_label":
+            targets = np.zeros((self.audios_num, self.classes_num))
 
+            # update targets
+            for audio_idx in range(self.audios_num):
+                audio_label_id_list = str(self.data_label_list[audio_idx]).split('/')
+                for label_id_idx in range(len(audio_label_id_list)):
+                    targets[audio_idx][int(audio_label_id_list[label_id_idx])] = 1.0
+
+            for k in range(self.classes_num):
+                indexes_per_class.append(np.where(targets[:, k] == 1)[0])
+        return indexes_per_class
+        
     def save_audio(self, data, audio_label, audio_file):
         out_folder = os.path.join(self.save_audio_dir, self.mode_type + '_audio', str("_".join(str(audio_label).split('/'))))
         

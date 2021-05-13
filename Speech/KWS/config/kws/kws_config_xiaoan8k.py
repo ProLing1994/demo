@@ -18,31 +18,35 @@ __C.general.sub_data_dir = ["/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experi
 # __C.general.version = "1.0"
 # __C.general.version = "1.1"
 # __C.general.version = "1.2"
-__C.general.version = "1.3"
+# __C.general.version = "1.3"
+__C.general.version = "1.4"
 
 # data date
 # __C.general.date = "04062021"
 # __C.general.date = "04082021"
 # __C.general.date = "04122021"
-__C.general.date = "04152021"
+# __C.general.date = "04152021"
+__C.general.date = "05132021"
 
 # data path
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.0_04062021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.1_04082021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.2_04122021/total_data_files.csv"
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.3_04152021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.3_04152021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.4_05132021/total_data_files.csv"
 
 # background noise path
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.0_04062021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.1_04082021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.2_04122021/background_noise_files.csv"
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.3_04152021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.3_04152021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.4_05132021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoan8k_test"
+__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoan8k_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_0_res15_fbankcpu_04062021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_1_res15_fbankcpu_04062021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_2_res15_fbankcpu_041262021/"
@@ -51,12 +55,12 @@ __C.general.is_test = True
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_1_tc-resnet14-amba_fbankcpu_kd_041262021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_2_tc-resnet14-amba_fbankcpu_kd_041262021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_3_tc-resnet14-amba_fbankcpu_kd_041262021/"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_4_tc-resnet14-amba_fbankcpu_64_kd_041262021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_4_tc-resnet14-amba_fbankcpu_64_kd_041262021/"
 
 # finetune model
-__C.general.finetune_on = False
-__C.general.finetune_model_dir = ""
-__C.general.finetune_epoch = 0
+__C.general.finetune_on = True
+__C.general.finetune_model_dir = "/home/engineers/yh_rmai/model/kws_xiaoan8k_1_3_res15_fbankcpu_041262021/"
+__C.general.finetune_epoch = 1999
 
 # set certain epoch to continue training, set -1 to train from scratch
 __C.general.resume_epoch = -1
@@ -147,19 +151,19 @@ __C.dataset.preprocess = "fbank_cpu"
 
 # How many bins to use for the Mel feature
 # __C.dataset.feature_bin_count = 40
-# __C.dataset.feature_bin_count = 48
-__C.dataset.feature_bin_count = 64
+__C.dataset.feature_bin_count = 48
+# __C.dataset.feature_bin_count = 64
 
 # How many nfilt to use for the Mel feature, only support preprocess=fbank_cpu
-# __C.dataset.nfilt = 48
-__C.dataset.nfilt = 64
+__C.dataset.nfilt = 48
+# __C.dataset.nfilt = 64
 
 # input size of training data (w, h), unit: voxel
 # __C.dataset.data_size = [40, 201]
 # __C.dataset.data_size = [64, 196]
 # __C.dataset.data_size = [64, 151]
-__C.dataset.data_size = [64, 146]
-# __C.dataset.data_size = [48, 146]
+# __C.dataset.data_size = [64, 146]
+__C.dataset.data_size = [48, 146]
 
 
 ##################################
@@ -178,7 +182,7 @@ __C.dataset.label.negative_label_together = True
 __C.dataset.label.negative_label_together_label = ["negative"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
 __C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[1]
-__C.dataset.label.ignore_label = ["kaldi_cut_keyword"]
+__C.dataset.label.ignore_label = ["kaldi_cut_keyword", "xiaoanxiaoan_16k_over_long", "xiaoanxiaoan_8k_over_long"]
 __C.dataset.label.label_list = __C.dataset.label.negative_label + __C.dataset.label.positive_label
 __C.dataset.label.num_classes = 2
 
@@ -269,7 +273,7 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'cnn-trad-pool2'
 # __C.net.model_name = 'cnn-one-fstride1'
 # __C.net.model_name = 'cnn-tpool2'
-# __C.net.model_name = 'res15'
+__C.net.model_name = 'res15'
 # __C.net.model_name = 'res15-narrow'
 # __C.net.model_name = 'res15-narrow-amba'
 # __C.net.model_name = 'res15-narrow-novt'
@@ -282,7 +286,7 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'tc-resnet8'
 # __C.net.model_name = 'tc-resnet14'
 # __C.net.model_name = 'tc-resnet14-amba'
-__C.net.model_name = 'tc-resnet14-amba-1-5s'
+# __C.net.model_name = 'tc-resnet14-amba-1-5s'
 # __C.net.model_name = 'tc-resnet8-dropout'
 # __C.net.model_name = 'tc-resnet14-dropout'
 # __C.net.model_name = 'tc-resnet18-dropout'

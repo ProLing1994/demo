@@ -25,6 +25,10 @@ def define_loss_function(cfg):
                               gamma=cfg.loss.focal_gamma)
     elif cfg.loss.name == 'sigmoid':
         loss_func = nn.BCEWithLogitsLoss()
+    elif cfg.loss.name == 'sigmoid_focal_loss':
+        loss_func = SigmoidFocalLoss(class_num=cfg.dataset.label.num_classes,
+                              alpha=cfg.loss.obj_weight,
+                              gamma=cfg.loss.focal_gamma)
     else:
         raise ValueError('Unsupported loss function.')
     return loss_func.cuda()
@@ -168,6 +172,58 @@ class FocalLoss(nn.Module):
             loss = batch_loss.sum()/mask.sum()
         else:
             loss = batch_loss.sum()
+        return loss
+
+
+class SigmoidFocalLoss(nn.Module):
+    def __init__(self, class_num, alpha=None, gamma=2, size_average=True):
+        super(SigmoidFocalLoss, self).__init__()
+        if alpha is None:
+            self.alpha = torch.FloatTensor([0.25, 0.75])
+        else:
+            assert len(alpha) == 2
+            self.alpha = torch.FloatTensor(alpha)
+            self.alpha = self.alpha / self.alpha.sum()
+
+        self.alpha = self.alpha.cuda()
+        self.gamma = gamma
+        self.class_num = class_num
+        self.size_average = size_average
+        self.one_hot_codes = torch.eye(self.class_num).cuda()
+
+    def forward(self, input, target):
+        # Assume that the input should has one of the following shapes:
+        # 1. [sample, class_num]
+        assert input.dim() == 2
+
+        # get alpha 
+        alpha = self.alpha
+        alpha = Variable(alpha, requires_grad=False)
+
+        # get mask
+        mask = target.data
+        mask = Variable(mask, requires_grad=False)
+
+        # sigmoid
+        input = torch.sigmoid(input)
+
+        # get probs from input
+        probs = input * mask + (1 - input) * (1 - mask) + 1e-10
+        log_probs = probs.log()
+
+        if self.gamma > 0:
+            batch_loss = -alpha[1] * mask * (torch.pow((1.0 - probs), self.gamma)) * log_probs
+            batch_loss += -alpha[0] * (1 - mask) * (torch.pow((1.0 - probs), self.gamma)) * log_probs
+        else:
+            batch_loss = -alpha[1] * mask * log_probs
+            batch_loss += -alpha[0] * (1 - mask) * log_probs
+
+        if self.size_average:
+            # loss = batch_loss.mean()
+            loss = batch_loss.sum()/mask.sum()
+        else:
+            loss = batch_loss.sum()
+        print(loss)
         return loss
 
 

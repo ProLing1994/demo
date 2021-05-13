@@ -223,12 +223,12 @@ if __name__ == "__main__":
     #             # "/mnt/huanyuan/data/speech/Recording_sample/demo_kws_asr_online_api/2021-04-20-18-54-31/found_words - 副本.csv",
     #             ["xiaoanxiaoan_8k", "xiaoanxiaoan_16k"],
     #             bool_write_audio)
-    cal_fpr_tpr_per_folder("/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/实车场景/处理音频/",
+    cal_fpr_tpr_per_folder("/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/处理音频/",
                             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_2_tc-resnet14-amba_fbankcpu_kd_041262021/test_straming_wav/实车录制_0427/阈值_05_03/实车场景/",
-                            # ["_adpro"],
+                            ["_adpro"],
                             # ["_mic"],
                             # ["danbin_ori"],
-                            ["danbin_asr"],
+                            # ["danbin_asr"],
                             "xiaoan8k",
                             bool_write_audio)
 

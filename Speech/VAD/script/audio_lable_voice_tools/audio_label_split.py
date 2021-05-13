@@ -7,7 +7,7 @@ import wave
 from tqdm import tqdm
 
 
-def audio_lable_csv(args):
+def audio_lable_split(args):
     # id_name_list
     id_name_pd = pd.read_csv(args.id_name_csv, encoding='utf_8_sig')
     name_list = id_name_pd["name"].to_list()
@@ -26,11 +26,6 @@ def audio_lable_csv(args):
         # init 
         label_path = os.path.join(args.input_folder, file_list[idx])
         audio_path = label_path.split('.')[0] + args.audio_suffix
-
-        # temp_path = os.path.join(args.input_folder, "temp.wav")
-        # os.system('sox {} -b 16 -e signed-integer {}'.format(audio_path, temp_path))
-        # wave_params = wave.open(temp_path)
-        # sample_rate = wave_params.getframerate()   # 获得采样率
 
         # id_name
         audio_name = file_list[idx].split('.')[0]
@@ -74,7 +69,7 @@ def main():
     # params
     args.sample_rate = 16000
     args.audio_suffix = ".wav"
-    audio_lable_csv(args)
+    audio_lable_split(args)
 
 
 if __name__ == "__main__":

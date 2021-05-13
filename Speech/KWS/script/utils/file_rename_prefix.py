@@ -3,12 +3,9 @@ import os
 
 if __name__ == '__main__':
     input_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/路边场景/场景二"
-    # old_file_format = 'RM_KWS_ACTIVATEBWC_asr_'
-    # new_file_format = 'RM_KWS_ACTIVATEBWC_ovweseas_asr_'
     old_file_format = 'RM_KWS_ACTIVATEBWC_ori_'
     new_file_format = 'RM_KWS_ACTIVATEBWC_ovweseas_ori_'
     file_type = ".wav"
-    # file_type = ".txt"
 
     file_list = glob.glob(os.path.join(input_dir, '*' + file_type))
     file_list.sort()

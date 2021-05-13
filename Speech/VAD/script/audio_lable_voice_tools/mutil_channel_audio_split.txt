@@ -1,0 +1,10 @@
+多通道音频数据处理思路：
+1、mutil_channel_audio_split.py，将多通音频转换为单通道音频
+2、mutil_channel_audio_label_split.py，按照 TXT 文件，将多个单通道音频按照标签进行拆分，注意标签 xiaoan/xiaoan1/error/error1
+3、dataset_align.sh，对单通道音频 mic 进行语音对齐，获得对齐数据（mic 音质理想）
+4、find_unuse_audio.py，获得未对齐数据
+5、手动检查的未对齐数据中，是否包含异常数据，标注错误数据
+6、find_matched_audio.py，剔除标注错误数据
+7、move_audio_batch.py，移动数据
+8、重复以上步骤，完成音频数据处理
+9、find_over_long_audio.py，检查超长语音数据

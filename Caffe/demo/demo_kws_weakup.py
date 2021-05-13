@@ -16,15 +16,17 @@ import caffe
 # image_transpose = [0, 1, 2, 3]
 # model_input_size = [1, 1, 201, 40]
 
-# tc_resnet14_amba
-caffe_prototxt = "/mnt/huanyuan/model/audio_model/kws_xiaorui_tc_resnet14/tc_resnet14_amba_031120221.prototxt"
-caffe_model = "/mnt/huanyuan/model/audio_model/kws_xiaorui_tc_resnet14/tc_resnet14_amba_031120221.caffemodel"
-model_output = "conv_blob23"
+# xiaoan: tc_resnet14_amba
+caffe_prototxt = "/mnt/huanyuan/model/audio_model/novt_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_2_2_05112021.prototxt"
+caffe_model = "/mnt/huanyuan/model/audio_model/novt_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_2_2_05112021.caffemodel"
+# caffe_prototxt = "/mnt/huanyuan/model/audio_model/novt_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_2_2_04162021.prototxt"
+# caffe_model = "/mnt/huanyuan/model/audio_model/novt_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_2_2_04162021.caffemodel"
+model_output = "Softmax"
 image_transpose = [0, 1, 3, 2]
-model_input_size = [1, 1, 40, 201]
+model_input_size = [1, 1, 48, 146]
 
 net = caffe.Net(caffe_prototxt, caffe_model, caffe.TEST)
-image_size = [1, 1, 201, 40]
+image_size = [1, 1, 146, 48]
 
 def forward_caffe(protofile, weightfile, image):
 
@@ -37,13 +39,16 @@ def forward_caffe(protofile, weightfile, image):
     net.blobs['data'].data[...] = image
     t0 = time.time()
     output = net.forward()
+    print(output)
     t1 = time.time()
     return t1-t0, net.blobs, net.params
 
 
 if __name__ == '__main__':
-    img = np.ones(image_size, dtype=np.float32)
-    img = np.transpose(img, axes=image_transpose)
+    img = cv2.imread("/home/huanyuan/share/audio_data/weakup_xiaoan8k/image_48_146_temp/RM_KWS_XIAOAN_xiaoan_S009M1D11T5_3200.jpg", 0)
+
+    # img = np.ones(image_size, dtype=np.float32)
+    # img = np.transpose(img, axes=image_transpose)
 
     time_caffe, caffe_blobs, caffe_params = forward_caffe(caffe_prototxt, caffe_model, img)
 

@@ -104,8 +104,6 @@ default_test_mode = 0
 default_input_wav = "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_validation_60.wav"
 # default_input_wav = "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_3_04152021_validation.wav"
 # default_input_wav = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/自测_0412/安静场景/xiaoan_麦克风_场景二_31.wav"
-# default_input_wav = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/实车场景/处理音频/吴毅然_adpro.wav"
-# default_input_wav = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/其他录音/adpro/B9P01D_20201113_231117_C02_Main_02_02.wav"
 
 # input_folder
 # default_input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/路边场景/场景二/"
