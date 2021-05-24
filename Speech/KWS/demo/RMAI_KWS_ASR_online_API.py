@@ -7,10 +7,7 @@ import wave
 from multiprocessing import Process, Event, Queue, freeze_support
 
 import RMAI_KWS_ASR_offline_API
-import RMAI_KWS_ASR_options as cfg
 
-# options 
-cfg = cfg.cfg
 
 def term(sig_num, addtion):
     """
@@ -31,7 +28,7 @@ class OnlineAudio:
     audio_queue_wakeup = Queue()
     event = Event() 
     
-    def __init__(self, chunk=int(cfg.general.sample_rate/10), format=pyaudio.paInt16, channels=1, rate=int(cfg.general.sample_rate)):
+    def __init__(self, chunk=int(RMAI_KWS_ASR_offline_API.cfg.general.sample_rate/10), format=pyaudio.paInt16, channels=1, rate=int(RMAI_KWS_ASR_offline_API.cfg.general.sample_rate)):
         self._chunk = chunk
         self._format = format
         self._channels = channels
@@ -106,10 +103,11 @@ class OnlineAudio:
         print("[Init:] wakeup & asr")
         
         # init
+        RMAI_KWS_ASR_offline_API.param_init()
         RMAI_KWS_ASR_offline_API.kws_asr_init()
         audio_data_list = []
         while True:
-            if len(audio_data_list) < cfg.general.window_size_samples:
+            if len(audio_data_list) < RMAI_KWS_ASR_offline_API.cfg.general.window_size_samples:
                 if queue.empty(): 
                     # print("等待数据中..........")
                     event.wait()

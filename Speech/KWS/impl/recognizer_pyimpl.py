@@ -342,7 +342,7 @@ class RecognizeCommandsCountNumber(object):
 
         # Prune any earlier results that are too old for the averaging window.
         time_limit = current_time_ms - self._average_window_duration_ms
-        while time_limit > self._previous_results[0][0]:
+        while time_limit >= self._previous_results[0][0]:
             self._previous_results.popleft()
 
         # If there are too few results, the result will be unreliable and bail.
@@ -366,6 +366,7 @@ class RecognizeCommandsCountNumber(object):
         recognize_element.score = detection_number
 
         time_since_last_top = current_time_ms - self._previous_top_time
+        # 第一次检出不考虑时间限制
         if self._previous_top_time == 0:
             time_since_last_top = np.inf
 

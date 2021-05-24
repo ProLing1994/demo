@@ -2,9 +2,9 @@ import glob
 import os
 
 if __name__ == '__main__':
-    input_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/安静场景/场景一"
-    old_file_format = 'RM_KWS_ACTIVATEBWC_ori_'
-    new_file_format = 'RM_KWS_ACTIVATEBWC_ovweseas_ori_'
+    input_dir = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_05132021/xiaorui8k/"
+    old_file_format = 'RM_KWS_XIAORUI_xiaoruitransfer_'
+    new_file_format = 'RM_KWS_XIAORUI_xiaorui_'
     file_type = ".wav"
 
     file_list = glob.glob(os.path.join(input_dir, '*' + file_type))

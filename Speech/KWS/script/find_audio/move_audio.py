@@ -9,13 +9,12 @@ from tqdm import tqdm
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 from ASR.impl.asr_data_loader_pyimpl import WaveLoader
 
-def move_audio():
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
+from utils.folder_tools import *
+
+def copy_audio():
     # init 
-    file_list = glob.glob(os.path.join(args.input_dir, '*' + ".wav"))
-    file_list += glob.glob(os.path.join(args.input_dir, '*/*' + ".wav"))
-    file_list += glob.glob(os.path.join(args.input_dir, '*/*/*' + ".wav"))
-    file_list += glob.glob(os.path.join(args.input_dir, '*/*/*/*' + ".wav"))
-    file_list += glob.glob(os.path.join(args.input_dir, '*/*/*/*/*' + ".wav"))
+    file_list = get_sub_filepaths_suffix(args.input_dir, '.wav')
     file_list.sort()
 
     for idx in tqdm(range(len(file_list))):
@@ -34,9 +33,9 @@ def move_audio():
 
 
 if __name__ == "__main__":
-    default_input_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_5_0_tc-resnet14-amba_fbankcpu_kd_04302021/test_straming_wav/danbin_daily_record/"
-    default_output_dir = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/danbing_daily_record_05132021"
-    default_output_folder_name = "xiaorui16k_danbing_record"
+    default_input_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_9_res15_fbankcpu_041262021/test_straming_wav/实车录制_0427_pytorch/阈值_05_03/其他录音/"
+    default_output_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_9_res15_fbankcpu_041262021/test_straming_wav/实车录制_0427_pytorch/阈值_05_03/其他录音/"
+    default_output_folder_name = "output"
     
     parser = argparse.ArgumentParser(description='Streamax KWS Engine')
     parser.add_argument('--input_dir', type=str, default=default_input_dir)
@@ -44,4 +43,4 @@ if __name__ == "__main__":
     parser.add_argument('--output_folder_name', type=str, default=default_output_folder_name)
     args = parser.parse_args()
 
-    move_audio()
+    copy_audio()

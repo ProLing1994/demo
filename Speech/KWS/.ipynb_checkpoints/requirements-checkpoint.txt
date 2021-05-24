@@ -1,0 +1,11 @@
+easydict==1.9
+ffmpeg
+librosa==0.6.3
+numba==0.48.0
+plotly
+soundfile
+thop
+torchstat
+tensorwatch
+git+https://github.com/daemon/pytorch-pcen
+git+https://github.com/amsehili/auditok

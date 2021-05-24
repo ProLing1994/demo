@@ -17,8 +17,8 @@ from dataset.kws.dataset_helper import SILENCE_LABEL, UNKNOWN_WORD_LABEL
 def plot_roc(fpr, tpr, color, linestyle, label):
     plt.plot(fpr, tpr, color = color,  linewidth=1.0, linestyle=linestyle, marker = 'o', label = label)
     plt.legend(loc=4)
-    # plt.xlim([0.0, 0.2])
-    # plt.ylim([0.9, 1.01])
+    # plt.xlim([0.0, 0.5])
+    # plt.ylim([0.5, 1.01])
     plt.xlim([0.0, 0.025])
     plt.ylim([0.96, 1.01])
     plt.xlabel('Flase Positive Rate')
@@ -174,38 +174,26 @@ def main():
     # show_roc(csv_list, color_list, linestyle_list, name_list, label_num, ignore_num)
 
     # xiaoan: 2 label 
-    # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_0_res15_fbankcpu_04062021/dataset_1_0_infer_longterm_validation_augmentation_False_mean.csv",
-    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_0_res15_fbankcpu_04062021/dataset_1_1_infer_longterm_validation_augmentation_False_mean.csv",
-    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_1_res15_fbankcpu_04062021/dataset_1_1_infer_longterm_validation_augmentation_False_mean.csv",
-    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan16k_1_0_res15_fbankcpu_04062021/dataset_2_0_infer_longterm_validation_augmentation_False_mean.csv",
-    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan16k_1_0_res15_fbankcpu_04062021/dataset_2_1_infer_longterm_validation_augmentation_False_mean.csv",
-    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan16k_1_1_res15_fbankcpu_04062021/dataset_2_1_ infer_longterm_validation_augmentation_False_mean.csv"]
-    # color_list = ["r", "r", "r", "g", "g", "g"]
-    # linestyle_list = ["-", "--", "-.", "-", "--", "-."]
-    # name_list = ["xiaoan8k-res15(1.0)--dataset(1.0)", "xiaoan8k-res15(1.0)--dataset(1.1)", "xiaoan8k-res15(1.1)--dataset(1.1)", "xiaoan16k-res15(1.0)--dataset(2.0)", "xiaoan16k-res15(1.0)--dataset(2.1)", "xiaoan16k-res15(1.1)--dataset(2.1)"]
-    # label_num = 2
-    # ignore_num= 1
-    # show_roc(csv_list, color_list, linestyle_list, name_list, label_num, ignore_num)
-    # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_3_res15_fbankcpu_041262021/dataset_1_3_infer_longterm_validation_augmentation_False_mean.csv",
-    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_2_tc-resnet14-amba_fbankcpu_kd_041262021/dataset_1_3_infer_longterm_validation_augmentation_False_mean.csv",
-    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_4_res15_fbankcpu_64_041262021/dataset_1_3_infer_longterm_validation_augmentation_False_mean.csv",
-    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_4_tc-resnet14-amba_fbankcpu_64_kd_041262021/dataset_1_3_infer_longterm_validation_augmentation_False_mean.csv"]
-    # color_list = ["r", "r", "b", "b"]
-    # linestyle_list = ["-", "--", "-", "--"]
-    # name_list = ["xiaoan8k-res15(1.3)--dataset(1.3)", "xiaoan8k-tcresnet14(2.2)--dataset(1.3)", "xiaoan8k-res15-64(1.4)--dataset(1.3)", "xiaoan8k-tcresnet14-64(2.4)--dataset(1.3)",]
-    # label_num = 2
-    # ignore_num= 1
-    # show_roc(csv_list, color_list, linestyle_list, name_list, label_num, ignore_num)
-
-    # xiaorui: 2 label
-    csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_4_0_res15_fbankcpu_04302021/infer_longterm_validation_augmentation_False_mean.csv",
-                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_5_0_tc-resnet14-amba_fbankcpu_kd_04302021/infer_longterm_validation_augmentation_False_mean.csv"]
-    color_list = ["r", "b"]
-    linestyle_list = ["-", "-"]
-    name_list = ["xiaorui16k-res15(4.0)--dataset(1.4)", "xiaorui16k-tcresnet14-64(5.0)--dataset(1.4)"]
+    csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_3_res15_fbankcpu_041262021/dataset_1_3_infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_2_tc-resnet14-amba_fbankcpu_kd_041262021/dataset_1_3_infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_9_res15_fbankcpu_041262021/dataset_1_3_infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_5_tc-resnet14-amba_fbankcpu_kd_05152021/dataset_1_3_infer_longterm_validation_augmentation_False_mean.csv"]
+    color_list = ["r", "r", "b", "b"]
+    linestyle_list = ["-", "--", "-", "--"]
+    name_list = ["xiaoan8k-res15(1.3)--dataset(1.3)", "xiaoan8k-tcresnet14(2.2)--dataset(1.3)", "xiaoan8k-res15-64(1.9)--dataset(1.3)", "xiaoan8k-tcresnet14-64(2.5)--dataset(1.3)",]
     label_num = 2
     ignore_num= 1
     show_roc(csv_list, color_list, linestyle_list, name_list, label_num, ignore_num)
+
+    # xiaorui: 2 label
+    # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_4_0_res15_fbankcpu_04302021/infer_longterm_validation_augmentation_False_mean.csv",
+    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_5_0_tc-resnet14-amba_fbankcpu_kd_04302021/infer_longterm_validation_augmentation_False_mean.csv"]
+    # color_list = ["r", "b"]
+    # linestyle_list = ["-", "-"]
+    # name_list = ["xiaorui16k-res15(4.0)--dataset(1.4)", "xiaorui16k-tcresnet14-64(5.0)--dataset(1.4)"]
+    # label_num = 2
+    # ignore_num= 1
+    # show_roc(csv_list, color_list, linestyle_list, name_list, label_num, ignore_num)
 
 if __name__ == "__main__":
     main()

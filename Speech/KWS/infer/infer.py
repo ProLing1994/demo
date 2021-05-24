@@ -266,20 +266,22 @@ def main():
     # default_timeshift_ms = 30       # [30]
     # default_average_window_duration_ms = 800                   # [800, 1500] only for mode: average_duration_ms/double_edge_triggered_detecting
     default_timeshift_ms = 100       # [30, 100]
-    default_average_window_duration_ms = 1000                   # [800, 1000, 1500] only for mode: average_duration_ms/double_edge_triggered_detecting
+    default_average_window_duration_ms = 1000                    # [800, 1000, 1500] only for mode: average_duration_ms/double_edge_triggered_detecting
     default_result_mode = 'mean'     # ['min','mean','max', 'average_duration_ms'] align：["double_edge_triggered_detecting"]
     
     parser = argparse.ArgumentParser(description='Streamax KWS Infering Engine')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_speech.py", help='config file')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaoyu.py", help='config file')
-    parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py", help='config file')
+    # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py", help='config file')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py", help='config file')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_heybodycam.py", help='config file')
-    # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan8k.py", help='config file')
+    parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan8k.py", help='config file')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan16k.py", help='config file')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_nihaoxiaoan8k.py", help='config file')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_nihaoxiaoan16k.py", help='config file')
+    # parser.add_argument('--input', type=str, default="/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_8_res15_fbankcpu_041262021/kws_config_xiaoan8k.py", help='config file')
+    
     parser.add_argument('--mode', type=str, default=default_mode)
     parser.add_argument('--epoch', type=int, default=default_model_epoch)
     parser.add_argument('--sub_folder_name', type=str, default=default_model_sub_folder_name)

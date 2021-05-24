@@ -27,13 +27,14 @@ def find_audio():
 
 
 if __name__ == "__main__":
-    default_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_05122021/kaldi_cut_keyword/unuse_16k/"
-    default_output_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_05122021/kaldi_cut_keyword/unuse_16k_mic/"
+    default_input_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/bwc/"
+    default_output_dir = "/mnt/huanyuan/data/speech/Recording_sample/RM_Meiguo_Activatebwc/office/adkit_16k/bwc_16k"
     
     parser = argparse.ArgumentParser(description='Streamax KWS Engine')
     parser.add_argument('--input_dir', type=str, default=default_input_dir)
     parser.add_argument('--output_dir', type=str, default=default_output_dir)
     args = parser.parse_args()
 
-    args.file_format = "D61"
+    # D0_ 单兵_ori   D1_ Jabra桌面录音设备   D2_ ADkit    D3_ c6dai    D4_ ADplus/ADpro    D5_ 手机    D6_ 多阵列mic板    D7_ 单兵_asr
+    args.file_format = "D2"
     find_audio()

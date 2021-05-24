@@ -99,15 +99,22 @@ def test(in_args):
                                     os.path.basename(args.csv_path).split('.')[0], args.type, 'bool_noise_reduction_' + str(args.bool_noise_reduction),
                                     os.path.basename(input_wav).split('.')[0] + '_threshold_{}'.format('_'.join(str(cfg.test.detection_threshold).split('.'))))
     elif args.mode == "2":
-        output_subfolder_path = (os.path.dirname(input_wav) + '/').replace(args.input_folder, '')
-        output_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', 
-                                    args.output_subfolder_name, output_subfolder_path, 
-                                    os.path.basename(input_wav).split('.')[0] + '_threshold_{}'.format('_'.join(str(cfg.test.detection_threshold).split('.'))))
+        # normal
+        # output_subfolder_path = (os.path.dirname(input_wav) + '/').replace(args.input_folder, '')
+        # output_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', 
+        #                             args.output_subfolder_name, output_subfolder_path, 
+        #                             os.path.basename(input_wav).split('.')[0] + '_threshold_{}'.format('_'.join(str(cfg.test.detection_threshold).split('.'))))
 
         # Dataset_Lenovo_xiaole
         # output_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', 
         #                             args.output_subfolder_name, os.path.basename(input_wav).split('_')[1].split('-')[0], output_subfolder_path, 
         #                             os.path.basename(input_wav).split('.')[0] + '_threshold_{}'.format('_'.join(str(cfg.test.detection_threshold).split('.'))))
+
+        # 实车录制_0427_pytorch
+        output_subfolder_path = (os.path.dirname(input_wav) + '/').replace(args.input_folder, '')
+        output_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', 
+                                    args.output_subfolder_name, output_subfolder_path, 
+                                    os.path.basename(input_wav).split('.')[0])
     else:
         raise Exception("[ERROR:] Unknow mode, please check!")
     if os.path.exists(output_dir):    
@@ -193,14 +200,6 @@ def test(in_args):
     original_scores_pd.to_csv(os.path.join(output_dir, 'original_scores.csv'), index=False)
     final_scores_pd = pd.DataFrame(csv_final_scores)
     final_scores_pd.to_csv(os.path.join(output_dir, 'final_scores.csv'), index=False)
-    
-    # show result
-    # [TO DO]：画图在多进程中会挂掉，目前在生成结果之后，再单独画图
-    # show_score_line(input_wav.split('.')[0] + '.csv', os.path.join(output_dir, 'csv_original_scores.csv'), positive_label[0])
-    # show_score_line(input_wav.split('.')[0] + '.csv', os.path.join(output_dir, 'mean_scores.csv'), positive_label[0])
-
-    # cal_fpr_tpr(input_wav.split('.')[0] + '.csv', os.path.join(output_dir, 'found_words.csv'),  positive_label[0], bool_write_audio)
-
     print("Do wave:{}, Done!!!".format(input_wav))
 
 
@@ -213,7 +212,7 @@ def main():
     # 0: from input_wav_list
     # 1: from csv
     # 2: from folder
-    default_mode = "2"    # ["0", "1" ,"2"]
+    default_mode = "0"    # ["0", "1" ,"2"]
 
     # mode 0: from input_wav_list
     # test
@@ -232,7 +231,7 @@ def main():
     #                             "/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_validation_60.wav"]
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_validation_3600.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
-    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_validation_3600.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_validation_3600.wav"]
 
     # xiaole
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaole_11252020_training_60_001.wav",
@@ -244,9 +243,8 @@ def main():
     # xiaoan8k
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_training_60.wav",
     #                             "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_validation_60.wav"]
-    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_testing_3600_001.wav",
-    #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
-    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_3_04152021_validation.wav"]
+    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_3_04152021_validation.wav",
+                            "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
     # xiaoa16k
     # default_input_wav_list = ['/mnt/huanyuan/model/test_straming_wav/xiaoan16k_2_1_04082021_training_60.wav',
@@ -350,14 +348,18 @@ def main():
     # default_output_subfolder_name = "ADkit_weiboyulu"
     # default_input_folder = "/mnt/huanyuan/data/speech/Recording_sample/danbin/daily_recording/"
     # default_output_subfolder_name = "danbin_daily_record"
-    default_input_folder = "/mnt/huanyuan/data/speech/Recording_sample/ADpro/real_vehicle_sample/platform_alarm_data/"
-    default_output_subfolder_name = "ADpro_real_vehicle_sample"
+    # default_input_folder = "/mnt/huanyuan/data/speech/Recording_sample/ADpro/real_vehicle_sample/platform_alarm_data/"
+    # default_output_subfolder_name = "ADpro_real_vehicle_sample"
     # default_input_folder = "/mnt/huanyuan/data/speech/kws/lenovo/experimental_dataset/LenovoDataset_11242020/other/"
     # default_output_subfolder_name = "Dataset_Lenovo_xiaole/other/"
     # default_input_folder = "/mnt/huanyuan/data/speech/kws/lenovo/experimental_dataset/LenovoDataset_11242020/xiaole/"
     # default_output_subfolder_name = "Dataset_Lenovo_xiaole/xiaole/"
     # default_input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/第二批数据_0425/安静场景/"
     # default_output_subfolder_name = "Activatebwc_test"
+    default_input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/处理音频/"
+    default_output_subfolder_name = "实车录制_0427_pytorch/阈值_05_05/货车怠速场景/"
+    # default_input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/其他录音/"
+    # default_output_subfolder_name = "实车录制_0427_pytorch/阈值_05_05/其他录音/"
 
     # config file
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
@@ -381,7 +383,11 @@ def main():
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_2_tc-resnet14-amba_fbankcpu_kd_03222021/kws_config_activatebwc_api.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_4_tc-resnet14-amba_fbankcpu_kd_04012021/kws_config_activatebwc_api.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_2_tc-resnet14-amba_fbankcpu_kd_041262021/kws_config_xiaoan8k_api.py"
-    default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_2_tc-resnet14-amba_fbankcpu_kd_041262021/kws_config_xiaoan8k_difficult_sample_mining.py"
+    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_2_tc-resnet14-amba_fbankcpu_kd_041262021/kws_config_xiaoan8k_difficult_sample_mining.py"
+    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_9_res15_fbankcpu_041262021/kws_config_xiaoan8k.py"
+    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_9_res15_fbankcpu_041262021/kws_config_xiaoan8k_api.py"
+    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_5_tc-resnet14-amba_fbankcpu_kd_05152021/kws_config_xiaoan8k.py"
+    default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_5_tc-resnet14-amba_fbankcpu_kd_05152021/kws_config_xiaoan8k_api.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_5_0_tc-resnet14-amba_fbankcpu_kd_04302021/kws_config_xiaorui_api.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_5_0_tc-resnet14-amba_fbankcpu_kd_04302021/kws_config_xiaorui_difficult_sample_mining.py"
 
