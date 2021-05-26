@@ -71,8 +71,10 @@ __C.model = {}
 # __C.model.kws_net_output_name = "Softmax"
 # __C.model.kws_chw_params = "1,146,48"
 # __C.model.kws_transpose = False
-__C.model.kws_model_path = "/mnt/huanyuan/model/audio_model/novt_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_2_5_05202021.caffemodel"
-__C.model.kws_prototxt_path = "/mnt/huanyuan/model/audio_model/novt_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_2_5_05202021.prototxt"
+__C.model.kws_model_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_2_5_05202021.caffemodel"
+__C.model.kws_prototxt_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_2_5_05202021.prototxt"
+# __C.model.kws_model_path = "/mnt/huanyuan/model/audio_model/novt_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_2_5_05202021.caffemodel"
+# __C.model.kws_prototxt_path = "/mnt/huanyuan/model/audio_model/novt_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_2_5_05202021.prototxt"
 __C.model.kws_label = "xiaoan8k"
 __C.model.kws_net_input_name = "data"
 __C.model.kws_net_output_name = "Softmax"
@@ -98,12 +100,13 @@ __C.test = {}
 # test_mode
 # 0: input_wav
 # 1: input_folder
-__C.test.test_mode = 1
+__C.test.test_mode = 0
 
 # input_Wav
-__C.test.input_wav = "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_training_60.wav"
+# __C.test.input_wav = "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_training_60.wav"
 # __C.test.input_wav = "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_validation_60.wav"
 # __C.test.input_wav = "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_3_04152021_validation.wav"
+__C.test.input_wav = "/home/huanyuan/share/audio_data/weakup_xiaoan8k/test/xiaoan8k_1_1_04082021_validation_60.wav"
 
 # input_folder
 # __C.test.input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/处理音频/"

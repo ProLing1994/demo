@@ -15,22 +15,26 @@ __C.general.sub_data_dir = ["/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experi
                             "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/"]
 
 # data version
-__C.general.version = "1.5"
+__C.general.version = "1.4"
+# __C.general.version = "1.5"
 
 # data date
-__C.general.date = "05172021"
+__C.general.date = "04302021"
+# __C.general.date = "05172021"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.5_05172021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.4_04302021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.5_05172021/total_data_files.csv"
 
 # background noise path
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.5_05172021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.4_04302021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.5_05172021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_test"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12082020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_1_finetune_res15_12082020/"
@@ -51,7 +55,9 @@ __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_3_2_res15_narrow_amba_fbankcpu_kd_03112021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_3_3_tc-resnet14-amba_fbankcpu_kd_03112021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_4_0_res15_fbankcpu_04302021" 
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_4_1_res15_fbankcpu_04302021" 
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_5_0_tc-resnet14-amba_fbankcpu_kd_04302021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_5_1_tc-resnet14-amba_fbankcpu_kd_04302021/"
 
 # finetune model
 __C.general.finetune_on = False
@@ -165,7 +171,8 @@ __C.dataset.data_size = [64, 196]
 __C.dataset.label = {}
 
 # label
-__C.dataset.label.positive_label = ["xiaorui_16k"]
+__C.dataset.label.positive_label = ["xiaorui"]
+# __C.dataset.label.positive_label = ["xiaorui_16k"]
 __C.dataset.label.positive_label_chinese_name_list = [""]
 __C.dataset.label.positive_label_together = False
 __C.dataset.label.positive_label_together_label = ["positive"]

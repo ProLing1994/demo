@@ -9,24 +9,32 @@ sys.path.insert(0, caffe_root + 'python')
 sys.path.append('./')
 import caffe
 
-# res15_narrow_amba
-# caffe_prototxt = "/mnt/huanyuan/model/audio_model/kws_xiaorui_res15_narrow/res15_narrow_amba_03112011.prototxt"
-# caffe_model = "/mnt/huanyuan/model/audio_model/kws_xiaorui_res15_narrow/res15_narrow_amba_03112011.caffemodel"
-# model_output = "fc_blob1"
+# # asr: english 
+# # caffe_prototxt = "/home/huanyuan/share/hisi/KWS_model/kws/models/asr_english_16k_0202.prototxt"
+# caffe_prototxt = "/home/huanyuan/share/hisi/KWS_model/kws/models/asr_english_16k_softmax_0202.prototxt"
+# caffe_model = "/home/huanyuan/share/hisi/KWS_model/kws/models/asr_english_16k_0202.caffemodel"
+# model_output = "prob"
 # image_transpose = [0, 1, 2, 3]
-# model_input_size = [1, 1, 201, 40]
+# model_input_size = [1, 1, 296, 64]
+# image_size = [1, 1, 296, 64]
 
-# xiaoan: tc_resnet14_amba
-caffe_prototxt = "/mnt/huanyuan/model/audio_model/novt_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_2_2_05112021.prototxt"
-caffe_model = "/mnt/huanyuan/model/audio_model/novt_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_2_2_05112021.caffemodel"
-# caffe_prototxt = "/mnt/huanyuan/model/audio_model/novt_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_2_2_04162021.prototxt"
-# caffe_model = "/mnt/huanyuan/model/audio_model/novt_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_2_2_04162021.caffemodel"
+# # asr: mandarin taxi 
+# caffe_prototxt = "/home/huanyuan/share/hisi/KWS_model/kws/models/asr_mandarin_taxi_16k_64dim.prototxt"
+# caffe_model = "/home/huanyuan/share/hisi/KWS_model/kws/models/asr_mandarin_taxi_16k_64dim.caffemodel"
+# model_output = "prob"
+# image_transpose = [0, 1, 2, 3]
+# model_input_size = [1, 1, 396, 64]
+# image_size = [1, 1, 396, 64]
+
+# xiaoan8k: tc_resnet14_amba
+caffe_prototxt = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_2_5_05202021.prototxt"
+caffe_model = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_2_5_05202021.caffemodel"
 model_output = "Softmax"
 image_transpose = [0, 1, 3, 2]
 model_input_size = [1, 1, 48, 146]
+image_size = [1, 1, 146, 48]
 
 net = caffe.Net(caffe_prototxt, caffe_model, caffe.TEST)
-image_size = [1, 1, 146, 48]
 
 def forward_caffe(protofile, weightfile, image):
 
@@ -45,10 +53,11 @@ def forward_caffe(protofile, weightfile, image):
 
 
 if __name__ == '__main__':
-    img = cv2.imread("/home/huanyuan/share/audio_data/weakup_xiaoan8k/image_48_146_temp/RM_KWS_XIAOAN_xiaoan_S009M1D11T5_3200.jpg", 0)
-
     # img = np.ones(image_size, dtype=np.float32)
-    # img = np.transpose(img, axes=image_transpose)
+
+    # if image_transpose != [0, 1, 2, 3]:
+    #     img = np.transpose(img, axes=image_transpose)
+    img = cv2.imread("/home/huanyuan/share/audio_data/weakup_xiaoan8k/image_48_146/RM_KWS_XIAOAN_xiaoan_S021M1D10T12_0.jpg", 0)
 
     time_caffe, caffe_blobs, caffe_params = forward_caffe(caffe_prototxt, caffe_model, img)
 

@@ -64,6 +64,14 @@ class Decode(object):
             for line in lines:          
                 self.asr_symbol_list.append(line.strip())
 
+    def output_symbol(self, result_id):
+        output_symbol = ""
+        for idx in range(len(result_id)):
+            symbol = self.asr_symbol_list[result_id[idx]] 
+            
+            output_symbol += symbol + " "
+        return output_symbol
+
     def output_symbol_english(self, result_id):
         output_symbol = ""
         for idx in range(len(result_id)):

@@ -159,11 +159,12 @@ __C.dataset.window_size_ms = 32.0
 # How far to move in time between frequency windows
 __C.dataset.window_stride_ms = 10.0
 
-# How the spectrogram is processed to produce features, support ["mfcc", "pcen", "fbank", "fbank"]
+# How the spectrogram is processed to produce features, support ["mfcc", "pcen", "fbank", "fbank_cpu", "fbank_cpu_hisi"]
 # __C.dataset.preprocess = "fbank"
 # __C.dataset.preprocess = "pcen"
 # __C.dataset.preprocess = "mfcc"
-__C.dataset.preprocess = "fbank_cpu"
+# __C.dataset.preprocess = "fbank_cpu"
+__C.dataset.preprocess = "fbank_cpu_hisi"
 
 # How many bins to use for the Mel feature
 # __C.dataset.feature_bin_count = 40
@@ -179,7 +180,8 @@ __C.dataset.nfilt = 48
 # __C.dataset.data_size = [64, 196]
 # __C.dataset.data_size = [64, 151]
 # __C.dataset.data_size = [64, 146]
-__C.dataset.data_size = [48, 146]
+# __C.dataset.data_size = [48, 146]
+__C.dataset.data_size = [48, 144]
 
 
 ##################################
@@ -289,7 +291,7 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'cnn-trad-pool2'
 # __C.net.model_name = 'cnn-one-fstride1'
 # __C.net.model_name = 'cnn-tpool2'
-__C.net.model_name = 'res15'
+# __C.net.model_name = 'res15'
 # __C.net.model_name = 'res15-narrow'
 # __C.net.model_name = 'res15-narrow-amba'
 # __C.net.model_name = 'res15-narrow-novt'
@@ -302,7 +304,7 @@ __C.net.model_name = 'res15'
 # __C.net.model_name = 'tc-resnet8'
 # __C.net.model_name = 'tc-resnet14'
 # __C.net.model_name = 'tc-resnet14-amba'
-# __C.net.model_name = 'tc-resnet14-amba-1-5s'
+__C.net.model_name = 'tc-resnet14-amba-1-5s'
 # __C.net.model_name = 'tc-resnet8-dropout'
 # __C.net.model_name = 'tc-resnet14-dropout'
 # __C.net.model_name = 'tc-resnet18-dropout'

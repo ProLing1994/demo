@@ -35,7 +35,7 @@ def gen_image_list(args):
         print("[Information:] Audio path: ", wave_path)
         
         # load wave
-        wave_loader = WaveLoader()
+        wave_loader = WaveLoader(sample_rate)
         wave_loader.load_data(wave_path)
         wave_data = wave_loader.to_numpy()
 
@@ -52,7 +52,7 @@ def gen_image_list(args):
             audio_data = np.array(audio_data_list)
             
             # cal feature
-            feature = Feature(sample_rate, window_size_samples/sample_rate, int(args.CHW_params.split(",")[2]))
+            feature = Feature(sample_rate, window_size_samples/sample_rate, int(args.CHW_params.split(",")[2]), args.nfilt)
             feature.get_mel_int_feature(audio_data, len(audio_data))
             feature_data = feature.copy_mfsc_feature_int_to()
             print(np.expand_dims(feature_data, axis=0).shape)
@@ -70,18 +70,18 @@ def gen_image_list(args):
             cv2.imwrite(output_path, feature_data)
 
 if __name__ == "__main__":
-    # chinese:
-    # default_audio_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/"
-    # default_output_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/image_296_64"
-    # default_audio_folder = "/home/huanyuan/share/audio_data/第三批数据/闹市场景/"
-    # default_output_folder = "/home/huanyuan/share/audio_data/第三批数据/闹市场景/image_296_64"
-    # default_CHW_params = "1,296,64"
+    # # asr mandarin:
+    # # default_audio_folder = "/home/huanyuan/share/audio_data/mandarin_wav/安静场景/"
+    # # default_output_folder = "/home/huanyuan/share/audio_data/mandarin_wav/安静场景/image_396_64"
+    # default_audio_folder = "/home/huanyuan/share/audio_data/mandarin_wav/闹市场景/"
+    # default_output_folder = "/home/huanyuan/share/audio_data/mandarin_wav/闹市场景/image_396_64"
+    # default_CHW_params = "1,396,64"
     # default_transpose = False
     
-    # default_audio_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/"
-    # default_output_folder = "/home/huanyuan/share/audio_data/第三批数据/安静场景/image_296_56"
-    # default_audio_folder = "/home/huanyuan/share/audio_data/第三批数据/闹市场景/"
-    # default_output_folder = "/home/huanyuan/share/audio_data/第三批数据/闹市场景/image_296_56"
+    # default_audio_folder = "/home/huanyuan/share/audio_data/mandarin_wav/安静场景/"
+    # default_output_folder = "/home/huanyuan/share/audio_data/mandarin_wav/安静场景/image_296_56"
+    # default_audio_folder = "/home/huanyuan/share/audio_data/mandarin_wav/闹市场景/"
+    # default_output_folder = "/home/huanyuan/share/audio_data/mandarin_wav/闹市场景/image_296_56"
     # default_audio_folder = "/home/huanyuan/share/audio_data/"
     # default_output_folder = "/home/huanyuan/share/audio_data/image_296_56"
     # default_CHW_params = "1,296,56"
@@ -107,7 +107,7 @@ if __name__ == "__main__":
     # default_CHW_params = "1,196,64"
     # default_transpose = True
 
-    # # english:
+    # # asr english:
     # default_audio_folder = "/home/huanyuan/share/audio_data/english_wav/"
     # default_output_folder = "/home/huanyuan/share/audio_data/english_wav/image_296_64"
     # default_CHW_params = "1,296,64"
@@ -121,6 +121,12 @@ if __name__ == "__main__":
     default_CHW_params = "1,146,48"
     default_transpose = True
 
+    # # weakup & asr:
+    # default_audio_folder = "/home/huanyuan/share/audio_data/kws_weakup_asr/test/"
+    # default_output_folder = "/home/huanyuan/share/audio_data/kws_weakup_asr/test/"
+    # default_CHW_params = "1,296,64"
+    # default_transpose = False
+
     parser = argparse.ArgumentParser(description='Streamax ASR Demo Engine')
     parser.add_argument('-i', '--audio_folder', type=str, default=default_audio_folder)
     parser.add_argument('-o', '--output_folder', type=str, default=default_output_folder)
@@ -128,13 +134,27 @@ if __name__ == "__main__":
     parser.add_argument('--transpose', action='store_true', default=default_transpose)
     args = parser.parse_args()
 
-    # 16k & 2s
+    # # 16k & 4s
+    # args.sample_rate = 16000
+    # args.window_size_ms = 4000
+    # args.window_stride_ms = 2000
+    # args.nfilt = 64
+
+    # # 16k & 3s
+    # args.sample_rate = 16000
+    # args.window_size_ms = 3000
+    # args.window_stride_ms = 2000
+    # args.nfilt = 64
+
+    # # 16k & 2s
     # args.sample_rate = 16000
     # args.window_size_ms = 2000
     # args.window_stride_ms = 2000
+    # args.nfilt = 64
 
     # 8k & 1.5s
     args.sample_rate = 8000
     args.window_size_ms = 1500
     args.window_stride_ms = 1500
+    args.nfilt = 48
     gen_image_list(args)

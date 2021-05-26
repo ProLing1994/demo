@@ -12,6 +12,7 @@ import torch
 from torch.utils.data import Dataset
 
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/SED')
+# sys.path.insert(0, '/yuanhuan/code/demo/Speech/KWS')
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from impl.pred_pyimpl import load_lmdb_env, read_audio_lmdb, load_background_noise_lmdb
 from dataset.kws.dataset_helper import *
@@ -118,7 +119,7 @@ class SpeechDataset(Dataset):
     def audio_preprocess(self, data):
         # check
         assert self.audio_preprocess_type in [
-            "mfcc", "pcen", "fbank", "fbank_cpu"], "[ERROR:] Audio preprocess type is wronge, please check"
+            "mfcc", "pcen", "fbank", "fbank_cpu", "fbank_cpu_hisi"], "[ERROR:] Audio preprocess type is wronge, please check"
 
         # preprocess
         if self.audio_preprocess_type == "mfcc":
@@ -129,6 +130,9 @@ class SpeechDataset(Dataset):
             audio_data = self.audio_processor.compute_fbanks(data)
         elif self.audio_preprocess_type == "fbank_cpu":
             audio_data = self.audio_processor.compute_fbanks_cpu(data)
+        elif self.audio_preprocess_type == "fbank_cpu_hisi":
+            audio_data = self.audio_processor.compute_fbanks_cpu(data)
+            audio_data = audio_data[:(audio_data.shape[0] // 16) * 16, :]
         return audio_data
 
     def dataset_alignment(self, data):
