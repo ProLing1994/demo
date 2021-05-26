@@ -162,7 +162,7 @@ class SpeechDataset(Dataset):
             audio_data = self.audio_processor.compute_fbanks_cpu(data)
         elif self.audio_preprocess_type == "fbank_cpu_hisi":
             audio_data = self.audio_processor.compute_fbanks_cpu(data)
-            audio_data = audio_data[:(audio_data.shape[0] // 16) * 16, :]
+            # audio_data = audio_data[:(audio_data.shape[0] // 16) * 16, :]
         return audio_data
 
     def dataset_alignment(self, data):

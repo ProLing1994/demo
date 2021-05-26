@@ -180,8 +180,7 @@ __C.dataset.nfilt = 48
 # __C.dataset.data_size = [64, 196]
 # __C.dataset.data_size = [64, 151]
 # __C.dataset.data_size = [64, 146]
-# __C.dataset.data_size = [48, 146]
-__C.dataset.data_size = [48, 144]
+__C.dataset.data_size = [48, 146]
 
 
 ##################################

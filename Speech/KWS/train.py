@@ -148,7 +148,11 @@ def train(config_file, training_mode):
 
         inputs, labels = inputs.cuda(), labels.cuda()
 
-        scores = net(inputs)
+        if cfg.dataset.preprocess == "fbank_cpu_hisi":
+            hisi_input = inputs[:, :, :(inputs.shape[2] // 16) * 16, :]
+            scores = net(hisi_input)
+        else:
+            scores = net(inputs)
         scores = scores.view(scores.size()[0], scores.size()[1])
         loss = loss_func(scores, labels)
         if cfg.knowledge_distillation.on:
