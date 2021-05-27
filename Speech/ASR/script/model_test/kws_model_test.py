@@ -55,10 +55,11 @@ def asr_model_test(args):
         audio_data = wave_data[times * int(window_stride_samples): times * int(window_stride_samples) + int(window_size_samples)]
         
         # cal feature
-        feature = Feature(sample_rate, window_size_samples/sample_rate, int(args.chw_params.split(",")[2]), args.nfilt)
+        feature = Feature(sample_rate, window_size_samples/sample_rate, args.feature_freq, args.nfilt)
         feature.get_mel_int_feature(audio_data, len(audio_data))
         feature_data = feature.copy_mfsc_feature_int_to()
         feature_data = feature_data.astype(np.uint8)
+        feature_data = feature_data[: args.feature_time, : args.feature_freq]
         if args.transpose:
             feature_data = feature_data.T
         print(feature_data.shape)
@@ -78,13 +79,15 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # kws weakup: xiaoan8k
-    args.model_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_2_5_05202021.caffemodel"
-    args.prototxt_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_2_5_05202021.prototxt"
-    args.chw_params = "1,48,146"
+    args.model_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_hisi_3_1_05272021.caffemodel"
+    args.prototxt_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_hisi_3_1_05272021.prototxt"
+    args.chw_params = "1,48,144"
     args.net_input_name = "data"
-    args.net_output_name = "Softmax"
+    args.net_output_name = "prob"
     args.transpose = True
     args.nfilt = 48
+    args.feature_freq = 48
+    args.feature_time = 144
     args.gpu = True
 
     # # 16k & 4s

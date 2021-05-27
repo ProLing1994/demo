@@ -113,7 +113,7 @@ def run_kws():
         net_output = np.squeeze(net_output)
         kws_score_list.append(net_output.copy())
         # print(feature_data_kws.shape, net_output)
-        # print(net_output)
+        print(net_output)
 
     # 如果有保留的 kws 结果，进行拼接
     kws_score_np = np.array(kws_score_list)

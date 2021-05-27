@@ -27,12 +27,12 @@ import caffe
 # image_size = [1, 1, 396, 64]
 
 # xiaoan8k: tc_resnet14_amba
-caffe_prototxt = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_2_5_05202021.prototxt"
-caffe_model = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_2_5_05202021.caffemodel"
-model_output = "Softmax"
+caffe_prototxt = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_hisi_3_1_05272021.prototxt"
+caffe_model = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_hisi_3_1_05272021.caffemodel"
+model_output = "prob"
 image_transpose = [0, 1, 3, 2]
-model_input_size = [1, 1, 48, 146]
-image_size = [1, 1, 146, 48]
+model_input_size = [1, 1, 48, 144]
+image_size = [1, 1, 144, 48]
 
 net = caffe.Net(caffe_prototxt, caffe_model, caffe.TEST)
 
@@ -54,10 +54,9 @@ def forward_caffe(protofile, weightfile, image):
 
 if __name__ == '__main__':
     # img = np.ones(image_size, dtype=np.float32)
-
     # if image_transpose != [0, 1, 2, 3]:
     #     img = np.transpose(img, axes=image_transpose)
-    img = cv2.imread("/home/huanyuan/share/audio_data/weakup_xiaoan8k/image_48_146/RM_KWS_XIAOAN_xiaoan_S021M1D10T12_0.jpg", 0)
+    img = cv2.imread("/home/huanyuan/share/audio_data/weakup_xiaoan8k/image_48_144/RM_KWS_XIAOAN_xiaoan_S021M1D10T12_0.jpg", 0)
 
     time_caffe, caffe_blobs, caffe_params = forward_caffe(caffe_prototxt, caffe_model, img)
 

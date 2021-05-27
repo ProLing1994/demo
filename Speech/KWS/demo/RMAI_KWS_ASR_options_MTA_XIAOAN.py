@@ -24,11 +24,13 @@ __C.general.feature_time = 96                       # 每次送入 1s 数据，�
 
 # kws
 # xiaoan8k
-__C.general.kws_feature_time = 146                  # kws 网络特征时间维度
+__C.general.kws_feature_time = 144                  # kws 网络特征时间维度
+# __C.general.kws_feature_time = 146                  # kws 网络特征时间维度
 __C.general.kws_stride_feature_time = 10            # kws 每间隔 10 个 feature_time 进行一次检索, 对应滑窗 100 ms，共检测 10 次
-__C.general.kws_detection_threshold = 0.9           # kws 检测阈值 0.9
-# __C.general.kws_detection_threshold = 0.5           # kws 检测阈值 0.5
+# __C.general.kws_detection_threshold = 0.9           # kws 检测阈值 0.9
+__C.general.kws_detection_threshold = 0.5           # kws 检测阈值 0.5
 __C.general.kws_detection_number_threshold = 0.5    # kws 计数阈值 0.5
+# __C.general.kws_suppression_counter = 3             # kws 激活后抑制时间 3s
 __C.general.kws_suppression_counter = 1             # kws 激活后抑制时间 1s
 
 # asr
@@ -71,14 +73,19 @@ __C.model = {}
 # __C.model.kws_net_output_name = "Softmax"
 # __C.model.kws_chw_params = "1,146,48"
 # __C.model.kws_transpose = False
-__C.model.kws_model_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_2_5_05202021.caffemodel"
-__C.model.kws_prototxt_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_2_5_05202021.prototxt"
-# __C.model.kws_model_path = "/mnt/huanyuan/model/audio_model/novt_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_2_5_05202021.caffemodel"
-# __C.model.kws_prototxt_path = "/mnt/huanyuan/model/audio_model/novt_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_2_5_05202021.prototxt"
+# __C.model.kws_model_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_2_5_05202021.caffemodel"
+# __C.model.kws_prototxt_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_2_5_05202021.prototxt"
+# __C.model.kws_label = "xiaoan8k"
+# __C.model.kws_net_input_name = "data"
+# __C.model.kws_net_output_name = "Softmax"
+# __C.model.kws_chw_params = "1,48,146"
+# __C.model.kws_transpose = True
+__C.model.kws_model_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_hisi_3_1_05272021.caffemodel"
+__C.model.kws_prototxt_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_hisi_3_1_05272021.prototxt"
 __C.model.kws_label = "xiaoan8k"
 __C.model.kws_net_input_name = "data"
-__C.model.kws_net_output_name = "Softmax"
-__C.model.kws_chw_params = "1,48,146"
+__C.model.kws_net_output_name = "prob"
+__C.model.kws_chw_params = "1,48,144"
 __C.model.kws_transpose = True
 
 # asr
@@ -109,15 +116,15 @@ __C.test.test_mode = 0
 __C.test.input_wav = "/home/huanyuan/share/audio_data/weakup_xiaoan8k/test/xiaoan8k_1_1_04082021_validation_60.wav"
 
 # input_folder
-# __C.test.input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/处理音频/"
+__C.test.input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/处理音频/"
 # __C.test.input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/其他录音/adpro/"
 # __C.test.input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/其他录音/adpro-1/"
-__C.test.input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/其他录音/adpro-2/"
+# __C.test.input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/其他录音/adpro-2/"
 
 # output_folder
-# __C.test.output_folder = "/mnt/huanyuan/data/speech/Recording/demo_kws_asr_online_api/{}".format('-'.join('-'.join(str(datetime.now()).split('.')[0].split(' ')).split(':')))
+__C.test.output_folder = "/mnt/huanyuan/data/speech/Recording/demo_kws_asr_online_api/{}".format('-'.join('-'.join(str(datetime.now()).split('.')[0].split(' ')).split(':')))
 # __C.test.output_folder = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_5_tc-resnet14-amba_fbankcpu_kd_05152021/test_straming_wav/实车录制_0427_caffemodel/阈值_05_05_唤醒间隔时间1s/货车怠速场景/"
 # __C.test.output_folder = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_5_tc-resnet14-amba_fbankcpu_kd_05152021/test_straming_wav/实车录制_0427_caffemodel/阈值_09_05_唤醒间隔时间1s/货车怠速场景/"
 # __C.test.output_folder = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_5_tc-resnet14-amba_fbankcpu_kd_05152021/test_straming_wav/实车录制_0427_caffemodel/阈值_05_05_唤醒间隔时间1s/其他录音/adpro/"
 # __C.test.output_folder = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_5_tc-resnet14-amba_fbankcpu_kd_05152021/test_straming_wav/实车录制_0427_caffemodel/阈值_05_05_唤醒间隔时间1s/其他录音/adpro-1/"
-__C.test.output_folder = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_5_tc-resnet14-amba_fbankcpu_kd_05152021/test_straming_wav/实车录制_0427_caffemodel/阈值_05_05_唤醒间隔时间1s/其他录音/adpro-2/"
+# __C.test.output_folder = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_5_tc-resnet14-amba_fbankcpu_kd_05152021/test_straming_wav/实车录制_0427_caffemodel/阈值_05_05_唤醒间隔时间1s/其他录音/adpro-2/"
