@@ -72,10 +72,13 @@ class SpeechResModel(nn.Module):
         self.layer4_1 = self._make_layer(TCBlock, int(self.planes[4] * self.width_multiplier), stride=2)
         self.layer4_2 = self._make_layer(TCBlock, int(self.planes[4] * self.width_multiplier), stride=1)
 
-        self.conv2 = nn.Conv2d(int(self.planes[4] * self.width_multiplier), int(self.planes[4] * self.width_multiplier), kernel_size=(7, 1), stride=2, padding=(0, 0), bias=False)
+        self.conv2 = nn.Conv2d(int(self.planes[4] * self.width_multiplier), int(self.planes[4] * self.width_multiplier), kernel_size=(7, 1), stride=2, padding=(3, 0), bias=False)
         self.bn2 = nn.BatchNorm2d(int(self.planes[4] * self.width_multiplier))
 
-        self.conv3 = nn.Conv2d(int(self.planes[4] * self.width_multiplier), num_classes, kernel_size=(3, 1), stride=1, padding=(0, 0), bias=False)
+        self.conv3 = nn.Conv2d(int(self.planes[4] * self.width_multiplier), int(self.planes[4] * self.width_multiplier), kernel_size=(3, 1), stride=2, padding=(1, 0), bias=False)
+        self.bn3 = nn.BatchNorm2d(int(self.planes[4] * self.width_multiplier))
+
+        self.conv4 = nn.Conv2d(int(self.planes[4] * self.width_multiplier), num_classes, kernel_size=(3, 1), stride=1, padding=(0, 0), bias=False)
 
     def _make_layer(self, block, planes, stride):
         layers = []
@@ -97,5 +100,6 @@ class SpeechResModel(nn.Module):
         out = self.layer4_2(out)                                        # shape: (batch, 96, 12, 1) -> shape: (batch, 96, 12, 1)
 
         out = self.relu(self.bn2(self.conv2(out)))                      # shape: (batch, 96, 12, 1) -> shape: (batch, 96, 6, 1)
-        out = self.conv3(out)                                           # shape: (batch, 96, 7, 1) -> shape: (batch, 3, 1, 1)
+        out = self.relu(self.bn3(self.conv3(out)))                      # shape: (batch, 96, 6, 1) -> shape: (batch, 3, 3, 1)
+        out = self.conv4(out)                                           # shape: (batch, 96, 3, 1) -> shape: (batch, 3, 1, 1)
         return out
