@@ -16,19 +16,23 @@ __C.general.sub_data_dir = ["/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experi
 
 # data version
 # __C.general.version = "1.4"
-__C.general.version = "1.5"
+# __C.general.version = "1.5"
+__C.general.version = "1.6"
 
 # data date
 # __C.general.date = "04302021"
-__C.general.date = "05172021"
+# __C.general.date = "05172021"
+__C.general.date = "05272021"
 
 # data path
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.4_04302021/total_data_files.csv"
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.5_05172021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.5_05172021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.6_05272021/total_data_files.csv"
 
 # background noise path
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.4_04302021/background_noise_files.csv"
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.5_05172021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.5_05172021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.6_05272021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -183,8 +187,8 @@ __C.dataset.label.negative_label_together_label = ["negative"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
 __C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[1]
 __C.dataset.label.ignore_label = ['kaldi_cut_keyword', 'xiaorui_8k', 'nihaoxiaoan_8k',
-                                    'platform_alarm_8k', 'truckidling_8k', 
-                                    'zanghuayulu8k', 'zanghuayulu16k',
+                                    'truck_platform_alarm_8k', 'truck_truckidling_noise_8k', 
+                                    'zanghuayulu_8k', 'zanghuayulu_16k', 'weibo_8k', 
                                     'xiaoanxiaoan_8k', 'xiaoanxiaoan_8k_once', 
                                     'xiaoanxiaoan_8k_over_long', 'xiaoanxiaoan_8k_small_voice',
                                     'xiaoanxiaoan_8k_difficult_sample_mining']

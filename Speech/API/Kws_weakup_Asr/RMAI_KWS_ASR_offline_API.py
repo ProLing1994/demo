@@ -248,7 +248,7 @@ def kws_asr_init():
 
     # init bpe
     decode_python = Decode_Python.Decode()
-    decode_python.init_ast_symbol_list(args.asr_bpe)
+    decode_python.init_symbol_list(args.asr_bpe)
 
     # mkdir
     if not os.path.exists(args.output_folder):

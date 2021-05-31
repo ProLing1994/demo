@@ -23,10 +23,10 @@ import caffe
 
 # options 
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC.py")
-cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MTA_XIAOAN.py")
+# cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MTA_XIAOAN.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_XIAORUI.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_3s.py")
-# cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_4s.py")
+cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_4s.py")
 cfg = cfg.cfg
 
 # params
@@ -76,7 +76,11 @@ def kws_asr_init():
 
     # init bpe
     decode_python = Decode_Python.Decode()
-    decode_python.init_ast_symbol_list(cfg.model.asr_bpe)
+    decode_python.init_symbol_list(cfg.model.asr_bpe)
+
+    # init lm
+    if cfg.general.decode_id == 1:
+        decode_python.init_lm_model(cfg.model.lm_path)
 
     # mkdir
     if not os.path.exists(cfg.test.output_folder):
@@ -113,7 +117,7 @@ def run_kws():
         net_output = np.squeeze(net_output)
         kws_score_list.append(net_output.copy())
         # print(feature_data_kws.shape, net_output)
-        print(net_output)
+        # print(net_output)
 
     # 如果有保留的 kws 结果，进行拼接
     kws_score_np = np.array(kws_score_list)
@@ -153,18 +157,26 @@ def run_asr():
     net_output = net_output.T
 
     # decode
-    decode_c = Decode_C.Decode()
-    decode_c.ctc_decoder(net_output)
-    result_id = decode_c.result_id_to_numpy()
-    if cfg.general.language_id == 0:
-        result_string = decode_python.output_symbol(result_id)
+    if cfg.general.decode_id == 0:
+        decode_c = Decode_C.Decode()
+        decode_c.ctc_decoder(net_output)
+        result_id = decode_c.result_id_to_numpy()
+        if cfg.general.language_id == 0:
+            result_string = decode_python.output_symbol(result_id)
+            control_command_string, not_control_command_string = result_string, result_string
+        elif cfg.general.language_id == 1:
+            result_string = decode_python.output_symbol_english(result_id)
+            matched_string = decode_python.match_kws_english(result_string.split(' '))
+            control_command_string, not_control_command_string = decode_python.match_kws_english_control_command(matched_string)
+        else:
+            print("[Unknow:] cfg.general.language_id. ")
+
+    elif cfg.general.decode_id == 1:
+        result_dict = decode_python.ctc_beam_search(net_output, 5, 0, bswt=1.0, lmwt=0.3)
+        result_string = " ".join(result_dict[0]['words'])
         control_command_string, not_control_command_string = result_string, result_string
-    elif cfg.general.language_id == 1:
-        result_string = decode_python.output_symbol_english(result_id)
-        matched_string = decode_python.match_kws_english(result_string.split(' '))
-        control_command_string, not_control_command_string = decode_python.match_kws_english_control_command(matched_string)
     else:
-        print("[Unknow:] cfg.general.language_id. ")
+        print("[Unknow:] cfg.general.decode_id. ")
     return result_string, control_command_string, not_control_command_string
 
 

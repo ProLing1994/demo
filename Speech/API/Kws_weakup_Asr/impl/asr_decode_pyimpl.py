@@ -58,7 +58,7 @@ class Decode(object):
     def result_id_to_numpy(self):
         pass
 
-    def init_ast_symbol_list(self, asr_bpe_path):
+    def init_symbol_list(self, asr_bpe_path):
         with open(asr_bpe_path, "r") as f :
             lines = f.readlines()       
             for line in lines:          

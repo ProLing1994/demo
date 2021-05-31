@@ -34,6 +34,8 @@ __C.general.kws_detection_number_threshold = 0.5    # kws 计数阈值 0.5
 __C.general.kws_suppression_counter = 1             # kws 激活后抑制时间 1s
 
 # asr
+__C.general.language_id = 0			                # 0： chinese  1： english
+__C.general.decode_id = 0			                # 0： greedy  1： beamsearch
 __C.general.asr_feature_time = 296                  # asr 网络特征时间维度，与语音特征容器长度相同
 __C.general.asr_suppression_counter = 2             # asr 激活后抑制时间，间隔 2s 执行一次 asr 检测
 

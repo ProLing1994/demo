@@ -83,14 +83,12 @@ if __name__ == "__main__":
     # default_output_folder = "/home/huanyuan/share/audio_data/image_296_56"
     # default_transpose = False
 
-    # # kws: xiaorui
-    # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/xiaorui/"
+    # kws: xiaorui
+    default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/xiaorui/"
     # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/xiaorui_long/"
     # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/other/"
-    # default_output_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/image_196_64"
-    # default_transpose = False
-    # # default_output_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/image_64_196"
-    # # default_transpose = True
+    default_output_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/image_64_192"
+    default_transpose = True
 
     # # kws: activatebwc
     # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_activatebwc/activatebwc/"
@@ -105,12 +103,12 @@ if __name__ == "__main__":
     # default_output_folder = "/home/huanyuan/share/audio_data/english_wav/image_296_64"
     # default_transpose = False
 
-    # kws: xiaoan8k
-    # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaoan8k/xiaoan8k/"
-    # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaoan8k/xiaoan8k_long/"
-    default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaoan8k/other/"
-    default_output_folder = "/home/huanyuan/share/audio_data/weakup_xiaoan8k/image_48_144/"
-    default_transpose = True
+    # # kws: xiaoan8k
+    # # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaoan8k/xiaoan8k/"
+    # # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaoan8k/xiaoan8k_long/"
+    # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaoan8k/other/"
+    # default_output_folder = "/home/huanyuan/share/audio_data/weakup_xiaoan8k/image_48_144/"
+    # default_transpose = True
 
     # # weakup & asr:
     # default_audio_folder = "/home/huanyuan/share/audio_data/kws_weakup_asr/test/"
@@ -139,19 +137,21 @@ if __name__ == "__main__":
     # args.feature_freq = 64
     # args.feature_time = 296
 
-    # # 16k & 2s
-    # args.sample_rate = 16000
-    # args.window_size_ms = 2000
-    # args.window_stride_ms = 2000
-    # args.nfilt = 64
-    # args.feature_freq = 64
+    # 16k & 2s
+    args.sample_rate = 16000
+    args.window_size_ms = 2000
+    args.window_stride_ms = 2000
+    args.nfilt = 64
+    args.feature_freq = 64
     # args.feature_time = 196
+    args.feature_time = 192
 
-    # 8k & 1.5s
-    args.sample_rate = 8000
-    args.window_size_ms = 1500
-    args.window_stride_ms = 1500
-    args.nfilt = 48
-    args.feature_freq = 48
-    args.feature_time = 144
+    # # 8k & 1.5s
+    # args.sample_rate = 8000
+    # args.window_size_ms = 1500
+    # args.window_stride_ms = 1500
+    # args.nfilt = 48
+    # args.feature_freq = 48
+    # # args.feature_time = 146
+    # args.feature_time = 144
     gen_image_list(args)

@@ -78,17 +78,31 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Streamax ASR Demo Engine')
     args = parser.parse_args()
 
-    # kws weakup: xiaoan8k
-    args.model_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_hisi_3_1_05272021.caffemodel"
-    args.prototxt_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_hisi_3_1_05272021.prototxt"
-    args.chw_params = "1,48,144"
+    # # kws weakup: xiaoan8k
+    # args.model_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_hisi_3_1_05272021.caffemodel"
+    # args.prototxt_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/kws_xiaoan8k_tc_resnet14_hisi_3_1_05272021.prototxt"
+    # args.chw_params = "1,48,144"
+    # args.net_input_name = "data"
+    # args.net_output_name = "prob"
+    # args.transpose = True
+    # args.nfilt = 48
+    # args.feature_freq = 48
+    # args.feature_time = 144
+    # args.gpu = True
+    # args.audio_wav = "/home/huanyuan/share/audio_data/weakup_xiaoan8k/test/xiaoan8k_1_1_04082021_validation_60.wav"
+
+    # kws weakup: xiaorui16k
+    args.model_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaorui16k_tc_resnet14/kws_xiaorui8k_tc_resnet14_hisi_6_1_05272021.caffemodel"
+    args.prototxt_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaorui16k_tc_resnet14/kws_xiaorui8k_tc_resnet14_hisi_6_1_05272021.prototxt"
+    args.chw_params = "1,64,192"
     args.net_input_name = "data"
     args.net_output_name = "prob"
     args.transpose = True
-    args.nfilt = 48
-    args.feature_freq = 48
-    args.feature_time = 144
+    args.nfilt = 64
+    args.feature_freq = 64
+    args.feature_time = 192
     args.gpu = True
+    args.audio_wav = "/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_validation_60.wav"
 
     # # 16k & 4s
     # args.sample_rate = 16000
@@ -100,11 +114,14 @@ if __name__ == "__main__":
     # args.window_size_ms = 3000
     # args.window_stride_ms = 3000
 
-    # 8k & 1.5s
-    args.sample_rate = 8000
-    args.window_size_ms = 1500
-    args.window_stride_ms = 1500
+    # 16k & 2s
+    args.sample_rate = 16000
+    args.window_size_ms = 2000
+    args.window_stride_ms = 2000
 
-    # test wav
-    args.audio_wav = "/home/huanyuan/share/audio_data/weakup_xiaoan8k/test/xiaoan8k_1_1_04082021_validation_60.wav"
+    # # 8k & 1.5s
+    # args.sample_rate = 8000
+    # args.window_size_ms = 1500
+    # args.window_stride_ms = 1500
+
     asr_model_test(args)

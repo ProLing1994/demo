@@ -2,10 +2,10 @@ import glob
 import os
 
 if __name__ == '__main__':
-    input_dir = "/mnt/huanyuan/data/TODO/re_xiaorui/wav/"
-    old_file_format = 'RM_KWS_XIAORUI_xiaorui_re_'
-    new_file_format = 'RM_KWS_XIAORUI_xiaoruitransfer_'
-    equipment_id = '11'
+    input_dir = "/mnt/huanyuan/data/speech/Recording/RM_Xiaorui/office/xiaorui_16k_TPEV/xiaorui_16k/"
+    old_file_format = 'RM_KWS_XIAORUI_xiaorui_TPEV_'
+    new_file_format = 'RM_KWS_XIAORUI_xiaorui_'
+    equipment_id = '81'
     file_type = ".wav"
 
     file_list = glob.glob(os.path.join(input_dir, '*' + file_type))

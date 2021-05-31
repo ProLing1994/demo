@@ -31,7 +31,12 @@ def test(cfg, net, loss_func, epoch_idx, batch_idx, logger, test_data_loader, mo
     losses = []
     for _, (x, label, index) in tqdm(enumerate(test_data_loader)):
         x, label = x.cuda(), label.cuda()
-        score = net(x)
+
+        if cfg.dataset.preprocess == "fbank_cpu_hisi":
+            hisi_input = x[:, :, :(x.shape[2] // 16) * 16, :]
+            score = net(hisi_input)
+        else:
+            score = net(x)
         score = score.view(score.size()[0], score.size()[1])
         loss = loss_func(score, label)
 

@@ -3,8 +3,9 @@ import os
 
 if __name__ == '__main__':
     # input_dir = "/mnt/huanyuan/model/kws_model/asr_english/image_296_64/"
-    input_dir = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/image_48_146/"
+    # input_dir = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/image_48_146/"
     # input_dir = "/mnt/huanyuan/model/audio_model/hisi_model/asr_mandarin_taxi_16k/image_296_64/"
+    input_dir = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaorui16k_tc_resnet14/image_64_192/"
     file_format = 'pic_'
     file_type = ".jpg"
     start_id = 1

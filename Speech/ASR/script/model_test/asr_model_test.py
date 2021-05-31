@@ -43,7 +43,7 @@ def asr_model_test(args):
 
     # init bpe
     decode_python = Decode_Python.Decode()
-    decode_python.init_ast_symbol_list(args.bpe)
+    decode_python.init_symbol_list(args.bpe)
 
     # load wave
     wave_loader = WaveLoader()
