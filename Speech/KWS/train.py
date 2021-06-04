@@ -103,8 +103,8 @@ def train(config_file, training_mode):
                                                         optimizer=optimizer)
         start_epoch = last_save_epoch
     else:
-        # start_epoch, last_save_epoch, start_batch = 0, 0, 0
-        start_epoch, last_save_epoch, start_batch = 0, -1, 0
+        start_epoch, last_save_epoch, start_batch = 0, 0, 0
+        # start_epoch, last_save_epoch, start_batch = 0, -1, 0
 
     # knowledge distillation
     if cfg.knowledge_distillation.on:
@@ -182,8 +182,8 @@ def train(config_file, training_mode):
         if (batch_idx % cfg.train.plot_snapshot) == 0:
             plot_tool(cfg, log_file)
 
-        # if epoch_idx % cfg.train.save_epochs == 0 or epoch_idx == cfg.train.num_epochs - 1:
-        if epoch_idx == 0 or epoch_idx == cfg.train.num_epochs - 1:
+        if epoch_idx % cfg.train.save_epochs == 0 or epoch_idx == cfg.train.num_epochs - 1:
+        # if epoch_idx == 0 or epoch_idx == cfg.train.num_epochs - 1:
             if last_save_epoch != epoch_idx:
                 last_save_epoch = epoch_idx
 

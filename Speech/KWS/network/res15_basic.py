@@ -14,7 +14,7 @@ def parameters_init(net):
 class BasicBlock(nn.Module):
     expansion = 1
 
-    def __init__(self, prob, multFlag, in_planes, planes, kernel_size=[3, 3], stride=[1, 1], padding=[1, 1], dilation=[1, 1]):
+    def __init__(self, in_planes, planes, kernel_size=[3, 3], stride=[1, 1], padding=[1, 1], dilation=[1, 1]):
         super(BasicBlock, self).__init__()
         self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=kernel_size[0], stride=stride[0], \
                                 padding=padding[0], dilation=dilation[0], bias=False)
@@ -27,10 +27,6 @@ class BasicBlock(nn.Module):
         self.relu = torch.nn.ReLU()
         self.shortcut = nn.Sequential()
         
-        self.prob = prob
-        self.m = torch.distributions.bernoulli.Bernoulli(torch.Tensor([self.prob]))
-        self.multFlag = multFlag
-
         # 经过处理后的 x 要与 x 的维度相同(尺寸和深度)
         # 如果不相同，需要添加卷积 +BN 来变换为同一维度
         if stride != [1, 1] or in_planes != self.expansion*planes:
@@ -41,32 +37,10 @@ class BasicBlock(nn.Module):
             )
 
     def forward(self, x):
-        if self.training:
-            if torch.equal(self.m.sample(),torch.ones(1)):
-                self.conv1.weight.requires_grad = True
-                self.conv2.weight.requires_grad = True
-
-                out = self.relu(self.bn1(self.conv1(x)))
-                out = self.bn2(self.conv2(out))
-
-                out += self.shortcut(x)
-                out = self.relu(out)
-            else:
-                self.conv1.weight.requires_grad = False
-                self.conv2.weight.requires_grad = False
-
-                out = self.shortcut(x)
-                out = self.relu(out)
-        else:
-            out = self.relu(self.bn1(self.conv1(x)))
-            out = self.bn2(self.conv2(out))
-
-            if self.multFlag:
-                out = self.prob * out + self.shortcut(x)
-                out = self.relu(out)
-            else:
-                out += self.shortcut(x)
-                out = self.relu(out)
+        out = self.relu(self.bn1(self.conv1(x)))
+        out = self.bn2(self.conv2(out))
+        out += self.shortcut(x)
+        out = self.relu(out)
         return out
 
 class SpeechResModel(nn.Module):
@@ -81,12 +55,6 @@ class SpeechResModel(nn.Module):
         self.in_planes = self.num_features
         self.padding_list = [int(2**(i // 3)) for i in range(self.num_layers + 1)]
         self.dilation_list = [int(2**(i // 3)) for i in range(self.num_layers + 1)]
-
-        self.multFlag = True
-        self.prob = [1, 0.5]
-        self.prob_now = self.prob[0]
-        self.prob_delta = self.prob[0] - self.prob[1]
-        self.prob_step = self.prob_delta/(self.num_layers//2 - 1)
 
         self.conv0 = nn.Conv2d(in_channels=1, out_channels=self.num_features, kernel_size=3, \
                                 padding=1, stride=1, bias=False)
@@ -114,8 +82,7 @@ class SpeechResModel(nn.Module):
 
     def _make_layer(self, block, planes, kernel_size, stride, padding, dilation):
         layers = []
-        layers.append(block(self.prob_now, self.multFlag, self.in_planes, planes, kernel_size, stride, padding, dilation))
-        self.prob_now = self.prob_now - self.prob_step
+        layers.append(block(self.in_planes, planes, kernel_size, stride, padding, dilation))
         self.in_planes = planes * block.expansion
         return nn.Sequential(*layers)
 
