@@ -103,7 +103,8 @@ def train(config_file, training_mode):
                                                         optimizer=optimizer)
         start_epoch = last_save_epoch
     else:
-        start_epoch, last_save_epoch, start_batch = 0, 0, 0
+        # start_epoch, last_save_epoch, start_batch = 0, 0, 0
+        start_epoch, last_save_epoch, start_batch = 0, -1, 0
 
     # knowledge distillation
     if cfg.knowledge_distillation.on:
@@ -181,7 +182,8 @@ def train(config_file, training_mode):
         if (batch_idx % cfg.train.plot_snapshot) == 0:
             plot_tool(cfg, log_file)
 
-        if epoch_idx % cfg.train.save_epochs == 0 or epoch_idx == cfg.train.num_epochs - 1:
+        # if epoch_idx % cfg.train.save_epochs == 0 or epoch_idx == cfg.train.num_epochs - 1:
+        if epoch_idx == 0 or epoch_idx == cfg.train.num_epochs - 1:
             if last_save_epoch != epoch_idx:
                 last_save_epoch = epoch_idx
 
@@ -202,8 +204,8 @@ def main():
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_speech.py", nargs='?', help='config file')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", nargs='?', help='config file')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py", nargs='?', help='config file')
-    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py", nargs='?', help='config file')
-    parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan8k.py", nargs='?', help='config file')
+    parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan8k.py", nargs='?', help='config file')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan16k.py", nargs='?', help='config file')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py", nargs='?', help='config file')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_all_pretrain.py", nargs='?', help='config file')

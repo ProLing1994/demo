@@ -49,6 +49,7 @@ class SpeechResModel(nn.Module):
         if bool_draw_features and i % 2 == 0:
           draw_features(x.cpu().detach().numpy(), "{}/conv_{}".format(output_dir, i))
   
-    x = x.view(x.size(0), x.size(1), -1)     # shape: (batch, 45, 101, 40) ->  # shape: (batch, 45, 4040)
-    x = torch.mean(x, 2)      # shape: (batch, 45, 4040) ->  # shape: (batch, 45)
-    return self.output(x)     # shape: (batch, 12)
+    x = x.view(x.size(0), x.size(1), -1)      # shape: (batch, 45, 193, 64) ->  # shape: (batch, 45, 12544)
+    x = torch.mean(x, 2)                      # shape: (batch, 45, 12544) ->  # shape: (batch, 45)
+    x = self.output(x)                        # shape: (batch, 45, 45) ->  # shape: (batch, 2)
+    return x
