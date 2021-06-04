@@ -69,8 +69,8 @@ __C.model = {}
 
 # kws
 # xiaorui
-__C.model.kws_model_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaorui16k_tc_resnet14/kws_xiaorui16k_tc_resnet14_hisi_6_1_05272021.caffemodel"
-__C.model.kws_prototxt_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaorui16k_tc_resnet14/kws_xiaorui16k_tc_resnet14_hisi_6_1_05272021.prototxt"
+__C.model.kws_model_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaorui16k_tc_resnet14/xiaorui16k_tc-resnet14_hisi_6_1_checkpoints_1999/kws_xiaorui16k_tc_resnet14_hisi_6_1_05312021.caffemodel"
+__C.model.kws_prototxt_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaorui16k_tc_resnet14/xiaorui16k_tc-resnet14_hisi_6_1_checkpoints_1999/kws_xiaorui16k_tc_resnet14_hisi_6_1_05312021.prototxt"
 __C.model.kws_label = "xiaorui"
 __C.model.kws_net_input_name = "data"
 __C.model.kws_net_output_name = "prob"

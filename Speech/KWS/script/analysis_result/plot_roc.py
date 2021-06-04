@@ -186,13 +186,13 @@ def main():
     # show_roc(csv_list, color_list, linestyle_list, name_list, label_num, ignore_num)
 
     # xiaorui: 2 label
-    csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_4_0_res15_fbankcpu_04302021/dataset_1_4_infer_longterm_validation_augmentation_False_mean.csv",
-                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_5_0_tc-resnet14-amba_fbankcpu_kd_04302021/dataset_1_4_infer_longterm_validation_augmentation_False_mean.csv",
-                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_4_1_res15_fbankcpu_04302021/dataset_1_4_infer_longterm_validation_augmentation_False_mean.csv",
-                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_5_1_tc-resnet14-amba_fbankcpu_kd_04302021/dataset_1_4_infer_longterm_validation_augmentation_False_mean.csv"]
+    csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_1_tc-resnet14-hisi_fbankcpu_kd_05302021/dataset_1_5_infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_1_tc-resnet14-hisi_fbankcpu_kd_05302021/dataset_1_6_infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_2_tc-resnet14-hisi_fbankcpu_kd_05302021/dataset_1_5_infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_2_tc-resnet14-hisi_fbankcpu_kd_05302021/dataset_1_6_infer_longterm_validation_augmentation_False_mean.csv"]
     color_list = ["r", "r", "b", "b"]
-    linestyle_list = ["-", "--", "-", "--"]
-    name_list = ["xiaorui16k-res15(4.0)--dataset(1.4)", "xiaorui16k-tcresnet14-64(5.0)--dataset(1.4)", "xiaorui16k-res15(4.1)--dataset(1.4)", "xiaorui16k-tcresnet14-64(5.1)--dataset(1.4)"]
+    linestyle_list = ["-", ":", "-", ":"]
+    name_list = ["xiaorui16k-tcresnet14hisi-64(6.1)--dataset(1.5)", "xiaorui16k-tcresnet14hisi-64(6.1)--dataset(1.6)", "xiaorui16k-tcresnet14hisi-64(6.2)--dataset(1.5)", "xiaorui16k-tcresnet14hisi-64(6.2)--dataset(1.6)"]
     label_num = 2
     ignore_num= 1
     show_roc(csv_list, color_list, linestyle_list, name_list, label_num, ignore_num)

@@ -22,11 +22,11 @@ sys.path.append('./')
 import caffe
 
 # options 
-# cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC.py")
+cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MTA_XIAOAN.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_XIAORUI.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_3s.py")
-cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_4s.py")
+# cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_4s.py")
 cfg = cfg.cfg
 
 # params
@@ -304,7 +304,7 @@ def KWS_ASR_offine():
 
         # get audio data
         audio_data = wave_data[times * int(cfg.general.window_stride_samples): times * int(cfg.general.window_stride_samples) + int(cfg.general.window_size_samples)]
-        print("[Information:] Audio data stram: {} - {}, length: {} ".format((times * int(cfg.general.window_stride_samples)), (times * int(cfg.general.window_stride_samples) + int(cfg.general.window_size_samples)), len(audio_data)))
+        print("[Information:] Audio data stream: {} - {}, length: {} ".format((times * int(cfg.general.window_stride_samples)), (times * int(cfg.general.window_stride_samples) + int(cfg.general.window_size_samples)), len(audio_data)))
         # print(audio_data)
 
         output_dict['sliding_window_start_time_ms'] = (((times - 2) * int(cfg.general.window_stride_samples)) / cfg.general.sample_rate) * 1000

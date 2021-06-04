@@ -82,12 +82,12 @@ __C.model.kws_chw_params = "1,64,196"
 __C.model.kws_transpose = True
 
 # asr
-__C.model.asr_model_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/english_0202_better.caffemodel"
-__C.model.asr_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/english_0202_mark.prototxt"
+__C.model.asr_model_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_16k_0202/english_0202_better.caffemodel"
+__C.model.asr_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_16k_0202/english_0202_mark.prototxt"
 __C.model.asr_net_input_name = "data"
 __C.model.asr_net_output_name = "conv39"
 __C.model.asr_chw_params = "1,296,64"
-__C.model.asr_bpe = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/english_bpe.txt"
+__C.model.asr_bpe = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_16k_0202/english_bpe.txt"
 
 
 ##################################
@@ -104,7 +104,7 @@ __C.test.test_mode = 0
 
 # input_Wav
 # __C.test.input_wav = "/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation_180.wav"
-__C.test.input_wav = "/mnt/huanyuan/data/speech/Recording/Daily_Record/jabra_510/wav/Jabra_510_test-kws-asr_0001.wav"
+__C.test.input_wav = "/mnt/huanyuan/data/speech/Recording/Daily_Record/jabra_510/test/Jabra_510_test-kws-asr_0001.wav"
 
 # input_folder
 __C.test.input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/路边场景/场景二/"

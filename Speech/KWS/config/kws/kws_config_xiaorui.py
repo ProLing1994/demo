@@ -16,29 +16,29 @@ __C.general.sub_data_dir = ["/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experi
 
 # data version
 # __C.general.version = "1.4"
-# __C.general.version = "1.5"
-__C.general.version = "1.6"
+__C.general.version = "1.5"
+# __C.general.version = "1.6"
 
 # data date
 # __C.general.date = "04302021"
-# __C.general.date = "05172021"
-__C.general.date = "05272021"
+__C.general.date = "05172021"
+# __C.general.date = "05272021"
 
 # data path
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.4_04302021/total_data_files.csv"
-# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.5_05172021/total_data_files.csv"
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.6_05272021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.5_05172021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.6_05272021/total_data_files.csv"
 
 # background noise path
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.4_04302021/background_noise_files.csv"
-# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.5_05172021/background_noise_files.csv"
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.6_05272021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.5_05172021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.6_05272021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_test"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12082020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_1_finetune_res15_12082020/"
@@ -62,6 +62,8 @@ __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_4_1_res15_fbankcpu_04302021" 
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_5_0_tc-resnet14-amba_fbankcpu_kd_04302021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_5_1_tc-resnet14-amba_fbankcpu_kd_04302021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_1_tc-resnet14-hisi_fbankcpu_kd_05302021/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_2_tc-resnet14-hisi_fbankcpu_kd_05302021/"
 
 # finetune model
 __C.general.finetune_on = False
@@ -166,7 +168,8 @@ __C.dataset.nfilt = 64
 
 # input size of training data (w, h), unit: voxel
 # __C.dataset.data_size = [40, 201]
-__C.dataset.data_size = [64, 196]
+# __C.dataset.data_size = [64, 196]
+__C.dataset.data_size = [64, 192]
 
 
 ##################################

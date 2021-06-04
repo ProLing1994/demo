@@ -194,21 +194,24 @@ def audio_preprocess(cfg, data):
                                         winlen=window_size_ms / 1000, 
                                         winstep=window_stride_ms / 1000,
                                         data_length=clip_duration_ms / 1000)
-    # check 
-    assert audio_preprocess_type in ["mfcc", "pcen", "fbank", 'fbank_cpu'], "[ERROR:] Audio preprocess type is wronge, please check"
+    # check
+    assert audio_preprocess_type in [
+        "mfcc", "pcen", "fbank", "fbank_cpu", "fbank_cpu_hisi"], "[ERROR:] Audio preprocess type is wronge, please check"
 
     # preprocess
     if audio_preprocess_type == "mfcc":
-      audio_data = audio_processor.compute_mfccs(data)
+        audio_data = audio_processor.compute_mfccs(data)
     elif audio_preprocess_type == "pcen":
-      audio_data = audio_processor.compute_pcen(data)
+        audio_data = audio_processor.compute_pcen(data)
     elif audio_preprocess_type == "fbank":
-      audio_data = audio_processor.compute_fbanks(data)
+        audio_data = audio_processor.compute_fbanks(data)
     elif audio_preprocess_type == "fbank_cpu":
-      audio_data = audio_processor.compute_fbanks_cpu(data)
-    return audio_data 
-
-
+        audio_data = audio_processor.compute_fbanks_cpu(data)
+    elif audio_preprocess_type == "fbank_cpu_hisi":
+        audio_data = audio_processor.compute_fbanks_cpu(data)
+        audio_data = audio_data[:(audio_data.shape[0] // 16) * 16, :]
+    return audio_data
+    
 def model_predict(cfg, model, data):
     """ 
     :param cfg:                   The config 

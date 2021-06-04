@@ -227,7 +227,7 @@ if __name__ == "__main__":
 
     # xiaorui
     cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_validation_3600.csv",
-                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_5_1_tc-resnet14-amba_fbankcpu_kd_04302021/test_straming_wav/xiaorui_1_4_04302021_validation_3600_threshold_0_5/found_words.csv",
+                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_2_tc-resnet14-hisi_fbankcpu_kd_05302021/test_straming_wav/xiaorui_1_4_04302021_validation_3600_threshold_0_5/found_words.csv",
                 ["xiaorui", "xiaorui_16k"],
                 bool_write_audio)
 
