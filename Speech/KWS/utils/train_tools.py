@@ -23,7 +23,6 @@ from common.common.utils.python.plotly_tools import plot_loss4d, plot_loss2d, pl
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/KWS')
 # sys.path.insert(0, '/yuanhuan/code/demo/Speech/KWS')
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
-from utils.loss import FocalLoss
 from dataset.kws.dataset_helper import SILENCE_LABEL
 from dataset.kws.kws_dataset_align_preload_audio import SpeechDatasetAlign
 from dataset.kws.kws_dataset_preload_audio_lmdb import SpeechDataset
@@ -104,22 +103,6 @@ def import_network(cfg, model_name, class_name='SpeechResModel'):
     else:
         raise Exception("[ERROR:] Unknow data parallel mode, please check!")
     return net
-
-
-def define_loss_function(cfg):
-    """ setup loss function
-    :param cfg:
-    :return:
-    """
-    if cfg.loss.name == 'softmax':
-        loss_func = nn.CrossEntropyLoss()
-    elif cfg.loss.name == 'focal':
-        loss_func = FocalLoss(class_num=cfg.dataset.label.num_classes,
-                              alpha=cfg.loss.obj_weight,
-                              gamma=cfg.loss.focal_gamma)
-    else:
-        raise ValueError('Unsupported loss function.')
-    return loss_func.cuda()
 
 
 def loss_fn_kd(cfg, original_scores, teacher_scores, loss):

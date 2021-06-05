@@ -4,6 +4,29 @@ from torch.autograd import Variable
 from torch import nn
 from torch.nn import functional as F
 
+def define_loss_function(cfg):
+    """ setup loss function
+    :param cfg:
+    :return:
+    """
+    if cfg.loss.name == 'softmax':
+        loss_func = nn.CrossEntropyLoss()
+    elif cfg.loss.name == 'focal':
+        loss_func = FocalLoss(class_num=cfg.dataset.label.num_classes,
+                              alpha=cfg.loss.obj_weight,
+                              gamma=cfg.loss.focal_gamma)
+    else:
+        raise ValueError('Unsupported loss function.')
+    return loss_func.cuda()
+
+def label_smoothing(inputs, num_classes=2, epsilon=0.1):
+    '''Applies label smoothing. See 5.4 and https://arxiv.org/abs/1512.00567.
+    inputs: 
+    num_classes: num of classes
+    epsilon: Smoothing rate. 
+    '''
+    return ((1 - epsilon) * inputs) + (epsilon / num_classes)
+
 class FocalLoss(nn.Module):
     def __init__(self, class_num, alpha=None, gamma=2, size_average=True):
         super(FocalLoss, self).__init__()

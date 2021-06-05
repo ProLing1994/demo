@@ -7,6 +7,7 @@ from tqdm import tqdm
 # sys.path.insert(0, '/yuanhuan/code/demo/Speech/KWS')
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from utils.train_tools import *
+from utils.loss_tools import *
 
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo')
 # sys.path.insert(0, '/yuanhuan/code/demo')
@@ -160,7 +161,12 @@ def train(config_file, training_mode):
         else:
             scores = net(inputs)
         scores = scores.view(scores.size()[0], scores.size()[1])
-        loss = loss_func(scores, labels)
+        
+        if cfg.regularization.label_smoothing.on:
+            loss = loss_func(scores, label_smoothing(labels, cfg.dataset.label.num_classes, cfg.regularization.label_smoothing.epsilon))
+        else:
+            loss = loss_func(scores, labels)
+            
         if cfg.knowledge_distillation.on:
             teacher_model.eval()
             teacher_scores = teacher_model(inputs)

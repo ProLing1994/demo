@@ -258,6 +258,24 @@ __C.dataset.augmentation.F = 5
 __C.dataset.augmentation.T = 10
 __C.dataset.augmentation.num_masks = 2
 
+
+##################################
+# regularization parameters
+##################################
+
+# regularization parameters
+__C.regularization = {}
+
+# regularization: label smoothing parameters
+__C.regularization.label_smoothing = {}
+
+# regularization: label smoothing on
+__C.regularization.label_smoothing.on = True
+
+# regularization: label smoothing epsilon 
+__C.regularization.label_smoothing.epsilon = 0.1
+
+
 ####################################
 # training lossd
 ####################################

@@ -43,8 +43,8 @@ class BasicBlock(nn.Module):
     def forward(self, x):
         if self.training:
             if torch.equal(self.m.sample(),torch.ones(1)):
-                self.conv1.weight.requires_grad = True
-                self.conv2.weight.requires_grad = True
+                # self.conv1.weight.requires_grad = True
+                # self.conv2.weight.requires_grad = True
 
                 out = self.relu(self.bn1(self.conv1(x)))
                 out = self.bn2(self.conv2(out))
@@ -52,8 +52,8 @@ class BasicBlock(nn.Module):
                 out += self.shortcut(x)
                 out = self.relu(out)
             else:
-                self.conv1.weight.requires_grad = False
-                self.conv2.weight.requires_grad = False
+                # self.conv1.weight.requires_grad = False
+                # self.conv2.weight.requires_grad = False
 
                 out = self.shortcut(x)
                 out = self.relu(out)

@@ -289,6 +289,7 @@ class SpeechDataset(Dataset):
         data_tensor = torch.from_numpy(np.expand_dims(data, axis=0))
         data_tensor = data_tensor.float()
         label_tensor = torch.tensor(audio_label_idx)
+        label_tensor = label_tensor.float()
 
         # check tensor
         assert data_tensor.shape[0] == self.input_channel
