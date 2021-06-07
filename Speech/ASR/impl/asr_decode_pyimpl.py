@@ -7,8 +7,7 @@ import kenlm
 kws_list = [['start', 'record'], ['stop', 'record'], ['mute', 'audio'], ['unmute', 'audio'],
             ['shot', 'fire'], ['freeze'], ['drop', 'gun'], ['keep', 'hand'], ['put', 'hand'], ['down', 'ground']]
 
-control_command_list = [['start', 'record'], [
-    'stop', 'record'], ['mute', 'audio'], ['unmute', 'audio']]
+control_command_list = [['start', 'record'], ['stop', 'record'], ['mute', 'audio'], ['unmute', 'audio']]
 
 
 class Ken_LM:
@@ -145,8 +144,7 @@ class Decode(object):
 
                                 # 针对长度大于 1 的匹配词，逆序匹配
                                 for idf in range(len(kws_idx) - 1):
-                                    bool_find_kws = True if match_list[-1 -
-                                                                       idf] == kws_idx[-2 - idf] else False
+                                    bool_find_kws = True if match_list[-1 - idf] == kws_idx[-2 - idf] else False
                         else:
                             # 建堆, 添加到匹配池中
                             match_list.append(kws_idx[idz])
@@ -176,6 +174,18 @@ class Decode(object):
         return output_control_command_list, output_not_control_command_list
 
     def ctc_beam_search(self, prob, beamSize, blankID, bswt=1.0, lmwt=0.3, beams_topk=[]):
+        '''
+        # post-processing ( append </s> symbol and update LM score )
+        for one in results:
+            newState, lmScore = lm.compute( state=one["lmState"], word="</s>" )
+            one["lm"] += lmwt * lmScore
+            numFrames = len(one["ali"])
+            numWords = len(one["words"]) + 1
+            one["total"] = one["bs"] / numFrames + one["lm"] / numWords (对数相加)
+            # discard <s>
+            one["words"] = " ".join( one["words"] )
+            one["lmState"] = newState
+        '''
         # 取对数，np.log，用于和语言模型得分相加
         prob = np.log(prob)
 
@@ -186,7 +196,7 @@ class Decode(object):
         _, init_lm_score = self.lm.compute(state=[], word="UNK")
         init_lm_score *= lmwt
         if(len(beams_topk) == 0):
-            beams_topk = [{"words": [""], "ali":[0], "bs":0, "lm":init_lm_score, "total":0, "lmState":["<s>"]}]
+            beams_topk = [{"words": [""], "ali":[0], "result_id":[0], "lmState":["<s>"], "bs":0, "lm":init_lm_score, "total":0}]
 
         for i in range(frame_num):
             tmp_beams = []
@@ -206,15 +216,16 @@ class Decode(object):
                     tmp_beam = copy.deepcopy(preResult)
 
                     # 1. compute LM score
-                    if id != blankID:  # ignore blank
+                    # ignore blank
+                    if id != blankID:  
                         # ignore continuous repeated symbols
                         if len(tmp_beam["ali"]) == 1 or id != tmp_beam["ali"][-1]:
                             symbol = self.id2word[id]
                             newState, lmScore = self.lm.compute(state=tmp_beam["lmState"], word=symbol)
                             tmp_beam["words"].append(symbol)
+                            tmp_beam["result_id"].append(id)
                             tmp_beam["lm"] += lmwt * lmScore
                             tmp_beam["lmState"] = newState
-                            # print("symbol: ", symbol, ", lmScore: ", lmScore)
 
                     # 2. compute beam search score
                     tmp_beam["bs"] += bswt * bs_score
@@ -232,17 +243,6 @@ class Decode(object):
             if(len(tmp_beams) == 0):
                 continue
             beams_topk = tmp_beams[:beamSize]
-            # print()
-        '''
-        # post-processing ( append </s> symbol and update LM score )
-        for one in results:
-            newState, lmScore = lm.compute( state=one["lmState"], word="</s>" )
-            one["lm"] += lmwt * lmScore
-            numFrames = len(one["ali"])
-            numWords = len(one["words"]) + 1
-            one["total"] = one["bs"] / numFrames + one["lm"] / numWords (对数相加)
-            # discard <s>
-            one["words"] = " ".join( one["words"] )
-            one["lmState"] = newState
-        '''
-        return sorted(beams_topk, key=lambda x: x["total"], reverse=True)
+        
+        result_id = sorted(beams_topk, key=lambda x: x["total"], reverse=True)[0]['result_id'][1:]
+        return result_id

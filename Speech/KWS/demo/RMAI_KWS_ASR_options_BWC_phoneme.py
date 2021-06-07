@@ -32,7 +32,7 @@ __C.general.kws_suppression_counter = 2             # kws 激活后抑制时间 
 
 # asr
 __C.general.language_id = 1			                # 0： chinese  1： english
-__C.general.decode_id = 0			                # 0： greedy  1： beamsearch
+__C.general.decode_id = 1			                # 0： greedy  1： beamsearch
 __C.general.asr_feature_time = 296                  # asr 网络特征时间维度，与语音特征容器长度相同
 __C.general.asr_suppression_counter = 2             # asr 激活后抑制时间，间隔 2s 执行一次 asr 检测
 
@@ -68,13 +68,6 @@ __C.model = {}
 
 # kws
 # activate bwc
-# __C.model.kws_model_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_activatebwc_res15/res15_1_5_03302021.caffemodel"
-# __C.model.kws_prototxt_path = "/mnt/huanyuan/model/audio_model/caffe_model/kws_activatebwc_res15/res15_1_5_03302021.prototxt"
-# __C.model.kws_label = "activatebwc"
-# __C.model.kws_net_input_name = "blob1"
-# __C.model.kws_net_output_name = "Softmax"
-# __C.model.kws_chw_params = "1,196,64"
-# __C.model.kws_transpose = False
 __C.model.kws_model_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_2_4_04012021.caffemodel"
 __C.model.kws_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_2_4_04012021.prototxt"
 __C.model.kws_label = "activatebwc"
@@ -84,12 +77,13 @@ __C.model.kws_chw_params = "1,64,196"
 __C.model.kws_transpose = True
 
 # asr
-__C.model.asr_model_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_16k_0202/english_0202_better.caffemodel"
-__C.model.asr_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_16k_0202/english_0202_mark.prototxt"
+__C.model.asr_model_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06032021/asr_english_phoneme_16k_64_0603.caffemodel"
+__C.model.asr_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06032021/asr_english_phoneme_16k_64_0603.prototxt"
 __C.model.asr_net_input_name = "data"
-__C.model.asr_net_output_name = "conv39"
+__C.model.asr_net_output_name = "prob"
 __C.model.asr_chw_params = "1,296,64"
-__C.model.asr_bpe = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_16k_0202/english_bpe.txt"
+__C.model.asr_bpe = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06032021/asr_english_phoneme_dict.txt"
+__C.model.lm_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06032021/4gram_asr_english_phoneme.bin"
 
 
 ##################################

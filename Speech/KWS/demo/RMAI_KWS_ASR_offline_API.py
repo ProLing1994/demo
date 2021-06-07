@@ -22,7 +22,8 @@ sys.path.append('./')
 import caffe
 
 # options 
-cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC.py")
+# cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC.py")
+cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_phoneme.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MTA_XIAOAN.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_XIAORUI.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_3s.py")
@@ -83,8 +84,9 @@ def kws_asr_init():
         decode_python.init_lm_model(cfg.model.lm_path)
 
     # mkdir
-    if not os.path.exists(cfg.test.output_folder):
-        os.makedirs(cfg.test.output_folder)
+    if cfg.general.bool_output_wave or cfg.general.bool_output_csv:
+        if not os.path.exists(cfg.test.output_folder):
+            os.makedirs(cfg.test.output_folder)
 
 
 def run_kws():
@@ -161,22 +163,22 @@ def run_asr():
         decode_c = Decode_C.Decode()
         decode_c.ctc_decoder(net_output)
         result_id = decode_c.result_id_to_numpy()
-        if cfg.general.language_id == 0:
-            result_string = decode_python.output_symbol(result_id)
-            control_command_string, not_control_command_string = result_string, result_string
-        elif cfg.general.language_id == 1:
-            result_string = decode_python.output_symbol_english(result_id)
-            matched_string = decode_python.match_kws_english(result_string.split(' '))
-            control_command_string, not_control_command_string = decode_python.match_kws_english_control_command(matched_string)
-        else:
-            print("[Unknow:] cfg.general.language_id. ")
-
     elif cfg.general.decode_id == 1:
-        result_dict = decode_python.ctc_beam_search(net_output, 5, 0, bswt=1.0, lmwt=0.3)
-        result_string = " ".join(result_dict[0]['words'])
-        control_command_string, not_control_command_string = result_string, result_string
+        result_id = decode_python.ctc_beam_search(net_output, 5, 0, bswt=1.0, lmwt=0.3)
     else:
         print("[Unknow:] cfg.general.decode_id. ")
+
+    if cfg.general.language_id == 0:
+        result_string = decode_python.output_symbol(result_id)
+        control_command_string, not_control_command_string = result_string, result_string
+    elif cfg.general.language_id == 1:
+        result_string = decode_python.output_symbol_english(result_id)
+        matched_string = decode_python.match_kws_english(result_string.split(' '))
+        control_command_string, not_control_command_string = decode_python.match_kws_english_control_command(matched_string)
+        # control_command_string, not_control_command_string = result_string, result_string
+    else:
+        print("[Unknow:] cfg.general.language_id. ")
+
     return result_string, control_command_string, not_control_command_string
 
 
@@ -279,10 +281,6 @@ def run_kws_asr(audio_data):
 
 
 def KWS_ASR_offine():
-
-    # params init 
-    cfg.general.bool_output_csv = True
-    
     # param_init
     param_init()
 
@@ -318,10 +316,6 @@ def KWS_ASR_offine():
 
 
 def KWS_ASR_offine_perfolder():
-
-    # params init 
-    cfg.general.bool_output_csv = True
-
     # param_init
     param_init()
 
