@@ -28,15 +28,28 @@ __C.general.kws_feature_time = 196                  # kws 网络特征时间维�
 __C.general.kws_stride_feature_time = 10            # kws 每间隔 10 个 feature_time 进行一次检索, 对应滑窗 100 ms，共检测 10 次
 __C.general.kws_detection_threshold = 0.5           # kws 检测阈值 0.5
 __C.general.kws_detection_number_threshold = 0.5    # kws 计数阈值 0.5
-__C.general.kws_suppression_counter = 2             # kws 激活后抑制时间 2s
+__C.general.kws_suppression_counter = 3             # kws 激活后抑制时间 3s
 
 # asr
 __C.general.language_id = 1			                # 0： chinese  1： english
 __C.general.decode_id = 1			                # 0： greedy  1： beamsearch
 __C.general.asr_feature_time = 296                  # asr 网络特征时间维度，与语音特征容器长度相同
 __C.general.asr_suppression_counter = 2             # asr 激活后抑制时间，间隔 2s 执行一次 asr 检测
+__C.general.kws_list = ['start_record', 'stop_record', 'mute_audio', 'unmute_audio', 'shot_fire', 'freeze', 'drop_gun', 'keep_hand', 'put_hand', 'down_ground']
+__C.general.kws_dict = {'start_record':["STAA1RT RAH0KAO1RD", "STAA1RT RAH0KER0D", "STAA1RT RIH0KAO1RD", "STAA1RT RIH0KER0D", "STAA1R RAH0KAO1RD", "STAA1R RAH0KER0D", "STAA1R RIH0KAO1RD", "STAA1R RIH0KER0D"], 
+                        'stop_record':["STAA1P RAH0KAO1RD", "STAA1P RAH0KER0D", "STAA1P RIH0KAO1RD", "STAA1P RIH0KER0D", "STAO1 RAH0KAO1RD", "STAO1 RAH0KER0D", "STAO1 RIH0KAO1RD", "STAO1 RIH0KER0D"], 
+                        'mute_audio':["MYUW1T AA1DIY0OW2", "MYUW1 AA1DIY0OW2"], 
+                        'unmute_audio':["AH0NMYUW1T AA1DIY0OW2", "AH0NMYUW1 AA1DIY0OW2"], 
+                        'shot_fire':["SHAA1T FAY1ER0", "SHAA1T FEH1ER0", "SHAA1T FEH1", "SHAO1 FAY1ER0", "SHAO1 FEH1ER0", "SHAO1 FEH1"], 
+                        'freeze':["FRIY1Z", "FRIY1"], 
+                        'drop_gun':["DRAA1P GAH1N", "DRAA1P GAH1", "JHAA1P GAH1N", "JHAA1P GAH1", "JHOW1 GAH1N", "JHOW1 GAH1"], 
+                        'keep_hand':["KIY1P HHAE1ND", "KIY1P HHEH1ND"], 
+                        'put_hand':["PUH1T HHAE1ND", "PUH1T HHEH1ND", "PUH1 HHAE1ND", "PUH1 HHEH1ND"], 
+                        'down_ground':["GEH1T DAW1N AA1N", "GEH1 DAW1N AA1N", "GEH1 DAW1 AA1N"]}
 
-# container
+__C.general.control_kws_list = ['start_record', 'stop_record', 'mute_audio', 'unmute_audio']
+
+# containe
 __C.general.audio_container_ms = 100                # 语音数据容器中，装有音频数据 100 ms
 __C.general.audio_container_time = 10               # 语音数据容器中，装有音频数据 100 ms，对应特征维度 10
 __C.general.feature_container_time = 296            # 语音特征容器中，装有时间维度 296
@@ -47,8 +60,8 @@ __C.general.feature_remove_before_time = 100        # 为保证特征一致，�
 __C.general.bool_do_kws_weakup = True
 # __C.general.bool_do_kws_weakup = False
 __C.general.bool_do_asr = True
-# __C.general.bool_output_wave = True
-__C.general.bool_output_wave = False
+__C.general.bool_output_wave = True
+# __C.general.bool_output_wave = False
 # __C.general.bool_output_csv = True
 __C.general.bool_output_csv = False
 __C.general.gpu = True
@@ -70,7 +83,6 @@ __C.model = {}
 # activate bwc
 __C.model.kws_model_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_2_4_04012021.caffemodel"
 __C.model.kws_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/tc_resnet14_amba_2_4_04012021.prototxt"
-__C.model.kws_label = "activatebwc"
 __C.model.kws_net_input_name = "data"
 __C.model.kws_net_output_name = "Softmax"
 __C.model.kws_chw_params = "1,64,196"
@@ -96,13 +108,16 @@ __C.test = {}
 # test_mode
 # 0: input_wav
 # 1: input_folder
-__C.test.test_mode = 0
+__C.test.test_mode = 1
 
 # input_Wav
 # __C.test.input_wav = "/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation_180.wav"
 __C.test.input_wav = "/mnt/huanyuan/data/speech/Recording/Daily_Record/jabra_510/test/Jabra_510_test-kws-asr_0001.wav"
 
 # input_folder
-__C.test.input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/路边场景/场景二/"
+# __C.test.input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/路边场景/场景二/"
+# __C.test.input_folder = "/home/huanyuan/share/audio_data/english_wav/office_false_alarm/"
+# __C.test.input_folder = "/home/huanyuan/share/audio_data/demo_test/test/"
+__C.test.input_folder = "/mnt/huanyuan/data/speech/Recording/demo_kws_asr_online_api/2021-06-08-14-51-18"
 
 __C.test.output_folder = "/mnt/huanyuan/data/speech/Recording/demo_kws_asr_online_api/{}".format('-'.join('-'.join(str(datetime.now()).split('.')[0].split(' ')).split(':')))

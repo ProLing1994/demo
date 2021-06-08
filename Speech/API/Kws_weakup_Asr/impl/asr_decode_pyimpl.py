@@ -79,7 +79,7 @@ class Decode(object):
             output_symbol += " "
         return output_symbol
 
-    def match_kws_english(self, string_list):
+    def match_keywords_english(self, string_list):
         # init 
         match_list = []
         output_list = []

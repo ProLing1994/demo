@@ -16,7 +16,6 @@ namespace ASR
         clear_state();
     }
 
-
     int Wave_Data::load_data(const char *filename)
     {
         Wave_File_Head_S wav_head;
@@ -27,21 +26,43 @@ namespace ASR
             printf("[ERROR:] %s, %d: Read wav failed.\n", __FUNCTION__, __LINE__);
             return -1;
         }
-        fread(&wav_head, sizeof(struct Wave_File_Head_S), 1, fp); //read wavehead
-        fclose(fp);
+        // fread(&wav_head, sizeof(struct Wave_File_Head_S), 1, fp); //read wavehead
 
-        // check
-        if(wav_head.channel != 1 || wav_head.bit_per_sample != 16 )  
-        {
-            printf("[ERROR:] %s, %d: Read wav failed!!, only support channel == %d/1, bit_per_sample == %d/16.\n", \
-                    __FUNCTION__, __LINE__, wav_head.channel, wav_head.bit_per_sample);
-            return -1;
-        }
-        
+        fread(wav_head.riff_char, sizeof(char), 4, fp);
+        fread(&wav_head.file_size, sizeof(int32_t) , 1, fp);
+        fread(wav_head.wave_fmt_char, sizeof(char), 8, fp);
+        fread(&wav_head.format_length, sizeof(int32_t), 1, fp);
+        fread(&wav_head.format_tag, sizeof(int16_t), 1, fp);
+        fread(&wav_head.channel, sizeof(int16_t), 1, fp);
+        fread(&wav_head.sample_rate, sizeof(int32_t), 1, fp);
+        fread(&wav_head.avg_bytes_sec, sizeof(int32_t), 1, fp);
+        fread(&wav_head.block_align, sizeof(int16_t), 1, fp);
+        fread(&wav_head.bit_per_sample, sizeof(int16_t), 1, fp);
+        fread(wav_head.temp, sizeof(char), 2, fp);
+        fread(wav_head.data_char, sizeof(char), 4, fp);
+        fread(&wav_head.data_size, sizeof(int32_t), 1, fp);
+
         // replace wav_head.data_size with men_len, becase some mistake is unkown in wav_head
         int32_t head_file_size = 36;  // 44 bytes(total head file size) - 8 bytes
         int32_t data_length = (wav_head.file_size - head_file_size) / sizeof(int16_t);
         int32_t memory_size = data_length * sizeof(int16_t);
+
+        fread(wav_head.wave_data, sizeof(int16_t), data_length, fp);
+        fclose(fp);
+
+        // check
+        // if(wav_head.channel != 1 || wav_head.bit_per_sample != 16 )  
+        // {
+        //     printf("[ERROR:] %s, %d: Read wav failed!!, only support channel == %d/1, bit_per_sample == %d/16.\n", \
+        //             __FUNCTION__, __LINE__, wav_head.channel, wav_head.bit_per_sample);
+        //     return -1;
+        // }
+        if(wav_head.bit_per_sample != 16 )  
+        {
+            printf("[ERROR:] %s, %d: Read wav failed!!, only support bit_per_sample == %d/16.\n", \
+                    __FUNCTION__, __LINE__, wav_head.channel, wav_head.bit_per_sample);
+            return -1;
+        }  
 
         if (m_wave_data.data == nullptr)
         {
@@ -53,9 +74,11 @@ namespace ASR
             m_wave_data.data = (int16_t *)malloc(memory_size);
         }
 
-        m_wave_data.data_length = static_cast<unsigned int>(data_length);
-        m_wave_data.fs = static_cast<unsigned short>(wav_head.sample_rate);
         memcpy(m_wave_data.data, wav_head.wave_data, memory_size);
+
+        m_wave_data.channel = wav_head.channel;
+        m_wave_data.data_length = static_cast<unsigned int>(data_length/m_wave_data.channel);
+        m_wave_data.fs = static_cast<unsigned short>(wav_head.sample_rate);
 
         // std::cout << "wav_head.riff_char: " << wav_head.riff_char << ", wav_head.file_size: " << wav_head.file_size \
         //             << ", wav_head.wave_fmt_char: " << wav_head.wave_fmt_char \
@@ -71,7 +94,7 @@ namespace ASR
         return 0;
     }
 
-    void Wave_Data::write_data(int16_t *data, unsigned int data_length, unsigned short fs, const char *filename)
+    void Wave_Data::write_data(int16_t *data, int data_length, int fs, const char *filename)
     {
         FILE *fp;
         fp = fopen(filename, "wb");
@@ -106,11 +129,10 @@ namespace ASR
         fwrite(&bit_per_sample, sizeof(int16_t), 1, fp);
         fwrite("  data", sizeof(char), 6, fp);
 
-		int32_t data_size = data_length * sizeof(int16_t);
+		int32_t data_size = static_cast<int32_t>(data_length * sizeof(int16_t));
         fwrite(&data_size, sizeof(int32_t), 1, fp);
 
         fwrite(data, sizeof(int16_t), data_length, fp);
-        fclose(fp);
         return;
     }
 
@@ -128,5 +150,32 @@ namespace ASR
         m_wave_data.data_length = 0;
         m_wave_data.fs = 0;
     }
+
+    short Wave_Data::get(int32_t i, int8_t c)
+    {
+        return static_cast<short>(m_wave_data.data[ i * m_wave_data.channel + c  ] );
+    }
+
+    int load_pcm_data(const char *filename, std::vector<short> &wave_data)
+    {   
+        FILE* fp = fopen(filename, "rb");
+        if (fp == nullptr)
+        {
+            printf("[ERROR:] %s, %d: Read wav failed.\n", __FUNCTION__, __LINE__);
+            return -1;
+        }        
+        fseek(fp, 0, std::ios::end);
+        int32_t memory_size = ftell(fp);
+        int32_t data_length = int(memory_size / sizeof(int16_t));
+        fseek(fp, 0, std::ios::beg);
+
+        wave_data.clear();
+        wave_data.resize(data_length);
+
+        fread(&wave_data[0], 2, memory_size, fp);
+        fclose(fp);
+
+        return 0;
+    }    
 
 } // namespace ASR

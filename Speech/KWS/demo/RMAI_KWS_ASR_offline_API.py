@@ -6,12 +6,11 @@ import pandas as pd
 import sys
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-from ASR.impl.asr_data_loader_pyimpl import WaveLoader
-# from ASR.impl.asr_data_loader_cimpl import WaveLoader
 from ASR.impl.asr_feature_pyimpl import Feature
 # from ASR.impl.asr_feature_cimpl import Feature
-import ASR.impl.asr_decode_cimpl as Decode_C
 import ASR.impl.asr_decode_pyimpl as Decode_Python
+import ASR.impl.asr_data_loader_pyimpl as WaveLoader_Python
+import ASR.impl.asr_data_loader_cimpl as WaveLoader_C
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from common.common.utils.python.file_tools import load_module_from_disk
@@ -44,7 +43,11 @@ def param_init():
     params_dict['bool_weakup'] = False
     params_dict['counter_weakup'] = 0
     params_dict['counter_asr'] = cfg.general.asr_suppression_counter - 1
-    params_dict['output_kws_id'] = 1
+
+    # mkdir
+    if cfg.general.bool_output_wave or cfg.general.bool_output_csv:
+        if not os.path.exists(cfg.test.output_folder):
+            os.makedirs(cfg.test.output_folder)
 
     
 def model_init(prototxt, model, net_input_name, CHW_params, use_gpu=False):
@@ -83,10 +86,51 @@ def kws_asr_init():
     if cfg.general.decode_id == 1:
         decode_python.init_lm_model(cfg.model.lm_path)
 
-    # mkdir
-    if cfg.general.bool_output_wave or cfg.general.bool_output_csv:
-        if not os.path.exists(cfg.test.output_folder):
-            os.makedirs(cfg.test.output_folder)
+
+def papare_data_and_feature(audio_data):
+    # 加载音频数据，用于打印输出
+    if cfg.general.bool_output_wave:
+        if len(params_dict['output_wave_list']) < cfg.general.total_time_samples:
+            params_dict['output_wave_list'].extend(audio_data)
+        else:
+            params_dict['output_wave_list'] = params_dict['output_wave_list'][cfg.general.window_size_samples:]
+            params_dict['output_wave_list'].extend(audio_data)
+
+    # audio data
+    # 拼接语音数据
+    if len(params_dict['audio_data_container_np']):
+        audio_data = np.concatenate((params_dict['audio_data_container_np'], audio_data), axis=0)
+    
+    # 存储指定时间的音频，用于后续拼接语音特征
+    params_dict['audio_data_container_np'] = audio_data[len(audio_data) - cfg.general.window_container_samples:]
+    # print("[Information:] Audio length: ", len(audio_data), len(params_dict['audio_data_container_np']))
+
+    # feature
+    # 计算特征
+    feature = Feature(cfg.general.sample_rate, len(audio_data)/cfg.general.sample_rate, int(cfg.general.feature_freq), int(cfg.general.nfilt))
+    feature.get_mel_int_feature(audio_data, len(audio_data))
+    feature_data = feature.copy_mfsc_feature_int_to()
+    # print("[Information:] Feature shape: ", feature_data.shape)
+
+    # 拼接特征
+    if not params_dict['feature_data_container_np'].shape[0]:
+        params_dict['feature_data_container_np'] = feature_data
+    elif params_dict['feature_data_container_np'].shape[0] < cfg.general.feature_container_time:
+        params_dict['feature_data_container_np'] = np.concatenate((params_dict['feature_data_container_np'][: -cfg.general.feature_remove_after_time], feature_data), axis=0)
+    else:
+        params_dict['feature_data_container_np'] = np.concatenate((params_dict['feature_data_container_np'][cfg.general.feature_remove_before_time: -cfg.general.feature_remove_after_time], feature_data), axis=0)
+    # print("[Information:] Feature container shape: ", params_dict['feature_data_container_np'].shape)
+
+
+def output_wave(output_prefix_name):
+    # save audio
+    if cfg.general.bool_output_wave:
+        # date_time = '-'.join('-'.join(str(datetime.now()).split('.')[0].split(' ')).split(':'))
+        date_time = str(datetime.now()).split(' ')[0]
+        output_path = os.path.join(cfg.test.output_folder, output_dict['subfolder_name'], '{}_{}_{}.wav'.format(output_prefix_name, date_time, output_dict['output_kws_id']))
+        wave_loader = WaveLoader_Python.WaveLoader(cfg.general.sample_rate)
+        wave_loader.save_data(np.array(params_dict['output_wave_list']), output_path)
+        output_dict['output_kws_id'] += 1
 
 
 def run_kws():
@@ -153,16 +197,16 @@ def run_asr():
 
     feature_data_asr = params_dict['feature_data_container_np'].astype(np.float32)
     asr_net.blobs[cfg.model.asr_net_input_name].data[...] = np.expand_dims(feature_data_asr, axis=0)
+    # print(feature_data_asr)
 
     net_output = asr_net.forward()[cfg.model.asr_net_output_name]
     net_output = np.squeeze(net_output)
     net_output = net_output.T
+    # print(net_output)
 
     # decode
     if cfg.general.decode_id == 0:
-        decode_c = Decode_C.Decode()
-        decode_c.ctc_decoder(net_output)
-        result_id = decode_c.result_id_to_numpy()
+        result_id = decode_python.ctc_decoder(net_output)
     elif cfg.general.decode_id == 1:
         result_id = decode_python.ctc_beam_search(net_output, 5, 0, bswt=1.0, lmwt=0.3)
     else:
@@ -170,49 +214,23 @@ def run_asr():
 
     if cfg.general.language_id == 0:
         result_string = decode_python.output_symbol(result_id)
-        control_command_string, not_control_command_string = result_string, result_string
     elif cfg.general.language_id == 1:
-        result_string = decode_python.output_symbol_english(result_id)
-        matched_string = decode_python.match_kws_english(result_string.split(' '))
-        control_command_string, not_control_command_string = decode_python.match_kws_english_control_command(matched_string)
-        # control_command_string, not_control_command_string = result_string, result_string
+        result_symbol_english = decode_python.output_symbol_english(result_id).strip()
+        result_string_list = decode_python.match_keywords_english(result_symbol_english.split(' '), cfg.general.kws_list, cfg.general.kws_dict)
+        result_string = decode_python.output_result_string(result_string_list)
+        # control_command_string, not_control_command_string = decode_python.match_kws_english_control_command(result_string)
+
+        print(result_id)
+        print(result_symbol_english)
     else:
         print("[Unknow:] cfg.general.language_id. ")
 
-    return result_string, control_command_string, not_control_command_string
+    return result_string
 
 
 def run_kws_asr(audio_data):
-
-    # 加载音频数据，用于打印输出
-    if len(params_dict['output_wave_list']) < cfg.general.total_time_samples:
-        params_dict['output_wave_list'].extend(audio_data)
-    else:
-        params_dict['output_wave_list'] = params_dict['output_wave_list'][cfg.general.window_size_samples:]
-        params_dict['output_wave_list'].extend(audio_data)
-
-    # 如果有保留的音频数据，进行拼接
-    if len(params_dict['audio_data_container_np']):
-        audio_data = np.concatenate((params_dict['audio_data_container_np'], audio_data), axis=0)
-    
-    # 存储一定时间的音频，用于后续计算特征
-    params_dict['audio_data_container_np'] = audio_data[len(audio_data) - cfg.general.window_container_samples:]
-    # print("[Information:] Audio length: ", len(audio_data), len(params_dict['audio_data_container_np']))
-
-    # 计算特征
-    feature = Feature(cfg.general.sample_rate, len(audio_data)/cfg.general.sample_rate, int(cfg.general.feature_freq), int(cfg.general.nfilt))
-    feature.get_mel_int_feature(audio_data, len(audio_data))
-    feature_data = feature.copy_mfsc_feature_int_to()
-    # print("[Information:] Feature shape: ", feature_data.shape)
-
-    # 更新特征
-    if not params_dict['feature_data_container_np'].shape[0]:
-        params_dict['feature_data_container_np'] = feature_data
-    elif params_dict['feature_data_container_np'].shape[0] < cfg.general.feature_container_time:
-        params_dict['feature_data_container_np'] = np.concatenate((params_dict['feature_data_container_np'][: -cfg.general.feature_remove_after_time], feature_data), axis=0)
-    else:
-        params_dict['feature_data_container_np'] = np.concatenate((params_dict['feature_data_container_np'][cfg.general.feature_remove_before_time: -cfg.general.feature_remove_after_time], feature_data), axis=0)
-    # print("[Information:] Feature container shape: ", params_dict['feature_data_container_np'].shape)
+    # 准备数据和特征
+    papare_data_and_feature(audio_data)
 
     # 如果语音特征未装满容器，不进行唤醒和关键词检测
     if params_dict['feature_data_container_np'].shape[0] < cfg.general.feature_container_time:
@@ -224,22 +242,21 @@ def run_kws_asr(audio_data):
         bool_find_kws, kws_score_list = run_kws()
 
         if bool_find_kws:
-            print("[Information:] Find Kws Weakup")
+            # 打印结果
+            print("\n===============!!!!!!!!!!!!!!===============")
+            print("********************************************")
+            print("** ")
+            print("** [Information:] Device Weakup: ", "Weakup")
+            print("** ")
+            print("********************************************\n")
+
             params_dict['bool_weakup'] = True
-
+            
             # save audio
-            if cfg.general.bool_output_wave and cfg.general.bool_output_csv:
-                output_path = os.path.join(cfg.test.output_folder, output_dict['subfolder_name'], 'label_{}_starttime_{}.wav'.format(cfg.model.kws_label, int(output_dict['sliding_window_start_time_ms'])))
-                wave_loader = WaveLoader(cfg.general.sample_rate)
-                wave_loader.save_data(np.array(params_dict['output_wave_list']), output_path)
+            output_wave("Weakup")
 
+            if cfg.general.bool_output_csv:
                 output_dict['csv_found_words'].append({'label':cfg.model.kws_label, 'start_time':int(output_dict['sliding_window_start_time_ms']), 'end_time': int(output_dict['sliding_window_start_time_ms'] + cfg.general.total_time_ms)})
-                
-            elif cfg.general.bool_output_wave:
-                wave_loader = WaveLoader(cfg.general.sample_rate)
-                date_time = '-'.join('-'.join(str(datetime.now()).split('.')[0].split(' ')).split(':'))
-                wave_loader.save_data(np.array(params_dict['output_wave_list']), os.path.join(cfg.test.output_folder, "Weakup_{}_{:0>4d}.wav".format(date_time, params_dict['output_kws_id'])))
-                params_dict['output_kws_id'] += 1
 
         if cfg.general.bool_output_csv:
             for idx in range(len(kws_score_list)):
@@ -254,9 +271,21 @@ def run_kws_asr(audio_data):
             params_dict['counter_asr'] -= 1
 
             # asr
-            result_string, control_command_string, _ = run_asr()
-            print("[Information:] kws asr outKeyword: ", result_string)
-            # print("[Information:] kws asr outKeyword: ", control_command_string)
+            result_string = run_asr()
+        
+            # 打印结果
+            if len(result_string):
+                print("\n===============!!!!!!!!!!!!!!===============")
+                print("********************************************")
+                print("** ")
+                print("** [Information:] Detect Command: ", result_string)
+                print("** ")
+                print("********************************************\n")
+
+                # save audio
+                output_wave("ASR_" + result_string)
+            else:
+                print("\n** [Information:] Detecting ... ")
         
         # if cfg.general.bool_output_csv:
         #     _, kws_score_list = run_kws()
@@ -274,10 +303,20 @@ def run_kws_asr(audio_data):
     if params_dict['counter_asr'] == cfg.general.asr_suppression_counter:
         params_dict['counter_asr'] = 0
 
-        result_string, _, not_control_command_string = run_asr()
-        print("[Information:] asr outKeyword: ", result_string)
-        # print("[Information:] asr outKeyword: ", not_control_command_string)
+        result_string = run_asr()
 
+        # 打印结果
+        if len(result_string):
+            print("\n===============!!!!!!!!!!!!!!===============")
+            print("********************************************")
+            print("** ")
+            print("** [Information:] Detect Command: ", result_string)
+            print("** ")
+            print("********************************************\n")
+            # save audio
+            output_wave("ASR_" + result_string)
+        else:
+            print("\n** [Information:] Detecting ... ")
 
 
 def KWS_ASR_offine():
@@ -290,9 +329,10 @@ def KWS_ASR_offine():
     output_dict['csv_original_scores'] = []
     output_dict['csv_found_words'] = []
     output_dict['subfolder_name'] = ''
+    output_dict['output_kws_id'] = 1
 
     # load wave
-    wave_loader = WaveLoader(cfg.general.sample_rate)
+    wave_loader = WaveLoader_C.WaveLoader(cfg.general.sample_rate)
     wave_loader.load_data(cfg.test.input_wav)
     wave_data = wave_loader.to_numpy()
 
@@ -318,6 +358,7 @@ def KWS_ASR_offine():
 def KWS_ASR_offine_perfolder():
     # param_init
     param_init()
+    output_dict['output_kws_id'] = 1
 
     # kws_asr_init
     kws_asr_init()
@@ -328,24 +369,29 @@ def KWS_ASR_offine_perfolder():
     for idx in range(len(wave_list)):
         if not wave_list[idx].endswith('.wav'):
             continue
-        
+
         # param_init
         param_init()
 
         wave_path = os.path.join(cfg.test.input_folder, wave_list[idx])
+        print("[Information:] Audio path: ", wave_path)
 
         # init 
         output_dict['csv_original_scores'] = []
         output_dict['csv_found_words'] = []
-        output_dict['subfolder_name'] = os.path.basename(wave_path).split('.')[0]
+        output_dict['subfolder_name'] = ''
+        # output_dict['subfolder_name'] = os.path.basename(wave_path).split('.')[0]
+        # output_dict['output_kws_id'] = 1
     
         # mkdir
-        output_path = os.path.join(cfg.test.output_folder, output_dict['subfolder_name'])
-        if not os.path.exists(output_path):
-            os.makedirs(output_path)
+        if cfg.general.bool_output_wave or cfg.general.bool_output_csv:
+            output_path = os.path.join(cfg.test.output_folder, output_dict['subfolder_name'])
+            if not os.path.exists(output_path):
+                os.makedirs(output_path)
 
         # load wave
-        wave_loader = WaveLoader(cfg.general.sample_rate)
+        # wave_loader = WaveLoader_C.WaveLoader(cfg.general.sample_rate)
+        wave_loader = WaveLoader_Python.WaveLoader(cfg.general.sample_rate)
         wave_loader.load_data(wave_path)
         wave_data = wave_loader.to_numpy()
 
@@ -356,7 +402,7 @@ def KWS_ASR_offine_perfolder():
             # get audio data
             audio_data = wave_data[times * int(cfg.general.window_stride_samples): times * int(cfg.general.window_stride_samples) + int(cfg.general.window_size_samples)]
             print("[Information:] Audio data stram: {} - {}, length: {} ".format((times * int(cfg.general.window_stride_samples)), (times * int(cfg.general.window_stride_samples) + int(cfg.general.window_size_samples)), len(audio_data)))
-            # print(audio_data)
+            print(audio_data)
 
             output_dict['sliding_window_start_time_ms'] = (((times - 2) * int(cfg.general.window_stride_samples)) / cfg.general.sample_rate) * 1000
             run_kws_asr(audio_data)

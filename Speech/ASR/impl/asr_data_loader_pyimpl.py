@@ -1,5 +1,6 @@
 import librosa
 import numpy as np
+import os
 
 class WaveLoader(object):
     """ wav loader python wrapper """
@@ -17,7 +18,9 @@ class WaveLoader(object):
     def save_data(self, data, output_path):
         data = data.astype(np.float32)
         audio_sample = data / float(pow(2, 15))
-        librosa.output.write_wav(output_path, audio_sample, sr=self.sample_rate)
+        temp_path = os.path.join(os.path.dirname(output_path), '{}.wav'.format('temp'))
+        librosa.output.write_wav(temp_path, audio_sample, sr=self.sample_rate)
+        os.system('sox {} -b 16 -e signed-integer {}'.format(temp_path, output_path))
         return
 
     def data_length(self):

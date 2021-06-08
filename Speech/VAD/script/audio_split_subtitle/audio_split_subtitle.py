@@ -363,7 +363,9 @@ def audio_split_subtitle(args):
 
         # out 
         output_path = os.path.join(output_dir, args.output_format.format(args.movie_id, srt['idx']))
-        librosa.output.write_wav(output_path, audio_sample, sample_rate) 
+        temp_path = os.path.join(output_dir, '{}.wav'.format('temp'))
+        librosa.output.write_wav(temp_path, audio_sample, sample_rate) 
+        os.system('sox {} -b 16 -e signed-integer {}'.format(temp_path, output_path))
     print("Split audio Done!")
 
     # output label.csv
@@ -393,9 +395,9 @@ def audio_split_subtitle(args):
 
 def main():
     parser = argparse.ArgumentParser(description="Audio Split Using Subtitle")
-    parser.add_argument('--audio_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/哪吒.wav") 
-    parser.add_argument('--subtitle_path', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/Fatale.2021.1080p.Bluray.DTS.X264-EVO_1617347319189.srt") 
-    parser.add_argument('--output_dir', type=str, default="/mnt/huanyuan/data/speech/Recording_sample/MKV_movie_sample/subtitle_result/")
+    parser.add_argument('--audio_path', type=str, default="/mnt/huanyuan/data/speech/Recording/RM_Movie/MKV_movie_sample/13Hours/13Hours.wav") 
+    parser.add_argument('--subtitle_path', type=str, default="/mnt/huanyuan/data/speech/Recording/RM_Movie/MKV_movie_sample/13Hours/13Hours.srt") 
+    parser.add_argument('--output_dir', type=str, default="/mnt/huanyuan/data/speech/Recording/RM_Movie/MKV_movie_sample/13Hours/subtitle_result/")
     parser.add_argument('--language', type=str, choices=["Chinese", "English"], default="English")
     parser.add_argument('--file_encoding', type=str, choices=["gbk", "utf-8", "gb2312"], default="utf-8")
     parser.add_argument('--time_shift', type=str, default="-,0.0")

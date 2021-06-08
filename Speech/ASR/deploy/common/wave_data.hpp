@@ -1,6 +1,8 @@
 #ifndef _ASR_WAVE_DATA_H_
 #define _ASR_WAVE_DATA_H_
 
+#include <vector>
+
 typedef signed char int8_t;
 typedef unsigned char uint8_t;
 typedef signed short int int16_t;
@@ -33,11 +35,13 @@ namespace ASR
 		Wave_Data_S(): 
 			data(nullptr), 	
 			data_length(0),
-			fs(0) {}
+			fs(0),
+			channel(1) {}
 
 		int16_t *data;
 		unsigned int data_length;
 		unsigned short fs;
+		unsigned int channel;
 	};
 	
 	class Wave_Data
@@ -49,16 +53,20 @@ namespace ASR
 		inline int data_length() const { return m_wave_data.data_length; } 
 		inline int fs() const { return m_wave_data.fs; } 
 		inline int16_t *data() { return m_wave_data.data; }
+		inline int channel() { return m_wave_data.channel; }
 	
 	public:
 		int load_data(const char *filename);
-		void write_data(int16_t *data, unsigned int data_length, unsigned short fs, const char *filename);
+		void write_data(int16_t *data, int data_length, int fs, const char *filename);
 		void copy_data_to(int16_t *data);
 		void clear_state();
+		short get(int32_t i, int8_t c=0);
 		
 	private:
 		Wave_Data_S m_wave_data;
 	};
+
+	int load_pcm_data(const char *filename, std::vector<short> &wave_data);
 } // namespace ASR
 
 #endif // _ASR_WAVE_DATA_H_

@@ -142,7 +142,7 @@ def run_asr():
     decode_c.ctc_decoder(net_output)
     result_id = decode_c.result_id_to_numpy()
     result_string = decode_python.output_symbol_english(result_id)
-    matched_string = decode_python.match_kws_english(result_string.split(' '))
+    matched_string = decode_python.match_keywords_english(result_string.split(' '))
     control_command_string, not_control_command_string = decode_python.match_kws_english_control_command(matched_string)
     return result_string, control_command_string, not_control_command_string
 

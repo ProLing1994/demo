@@ -4,9 +4,6 @@ import numpy as np
 import kenlm
 
 
-kws_list = [['start', 'record'], ['stop', 'record'], ['mute', 'audio'], ['unmute', 'audio'],
-            ['shot', 'fire'], ['freeze'], ['drop', 'gun'], ['keep', 'hand'], ['put', 'hand'], ['down', 'ground']]
-
 control_command_list = [['start', 'record'], ['stop', 'record'], ['mute', 'audio'], ['unmute', 'audio']]
 
 
@@ -65,6 +62,38 @@ def edit_distance_pinyin(sentence1, sentence2):
                            min(dp[i-1][j] + 1, dp[i][j - 1] + 1))
     return dp[len1][len2]
 
+def remove_number_english_string(word):
+    res_word = ''
+    for idx in range(len(word)):
+        if word[idx] >= '0' and word[idx] <= '9':
+            continue
+        else:
+            res_word += word[idx]
+    return res_word
+
+def match_english_string_verb(key_word, symbol_word):
+    key_word_without_number = remove_number_english_string(key_word)
+    symbol_word_without_number = remove_number_english_string(symbol_word)
+
+    if len(symbol_word_without_number) < len(key_word_without_number):
+        return False
+    
+    dist = edit_distance_symbol(key_word_without_number, symbol_word_without_number[:len(key_word_without_number)]) 
+
+    if dist == 0:
+        return True
+    else:
+        return False
+
+def match_english_string_noum(key_word, symbol_word):
+    key_word_without_number = remove_number_english_string(key_word)
+    symbol_word_without_number = remove_number_english_string(symbol_word)
+
+    dist = edit_distance_symbol(key_word_without_number, symbol_word_without_number)
+    if dist == 0 or (dist < 2 and len(key_word_without_number) > 4) or (dist < 3 and len(key_word_without_number) > 6):
+        return True
+    else:
+        return match_english_string_verb(key_word, symbol_word)
 
 class Decode(object):
     """ decode python wrapper """
@@ -76,7 +105,27 @@ class Decode(object):
         pass
 
     def ctc_decoder(self, input_data):
-        pass
+        # init
+        result_id = []
+        blank_id = 0
+        last_max_id = 0
+        frame_num = input_data.shape[0];
+        feature_num = input_data.shape[1];
+
+        for idx in range(frame_num):
+            max_value = input_data[idx][0]
+            max_id = 0
+
+            for idy in range(feature_num):
+                if input_data[idx][idy] > max_value:
+                    max_value = input_data[idx][idy]
+                    max_id = idy
+            
+            if max_id != blank_id and last_max_id != max_id:
+                result_id.append(max_id)
+                last_max_id = max_id;
+                print("id: ", max_id, ", value: ", max_value)
+        return result_id
 
     def result_id_length(self):
         pass
@@ -116,61 +165,78 @@ class Decode(object):
             output_symbol += " "
         return output_symbol
 
-    def match_kws_english(self, string_list):
+    def output_result_string(self, sting_list):
+        res_string = ''
+        for idx in range(len(sting_list)):
+            res_string += sting_list[idx]
+            res_string += ' '
+        return res_string.strip()
+
+    def match_keywords_english(self, english_symbol_list, kws_list, kws_dict):
         # init
-        match_list = []
-        output_list = []
+        res_sting_list = []
+        matching_lable_list = []            # 容器，记录匹配的 label
 
-        # 使用堆的方法进行遍历
-        # 遍历字符串
-        for idx in range(len(string_list)):
-            string_idx = string_list[idx]
+        # init matching_state_list，匹配状态容器
+        matching_state_list = []            # {'words':[], 'lable':[], 'length':0, 'matched_id':-1}
+        for idx in range(len(kws_list)):
+            kws_idx = kws_list[idx]
+            for idy in range(len(kws_dict[kws_idx])):
+                matching_state_dict = {}
+                matching_state_dict['words'] = kws_dict[kws_idx][idy].strip().split(" ")
+                matching_state_dict['lable'] = kws_idx
+                matching_state_dict['length'] = len(kws_dict[kws_idx][idy].strip().split(" "))
+                matching_state_dict['matched_id'] = -1
+                matching_state_list.append(matching_state_dict)
 
-            # 遍历模板
-            bool_find_kws = False
-            for idy in range(len(kws_list)):
-                kws_idx = kws_list[idy]
+        # 遍历 english_symbol_list
+        for idx in range(len(english_symbol_list)):
+            # 遍历 matching_state_list
+            for idy in range(len(matching_state_list)):
+                # init
+                match_bool = False
+                words = matching_state_list[idy]['words'];
+                lable = matching_state_list[idy]['lable'];
+                length = matching_state_list[idy]['length'];
+                matched_id = matching_state_list[idy]['matched_id'];
 
-                # 遍历模板成员
-                for idz in range(len(kws_idx)):
-                    # To do：匹配策略，即使更新
-                    # 匹配策略，任意匹配 [ing, ed, s]
-                    if kws_idx[idz] in string_idx and kws_idx[idz] == string_idx[:len(kws_idx[idz])]:
-                        # 若遍历至模板成员最后一个成员，遍历堆中结果，判断模板成员是否均存在
-                        if idz == len(kws_idx) - 1:
-                            if len(match_list) >= len(kws_idx) - 1:
-                                # 针对长度为 1 的匹配词
-                                bool_find_kws = True if len(kws_idx) - 1 == 0 else False
+                # 当前策略：
+                # 动词：任意匹配 [ing, ed, s]；
+                if matched_id + 1 == 0:
+                    match_bool = match_english_string_verb(words[matched_id + 1], english_symbol_list[idx])
+                # 名词：编辑距离小于 1 或者任意匹配 [ing, ed, s]
+                elif matched_id + 1 < length:
+                    match_bool = match_english_string_noum(words[matched_id + 1], english_symbol_list[idx])
+                else:
+                    continue
 
-                                # 针对长度大于 1 的匹配词，逆序匹配
-                                for idf in range(len(kws_idx) - 1):
-                                    bool_find_kws = True if match_list[-1 - idf] == kws_idx[-2 - idf] else False
-                        else:
-                            # 建堆, 添加到匹配池中
-                            match_list.append(kws_idx[idz])
+                if match_bool:
+                    # 更新 matched_id
+                    matched_id = matched_id + 1
+                    matching_state_list[idy]['matched_id'] = matched_id
 
-                        if bool_find_kws:
-                            output_list.append(kws_idx)
+                    # # 查询匹配成功的字符
+                    # print("匹配成功字符：", english_symbol_list[idx], ": ", words[matched_id]);
+                    # print("匹配成功长度：", matched_id + 1, "/", length);
 
-                            # 清除匹配池
-                            for idf in range(len(kws_idx) - 1):
-                                match_list.pop()
+                    if matched_id + 1 == length:
+                        find_matching_lable_bool = True if lable in matching_lable_list else False
 
-                if bool_find_kws:
-                    break
+                        if not find_matching_lable_bool:
+                            matching_lable_list.append(lable)
+                            res_sting_list.append(lable)
+        return res_sting_list
 
-        return output_list
-
-    def match_kws_english_control_command(self, string_list):
+    def match_kws_english_control_command(self, english_symbol_list):
         # init
         output_control_command_list = []
         output_not_control_command_list = []
 
-        for idx in range(len(string_list)):
-            if string_list[idx] in control_command_list:
-                output_control_command_list.append(string_list[idx])
+        for idx in range(len(english_symbol_list)):
+            if english_symbol_list[idx] in control_command_list:
+                output_control_command_list.append(english_symbol_list[idx])
             else:
-                output_not_control_command_list.append(string_list[idx])
+                output_not_control_command_list.append(english_symbol_list[idx])
         return output_control_command_list, output_not_control_command_list
 
     def ctc_beam_search(self, prob, beamSize, blankID, bswt=1.0, lmwt=0.3, beams_topk=[]):
@@ -187,7 +253,7 @@ class Decode(object):
             one["lmState"] = newState
         '''
         # 取对数，np.log，用于和语言模型得分相加
-        prob = np.log(prob)
+        prob = np.log(prob + 0.001)
 
         # init
         frame_num = prob.shape[0]
@@ -196,7 +262,8 @@ class Decode(object):
         _, init_lm_score = self.lm.compute(state=[], word="UNK")
         init_lm_score *= lmwt
         if(len(beams_topk) == 0):
-            beams_topk = [{"words": [""], "ali":[0], "result_id":[0], "lmState":["<s>"], "bs":0, "lm":init_lm_score, "total":0}]
+            # beams_topk = [{"words": [""], "ali":[0], "result_id":[0], "lmState":["<s>"], "bs":0, "lm":init_lm_score, "total":0}]
+            beams_topk = [{"words": [""], "ali":[0], "result_id":[0], "lmState":["<s>"], "bs":0, "lm":0.0, "total":0}]
 
         for i in range(frame_num):
             tmp_beams = []
@@ -212,14 +279,16 @@ class Decode(object):
 
                     if(bs_score < -1.6):
                         continue
-
+                    
+                    # print("id: ", id, ", bs_score: ", bs_score)
                     tmp_beam = copy.deepcopy(preResult)
 
                     # 1. compute LM score
                     # ignore blank
                     if id != blankID:  
                         # ignore continuous repeated symbols
-                        if len(tmp_beam["ali"]) == 1 or id != tmp_beam["ali"][-1]:
+                        # if len(tmp_beam["ali"]) == 1 or id != tmp_beam["ali"][-1]:
+                        if len(tmp_beam["ali"]) == 1 or id != tmp_beam["result_id"][-1]:
                             symbol = self.id2word[id]
                             newState, lmScore = self.lm.compute(state=tmp_beam["lmState"], word=symbol)
                             tmp_beam["words"].append(symbol)

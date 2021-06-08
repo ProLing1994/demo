@@ -22,5 +22,5 @@ if __name__ == "__main__":
 
         # decode 
         decode = Decode()
-        decode_result = decode.match_kws_english(string_idx)
+        decode_result = decode.match_keywords_english(string_idx)
         print("[Information:] Result: ", decode_result)
