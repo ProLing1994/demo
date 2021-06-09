@@ -2,7 +2,6 @@ import os
 import sys
 import argparse
 import time
-sys.path.append('/data/engineer/lbj/ASR/torch_version')
 
 import cv2
 import torch
@@ -10,18 +9,20 @@ import torch.nn.parallel
 import matplotlib.pyplot as plt
 import torch.optim
 import numpy as np
-from asr.networks import deepspeech,network_nofc,network_lianyong,ASR_english_phoneme
-from asr.general_function.get_mfcc import GetMfscFeature
-from asr.rm_asr.simple_beam_search import ctc_beam_search,Ken_LM
 import scipy.io.wavfile as wav
 import configparser
 import wave
 import random
 import soundfile as sf
 
+sys.path.append('/home/huanyuan/code/demo/Temp/asr_english')
+import ASR_english_phoneme
+from get_mfcc import GetMfscFeature
+from simple_beam_search import ctc_beam_search,Ken_LM
+
 
 algorithem_dict={'0':'Mandarin_Normal','1':'Mandarin_Taxi','2':'Mandarin_Railway','3':'Mandarin_Buslounge','4':'English_BWC_Phoneme'}
-
+freeze=['_F','R','IY1','Z']
 label_gt=['xian', 'zai', 'kai', 'shi', 'ce','shi', 'guan', 'bi', 'che', 'chuang', 'guan', 'bi',
           'kong', 'tiao', 'kai', 'che', 'zai', 'lu', 'shang ',
           'ta', 'ma', 'de', 'wo', 'ri', 'ma', 'le', 'ge', 'bi',
@@ -124,13 +125,13 @@ def match_kws(input):
                                 break
                             dist = GetEditDistance_RM(input[i:min(slen,i + len(pinyin_tmp[j][1]))], pinyin_tmp[j][1])
                             if(dist<=1):
-                                match_string += kws_tmp[j] + '    '
+                                match_string += kws_tmp[j] + ' '
                                 del kws_tmp[j]
                                 del pinyin_tmp[j]
                                 break
                         else:
                             i=i-1
-                            match_string += kws_tmp[j] + '    '
+                            match_string += kws_tmp[j] + ' '
                             del kws_tmp[j]
                             del pinyin_tmp[j]
                             break
@@ -142,7 +143,7 @@ def match_kws(input):
                     dist=GetEditDistance_RM(input[i:i+len(pinyin_tmp[j])],pinyin_tmp[j])
                     if((dist==0) or(len(pinyin_tmp[j])>6 and dist<2) or(len(pinyin_tmp[j])>9 and dist<3)):
                         i = i + len(pinyin_tmp[j]) - 2
-                        match_string+=kws_tmp[j]+'    '
+                        match_string+=kws_tmp[j]+' '
                         del kws_tmp[j]
                         del pinyin_tmp[j]
                         break
@@ -382,14 +383,101 @@ def sigmoid(x):
 def tanh(x):
     return (np.exp(x) - np.exp(-x)) / (np.exp(x) + np.exp(-x))
 
-
 def eval(model,lm,algorithem_id):
     model.eval()
-    wav_path = './test_wav/test-kws-xiaorui-asr-mandarin.wav'
-    fs, wavsignal = wav.read(wav_path)
-    if(0):
-        wavsignal=wavsignal[::2]
-        fs=8000
+    save_id=0
+    # data_path= "/home/huanyuan/share/audio_data/demo_test/"
+    # sub_dir = ["test"]
+    data_path= "/home/huanyuan/share/audio_data/english_wav/"
+    sub_dir = ["office_false_alarm"]
+    # sub_dir = ["test_one_case"]
+    # wav_path = 'G:/DATASET/speech_recognition/英文音频/电影素材/0607/tt.wav'
+    # sub_dir = os.listdir(data_path)
+    # for sub in sub_dir[2:3]:
+    for sub in sub_dir:
+        wav_list=os.listdir(os.path.join(data_path,sub))
+        wav_list.sort()
+        for w in wav_list:
+            if not w.endswith('.wav'):
+                continue
+            print('wave path: ',w)
+            wav_path=os.path.join(data_path, sub ,w)
+            wavsignal,fs = sf.read(wav_path,dtype='int16')
+            if(0):
+                wavsignal=wavsignal[::2]
+                fs=8000
+            for t in range(0, len(wavsignal) - 47999, 32000):
+                tmp_wav=wavsignal[t:t+48000].copy()
+                # tmp_wav=wavsignal[t:t+16000].copy()
+                feat = GetMfscFeature(tmp_wav, fs)
+                if (1):
+                    feat = feat * 255 / 10
+                    feat = feat.astype(int)
+                    a = np.where(feat > 255)
+                    feat[a] = 255
+                    a = np.where(feat < 0)
+                    feat[a] = 0
+                input_var = feat[np.newaxis, :, :, np.newaxis].astype(np.float32)
+                input_var = input_var.transpose(0, 3, 1, 2)
+                input_var = torch.from_numpy(input_var)
+                with torch.no_grad():
+                    input_var = torch.autograd.Variable(input_var.cuda())
+                    fc_outputs = model(input_var)
+                    fc_outputs = fc_outputs.cpu().detach().numpy()
+                    fc_outputs = fc_outputs[:, :, :-1]
+                    pred_b = []
+                    if (0):
+                        out_batch = greedy_decode(fc_outputs)
+                        for i in range(len(out_batch)):
+                            pred = []
+                            for id in out_batch[i]:
+                                if (id != 0):
+                                    # pred.append(dicts_tone[id][:-1])
+                                    if (asr_dicts[id] in ignore_tongue_table):
+                                        pred.append(ignore_tongue_table[asr_dicts[id]])
+                                    else:
+                                        pred.append(asr_dicts[id])
+                            print('pred: ',pred)
+                    else:
+                        out_batch = ctc_beam_search(fc_outputs[0], lm, 5, 0, asr_dicts, bswt=1.0, lmwt=0.3)
+                        pred=out_batch[0]['words']
+                        print('predict words: ', output_symbol_english(pred))
+                    match_string=match_kws(pred)
+                    if(match_string):
+                        #sf.write('D:/python_script/asr/rm_asr/save_wav/0608/'+match_string+str(save_id)+'.wav',tmp_wav,fs)
+                        save_id+=1
+                        #print('predict words: ', pred)
+                        print('match_string: ',match_string)
+                        wordscore = out_batch[0]['wordscore']
+                        for p in range(len(wordscore)):
+                            if (wordscore[p][0] == freeze[0] and wordscore[p + 1][0] == freeze[1] and
+                                    wordscore[p + 2][0] == freeze[2] and wordscore[p + 3][0] == freeze[3]):
+                                freeze_score = wordscore[p][1] + wordscore[p + 1][1] + wordscore[p + 2][1] + \
+                                               wordscore[p + 3][1]
+                                print("freezescore", freeze_score)
+                                break
+
+def output_symbol_english(result_symbol):
+    output_symbol = ""
+    for idx in range(len(result_symbol)):
+        symbol = result_symbol[idx]
+
+        if symbol[0] == '_':
+            if idx != 0:
+                output_symbol += " "
+            output_symbol += symbol[1:]
+        else:
+            output_symbol += symbol
+    if len(result_symbol):
+        output_symbol += " "
+    return output_symbol
+
+
+def eval0(model,lm,algorithem_id):
+    model.eval()
+    save_id=0
+    wav_path = 'G:/DATASET/speech_recognition/英文音频/标注样本/0426/wav/RM_Foreigner_English_BWC_S009P6.wav'
+    wavsignal,fs = sf.read(wav_path,dtype='int16')
     feat = GetMfscFeature(wavsignal, fs)
     if (1):
         feat = feat * 255 / 10
@@ -403,9 +491,8 @@ def eval(model,lm,algorithem_id):
     input_var = torch.from_numpy(input_var)
     with torch.no_grad():
         input_var = torch.autograd.Variable(input_var.cuda())
-        fc_outputs,_ = model(input_var)
+        fc_outputs = model(input_var)
         fc_outputs = fc_outputs.cpu().detach().numpy()
-        print(np.argmax(fc_outputs,axis=-1))
         fc_outputs = fc_outputs[:, :, :-1]
         pred_b = []
         if (0):
@@ -420,15 +507,23 @@ def eval(model,lm,algorithem_id):
                         else:
                             pred.append(asr_dicts[id])
                 print('pred: ',pred)
-                pred_b.append(pred)
         else:
             out_batch = ctc_beam_search(fc_outputs[0], lm, 5, 0, asr_dicts, bswt=1.0, lmwt=0.3)
             pred=out_batch[0]['words']
+            #print('predict words: ', pred)
+        match_string=match_kws(pred)
+        if(match_string):
+            save_id+=1
             print('predict words: ', pred)
-            match_string=match_kws(pred)
             print('match_string: ',match_string)
-            pred_b.append(pred)
-
+            if(match_string=='freeze '):
+                wordscore=out_batch[0]['wordscore']
+                for p in range(len(wordscore)):
+                    if(wordscore[p][0]==freeze[0] and wordscore[p+1][0]==freeze[1] and wordscore[p+2][0]==freeze[2] and wordscore[p+3][0]==freeze[3]):
+                        freeze_score=wordscore[p][1]+wordscore[p+1][1]+wordscore[p+2][1]+wordscore[p+3][1]
+                        print("freezescore",freeze_score)
+                        break
+                print()
 
 
 def tmp(model,lm,algorithem_id):
@@ -437,9 +532,9 @@ def tmp(model,lm,algorithem_id):
     fs, wavsignal = wav.read(wav_path)
     lmresult=[]
     lstm_state=None
-    for i in range(0,len(wavsignal)-9632,6400):
+    for i in range(0,len(wavsignal)-6400,4800):
         if(i==0):
-            feat_t = GetMfscFeature(wavsignal[0:9632], fs)
+            feat_t = GetMfscFeature(wavsignal[0:6400], fs)
             feat_t = feat_t * 255 / 10
             feat_t = feat_t.astype(int)
             a = np.where(feat_t > 255)
@@ -499,7 +594,7 @@ def initASR(checkpoint_file):
     else:
         asr_model = network_nofc.__dict__['Res18'](408, pretrained = False)
     asr_model=asr_model.cuda()
-    model_path='./checkpoint'
+    model_path= '/home/huanyuan/code/demo/Temp/asr_english/checkpoint'
     if(algorithem_id==1):
         checkpoint_file = os.path.join(model_path,'0520taxi/taxi_16k_64dim.pth')
         lm_file = os.path.join(model_path,'LM/3gram_taxi_408.bin')
@@ -513,9 +608,9 @@ def initASR(checkpoint_file):
         lm_file = os.path.join(model_path,'0511BUS/3gram_buslounge_408.bin')
         dict_file=os.path.join(model_path,'0511BUS/dict_buslounge.txt')
     elif(algorithem_id==4):
-        checkpoint_file = os.path.join(model_path, '0513/BWC_phoneme_64dim_6.4.pth')
-        lm_file = os.path.join(model_path,'0513/4gram_phoneme_136.bin')
-        dict_file=os.path.join(model_path,'0513/phoneme_dict.txt')
+        checkpoint_file = os.path.join(model_path, '0517BWC/BWC_phoneme_64dim.pth')
+        lm_file = os.path.join(model_path,'0517BWC/4gram_phoneme_136.bin')
+        dict_file=os.path.join(model_path,'0517BWC/phoneme_dict.txt')
     else:
         checkpoint_file = os.path.join(model_path,'0518hanzi/deepspeech408.epoch9.pth')
         lm_file = os.path.join(model_path,'LM/3gram_mandarin_408.bin')
@@ -535,7 +630,7 @@ def initASR(checkpoint_file):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='PyTorch CPN Test')
 
-    checkpoint_file = os.path.join('./checkpoint/configFileASR.cfg')
+    checkpoint_file = "/home/huanyuan/code/demo/Temp/asr_english/checkpoint/configFileASR.cfg"
     asr_model,lm,asr_dicts,kws_list,pinyin_list,algorithem_id=initASR(checkpoint_file)
 
     eval(asr_model,lm,algorithem_id)

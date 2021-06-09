@@ -35,17 +35,44 @@ __C.general.language_id = 1			                # 0： chinese  1： english
 __C.general.decode_id = 1			                # 0： greedy  1： beamsearch
 __C.general.asr_feature_time = 296                  # asr 网络特征时间维度，与语音特征容器长度相同
 __C.general.asr_suppression_counter = 2             # asr 激活后抑制时间，间隔 2s 执行一次 asr 检测
+
+# __C.general.kws_list = ['start_record', 'stop_record', 'mute_audio', 'unmute_audio', 'shot_fire', 'freeze', 'drop_gun', 'keep_hand', 'put_hand', 'down_ground']
+# __C.general.kws_dict = {'start_record':["STAA1RT RAH0KAO1RD", "STAA1RT RAH0KER0D", "STAA1RT RIH0KAO1RD", "STAA1RT RIH0KER0D", "STAA1R RAH0KAO1RD", "STAA1R RAH0KER0D", "STAA1R RIH0KAO1RD", "STAA1R RIH0KER0D"], 
+#                         'stop_record':["STAA1P RAH0KAO1RD", "STAA1P RAH0KER0D", "STAA1P RIH0KAO1RD", "STAA1P RIH0KER0D", "STAO1 RAH0KAO1RD", "STAO1 RAH0KER0D", "STAO1 RIH0KAO1RD", "STAO1 RIH0KER0D"], 
+#                         'mute_audio':["MYUW1T AA1DIY0OW2", "MYUW1 AA1DIY0OW2"], 
+#                         'unmute_audio':["AH0NMYUW1T AA1DIY0OW2", "AH0NMYUW1 AA1DIY0OW2"], 
+#                         'shot_fire':["SHAA1T FAY1ER0", "SHAA1T FEH1ER0", "SHAA1T FEH1", "SHAO1 FAY1ER0", "SHAO1 FEH1ER0", "SHAO1 FEH1"], 
+#                         'freeze':["FRIY1Z", "FRIY1"], 
+#                         'drop_gun':["DRAA1P GAH1N", "DRAA1P GAH1", "JHAA1P GAH1N", "JHAA1P GAH1", "JHOW1 GAH1N", "JHOW1 GAH1"], 
+#                         'keep_hand':["KIY1P HHAE1ND", "KIY1P HHEH1ND"], 
+#                         'put_hand':["PUH1T HHAE1ND", "PUH1T HHEH1ND", "PUH1 HHAE1ND", "PUH1 HHEH1ND"], 
+#                         'down_ground':["GEH1T DAW1N AA1N", "GEH1 DAW1N AA1N", "GEH1 DAW1 AA1N"]}
+
+# # strict
+# __C.general.kws_list = ['start_record', 'stop_record', 'mute_audio', 'unmute_audio', 'shot_fire', 'freeze', 'drop_gun', 'keep_hand', 'put_hand', 'down_ground']
+# __C.general.kws_dict = {'start_record':["STAA1RT RAH0KAO1RD", "STAA1RT RAH0KER0D", "STAA1RT RIH0KAO1RD", "STAA1RT RIH0KER0D"], 
+#                         'stop_record':["STAA1P RAH0KAO1RD", "STAA1P RAH0KER0D", "STAA1P RIH0KAO1RD", "STAA1P RIH0KER0D"], 
+#                         'mute_audio':["MYUW1T AA1DIY0OW2"], 
+#                         'unmute_audio':["AH0NMYUW1T AA1DIY0OW2"], 
+#                         'shot_fire':["SHAA1T FAY1ER0", "SHAA1T FEH1ER0", "SHAA1T FEH1"], 
+#                         'freeze':["FRIY1Z"], 
+#                         'drop_gun':["DRAA1P GAH1N", "DRAA1P GAH1"], 
+#                         'keep_hand':["KIY1P HHAE1ND", "KIY1P HHEH1ND"], 
+#                         'put_hand':["PUH1T HHAE1ND", "PUH1T HHEH1ND"], 
+#                         'down_ground':["GEH1T DAW1N AA1N"]}
+
+# stricter
 __C.general.kws_list = ['start_record', 'stop_record', 'mute_audio', 'unmute_audio', 'shot_fire', 'freeze', 'drop_gun', 'keep_hand', 'put_hand', 'down_ground']
-__C.general.kws_dict = {'start_record':["STAA1RT RAH0KAO1RD", "STAA1RT RAH0KER0D", "STAA1RT RIH0KAO1RD", "STAA1RT RIH0KER0D", "STAA1R RAH0KAO1RD", "STAA1R RAH0KER0D", "STAA1R RIH0KAO1RD", "STAA1R RIH0KER0D"], 
-                        'stop_record':["STAA1P RAH0KAO1RD", "STAA1P RAH0KER0D", "STAA1P RIH0KAO1RD", "STAA1P RIH0KER0D", "STAO1 RAH0KAO1RD", "STAO1 RAH0KER0D", "STAO1 RIH0KAO1RD", "STAO1 RIH0KER0D"], 
-                        'mute_audio':["MYUW1T AA1DIY0OW2", "MYUW1 AA1DIY0OW2"], 
-                        'unmute_audio':["AH0NMYUW1T AA1DIY0OW2", "AH0NMYUW1 AA1DIY0OW2"], 
-                        'shot_fire':["SHAA1T FAY1ER0", "SHAA1T FEH1ER0", "SHAA1T FEH1", "SHAO1 FAY1ER0", "SHAO1 FEH1ER0", "SHAO1 FEH1"], 
-                        'freeze':["FRIY1Z", "FRIY1"], 
-                        'drop_gun':["DRAA1P GAH1N", "DRAA1P GAH1", "JHAA1P GAH1N", "JHAA1P GAH1", "JHOW1 GAH1N", "JHOW1 GAH1"], 
-                        'keep_hand':["KIY1P HHAE1ND", "KIY1P HHEH1ND"], 
-                        'put_hand':["PUH1T HHAE1ND", "PUH1T HHEH1ND", "PUH1 HHAE1ND", "PUH1 HHEH1ND"], 
-                        'down_ground':["GEH1T DAW1N AA1N", "GEH1 DAW1N AA1N", "GEH1 DAW1 AA1N"]}
+__C.general.kws_dict = {'start_record':["STAA1RT RAH0KAO1RD"], 
+                        'stop_record':["STAA1P RAH0KAO1RD"], 
+                        'mute_audio':["MYUW1T AA1DIY0OW2"], 
+                        'unmute_audio':["AH0NMYUW1T AA1DIY0OW2"], 
+                        'shot_fire':["SHAA1T FAY1ER0"], 
+                        'freeze':["FRIY1Z"], 
+                        'drop_gun':["DRAA1P GAH1N"], 
+                        'keep_hand':["KIY1P HHAE1ND"], 
+                        'put_hand':["PUH1T HHAE1ND"], 
+                        'down_ground':["GEH1T DAW1N AA1N"]}
 
 __C.general.control_kws_list = ['start_record', 'stop_record', 'mute_audio', 'unmute_audio']
 
@@ -89,8 +116,10 @@ __C.model.kws_chw_params = "1,64,196"
 __C.model.kws_transpose = True
 
 # asr
-__C.model.asr_model_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06032021/asr_english_phoneme_16k_64_0603.caffemodel"
-__C.model.asr_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06032021/asr_english_phoneme_16k_64_0603.prototxt"
+# __C.model.asr_model_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06032021/asr_english_phoneme_16k_64_0603.caffemodel"
+# __C.model.asr_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06032021/asr_english_phoneme_16k_64_0603.prototxt"
+__C.model.asr_model_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06082021/asr_english_phoneme_16k_64_0608.caffemodel"
+__C.model.asr_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06082021/asr_english_phoneme_16k_64_0608.prototxt"
 __C.model.asr_net_input_name = "data"
 __C.model.asr_net_output_name = "prob"
 __C.model.asr_chw_params = "1,296,64"
@@ -116,8 +145,10 @@ __C.test.input_wav = "/mnt/huanyuan/data/speech/Recording/Daily_Record/jabra_510
 
 # input_folder
 # __C.test.input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/路边场景/场景二/"
-# __C.test.input_folder = "/home/huanyuan/share/audio_data/english_wav/office_false_alarm/"
+__C.test.input_folder = "/home/huanyuan/share/audio_data/english_wav/office_false_alarm/"
+# __C.test.input_folder = "/home/huanyuan/share/audio_data/english_wav/test_one_case/"
+# __C.test.input_folder = "/home/huanyuan/share/audio_data/english_wav/test_freeze/"
 # __C.test.input_folder = "/home/huanyuan/share/audio_data/demo_test/test/"
-__C.test.input_folder = "/mnt/huanyuan/data/speech/Recording/demo_kws_asr_online_api/2021-06-08-14-51-18"
+# __C.test.input_folder = "/mnt/huanyuan/data/speech/Recording/demo_kws_asr_online_api/2021-06-08-14-51-18"
 
 __C.test.output_folder = "/mnt/huanyuan/data/speech/Recording/demo_kws_asr_online_api/{}".format('-'.join('-'.join(str(datetime.now()).split('.')[0].split(' ')).split(':')))

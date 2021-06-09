@@ -390,8 +390,8 @@ def KWS_ASR_offine_perfolder():
                 os.makedirs(output_path)
 
         # load wave
-        # wave_loader = WaveLoader_C.WaveLoader(cfg.general.sample_rate)
-        wave_loader = WaveLoader_Python.WaveLoader(cfg.general.sample_rate)
+        wave_loader = WaveLoader_C.WaveLoader(cfg.general.sample_rate)
+        # wave_loader = WaveLoader_Python.WaveLoader(cfg.general.sample_rate)
         wave_loader.load_data(wave_path)
         wave_data = wave_loader.to_numpy()
 

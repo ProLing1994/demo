@@ -18,31 +18,30 @@ def GetMfscFeature(wavsignal, fs):
 
 
 def GetFrequencyFeature3(wavsignal, fs):
-    time_window = 32 
+    time_window = 32
     window_size = int(fs*32/1000)
-    time_step = 10  
+    time_step = 10
 
     x = np.linspace(0, window_size - 1, window_size, dtype=np.int64)
-    w = 0.54 - 0.46 * np.cos(2 * np.pi * x / (window_size - 1)) 
-    # window_length = fs / 1000 * time_window  
+    w = 0.54 - 0.46 * np.cos(2 * np.pi * x / (window_size - 1))
+    # window_length = fs / 1000 * time_window
     wav_arr = np.array(wavsignal)
 
     wav_length = wav_arr.shape[0]
     ww=len(wavsignal)
-    range0_end = int((len(wavsignal) / float(fs) * 1000 - time_window) // time_step) 
-    #print(range0_end,len(wavsignal),fs,time_window,time_step)
-    data_input = np.zeros((range0_end, int(window_size / 2)), dtype=np.float)  
-    for i in range(0, range0_end-1):
+    range0_end = int((len(wavsignal) / float(fs) * 1000 - time_window) // time_step)
+    data_input = np.zeros((range0_end, int(window_size / 2)), dtype=np.float)
+    for i in range(0, range0_end):
         p_start = int(i * fs*time_step/1000)
         p_end = p_start + window_size
         data_line = wav_arr[p_start:p_end]
         if(data_line.shape[0]!=w.shape[0]):
             continue
-        data_line = data_line * w  # 加窗
+        data_line = data_line * w  # 鍔犵獥
 
         data_line = np.abs(fft(data_line)) / window_size
 
-        data_input[i] = data_line[0:int(window_size / 2)] 
+        data_input[i] = data_line[0:int(window_size / 2)]
     #data_input = np.log(data_input + 1)
 
     return data_input
@@ -69,7 +68,7 @@ def mfsc(signal, samplerate=16000, winlen=0.025,winstep=0.01, numcep=13, nfilt=2
     feat, energy = fbank2(signal,samplerate,winlen,winstep,nfilt,nfft,lowfreq,highfreq,preemph,winfunc)
     #feat = numpy.log(feat+1)
 
-    # 对库函数一下三行进行注释掉了，如果需要请自行打开
+    # 瀵瑰簱鍑芥暟涓€涓嬩笁琛岃繘琛屾敞閲婃帀浜嗭紝濡傛灉闇€瑕佽鑷鎵撳紑
     #feat = dct(feat, type=2, axis=1, norm='ortho')[:,:numcep]
     feat=feat[:,:numcep]
 
@@ -118,26 +117,6 @@ def fbank2(signal,samplerate=16000,winlen=0.025,winstep=0.01,
     feat = numpy.where(feat == 0,numpy.finfo(float).eps,feat) # if feat is zero, we get problems with log
     #out_feat=numpy.concatenate((pspec[:,:20],feat[:,20:]),axis=1)
     return feat,energy
-
-def logfbank(signal,samplerate=16000,winlen=0.025,winstep=0.01,
-          nfilt=26,nfft=512,lowfreq=0,highfreq=None,preemph=0.97):
-    """Compute log Mel-filterbank energy features from an audio signal.
-
-    :param signal: the audio signal from which to compute features. Should be an N*1 array
-    :param samplerate: the samplerate of the signal we are working with.
-    :param winlen: the length of the analysis window in seconds. Default is 0.025s (25 milliseconds)
-    :param winstep: the step between successive windows in seconds. Default is 0.01s (10 milliseconds)
-    :param nfilt: the number of filters in the filterbank, default 26.
-    :param nfft: the FFT size. Default is 512.
-    :param lowfreq: lowest band edge of mel filters. In Hz, default is 0.
-    :param highfreq: highest band edge of mel filters. In Hz, default is samplerate/2
-    :param preemph: apply preemphasis filter with preemph as coefficient. 0 is no filter. Default is 0.97.
-    :returns: A numpy array of size (NUMFRAMES by nfilt) containing features. Each row holds 1 feature vector.
-    """
-    feat,energy = fbank(signal,samplerate,winlen,winstep,nfilt,nfft,lowfreq,highfreq,preemph)
-    return numpy.log(feat)
-
-
 def ssc(signal,samplerate=16000,winlen=0.025,winstep=0.01,
         nfilt=26,nfft=512,lowfreq=0,highfreq=None,preemph=0.97,
         winfunc=lambda x:numpy.ones((x,))):

@@ -100,6 +100,7 @@ class Decode(object):
 
     def __init__(self):
         self.id2word = []
+        self.words_scores = []
 
     def __del__(self):
         pass
@@ -222,7 +223,30 @@ class Decode(object):
                     if matched_id + 1 == length:
                         find_matching_lable_bool = True if lable in matching_lable_list else False
 
-                        if not find_matching_lable_bool:
+                        # special for label: freeze
+                        find_lable_freeze_bool = False
+                        output_label_freeze_bool = False
+                        if len(self.words_scores):
+                            if lable == "freeze":
+                                freeze_score = 0
+                                freeze_threshold = -1.0
+                                feeeze_phoneme_length = 4
+
+                                find_lable_freeze_bool = True
+                                if len(self.words_scores) + 1 - feeeze_phoneme_length >= 0:
+                                    for idk in range(len(self.words_scores) + 1 - feeeze_phoneme_length):
+                                        if (self.words_scores[idk][0] == "_F") and (self.words_scores[idk+1][0]  == "R") and (self.words_scores[idk+2][0]  == "IY1") and (self.words_scores[idk+3][0]  == "Z"):
+                                            # 查询字符和得分
+                                            print("字符：", self.words_scores[idk][0], ", 得分: ", self.words_scores[idk][1])
+                                            print("字符：", self.words_scores[idk+1][0], ", 得分: ", self.words_scores[idk+1][1])
+                                            print("字符：", self.words_scores[idk+2][0], ", 得分: ", self.words_scores[idk+2][1])
+                                            print("字符：", self.words_scores[idk+3][0], ", 得分: ", self.words_scores[idk+3][1])
+                                            freeze_score = self.words_scores[idk][1] + self.words_scores[idk+1][1] + self.words_scores[idk+2][1] + self.words_scores[idk+3][1]
+
+                                            if freeze_score > freeze_threshold:
+                                                output_label_freeze_bool = True
+
+                        if not find_matching_lable_bool and (not find_lable_freeze_bool or (find_lable_freeze_bool and output_label_freeze_bool)):
                             matching_lable_list.append(lable)
                             res_sting_list.append(lable)
         return res_sting_list
@@ -253,7 +277,7 @@ class Decode(object):
             one["lmState"] = newState
         '''
         # 取对数，np.log，用于和语言模型得分相加
-        prob = np.log(prob + 0.001)
+        prob = np.log(prob)
 
         # init
         frame_num = prob.shape[0]
@@ -262,8 +286,8 @@ class Decode(object):
         _, init_lm_score = self.lm.compute(state=[], word="UNK")
         init_lm_score *= lmwt
         if(len(beams_topk) == 0):
-            # beams_topk = [{"words": [""], "ali":[0], "result_id":[0], "lmState":["<s>"], "bs":0, "lm":init_lm_score, "total":0}]
-            beams_topk = [{"words": [""], "ali":[0], "result_id":[0], "lmState":["<s>"], "bs":0, "lm":0.0, "total":0}]
+            beams_topk = [{"words": [], "ali":[], "result_id":[0], "words_scores":[], "lmState":["<s>"], "bs":0, "lm":init_lm_score, "total":0}]
+            # beams_topk = [{"words": [], "ali":[], "result_id":[0], "words_scores":[],"lmState":["<s>"], "bs":0, "lm":0.0, "total":0}]
 
         for i in range(frame_num):
             tmp_beams = []
@@ -287,12 +311,13 @@ class Decode(object):
                     # ignore blank
                     if id != blankID:  
                         # ignore continuous repeated symbols
-                        # if len(tmp_beam["ali"]) == 1 or id != tmp_beam["ali"][-1]:
-                        if len(tmp_beam["ali"]) == 1 or id != tmp_beam["result_id"][-1]:
+                        if len(tmp_beam["ali"]) == 0 or id != tmp_beam["ali"][-1]:
+                        # if len(tmp_beam["ali"]) == 1 or id != tmp_beam["result_id"][-1]:
                             symbol = self.id2word[id]
                             newState, lmScore = self.lm.compute(state=tmp_beam["lmState"], word=symbol)
                             tmp_beam["words"].append(symbol)
                             tmp_beam["result_id"].append(id)
+                            tmp_beam["words_scores"].append([symbol, bswt * bs_score])
                             tmp_beam["lm"] += lmwt * lmScore
                             tmp_beam["lmState"] = newState
 
@@ -314,4 +339,5 @@ class Decode(object):
             beams_topk = tmp_beams[:beamSize]
         
         result_id = sorted(beams_topk, key=lambda x: x["total"], reverse=True)[0]['result_id'][1:]
+        self.words_scores = sorted(beams_topk, key=lambda x: x["total"], reverse=True)[0]['words_scores']
         return result_id

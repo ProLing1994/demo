@@ -20,6 +20,10 @@ bin/
 
 # model
 *.pkl
+*.pth
+*.caffemodel
+*.prototxt
+*.bin
 
 # python
 *__pycache__/

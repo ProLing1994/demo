@@ -40,7 +40,7 @@ def get_frequency_feature(signal, sample_rate, winlen, winstep):
     ww = len(signal)
     range0_end = int((len(signal) / float(sample_rate) * 1000 - time_window) // time_step) 
     data_input = np.zeros((range0_end, int(window_size / 2)), dtype=np.float)  
-    for i in range(0, range0_end-1):
+    for i in range(0, range0_end):
         p_start = int(i * sample_rate * time_step / 1000)
         p_end = p_start + window_size
         data_line = wav_arr[p_start:p_end]
