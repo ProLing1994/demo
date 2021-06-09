@@ -389,8 +389,8 @@ def eval(model,lm,algorithem_id):
     # data_path= "/home/huanyuan/share/audio_data/demo_test/"
     # sub_dir = ["test"]
     data_path= "/home/huanyuan/share/audio_data/english_wav/"
-    sub_dir = ["office_false_alarm"]
-    # sub_dir = ["test_one_case"]
+    # sub_dir = ["office_false_alarm"]
+    sub_dir = ["test_one_case"]
     # wav_path = 'G:/DATASET/speech_recognition/英文音频/电影素材/0607/tt.wav'
     # sub_dir = os.listdir(data_path)
     # for sub in sub_dir[2:3]:

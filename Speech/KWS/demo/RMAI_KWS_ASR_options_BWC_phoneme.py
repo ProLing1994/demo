@@ -36,6 +36,7 @@ __C.general.decode_id = 1			                # 0： greedy  1： beamsearch
 __C.general.asr_feature_time = 296                  # asr 网络特征时间维度，与语音特征容器长度相同
 __C.general.asr_suppression_counter = 2             # asr 激活后抑制时间，间隔 2s 执行一次 asr 检测
 
+# robust
 # __C.general.kws_list = ['start_record', 'stop_record', 'mute_audio', 'unmute_audio', 'shot_fire', 'freeze', 'drop_gun', 'keep_hand', 'put_hand', 'down_ground']
 # __C.general.kws_dict = {'start_record':["STAA1RT RAH0KAO1RD", "STAA1RT RAH0KER0D", "STAA1RT RIH0KAO1RD", "STAA1RT RIH0KER0D", "STAA1R RAH0KAO1RD", "STAA1R RAH0KER0D", "STAA1R RIH0KAO1RD", "STAA1R RIH0KER0D"], 
 #                         'stop_record':["STAA1P RAH0KAO1RD", "STAA1P RAH0KER0D", "STAA1P RIH0KAO1RD", "STAA1P RIH0KER0D", "STAO1 RAH0KAO1RD", "STAO1 RAH0KER0D", "STAO1 RIH0KAO1RD", "STAO1 RIH0KER0D"], 
@@ -48,31 +49,18 @@ __C.general.asr_suppression_counter = 2             # asr 激活后抑制时间�
 #                         'put_hand':["PUH1T HHAE1ND", "PUH1T HHEH1ND", "PUH1 HHAE1ND", "PUH1 HHEH1ND"], 
 #                         'down_ground':["GEH1T DAW1N AA1N", "GEH1 DAW1N AA1N", "GEH1 DAW1 AA1N"]}
 
-# # strict
-# __C.general.kws_list = ['start_record', 'stop_record', 'mute_audio', 'unmute_audio', 'shot_fire', 'freeze', 'drop_gun', 'keep_hand', 'put_hand', 'down_ground']
-# __C.general.kws_dict = {'start_record':["STAA1RT RAH0KAO1RD", "STAA1RT RAH0KER0D", "STAA1RT RIH0KAO1RD", "STAA1RT RIH0KER0D"], 
-#                         'stop_record':["STAA1P RAH0KAO1RD", "STAA1P RAH0KER0D", "STAA1P RIH0KAO1RD", "STAA1P RIH0KER0D"], 
-#                         'mute_audio':["MYUW1T AA1DIY0OW2"], 
-#                         'unmute_audio':["AH0NMYUW1T AA1DIY0OW2"], 
-#                         'shot_fire':["SHAA1T FAY1ER0", "SHAA1T FEH1ER0", "SHAA1T FEH1"], 
-#                         'freeze':["FRIY1Z"], 
-#                         'drop_gun':["DRAA1P GAH1N", "DRAA1P GAH1"], 
-#                         'keep_hand':["KIY1P HHAE1ND", "KIY1P HHEH1ND"], 
-#                         'put_hand':["PUH1T HHAE1ND", "PUH1T HHEH1ND"], 
-#                         'down_ground':["GEH1T DAW1N AA1N"]}
-
-# stricter
+# strict
 __C.general.kws_list = ['start_record', 'stop_record', 'mute_audio', 'unmute_audio', 'shot_fire', 'freeze', 'drop_gun', 'keep_hand', 'put_hand', 'down_ground']
-__C.general.kws_dict = {'start_record':["STAA1RT RAH0KAO1RD"], 
-                        'stop_record':["STAA1P RAH0KAO1RD"], 
-                        'mute_audio':["MYUW1T AA1DIY0OW2"], 
-                        'unmute_audio':["AH0NMYUW1T AA1DIY0OW2"], 
-                        'shot_fire':["SHAA1T FAY1ER0"], 
-                        'freeze':["FRIY1Z"], 
-                        'drop_gun':["DRAA1P GAH1N"], 
-                        'keep_hand':["KIY1P HHAE1ND"], 
-                        'put_hand':["PUH1T HHAE1ND"], 
-                        'down_ground':["GEH1T DAW1N AA1N"]}
+__C.general.kws_dict = {'start_record':["_S T AA1 R T, _R AH0 K AO1 R D IH0 NG"], 
+                        'stop_record':["_S T AA1 P, _R AH0 K AO1 R D IH0 NG"], 
+                        'mute_audio':["_M Y UW1 T, _AA1 D IY0 OW2"], 
+                        'unmute_audio':["_AH0 N M Y UW1 T, _AA1 D IY0 OW2"], 
+                        'shot_fire':["_SH AA1 T, _F AY1 ER0 "], 
+                        'freeze':["_F R IY1 Z"], 
+                        'drop_gun':["_D R AA1 P, _Y AO1 R _G AH1 N"], 
+                        'keep_hand':["_K IY1 P, _Y AO1 R _HH AE1 N D"], 
+                        'put_hand':["_P UH1 T, _Y AO1 R _HH AE1 N D"], 
+                        'down_ground':["_G EH1 T, _D AW1 N _AA1 N"]}
 
 __C.general.control_kws_list = ['start_record', 'stop_record', 'mute_audio', 'unmute_audio']
 
@@ -146,8 +134,6 @@ __C.test.input_wav = "/mnt/huanyuan/data/speech/Recording/Daily_Record/jabra_510
 # input_folder
 # __C.test.input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/路边场景/场景二/"
 __C.test.input_folder = "/home/huanyuan/share/audio_data/english_wav/office_false_alarm/"
-# __C.test.input_folder = "/home/huanyuan/share/audio_data/english_wav/test_one_case/"
-# __C.test.input_folder = "/home/huanyuan/share/audio_data/english_wav/test_freeze/"
 # __C.test.input_folder = "/home/huanyuan/share/audio_data/demo_test/test/"
 # __C.test.input_folder = "/mnt/huanyuan/data/speech/Recording/demo_kws_asr_online_api/2021-06-08-14-51-18"
 

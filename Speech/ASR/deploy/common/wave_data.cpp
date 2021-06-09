@@ -38,7 +38,6 @@ namespace ASR
         fread(&wav_head.avg_bytes_sec, sizeof(int32_t), 1, fp);
         fread(&wav_head.block_align, sizeof(int16_t), 1, fp);
         fread(&wav_head.bit_per_sample, sizeof(int16_t), 1, fp);
-        fread(wav_head.temp, sizeof(char), 2, fp);
         fread(wav_head.data_char, sizeof(char), 4, fp);
         fread(&wav_head.data_size, sizeof(int32_t), 1, fp);
 
@@ -127,7 +126,7 @@ namespace ASR
         fwrite(&block_align, sizeof(int16_t), 1, fp);
 
         fwrite(&bit_per_sample, sizeof(int16_t), 1, fp);
-        fwrite("  data", sizeof(char), 6, fp);
+        fwrite("data", sizeof(char), 4, fp);
 
 		int32_t data_size = static_cast<int32_t>(data_length * sizeof(int16_t));
         fwrite(&data_size, sizeof(int32_t), 1, fp);

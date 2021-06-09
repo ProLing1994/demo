@@ -24,7 +24,6 @@ namespace ASR
 		int32_t avg_bytes_sec; 	  //sample_rate*bit_per_sample*channel/8
 		int16_t block_align;	  //block align
 		int16_t bit_per_sample;	  //bit per sample
-		char temp[2];			  //某些数据头存在差异
 		char data_char[4]; 		  //"data"
 		int32_t data_size;        //data size
 		int16_t wave_data[3000000];

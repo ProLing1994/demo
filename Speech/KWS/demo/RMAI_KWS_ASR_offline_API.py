@@ -206,22 +206,28 @@ def run_asr():
 
     # decode
     if cfg.general.decode_id == 0:
-        result_id = decode_python.ctc_decoder(net_output)
+        decode_python.ctc_decoder(net_output)
     elif cfg.general.decode_id == 1:
-        result_id = decode_python.ctc_beam_search(net_output, 5, 0, bswt=1.0, lmwt=0.3)
+        decode_python.beamsearch_decoder(net_output, 5, 0, bswt=1.0, lmwt=0.3)
     else:
         print("[Unknow:] cfg.general.decode_id. ")
 
     if cfg.general.language_id == 0:
-        result_string = decode_python.output_symbol(result_id)
+        decode_python.show_result_id()
+        decode_python.show_symbol()
+        result_string = decode_python.output_symbol()
     elif cfg.general.language_id == 1:
-        result_symbol_english = decode_python.output_symbol_english(result_id).strip()
-        result_string_list = decode_python.match_keywords_english(result_symbol_english.split(' '), cfg.general.kws_list, cfg.general.kws_dict)
-        result_string = decode_python.output_result_string(result_string_list)
-        # control_command_string, not_control_command_string = decode_python.match_kws_english_control_command(result_string)
+        decode_python.show_result_id()
+        decode_python.show_symbol()
+        decode_python.show_symbol_english()
 
-        print(result_id)
-        print(result_symbol_english)
+        # # 鲁邦的匹配方式
+        # decode_python.match_keywords_english_robust(cfg.general.kws_list, cfg.general.kws_dict)
+        # result_string = decode_python.output_result_string()
+
+        # 严格匹配方式
+        decode_python.match_keywords_english_strict(cfg.general.kws_list, cfg.general.kws_dict)
+        result_string = decode_python.output_result_string()
     else:
         print("[Unknow:] cfg.general.language_id. ")
 
@@ -390,8 +396,8 @@ def KWS_ASR_offine_perfolder():
                 os.makedirs(output_path)
 
         # load wave
-        wave_loader = WaveLoader_C.WaveLoader(cfg.general.sample_rate)
-        # wave_loader = WaveLoader_Python.WaveLoader(cfg.general.sample_rate)
+        # wave_loader = WaveLoader_C.WaveLoader(cfg.general.sample_rate)
+        wave_loader = WaveLoader_Python.WaveLoader(cfg.general.sample_rate)
         wave_loader.load_data(wave_path)
         wave_data = wave_loader.to_numpy()
 
