@@ -5,7 +5,7 @@ kws_list = [['start', 'record'], ['stop', 'record'], ['mute', 'audio'], ['unmute
 
 control_command_list = [['start', 'record'], ['stop', 'record'], ['mute', 'audio'], ['unmute', 'audio']]
 
-def edit_distance_symbol(word1, word2):
+def get_edit_distance(word1, word2):
     word1 = "".join(word1.strip().split(' '))
     word2 = "".join(word2.strip().split(' '))
     len1 = len(word1)
@@ -23,7 +23,7 @@ def edit_distance_symbol(word1, word2):
     return dp[len1][len2]
 
 
-def edit_distance_pinyin(sentence1, sentence2):
+def get_edit_distance(sentence1, sentence2):
     sentence1 = sentence1.strip().split(' ')
     sentence2 = sentence2.strip().split(' ')
     len1 = len(sentence1)

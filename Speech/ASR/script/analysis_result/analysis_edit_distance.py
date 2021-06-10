@@ -4,7 +4,7 @@ import pandas as pd
 import sys
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/ASR')
-from impl.asr_decode_pyimpl import edit_distance_symbol, edit_distance_pinyin
+from impl.asr_decode_pyimpl import get_edit_distance, get_edit_distance
 
 def clean_tone(srt):
     srt = srt.replace('1', '')
@@ -35,14 +35,14 @@ def analysis_edit_distance(args):
         ground_truth_idx = ground_truth_dict[row['data']]
         
         total_symbol += len("".join(ground_truth_idx.split(' ')))
-        error_symbol += edit_distance_symbol("".join(result_idx.split(' ')), "".join(ground_truth_idx.split(' ')))
+        error_symbol += get_edit_distance("".join(result_idx.split(' ')), "".join(ground_truth_idx.split(' ')))
         total_pinyin += len(ground_truth_idx.split(' '))
-        error_pinyin += edit_distance_pinyin(result_idx, ground_truth_idx)
+        error_pinyin += get_edit_distance(result_idx, ground_truth_idx)
         if result_idx != ground_truth_idx:
             print("Ground Truth:", ground_truth_idx)
             print("Result      :", result_idx)
-            print("Symbol Edit Distance:", edit_distance_symbol("".join(result_idx.split(' ')), "".join(ground_truth_idx.split(' '))))
-            print("Pinyin Edit Distance:", edit_distance_pinyin(result_idx, ground_truth_idx))
+            print("Symbol Edit Distance:", get_edit_distance("".join(result_idx.split(' ')), "".join(ground_truth_idx.split(' '))))
+            print("Pinyin Edit Distance:", get_edit_distance(result_idx, ground_truth_idx))
     print("Error Symbol: {}/{}, {:.2f}%".format(error_symbol, total_symbol, error_symbol/total_symbol*100))
     print("Error Pinyin: {}/{}, {:.2f}%".format(error_pinyin, total_pinyin, error_pinyin/total_pinyin*100))
 

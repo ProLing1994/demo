@@ -4,7 +4,7 @@ import pandas as pd
 import sys
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/ASR')
-from impl.asr_decode_pyimpl import edit_distance_symbol, edit_distance_pinyin
+from impl.asr_decode_pyimpl import get_edit_distance, get_edit_distance
 
 
 def compare_result(args):
@@ -18,14 +18,14 @@ def compare_result(args):
     error_pinyin = 0.0
     for idx, row in merge_pd.iterrows(): 
         total_symbol += max(len("".join(row['caffe_result'].strip().split(' '))), len("".join(row['amba_result'].strip().split(' '))))
-        error_symbol += edit_distance_symbol("".join(row['caffe_result'].strip().split(' ')), "".join(row['amba_result'].strip().split(' ')))
+        error_symbol += get_edit_distance("".join(row['caffe_result'].strip().split(' ')), "".join(row['amba_result'].strip().split(' ')))
         total_pinyin += max(len(row['caffe_result'].strip().split(' ')), len(row['amba_result'].strip().split(' ')))
-        error_pinyin += edit_distance_pinyin(row['caffe_result'], row['amba_result'])
+        error_pinyin += get_edit_distance(row['caffe_result'], row['amba_result'])
         if error_pinyin != 0:
             print(row['caffe_result'].strip().split(' '))
             print(row['amba_result'].strip().split(' '))
-            print("Symbol Edit Distance:", edit_distance_symbol("".join(row['caffe_result'].strip().split(' ')), "".join(row['amba_result'].strip().split(' '))))
-            print("Pinyin Edit Distance:", edit_distance_pinyin(row['caffe_result'], row['amba_result']))
+            print("Symbol Edit Distance:", get_edit_distance("".join(row['caffe_result'].strip().split(' ')), "".join(row['amba_result'].strip().split(' '))))
+            print("Pinyin Edit Distance:", get_edit_distance(row['caffe_result'], row['amba_result']))
     print("Error Symbol: {}/{}, {:.2f}%".format(error_symbol, total_symbol, error_symbol/total_symbol*100))
     print("Error Pinyin: {}/{}, {:.2f}%".format(error_pinyin, total_pinyin, error_pinyin/total_pinyin*100))
 

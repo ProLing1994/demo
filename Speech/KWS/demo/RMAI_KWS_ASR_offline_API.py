@@ -202,8 +202,25 @@ def run_asr():
     net_output = asr_net.forward()[cfg.model.asr_net_output_name]
     net_output = np.squeeze(net_output)
     net_output = net_output.T
+    # print(net_output.shape)
     # print(net_output)
 
+    # # # debug: cpp & python 一致性测试
+    # import cv2
+    # # 保存矩阵
+    # # cv_file = cv2.FileStorage("/home/huanyuan/share/audio_data/demo_test/test_python.xml", cv2.FILE_STORAGE_WRITE)
+    # # cv_file.write('test', net_output)
+    # # cv_file.release()
+
+    # # 加载矩阵
+    # # cv_file = cv2.FileStorage("/home/huanyuan/share/audio_data/demo_test/test_cpp.xml", cv2.FILE_STORAGE_READ)
+    # # net_output = cv_file.getNode("test").mat()
+    # # cv_file.release()
+    # cv_file = cv2.FileStorage("/home/huanyuan/share/audio_data/demo_test/test_feature_cpp.xml", cv2.FILE_STORAGE_READ)
+    # feature_data_fs = cv_file.getNode("feature").mat()
+    # cv_file.release()
+    # print("feature equal：", (feature_data_fs == feature_data_asr).all())
+    
     # decode
     if cfg.general.decode_id == 0:
         decode_python.ctc_decoder(net_output)
@@ -338,7 +355,8 @@ def KWS_ASR_offine():
     output_dict['output_kws_id'] = 1
 
     # load wave
-    wave_loader = WaveLoader_C.WaveLoader(cfg.general.sample_rate)
+    # wave_loader = WaveLoader_C.WaveLoader(cfg.general.sample_rate)
+    wave_loader = WaveLoader_Python.WaveLoader(cfg.general.sample_rate)
     wave_loader.load_data(cfg.test.input_wav)
     wave_data = wave_loader.to_numpy()
 
@@ -349,7 +367,7 @@ def KWS_ASR_offine():
         # get audio data
         audio_data = wave_data[times * int(cfg.general.window_stride_samples): times * int(cfg.general.window_stride_samples) + int(cfg.general.window_size_samples)]
         print("[Information:] Audio data stream: {} - {}, length: {} ".format((times * int(cfg.general.window_stride_samples)), (times * int(cfg.general.window_stride_samples) + int(cfg.general.window_size_samples)), len(audio_data)))
-        # print(audio_data)
+        print(audio_data)
 
         output_dict['sliding_window_start_time_ms'] = (((times - 2) * int(cfg.general.window_stride_samples)) / cfg.general.sample_rate) * 1000
         run_kws_asr(audio_data)
@@ -396,8 +414,8 @@ def KWS_ASR_offine_perfolder():
                 os.makedirs(output_path)
 
         # load wave
-        # wave_loader = WaveLoader_C.WaveLoader(cfg.general.sample_rate)
-        wave_loader = WaveLoader_Python.WaveLoader(cfg.general.sample_rate)
+        wave_loader = WaveLoader_C.WaveLoader(cfg.general.sample_rate)
+        # wave_loader = WaveLoader_Python.WaveLoader(cfg.general.sample_rate)
         wave_loader.load_data(wave_path)
         wave_data = wave_loader.to_numpy()
 
@@ -408,7 +426,7 @@ def KWS_ASR_offine_perfolder():
             # get audio data
             audio_data = wave_data[times * int(cfg.general.window_stride_samples): times * int(cfg.general.window_stride_samples) + int(cfg.general.window_size_samples)]
             print("[Information:] Audio data stram: {} - {}, length: {} ".format((times * int(cfg.general.window_stride_samples)), (times * int(cfg.general.window_stride_samples) + int(cfg.general.window_size_samples)), len(audio_data)))
-            print(audio_data)
+            # print(audio_data)
 
             output_dict['sliding_window_start_time_ms'] = (((times - 2) * int(cfg.general.window_stride_samples)) / cfg.general.sample_rate) * 1000
             run_kws_asr(audio_data)

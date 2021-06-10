@@ -38,7 +38,24 @@ namespace ASR
         fread(&wav_head.avg_bytes_sec, sizeof(int32_t), 1, fp);
         fread(&wav_head.block_align, sizeof(int16_t), 1, fp);
         fread(&wav_head.bit_per_sample, sizeof(int16_t), 1, fp);
-        fread(wav_head.data_char, sizeof(char), 4, fp);
+
+        char temp[2];
+        fread(temp, sizeof(char), 2, fp);
+        std::string temp_string = temp;
+        if (temp_string == "  ") {
+            wav_head.temp[0] = temp[0];
+            wav_head.temp[1] = temp[1];
+            fread(wav_head.data_char, sizeof(char), 4, fp);
+        }
+        else {
+            char temp2[2];
+            fread(temp2, sizeof(char), 2, fp);
+            wav_head.data_char[0] = temp[0];
+            wav_head.data_char[1] = temp[1];
+            wav_head.data_char[2] = temp2[0];
+            wav_head.data_char[3] = temp2[1];
+        }
+        
         fread(&wav_head.data_size, sizeof(int32_t), 1, fp);
 
         // replace wav_head.data_size with men_len, becase some mistake is unkown in wav_head
@@ -126,7 +143,8 @@ namespace ASR
         fwrite(&block_align, sizeof(int16_t), 1, fp);
 
         fwrite(&bit_per_sample, sizeof(int16_t), 1, fp);
-        fwrite("data", sizeof(char), 4, fp);
+        fwrite("  data", sizeof(char), 6, fp);
+        // fwrite("data", sizeof(char), 4, fp);
 
 		int32_t data_size = static_cast<int32_t>(data_length * sizeof(int16_t));
         fwrite(&data_size, sizeof(int32_t), 1, fp);
