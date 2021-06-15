@@ -225,11 +225,11 @@ if __name__ == "__main__":
     #             "xiaoyu",
     #             bool_write_audio)
 
-    # xiaorui
-    cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_validation_3600.csv",
-                "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_2_tc-resnet14-hisi_fbankcpu_kd_05302021/test_straming_wav/xiaorui_1_4_04302021_validation_3600_threshold_0_5/found_words.csv",
-                ["xiaorui", "xiaorui_16k"],
-                bool_write_audio)
+    # # xiaorui
+    # cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_validation_3600.csv",
+    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_2_tc-resnet14-hisi_fbankcpu_kd_05302021/test_straming_wav/xiaorui_1_4_04302021_validation_3600_threshold_0_5/found_words.csv",
+    #             ["xiaorui", "xiaorui_16k"],
+    #             bool_write_audio)
 
     # # xiaole
     # cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/xiaole_11252020_testing_3600_001.csv",
@@ -237,19 +237,19 @@ if __name__ == "__main__":
     #             "xiaole",
     #             bool_write_audio)
 
-    # # xiaoan8k
+    # xiaoan8k
     # cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_3_04152021_validation.csv",
-    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_5_tc-resnet14-amba_fbankcpu_kd_05152021/test_straming_wav/xiaoan8k_1_3_04152021_validation_threshold_0_9/found_words.csv",
+    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/test_straming_wav/xiaoan8k_1_3_04152021_validation_threshold_0_9/found_words.csv",
     #             ["xiaoanxiaoan_8k", "xiaoanxiaoan_16k"],
     #             bool_write_audio)
-    # cal_fpr_tpr_per_folder("/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/处理音频/",
-    #                         "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_5_tc-resnet14-amba_fbankcpu_kd_05152021/test_straming_wav/实车录制_0427_caffemodel/阈值_09_05_唤醒间隔时间1s/货车怠速场景/",
-    #                         # ["_adpro"],
-    #                         # ["_mic"],
-    #                         # ["danbin_ori"],
-    #                         ["danbin_asr"],
-    #                         ["xiaoanxiaoan_8k", "xiaoan8k"],
-    #                         bool_write_audio)
+    cal_fpr_tpr_per_folder("/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/处理音频/",
+                            "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/test_straming_wav/实车录制_0427_caffemodel/阈值_09_05_唤醒间隔时间1s/货车怠速场景/",
+                            # ["_adpro"],
+                            # ["_mic"],
+                            # ["danbin_ori"],
+                            ["danbin_asr"],
+                            ["xiaoanxiaoan_8k", "xiaoan8k", "Weakup"],
+                            bool_write_audio)
     # cal_fpr_tpr("/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/处理音频/李煜_danbin_ori.csv",
     #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_8_res15_fbankcpu_041262021/test_straming_wav/实车录制_0427_pytorch/阈值_05_03/货车怠速场景/李煜_danbin_ori/found_words.csv",
     #             ["xiaoanxiaoan_8k", "xiaoan8k"],

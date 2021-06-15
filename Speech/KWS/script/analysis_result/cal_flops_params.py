@@ -12,8 +12,8 @@ def count_parameters(model):
 def main():
     batch_size = 1
     in_channels = 1
-    image_height = 192
-    image_weidth = 64
+    image_height = 144
+    image_weidth = 48
     num_classes = 2
 
     # net_name = "crnn-attention"
@@ -29,8 +29,8 @@ def main():
     # net_name = "tc-resnet14-dropout"
     # net_name = "tc-resnet18-dropout"
     # net_name = "tc-resnet14-amba"
-    net_name = "tc-resnet14-hisi"
-    # net_name = "tc-resnet14-amba-1-5s"
+    # net_name = "tc-resnet14-hisi"
+    net_name = "tc-resnet14-amba-hisi-1-5s"
 
     # load network structure
     net_module = importlib.import_module('network.' + net_name)

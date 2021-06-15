@@ -22,8 +22,8 @@ import caffe
 
 # options 
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC.py")
-cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_phoneme.py")
-# cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MTA_XIAOAN.py")
+# cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_phoneme.py")
+cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MTA_XIAOAN.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_XIAORUI.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_3s.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_4s.py")
@@ -43,6 +43,12 @@ def param_init():
     params_dict['bool_weakup'] = False
     params_dict['counter_weakup'] = 0
     params_dict['counter_asr'] = cfg.general.asr_suppression_counter - 1
+
+    output_dict['csv_original_scores'] = []
+    output_dict['csv_found_words'] = []
+    output_dict['subfolder_name'] = ''
+    output_dict['output_kws_id'] = 1
+    output_dict['sliding_window_start_time_ms'] = 0
 
     # mkdir
     if cfg.general.bool_output_wave or cfg.general.bool_output_csv:
@@ -128,7 +134,9 @@ def output_wave(output_prefix_name):
         # date_time = '-'.join('-'.join(str(datetime.now()).split('.')[0].split(' ')).split(':'))
         date_time = str(datetime.now()).split(' ')[0]
         output_path = os.path.join(cfg.test.output_folder, output_dict['subfolder_name'], '{}_{}_{}.wav'.format(output_prefix_name, date_time, output_dict['output_kws_id']))
-        wave_loader = WaveLoader_Python.WaveLoader(cfg.general.sample_rate)
+        # output_path = os.path.join(cfg.test.output_folder, output_dict['subfolder_name'], '{}_starttime_{}.wav'.format(output_prefix_name, int(output_dict['sliding_window_start_time_ms'])))
+        # wave_loader = WaveLoader_Python.WaveLoader_Soundfile(cfg.general.sample_rate)
+        wave_loader = WaveLoader_Python.WaveLoader_Librosa(cfg.general.sample_rate)
         wave_loader.save_data(np.array(params_dict['output_wave_list']), output_path)
         output_dict['output_kws_id'] += 1
 
@@ -193,7 +201,7 @@ def run_kws():
 
 def run_asr():
     if not cfg.general.bool_do_asr:
-        return "cfg.general.bool_do_asr = False", "", ""
+        return "cfg.general.bool_do_asr = False"
 
     feature_data_asr = params_dict['feature_data_container_np'].astype(np.float32)
     asr_net.blobs[cfg.model.asr_net_input_name].data[...] = np.expand_dims(feature_data_asr, axis=0)
@@ -279,7 +287,7 @@ def run_kws_asr(audio_data):
             output_wave("Weakup")
 
             if cfg.general.bool_output_csv:
-                output_dict['csv_found_words'].append({'label':cfg.model.kws_label, 'start_time':int(output_dict['sliding_window_start_time_ms']), 'end_time': int(output_dict['sliding_window_start_time_ms'] + cfg.general.total_time_ms)})
+                output_dict['csv_found_words'].append({'label':"Weakup", 'start_time':int(output_dict['sliding_window_start_time_ms']), 'end_time': int(output_dict['sliding_window_start_time_ms'] + cfg.general.total_time_ms)})
 
         if cfg.general.bool_output_csv:
             for idx in range(len(kws_score_list)):
@@ -297,7 +305,7 @@ def run_kws_asr(audio_data):
             result_string = run_asr()
         
             # 打印结果
-            if len(result_string):
+            if len(result_string) and result_string != "cfg.general.bool_do_asr = False":
                 print("\n===============!!!!!!!!!!!!!!===============")
                 print("********************************************")
                 print("** ")
@@ -329,7 +337,7 @@ def run_kws_asr(audio_data):
         result_string = run_asr()
 
         # 打印结果
-        if len(result_string):
+        if len(result_string) and result_string != "cfg.general.bool_do_asr = False":
             print("\n===============!!!!!!!!!!!!!!===============")
             print("********************************************")
             print("** ")
@@ -349,14 +357,10 @@ def KWS_ASR_offine():
     # kws_asr_init
     kws_asr_init()
 
-    output_dict['csv_original_scores'] = []
-    output_dict['csv_found_words'] = []
-    output_dict['subfolder_name'] = ''
-    output_dict['output_kws_id'] = 1
-
     # load wave
     # wave_loader = WaveLoader_C.WaveLoader(cfg.general.sample_rate)
-    wave_loader = WaveLoader_Python.WaveLoader(cfg.general.sample_rate)
+    # wave_loader = WaveLoader_Python.WaveLoader_Soundfile(cfg.general.sample_rate)
+    wave_loader = WaveLoader_Python.WaveLoader_Librosa(cfg.general.sample_rate)
     wave_loader.load_data(cfg.test.input_wav)
     wave_data = wave_loader.to_numpy()
 
@@ -401,11 +405,8 @@ def KWS_ASR_offine_perfolder():
         print("[Information:] Audio path: ", wave_path)
 
         # init 
-        output_dict['csv_original_scores'] = []
-        output_dict['csv_found_words'] = []
-        output_dict['subfolder_name'] = ''
-        # output_dict['subfolder_name'] = os.path.basename(wave_path).split('.')[0]
-        # output_dict['output_kws_id'] = 1
+        # output_dict['subfolder_name'] = ''
+        output_dict['subfolder_name'] = os.path.basename(wave_path).split('.')[0]
     
         # mkdir
         if cfg.general.bool_output_wave or cfg.general.bool_output_csv:
@@ -414,8 +415,9 @@ def KWS_ASR_offine_perfolder():
                 os.makedirs(output_path)
 
         # load wave
-        wave_loader = WaveLoader_C.WaveLoader(cfg.general.sample_rate)
-        # wave_loader = WaveLoader_Python.WaveLoader(cfg.general.sample_rate)
+        # wave_loader = WaveLoader_C.WaveLoader(cfg.general.sample_rate)
+        # wave_loader = WaveLoader_Python.WaveLoader_Soundfile(cfg.general.sample_rate)
+        wave_loader = WaveLoader_Python.WaveLoader_Librosa(cfg.general.sample_rate)
         wave_loader.load_data(wave_path)
         wave_data = wave_loader.to_numpy()
 
@@ -426,7 +428,7 @@ def KWS_ASR_offine_perfolder():
             # get audio data
             audio_data = wave_data[times * int(cfg.general.window_stride_samples): times * int(cfg.general.window_stride_samples) + int(cfg.general.window_size_samples)]
             print("[Information:] Audio data stram: {} - {}, length: {} ".format((times * int(cfg.general.window_stride_samples)), (times * int(cfg.general.window_stride_samples) + int(cfg.general.window_size_samples)), len(audio_data)))
-            # print(audio_data)
+            print(audio_data)
 
             output_dict['sliding_window_start_time_ms'] = (((times - 2) * int(cfg.general.window_stride_samples)) / cfg.general.sample_rate) * 1000
             run_kws_asr(audio_data)

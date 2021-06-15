@@ -59,7 +59,7 @@ __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset
 __C.general.is_test = True
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoan8k_test"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoan8k_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_0_res15_fbankcpu_04062021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_1_res15_fbankcpu_04062021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_2_res15_fbankcpu_041262021/"
@@ -71,7 +71,8 @@ __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoan8k_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_2_tc-resnet14-amba_fbankcpu_kd_041262021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_3_tc-resnet14-amba_fbankcpu_kd_041262021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_4_tc-resnet14-amba_fbankcpu_64_kd_041262021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_5_tc-resnet14-amba_fbankcpu_kd_05152021/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_5_tc-resnet14-amba_fbankcpu_kd_05152021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/"
 
 # finetune model
 __C.general.finetune_on = False
@@ -180,7 +181,8 @@ __C.dataset.nfilt = 48
 # __C.dataset.data_size = [64, 196]
 # __C.dataset.data_size = [64, 151]
 # __C.dataset.data_size = [64, 146]
-__C.dataset.data_size = [48, 146]
+# __C.dataset.data_size = [48, 146]
+__C.dataset.data_size = [48, 144]
 
 
 ##################################

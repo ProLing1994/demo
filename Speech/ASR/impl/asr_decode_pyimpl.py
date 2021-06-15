@@ -433,9 +433,9 @@ class Decode(object):
             beams_topk = tmp_beams[:beamSize]
         
         # print(sorted(beams_topk, key=lambda x: x["total"], reverse=True)[0])
-        print("bs: ", sorted(beams_topk, key=lambda x: x["total"], reverse=True)[0]['bs'], \
-                ", lm: ", sorted(beams_topk, key=lambda x: x["total"], reverse=True)[0]['lm'], \
-                ", total: ", sorted(beams_topk, key=lambda x: x["total"], reverse=True)[0]['total'])
+        # print("bs: ", sorted(beams_topk, key=lambda x: x["total"], reverse=True)[0]['bs'], \
+        #         ", lm: ", sorted(beams_topk, key=lambda x: x["total"], reverse=True)[0]['lm'], \
+        #         ", total: ", sorted(beams_topk, key=lambda x: x["total"], reverse=True)[0]['total'])
         self.result_id = sorted(beams_topk, key=lambda x: x["total"], reverse=True)[0]['result_id']
         self.word_bs = sorted(beams_topk, key=lambda x: x["total"], reverse=True)[0]['word_bs']
         return 

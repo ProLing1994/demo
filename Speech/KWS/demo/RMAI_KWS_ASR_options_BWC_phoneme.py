@@ -129,7 +129,8 @@ __C.test.test_mode = 0
 
 # input_Wav
 # __C.test.input_wav = "/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation_180.wav"
-__C.test.input_wav = "/mnt/huanyuan/data/speech/Recording/Daily_Record/jabra_510/test/Jabra_510_test-kws-asr_0001.wav"
+# __C.test.input_wav = "/mnt/huanyuan/data/speech/Recording/Daily_Record/jabra_510/test/Jabra_510_test-kws-asr_0001.wav"
+__C.test.input_wav = "/home/huanyuan/share/audio_data/english_wav/get_down_on_true/get_down_on_001.wav"
 
 # input_folder
 # __C.test.input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/路边场景/场景二/"
