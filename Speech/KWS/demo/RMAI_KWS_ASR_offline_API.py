@@ -22,8 +22,8 @@ import caffe
 
 # options 
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC.py")
-# cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_phoneme.py")
-cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MTA_XIAOAN.py")
+cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_phoneme.py")
+# cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MTA_XIAOAN.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_XIAORUI.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_3s.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_4s.py")
@@ -199,7 +199,7 @@ def run_kws():
     return bool_find_kws, kws_score_list
 
 
-def run_asr():
+def run_asr(contorl_kws_bool=True):
     if not cfg.general.bool_do_asr:
         return "cfg.general.bool_do_asr = False"
 
@@ -246,13 +246,21 @@ def run_asr():
         decode_python.show_symbol()
         decode_python.show_symbol_english()
 
-        # # 鲁邦的匹配方式
-        # decode_python.match_keywords_english_robust(cfg.general.kws_list, cfg.general.kws_dict)
+        # 鲁邦的匹配方式
+        decode_python.match_keywords_english_robust(cfg.general.kws_list, cfg.general.kws_phoneme_dict)
         # result_string = decode_python.output_result_string()
+        result_string = decode_python.output_control_result_string(cfg.general.control_kws_list, contorl_kws_bool)
 
-        # 严格匹配方式
-        decode_python.match_keywords_english_strict(cfg.general.kws_list, cfg.general.kws_dict)
-        result_string = decode_python.output_result_string()
+        # # 严格匹配方式
+        # decode_python.match_keywords_english_strict(cfg.general.kws_list, cfg.general.kws_phoneme_dict, cfg.general.kws_verb_socres_threshold_dict)
+        # # result_string = decode_python.output_result_string()
+        # result_string = decode_python.output_control_result_string(cfg.general.control_kws_list, contorl_kws_bool)
+
+        # # 自定义的匹配方式
+        # decode_python.match_keywords_english_custom(cfg.general.kws_list, cfg.general.kws_phoneme_dict, cfg.general.kws_verb_socres_threshold_dict, cfg.general.kws_matched_interval_threshold_dict)
+        # # result_string = decode_python.output_result_string()
+        # result_string = decode_python.output_control_result_string(cfg.general.control_kws_list, contorl_kws_bool)
+
     else:
         print("[Unknow:] cfg.general.language_id. ")
 
@@ -334,7 +342,7 @@ def run_kws_asr(audio_data):
     if params_dict['counter_asr'] == cfg.general.asr_suppression_counter:
         params_dict['counter_asr'] = 0
 
-        result_string = run_asr()
+        result_string = run_asr(False)
 
         # 打印结果
         if len(result_string) and result_string != "cfg.general.bool_do_asr = False":

@@ -6,9 +6,6 @@ import sys
 import shutil
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-from ASR.impl.asr_data_loader_pyimpl import WaveLoader
-
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from utils.folder_tools import *
 
@@ -33,8 +30,8 @@ def copy_audio():
 
 
 if __name__ == "__main__":
-    default_input_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_9_res15_fbankcpu_041262021/test_straming_wav/实车录制_0427_pytorch/阈值_05_03/其他录音/"
-    default_output_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_9_res15_fbankcpu_041262021/test_straming_wav/实车录制_0427_pytorch/阈值_05_03/其他录音/"
+    default_input_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/test_straming_wav/实车录制_0427_pytorch/阈值_05_05/其他录音/"
+    default_output_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/test_straming_wav/实车录制_0427_pytorch/阈值_05_05/其他录音/"
     default_output_folder_name = "output"
     
     parser = argparse.ArgumentParser(description='Streamax KWS Engine')

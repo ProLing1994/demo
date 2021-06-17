@@ -343,8 +343,10 @@ def main():
     # default_output_subfolder_name = "Jabra_510"
     # default_input_folder = "/mnt/huanyuan/data/speech/Recording_sample/danbin/real_vehicle_sample/Original/"
     # default_output_subfolder_name = "danbin_real_vehicle_sample"
-    # default_input_folder = "/mnt/huanyuan/data/speech/Recording_sample/ADkit/weiboyulu/"
-    # default_output_subfolder_name = "ADkit_weiboyulu"
+    # default_input_folder = "/mnt/huanyuan/data/speech/Recording/RM_Mandarin_Weibo/office/tpev_44.1k/wav/"
+    # default_output_subfolder_name = "tpev_Mandarin_Weibo"
+    default_input_folder = "/mnt/huanyuan/data/speech/Recording/RM_Mandarin_Weibo/office/android_16k/wav/"
+    default_output_subfolder_name = "android_Mandarin_Weibo"
     # default_input_folder = "/mnt/huanyuan/data/speech/Recording_sample/danbin/daily_recording/"
     # default_output_subfolder_name = "danbin_daily_record"
     # default_input_folder = "/mnt/huanyuan/data/speech/Recording_sample/ADpro/real_vehicle_sample/platform_alarm_data/"
@@ -361,8 +363,8 @@ def main():
     # default_output_subfolder_name = "tpev_daily_record"
     # default_input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/处理音频/"
     # default_output_subfolder_name = "实车录制_0427_pytorch/阈值_05_05/货车怠速场景/"
-    default_input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/其他录音/"
-    default_output_subfolder_name = "实车录制_0427_pytorch/阈值_05_05/其他录音/"
+    # default_input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/其他录音/"
+    # default_output_subfolder_name = "实车录制_0427_pytorch/阈值_05_05/其他录音/"
 
     # config file
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
@@ -396,7 +398,7 @@ def main():
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_5_tc-resnet14-amba_fbankcpu_kd_05152021/kws_config_xiaoan8k_api.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/kws_config_xiaoan8k.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/kws_config_xiaoan8k_api.py"
-    default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/kws_config_xiaoan8k_api_0_5.py"
+    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/kws_config_xiaoan8k_api_0_5.py"
     
     # xiaorui 
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_5_0_tc-resnet14-amba_fbankcpu_kd_04302021/kws_config_xiaorui_api.py"
@@ -407,7 +409,7 @@ def main():
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_2_tc-resnet14-hisi_fbankcpu_kd_05302021/kws_config_xiaorui.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_2_tc-resnet14-hisi_fbankcpu_kd_05302021/kws_config_xiaorui_api.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_2_tc-resnet14-hisi_fbankcpu_kd_05302021/kws_config_xiaorui_api_08.py"
-    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_2_tc-resnet14-hisi_fbankcpu_kd_05302021/kws_config_xiaorui_difficult_sample_mining.py"
+    default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_2_tc-resnet14-hisi_fbankcpu_kd_05302021/kws_config_xiaorui_difficult_sample_mining.py"
 
     parser = argparse.ArgumentParser(description='Streamax KWS Testing Engine')
     parser.add_argument('--mode', type=str, default=default_mode)

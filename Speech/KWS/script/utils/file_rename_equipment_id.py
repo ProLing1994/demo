@@ -2,9 +2,9 @@ import glob
 import os
 
 if __name__ == '__main__':
-    input_dir = "/mnt/huanyuan/data/speech/Recording/RM_Xiaorui/office/xiaorui_16k_TPEV/xiaorui_16k/"
-    old_file_format = 'RM_KWS_XIAORUI_xiaorui_TPEV_'
-    new_file_format = 'RM_KWS_XIAORUI_xiaorui_'
+    input_dir = "/mnt/huanyuan/data/speech/Recording/RM_Mandarin_Weibo/office/tpev_44.1k/wav/"
+    old_file_format = 'RM_ROOM_Mandarin_tpev_'
+    new_file_format = 'RM_ROOM_Mandarin_'
     equipment_id = '81'
     file_type = ".wav"
 
