@@ -104,7 +104,7 @@ def match_phoneme_noum(key_phonme, input_phonme):
     dist = get_edit_distance(key_phonme, input_phonme) 
 
     # if dist <= 1:
-    if dist <= 1 or (dist <= 2 and len(key_phonme) > 4) or (dist <= 3 and len(key_phonme) > 6):
+    if dist <= 1 or (dist < 3 and len(key_phonme) > 6):
         return True
     else:
         return False
@@ -311,19 +311,19 @@ class Decode(object):
                             # 记录匹配成功的动词的起止位置
                             matched_verb_id = range(idx, min(len(english_phoneme_list), idx + len(phoneme)))
 
-                            # if len(self.word_bs):
-                            #     verb_socres = 0.0
-                            #     for verb_id in range(len(matched_verb_id)):
-                            #         print("动词字符：", self.word_bs[matched_verb_id[verb_id]][0], "动词得分: ", self.word_bs[matched_verb_id[verb_id]][1])
-                            #         verb_socres += self.word_bs[matched_verb_id[verb_id]][1]
-                            #     verb_socres /= len(matched_verb_id)
-                            #     print("动词平均得分（模型得分）：", verb_socres)
+                            if len(self.word_bs):
+                                verb_socres = 0.0
+                                for verb_id in range(len(matched_verb_id)):
+                                    print("动词字符：", self.word_bs[matched_verb_id[verb_id]][0], "动词得分: ", self.word_bs[matched_verb_id[verb_id]][1])
+                                    verb_socres += self.word_bs[matched_verb_id[verb_id]][1]
+                                verb_socres /= len(matched_verb_id)
+                                print("动词平均得分（模型得分）：", verb_socres)
 
-                            #     if verb_socres < verb_socres_threshold:
-                            #         print("动词匹配失败 ...")
-                            #         match_bool = False
-                            #     else:
-                            #         print("动词匹配成功 !!!")
+                                if verb_socres < verb_socres_threshold:
+                                    print("动词匹配失败 ...")
+                                    match_bool = False
+                                else:
+                                    print("动词匹配成功 !!!")
                             
                             if (match_bool):
                                 matched_id = idx + len(phoneme)
