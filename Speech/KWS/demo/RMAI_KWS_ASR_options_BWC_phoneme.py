@@ -42,30 +42,34 @@ __C.general.kws_phoneme_dict = {'start_record':[[["_S T", "_TH"], ["AA1", "AO1",
                                                 [["_R", "_W"], ["AH0", "IH0", "IY0", "UW1", "ER0"], ["K", "P", "K W", "_HH"], ["AO1", "AA1", "AH0", "OW1"], ["R D", "R T", "R", "L D", "L T", "L", "D", "N", "T"], ["IH0 NG", "IY0", "AHO"]]],
                                 'stop_record':[[["_S T", "_TH"], ["AA1", "AO1", "AH1", "AE1 S"], ["P", "F", "V"]], \
                                                 [["_R", "_W"], ["AH0", "IH0", "IY0", "UW1", "ER0"], ["K", "P", "K W", "_HH"], ["AO1", "AA1", "AH0", "OW1"], ["R D", "R T", "R", "L D", "L T", "L", "D", "N", "T"], ["IH0 NG", "IY0", "AHO"]]],
-                                'mute_audio':[[["_M", "_HH", "_Y", "_R", "_N"], ["Y", ""], ["AH0", "IH0", "IY0", "UW1", "L"], ["T", "L", "_T", "R _T"]], \
+                                'mute_audio':[[["_M", "_HH", "_Y", "_R", "_N", "_W"], ["Y", ""], ["AH0", "IH0", "IY0", "UW1", "L"], ["T", "L", "_T", "R _T", "L T"]], \
                                                 [["_AA1", "_AO1", "_OW1", "_T", "_Z", "_HH"], ["AA1", "AO1", "OW1", ""], ["D", "R D", "R T", "L D", "L T", "G L", "T", "R", "L", "V"], ["IY0 OW2", "IY0 UW1", "IY0 AH0", "IY0 L", "IY0", "AH0", "ER0", "_Y UW1", "_D UW1", "_DH AH0"]]], 
-                                'unmute_audio':[[["_AH0", "_AA1", "_OW1"], ["N", "L", "R M", ""], ["M", "W", "Y", "_M", "_HH", "_Y", "_R", "_N"], ["Y", ""], ["AH0", "IH0", "IY0", "UW1", "L"], ["T", "L", "_T", "R _T"]], \
-                                                [["_AA1", "_AO1", "_OW1", "_T", "_Z", "_HH"], ["AA1", "AO1", "OW1", ""], ["D", "R D", "R T", "L D", "L T", "G L", "T", "R", "L", "V"], ["IY0 OW2", "IY0 UW1", "IY0 AH0", "IY0 L", "IY0", "AH0", "ER0", "_Y UW1", "_D UW1", "_DH AH0"]]], 
-                                'shot_fire':[["_SH AA1 T"], ["_F AY1 ER0"]], 
-                                'freeze':[["_F R IY1 Z"]], 
-                                'drop_gun':[["_D R AA1 P"], [" _Y AO1 R _G AH1 N"]], 
-                                'keep_hand':[["_K IY1 P"], ["_Y AO1 R _HH AE1 N D"]], 
-                                'put_hand':[["_P UH1 T"], ["_Y AO1 R _HH AE1 N D"]], 
-                                'down_ground':[["_G EH1 T"], ["_D AW1 N _AA1 N"]]}
+                                'unmute_audio':[[["_AH0", "_AA1", "_OW1"], ["N", "L", "R M", ""], ["M", "W", "Y", "_M", "_HH", "_Y", "_R", "_N" "_W"], ["Y", ""], ["AH0", "IH0", "IY0", "UW1", "L"], ["T", "L", "_T", "R _T", "L T"]], \
+                                                [["_AA1", "_AO1", "_OW1", "_T", "_Z", "_HH"], ["AA1", "AO1", "OW1", ""], ["D", "R D", "R T", "L D", "L T", "G L", "T", "R", "L", "V"], ["IY0 OW2", "IY0 UW1", "IY0 AH0", "IY0 L", "IY0", "AH0", "ER0", "_Y UW1", "_D UW1", "_DH AH0"]]]}
 __C.general.control_kws_list = ['start_record', 'stop_record', 'mute_audio', 'unmute_audio']
 
 # # strict
 # __C.general.kws_list = ['start_record', 'stop_record', 'mute_audio', 'unmute_audio', 'shot_fire', 'freeze', 'drop_gun', 'keep_hand', 'put_hand', 'down_ground']
-# __C.general.kws_phoneme_dict = {'start_record':["_S T AA1 R T, _R AH0 K AO1 R D IH0 NG"], 
-#                                 'stop_record':["_S T AA1 P, _R AH0 K AO1 R D IH0 NG"], 
-#                                 'mute_audio':["_M Y UW1 T, _AA1 D IY0 OW2"], 
-#                                 'unmute_audio':["_AH0 N M Y UW1 T, _AA1 D IY0 OW2"], 
-#                                 'shot_fire':["_SH AA1 T, _F AY1 ER0"], 
-#                                 'freeze':["_F R IY1 Z"], 
-#                                 'drop_gun':["_D R AA1 P, _Y AO1 R _G AH1 N"], 
-#                                 'keep_hand':["_K IY1 P, _Y AO1 R _HH AE1 N D"], 
-#                                 'put_hand':["_P UH1 T, _Y AO1 R _HH AE1 N D"], 
-#                                 'down_ground':["_G EH1 T, _D AW1 N _AA1 N"]}
+# __C.general.kws_phoneme_dict = {'start_record':[[['_S'], ['T'], ['AA1'], ['R'], ['T']],\
+#                                                 [['_R'], ['AH0'], ['K'], ['AO1'], ['R'], ['D'], ['IH0'], ['NG']]], 
+#                                 'stop_record':[[['_S'], ['T'], ['AA1'], ['P']], \
+#                                                 [['_R'], ['AH0'], ['K'], ['AO1'], ['R'], ['D'], ['IH0'], ['NG']]], 
+#                                 'mute_audio':[[['_M'], ['Y'], ['UW1'], ['T']], \
+#                                                 [['_AA1'], ['D'], ['IY0'], ['OW2']]], 
+#                                 'unmute_audio':[[['_AH0'], ['N'], ['M'], ['Y'], ['UW1'], ['T']], \
+#                                                 [['_AA1'], ['D'], ['IY0'], ['OW2']]], 
+#                                 'shot_fire':[[['_SH'], ['AA1'], ['T']]], 
+#                                 'unmute_audio':[[['_AH0'], ['N'], ['M'], ['Y'], ['UW1'], ['T']], \
+#                                                 [['_F'], ['AY1'], ['ER0']]], 
+#                                 'freeze':[[['_F'], ['R'], ['IY1'], ['Z']]], 
+#                                 'drop_gun':[[['_D'], ['R'], ['AA1'], ['P']], \
+#                                                 [['_Y'], ['AO1'], ['R'], ['_G'], ['AH1'], ['N']]], 
+#                                 'keep_hand':[[['_K'], ['IY1'], ['P']], \
+#                                                 [['_Y'], ['AO1'], ['R'], ['_HH'], ['AE1'], ['N'], ['D']]], 
+#                                 'put_hand':[[['_P'], ['UH1'], ['T']], \
+#                                                 [['_Y'], ['AO1'], ['R'], ['_HH'], ['AE1'], ['N'], ['D']]], 
+#                                 'down_ground':[[['_G'], ['EH1'], ['T']], \
+#                                                 [['_D'], ['AW1'], ['N'], ['_AA1'], ['N']]]}
 # __C.general.kws_verb_socres_threshold_dict = {'start_record': -2.3, 
 #                                                 'stop_record': -2.3, 
 #                                                 'mute_audio': -2.3, 

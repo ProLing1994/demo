@@ -238,15 +238,14 @@ class Decode(object):
         matched_verb_id = []
 
         # init matching_state_list，匹配状态容器
-        matching_state_list = []            # [{'phoneme':[], 'lable':[], 'verb_socres_threshold': -0.2}]
+        matching_state_list = []            # {'phoneme_group':[], 'lable':[], 'verb_socres_threshold': -0.2}
         for idx in range(len(kws_list)):
             kws_idx = kws_list[idx]
-            for idy in range(len(kws_phoneme_dict[kws_idx])):
-                matching_state_dict = {}
-                matching_state_dict['phoneme'] = [idz.strip().split(" ") for idz in kws_phoneme_dict[kws_idx][idy].strip().split(",")]
-                matching_state_dict['lable'] = kws_idx
-                matching_state_dict['verb_socres_threshold'] = kws_verb_socres_threshold_dict[kws_idx] if kws_idx in kws_verb_socres_threshold_dict else self.verb_socres_threshold 
-                matching_state_list.append(matching_state_dict)
+            matching_state_dict = {}
+            matching_state_dict['phoneme_group'] = kws_phoneme_dict[kws_idx]
+            matching_state_dict['lable'] = kws_idx
+            matching_state_dict['verb_socres_threshold'] = kws_verb_socres_threshold_dict[kws_idx] if kws_idx in kws_verb_socres_threshold_dict else self.verb_socres_threshold 
+            matching_state_list.append(matching_state_dict)
 
         english_phoneme_list = [self.id2word[idx] for idx in self.result_id]
 
@@ -257,64 +256,75 @@ class Decode(object):
                 
                 # init 
                 match_bool = False
-                phoneme_list = matching_state_list[idy]['phoneme']
+                phoneme_group = matching_state_list[idy]['phoneme_group']
                 lable = matching_state_list[idy]['lable']
                 verb_socres_threshold = matching_state_list[idy]['verb_socres_threshold']
 
                 # 匹配规则：
                 # 1、匹配动词音素：动词任意匹配 [ing, ed, s]，动词音素的编辑距离等于 0 
-                if (english_phoneme_list[idx] == phoneme_list[0][0]):
+                if '_' not in english_phoneme_list[idx]:
+                    continue
 
-                    # 动词匹配
-                    match_bool = match_phoneme_verb(phoneme_list[0], english_phoneme_list[idx: min(len(english_phoneme_list), idx + len(phoneme_list[0]))])
+                # 生成 phoneme_list 
+                verb_phoneme_list = []
+                self.phonemegroup2phonemelist(phoneme_group[0], verb_phoneme_list)
+                verb_phoneme = verb_phoneme_list[0]
 
-                    if (match_bool):
-                        # 查询匹配的字符
-                        print("动词匹配字符：", english_phoneme_list[idx: idx + len(phoneme_list[0])], ": ", phoneme_list[0])
+                # 动词匹配
+                match_bool = match_phoneme_verb(verb_phoneme, english_phoneme_list[idx: min(len(english_phoneme_list), idx + len(verb_phoneme))])
 
-                        # 记录匹配成功的动词的起止位置
-                        matched_verb_id = range(idx, min(len(english_phoneme_list), idx + len(phoneme_list[0])))
+                if (match_bool):
+                    # 查询匹配的字符
+                    print("动词匹配字符：", english_phoneme_list[idx: idx + len(verb_phoneme)], ": ", verb_phoneme)
 
-                        # 计算动词平均得分（模型得分），若均值大于阈值（-0.2），则认为匹配成功
-                        if len(self.word_bs):
-                            verb_socres = 0.0
-                            for verb_id in range(len(matched_verb_id)):
-                                print("动词字符：", self.word_bs[matched_verb_id[verb_id]][0], "动词得分: ", self.word_bs[matched_verb_id[verb_id]][1])
-                                verb_socres += self.word_bs[matched_verb_id[verb_id]][1]
-                            verb_socres /= len(matched_verb_id)
-                            print("动词平均得分（模型得分）：", verb_socres)
+                    # 计算动词平均得分（模型得分），若均值大于阈值（-0.2），则认为匹配成功
+                    # 记录匹配成功的动词的起止位置
+                    matched_verb_id = range(idx, min(len(english_phoneme_list), idx + len(verb_phoneme)))
 
-                            if verb_socres < verb_socres_threshold:
-                                print("匹配失败 ...")
-                                continue
-                            else:
-                                print("匹配成功 !!!")
+                    if len(self.word_bs):
+                        verb_socres = 0.0
+                        for verb_id in range(len(matched_verb_id)):
+                            print("动词字符：", self.word_bs[matched_verb_id[verb_id]][0], "动词得分: ", self.word_bs[matched_verb_id[verb_id]][1])
+                            verb_socres += self.word_bs[matched_verb_id[verb_id]][1]
+                        verb_socres /= len(matched_verb_id)
+                        print("动词平均得分（模型得分）：", verb_socres)
 
-
-                        # 判断是不是单个词组组成的关键词，如：freeze
-                        if len(phoneme_list) == 1:
-                            # 匹配规则
-                            # 2、若只存在一个动词，匹配成功
-                            self.result_string.append(lable)
-                        # 判断是不是多个词组组成的关键词，如：start_record
+                        if verb_socres < verb_socres_threshold:
+                            print("动词匹配失败 ...")
+                            continue
                         else:
-                            # 匹配规则
-                            # 2、匹配名词音素：名词必须紧跟动词，名词音素的编辑距离小于 1
-                            id_noum = idx + len(phoneme_list[0])
+                            print("动词匹配成功 !!!")
 
-                            # 查询到下一个起始音素
-                            while (id_noum < len(english_phoneme_list) and '_' not in english_phoneme_list[id_noum]):
-                                id_noum += 1
-                            # 若查询到末尾，则查询失败
-                            if (id_noum == len(english_phoneme_list)):
-                                continue
 
-                            # 名词匹配 
-                            match_bool = match_phoneme_noum(phoneme_list[1], english_phoneme_list[id_noum: min(len(english_phoneme_list), id_noum + len(phoneme_list[1]))])
-                            if (match_bool):
-                                # 查询匹配成功的字符
-                                print("匹配成功字符：", english_phoneme_list[id_noum: min(len(english_phoneme_list), id_noum + len(phoneme_list[1]))], ": ", phoneme_list[1])
-                                self.result_string.append(lable)
+                    # 判断是不是单个词组组成的关键词，如：freeze
+                    if len(phoneme_group) == 1:
+                        # 匹配规则
+                        # 2、若只存在一个动词，匹配成功
+                        self.result_string.append(lable)
+                    # 判断是不是多个词组组成的关键词，如：start_record
+                    else:
+                        # 匹配规则
+                        # 2、匹配名词音素：名词必须紧跟动词，名词音素的编辑距离小于 1
+                        id_noum = idx + len(verb_phoneme)
+
+                        # 查询到下一个起始音素
+                        while (id_noum < len(english_phoneme_list) and '_' not in english_phoneme_list[id_noum]):
+                            id_noum += 1
+                        # 若查询到末尾，则查询失败
+                        if (id_noum == len(english_phoneme_list)):
+                            continue
+
+                        # 生成 phoneme_list 
+                        noum_phoneme_list = []
+                        self.phonemegroup2phonemelist(phoneme_group[1], noum_phoneme_list)
+                        noum_phoneme = noum_phoneme_list[0]
+
+                        # 名词匹配 
+                        match_bool = match_phoneme_noum(noum_phoneme, english_phoneme_list[id_noum: min(len(english_phoneme_list), id_noum + len(noum_phoneme))])
+                        if (match_bool):
+                            # 查询匹配成功的字符
+                            print("名词匹配字符：", english_phoneme_list[id_noum: min(len(english_phoneme_list), id_noum + len(noum_phoneme))], ": ", noum_phoneme)
+                            self.result_string.append(lable)
         return
 
     def match_keywords_english_robust(self, kws_list, kws_phoneme_dict):
