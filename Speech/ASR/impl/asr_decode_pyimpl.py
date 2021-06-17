@@ -232,7 +232,7 @@ class Decode(object):
             temp_list.pop()
         return 
 
-    def match_keywords_english_strict(self, kws_list, kws_phoneme_dict, kws_verb_socres_threshold_dict={}):
+    def match_keywords_english_strict(self, kws_list, kws_phoneme_dict, control_kws_list, contorl_kws_bool, kws_phoneme_param_dict={}):
         # init
         self.result_string = []
         matched_verb_id = []
@@ -244,7 +244,7 @@ class Decode(object):
             matching_state_dict = {}
             matching_state_dict['phoneme_group'] = kws_phoneme_dict[kws_idx]
             matching_state_dict['lable'] = kws_idx
-            matching_state_dict['verb_socres_threshold'] = kws_verb_socres_threshold_dict[kws_idx] if kws_idx in kws_verb_socres_threshold_dict else self.verb_socres_threshold 
+            matching_state_dict['verb_socres_threshold'] = kws_phoneme_param_dict[kws_idx]["verb_socres_threshold"] if kws_idx in kws_phoneme_param_dict else self.verb_socres_threshold 
             matching_state_list.append(matching_state_dict)
 
         english_phoneme_list = [self.id2word[idx] for idx in self.result_id]
@@ -265,10 +265,17 @@ class Decode(object):
                 if '_' not in english_phoneme_list[idx]:
                     continue
 
+                find_control_kws = lable in control_kws_list
+                if contorl_kws_bool and not find_control_kws:
+                    continue
+                if not contorl_kws_bool and find_control_kws:
+                    continue
+
                 # 生成 phoneme_list 
                 verb_phoneme_list = []
                 self.phonemegroup2phonemelist(phoneme_group[0], verb_phoneme_list)
                 verb_phoneme = verb_phoneme_list[0]
+                verb_phoneme = ' '.join(verb_phoneme).strip().split(" ")
 
                 # 动词匹配
                 match_bool = match_phoneme_verb(verb_phoneme, english_phoneme_list[idx: min(len(english_phoneme_list), idx + len(verb_phoneme))])
@@ -318,7 +325,8 @@ class Decode(object):
                         noum_phoneme_list = []
                         self.phonemegroup2phonemelist(phoneme_group[1], noum_phoneme_list)
                         noum_phoneme = noum_phoneme_list[0]
-
+                        noum_phoneme = ' '.join(noum_phoneme).strip().split(" ")
+                        
                         # 名词匹配 
                         match_bool = match_phoneme_noum(noum_phoneme, english_phoneme_list[id_noum: min(len(english_phoneme_list), id_noum + len(noum_phoneme))])
                         if (match_bool):
@@ -327,7 +335,7 @@ class Decode(object):
                             self.result_string.append(lable)
         return
 
-    def match_keywords_english_robust(self, kws_list, kws_phoneme_dict):
+    def match_keywords_english_robust(self, kws_list, kws_phoneme_dict, control_kws_list, contorl_kws_bool):
         # init
         self.result_string = []
         matching_lable_list = []            # 容器，记录匹配的 label
@@ -361,7 +369,13 @@ class Decode(object):
                 # check 
                 if idx < matched_id:
                     continue
-                
+
+                find_control_kws = lable in control_kws_list
+                if contorl_kws_bool and not find_control_kws:
+                    continue
+                if not contorl_kws_bool and find_control_kws:
+                    continue
+
                 # 当前策略：
                 # 动词：任意匹配 [ing, ed, s]；
                 if state_id + 1 == 0:
@@ -375,11 +389,10 @@ class Decode(object):
                     # 生成 phoneme_list 
                     phoneme_list = []
                     self.phonemegroup2phonemelist(phoneme_group[state_id + 1], phoneme_list)
-                    # print([' '.join(phoneme_list[idz]).strip().split(" ") for idz in range(len(phoneme_list))])
 
                     for idz in range(len(phoneme_list)):
-                        phoneme_list_idz = [i for i in phoneme_list[idz] if i != ""]
-                        phoneme = ' '.join(phoneme_list_idz).strip().split(" ")
+                        phoneme = [i for i in phoneme_list[idz] if i != ""]
+                        phoneme = ' '.join(phoneme).strip().split(" ")
                         key_symbol = self.phoneme2symbol(phoneme)
                         input_symbol = self.phoneme2symbol(english_phoneme_list[idx: min(len(english_phoneme_list), idx + len(phoneme))])
                         match_bool = match_symbol_verb(key_symbol, input_symbol)
@@ -404,10 +417,10 @@ class Decode(object):
                     # 生成 phoneme_list
                     phoneme_list = []
                     self.phonemegroup2phonemelist(phoneme_group[state_id + 1], phoneme_list)
-                    # print([' '.join(phoneme_list[idz]).strip().split(" ") for idz in range(len(phoneme_list))])
+
                     for idz in range(len(phoneme_list)):
-                        phoneme_list_idz = [i for i in phoneme_list[idz] if i != ""]
-                        phoneme = ' '.join(phoneme_list_idz).strip().split(" ")
+                        phoneme = [i for i in phoneme_list[idz] if i != ""]
+                        phoneme = ' '.join(phoneme).strip().split(" ")
                         key_symbol = self.phoneme2symbol(phoneme)
                         input_symbol = self.phoneme2symbol(english_phoneme_list[idx: min(len(english_phoneme_list), idx + len(phoneme))])
                         match_bool = match_symbol_noum(key_symbol, input_symbol)
@@ -432,26 +445,33 @@ class Decode(object):
                         if not find_matching_lable_bool:
                             matching_lable_list.append(lable)
                             self.result_string.append(lable)
+
+                        if 'mute_audio' in matching_lable_list and 'unmute_audio' in matching_lable_list:
+                            self.result_string = []
+                            matching_lable_list = []            # 容器，记录匹配的 label
+                            self.result_string.append('unmute_audio')    
+                            matching_lable_list.append('unmute_audio')
         return
 
-    def match_keywords_english_custom(self, kws_list, kws_phoneme_dict, kws_verb_socres_threshold_dict={}, kws_matched_interval_threshold_dict={}):
+    def match_keywords_english_combine(self, kws_list, kws_phoneme_dict, control_kws_list, contorl_kws_bool, kws_phoneme_param_dict={}):
         # init
         self.result_string = []
         matching_lable_list = []            # 容器，记录匹配的 label
         matched_verb_id = []                # 容器，记录动词的 id
 
         # init matching_state_list，匹配状态容器
-        matching_state_list = []            # {'phoneme':[], 'lable':[], 'length':0, 'state_id':-1, 'matched_interval':0, 'verb_socres_threshold':-0.2, 'matched_interval_threshold':0}
+        matching_state_list = []            # {'phoneme_group':[], 'lable':[], 'length':0, 'state_id':-1, 'matched_id':-1, 'matched_interval':0, 'verb_socres_threshold':-0.2, 'strategy': strict}
         for idx in range(len(kws_list)):
             kws_idx = kws_list[idx]
             matching_state_dict = {}
-            matching_state_dict['phoneme'] = [[idz.strip().split(" ") for idz in idy] for idy in kws_phoneme_dict[kws_idx]]
+            matching_state_dict['phoneme_group'] = kws_phoneme_dict[kws_idx]
             matching_state_dict['lable'] = kws_idx
-            matching_state_dict['length'] = len(matching_state_dict['phoneme'])
+            matching_state_dict['length'] = len(matching_state_dict['phoneme_group'])
             matching_state_dict['state_id'] = -1
+            matching_state_dict['matched_id'] = -1
             matching_state_dict['matched_interval'] = 0
-            matching_state_dict['verb_socres_threshold'] = kws_verb_socres_threshold_dict[kws_idx] if kws_idx in kws_verb_socres_threshold_dict else self.verb_socres_threshold 
-            matching_state_dict['matched_interval_threshold'] = kws_matched_interval_threshold_dict[kws_idx] if kws_idx in kws_matched_interval_threshold_dict else 0
+            matching_state_dict['verb_socres_threshold'] = kws_phoneme_param_dict[kws_idx]["verb_socres_threshold"] if kws_idx in kws_phoneme_param_dict else self.verb_socres_threshold 
+            matching_state_dict['strategy'] = kws_phoneme_param_dict[kws_idx]["strategy"] if kws_idx in kws_phoneme_param_dict else 'strict'
             matching_state_list.append(matching_state_dict)
 
         english_phoneme_list = [self.id2word[idx] for idx in self.result_id]
@@ -462,13 +482,24 @@ class Decode(object):
             for idy in range(len(matching_state_list)):
                 # init
                 match_bool = False
-                phoneme_list = matching_state_list[idy]['phoneme']
+                phoneme_group = matching_state_list[idy]['phoneme_group']
                 lable = matching_state_list[idy]['lable']
                 length = matching_state_list[idy]['length']
                 state_id = matching_state_list[idy]['state_id']
+                matched_id = matching_state_list[idy]['matched_id']
                 matched_interval = matching_state_list[idy]['matched_interval']
                 verb_socres_threshold = matching_state_list[idy]['verb_socres_threshold']
-                matched_interval_threshold = matching_state_list[idy]['matched_interval_threshold']
+                strategy = matching_state_list[idy]['strategy']
+
+                # check 
+                if idx < matched_id:
+                    continue
+
+                find_control_kws = lable in control_kws_list
+                if contorl_kws_bool and not find_control_kws:
+                    continue
+                if not contorl_kws_bool and find_control_kws:
+                    continue
 
                 # 当前策略：
                 # 动词：任意匹配 [ing, ed, s]；
@@ -476,21 +507,38 @@ class Decode(object):
 
                     # 匹配规则：
                     # 1、匹配动词音素：动词任意匹配 [ing, ed, s]，动词音素的编辑距离等于 0 
-                    if ('_' in english_phoneme_list[idx]):
+                    # 必须以 "_" 开头 
+                    if '_' not in english_phoneme_list[idx]:
+                        continue
 
-                        # 动词匹配
-                        for idz in range(len(phoneme_list[0])):
-                            match_bool = match_phoneme_verb(phoneme_list[0][idz], english_phoneme_list[idx: min(len(english_phoneme_list), idx + len(phoneme_list[0][idz]))])
+                    # 动词匹配
+                    # 生成 phoneme_list 
+                    phoneme_list = []
+                    self.phonemegroup2phonemelist(phoneme_group[state_id + 1], phoneme_list)
 
-                            # 动词匹配成功
-                            if (match_bool):
-                                # 查询匹配的字符
-                                print("动词匹配字符：", english_phoneme_list[idx: idx + len(phoneme_list[0][idz])], ": ", phoneme_list[0][idz])
+                    for idz in range(len(phoneme_list)):
+                        phoneme = [i for i in phoneme_list[idz] if i != ""]
+                        phoneme = ' '.join(phoneme).strip().split(" ")
+                        key_symbol = self.phoneme2symbol(phoneme)
+                        input_symbol = self.phoneme2symbol(english_phoneme_list[idx: min(len(english_phoneme_list), idx + len(phoneme))])
 
-                                # 记录匹配成功的动词的起止位置
-                                matched_verb_id = range(idx, min(len(english_phoneme_list), idx + len(phoneme_list[0][idz])))
+                        if strategy == "robust":
+                            match_bool = match_symbol_verb(key_symbol, input_symbol)
+                        elif strategy == "strict":
+                            match_bool = match_phoneme_verb(phoneme, english_phoneme_list[idx: min(len(english_phoneme_list), idx + len(phoneme))])
+
+                        # 动词匹配成功
+                        if (match_bool):
+                            # 查询匹配的字符
+                            print("动词匹配字符：", english_phoneme_list[idx: min(len(english_phoneme_list), idx + len(phoneme))], ": ", phoneme)
+                            print("动词匹配字符：", input_symbol, ": ", key_symbol)
+
+                            if strategy == "strict":
 
                                 # 计算动词平均得分（模型得分），若均值大于阈值（-0.2），则认为匹配成功
+                                # 记录匹配成功的动词的起止位置
+                                matched_verb_id = range(idx, min(len(english_phoneme_list), idx + len(phoneme)))
+
                                 if len(self.word_bs):
                                     verb_socres = 0.0
                                     for verb_id in range(len(matched_verb_id)):
@@ -500,36 +548,53 @@ class Decode(object):
                                     print("动词平均得分（模型得分）：", verb_socres)
 
                                     if verb_socres < verb_socres_threshold:
-                                        print("动词匹配失败 ..., verb_socres_threshold: ", verb_socres_threshold)
+                                        print("动词匹配失败 ...")
                                         match_bool = False
                                     else:
                                         print("动词匹配成功 !!!")
-                                        break
+                            
+                            if (match_bool):
+                                matched_id = idx + len(phoneme)
+                                matching_state_list[idy]['matched_id'] = matched_id
+                                break
 
                 # 名词：编辑距离小于 1 或者任意匹配 [ing, ed, s]
                 elif state_id + 1 < length:
 
                     # 匹配规则
                     # 2、匹配名词音素：名词不必紧跟动词（允许有相应的间隔），名词音素的编辑距离小于 1
-                    if ('_' in english_phoneme_list[idx]):
 
-                        # 名词匹配 
-                        for idz in range(len(phoneme_list[state_id + 1])):
-                            match_bool = match_phoneme_noum(phoneme_list[state_id + 1][idz], english_phoneme_list[idx: min(len(english_phoneme_list), idx + len(phoneme_list[state_id + 1][idz]))])
-                            
-                            if (match_bool):
-                                # 查询匹配的字符
-                                print("名词匹配字符：", english_phoneme_list[idx: min(len(english_phoneme_list), idx + len(phoneme_list[state_id + 1][idz]))], ": ", phoneme_list[state_id + 1][idz])
+                    # 名词匹配 
+                    # 生成 phoneme_list
+                    phoneme_list = []
+                    self.phonemegroup2phonemelist(phoneme_group[state_id + 1], phoneme_list)
 
-                                if matched_interval <= matched_interval_threshold:
-                                    print("名词匹配成功 !!!")
-                                    break
-                                else:
-                                    print("名词匹配失败 ...")
-                                    match_bool = False
+                    for idz in range(len(phoneme_list)):
+                        phoneme = [i for i in phoneme_list[idz] if i != ""]
+                        phoneme = ' '.join(phoneme).strip().split(" ")
+                        key_symbol = self.phoneme2symbol(phoneme)
+                        input_symbol = self.phoneme2symbol(english_phoneme_list[idx: min(len(english_phoneme_list), idx + len(phoneme))])
+
+                        if strategy == "robust":
+                            match_bool = match_symbol_noum(key_symbol, input_symbol)
+                        elif strategy == "strict":
+                            match_bool = False
+                            if '_' in english_phoneme_list[idx] and matched_interval < 1:
+                                match_bool = match_phoneme_noum(phoneme, english_phoneme_list[idx: min(len(english_phoneme_list), idx + len(phoneme))])
                         
+                        if (match_bool):
+                            # 查询匹配的字符
+                            print("名词匹配字符：", english_phoneme_list[idx: min(len(english_phoneme_list), idx + len(phoneme))], ": ", phoneme)
+                            print("名词匹配字符：", input_symbol, ": ", key_symbol)
+
+                            matched_id = idx + len(phoneme)
+                            matching_state_list[idy]['matched_id'] = matched_id
+                            break
+                    
+                    if '_' in english_phoneme_list[idx]:
                         matched_interval = matched_interval + 1
                         matching_state_list[idy]['state_id'] = matched_interval
+
                 else:
                     continue
 
@@ -544,6 +609,12 @@ class Decode(object):
                         if not find_matching_lable_bool:
                             matching_lable_list.append(lable)
                             self.result_string.append(lable)
+
+                        if 'mute_audio' in matching_lable_list and 'unmute_audio' in matching_lable_list:
+                            self.result_string = []
+                            matching_lable_list = []            # 容器，记录匹配的 label
+                            self.result_string.append('unmute_audio')    
+                            matching_lable_list.append('unmute_audio')
         return
 
     def ctc_decoder(self, input_data):
