@@ -10,7 +10,7 @@ from ASR.impl.asr_feature_pyimpl import Feature
 # from ASR.impl.asr_feature_cimpl import Feature
 import ASR.impl.asr_decode_pyimpl as Decode_Python
 import ASR.impl.asr_data_loader_pyimpl as WaveLoader_Python
-import ASR.impl.asr_data_loader_cimpl as WaveLoader_C
+# import ASR.impl.asr_data_loader_cimpl as WaveLoader_C
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from common.common.utils.python.file_tools import load_module_from_disk
@@ -33,7 +33,7 @@ cfg = cfg.cfg
 params_dict = {}
 output_dict = {}
 
-def param_init():
+def param_init(bool_init_output_kws_id = True, subfolder_name=''):
     # container
     params_dict['audio_data_container_np'] = np.array([])
     params_dict['feature_data_container_np'] = np.array([])
@@ -46,8 +46,9 @@ def param_init():
 
     output_dict['csv_original_scores'] = []
     output_dict['csv_found_words'] = []
-    output_dict['subfolder_name'] = ''
-    output_dict['output_kws_id'] = 1
+    output_dict['subfolder_name'] = subfolder_name
+    if bool_init_output_kws_id:
+        output_dict['output_kws_id'] = 1
     output_dict['sliding_window_start_time_ms'] = 0
 
     # mkdir
@@ -135,8 +136,8 @@ def output_wave(output_prefix_name):
         date_time = str(datetime.now()).split(' ')[0]
         output_path = os.path.join(cfg.test.output_folder, output_dict['subfolder_name'], '{}_{}_{}.wav'.format(output_prefix_name, date_time, output_dict['output_kws_id']))
         # output_path = os.path.join(cfg.test.output_folder, output_dict['subfolder_name'], '{}_starttime_{}.wav'.format(output_prefix_name, int(output_dict['sliding_window_start_time_ms'])))
-        # wave_loader = WaveLoader_Python.WaveLoader_Soundfile(cfg.general.sample_rate)
-        wave_loader = WaveLoader_Python.WaveLoader_Librosa(cfg.general.sample_rate)
+        wave_loader = WaveLoader_Python.WaveLoader_Soundfile(cfg.general.sample_rate)
+        # wave_loader = WaveLoader_Python.WaveLoader_Librosa(cfg.general.sample_rate)
         wave_loader.save_data(np.array(params_dict['output_wave_list']), output_path)
         output_dict['output_kws_id'] += 1
 
@@ -247,19 +248,19 @@ def run_asr(contorl_kws_bool=True):
         decode_python.show_symbol_english()
 
         # # 鲁邦的匹配方式
-        # decode_python.match_keywords_english_robust(cfg.general.kws_list, cfg.general.control_kws_list, contorl_kws_bool, cfg.general.kws_phoneme_dict)
+        # decode_python.match_keywords_english_robust(cfg.general.kws_list, cfg.general.kws_phoneme_dict, cfg.general.control_kws_list, contorl_kws_bool)
         # # result_string = decode_python.output_result_string()
         # result_string = decode_python.output_control_result_string(cfg.general.control_kws_list, contorl_kws_bool)
 
-        # # 严格匹配方式
-        # decode_python.match_keywords_english_strict(cfg.general.kws_list, cfg.general.kws_phoneme_dict, cfg.general.kws_phoneme_param_dict, cfg.general.control_kws_list, contorl_kws_bool)
-        # # result_string = decode_python.output_result_string()
-        # result_string = decode_python.output_control_result_string(cfg.general.control_kws_list, contorl_kws_bool)
-
-        # 自定义的匹配方式
-        decode_python.match_keywords_english_combine(cfg.general.kws_list, cfg.general.kws_phoneme_dict, cfg.general.control_kws_list, contorl_kws_bool, cfg.general.kws_phoneme_param_dict)
+        # 严格匹配方式
+        decode_python.match_keywords_english_strict(cfg.general.kws_list, cfg.general.kws_phoneme_dict, cfg.general.control_kws_list, contorl_kws_bool, cfg.general.kws_phoneme_param_dict)
         # result_string = decode_python.output_result_string()
         result_string = decode_python.output_control_result_string(cfg.general.control_kws_list, contorl_kws_bool)
+
+        # # 自定义的匹配方式
+        # decode_python.match_keywords_english_combine(cfg.general.kws_list, cfg.general.kws_phoneme_dict, cfg.general.control_kws_list, contorl_kws_bool, cfg.general.kws_phoneme_param_dict)
+        # # result_string = decode_python.output_result_string()
+        # result_string = decode_python.output_control_result_string(cfg.general.control_kws_list, contorl_kws_bool)
 
     else:
         print("[Unknow:] cfg.general.language_id. ")
@@ -367,8 +368,8 @@ def KWS_ASR_offine():
 
     # load wave
     # wave_loader = WaveLoader_C.WaveLoader(cfg.general.sample_rate)
-    # wave_loader = WaveLoader_Python.WaveLoader_Soundfile(cfg.general.sample_rate)
-    wave_loader = WaveLoader_Python.WaveLoader_Librosa(cfg.general.sample_rate)
+    wave_loader = WaveLoader_Python.WaveLoader_Soundfile(cfg.general.sample_rate)
+    # wave_loader = WaveLoader_Python.WaveLoader_Librosa(cfg.general.sample_rate)
     wave_loader.load_data(cfg.test.input_wav)
     wave_data = wave_loader.to_numpy()
 
@@ -394,7 +395,6 @@ def KWS_ASR_offine():
 def KWS_ASR_offine_perfolder():
     # param_init
     param_init()
-    output_dict['output_kws_id'] = 1
 
     # kws_asr_init
     kws_asr_init()
@@ -407,14 +407,11 @@ def KWS_ASR_offine_perfolder():
             continue
 
         # param_init
-        param_init()
+        param_init(bool_init_output_kws_id = False, subfolder_name='')
+        # param_init(bool_init_output_kws_id = False, subfolder_name=os.path.basename(wave_path).split('.')[0])
 
         wave_path = os.path.join(cfg.test.input_folder, wave_list[idx])
         print("[Information:] Audio path: ", wave_path)
-
-        # init 
-        # output_dict['subfolder_name'] = ''
-        output_dict['subfolder_name'] = os.path.basename(wave_path).split('.')[0]
     
         # mkdir
         if cfg.general.bool_output_wave or cfg.general.bool_output_csv:
@@ -424,8 +421,8 @@ def KWS_ASR_offine_perfolder():
 
         # load wave
         # wave_loader = WaveLoader_C.WaveLoader(cfg.general.sample_rate)
-        # wave_loader = WaveLoader_Python.WaveLoader_Soundfile(cfg.general.sample_rate)
-        wave_loader = WaveLoader_Python.WaveLoader_Librosa(cfg.general.sample_rate)
+        wave_loader = WaveLoader_Python.WaveLoader_Soundfile(cfg.general.sample_rate)
+        # wave_loader = WaveLoader_Python.WaveLoader_Librosa(cfg.general.sample_rate)
         wave_loader.load_data(wave_path)
         wave_data = wave_loader.to_numpy()
 

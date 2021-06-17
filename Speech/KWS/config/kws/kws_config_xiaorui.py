@@ -17,22 +17,26 @@ __C.general.sub_data_dir = ["/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experi
 # data version
 # __C.general.version = "1.4"
 # __C.general.version = "1.5"
-__C.general.version = "1.6"
+# __C.general.version = "1.6"
+__C.general.version = "1.7"
 
 # data date
 # __C.general.date = "04302021"
 # __C.general.date = "05172021"
-__C.general.date = "05272021"
+# __C.general.date = "05272021"
+__C.general.date = "06172021"
 
 # data path
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.4_04302021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.5_05172021/total_data_files.csv"
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.6_05272021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.6_05272021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.7_06172021/total_data_files.csv"
 
 # background noise path
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.4_04302021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.5_05172021/background_noise_files.csv"
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.6_05272021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.6_05272021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.7_06172021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -154,8 +158,8 @@ __C.dataset.window_stride_ms = 10.0
 # __C.dataset.preprocess = "fbank"
 # __C.dataset.preprocess = "pcen"
 # __C.dataset.preprocess = "mfcc"
-__C.dataset.preprocess = "fbank_cpu"
-# __C.dataset.preprocess = "fbank_cpu_hisi"
+# __C.dataset.preprocess = "fbank_cpu"
+__C.dataset.preprocess = "fbank_cpu_hisi"
 
 # How many bins to use for the Mel feature
 # __C.dataset.feature_bin_count = 40
@@ -270,7 +274,7 @@ __C.regularization = {}
 __C.regularization.label_smoothing = {}
 
 # regularization: label smoothing on
-__C.regularization.label_smoothing.on = True
+__C.regularization.label_smoothing.on = False
 
 # regularization: label smoothing epsilon 
 __C.regularization.label_smoothing.epsilon = 0.1
@@ -303,11 +307,11 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'cnn-trad-pool2'
 # __C.net.model_name = 'cnn-one-fstride1'
 # __C.net.model_name = 'cnn-tpool2'
-# __C.net.model_name = 'res15'
+__C.net.model_name = 'res15'
 # __C.net.model_name = 'res15-narrow'
 # __C.net.model_name = 'res15-narrow-amba'
 # __C.net.model_name = 'res15-narrow-novt'
-__C.net.model_name = 'res15_stochastic_depth'
+# __C.net.model_name = 'res15_stochastic_depth'
 # __C.net.model_name = 'res8'
 # __C.net.model_name = 'res8-narrow'
 # __C.net.model_name = 'lstm-avg'
