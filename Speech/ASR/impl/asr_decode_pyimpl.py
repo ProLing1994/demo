@@ -5,7 +5,7 @@ import kenlm
 
 
 class Ken_LM:
-
+    
     def __init__(self, lmPATH):
         self.__model = kenlm.Model(lmPATH)
         self.senlen = 3
@@ -104,7 +104,7 @@ def match_phoneme_noum(key_phonme, input_phonme):
     dist = get_edit_distance(key_phonme, input_phonme) 
 
     # if dist <= 1:
-    if dist == 0 or (dist < 2 and len(key_phonme) > 4) or (dist < 3 and len(key_phonme) > 6):
+    if dist <= 1 or (dist <= 2 and len(key_phonme) > 4) or (dist <= 3 and len(key_phonme) > 6):
         return True
     else:
         return False
