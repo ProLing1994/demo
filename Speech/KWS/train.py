@@ -162,10 +162,7 @@ def train(config_file, training_mode):
             scores = net(inputs)
         scores = scores.view(scores.size()[0], scores.size()[1])
         
-        if cfg.regularization.label_smoothing.on:
-            loss = loss_func(scores, label_smoothing(labels, cfg.dataset.label.num_classes, cfg.regularization.label_smoothing.epsilon))
-        else:
-            loss = loss_func(scores, labels)
+        loss = loss_func(scores, labels)
             
         if cfg.knowledge_distillation.on:
             teacher_model.eval()

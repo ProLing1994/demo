@@ -274,7 +274,7 @@ __C.regularization = {}
 __C.regularization.label_smoothing = {}
 
 # regularization: label smoothing on
-__C.regularization.label_smoothing.on = False
+__C.regularization.label_smoothing.on = True
 
 # regularization: label smoothing epsilon 
 __C.regularization.label_smoothing.epsilon = 0.1
@@ -345,6 +345,7 @@ __C.train.num_epochs = 1
 # __C.train.batch_size = 128
 # __C.train.batch_size = 64
 # __C.train.batch_size = 16
+# __C.train.batch_size = 8
 __C.train.batch_size = 1
 
 # the number of threads for IO
