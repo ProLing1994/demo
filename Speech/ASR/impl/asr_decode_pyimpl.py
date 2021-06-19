@@ -218,10 +218,6 @@ class Decode(object):
         return output_symbol
 
     def phonemegroup2phonemelist(self, phoneme_group, phoneme_list, temp_list=[], id = 0):
-        if len(phoneme_group) == 1:
-            phoneme_list.append(phoneme_group[0])
-            return 
-
         if id == len(phoneme_group):
             phoneme_list.append(temp_list.copy())
             return
@@ -239,13 +235,13 @@ class Decode(object):
         matched_verb_id = []                # 容器，记录动词的 id
 
         # init matching_state_list，匹配状态容器
-        matching_state_list = []            # {'phoneme_group':[], 'lable':[], 'length':0, 'state_id':-1, 'matched_id':-1, 'matched_interval':0, 'verb_socres_threshold':-0.2}
+        matching_state_list = []            # {'phoneme_groups':[], 'lable':[], 'length':0, 'state_id':-1, 'matched_id':-1, 'matched_interval':0, 'verb_socres_threshold':-0.2}
         for idx in range(len(kws_list)):
             kws_idx = kws_list[idx]
             matching_state_dict = {}
-            matching_state_dict['phoneme_group'] = kws_phoneme_dict[kws_idx]
+            matching_state_dict['phoneme_groups'] = kws_phoneme_dict[kws_idx]
             matching_state_dict['lable'] = kws_idx
-            matching_state_dict['length'] = len(matching_state_dict['phoneme_group'])
+            matching_state_dict['length'] = len(matching_state_dict['phoneme_groups'])
             matching_state_dict['state_id'] = -1
             matching_state_dict['matched_id'] = -1
             matching_state_dict['matched_interval'] = 0
@@ -260,7 +256,7 @@ class Decode(object):
             for idy in range(len(matching_state_list)):
                 # init
                 match_bool = False
-                phoneme_group = matching_state_list[idy]['phoneme_group']
+                phoneme_groups = matching_state_list[idy]['phoneme_groups']
                 lable = matching_state_list[idy]['lable']
                 length = matching_state_list[idy]['length']
                 state_id = matching_state_list[idy]['state_id']
@@ -290,7 +286,7 @@ class Decode(object):
 
                     # 生成 phoneme_list 
                     phoneme_list = []
-                    self.phonemegroup2phonemelist(phoneme_group[state_id + 1], phoneme_list)
+                    self.phonemegroup2phonemelist(phoneme_groups[state_id + 1], phoneme_list)
 
                     for idz in range(len(phoneme_list)):
                         phoneme = [i for i in phoneme_list[idz] if i != ""]
@@ -338,7 +334,7 @@ class Decode(object):
 
                     # 生成 phoneme_list
                     phoneme_list = []
-                    self.phonemegroup2phonemelist(phoneme_group[state_id + 1], phoneme_list)
+                    self.phonemegroup2phonemelist(phoneme_groups[state_id + 1], phoneme_list)
 
                     for idz in range(len(phoneme_list)):
                         phoneme = [i for i in phoneme_list[idz] if i != ""]
@@ -393,13 +389,13 @@ class Decode(object):
         matching_lable_list = []            # 容器，记录匹配的 label
 
         # init matching_state_list，匹配状态容器
-        matching_state_list = []            # {'phoneme_group':[], 'lable':[], 'length':0, 'state_id':-1, 'matched_id':-1}
+        matching_state_list = []            # {'phoneme_groups':[], 'lable':[], 'length':0, 'state_id':-1, 'matched_id':-1}
         for idx in range(len(kws_list)):
             kws_idx = kws_list[idx]
             matching_state_dict = {}
-            matching_state_dict['phoneme_group'] = kws_phoneme_dict[kws_idx]
+            matching_state_dict['phoneme_groups'] = kws_phoneme_dict[kws_idx]
             matching_state_dict['lable'] = kws_idx
-            matching_state_dict['length'] = len(matching_state_dict['phoneme_group'])
+            matching_state_dict['length'] = len(matching_state_dict['phoneme_groups'])
             matching_state_dict['state_id'] = -1
             matching_state_dict['matched_id'] = -1
             matching_state_list.append(matching_state_dict)
@@ -412,7 +408,7 @@ class Decode(object):
             for idy in range(len(matching_state_list)):
                 # init
                 match_bool = False
-                phoneme_group = matching_state_list[idy]['phoneme_group']
+                phoneme_groups = matching_state_list[idy]['phoneme_groups']
                 lable = matching_state_list[idy]['lable']
                 length = matching_state_list[idy]['length']
                 state_id = matching_state_list[idy]['state_id']
@@ -439,7 +435,7 @@ class Decode(object):
 
                     # 生成 phoneme_list 
                     phoneme_list = []
-                    self.phonemegroup2phonemelist(phoneme_group[state_id + 1], phoneme_list)
+                    self.phonemegroup2phonemelist(phoneme_groups[state_id + 1], phoneme_list)
 
                     for idz in range(len(phoneme_list)):
                         phoneme = [i for i in phoneme_list[idz] if i != ""]
@@ -468,7 +464,7 @@ class Decode(object):
 
                     # 生成 phoneme_list
                     phoneme_list = []
-                    self.phonemegroup2phonemelist(phoneme_group[state_id + 1], phoneme_list)
+                    self.phonemegroup2phonemelist(phoneme_groups[state_id + 1], phoneme_list)
 
                     for idz in range(len(phoneme_list)):
                         phoneme = [i for i in phoneme_list[idz] if i != ""]
@@ -514,13 +510,13 @@ class Decode(object):
         matched_verb_id = []                # 容器，记录动词的 id
 
         # init matching_state_list，匹配状态容器
-        matching_state_list = []            # {'phoneme_group':[], 'lable':[], 'length':0, 'state_id':-1, 'matched_id':-1, 'matched_interval':0, 'verb_socres_threshold':-0.2, 'strategy': strict}
+        matching_state_list = []            # {'phoneme_groups':[], 'lable':[], 'length':0, 'state_id':-1, 'matched_id':-1, 'matched_interval':0, 'verb_socres_threshold':-0.2, 'strategy': strict}
         for idx in range(len(kws_list)):
             kws_idx = kws_list[idx]
             matching_state_dict = {}
-            matching_state_dict['phoneme_group'] = kws_phoneme_dict[kws_idx]
+            matching_state_dict['phoneme_groups'] = kws_phoneme_dict[kws_idx]
             matching_state_dict['lable'] = kws_idx
-            matching_state_dict['length'] = len(matching_state_dict['phoneme_group'])
+            matching_state_dict['length'] = len(matching_state_dict['phoneme_groups'])
             matching_state_dict['state_id'] = -1
             matching_state_dict['matched_id'] = -1
             matching_state_dict['matched_interval'] = 0
@@ -537,7 +533,7 @@ class Decode(object):
             for idy in range(len(matching_state_list)):
                 # init
                 match_bool = False
-                phoneme_group = matching_state_list[idy]['phoneme_group']
+                phoneme_groups = matching_state_list[idy]['phoneme_groups']
                 lable = matching_state_list[idy]['lable']
                 length = matching_state_list[idy]['length']
                 state_id = matching_state_list[idy]['state_id']
@@ -549,7 +545,8 @@ class Decode(object):
                 # check 
                 if idx < matched_id:
                     continue
-
+                
+                # 判断是否为控制词，减少不需要的匹配
                 find_control_kws = lable in control_kws_list
                 if contorl_kws_bool and not find_control_kws:
                     continue
@@ -561,14 +558,13 @@ class Decode(object):
                 if state_id + 1 == 0:
 
                     # 匹配规则：
-                    # 1、匹配动词音素：动词任意匹配 [ing, ed, s]，动词音素的编辑距离等于 0 
-                    # 必须以 "_" 开头 
+                    # 1、匹配动词音素：必须以 "_" 开头，动词任意匹配 [ing, ed, s]，动词音素的编辑距离等于 0 
                     if '_' not in english_phoneme_list[idx]:
                         continue
 
                     # 生成 phoneme_list 
                     phoneme_list = []
-                    self.phonemegroup2phonemelist(phoneme_group[state_id + 1], phoneme_list)
+                    self.phonemegroup2phonemelist(phoneme_groups[state_id + 1], phoneme_list)
 
                     for idz in range(len(phoneme_list)):
                         phoneme = [i for i in phoneme_list[idz] if i != ""]
@@ -576,6 +572,7 @@ class Decode(object):
                         key_symbol = self.phoneme2symbol(phoneme)
                         input_symbol = self.phoneme2symbol(english_phoneme_list[idx: min(len(english_phoneme_list), idx + len(phoneme))])
 
+                        # print(phoneme, key_symbol)
                         # 动词匹配
                         if strategy == "robust":
                             match_bool = match_symbol_verb(key_symbol, input_symbol)
@@ -621,7 +618,7 @@ class Decode(object):
 
                     # 生成 phoneme_list
                     phoneme_list = []
-                    self.phonemegroup2phonemelist(phoneme_group[state_id + 1], phoneme_list)
+                    self.phonemegroup2phonemelist(phoneme_groups[state_id + 1], phoneme_list)
 
                     for idz in range(len(phoneme_list)):
                         phoneme = [i for i in phoneme_list[idz] if i != ""]
@@ -659,6 +656,7 @@ class Decode(object):
                     matching_state_list[idy]['state_id'] = state_id
 
                     if state_id + 1 == length:
+                        # 更新输出，保证每类关键词只输出一次
                         find_matching_lable_bool = True if lable in matching_lable_list else False
 
                         if not find_matching_lable_bool:

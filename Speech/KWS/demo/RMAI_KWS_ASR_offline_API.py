@@ -258,6 +258,9 @@ def run_asr(contorl_kws_bool=True):
         # result_string = decode_python.output_control_result_string(cfg.general.control_kws_list, contorl_kws_bool)
 
         # 自定义的匹配方式
+        # test
+        contorl_kws_bool = True
+        
         decode_python.match_keywords_english_combine(cfg.general.kws_list, cfg.general.kws_phoneme_dict, cfg.general.control_kws_list, contorl_kws_bool, cfg.general.kws_phoneme_param_dict)
         # result_string = decode_python.output_result_string()
         result_string = decode_python.output_control_result_string(cfg.general.control_kws_list, contorl_kws_bool)
