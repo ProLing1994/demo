@@ -33,22 +33,56 @@ __C.general.kws_suppression_counter = 3             # kws 激活后抑制时间 
 # asr
 __C.general.language_id = 1			                # 0： chinese  1： english
 __C.general.decode_id = 0			                # 0： greedy  1： beamsearch
+__C.general.bpe_decode_id = 0			            # 0： greedy  1： beamsearch
+__C.general.phoneme_decode_id = 1			        # 0： greedy  1： beamsearch
 __C.general.asr_feature_time = 296                  # asr 网络特征时间维度，与语音特征容器长度相同
 __C.general.asr_suppression_counter = 2             # asr 激活后抑制时间，间隔 2s 执行一次 asr 检测
+__C.general.asr_bpe_phoneme_on = True               # asr 使用 bpe 和 phoneme 两个 model
 
 # bpe
 __C.general.kws_list = ['start_record', 'stop_record', 'mute_audio', 'unmute_audio', 'shot_fire', 'freeze', 'drop_gun', 'keep_hand', 'put_hand', 'down_ground']
+__C.general.control_kws_list = ['start_record', 'stop_record', 'mute_audio', 'unmute_audio']
 __C.general.kws_bpe_dict = {'start_record':['start record'],
                                 'stop_record':['stop record'],
                                 'mute_audio':['mute audio'], 
-                                'unmute_audio':['unmute audio'],
+                                'unmute_audio':['unmute audio', 'imute audio', 'onmute audio'],
                                 'shot_fire':['shot fire'], 
                                 'freeze':['freeze'], 
                                 'drop_gun':['drop gun'], 
                                 'keep_hand':['keep hand'], 
                                 'put_hand':['put hand'], 
                                 'down_ground':['get down on']}
-__C.general.control_kws_list = ['start_record', 'stop_record', 'mute_audio', 'unmute_audio']
+
+# phoneme: strict
+__C.general.kws_phoneme_dict = {'start_record':[[['_S'], ['T'], ['AA1'], ['R'], ['T']],\
+                                                [['_R'], ['AH0'], ['K'], ['AO1'], ['R'], ['D'], ['IH0'], ['NG']]], 
+                                'stop_record':[[['_S'], ['T'], ['AA1'], ['P']], \
+                                                [['_R'], ['AH0'], ['K'], ['AO1'], ['R'], ['D'], ['IH0'], ['NG']]], 
+                                'mute_audio':[[['_M'], ['Y'], ['UW1'], ['T']], \
+                                                [['_AA1'], ['D'], ['IY0'], ['OW2']]], 
+                                'unmute_audio':[[['_AH0'], ['N'], ['M'], ['Y'], ['UW1'], ['T']], \
+                                                [['_AA1'], ['D'], ['IY0'], ['OW2']]], 
+                                'shot_fire':[[['_SH'], ['AA1'], ['T']], \
+                                                [['_F'], ['AY1'], ['ER0']]], 
+                                'freeze':[[['_F'], ['R'], ['IY1'], ['Z']]], 
+                                'drop_gun':[[['_D'], ['R'], ['AA1'], ['P']], \
+                                                [['_Y'], ['AO1'], ['R'], ['_G'], ['AH1'], ['N']]], 
+                                'keep_hand':[[['_K'], ['IY1'], ['P']], \
+                                                [['_Y'], ['AO1'], ['R'], ['_HH'], ['AE1'], ['N'], ['D']]], 
+                                'put_hand':[[['_P'], ['UH1'], ['T']], \
+                                                [['_Y'], ['AO1'], ['R'], ['_HH'], ['AE1'], ['N'], ['D']]], 
+                                'down_ground':[[['_G'], ['EH1'], ['T']], \
+                                                [['_D'], ['AW1'], ['N'], ['_AA1'], ['N']]]}
+__C.general.kws_phoneme_param_dict = {'start_record': {"verb_socres_threshold": -2.3},                    
+                                                'stop_record': {"verb_socres_threshold": -2.3},
+                                                'mute_audio': {"verb_socres_threshold": -2.3}, 
+                                                'unmute_audio': {"verb_socres_threshold": -2.3},
+                                                'shot_fire': {"verb_socres_threshold": -0.2}, 
+                                                'freeze': {"verb_socres_threshold": -0.2}, 
+                                                'drop_gun': {"verb_socres_threshold": -0.7}, 
+                                                'keep_hand': {"verb_socres_threshold": -0.7}, 
+                                                'put_hand': {"verb_socres_threshold": -0.7}, 
+                                                'down_ground': {"verb_socres_threshold": -0.7}}
 
 # container
 __C.general.audio_container_ms = 100                # 语音数据容器中，装有音频数据 100 ms
@@ -89,14 +123,23 @@ __C.model.kws_net_output_name = "Softmax"
 __C.model.kws_chw_params = "1,64,196"
 __C.model.kws_transpose = True
 
-# asr
-__C.model.asr_model_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_16k_0202/english_0202_better.caffemodel"
-__C.model.asr_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_16k_0202/english_0202_mark.prototxt"
-__C.model.asr_net_input_name = "data"
-__C.model.asr_net_output_name = "conv39"
-__C.model.asr_chw_params = "1,296,64"
-__C.model.asr_bpe = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_16k_0202/english_bpe.txt"
+# asr bpe
+__C.model.asr_bpe_model_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_16k_0202/english_0202_better.caffemodel"
+__C.model.asr_bpe_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_16k_0202/english_0202_mark.prototxt"
+__C.model.asr_bpe_net_input_name = "data"
+__C.model.asr_bpe_net_output_name = "conv39"
+__C.model.asr_bpe_chw_params = "1,296,64"
+__C.model.asr_bpe_dict = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_16k_0202/english_bpe.txt"
+__C.model.asr_bpe_lm_path = ""
 
+# asr phoneme
+__C.model.asr_phoneme_model_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06082021/asr_english_phoneme_16k_64_0608.caffemodel"
+__C.model.asr_phoneme_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06082021/asr_english_phoneme_16k_64_0608.prototxt"
+__C.model.asr_phoneme_net_input_name = "data"
+__C.model.asr_phoneme_net_output_name = "prob"
+__C.model.asr_phoneme_chw_params = "1,296,64"
+__C.model.asr_phoneme_dict = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06032021/asr_english_phoneme_dict.txt"
+__C.model.asr_phoneme_lm_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06032021/4gram_asr_english_phoneme.bin"
 
 ##################################
 # test parameters

@@ -237,12 +237,13 @@ class Decode(object):
         matching_state_list = []            # {'words':[], 'lable':[], 'length':0, 'state_id':-1}
         for idx in range(len(kws_list)):
             kws_idx = kws_list[idx]
-            matching_state_dict = {}
-            matching_state_dict['words'] = kws_dict[kws_idx][0].strip().split(" ")
-            matching_state_dict['lable'] = kws_idx
-            matching_state_dict['length'] = len(kws_dict[kws_idx][0].strip().split(" "))
-            matching_state_dict['state_id'] = -1
-            matching_state_list.append(matching_state_dict)
+            for idy in range(len(kws_dict[kws_idx])):
+                matching_state_dict = {}
+                matching_state_dict['words'] = kws_dict[kws_idx][idy].strip().split(" ")
+                matching_state_dict['lable'] = kws_idx
+                matching_state_dict['length'] = len(matching_state_dict['words'])
+                matching_state_dict['state_id'] = -1
+                matching_state_list.append(matching_state_dict)
 
         # init english_symbol_list
         english_symbol_list = self.output_symbol_english().split(' ')
