@@ -21,8 +21,8 @@ sys.path.append('./')
 import caffe
 
 # options 
-# cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC.py")
-cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_phoneme.py")
+cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_BPE.py")
+# cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_phoneme.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MTA_XIAOAN.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_XIAORUI.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_3s.py")
@@ -247,23 +247,25 @@ def run_asr(contorl_kws_bool=True):
         decode_python.show_symbol()
         decode_python.show_symbol_english()
 
-        # # 鲁邦的匹配方式
-        # decode_python.match_keywords_english_robust(cfg.general.kws_list, cfg.general.kws_phoneme_dict, cfg.general.control_kws_list, contorl_kws_bool)
+        # bpe
+        decode_python.match_keywords_english_bpe(cfg.general.kws_list, cfg.general.kws_bpe_dict)
+        result_string = decode_python.output_control_result_string(cfg.general.control_kws_list, contorl_kws_bool)
+        
+        # phoneme
+        # # 鲁邦的匹配方式  
+        # decode_python.match_keywords_english_phoneme_robust(cfg.general.kws_list, cfg.general.kws_phoneme_dict, cfg.general.control_kws_list, contorl_kws_bool)
         # # result_string = decode_python.output_result_string()
         # result_string = decode_python.output_control_result_string(cfg.general.control_kws_list, contorl_kws_bool)
 
         # # 严格匹配方式
-        # decode_python.match_keywords_english_strict(cfg.general.kws_list, cfg.general.kws_phoneme_dict, cfg.general.control_kws_list, contorl_kws_bool, cfg.general.kws_phoneme_param_dict)
+        # decode_python.match_keywords_english_phoneme_strict(cfg.general.kws_list, cfg.general.kws_phoneme_dict, cfg.general.control_kws_list, contorl_kws_bool, cfg.general.kws_phoneme_param_dict)
         # # result_string = decode_python.output_result_string()
         # result_string = decode_python.output_control_result_string(cfg.general.control_kws_list, contorl_kws_bool)
 
-        # 自定义的匹配方式
-        # test
-        contorl_kws_bool = True
-        
-        decode_python.match_keywords_english_combine(cfg.general.kws_list, cfg.general.kws_phoneme_dict, cfg.general.control_kws_list, contorl_kws_bool, cfg.general.kws_phoneme_param_dict)
-        # result_string = decode_python.output_result_string()
-        result_string = decode_python.output_control_result_string(cfg.general.control_kws_list, contorl_kws_bool)
+        # # 自定义的匹配方式       
+        # decode_python.match_keywords_english_phoneme_combine(cfg.general.kws_list, cfg.general.kws_phoneme_dict, cfg.general.control_kws_list, contorl_kws_bool, cfg.general.kws_phoneme_param_dict)
+        # # result_string = decode_python.output_result_string()
+        # result_string = decode_python.output_control_result_string(cfg.general.control_kws_list, contorl_kws_bool)
 
     else:
         print("[Unknow:] cfg.general.language_id. ")

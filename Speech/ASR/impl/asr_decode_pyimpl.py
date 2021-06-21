@@ -228,7 +228,64 @@ class Decode(object):
             temp_list.pop()
         return 
 
-    def match_keywords_english_strict(self, kws_list, kws_phoneme_dict, control_kws_list, contorl_kws_bool, kws_phoneme_param_dict={}):
+    def match_keywords_english_bpe(self, kws_list, kws_dict):
+        # init
+        self.result_string = []
+        matching_lable_list = []            # 容器，记录匹配的 label
+
+        # init matching_state_list，匹配状态容器
+        matching_state_list = []            # {'words':[], 'lable':[], 'length':0, 'state_id':-1}
+        for idx in range(len(kws_list)):
+            kws_idx = kws_list[idx]
+            matching_state_dict = {}
+            matching_state_dict['words'] = kws_dict[kws_idx][0].strip().split(" ")
+            matching_state_dict['lable'] = kws_idx
+            matching_state_dict['length'] = len(kws_dict[kws_idx][0].strip().split(" "))
+            matching_state_dict['state_id'] = -1
+            matching_state_list.append(matching_state_dict)
+
+        # init english_symbol_list
+        english_symbol_list = self.output_symbol_english().split(' ')
+
+        # 遍历 english_symbol_list
+        for idx in range(len(english_symbol_list)):
+            # 遍历 matching_state_list
+            for idy in range(len(matching_state_list)):
+                # init
+                match_bool = False
+                words = matching_state_list[idy]['words']
+                lable = matching_state_list[idy]['lable']
+                length = matching_state_list[idy]['length']
+                state_id = matching_state_list[idy]['state_id']
+
+                # 当前策略：
+                # 动词：任意匹配 [ing, ed, s]；
+                if state_id + 1 == 0:
+                    match_bool = match_symbol_verb(words[state_id + 1], english_symbol_list[idx])
+                # 名词：编辑距离小于阈值或者任意匹配 [ing, ed, s]
+                elif state_id + 1 < length:
+                    match_bool = match_symbol_noum(words[state_id + 1], english_symbol_list[idx])
+                else:
+                    continue
+
+                if match_bool:
+                    # 更新 state_id
+                    state_id = state_id + 1
+                    matching_state_list[idy]['state_id'] = state_id
+
+                    # # 查询匹配成功的字符
+                    # print("匹配成功字符：", english_symbol_list[idx], ": ", words[state_id]);
+                    # print("匹配成功长度：", state_id + 1, "/", length);
+
+                    if state_id + 1 == length:
+                        find_matching_lable_bool = True if lable in matching_lable_list else False
+
+                        if not find_matching_lable_bool:
+                            matching_lable_list.append(lable)
+                            self.result_string.append(lable)
+        return 
+
+    def match_keywords_english_phoneme_strict(self, kws_list, kws_phoneme_dict, control_kws_list, contorl_kws_bool, kws_phoneme_param_dict={}):
         # init
         self.result_string = []
         matching_lable_list = []            # 容器，记录匹配的 label
@@ -383,7 +440,7 @@ class Decode(object):
                             matching_lable_list.append('unmute_audio')
         return
 
-    def match_keywords_english_robust(self, kws_list, kws_phoneme_dict, control_kws_list, contorl_kws_bool):
+    def match_keywords_english_phoneme_robust(self, kws_list, kws_phoneme_dict, control_kws_list, contorl_kws_bool):
         # init
         self.result_string = []
         matching_lable_list = []            # 容器，记录匹配的 label
@@ -503,7 +560,7 @@ class Decode(object):
                             matching_lable_list.append('unmute_audio')
         return
 
-    def match_keywords_english_combine(self, kws_list, kws_phoneme_dict, control_kws_list, contorl_kws_bool, kws_phoneme_param_dict={}):
+    def match_keywords_english_phoneme_combine(self, kws_list, kws_phoneme_dict, control_kws_list, contorl_kws_bool, kws_phoneme_param_dict={}):
         # init
         self.result_string = []
         matching_lable_list = []            # 容器，记录匹配的 label
