@@ -105,14 +105,14 @@ class FocalLoss(nn.Module):
         '''
         if self.label_smoothing_on:
             if self.gamma > 0:
-                batch_loss = -alpha * (target_smoothing * (torch.pow((target_smoothing - input), self.gamma)) * input.log() + (1 - target_smoothing) * (torch.pow((input - target_smoothing), self.gamma)) * (1 - input).log())
+                batch_loss = -alpha * (target_smoothing * (torch.pow((target_smoothing - input), self.gamma)) * input.log() + (1 - target_smoothing) * (torch.pow((input - target_smoothing), self.gamma)) * (1 - input + 1e-10).log())
             else:
-                batch_loss = -alpha * (target_smoothing * input.log() + (1 - target_smoothing) * (1 - input).log())
+                batch_loss = -alpha * (target_smoothing * input.log() + (1 - target_smoothing) * (1 - input + 1e-10).log())
         else:
             if self.gamma > 0:
-                batch_loss = -alpha * (mask * (torch.pow((1 - input), self.gamma)) * input.log() + (1 - mask) * (torch.pow((input), self.gamma)) * (1 - input).log())
+                batch_loss = -alpha * (mask * (torch.pow((1 - input), self.gamma)) * input.log() + (1 - mask) * (torch.pow((input), self.gamma)) * (1 - input + 1e-10).log())
             else:
-                batch_loss = -alpha * (mask * input.log() + (1 - mask) * (1 - input).log())
+                batch_loss = -alpha * (mask * input.log() + (1 - mask) * (1 - input + 1e-10).log())
 
         if self.size_average:
             # loss = batch_loss.mean()

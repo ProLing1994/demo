@@ -46,7 +46,7 @@ __C.general.kws_bpe_dict = {'start_record':['start record'],
                                 'stop_record':['stop record'],
                                 'mute_audio':['mute audio'], 
                                 'unmute_audio':['unmute audio', 'imute audio', 'onmute audio'],
-                                'shot_fire':['shot fire'], 
+                                'shot_fire':['shot fire', 'shut fire'], 
                                 'freeze':['freeze'], 
                                 'drop_gun':['drop gun'], 
                                 'keep_hand':['keep hand'], 
@@ -156,7 +156,7 @@ __C.test.test_mode = 0
 # input_Wav
 # __C.test.input_wav = "/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation_180.wav"
 # __C.test.input_wav = "/mnt/huanyuan/data/speech/Recording/Daily_Record/jabra_510/test/Jabra_510_test-kws-asr_0001.wav"
-__C.test.input_wav = "/home/huanyuan/share/audio_data/weakup_asr/weakup_bwc_asr_english/Jabra_510_test-kws-asr_0001.wav"
+__C.test.input_wav = "/home/huanyuan/share/audio_data/weakup_asr/weakup_bwc_asr_english/phone_test-kws-asr_0002.wav"
 
 # input_folder
 __C.test.input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/路边场景/场景二/"

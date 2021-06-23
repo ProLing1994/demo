@@ -431,13 +431,11 @@ def run_asr_bpe_phoneme(contorl_kws_bool=True):
     result_string = run_asr_bpe(contorl_kws_bool)
 
     if len(result_string) and result_string != "cfg.general.bool_do_asr = False":
-        if contorl_kws_bool:
-            print("Bpe Detect Command: ", result_string)
-        else:
-            print("Bpe Detect Command: ", result_string)
-            print("Followed Phoneme Detect: ")
-            
+        print("Bpe Detect Command: ", result_string)
+
+        if not contorl_kws_bool:
             result_string = run_asr_phoneme(contorl_kws_bool)
+            print("Phoneme Detect Command: ", result_string)
     return result_string
 
 
