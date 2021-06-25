@@ -158,8 +158,8 @@ def train(config_file, local_rank, training_mode):
                         last_save_epoch = epoch_num
 
                         # save training model
-                        save_checkpoint(net, optimizer, epoch_num,
-                                        batch_num, cfg, config_file)
+                        save_checkpoint(cfg, config_file, net, optimizer, epoch_num,
+                                        batch_num)
 
                         if cfg.general.is_test:
                             test(cfg, net, loss_func, epoch_num, batch_num, logger, eval_validation_dataloader, mode='eval')

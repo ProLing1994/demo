@@ -306,15 +306,15 @@ def plot_tool(cfg, log_file):
                     display='Training Accuracy ({})'.format(cfg.loss.name))
 
 
-def save_checkpoint(net, optimizer, epoch_idx, batch_idx, cfg, config_file, output_folder_name='checkpoints'):
+def save_checkpoint(cfg, config_file, net, optimizer, epoch_idx, batch_idx, output_folder_name='checkpoints'):
     """
     save model and parameters into a checkpoint file (.pth)
+    :param cfg: the configuration object
+    :param config_file: the configuration file path
     :param net: the network object
     :param optimizer: the optimizer object
     :param epoch_idx: the epoch index
     :param batch_idx: the batch index
-    :param cfg: the configuration object
-    :param config_file: the configuration file path
     :return: None
     """
     chk_folder = os.path.join(cfg.general.save_dir, output_folder_name, 'chk_{}'.format(epoch_idx))

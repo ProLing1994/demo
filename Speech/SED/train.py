@@ -132,7 +132,7 @@ def train(args):
             # save model
             msg = 'Save Model: {}'.format(epoch_idx)
             logger.info(msg)
-            save_checkpoint(net, optimizer, train_datasampler, epoch_idx, iteration, cfg, args.config_file)
+            save_checkpoint(cfg, args.config_file, net, optimizer, train_datasampler, epoch_idx, iteration)
 
             # test model
             msg = 'Test Model: {}'.format(epoch_idx)

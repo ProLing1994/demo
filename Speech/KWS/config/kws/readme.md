@@ -12,19 +12,6 @@
                 - __C.dataset.data_size = [64, 196]/[64, 146]
                 - __C.net.model_name = 'tc-resnet14-amba-novt-2s'/'res15'
 
-        - novt: 异形卷积受限制
-                - __C.dataset.sample_rate = 16000/8000
-                - __C.dataset.clip_duration_ms = 2000/1500
-                - __C.dataset.window_size_ms = 32.0
-                - __C.dataset.window_stride_ms = 10.0
-                - __C.dataset.preprocess = "fbank_cpu"
-                - __C.dataset.feature_bin_count = 56
-                - __C.dataset.nfilt = 64
-                - __C.dataset.w_alignment = False
-                - __C.dataset.h_alignment = False
-                - __C.dataset.data_size = [56, 196]/[56, 146]
-                - __C.net.model_name = 'tc-resnet14-amba-novt-2s'
-
         - hisi: 输入仅支持 16 倍数输入
                 - __C.dataset.sample_rate = 16000/8000
                 - __C.dataset.clip_duration_ms = 2000/1500
@@ -36,4 +23,17 @@
                 - __C.dataset.w_alignment = False
                 - __C.dataset.h_alignment = True        # 196 --> 192 / 146 --> 144
                 - __C.dataset.data_size = [64, 196]/[64, 146]
-                - __C.net.model_name = 'tc-resnet14-hisi-2s'
+                - __C.net.model_name = 'tc-resnet14-hisi-2s'    # 'res15' 与 amba 共用一个即可
+
+        - novt: 异形卷积受限制
+                - __C.dataset.sample_rate = 16000/8000
+                - __C.dataset.clip_duration_ms = 2000/1500
+                - __C.dataset.window_size_ms = 32.0
+                - __C.dataset.window_stride_ms = 10.0
+                - __C.dataset.preprocess = "fbank_cpu"
+                - __C.dataset.feature_bin_count = 56
+                - __C.dataset.nfilt = 64
+                - __C.dataset.w_alignment = False
+                - __C.dataset.h_alignment = False
+                - __C.dataset.data_size = [56, 196]/[56, 146]
+                - __C.net.model_name = 'tc-resnet14-amba-novt-2s'/'res15'

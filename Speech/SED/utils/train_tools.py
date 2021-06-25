@@ -132,16 +132,16 @@ def generate_test_dataset(cfg, mode='testing', augmentation_on=False):
                                                 pin_memory=False)
     return data_loader
     
-def save_checkpoint(net, optimizer, sampler, epoch_idx, iteration, cfg, config_file, output_folder_name='checkpoints'):
+def save_checkpoint(cfg, config_file, net, optimizer, sampler, epoch_idx, iteration, output_folder_name='checkpoints'):
     """
     save model and parameters into a checkpoint file (.pth)
+    :param cfg: the configuration object
+    :param config_file: the configuration file path
     :param net: the network object
     :param optimizer: the optimizer object
     :param sampler: the sampler object
     :param epoch_idx: the epoch index
     :param iteration: the iteration
-    :param cfg: the configuration object
-    :param config_file: the configuration file path
     :return: None
     """
     chk_folder = os.path.join(cfg.general.save_dir,

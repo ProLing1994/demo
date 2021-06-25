@@ -182,7 +182,7 @@ def train(config_file, training_mode):
 
                 # save training model
                 for i in range(cfg.deep_mutual_learning.model_num):
-                    save_checkpoint(net_list[i], optimizer_list[i], epoch_idx, batch_idx, cfg, config_file, output_folder_name='checkpoints_{}'.format(i))
+                    save_checkpoint(cfg, config_file, net_list[i], optimizer_list[i], epoch_idx, batch_idx, output_folder_name='checkpoints_{}'.format(i))
 
                 if cfg.general.is_test:
                     for i in range(cfg.deep_mutual_learning.model_num):

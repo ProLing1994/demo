@@ -191,8 +191,7 @@ def train(config_file, training_mode):
                 last_save_epoch = epoch_idx
 
                 # save training model
-                save_checkpoint(net, optimizer, epoch_idx,
-                                batch_idx, cfg, config_file)
+                save_checkpoint(cfg, config_file, net, optimizer, epoch_idx, batch_idx)
 
                 if cfg.general.is_test:
                     test(cfg, net, loss_func, epoch_idx, batch_idx,

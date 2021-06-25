@@ -19,32 +19,32 @@ __C.general.sub_data_dir = ["/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experi
 # __C.general.version = "1.5"
 # __C.general.version = "1.6"
 # __C.general.version = "1.7"
-__C.general.version = "3.1"
-# __C.general.version = "3.2"
+# __C.general.version = "3.1"
+__C.general.version = "3.2"
 
 # data date
 # __C.general.date = "04302021"
 # __C.general.date = "05172021"
 # __C.general.date = "05272021"
 # __C.general.date = "06172021"
-__C.general.date = "06242021"
-# __C.general.date = "06252021"
+# __C.general.date = "06242021"
+__C.general.date = "06252021"
 
 # data path
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.4_04302021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.5_05172021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.6_05272021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.7_06172021/total_data_files.csv"
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_3.1_06242021/total_data_files.csv"
-# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_3.2_06252021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_3.1_06242021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_3.2_06252021/total_data_files.csv"
 
 # background noise path
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.4_04302021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.5_05172021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.6_05272021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.7_06172021/background_noise_files.csv"
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_3.1_06242021/background_noise_files.csv"
-# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_3.2_06252021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_3.1_06242021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_3.2_06252021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -320,7 +320,7 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'cnn-trad-pool2'
 # __C.net.model_name = 'cnn-one-fstride1'
 # __C.net.model_name = 'cnn-tpool2'
-# __C.net.model_name = 'res15'
+__C.net.model_name = 'res15'
 # __C.net.model_name = 'res15-narrow'
 # __C.net.model_name = 'res15-narrow-amba'
 # __C.net.model_name = 'res15-narrow-novt'
@@ -336,7 +336,7 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'tc-resnet8-dropout'
 # __C.net.model_name = 'tc-resnet14-dropout'
 # __C.net.model_name = 'tc-resnet18-dropout'
-__C.net.model_name = 'tc-resnet14-amba-novt-2s'
+# __C.net.model_name = 'tc-resnet14-amba-novt-2s'
 
 ######################################
 # training parameters
