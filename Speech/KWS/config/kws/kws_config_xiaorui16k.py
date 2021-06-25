@@ -296,6 +296,14 @@ __C.loss.obj_weight = np.array([[1/9, 0], [0, 8/9]])
 # the gamma parameter in focal loss
 __C.loss.focal_gamma = 2
 
+# EMA: expontential moving average on
+# EMA: https://github.com/ProLing1994/pytorch-loss/blob/master/ema.py
+__C.loss.ema_on = True
+# __C.loss.ema_on = False
+
+# the alpha parameter in EMA: each parameter p should be computed as p_hat = alpha * p + (1. - alpha) * p_hat
+__C.loss.ema_alpha = 0.995
+
 #####################################
 # net
 #####################################

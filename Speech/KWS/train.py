@@ -8,6 +8,7 @@ from tqdm import tqdm
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from utils.train_tools import *
 from utils.loss_tools import *
+from utils.ema import *
 
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo')
 # sys.path.insert(0, '/yuanhuan/code/demo')
@@ -133,6 +134,10 @@ def train(config_file, training_mode):
     data_iter = iter(train_dataloader)
     batch_idx = start_batch
 
+    # ema
+    if cfg.loss.ema_on:
+        ema = EMA(net, 0.9999)
+
     # # save model 
     # os.makedirs('/mnt/huanyuan/model/kws_xiaorui_12162020_test/checkpoints/chk_1/')
     # torch.save(net.cpu().module.state_dict(), '/mnt/huanyuan/model/kws_xiaorui_12162020_test/checkpoints/chk_1/net_parameter.pth')
@@ -162,14 +167,17 @@ def train(config_file, training_mode):
             scores = net(inputs)
         scores = scores.view(scores.size()[0], scores.size()[1])
         
+        # calculate loss
         loss = loss_func(scores, labels)
-            
         if cfg.knowledge_distillation.on:
             teacher_model.eval()
             teacher_scores = teacher_model(inputs)
             loss = loss_fn_kd(cfg, scores, teacher_scores, loss)
+
         loss.backward()
         optimizer.step()
+        if cfg.loss.ema_on:
+            ema.update_params()     # apply ema
 
         # caltulate accuracy
         pred_y = torch.max(scores, 1)[1].cpu().data.numpy()
@@ -190,6 +198,9 @@ def train(config_file, training_mode):
             if last_save_epoch != epoch_idx:
                 last_save_epoch = epoch_idx
 
+                if cfg.loss.ema_on:
+                    ema.apply_shadow() # copy ema status to the model
+
                 # save training model
                 save_checkpoint(cfg, config_file, net, optimizer, epoch_idx, batch_idx)
 
@@ -197,6 +208,9 @@ def train(config_file, training_mode):
                     test(cfg, net, loss_func, epoch_idx, batch_idx,
                          logger, eval_validation_dataloader, mode='eval')
                     # test(cfg, net, loss_func, epoch_idx, batch_idx, logger, eval_train_dataloader, mode='eval')
+            
+                if cfg.loss.ema_on:
+                    ema.restore() # resume the model parameters
 
 
 def main():
@@ -206,8 +220,8 @@ def main():
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_speech.py", nargs='?', help='config file')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", nargs='?', help='config file')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py", nargs='?', help='config file')
-    parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui8k.py", nargs='?', help='config file')
-    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui16k.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui8k.py", nargs='?', help='config file')
+    parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui16k.py", nargs='?', help='config file')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan8k.py", nargs='?', help='config file')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan16k.py", nargs='?', help='config file')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py", nargs='?', help='config file')
