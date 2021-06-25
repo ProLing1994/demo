@@ -10,33 +10,72 @@ cfg = __C
 
 __C.general = {}
 
-__C.general.data_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/"
+__C.general.data_dir = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/XiaoRuiDataset/"
 __C.general.sub_data_dir = ["/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experimental_dataset/XiaoYuDataset/",
-                            "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/XiaoRuiDataset/"]
+                            "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/"]
 
 # data version
-# __C.general.version = "2.0"
-__C.general.version = "2.1"
+# __C.general.version = "1.4"
+# __C.general.version = "1.5"
+# __C.general.version = "1.6"
+# __C.general.version = "1.7"
+__C.general.version = "3.1"
+# __C.general.version = "3.2"
 
 # data date
-# __C.general.date = "04062021"
-__C.general.date = "04082021"
+# __C.general.date = "04302021"
+# __C.general.date = "05172021"
+# __C.general.date = "05272021"
+# __C.general.date = "06172021"
+__C.general.date = "06242021"
+# __C.general.date = "06252021"
 
 # data path
-# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_2.0_04062021/total_data_files.csv"
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_2.1_04082021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.4_04302021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.5_05172021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.6_05272021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.7_06172021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_3.1_06242021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_3.2_06252021/total_data_files.csv"
 
 # background noise path
-# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_2.0_04062021/background_noise_files.csv"
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_2.1_04082021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.4_04302021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.5_05172021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.6_05272021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.7_06172021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_3.1_06242021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_3.2_06252021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoan16k_test"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan16k_1_0_res15_fbankcpu_04062021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan16k_1_1_res15_fbankcpu_04062021/"
+__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_test"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12082020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_1_finetune_res15_12082020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_3_res15_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_4_finetune_res15_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_5_finetune_res15_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_6_res15_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_7_res15_narrow_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_10_res15_finetune_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_11_res15_narrow_kd_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_12_res15_narrow_fintune_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_13_res15_narrow_fintune_kd_12162020/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_2_2_tc-resnet8-dropout_02202021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_2_3_tc-resnet14-dropout_02202021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_2_4_tc-resnet18-dropout_02202021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_2_5_tc-resnet14-dropout_kd_02202021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_3_1_res15_fbankcpu_03112021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_3_2_res15_narrow_amba_fbankcpu_kd_03112021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_3_3_tc-resnet14-amba_fbankcpu_kd_03112021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_4_0_res15_fbankcpu_04302021" 
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_4_1_res15_fbankcpu_04302021" 
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_5_0_tc-resnet14-amba_fbankcpu_kd_04302021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_5_1_tc-resnet14-amba_fbankcpu_kd_04302021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_1_tc-resnet14-hisi_fbankcpu_kd_05302021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_2_tc-resnet14-hisi_fbankcpu_kd_05302021/"
 
 # finetune model
 __C.general.finetune_on = False
@@ -111,10 +150,11 @@ __C.dataset = {}
 __C.dataset.input_channel = 1
 
 # Number of audio samples per second
-__C.dataset.sample_rate = 16000
+# __C.dataset.sample_rate = 16000
+__C.dataset.sample_rate = 8000
 
 # Length of each audio clip to be analyzed
-__C.dataset.clip_duration_ms = 1500
+__C.dataset.clip_duration_ms = 2000
 
 # Duration of frequency analysis window
 # __C.dataset.window_size_ms = 30.0
@@ -123,20 +163,30 @@ __C.dataset.window_size_ms = 32.0
 # How far to move in time between frequency windows
 __C.dataset.window_stride_ms = 10.0
 
-# How the spectrogram is processed to produce features, support ["mfcc", "pcen", "fbank", "fbank"]
+# How the spectrogram is processed to produce features, support ["mfcc", "pcen", "fbank", "fbank_cpu"]
 # __C.dataset.preprocess = "fbank"
 # __C.dataset.preprocess = "pcen"
 # __C.dataset.preprocess = "mfcc"
 __C.dataset.preprocess = "fbank_cpu"
 
-# How many bins to use for the MFCC fingerprint
-__C.dataset.feature_bin_count = 64
+# How many bins to use for the Mel feature
+__C.dataset.feature_bin_count = 56
+# __C.dataset.feature_bin_count = 64
 
-# How many nfilt to use for the Mel feature, only support preprocess=fbank_cpu
+# How many nfilt to use for the Mel feature, only support preprocess = fbank_cpu
 __C.dataset.nfilt = 64
 
+# input size of training data (w, h), whether input size is a multiple of 16, unit: voxel
+# __C.dataset.h_alignment = True, [hisi], 模型需要图像输入长度为 16 的倍数
+# __C.dataset.h_alignment = False, [amba, novt]
+__C.dataset.w_alignment = False
+__C.dataset.h_alignment = False
+
 # input size of training data (w, h), unit: voxel
-__C.dataset.data_size = [64, 146]
+__C.dataset.data_size = [56, 196]
+# __C.dataset.data_size = [56, 192]
+# __C.dataset.data_size = [64, 196]
+# __C.dataset.data_size = [64, 192]
 
 
 ##################################
@@ -146,7 +196,7 @@ __C.dataset.data_size = [64, 146]
 __C.dataset.label = {}
 
 # label
-__C.dataset.label.positive_label = ["xiaoanxiaoan_16k"]
+__C.dataset.label.positive_label = ["xiaorui_16k", "xiaorui_8k"]
 __C.dataset.label.positive_label_chinese_name_list = [""]
 __C.dataset.label.positive_label_together = False
 __C.dataset.label.positive_label_together_label = ["positive"]
@@ -155,12 +205,18 @@ __C.dataset.label.negative_label_together = True
 __C.dataset.label.negative_label_together_label = ["negative"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
 __C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[1]
-__C.dataset.label.ignore_label = ["kaldi_cut_keyword", "xiaoanxiaoan_8k", 'nihaoxiaoan_8k']
+__C.dataset.label.ignore_label = ['kaldi_cut_keyword', 
+                                    'zanghuayulu_8k', 'zanghuayulu_16k', 
+                                    'xiaoanxiaoan_16k_once', 
+                                    'xiaoanxiaoan_16k_over_long', 'xiaoanxiaoan_16k_small_voice',
+                                    'xiaoanxiaoan_8k_once', 
+                                    'xiaoanxiaoan_8k_over_long', 'xiaoanxiaoan_8k_small_voice',
+                                    'xiaoanxiaoan_8k_difficult_sample_mining']
 __C.dataset.label.label_list = __C.dataset.label.negative_label + __C.dataset.label.positive_label
 __C.dataset.label.num_classes = 2
 
 # label percentage
-__C.dataset.label.silence_percentage = 100.0        # 100%
+__C.dataset.label.silence_percentage = 50.0        # 50%
 __C.dataset.label.unknown_percentage = 2000.0       # 2000%
 
 # difficult sample mining
@@ -216,8 +272,26 @@ __C.dataset.augmentation.pitch = [-5, 5]
 __C.dataset.augmentation.spec_on = True
 # __C.dataset.augmentation.spec_on = False
 __C.dataset.augmentation.F = 5
-__C.dataset.augmentation.T = 20
-__C.dataset.augmentation.num_masks = 1
+__C.dataset.augmentation.T = 10
+__C.dataset.augmentation.num_masks = 2
+
+
+##################################
+# regularization parameters
+##################################
+
+# regularization parameters
+__C.regularization = {}
+
+# regularization: label smoothing parameters
+__C.regularization.label_smoothing = {}
+
+# regularization: label smoothing on
+__C.regularization.label_smoothing.on = False
+
+# regularization: label smoothing epsilon 
+__C.regularization.label_smoothing.epsilon = 0.1
+
 
 ####################################
 # training lossd
@@ -246,10 +320,11 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'cnn-trad-pool2'
 # __C.net.model_name = 'cnn-one-fstride1'
 # __C.net.model_name = 'cnn-tpool2'
-__C.net.model_name = 'res15'
+# __C.net.model_name = 'res15'
 # __C.net.model_name = 'res15-narrow'
 # __C.net.model_name = 'res15-narrow-amba'
 # __C.net.model_name = 'res15-narrow-novt'
+# __C.net.model_name = 'res15_stochastic_depth'
 # __C.net.model_name = 'res8'
 # __C.net.model_name = 'res8-narrow'
 # __C.net.model_name = 'lstm-avg'
@@ -258,10 +333,10 @@ __C.net.model_name = 'res15'
 # __C.net.model_name = 'crnn-attention'
 # __C.net.model_name = 'tc-resnet8'
 # __C.net.model_name = 'tc-resnet14'
-# __C.net.model_name = 'tc-resnet14-amba'
 # __C.net.model_name = 'tc-resnet8-dropout'
 # __C.net.model_name = 'tc-resnet14-dropout'
 # __C.net.model_name = 'tc-resnet18-dropout'
+__C.net.model_name = 'tc-resnet14-amba-novt-2s'
 
 ######################################
 # training parameters
@@ -280,14 +355,15 @@ __C.train.num_epochs = 1
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 1024
 # __C.train.batch_size = 128
-__C.train.batch_size = 64
+# __C.train.batch_size = 64
 # __C.train.batch_size = 16
-# __C.train.batch_size = 1
+# __C.train.batch_size = 8
+__C.train.batch_size = 1
 
 # the number of threads for IO
-__C.train.num_threads = 64
+# __C.train.num_threads = 64
 # __C.train.num_threads = 16
-# __C.train.num_threads = 1
+__C.train.num_threads = 1
 
 # the number of batches to update loss curve
 __C.train.plot_snapshot = 5

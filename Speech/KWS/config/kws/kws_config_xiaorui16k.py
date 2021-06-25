@@ -154,26 +154,26 @@ __C.dataset.window_size_ms = 32.0
 # How far to move in time between frequency windows
 __C.dataset.window_stride_ms = 10.0
 
-# How the spectrogram is processed to produce features, support ["mfcc", "pcen", "fbank", "fbank_cpu", "fbank_cpu_hisi"]
+# How the spectrogram is processed to produce features, support ["mfcc", "pcen", "fbank", "fbank_cpu"]
 # __C.dataset.preprocess = "fbank"
 # __C.dataset.preprocess = "pcen"
 # __C.dataset.preprocess = "mfcc"
-# __C.dataset.preprocess = "fbank_cpu"
-__C.dataset.preprocess = "fbank_cpu_hisi"
+__C.dataset.preprocess = "fbank_cpu"
 
 # How many bins to use for the Mel feature
-# __C.dataset.feature_bin_count = 40
-# __C.dataset.feature_bin_count = 48
 __C.dataset.feature_bin_count = 64
 
 # How many nfilt to use for the Mel feature, only support preprocess=fbank_cpu
-# __C.dataset.nfilt = 48
 __C.dataset.nfilt = 64
 
+# input size of training data (w, h), whether input size is a multiple of 16, unit: voxel
+# __C.dataset.h_alignment = True, [hisi], 模型需要图像输入长度为 16 的倍数
+# __C.dataset.h_alignment = False, [amba, novt]
+__C.dataset.w_alignment = False
+__C.dataset.h_alignment = False
+
 # input size of training data (w, h), unit: voxel
-# __C.dataset.data_size = [40, 201]
 __C.dataset.data_size = [64, 196]
-# __C.dataset.data_size = [64, 192]
 
 
 ##################################
@@ -320,11 +320,11 @@ __C.net.model_name = 'res15'
 # __C.net.model_name = 'crnn-attention'
 # __C.net.model_name = 'tc-resnet8'
 # __C.net.model_name = 'tc-resnet14'
-# __C.net.model_name = 'tc-resnet14-amba'
-# __C.net.model_name = 'tc-resnet14-hisi'
 # __C.net.model_name = 'tc-resnet8-dropout'
 # __C.net.model_name = 'tc-resnet14-dropout'
 # __C.net.model_name = 'tc-resnet18-dropout'
+# __C.net.model_name = 'tc-resnet14-amba-novt-2s'
+# __C.net.model_name = 'tc-resnet14-hisi-2s'
 
 ######################################
 # training parameters
@@ -344,9 +344,9 @@ __C.train.num_epochs = 1
 # __C.train.batch_size = 1024
 # __C.train.batch_size = 128
 # __C.train.batch_size = 64
-__C.train.batch_size = 16
+# __C.train.batch_size = 16
 # __C.train.batch_size = 8
-# __C.train.batch_size = 1
+__C.train.batch_size = 1
 
 # the number of threads for IO
 # __C.train.num_threads = 64

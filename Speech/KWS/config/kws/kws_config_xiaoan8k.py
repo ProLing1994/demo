@@ -59,7 +59,7 @@ __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset
 __C.general.is_test = True
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoan8k_test"
+__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoan8k_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_0_res15_fbankcpu_04062021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_1_res15_fbankcpu_04062021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_2_res15_fbankcpu_041262021/"
@@ -71,7 +71,7 @@ __C.general.is_test = True
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_2_tc-resnet14-amba_fbankcpu_kd_041262021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_3_tc-resnet14-amba_fbankcpu_kd_041262021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_4_tc-resnet14-amba_fbankcpu_64_kd_041262021/"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_5_tc-resnet14-amba_fbankcpu_kd_05152021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_5_tc-resnet14-amba_fbankcpu_kd_05152021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/"
 
 # finetune model
@@ -160,29 +160,28 @@ __C.dataset.window_size_ms = 32.0
 # How far to move in time between frequency windows
 __C.dataset.window_stride_ms = 10.0
 
-# How the spectrogram is processed to produce features, support ["mfcc", "pcen", "fbank", "fbank_cpu", "fbank_cpu_hisi"]
+# How the spectrogram is processed to produce features, support ["mfcc", "pcen", "fbank", "fbank_cpu"]
 # __C.dataset.preprocess = "fbank"
 # __C.dataset.preprocess = "pcen"
 # __C.dataset.preprocess = "mfcc"
-# __C.dataset.preprocess = "fbank_cpu"
-__C.dataset.preprocess = "fbank_cpu_hisi"
+__C.dataset.preprocess = "fbank_cpu"
 
 # How many bins to use for the Mel feature
-# __C.dataset.feature_bin_count = 40
 __C.dataset.feature_bin_count = 48
-# __C.dataset.feature_bin_count = 64
 
-# How many nfilt to use for the Mel feature, only support preprocess=fbank_cpu
+# How many nfilt to use for the Mel feature, only support preprocess = fbank_cpu
 __C.dataset.nfilt = 48
-# __C.dataset.nfilt = 64
+
+# input size of training data (w, h), whether input size is a multiple of 16, unit: voxel
+# __C.dataset.h_alignment = True, [hisi], 模型需要图像输入长度为 16 的倍数
+# __C.dataset.h_alignment = False, [amba, novt]
+__C.dataset.w_alignment = False
+__C.dataset.h_alignment = False
 
 # input size of training data (w, h), unit: voxel
 # __C.dataset.data_size = [40, 201]
-# __C.dataset.data_size = [64, 196]
-# __C.dataset.data_size = [64, 151]
-# __C.dataset.data_size = [64, 146]
-# __C.dataset.data_size = [48, 146]
-__C.dataset.data_size = [48, 144]
+__C.dataset.data_size = [48, 146]
+# __C.dataset.data_size = [48, 144]
 
 
 ##################################
@@ -265,6 +264,24 @@ __C.dataset.augmentation.F = 5
 __C.dataset.augmentation.T = 20
 __C.dataset.augmentation.num_masks = 1
 
+
+##################################
+# regularization parameters
+##################################
+
+# regularization parameters
+__C.regularization = {}
+
+# regularization: label smoothing parameters
+__C.regularization.label_smoothing = {}
+
+# regularization: label smoothing on
+__C.regularization.label_smoothing.on = False
+
+# regularization: label smoothing epsilon 
+__C.regularization.label_smoothing.epsilon = 0.1
+
+
 ####################################
 # training lossd
 ####################################
@@ -280,6 +297,7 @@ __C.loss.obj_weight = np.array([[1/9, 0], [0, 8/9]])
 
 # the gamma parameter in focal loss
 __C.loss.focal_gamma = 2
+
 
 #####################################
 # net
@@ -304,11 +322,11 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'crnn-attention'
 # __C.net.model_name = 'tc-resnet8'
 # __C.net.model_name = 'tc-resnet14'
-# __C.net.model_name = 'tc-resnet14-amba'
-__C.net.model_name = 'tc-resnet14-amba-hisi-1-5s'
 # __C.net.model_name = 'tc-resnet8-dropout'
 # __C.net.model_name = 'tc-resnet14-dropout'
 # __C.net.model_name = 'tc-resnet18-dropout'
+__C.net.model_name = 'tc-resnet14-amba-hisi-novt-1-5s'
+
 
 ######################################
 # training parameters

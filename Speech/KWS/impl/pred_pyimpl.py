@@ -196,7 +196,7 @@ def audio_preprocess(cfg, data):
                                         data_length=clip_duration_ms / 1000)
     # check
     assert audio_preprocess_type in [
-        "mfcc", "pcen", "fbank", "fbank_cpu", "fbank_cpu_hisi"], "[ERROR:] Audio preprocess type is wronge, please check"
+        "mfcc", "pcen", "fbank", "fbank_cpu"], "[ERROR:] Audio preprocess type is wronge, please check"
 
     # preprocess
     if audio_preprocess_type == "mfcc":
@@ -207,9 +207,6 @@ def audio_preprocess(cfg, data):
         audio_data = audio_processor.compute_fbanks(data)
     elif audio_preprocess_type == "fbank_cpu":
         audio_data = audio_processor.compute_fbanks_cpu(data)
-    elif audio_preprocess_type == "fbank_cpu_hisi":
-        audio_data = audio_processor.compute_fbanks_cpu(data)
-        audio_data = audio_data[:(audio_data.shape[0] // 16) * 16, :]
     return audio_data
     
 def model_predict(cfg, model, data):
@@ -227,6 +224,10 @@ def model_predict(cfg, model, data):
 
     # audio preprocess, load mfcc data
     data = audio_preprocess(cfg, data)
+
+    if cfg.dataset.h_alignment == True:
+        data = data[:(data.shape[0] // 16) * 16, :]
+        data_size_h = (data_size_h // 16) * 16
 
     # to tensor
     data_tensor = torch.from_numpy(np.expand_dims(data, axis=0))

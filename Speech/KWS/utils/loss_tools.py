@@ -89,30 +89,35 @@ class FocalLoss(nn.Module):
         #     [知乎](https://zhuanlan.zhihu.com/p/335694672)
         # '''
         # # get probs from input
-        # probs = input * mask + (1 - input) * (1 - mask) + 1e-10
-        # log_probs = probs.log()
+        # pt = input * mask + (1 - input) * (1 - mask) + 1e-10
+        # diff = (torch.pow((1 - pt), self.gamma))
+        # log_pt = pt.log()
 
         # if self.gamma > 0:
-        #     batch_loss = -alpha * (torch.pow((1 - probs), self.gamma)) * log_probs
+        #     batch_loss = -alpha * diff * log_pt
         # else:
-        #     batch_loss = -alpha * log_probs
+        #     batch_loss = -alpha * log_pt
 
         ''' 实现二： 正负类分别处理
-            FocalLoss = - alpha_t * target * (1 - pred) ** self.gamma * torch.log(pred) 
-- (1 - alpha_t) * (1 - target) * pred ** self.gamma * torch.log(1 - pred)
+            FocalLoss = - alpha_t * label * (1 - pred) ** self.gamma * torch.log(pred) 
+- (1 - alpha_t) * (1 - label) * pred ** self.gamma * torch.log(1 - pred)
             代码稍复杂，但逻辑清晰，容易兼容 Label Smooth
             [知乎](https://zhuanlan.zhihu.com/p/335694672)
         '''
+        log_pred = (input + 1e-10).log()
+        log_pred_reverse = (1 - input + 1e-10).log()
         if self.label_smoothing_on:
             if self.gamma > 0:
-                batch_loss = -alpha * (target_smoothing * (torch.pow((target_smoothing - input), self.gamma)) * input.log() + (1 - target_smoothing) * (torch.pow((input - target_smoothing), self.gamma)) * (1 - input + 1e-10).log())
+                batch_loss = -alpha * (target_smoothing * (torch.pow((target_smoothing - input), self.gamma)) * log_pred + \
+                                        (1 - target_smoothing) * (torch.pow((input - target_smoothing), self.gamma)) * log_pred_reverse)
             else:
-                batch_loss = -alpha * (target_smoothing * input.log() + (1 - target_smoothing) * (1 - input + 1e-10).log())
+                batch_loss = -alpha * (target_smoothing * log_pred + (1 - target_smoothing) * log_pred_reverse)
         else:
             if self.gamma > 0:
-                batch_loss = -alpha * (mask * (torch.pow((1 - input), self.gamma)) * input.log() + (1 - mask) * (torch.pow((input), self.gamma)) * (1 - input + 1e-10).log())
+                batch_loss = -alpha * (mask * (torch.pow((1 - input), self.gamma)) * log_pred + \
+                                        (1 - mask) * (torch.pow((input), self.gamma)) * log_pred_reverse)
             else:
-                batch_loss = -alpha * (mask * input.log() + (1 - mask) * (1 - input + 1e-10).log())
+                batch_loss = -alpha * (mask * log_pred + (1 - mask) * log_pred_reverse)
 
         if self.size_average:
             # loss = batch_loss.mean()
