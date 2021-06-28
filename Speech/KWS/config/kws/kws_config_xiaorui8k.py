@@ -76,6 +76,7 @@ __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_5_1_tc-resnet14-amba_fbankcpu_kd_04302021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_1_tc-resnet14-hisi_fbankcpu_kd_05302021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_2_tc-resnet14-hisi_fbankcpu_kd_05302021/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui8k_1_0_res15_fbankcpu_06252021/"
 
 # finetune model
 __C.general.finetune_on = False
@@ -198,7 +199,7 @@ __C.dataset.label = {}
 # label
 __C.dataset.label.positive_label = ["xiaorui_16k", "xiaorui_8k"]
 __C.dataset.label.positive_label_chinese_name_list = [""]
-__C.dataset.label.positive_label_together = False
+__C.dataset.label.positive_label_together = True
 __C.dataset.label.positive_label_together_label = ["positive"]
 __C.dataset.label.negative_label = ["_silence_", "_unknown_"]
 __C.dataset.label.negative_label_together = True
@@ -309,6 +310,14 @@ __C.loss.obj_weight = np.array([[1/9, 0], [0, 8/9]])
 # the gamma parameter in focal loss
 __C.loss.focal_gamma = 2
 
+# EMA: expontential moving average on
+# EMA: https://github.com/ProLing1994/pytorch-loss/blob/master/ema.py
+# __C.loss.ema_on = True
+__C.loss.ema_on = False
+
+# the alpha parameter in EMA: each parameter p should be computed as p_hat = alpha * p + (1. - alpha) * p_hat
+__C.loss.ema_alpha = 0.995
+
 #####################################
 # net
 #####################################
@@ -348,12 +357,14 @@ __C.train = {}
 # __C.train.num_epochs = 16000
 # __C.train.num_epochs = 8000
 # __C.train.num_epochs = 4000
+# __C.train.num_epochs = 2000
 # __C.train.num_epochs = 100
 __C.train.num_epochs = 1
 
 # the number of samples in a batch
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 1024
+# __C.train.batch_size = 768
 # __C.train.batch_size = 128
 # __C.train.batch_size = 64
 # __C.train.batch_size = 16
@@ -369,6 +380,7 @@ __C.train.num_threads = 1
 __C.train.plot_snapshot = 5
 
 # the number of epochs to save model
+# __C.train.save_epochs = 100
 # __C.train.save_epochs = 25
 __C.train.save_epochs = 1
 

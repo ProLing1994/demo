@@ -214,8 +214,8 @@ if __name__ == '__main__':
     功能描述：模型训练和测试脚本
     """
     parser = argparse.ArgumentParser(description='Streamax KWS Training Engine')
-    # parser.add_argument('-i', '--config_file', type=str, default='/home/huanyuan/code/demo/Speech/SED/config/sed_config_ESC50.py')
-    parser.add_argument('-i', '--config_file', type=str, default='/home/huanyuan/code/demo/Speech/SED/config/sed_config_FSD50K.py')
+    parser.add_argument('-i', '--config_file', type=str, default='/home/huanyuan/code/demo/Speech/SED/config/sed_config_ESC50.py')
+    # parser.add_argument('-i', '--config_file', type=str, default='/home/huanyuan/code/demo/Speech/SED/config/sed_config_FSD50K.py')
     args = parser.parse_args()
 
     train(args)

@@ -4,7 +4,7 @@ import os
 import sys
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-from ASR.impl.asr_data_loader_pyimpl import WaveLoader
+from ASR.impl.asr_data_loader_pyimpl import WaveLoader_Librosa as WaveLoader
 from ASR.impl.asr_feature_pyimpl import Feature
 
 
@@ -88,7 +88,7 @@ def KWS_ASR_offine():
     print("feature_merge == feature_data: ", (feature_merge == feature_data).all())
 
 
-if __name__ == "__main__":0
+if __name__ == "__main__":
     # params
     sample_rate = 16000
     window_size_ms = 1000                   # 每次送入 1s 数据

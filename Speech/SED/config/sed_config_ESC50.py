@@ -153,8 +153,8 @@ __C.dataset.augmentation.T = 20
 __C.dataset.augmentation.num_masks = 1
 
 # minx up
-__C.dataset.augmentation.mix_up_on = True
-# __C.dataset.augmentation.mix_up_on = False
+# __C.dataset.augmentation.mix_up_on = True
+__C.dataset.augmentation.mix_up_on = False
 __C.dataset.augmentation.mix_up_frequency = 1.0
 # __C.dataset.augmentation.mix_up_alpha = 2.0
 __C.dataset.augmentation.mix_up_alpha = 0.5
@@ -193,8 +193,11 @@ __C.sampler.name = 'none'
 __C.net = {}
 
 # the network name
-__C.net.model_name = 'Cnn'
-__C.net.class_name = "Cnn14"
+# __C.net.class_name = "Cnn14"
+# __C.net.model_name = 'Cnn'
+__C.net.class_name = "SpeechResModel"
+__C.net.model_name = 'res15_basic'
+
 
 ######################################
 # training parameters
