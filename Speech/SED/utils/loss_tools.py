@@ -48,7 +48,7 @@ def calculate_score_label(cfg, output, target):
 
 def calculate_accuracy(cfg, output, target):
     if cfg.dataset.label.type == "multi_class":
-        accuracy = float((output == target).astype(int).sum()) / float(target.size(0))
+        accuracy = float((output == target).astype(int).sum()) / float(target.shape(0))
         return accuracy
     elif cfg.dataset.label.type == "multi_label":
         mAP = get_average_precision(target, output, average="macro")
