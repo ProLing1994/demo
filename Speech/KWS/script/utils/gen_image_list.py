@@ -6,7 +6,7 @@ import pandas as pd
 import sys
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/ASR')
-from impl.asr_data_loader_pyimpl import WaveLoader
+from impl.asr_data_loader_pyimpl import WaveLoader_Librosa as WaveLoader
 from impl.asr_feature_cimpl import Feature
 # from impl.asr_feature_pyimpl import Feature
 from impl.asr_decode_cimpl import Decode
@@ -68,12 +68,12 @@ def gen_image_list(args):
             cv2.imwrite(output_path, feature_data)
 
 if __name__ == "__main__":
-    # # asr mandarin:
-    # # default_audio_folder = "/home/huanyuan/share/audio_data/mandarin_wav/安静场景/"
-    # # default_output_folder = "/home/huanyuan/share/audio_data/mandarin_wav/安静场景/image_396_64"
-    # default_audio_folder = "/home/huanyuan/share/audio_data/mandarin_wav/闹市场景/"
-    # default_output_folder = "/home/huanyuan/share/audio_data/mandarin_wav/闹市场景/image_396_64"
-    # default_transpose = False
+    # asr mandarin:
+    # default_audio_folder = "/home/huanyuan/share/audio_data/mandarin_wav/安静场景/"
+    # default_output_folder = "/home/huanyuan/share/audio_data/mandarin_wav/安静场景/image_396_8k_56"
+    default_audio_folder = "/home/huanyuan/share/audio_data/mandarin_wav/闹市场景/"
+    default_output_folder = "/home/huanyuan/share/audio_data/mandarin_wav/闹市场景/image_396_8k_56"
+    default_transpose = False
     
     # default_audio_folder = "/home/huanyuan/share/audio_data/mandarin_wav/安静场景/"
     # default_output_folder = "/home/huanyuan/share/audio_data/mandarin_wav/安静场景/image_296_56"
@@ -83,12 +83,12 @@ if __name__ == "__main__":
     # default_output_folder = "/home/huanyuan/share/audio_data/image_296_56"
     # default_transpose = False
 
-    # kws: xiaorui
-    default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/xiaorui/"
-    # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/xiaorui_long/"
-    # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/other/"
-    default_output_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/image_64_192"
-    default_transpose = True
+    # # kws: xiaorui
+    # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/xiaorui/"
+    # # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/xiaorui_long/"
+    # # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/other/"
+    # default_output_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/image_64_192"
+    # default_transpose = True
 
     # # kws: activatebwc
     # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_activatebwc/activatebwc/"
@@ -137,14 +137,22 @@ if __name__ == "__main__":
     # args.feature_freq = 64
     # args.feature_time = 296
 
-    # 16k & 2s
-    args.sample_rate = 16000
-    args.window_size_ms = 2000
+    # # 16k & 2s
+    # args.sample_rate = 16000
+    # args.window_size_ms = 2000
+    # args.window_stride_ms = 2000
+    # args.nfilt = 64
+    # args.feature_freq = 64
+    # # args.feature_time = 196
+    # args.feature_time = 192
+
+    # 8k & 4s
+    args.sample_rate = 8000
+    args.window_size_ms = 4000
     args.window_stride_ms = 2000
     args.nfilt = 64
-    args.feature_freq = 64
-    # args.feature_time = 196
-    args.feature_time = 192
+    args.feature_freq = 56
+    args.feature_time = 396
 
     # # 8k & 1.5s
     # args.sample_rate = 8000

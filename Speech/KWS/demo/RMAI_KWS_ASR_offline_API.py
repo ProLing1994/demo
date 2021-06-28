@@ -23,11 +23,13 @@ import caffe
 # options 
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_bpe.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_phoneme.py")
-cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_bpe_phoneme.py")
+# cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_bpe_phoneme.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MTA_XIAOAN.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_XIAORUI.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_3s.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_4s.py")
+cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_4s_8k_56dim.py")
+
 cfg = cfg.cfg
 
 # params
@@ -187,8 +189,8 @@ def output_wave(output_prefix_name):
         date_time = str(datetime.now()).split(' ')[0]
         output_path = os.path.join(cfg.test.output_folder, output_dict['subfolder_name'], '{}_{}_{}.wav'.format(output_prefix_name, date_time, output_dict['output_kws_id']))
         # output_path = os.path.join(cfg.test.output_folder, output_dict['subfolder_name'], '{}_starttime_{}.wav'.format(output_prefix_name, int(output_dict['sliding_window_start_time_ms'])))
-        wave_loader = WaveLoader_Python.WaveLoader_Soundfile(cfg.general.sample_rate)
-        # wave_loader = WaveLoader_Python.WaveLoader_Librosa(cfg.general.sample_rate)
+        # wave_loader = WaveLoader_Python.WaveLoader_Soundfile(cfg.general.sample_rate)
+        wave_loader = WaveLoader_Python.WaveLoader_Librosa(cfg.general.sample_rate)
         wave_loader.save_data(np.array(params_dict['output_wave_list']), output_path)
         output_dict['output_kws_id'] += 1
 
@@ -547,8 +549,8 @@ def KWS_ASR_offine():
 
     # load wave
     # wave_loader = WaveLoader_C.WaveLoader(cfg.general.sample_rate)
-    wave_loader = WaveLoader_Python.WaveLoader_Soundfile(cfg.general.sample_rate)
-    # wave_loader = WaveLoader_Python.WaveLoader_Librosa(cfg.general.sample_rate)
+    # wave_loader = WaveLoader_Python.WaveLoader_Soundfile(cfg.general.sample_rate)
+    wave_loader = WaveLoader_Python.WaveLoader_Librosa(cfg.general.sample_rate)
     wave_loader.load_data(cfg.test.input_wav)
     wave_data = wave_loader.to_numpy()
 
@@ -600,8 +602,8 @@ def KWS_ASR_offine_perfolder():
 
         # load wave
         # wave_loader = WaveLoader_C.WaveLoader(cfg.general.sample_rate)
-        wave_loader = WaveLoader_Python.WaveLoader_Soundfile(cfg.general.sample_rate)
-        # wave_loader = WaveLoader_Python.WaveLoader_Librosa(cfg.general.sample_rate)
+        # wave_loader = WaveLoader_Python.WaveLoader_Soundfile(cfg.general.sample_rate)
+        wave_loader = WaveLoader_Python.WaveLoader_Librosa(cfg.general.sample_rate)
         wave_loader.load_data(wave_path)
         wave_data = wave_loader.to_numpy()
 

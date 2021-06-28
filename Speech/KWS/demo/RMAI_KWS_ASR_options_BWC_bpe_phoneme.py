@@ -33,11 +33,11 @@ __C.general.kws_suppression_counter = 3             # kws 激活后抑制时间 
 # asr
 __C.general.language_id = 1			                # 0： chinese  1： english
 __C.general.decode_id = 0			                # 0： greedy  1： beamsearch
-__C.general.bpe_decode_id = 0			            # 0： greedy  1： beamsearch
-__C.general.phoneme_decode_id = 1			        # 0： greedy  1： beamsearch
 __C.general.asr_feature_time = 296                  # asr 网络特征时间维度，与语音特征容器长度相同
 __C.general.asr_suppression_counter = 2             # asr 激活后抑制时间，间隔 2s 执行一次 asr 检测
 __C.general.asr_bpe_phoneme_on = True               # asr 使用 bpe 和 phoneme 两个 model
+__C.general.bpe_decode_id = 0			            # 0： greedy  1： beamsearch
+__C.general.phoneme_decode_id = 1			        # 0： greedy  1： beamsearch
 
 # bpe
 __C.general.kws_list = ['start_record', 'stop_record', 'mute_audio', 'unmute_audio', 'shot_fire', 'freeze', 'drop_gun', 'keep_hand', 'put_hand', 'down_ground']

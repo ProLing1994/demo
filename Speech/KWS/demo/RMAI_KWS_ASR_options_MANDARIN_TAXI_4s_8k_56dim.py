@@ -17,9 +17,9 @@ __C.general.window_size_ms = 1000                   # 每次送入 1s 数据
 __C.general.window_stride_ms = 1000                 # 每次间隔 1s 时间
 __C.general.total_time_ms = 4000                    # 算法处理时长 4s 时间
 
-__C.general.sample_rate = 16000
+__C.general.sample_rate = 8000
 __C.general.nfilt = 64                              # 计算特征中，Mel 滤波器个数
-__C.general.feature_freq = 64                       # 计算特征维度
+__C.general.feature_freq = 56                       # 计算特征维度
 __C.general.feature_time = 96                       # 每次送入 1s 数据，对应的特征时间维度 96
 
 # kws
@@ -34,7 +34,6 @@ __C.general.kws_suppression_counter = 4             # kws 激活后抑制时间 
 __C.general.language_id = 0			                # 0： chinese  1： english
 __C.general.decode_id = 1			                # 0： greedy  1： beamsearch
 __C.general.asr_feature_time = 396                  # asr 网络特征时间维度，与语音特征容器长度相同
-# __C.general.asr_suppression_counter = 3             # asr 激活后抑制时间，间隔 3s 执行一次 asr 检测
 __C.general.asr_suppression_counter = 2             # asr 激活后抑制时间，间隔 2s 执行一次 asr 检测
 __C.general.asr_bpe_phoneme_on = False               # asr 使用 bpe 和 phoneme 两个 model
 
@@ -78,13 +77,13 @@ __C.model.kws_chw_params = "1,64,192"
 __C.model.kws_transpose = True
 
 # asr
-__C.model.asr_model_path = "/mnt/huanyuan/model/audio_model/hisi_model/asr_mandarin_taxi_16k/asr_mandarin_taxi_16k_64.caffemodel"
-__C.model.asr_prototxt_path = "/mnt/huanyuan/model/audio_model/hisi_model/asr_mandarin_taxi_16k/asr_mandarin_taxi_16k_64_296.prototxt"
+__C.model.asr_model_path = "/mnt/huanyuan/model/audio_model/novt_model/asr_mandarin_taxi_8k/asr_mandarin_taxi_8k_56.caffemodel"
+__C.model.asr_prototxt_path = "/mnt/huanyuan/model/audio_model/novt_model/asr_mandarin_taxi_8k/asr_mandarin_taxi_8k_56_396.prototxt"
 __C.model.asr_net_input_name = "data"
 __C.model.asr_net_output_name = "prob"
-__C.model.asr_chw_params = "1,396,64"
-__C.model.asr_bpe = "/mnt/huanyuan/model/audio_model/hisi_model/asr_mandarin_taxi_16k/asr_mandarin_dict_taxi.txt"
-__C.model.lm_path = "/mnt/huanyuan/model/audio_model/hisi_model/asr_mandarin_taxi_16k/3gram_asr_mandarin_taxi_408.bin" 
+__C.model.asr_chw_params = "1,396,56"
+__C.model.asr_bpe = "/mnt/huanyuan/model/audio_model/novt_model/asr_mandarin_taxi_8k/asr_mandarin_dict_taxi.txt"
+__C.model.lm_path = "/mnt/huanyuan/model/audio_model/novt_model/asr_mandarin_taxi_8k/3gram_asr_mandarin_taxi_408.bin"
 
 
 ##################################
@@ -101,7 +100,8 @@ __C.test.test_mode = 0
 
 # input_Wav
 # __C.test.input_wav = "/home/huanyuan/share/audio_data/mandarin_wav/taxi_phone/test/RM_Room_Taxi_Phone_S001T1P69.wav"
-__C.test.input_wav = "/mnt/huanyuan/data/speech/Recording/Daily_Record/mobile_phone/test/test-kws-xiaorui-asr-mandarin-taxi.wav"
+__C.test.input_wav = "/mnt/huanyuan/data/speech/Recording/Daily_Record/mobile_phone/test/test-kws-xiaorui-asr-mandarin-taxi-8k.wav"
+# __C.test.input_wav = "/mnt/huanyuan/data/speech/Recording/Daily_Record/mobile_phone/test/test-kws-xiaorui-asr-mandarin-taxi.wav"
 
 # input_folder
 __C.test.input_folder = ""

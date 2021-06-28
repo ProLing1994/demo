@@ -196,7 +196,8 @@ __C.net = {}
 # __C.net.class_name = "Cnn14"
 # __C.net.model_name = 'Cnn'
 __C.net.class_name = "SpeechResModel"
-__C.net.model_name = 'res15_basic'
+# __C.net.model_name = 'res15_basic'
+__C.net.model_name = 'res15_stochastic_depth'
 
 
 ######################################
