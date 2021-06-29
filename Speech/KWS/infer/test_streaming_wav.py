@@ -226,11 +226,11 @@ def main():
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_testing_3600_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
-    # # xiaorui
-    # # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_training_60.wav",
-    # #                             "/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_validation_60.wav"]
-    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_validation_3600.wav",
-    #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
+    # xiaorui
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_training_60.wav",
+    #                             "/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_validation_60.wav"]
+    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_validation_3600.wav",
+                            "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
     # xiaole
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaole_11252020_training_60_001.wav",
@@ -239,11 +239,11 @@ def main():
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaole_11252020_testing_3600_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
     
-    # xiaoan8k
-    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_training_60.wav",
-    #                             "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_validation_60.wav"]
-    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_3_04152021_validation.wav",
-                            "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
+    # # xiaoan8k
+    # # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_training_60.wav",
+    # #                             "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_validation_60.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_3_04152021_validation.wav",
+    #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
     # xiaoa16k
     # default_input_wav_list = ['/mnt/huanyuan/model/test_straming_wav/xiaoan16k_2_1_04082021_training_60.wav',
@@ -349,8 +349,8 @@ def main():
     # default_output_subfolder_name = "android_Mandarin_Weibo"
     # default_input_folder = "/mnt/huanyuan/data/speech/Recording/RM_Mandarin_Bus/office/tpev_44.1k/wav/"
     # default_output_subfolder_name = "tpev_Mandarin_Bus"
-    default_input_folder = "/mnt/huanyuan/data/speech/Recording/RM_Mandarin_Bus/office/android_16k/wav/"
-    default_output_subfolder_name = "android_Mandarin_Bus"
+    # default_input_folder = "/mnt/huanyuan/data/speech/Recording/RM_Mandarin_Bus/office/android_16k/wav/"
+    # default_output_subfolder_name = "android_Mandarin_Bus"
     # default_input_folder = "/mnt/huanyuan/data/speech/Recording_sample/danbin/daily_recording/"
     # default_output_subfolder_name = "danbin_daily_record"
     # default_input_folder = "/mnt/huanyuan/data/speech/Recording_sample/ADpro/real_vehicle_sample/platform_alarm_data/"
@@ -361,8 +361,8 @@ def main():
     # default_output_subfolder_name = "Dataset_Lenovo_xiaole/xiaole/"
     # default_input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/第二批数据_0425/安静场景/"
     # default_output_subfolder_name = "Activatebwc_test"
-    # default_input_folder = "/mnt/huanyuan/data/speech/Recording/Daily_Record/TPEV/test/"
-    # default_output_subfolder_name = "tpev_daily_record_test"
+    default_input_folder = "/mnt/huanyuan/data/speech/Recording/Daily_Record/TPEV/test/"
+    default_output_subfolder_name = "tpev_daily_record_test"
     # default_input_folder = "/mnt/huanyuan/data/speech/Recording/Daily_Record/TPEV/wav/"
     # default_output_subfolder_name = "tpev_daily_record"
     # default_input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/处理音频/"
@@ -413,7 +413,9 @@ def main():
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_2_tc-resnet14-hisi_fbankcpu_kd_05302021/kws_config_xiaorui.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_2_tc-resnet14-hisi_fbankcpu_kd_05302021/kws_config_xiaorui_api.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_2_tc-resnet14-hisi_fbankcpu_kd_05302021/kws_config_xiaorui_api_08.py"
-    default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_2_tc-resnet14-hisi_fbankcpu_kd_05302021/kws_config_xiaorui_difficult_sample_mining.py"
+    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_2_tc-resnet14-hisi_fbankcpu_kd_05302021/kws_config_xiaorui_difficult_sample_mining.py"
+    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_3_tc-resnet14-hisi_fbankcpu_kd_05302021/kws_config_xiaorui16k.py"
+    default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_3_tc-resnet14-hisi_fbankcpu_kd_05302021/kws_config_xiaorui16k_api.py"
 
     parser = argparse.ArgumentParser(description='Streamax KWS Testing Engine')
     parser.add_argument('--mode', type=str, default=default_mode)

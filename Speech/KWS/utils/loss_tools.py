@@ -99,8 +99,7 @@ class FocalLoss(nn.Module):
         #     batch_loss = -alpha * log_pt
 
         ''' 实现二： 正负类分别处理
-            FocalLoss = - alpha_t * label * (1 - pred) ** self.gamma * torch.log(pred) 
-- (1 - alpha_t) * (1 - label) * pred ** self.gamma * torch.log(1 - pred)
+            FocalLoss = - alpha_t * label * (1 - pred) ** self.gamma * torch.log(pred) - (1 - alpha_t) * (1 - label) * pred ** self.gamma * torch.log(1 - pred)
             代码稍复杂，但逻辑清晰，容易兼容 Label Smooth
             [知乎](https://zhuanlan.zhihu.com/p/335694672)
         '''

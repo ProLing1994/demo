@@ -159,6 +159,22 @@ __C.dataset.augmentation.mix_up_frequency = 1.0
 # __C.dataset.augmentation.mix_up_alpha = 2.0
 __C.dataset.augmentation.mix_up_alpha = 0.5
 
+##################################
+# regularization parameters
+##################################
+
+# regularization parameters
+__C.regularization = {}
+
+# regularization: label smoothing parameters
+__C.regularization.label_smoothing = {}
+
+# regularization: label smoothing on
+__C.regularization.label_smoothing.on = True
+
+# regularization: label smoothing epsilon 
+__C.regularization.label_smoothing.epsilon = 0.1
+
 ####################################
 # training lossd
 ####################################
