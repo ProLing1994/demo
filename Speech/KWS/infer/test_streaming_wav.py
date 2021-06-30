@@ -117,6 +117,7 @@ def test(in_args):
                                     os.path.basename(input_wav).split('.')[0])
     else:
         raise Exception("[ERROR:] Unknow mode, please check!")
+
     if os.path.exists(output_dir):    
         return
     else:
@@ -212,7 +213,7 @@ def main():
     # 0: from input_wav_list
     # 1: from csv
     # 2: from folder
-    default_mode = "2"    # ["0", "1" ,"2"]
+    default_mode = "0"    # ["0", "1" ,"2"]
 
     # mode 0: from input_wav_list
     # test
@@ -227,10 +228,10 @@ def main():
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
     # xiaorui
-    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_training_60.wav",
-    #                             "/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_validation_60.wav"]
-    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_validation_3600.wav",
-                            "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
+    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_training_60.wav",
+                                "/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_validation_60.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_validation_3600.wav",
+    #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
     # xiaole
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaole_11252020_training_60_001.wav",

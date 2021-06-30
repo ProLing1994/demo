@@ -169,6 +169,38 @@ def set_optimizer(cfg, net):
     return opt
 
 
+def set_scheduler(cfg, optimizer):
+    """
+    :param cfg:   training configure file
+    :param optimizer:   pytorch optimizer
+    :return:
+    """
+    scheduler = None
+    if cfg.train.optimizer == 'SGD':
+        if cfg.train.scheduler == 'StepLR':
+            scheduler = torch.optim.lr_scheduler.StepLR(optimizer=optimizer, 
+                                                        step_size=cfg.train.lr_step_size, 
+                                                        gamma=cfg.train.lr_gamma)
+        elif cfg.train.scheduler == 'CosineAnnealingWarmRestarts':
+            scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer=optimizer, 
+                                                        T_0=cfg.train.T_0,
+                                                        T_mult=cfg.train.T_mult)
+        else:
+            raise ValueError('Unknown loss scheduler')
+    return scheduler
+
+def update_scheduler(cfg, scheduler, epoch_idx):
+    """
+    :param cfg:   training configure file
+    :param scheduler:   pytorch scheduler
+    :param epoch_idx:   
+    :return:
+    """
+    if cfg.train.optimizer == 'SGD' or cfg.train.scheduler == 'CosineAnnealingWarmRestarts':
+        scheduler.step(epoch_idx)
+    else:
+        pass
+
 def generate_dataset(cfg, mode, training_mode=0):
     """
     :param cfg:            config contain data set information

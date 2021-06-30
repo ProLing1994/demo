@@ -117,7 +117,11 @@ def train(args):
 
     msg = 'Init Time: {}'.format((time.time() - begin_t) * 1.0)
     logger.info(msg)
-    
+
+    # ema
+    if cfg.loss.ema_on:
+        ema = EMA(net, 0.9999)
+
     # list init
     scores_list = []
     labels_list = []
@@ -129,6 +133,9 @@ def train(args):
         if epoch_idx % cfg.train.save_epochs == 0 and epoch_idx != last_save_epoch:
             last_save_epoch = epoch_idx
 
+            if cfg.loss.ema_on:
+                ema.apply_shadow() # copy ema status to the model
+
             # save model
             msg = 'Save Model: {}'.format(epoch_idx)
             logger.info(msg)
@@ -139,6 +146,9 @@ def train(args):
             logger.info(msg)
             if cfg.general.is_test:
                 test(cfg, net, loss_func, epoch_idx, iteration, logger, eval_validation_dataloader, mode='eval')
+
+            if cfg.loss.ema_on:
+                ema.restore() # resume the model parameters
 
         # Stop learning
         if epoch_idx == cfg.train.num_epochs:
@@ -170,6 +180,9 @@ def train(args):
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
+
+        if cfg.loss.ema_on:
+            ema.update_params()     # apply ema
 
         # caltulate accuracy
         if cfg.dataset.augmentation.mix_up_on and bool_mix_up:

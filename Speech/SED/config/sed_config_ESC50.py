@@ -170,7 +170,7 @@ __C.regularization = {}
 __C.regularization.label_smoothing = {}
 
 # regularization: label smoothing on
-__C.regularization.label_smoothing.on = True
+__C.regularization.label_smoothing.on = False
 
 # regularization: label smoothing epsilon 
 __C.regularization.label_smoothing.epsilon = 0.1
@@ -192,6 +192,14 @@ __C.loss.obj_weight = None
 # the gamma parameter in focal loss
 __C.loss.focal_gamma = 2
 
+# EMA: expontential moving average on
+# EMA: https://github.com/ProLing1994/pytorch-loss/blob/master/ema.py
+__C.loss.ema_on = True
+# __C.loss.ema_on = False
+
+# the alpha parameter in EMA: each parameter p should be computed as p_hat = alpha * p + (1. - alpha) * p_hat
+__C.loss.ema_alpha = 0.995
+
 ####################################
 # training sampler
 ####################################
@@ -212,8 +220,8 @@ __C.net = {}
 # __C.net.class_name = "Cnn14"
 # __C.net.model_name = 'Cnn'
 __C.net.class_name = "SpeechResModel"
-# __C.net.model_name = 'res15_basic'
-__C.net.model_name = 'res15_stochastic_depth'
+__C.net.model_name = 'res15_basic'
+# __C.net.model_name = 'res15_stochastic_depth'
 
 
 ######################################

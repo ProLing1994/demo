@@ -8,7 +8,6 @@ from tqdm import tqdm
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from utils.train_tools import *
 from utils.loss_tools import *
-from utils.ema import *
 
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo')
 # sys.path.insert(0, '/yuanhuan/code/demo')
@@ -87,6 +86,7 @@ def train(config_file, training_mode):
 
     # set training optimizer, learning rate scheduler
     optimizer = set_optimizer(cfg, net)
+    scheduler = set_scheduler(cfg, optimizer)
 
     # define loss function
     loss_func = define_loss_function(cfg)
@@ -176,6 +176,8 @@ def train(config_file, training_mode):
 
         loss.backward()
         optimizer.step()
+        update_scheduler(cfg, scheduler, epoch_idx)
+
         if cfg.loss.ema_on:
             ema.update_params()     # apply ema
 

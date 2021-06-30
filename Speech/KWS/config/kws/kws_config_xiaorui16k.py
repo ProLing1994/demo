@@ -42,7 +42,7 @@ __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_datase
 __C.general.is_test = True
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_test"
+__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12082020/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_1_finetune_res15_12082020/"
@@ -67,7 +67,7 @@ __C.general.is_test = True
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_5_0_tc-resnet14-amba_fbankcpu_kd_04302021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_5_1_tc-resnet14-amba_fbankcpu_kd_04302021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_1_tc-resnet14-hisi_fbankcpu_kd_05302021/"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_2_tc-resnet14-hisi_fbankcpu_kd_05302021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_2_tc-resnet14-hisi_fbankcpu_kd_05302021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_3_tc-resnet14-hisi_fbankcpu_kd_05302021/"
 
 # finetune model
@@ -390,17 +390,40 @@ __C.train.lr_gamma = 0.9
 ######################################
 
 # optimizer, support SGD and Adam
-__C.train.optimizer = 'Adam'
+__C.train.optimizer = 'SGD'
+# __C.train.optimizer = 'Adam'
 
-# SGD, Adam momentum
+# SGD momentum
 __C.train.momentum = 0.9
 
-# SGD,Adam weight decay
+# SGD, Adam weight decay
 # __C.train.weight_decay = 0.0
 __C.train.weight_decay = 0.0001
 
 # the beta in Adam optimizer
 __C.train.betas = (0.9, 0.999)
+
+
+######################################
+# scheduler parameters
+######################################
+
+# only with optimizer: SGD
+# scheduler, support StepLR and CosineAnnealingWarmRestarts
+# __C.train.scheduler = 'StepLR'
+__C.train.scheduler = 'CosineAnnealingWarmRestarts'
+
+# StepLR step_size
+__C.train.lr_step_size = 1000
+
+# StepLR lr_gamma
+__C.train.lr_gamma = 0.1
+
+# CosineAnnealingWarmRestarts T_0
+__C.train.T_0 = 2
+
+# CosineAnnealingWarmRestarts T_mult
+__C.train.T_mult = 2
 
 
 ######################################

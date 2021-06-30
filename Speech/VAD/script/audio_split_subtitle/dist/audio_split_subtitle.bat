@@ -1,1 +1,1 @@
-audio_split_subtitle.exe --audio_path="E:\\迅雷下载\\mkv\\失孤\\失孤.wav" --subtitle_path="E:\\迅雷下载\\mkv\\失孤\\失孤.srt" --output_dir="E:\\迅雷下载\\mkv\\失孤\\" --language="Chinese" --file_encoding="utf-8" --movie_id=1
+audio_split_subtitle.exe --audio_path="E:\\迅雷下载\\mkv\\蜀山传\\蜀山传.wav" --subtitle_path="E:\\迅雷下载\\mkv\\蜀山传\\蜀山传.srt" --output_dir="E:\\迅雷下载\\mkv\\result\\" --language="Chinese" --file_encoding="gbk" --movie_id=2 --time_shift="-,0.0"

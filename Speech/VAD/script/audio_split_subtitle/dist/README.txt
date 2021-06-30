@@ -6,3 +6,4 @@ audio_split_subtitle.exe 音频字幕切割工具
 	language ["Chinese", "English"]
 	file_encoding ["gbk", "utf-8"]
 	movie_id
+	time_shift ["+,0.0","-,0.0"]
