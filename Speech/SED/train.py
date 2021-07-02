@@ -180,6 +180,7 @@ def train(args):
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
+        optimizer.update_scheduler(epoch_idx)
 
         if cfg.loss.ema_on:
             ema.update_params()     # apply ema

@@ -280,7 +280,8 @@ __C.train.lr_gamma = 0.9
 ######################################
 
 # optimizer, support SGD and Adam
-__C.train.optimizer = 'Adam'
+__C.train.optimizer = 'SGD'
+# __C.train.optimizer = 'Adam'
 
 # SGD, Adam momentum
 __C.train.momentum = 0.9
@@ -290,6 +291,28 @@ __C.train.weight_decay = 0.0001
 
 # the beta in Adam optimizer
 __C.train.betas = (0.9, 0.999)
+
+
+######################################
+# scheduler parameters
+######################################
+
+# only with optimizer: SGD
+# scheduler, support StepLR and CosineAnnealingWarmRestarts
+# __C.train.scheduler = 'StepLR'
+__C.train.scheduler = 'CosineAnnealingWarmRestarts'
+
+# StepLR step_size
+__C.train.lr_step_size = 1000
+
+# StepLR lr_gamma
+__C.train.lr_gamma = 0.1
+
+# CosineAnnealingWarmRestarts T_0
+__C.train.T_0 = 2
+
+# CosineAnnealingWarmRestarts T_mult
+__C.train.T_mult = 2
 
 
 ######################################
