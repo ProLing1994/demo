@@ -37,7 +37,7 @@ class SpeechDataset(Dataset):
         self.audio_label_type = cfg.dataset.label.type 
 
         # lmdb
-        self.lmdb_path = os.path.join(cfg.general.data_dir, '../experimental_dataset/dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset_audio_lmdb', '{}.lmdb'.format(mode))
+        self.lmdb_path = os.path.join(os.path.dirname(cfg.general.data_csv_path), 'dataset_audio_lmdb', '{}.lmdb'.format(mode))
         self.lmdb_env = load_lmdb_env(self.lmdb_path)
 
         self.sample_rate = cfg.dataset.sample_rate

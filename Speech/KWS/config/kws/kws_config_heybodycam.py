@@ -147,12 +147,6 @@ __C.dataset.label.num_classes = 2
 __C.dataset.label.silence_percentage = 20.0      # 20%
 __C.dataset.label.unknown_percentage = 1000.0       # 500%
 
-# difficult sample mining
-__C.dataset.label.difficult_sample_mining = False
-__C.dataset.label.difficult_sample_percentage = 200.0     # 200% per dir
-__C.dataset.label.difficult_sample_mining_dir = ["/mnt/huanyuan/data/speech/kws/difficult_sample_mining/difficult_sample_mining_11122020/clean_audio/",
-                                                 "/mnt/huanyuan/data/speech/kws/difficult_sample_mining/difficult_sample_mining_12212020/audio/"]
-
 # trian/validation/test percentage
 __C.dataset.label.validation_percentage = 15.0  # 15%
 __C.dataset.label.testing_percentage = 0.0     # 0%

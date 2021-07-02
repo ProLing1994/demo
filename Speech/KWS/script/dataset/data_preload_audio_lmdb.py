@@ -83,7 +83,7 @@ def preload_audio_lmdb(mode):
     cfg = load_cfg_file(args.config_file)
 
     # mkdir
-    output_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset_audio_lmdb')
+    output_dir = os.path.join(os.path.dirname(cfg.general.data_csv_path), 'dataset_audio_lmdb')
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
@@ -109,7 +109,7 @@ def preload_background_audio_lmdb():
     sample_rate = cfg.dataset.sample_rate
 
     # mkdir
-    output_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset_audio_lmdb')
+    output_dir = os.path.join(os.path.dirname(cfg.general.data_csv_path), 'dataset_audio_lmdb')
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 

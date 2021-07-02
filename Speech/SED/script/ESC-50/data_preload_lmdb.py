@@ -59,7 +59,7 @@ def preload_audio_lmdb(args):
     cfg = load_cfg_file(args.config_file)
 
     # mkdir
-    output_dir = os.path.join(cfg.general.data_dir, '../experimental_dataset/dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset_audio_lmdb')
+    output_dir = os.path.join(os.path.dirname(cfg.general.data_csv_path), 'dataset_audio_lmdb')
     create_folder(output_dir)
 
     # load csv

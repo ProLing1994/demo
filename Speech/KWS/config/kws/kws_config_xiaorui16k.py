@@ -30,13 +30,13 @@ __C.general.date = "06172021"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.4_04302021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.5_05172021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.6_05272021/total_data_files.csv"
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.7_06172021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_16k_1.7_06172021/total_data_files.csv"
 
 # background noise path
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.4_04302021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.5_05172021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.6_05272021/background_noise_files.csv"
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.7_06172021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_16k_1.7_06172021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -162,7 +162,8 @@ __C.dataset.window_stride_ms = 10.0
 __C.dataset.preprocess = "fbank_cpu"
 
 # How many bins to use for the Mel feature
-__C.dataset.feature_bin_count = 64
+__C.dataset.feature_bin_count = 56
+# __C.dataset.feature_bin_count = 64
 
 # How many nfilt to use for the Mel feature, only support preprocess=fbank_cpu
 __C.dataset.nfilt = 64
@@ -171,10 +172,12 @@ __C.dataset.nfilt = 64
 # __C.dataset.h_alignment = True, [hisi], 模型需要图像输入长度为 16 的倍数
 # __C.dataset.h_alignment = False, [amba, novt]
 __C.dataset.w_alignment = False
-__C.dataset.h_alignment = True
+# __C.dataset.h_alignment = True
+__C.dataset.h_alignment = False
 
 # input size of training data (w, h), unit: voxel
-__C.dataset.data_size = [64, 196]
+__C.dataset.data_size = [56, 196]
+# __C.dataset.data_size = [64, 196]
 
 
 ##################################
@@ -194,8 +197,10 @@ __C.dataset.label.negative_label_together_label = ["negative"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
 __C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[1]
 __C.dataset.label.ignore_label = ['kaldi_cut_keyword', 'xiaorui_8k', 'nihaoxiaoan_8k',
-                                    'truck_platform_alarm_8k', 'truck_truckidling_noise_8k', 
-                                    'zanghuayulu_8k', 'zanghuayulu_16k', 'weibo_8k', 
+                                    'truck_platform_alarm_8k', 'truck_truckidling_noise_8k', 'weibo_8k', 
+                                    'zanghuayulu_8k', 'zanghuayulu_16k',
+                                    'xiaoanxiaoan_16k_once', 
+                                    'xiaoanxiaoan_16k_over_long', 'xiaoanxiaoan_16k_small_voice',
                                     'xiaoanxiaoan_8k', 'xiaoanxiaoan_8k_once', 
                                     'xiaoanxiaoan_8k_over_long', 'xiaoanxiaoan_8k_small_voice',
                                     'xiaoanxiaoan_8k_difficult_sample_mining']
@@ -205,11 +210,6 @@ __C.dataset.label.num_classes = 2
 # label percentage
 __C.dataset.label.silence_percentage = 50.0        # 50%
 __C.dataset.label.unknown_percentage = 2000.0       # 2000%
-
-# difficult sample mining
-__C.dataset.label.difficult_sample_mining = False
-__C.dataset.label.difficult_sample_percentage = 200.0     # 200% per dir
-__C.dataset.label.difficult_sample_mining_dir = [""]
 
 # trian/validation/test percentage
 __C.dataset.label.validation_percentage = 15.0  # 15%
@@ -315,7 +315,7 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'cnn-trad-pool2'
 # __C.net.model_name = 'cnn-one-fstride1'
 # __C.net.model_name = 'cnn-tpool2'
-# __C.net.model_name = 'res15'
+__C.net.model_name = 'res15'
 # __C.net.model_name = 'res15-narrow'
 # __C.net.model_name = 'res15-narrow-amba'
 # __C.net.model_name = 'res15-narrow-novt'
@@ -332,7 +332,7 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'tc-resnet14-dropout'
 # __C.net.model_name = 'tc-resnet18-dropout'
 # __C.net.model_name = 'tc-resnet14-amba-novt-2s'
-__C.net.model_name = 'tc-resnet14-hisi-2s'
+# __C.net.model_name = 'tc-resnet14-hisi-2s'
 
 ######################################
 # training parameters
@@ -390,8 +390,8 @@ __C.train.lr_gamma = 0.9
 ######################################
 
 # optimizer, support SGD and Adam
-__C.train.optimizer = 'SGD'
-# __C.train.optimizer = 'Adam'
+# __C.train.optimizer = 'SGD'
+__C.train.optimizer = 'Adam'
 
 # SGD momentum
 __C.train.momentum = 0.9

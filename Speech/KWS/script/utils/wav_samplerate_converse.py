@@ -22,12 +22,13 @@ def format_converse(args):
     for idx in tqdm(range(len(wave_list))):
         audio_path = wave_list[idx]
         shutil.copy(audio_path, temp_path)
-        os.system('sox {} -c 1 -b 16 -r 8k -e signed-integer {}'.format(temp_path, audio_path))
+        os.system('sox {} -c 1 -b 16 -r {} -e signed-integer {}'.format(temp_path, args.samplerate, audio_path))
 
 def main():
     parser = argparse.ArgumentParser(description="Sudio Format")
     args = parser.parse_args()
-    args.input_dir = "/home/huanyuan/share/audio_data/weakup_asr/weakup_xiaorui_asr_mandarin_8k/"
+    args.input_dir = "/home/huanyuan/share/audio_data/mandarin_wav/安静场景/test_8k/"
+    args.samplerate = "8k"
 
     format_converse(args)
     

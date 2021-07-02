@@ -55,7 +55,7 @@ class SpeechDataset(Dataset):
         self.data_label_list = self.data_pd['label'].tolist()
 
         # lmdb
-        self.lmdb_path = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset_audio_lmdb', '{}.lmdb'.format(mode))
+        self.lmdb_path = os.path.join(os.path.dirname(cfg.general.data_csv_path), 'dataset_audio_lmdb', '{}.lmdb'.format(mode))
         self.lmdb_env = load_lmdb_env(self.lmdb_path)
         self.background_data = load_background_noise_lmdb(cfg)
 

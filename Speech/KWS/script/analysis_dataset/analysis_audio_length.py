@@ -34,7 +34,7 @@ def analysis_audio_length(config_file):
     # init 
     sample_rate = cfg.dataset.sample_rate
     data_dir = cfg.general.data_dir
-    output_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'data_distribution')
+    output_dir = os.path.join(os.path.dirname(cfg.general.data_csv_path), 'data_distribution')
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
 

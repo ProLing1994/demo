@@ -114,7 +114,7 @@ def longterm_audio_predict(cfg, net, lmdb_env, audio_file, audio_mode, audio_lab
     加载语音，前向传播预测结果
     """
     # init 
-    input_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset_audio', audio_mode)
+    input_dir = os.path.join(os.path.dirname(cfg.general.data_csv_path), 'dataset_audio', audio_mode)
     input_dir = os.path.join(input_dir, audio_label)
     sample_rate = cfg.dataset.sample_rate
     clip_duration_ms = cfg.dataset.clip_duration_ms
@@ -201,7 +201,7 @@ def infer(args, config_file, epoch_num, dataset_mode, add_noise_on, timeshift_ms
     data_label_list = data_pd_mode['label'].tolist()
 
     # lmdb
-    lmdb_path = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset_audio_lmdb', '{}.lmdb'.format(dataset_mode))
+    lmdb_path = os.path.join(os.path.dirname(cfg.general.data_csv_path), 'dataset_audio_lmdb', '{}.lmdb'.format(dataset_mode))
     lmdb_env = load_lmdb_env(lmdb_path)
 
     # load background noise

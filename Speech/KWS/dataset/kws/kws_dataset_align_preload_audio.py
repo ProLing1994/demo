@@ -35,7 +35,7 @@ class SpeechDatasetAlign(Dataset):
   
     self.mode_type = mode
     self.data_pd = data_pd[data_pd['mode'] == mode]
-    self.input_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset_audio', mode)
+    self.input_dir = os.path.join(os.path.dirname(cfg.general.data_csv_path), 'dataset_audio', mode)
     self.data_file_list = self.data_pd['file'].tolist()
     self.data_mode_list = self.data_pd['mode'].tolist()
     self.data_label_list = self.data_pd['label'].tolist()

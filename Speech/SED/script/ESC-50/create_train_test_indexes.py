@@ -23,7 +23,7 @@ def create_indexes(args):
         test_lable[row['file']] = row['label']
 
     # create folder 
-    output_dir = os.path.join(cfg.general.data_dir, '../experimental_dataset/dataset_{}_{}'.format(cfg.general.version, cfg.general.date))
+    output_dir = os.path.join(os.path.dirname(cfg.general.data_csv_path))
     create_folder(output_dir)
     
     train_data_list = get_sub_filepaths_suffix(train_folder, '.wav')

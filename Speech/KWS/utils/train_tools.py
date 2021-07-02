@@ -196,7 +196,7 @@ def update_scheduler(cfg, scheduler, epoch_idx):
     :param epoch_idx:   
     :return:
     """
-    if cfg.train.optimizer == 'SGD' or cfg.train.scheduler == 'CosineAnnealingWarmRestarts':
+    if cfg.train.optimizer == 'SGD':
         scheduler.step(epoch_idx)
     else:
         pass

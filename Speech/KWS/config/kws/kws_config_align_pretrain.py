@@ -127,8 +127,6 @@ __C.dataset.label.align_type = 'word'
 # label percentage
 __C.dataset.label.silence_percentage = 50.0      # 50%
 __C.dataset.label.unknown_percentage = 200.0     # 200%
-__C.dataset.label.difficult_sample_mining = True
-__C.dataset.label.difficult_sample_percentage = 200.0     # 200%
 
 # trian/validation/test percentage
 __C.dataset.label.validation_percentage = 10.0  # 10%

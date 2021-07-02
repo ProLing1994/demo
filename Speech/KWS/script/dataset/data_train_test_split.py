@@ -181,7 +181,7 @@ def data_split(config_file):
     random.shuffle(total_data_files)
 
     # output
-    output_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date))
+    output_dir = os.path.dirname(cfg.general.data_csv_path)
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 

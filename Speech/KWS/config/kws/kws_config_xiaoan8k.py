@@ -208,11 +208,6 @@ __C.dataset.label.num_classes = 2
 __C.dataset.label.silence_percentage = 50.0        # 50%
 __C.dataset.label.unknown_percentage = 2000.0       # 2000%
 
-# difficult sample mining
-__C.dataset.label.difficult_sample_mining = False
-__C.dataset.label.difficult_sample_percentage = 200.0     # 200% per dir
-__C.dataset.label.difficult_sample_mining_dir = [""]
-
 # trian/validation/test percentage
 __C.dataset.label.validation_percentage = 15.0  # 15%
 __C.dataset.label.testing_percentage = 0.0     # 0%

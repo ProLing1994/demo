@@ -99,9 +99,8 @@ __C.test = {}
 __C.test.test_mode = 0
 
 # input_Wav
-# __C.test.input_wav = "/home/huanyuan/share/audio_data/mandarin_wav/taxi_phone/test/RM_Room_Taxi_Phone_S001T1P69.wav"
-__C.test.input_wav = "/mnt/huanyuan/data/speech/Recording/Daily_Record/mobile_phone/test/test-kws-xiaorui-asr-mandarin-taxi-8k.wav"
-# __C.test.input_wav = "/mnt/huanyuan/data/speech/Recording/Daily_Record/mobile_phone/test/test-kws-xiaorui-asr-mandarin-taxi.wav"
+# __C.test.input_wav = "/mnt/huanyuan/data/speech/Recording/Daily_Record/mobile_phone/test/test-kws-xiaorui-asr-mandarin-taxi-8k.wav"
+__C.test.input_wav = "/home/huanyuan/share/audio_data/mandarin_wav/taxi_phone/no_response_8k/taxi_no_response.wav"
 
 # input_folder
 __C.test.input_folder = ""

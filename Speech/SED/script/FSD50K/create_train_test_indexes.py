@@ -21,7 +21,7 @@ def create_indexes(args):
     eval_folder = os.path.join(cfg.general.data_dir, 'FSD50K.eval_audio')
 
     # create folder 
-    output_dir = os.path.join(cfg.general.data_dir, '../experimental_dataset/dataset_{}_{}'.format(cfg.general.version, cfg.general.date))
+    output_dir = os.path.join(os.path.dirname(cfg.general.data_csv_path))
     create_folder(output_dir)
     
     # label: vocabulary.csv

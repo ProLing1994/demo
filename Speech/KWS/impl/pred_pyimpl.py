@@ -84,7 +84,7 @@ def kws_load_model(model_folder, gpu_id, epoch, sub_folder_name='checkpoints'):
 def load_background_noise(cfg):
     # load noise data
     background_data_pd = pd.read_csv(cfg.general.background_data_path)
-    input_dir = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset_audio', BACKGROUND_NOISE_DIR_NAME)
+    input_dir = os.path.join(os.path.dirname(cfg.general.data_csv_path), 'dataset_audio', BACKGROUND_NOISE_DIR_NAME)
     background_data = []
     for _, row in background_data_pd.iterrows():
         filename = os.path.basename(row.file).split('.')[0] + '.txt'
@@ -128,7 +128,7 @@ def load_background_noise_lmdb(cfg):
     # load noise data
     # init 
     background_data_pd = pd.read_csv(cfg.general.background_data_path)
-    background_data_lmdb_path = os.path.join(cfg.general.data_dir, '../dataset_{}_{}'.format(cfg.general.version, cfg.general.date), 'dataset_audio_lmdb', '{}.lmdb'.format(BACKGROUND_NOISE_DIR_NAME))
+    background_data_lmdb_path = os.path.join(os.path.dirname(cfg.general.data_csv_path), 'dataset_audio_lmdb', '{}.lmdb'.format(BACKGROUND_NOISE_DIR_NAME))
     background_data = []
 
     background_data_lmdb_env = lmdb.open(background_data_lmdb_path, readonly=True, lock=False, readahead=False, meminit=False)

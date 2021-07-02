@@ -139,8 +139,6 @@ __C.dataset.label.num_classes = len(__C.dataset.label.positive_label) + len(__C.
 # label percentage
 __C.dataset.label.silence_percentage = 50.0      # 50%
 __C.dataset.label.unknown_percentage = 200.0     # 200%
-__C.dataset.label.difficult_sample_mining = True
-__C.dataset.label.difficult_sample_percentage = 200.0     # 200%
 
 # trian/validation/test percentage
 __C.dataset.label.validation_percentage = 15.0  # 15%
