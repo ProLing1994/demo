@@ -5,10 +5,10 @@ from torchvision.models import resnet18
 import matplotlib.pyplot as plt
 
 model = resnet18(pretrained=False)
-optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9, weight_decay=1e-4)
+optimizer = torch.optim.SGD(model.parameters(), lr=0.5, momentum=0.9, weight_decay=1e-4)
 mode='cosineAnnWarm'
-max_epoch = 2000
-batch_iters = 10
+max_epoch = 4000
+batch_iters = 1
 
 if mode=='cosineAnn':
     scheduler = CosineAnnealingLR(optimizer, T_max=5, eta_min=0)

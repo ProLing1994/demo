@@ -14,6 +14,7 @@ from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from utils.train_tools import *
+from utils.folder_tools import *
 from dataset.kws.dataset_helper import *
 
 MAX_NUM_WAVS_PER_CLASS = 2**27 - 1    # ~134M
@@ -104,17 +105,11 @@ def data_split(config_file):
     total_data_files = []                 # {'label': [], 'file': [], 'mode': []}
 
     # Look through all the subfolders to find audio samples
-    path_list = glob.glob(os.path.join(cfg.general.data_dir, '*', '*.wav'))
-    path_list += glob.glob(os.path.join(cfg.general.data_dir, '*/*', '*.wav'))
-    path_list += glob.glob(os.path.join(cfg.general.data_dir, '*/*/*', '*.wav'))
-    path_list += glob.glob(os.path.join(cfg.general.data_dir, '*/*/*/*', '*.wav'))
-    path_list += glob.glob(os.path.join(cfg.general.data_dir, '*/*/*/*/*', '*.wav'))
+    path_list = get_sub_filepaths_suffix(cfg.general.data_dir)
     if 'sub_data_dir' in cfg.general:
         assert type(cfg.general.sub_data_dir) == type(list())
         for sub_data_dir in cfg.general.sub_data_dir:
-            path_list += glob.glob(os.path.join(sub_data_dir, '*', '*.wav'))
-            path_list += glob.glob(os.path.join(sub_data_dir, '*/*', '*.wav'))
-            path_list += glob.glob(os.path.join(sub_data_dir, '*/*/*', '*.wav'))
+            path_list += get_sub_filepaths_suffix(sub_data_dir)
 
     for wav_path in tqdm(path_list):
         # gen word

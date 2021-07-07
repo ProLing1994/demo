@@ -194,8 +194,8 @@ __C.loss.focal_gamma = 2
 
 # EMA: expontential moving average on
 # EMA: https://github.com/ProLing1994/pytorch-loss/blob/master/ema.py
-__C.loss.ema_on = True
-# __C.loss.ema_on = False
+# __C.loss.ema_on = True
+__C.loss.ema_on = False
 
 # the alpha parameter in EMA: each parameter p should be computed as p_hat = alpha * p + (1. - alpha) * p_hat
 __C.loss.ema_alpha = 0.995
@@ -280,8 +280,8 @@ __C.train.lr_gamma = 0.9
 ######################################
 
 # optimizer, support SGD and Adam
-__C.train.optimizer = 'SGD'
-# __C.train.optimizer = 'Adam'
+# __C.train.optimizer = 'SGD'
+__C.train.optimizer = 'Adam'
 
 # SGD, Adam momentum
 __C.train.momentum = 0.9

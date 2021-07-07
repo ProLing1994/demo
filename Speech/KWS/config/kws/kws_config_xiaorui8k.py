@@ -15,68 +15,22 @@ __C.general.sub_data_dir = ["/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experi
                             "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/"]
 
 # data version
-# __C.general.version = "1.4"
-# __C.general.version = "1.5"
-# __C.general.version = "1.6"
-# __C.general.version = "1.7"
-# __C.general.version = "3.1"
 __C.general.version = "3.2"
 
 # data date
-# __C.general.date = "04302021"
-# __C.general.date = "05172021"
-# __C.general.date = "05272021"
-# __C.general.date = "06172021"
-# __C.general.date = "06242021"
 __C.general.date = "06252021"
 
 # data path
-# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.4_04302021/total_data_files.csv"
-# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.5_05172021/total_data_files.csv"
-# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.6_05272021/total_data_files.csv"
-# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.7_06172021/total_data_files.csv"
-# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_3.1_06242021/total_data_files.csv"
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_3.2_06252021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_8k_3.2_06252021/total_data_files.csv"
 
 # background noise path
-# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.4_04302021/background_noise_files.csv"
-# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.5_05172021/background_noise_files.csv"
-# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.6_05272021/background_noise_files.csv"
-# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.7_06172021/background_noise_files.csv"
-# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_3.1_06242021/background_noise_files.csv"
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_3.2_06252021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_8k_3.2_06252021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # the output of training models and logging files
 __C.general.save_dir = "/mnt/huanyuan/model/kws_xiaorui_test"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12032020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_0_res15_12082020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_1_finetune_res15_12082020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_3_res15_12162020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_4_finetune_res15_12162020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_5_finetune_res15_12162020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_6_res15_12162020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_7_res15_narrow_12162020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_10_res15_finetune_12162020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_11_res15_narrow_kd_12162020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_12_res15_narrow_fintune_12162020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui1_13_res15_narrow_fintune_kd_12162020/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_2_2_tc-resnet8-dropout_02202021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_2_3_tc-resnet14-dropout_02202021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_2_4_tc-resnet18-dropout_02202021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_2_5_tc-resnet14-dropout_kd_02202021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_3_1_res15_fbankcpu_03112021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_3_2_res15_narrow_amba_fbankcpu_kd_03112021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_3_3_tc-resnet14-amba_fbankcpu_kd_03112021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_4_0_res15_fbankcpu_04302021" 
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_4_1_res15_fbankcpu_04302021" 
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_5_0_tc-resnet14-amba_fbankcpu_kd_04302021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_5_1_tc-resnet14-amba_fbankcpu_kd_04302021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_1_tc-resnet14-hisi_fbankcpu_kd_05302021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_2_tc-resnet14-hisi_fbankcpu_kd_05302021/"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui8k_1_0_res15_fbankcpu_06252021/"
 
 # finetune model
 __C.general.finetune_on = False
@@ -151,14 +105,12 @@ __C.dataset = {}
 __C.dataset.input_channel = 1
 
 # Number of audio samples per second
-# __C.dataset.sample_rate = 16000
 __C.dataset.sample_rate = 8000
 
 # Length of each audio clip to be analyzed
 __C.dataset.clip_duration_ms = 2000
 
 # Duration of frequency analysis window
-# __C.dataset.window_size_ms = 30.0
 __C.dataset.window_size_ms = 32.0
 
 # How far to move in time between frequency windows
@@ -242,6 +194,19 @@ __C.dataset.augmentation.background_frequency = 0.8
 # How loud the background noise should be, between 0 and 1.
 __C.dataset.augmentation.background_volume = 0.1
 
+# How many of the training samples have synthetic noise mixed in.
+__C.dataset.augmentation.synthetic_frequency = -1
+
+# type of the synthetic noise, support ['white', 'salt_pepper'].
+# __C.dataset.augmentation.synthetic_type = 'white'
+__C.dataset.augmentation.synthetic_type = 'salt_pepper'
+
+# the scale parameter in white synthetic noise
+__C.dataset.augmentation.synthetic_scale = 0.001
+
+# the prob parameter in salt pepper synthetic noise
+__C.dataset.augmentation.synthetic_prob = 0.001
+
 # Range to randomly shift the training audio by in time(ms).
 __C.dataset.augmentation.time_shift_ms = 100.0
 
@@ -264,7 +229,13 @@ __C.dataset.augmentation.volume = [0.4, 1.6]
 __C.dataset.augmentation.pitch_on = False
 __C.dataset.augmentation.pitch = [-5, 5]
 
+# based on audio vtlp: on
+# vtlp: http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=34DDD4B0CDCE76942A879204E8B7716C?doi=10.1.1.369.733&rep=rep1&type=pdf
+# __C.dataset.augmentation.vtlp_on = True
+__C.dataset.augmentation.vtlp_on = False
+
 # based on audio spectrum: on
+# spec_aug
 __C.dataset.augmentation.spec_on = True
 # __C.dataset.augmentation.spec_on = False
 __C.dataset.augmentation.F = 5
@@ -412,6 +383,28 @@ __C.train.weight_decay = 0.0001
 
 # the beta in Adam optimizer
 __C.train.betas = (0.9, 0.999)
+
+
+######################################
+# scheduler parameters
+######################################
+
+# only with optimizer: SGD
+# scheduler, support StepLR and CosineAnnealingWarmRestarts
+# __C.train.scheduler = 'StepLR'
+__C.train.scheduler = 'CosineAnnealingWarmRestarts'
+
+# StepLR step_size
+__C.train.lr_step_size = 1000
+
+# StepLR lr_gamma
+__C.train.lr_gamma = 0.1
+
+# CosineAnnealingWarmRestarts T_0
+__C.train.T_0 = 2
+
+# CosineAnnealingWarmRestarts T_mult
+__C.train.T_mult = 2
 
 
 ######################################

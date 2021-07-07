@@ -112,6 +112,7 @@ class AudioPreprocessor(object):
         data[data > 0] = np.log(data[data > 0])
         data = [np.matmul(self.dct_filters, x) for x in np.split(data, data.shape[1], axis=1)]
         data = np.array(data, order="F").astype(np.float32)
+        data = np.squeeze(data)
         return data
 
     def compute_fbanks(self, data):
@@ -135,7 +136,7 @@ class AudioPreprocessor(object):
         data = data.reshape(-1, 40)
         return data
 
-    def compute_fbanks_cpu(self, data):
+    def compute_fbanks_cpu(self, data, bool_vtlp_augmentation=False):
         # data to numpy
         data = data * pow(2,15)
         data = data.astype(int)
@@ -143,7 +144,7 @@ class AudioPreprocessor(object):
         
         # compute fbank cpu
         featurefbanks_cpu = Feature(sample_rate=self.sr, data_length=self.data_length, feature_freq=self.n_mels, nfilt=self.nfilt, winlen=self.winlen , winstep=self.winstep)
-        featurefbanks_cpu.get_mel_int_feature(data, len(data))
+        featurefbanks_cpu.get_mel_int_feature(data, len(data), bool_vtlp_augmentation)
         feature_data = featurefbanks_cpu.copy_mfsc_feature_int_to()
         return feature_data
 

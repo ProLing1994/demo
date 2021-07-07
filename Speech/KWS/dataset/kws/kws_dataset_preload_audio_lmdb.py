@@ -75,11 +75,16 @@ class SpeechDataset(Dataset):
         self.augmentation_pitch_on = cfg.dataset.augmentation.pitch_on
         self.background_frequency = cfg.dataset.augmentation.background_frequency
         self.background_volume = cfg.dataset.augmentation.background_volume
+        self.synthetic_frequency = cfg.dataset.augmentation.synthetic_frequency
+        self.synthetic_type = cfg.dataset.augmentation.synthetic_type
+        self.synthetic_scale = cfg.dataset.augmentation.synthetic_scale
+        self.synthetic_prob = cfg.dataset.augmentation.synthetic_prob
         self.time_shift_ms = cfg.dataset.augmentation.time_shift_ms
         self.time_shift_multiple = cfg.dataset.augmentation.time_shift_multiple
         self.speed_list = cfg.dataset.augmentation.speed
         self.volume_list = cfg.dataset.augmentation.volume
         self.pitch_list = cfg.dataset.augmentation.pitch 
+        self.vtlp_on = cfg.dataset.augmentation.vtlp_on
 
         self.augmentation_spec_on = cfg.dataset.augmentation.spec_on
         self.F = cfg.dataset.augmentation.F
@@ -129,22 +134,44 @@ class SpeechDataset(Dataset):
         elif self.audio_preprocess_type == "fbank":
             audio_data = self.audio_processor.compute_fbanks(data)
         elif self.audio_preprocess_type == "fbank_cpu":
-            audio_data = self.audio_processor.compute_fbanks_cpu(data)
+            audio_data = self.audio_processor.compute_fbanks_cpu(data, self.vtlp_on)
         return audio_data
 
-    def dataset_alignment(self, data):
+    def dataset_alignment(self, data, bool_replicate=False):
         # alignment data
         if len(data) < self.desired_samples:
             data_length = len(data)
-            data_offset = np.random.randint(0, self.desired_samples - data_length)
-            data = np.pad(data, (data_offset, 0), "constant")
-            data = np.pad(data, (0, self.desired_samples - data_length - data_offset), "constant")
+            if bool_replicate:
+                tile_size = (self.desired_samples // data_length) + 1
+                data = np.tile(data, tile_size)[:self.desired_samples]
+            else:
+                data_offset = np.random.randint(0, self.desired_samples - data_length)
+                data = np.pad(data, (data_offset, 0), "constant")
+                data = np.pad(data, (0, self.desired_samples - data_length - data_offset), "constant")
 
         if len(data) > self.desired_samples:
             data_offset = np.random.randint(0, len(data) - self.desired_samples)
             data = data[data_offset:(data_offset + self.desired_samples)]
 
         assert len(data) == self.desired_samples, "[ERROR:] Something wronge with audio length, please check"
+        return data
+
+    def dataset_add_synthetic_noise(self, data):
+        if not self.synthetic_frequency > 0:
+            return data
+
+        if np.random.uniform(0, 1) < self.synthetic_frequency:
+            if self.synthetic_type == "white":
+                scale = self.synthetic_scale * np.random.uniform(0, 1)
+                synthetic_noise = np.random.normal(loc=0, scale=scale, size=data.shape)
+                data = (data + synthetic_noise)
+            elif self.synthetic_type == "salt_pepper": 
+                prob = self.synthetic_prob * np.random.uniform(0, 1)
+                synthetic_noise = np.random.binomial(1, prob, size=data.shape) - np.random.binomial(1, prob, size=data.shape) 
+                data = (data + synthetic_noise)
+
+        # data clip
+        data = np.clip(data, -1.0, 1.0)
         return data
 
     def dataset_add_noise(self, data, bool_silence_label=False):
@@ -159,11 +186,9 @@ class SpeechDataset(Dataset):
 
         background_idx = np.random.randint(len(self.background_data))
         background_sample = self.background_data[background_idx]
-        assert len(background_sample) >= self.desired_samples, \
-            "[ERROR:] Background sample is too short! Need more than {} samples but only {} were found".format(
-                self.desired_samples, len(background_sample))
-        background_offset = np.random.randint(0, len(background_sample) - self.desired_samples - 1)
-        background_clipped = background_sample[background_offset:(background_offset + self.desired_samples)]
+
+        # alignment background data
+        background_sample = self.dataset_alignment(background_sample, True) 
 
         # if np.random.uniform(0, 1) < self.background_frequency or bool_silence_label:
         if np.random.uniform(0, 1) < self.background_frequency:
@@ -173,6 +198,9 @@ class SpeechDataset(Dataset):
         background_max_value = (background_volume * background_clipped).max() * 0.8
         if background_max_value < data_max_value or bool_silence_label:
             data = background_volume * background_clipped + data
+
+        # add synthetic noise
+        data = self.dataset_add_synthetic_noise(data)
 
         # data clip
         data = np.clip(data, -1.0, 1.0)
@@ -286,7 +314,8 @@ class SpeechDataset(Dataset):
         data_tensor = torch.from_numpy(np.expand_dims(data, axis=0))
         data_tensor = data_tensor.float()
         label_tensor = torch.tensor(audio_label_idx)
-        label_tensor = label_tensor.float()
+        # label_tensor = label_tensor.float()
+        label_tensor = label_tensor.type(torch.LongTensor)
 
         # check tensor
         assert data_tensor.shape[0] == self.input_channel

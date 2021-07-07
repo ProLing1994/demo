@@ -79,5 +79,3 @@ def update_scheduler(cfg, scheduler, epoch_idx):
     """
     if cfg.train.optimizer == 'SGD':
         scheduler.step(epoch_idx)
-    else:
-        pass

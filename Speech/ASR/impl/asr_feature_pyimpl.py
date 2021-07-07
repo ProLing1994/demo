@@ -1,3 +1,4 @@
+import copy
 import numpy as np
 from scipy.fftpack import fft
 
@@ -52,7 +53,7 @@ def get_frequency_feature(signal, sample_rate, winlen, winstep):
     return data_input
 
 
-def get_filterbanks(nfilt=20, nfft=512, samplerate=16000, lowfreq=0, highfreq=None):
+def get_filterbanks(nfilt=20, nfft=512, samplerate=16000, lowfreq=0, highfreq=None, bool_vtlp_augmentation=False):
     """Compute a Mel-filterbank. The filters are stored in the rows, the columns correspond
     to fft bins. The filters are returned as an array of size nfilt * (nfft/2 + 1)
 
@@ -61,6 +62,7 @@ def get_filterbanks(nfilt=20, nfft=512, samplerate=16000, lowfreq=0, highfreq=No
     :param samplerate: the samplerate of the signal we are working with. Affects mel spacing.
     :param lowfreq: lowest band edge of mel filters, default 0 Hz
     :param highfreq: highest band edge of mel filters, default samplerate/2
+    :param bool_vtlp_augmentation: if this is true, Vocal Tract Length Perturbation (VTLP) augmentation.
     :returns: A numpy array of size nfilt * (nfft/2 + 1) containing filterbank. Each row holds 1 filter.
     """
     highfreq = highfreq or samplerate / 2
@@ -71,7 +73,28 @@ def get_filterbanks(nfilt=20, nfft=512, samplerate=16000, lowfreq=0, highfreq=No
     lowmel = hz2mel(lowfreq)
     highmel = hz2mel(highfreq)
     melpoints = np.linspace(lowmel, highmel, nfilt + 2)
-    bin = np.floor((nfft + 1) * mel2hz(melpoints) / samplerate)
+    freqpoints = mel2hz(melpoints)
+
+    # vtlp: http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=34DDD4B0CDCE76942A879204E8B7716C?doi=10.1.1.369.733&rep=rep1&type=pdf
+    if bool_vtlp_augmentation:
+        # init param
+        f_hi = 4800
+        # alpha: 0.9 ~ 1.1
+        alpha = np.random.uniform(0, 1) * 0.2 + 0.9
+
+        # vtlp，freqpoints 添加扰动
+        freqpoints_temp = copy.deepcopy(freqpoints)
+        f = freqpoints[freqpoints <= f_hi * min(alpha, 1) / alpha]
+        freqpoints_temp[freqpoints <= f_hi * min(alpha, 1) / alpha] = f * alpha
+
+        f = freqpoints[freqpoints > f_hi * min(alpha, 1) / alpha]
+        freqpoints_temp[freqpoints > f_hi * min(alpha, 1) / alpha] = samplerate / 2 - ((samplerate / 2 - f_hi * min(alpha, 1)) /
+                                                                (samplerate / 2 - f_hi * min(alpha, 1) / alpha)) * (samplerate / 2 - f)
+
+        freqpoints_temp[freqpoints_temp > freqpoints[-1]] = freqpoints[-1]
+        freqpoints = freqpoints_temp
+
+    bin = np.floor((nfft + 1) * freqpoints / samplerate)
 
     fbank = np.zeros([nfilt, nfft // 2 + 1])
     for j in range(0, nfilt):
@@ -83,7 +106,7 @@ def get_filterbanks(nfilt=20, nfft=512, samplerate=16000, lowfreq=0, highfreq=No
 
 
 def fbank(signal, sample_rate=16000, winlen=0.025, winstep=0.01,
-            nfilt=26, nfft=512, lowfreq=0, highfreq=None):
+            nfilt=26, nfft=512, lowfreq=0, highfreq=None, bool_vtlp_augmentation=False):
     """Compute Mel-filterbank energy features from an audio signal.
 
     :param signal: the audio signal from which to compute features. Should be an N*1 array
@@ -94,6 +117,7 @@ def fbank(signal, sample_rate=16000, winlen=0.025, winstep=0.01,
     :param nfft: the FFT size. Default is 512.
     :param lowfreq: lowest band edge of mel filters. In Hz, default is 0.
     :param highfreq: highest band edge of mel filters. In Hz, default is sample_rate/2
+    :param bool_vtlp_augmentation: if this is true, Vocal Tract Length Perturbation (VTLP) augmentation.
     :returns: 2 values. The first is a numpy array of size (NUMFRAMES by nfilt) containing features. Each row holds 1 feature vector. The
         second return value is the energy in each frame (total energy, unwindowed)
     """
@@ -101,7 +125,7 @@ def fbank(signal, sample_rate=16000, winlen=0.025, winstep=0.01,
     energy = []
     pspec = get_frequency_feature(signal, sample_rate, winlen, winstep)
 
-    fb = get_filterbanks(nfilt, nfft, sample_rate, lowfreq, highfreq)
+    fb = get_filterbanks(nfilt, nfft, sample_rate, lowfreq, highfreq, bool_vtlp_augmentation)
     if(sample_rate == 8000):
         fb = fb[:, :128]
     elif(sample_rate == 16000):
@@ -117,7 +141,8 @@ def fbank(signal, sample_rate=16000, winlen=0.025, winstep=0.01,
 
 def gen_fbank_feature(signal, sample_rate=16000, winlen=0.025, winstep=0.01, 
                     numcep=13, nfilt=26, nfft=512, 
-                    lowfreq=0, highfreq=None, appendEnergy=True):
+                    lowfreq=0, highfreq=None, appendEnergy=True, 
+                    bool_vtlp_augmentation=False):
     """Compute Fbank features from an audio signal.
 
     :param signal: the audio signal from which to compute features. Should be an N*1 array
@@ -130,9 +155,10 @@ def gen_fbank_feature(signal, sample_rate=16000, winlen=0.025, winstep=0.01,
     :param lowfreq: lowest band edge of mel filters. In Hz, default is 0.
     :param highfreq: highest band edge of mel filters. In Hz, default is sample_rate/2
     :param appendEnergy: if this is true, the zeroth cepstral coefficient is replaced with the log of the total frame energy.
+    :param bool_vtlp_augmentation: if this is true, Vocal Tract Length Perturbation (VTLP) augmentation.
     :returns: A numpy array of size (NUMFRAMES by numcep) containing features. Each row holds 1 feature vector.
     """
-    feat, energy = fbank(signal, sample_rate, winlen, winstep, nfilt, nfft, lowfreq, highfreq)
+    feat, energy = fbank(signal, sample_rate, winlen, winstep, nfilt, nfft, lowfreq, highfreq, bool_vtlp_augmentation)
     feat = feat[:, :numcep]
     if appendEnergy: feat[:,0] = np.log(energy) # replace first cepstral coefficient with log of frame energy
     return feat
@@ -172,19 +198,19 @@ class Feature(object):
     def check_feature_time(self, data_len_samples):
         pass
 
-    def get_mel_feature(self, data, data_len_samples):
+    def get_mel_feature(self, data, data_len_samples, bool_vtlp_augmentation=False):
         assert data_len_samples == self.data_len_samples
         self.mel_feature = gen_fbank_feature(data, self.sample_rate, winlen=self.winlen, winstep=self.winstep, 
                                                 numcep=self.feature_freq, nfilt=self.nfilt, nfft=self.nfft, 
-                                                lowfreq=10, highfreq=None, appendEnergy=False)
+                                                lowfreq=10, highfreq=None, appendEnergy=False, bool_vtlp_augmentation=bool_vtlp_augmentation)
         self.mel_feature = np.log(1 + self.mel_int_feature)
         return
 
-    def get_mel_int_feature(self, data, data_len_samples):
+    def get_mel_int_feature(self, data, data_len_samples, bool_vtlp_augmentation=False):
         assert data_len_samples == self.data_len_samples
         self.mel_int_feature = gen_fbank_feature(data, self.sample_rate, winlen=self.winlen, winstep=self.winstep, 
                                                 numcep=self.feature_freq, nfilt=self.nfilt, nfft=self.nfft, 
-                                                lowfreq=10, highfreq=None, appendEnergy=False)
+                                                lowfreq=10, highfreq=None, appendEnergy=False, bool_vtlp_augmentation=bool_vtlp_augmentation)
         self.mel_int_feature = np.log(1 + self.mel_int_feature)
 
         self.mel_int_feature = self.mel_int_feature * 255 / self.scale_num  

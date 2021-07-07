@@ -18,25 +18,29 @@ __C.general.sub_data_dir = ["/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experi
 # __C.general.version = "1.4"
 # __C.general.version = "1.5"
 # __C.general.version = "1.6"
-__C.general.version = "1.7"
+# __C.general.version = "1.7"
+__C.general.version = "1.8"
 
 # data date
 # __C.general.date = "04302021"
 # __C.general.date = "05172021"
 # __C.general.date = "05272021"
-__C.general.date = "06172021"
+# __C.general.date = "06172021"
+__C.general.date = "07052021"
 
 # data path
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.4_04302021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.5_05172021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.6_05272021/total_data_files.csv"
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_16k_1.7_06172021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_16k_1.7_06172021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_16k_1.8_07052021/total_data_files.csv"
 
 # background noise path
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.4_04302021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.5_05172021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_1.6_05272021/background_noise_files.csv"
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_16k_1.7_06172021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_16k_1.7_06172021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_16k_1.8_07052021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -149,7 +153,6 @@ __C.dataset.sample_rate = 16000
 __C.dataset.clip_duration_ms = 2000
 
 # Duration of frequency analysis window
-# __C.dataset.window_size_ms = 30.0
 __C.dataset.window_size_ms = 32.0
 
 # How far to move in time between frequency windows
@@ -233,6 +236,19 @@ __C.dataset.augmentation.background_frequency = 0.8
 # How loud the background noise should be, between 0 and 1.
 __C.dataset.augmentation.background_volume = 0.1
 
+# How many of the training samples have synthetic noise mixed in.
+__C.dataset.augmentation.synthetic_frequency = 0.8
+
+# type of the synthetic noise, support ['white', 'salt_pepper'].
+# __C.dataset.augmentation.synthetic_type = 'white'
+__C.dataset.augmentation.synthetic_type = 'salt_pepper'
+
+# the scale parameter in white synthetic noise
+__C.dataset.augmentation.synthetic_scale = 0.001
+
+# the prob parameter in salt pepper synthetic noise
+__C.dataset.augmentation.synthetic_prob = 0.001
+
 # Range to randomly shift the training audio by in time(ms).
 __C.dataset.augmentation.time_shift_ms = 100.0
 
@@ -255,7 +271,13 @@ __C.dataset.augmentation.volume = [0.4, 1.6]
 __C.dataset.augmentation.pitch_on = False
 __C.dataset.augmentation.pitch = [-5, 5]
 
+# based on audio vtlp: on
+# vtlp: http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=34DDD4B0CDCE76942A879204E8B7716C?doi=10.1.1.369.733&rep=rep1&type=pdf
+# __C.dataset.augmentation.vtlp_on = True
+__C.dataset.augmentation.vtlp_on = False
+
 # based on audio spectrum: on
+# spec_aug
 __C.dataset.augmentation.spec_on = True
 # __C.dataset.augmentation.spec_on = False
 __C.dataset.augmentation.F = 5
