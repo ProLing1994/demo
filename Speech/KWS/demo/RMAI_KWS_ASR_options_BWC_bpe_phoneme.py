@@ -34,7 +34,7 @@ __C.general.kws_suppression_counter = 3             # kws 激活后抑制时间 
 __C.general.language_id = 1			                # 0： chinese  1： english
 __C.general.decode_id = 0			                # 0： greedy  1： beamsearch
 __C.general.asr_feature_time = 296                  # asr 网络特征时间维度，与语音特征容器长度相同
-__C.general.asr_suppression_counter = 2             # asr 激活后抑制时间，间隔 2s 执行一次 asr 检测
+__C.general.asr_suppression_counter = 1             # asr 激活后抑制时间，间隔 1s 执行一次 asr 检测
 __C.general.asr_bpe_phoneme_on = True               # asr 使用 bpe 和 phoneme 两个 model
 __C.general.bpe_decode_id = 0			            # 0： greedy  1： beamsearch
 __C.general.phoneme_decode_id = 1			        # 0： greedy  1： beamsearch
@@ -156,7 +156,8 @@ __C.test.test_mode = 0
 # input_Wav
 # __C.test.input_wav = "/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation_180.wav"
 # __C.test.input_wav = "/mnt/huanyuan/data/speech/Recording/Daily_Record/jabra_510/test/Jabra_510_test-kws-asr_0001.wav"
-__C.test.input_wav = "/home/huanyuan/share/audio_data/weakup_asr/weakup_bwc_asr_english/phone_test-kws-asr_0002.wav"
+# __C.test.input_wav = "/home/huanyuan/share/audio_data/weakup_asr/weakup_bwc_asr_english/phone_test-kws-asr_0002.wav"
+__C.test.input_wav = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/非常珍贵的外籍人士专门录制的语料/wav_list/foreigner_1_4.wav"
 
 # input_folder
 __C.test.input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/路边场景/场景二/"

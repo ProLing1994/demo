@@ -23,11 +23,11 @@ import caffe
 # options 
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_bpe.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_phoneme.py")
-# cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_bpe_phoneme.py")
+cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_bpe_phoneme.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MTA_XIAOAN.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_XIAORUI.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_3s.py")
-cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_4s_16k_64dim.py")
+# cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_4s_16k_64dim.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_4s_8k_56dim.py")
 
 cfg = cfg.cfg
@@ -366,6 +366,7 @@ def run_asr_bpe(contorl_kws_bool=True):
         # bpe
         decode_python_bpe.match_keywords_english_bpe(cfg.general.kws_list, cfg.general.kws_bpe_dict)
         result_string = decode_python_bpe.output_control_result_string(cfg.general.control_kws_list, contorl_kws_bool)
+        # result_string = decode_python_bpe.output_result_string()
     else:
         print("[Unknow:] cfg.general.language_id. ")
 
@@ -415,8 +416,8 @@ def run_asr_phoneme(contorl_kws_bool=True):
 
         # 严格匹配方式
         decode_python_phoneme.match_keywords_english_phoneme_strict(cfg.general.kws_list, cfg.general.kws_phoneme_dict, cfg.general.control_kws_list, contorl_kws_bool, cfg.general.kws_phoneme_param_dict)
-        # result_string = decode_python_phoneme.output_result_string()
         result_string = decode_python_phoneme.output_control_result_string(cfg.general.control_kws_list, contorl_kws_bool)
+        # result_string = decode_python_phoneme.output_result_string()
 
         # # 自定义的匹配方式       
         # decode_python_phoneme.match_keywords_english_phoneme_combine(cfg.general.kws_list, cfg.general.kws_phoneme_dict, cfg.general.control_kws_list, contorl_kws_bool, cfg.general.kws_phoneme_param_dict)
