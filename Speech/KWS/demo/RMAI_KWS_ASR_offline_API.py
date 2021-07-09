@@ -17,22 +17,26 @@ import ASR.impl.asr_data_loader_pyimpl as WaveLoader_Python
 sys.path.insert(0, 'E:\\project\\demo')
 from common.common.utils.python.file_tools import load_module_from_disk
 
-caffe_root = "/home/huanyuan/code/caffe_ssd/"
-sys.path.insert(0, caffe_root + 'python')
-sys.path.append('./')
-import caffe
-
 # options 
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_bpe.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_phoneme.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_bpe_phoneme.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MTA_XIAOAN.py")
-# cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_XIAORUI.py")
+cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_XIAORUI.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_3s.py")
 cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_4s_16k_64dim.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_4s_8k_56dim.py")
 
 cfg = cfg.cfg
+
+if cfg.model.bool_caffe:
+    caffe_root = "/home/huanyuan/code/caffe_ssd/"
+    sys.path.insert(0, caffe_root + 'python')
+    sys.path.append('./')
+    import caffe
+elif cfg.model.bool_pytorch:
+    import importlib
+    import torch
 
 # params
 params_dict = {}
@@ -62,7 +66,7 @@ def param_init(bool_init_output_kws_id = True, subfolder_name=''):
             os.makedirs(cfg.test.output_folder)
 
     
-def model_init(prototxt, model, net_input_name, CHW_params, use_gpu=False):
+def model_init_caffe_nomal(prototxt, model, net_input_name, CHW_params, use_gpu=False):
     if use_gpu:
         caffe.set_device(0)
         caffe.set_mode_gpu()
@@ -74,6 +78,43 @@ def model_init(prototxt, model, net_input_name, CHW_params, use_gpu=False):
     net.blobs[net_input_name].reshape(1, int(CHW_params[0]), int(CHW_params[1]), int(CHW_params[2])) 
     return net
 
+def model_init_pytorch_kws(chk_file, model_name, class_name, num_classes, image_height, image_weidth, use_gpu=False):
+    # init model
+    net_module = importlib.import_module('network.' + model_name)
+    net = net_module.__getattribute__(class_name)(num_classes=num_classes,
+                                                    image_height=image_height,
+                                                    image_weidth=image_weidth)
+    
+    if use_gpu:
+        net = net.cuda()
+
+    # load state
+    state = torch.load(chk_file)
+    new_state = {}
+    for k,v in state['state_dict'].items():
+        name = k[7:]
+        new_state[name] = v
+    net.load_state_dict(new_state)
+
+    net.eval()
+    return net
+
+def model_forward_caffe_mormal(net, feature_data, output_name, bool_kws_transpose):
+    if bool_kws_transpose:
+        feature_data = feature_data.T
+
+    net.blobs[cfg.model.kws_net_input_name].data[...] = np.expand_dims(feature_data, axis=0)
+    net_output = net.forward()[output_name]
+    return net_output
+
+def model_forward_pytorch_mormal(net, feature_data, use_gpu=False):
+    data_tensor = torch.from_numpy(np.expand_dims(np.expand_dims(feature_data, axis=0), axis=0))
+    data_tensor = data_tensor.float()
+
+    if use_gpu:
+        data_tensor = data_tensor.cuda()
+    net_output = net(data_tensor).cpu().data.numpy()
+    return net_output
 
 def kws_asr_init_normal():
     global kws_net
@@ -81,13 +122,20 @@ def kws_asr_init_normal():
 
     # init model
     if cfg.general.bool_do_kws_weakup:
-        kws_net = model_init(cfg.model.kws_prototxt_path, cfg.model.kws_model_path, cfg.model.kws_net_input_name, cfg.model.kws_chw_params.split(","), cfg.general.gpu)
+        if cfg.model.bool_caffe:
+            kws_net = model_init_caffe_nomal(cfg.model.kws_prototxt_path, cfg.model.kws_model_path, cfg.model.kws_net_input_name, cfg.model.kws_chw_params.split(","), cfg.general.gpu)
+        elif cfg.model.bool_pytorch:
+            kws_net = model_init_pytorch_kws(cfg.model.kws_chk_path, cfg.model.kws_model_name, cfg.model.kws_class_name, cfg.model.kws_num_classes, cfg.model.image_height, cfg.model.image_weidth, cfg.general.gpu)
+        else:
+            kws_net = None
     else:
         kws_net = None
 
     if cfg.general.bool_do_asr:
-        asr_net = model_init(cfg.model.asr_prototxt_path, cfg.model.asr_model_path, cfg.model.asr_net_input_name, cfg.model.asr_chw_params.split(","), cfg.general.gpu)
-
+        if cfg.model.bool_caffe:
+            asr_net = model_init_caffe_nomal(cfg.model.asr_prototxt_path, cfg.model.asr_model_path, cfg.model.asr_net_input_name, cfg.model.asr_chw_params.split(","), cfg.general.gpu)
+        else:
+            kws_net = None
         # init bpe dict 
         decode_python = Decode_Python.Decode()
         decode_python.init_symbol_list(cfg.model.asr_bpe)
@@ -107,13 +155,21 @@ def kws_asr_init_bpe_phoneme():
 
     # init model
     if cfg.general.bool_do_kws_weakup:
-        kws_net = model_init(cfg.model.kws_prototxt_path, cfg.model.kws_model_path, cfg.model.kws_net_input_name, cfg.model.kws_chw_params.split(","), cfg.general.gpu)
+        if cfg.model.bool_caffe:
+            kws_net = model_init_caffe_nomal(cfg.model.kws_prototxt_path, cfg.model.kws_model_path, cfg.model.kws_net_input_name, cfg.model.kws_chw_params.split(","), cfg.general.gpu)
+        elif cfg.model.bool_pytorch:
+            kws_net = model_init_pytorch_kws(cfg.model.kws_chk_path, cfg.model.kws_model_name, cfg.model.kws_class_name, cfg.model.kws_num_classes, cfg.model.image_height, cfg.model.image_weidth, cfg.general.gpu)
+        else:
+            kws_net = None
     else:
         kws_net = None
 
     if cfg.general.bool_do_asr:
         # init bpe net
-        asr_net_bpe = model_init(cfg.model.asr_bpe_prototxt_path, cfg.model.asr_bpe_model_path, cfg.model.asr_bpe_net_input_name, cfg.model.asr_bpe_chw_params.split(","), cfg.general.gpu)
+        if cfg.model.bool_caffe:
+            asr_net_bpe = model_init_caffe_nomal(cfg.model.asr_bpe_prototxt_path, cfg.model.asr_bpe_model_path, cfg.model.asr_bpe_net_input_name, cfg.model.asr_bpe_chw_params.split(","), cfg.general.gpu)
+        else:
+            kws_net = None
 
         # init bpe dict 
         decode_python_bpe = Decode_Python.Decode()
@@ -124,7 +180,10 @@ def kws_asr_init_bpe_phoneme():
             decode_python_bpe.init_lm_model(cfg.model.asr_bpe_lm_path)
 
         # init phoneme net
-        asr_net_phoneme = model_init(cfg.model.asr_phoneme_prototxt_path, cfg.model.asr_phoneme_model_path, cfg.model.asr_phoneme_net_input_name, cfg.model.asr_phoneme_chw_params.split(","), cfg.general.gpu)
+        if cfg.model.bool_caffe:
+            asr_net_phoneme = model_init_caffe_nomal(cfg.model.asr_phoneme_prototxt_path, cfg.model.asr_phoneme_model_path, cfg.model.asr_phoneme_net_input_name, cfg.model.asr_phoneme_chw_params.split(","), cfg.general.gpu)
+        else:
+            kws_net = None
 
         # init phoneme dict 
         decode_python_phoneme = Decode_Python.Decode()
@@ -219,11 +278,12 @@ def run_kws():
 
         feature_data_kws = params_dict['feature_data_container_np'][start_feature_time: end_feature_time,:]
         feature_data_kws = feature_data_kws.astype(np.float32)
-        if cfg.model.kws_transpose:
-            feature_data_kws = feature_data_kws.T
-        kws_net.blobs[cfg.model.kws_net_input_name].data[...] = np.expand_dims(feature_data_kws, axis=0)
+        
+        if cfg.model.bool_caffe:
+            net_output = model_forward_caffe_mormal(kws_net, feature_data_kws, cfg.model.kws_net_output_name, cfg.model.kws_transpose)
+        elif cfg.model.bool_pytorch:
+            net_output = model_forward_pytorch_mormal(kws_net, feature_data_kws, cfg.general.gpu)
 
-        net_output = kws_net.forward()[cfg.model.kws_net_output_name]
         net_output = np.squeeze(net_output)
         kws_score_list.append(net_output.copy())
         # print(feature_data_kws.shape, net_output)
@@ -540,7 +600,7 @@ def run_kws_asr(audio_data):
             # save audio
             output_wave("ASR_" + result_string)
         else:
-            print("\n** [Information:] Detecting ... ")
+            print("\n** [Information:] Detecting ...\n")
 
 
 def KWS_ASR_offine():
@@ -564,7 +624,7 @@ def KWS_ASR_offine():
         # get audio data
         audio_data = wave_data[times * int(cfg.general.window_stride_samples): times * int(cfg.general.window_stride_samples) + int(cfg.general.window_size_samples)]
         print("[Information:] Audio data stream: {} - {}, length: {} ".format((times * int(cfg.general.window_stride_samples)), (times * int(cfg.general.window_stride_samples) + int(cfg.general.window_size_samples)), len(audio_data)))
-        print(audio_data)
+        # print(audio_data)
 
         output_dict['sliding_window_start_time_ms'] = (((times - 2) * int(cfg.general.window_stride_samples)) / cfg.general.sample_rate) * 1000
         run_kws_asr(audio_data)
@@ -617,7 +677,7 @@ def KWS_ASR_offine_perfolder():
             # get audio data
             audio_data = wave_data[times * int(cfg.general.window_stride_samples): times * int(cfg.general.window_stride_samples) + int(cfg.general.window_size_samples)]
             print("[Information:] Audio data stram: {} - {}, length: {} ".format((times * int(cfg.general.window_stride_samples)), (times * int(cfg.general.window_stride_samples) + int(cfg.general.window_size_samples)), len(audio_data)))
-            print(audio_data)
+            # print(audio_data)
 
             output_dict['sliding_window_start_time_ms'] = (((times - 2) * int(cfg.general.window_stride_samples)) / cfg.general.sample_rate) * 1000
             run_kws_asr(audio_data)
