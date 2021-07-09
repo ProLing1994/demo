@@ -6,7 +6,7 @@ import pandas as pd
 import sys
 
 # sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-sys.path.insert(0, 'E:\\project\\demo\\Speech')
+sys.path.insert(0, r'E:\project\demo\Speech')
 from ASR.impl.asr_feature_pyimpl import Feature
 # from ASR.impl.asr_feature_cimpl import Feature
 import ASR.impl.asr_decode_pyimpl as Decode_Python
@@ -14,7 +14,7 @@ import ASR.impl.asr_data_loader_pyimpl as WaveLoader_Python
 # import ASR.impl.asr_data_loader_cimpl as WaveLoader_C
 
 # sys.path.insert(0, '/home/huanyuan/code/demo')
-sys.path.insert(0, 'E:\\project\\demo')
+sys.path.insert(0, r'E:\project\demo')
 from common.common.utils.python.file_tools import load_module_from_disk
 
 # options 
@@ -22,9 +22,9 @@ from common.common.utils.python.file_tools import load_module_from_disk
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_phoneme.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_bpe_phoneme.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MTA_XIAOAN.py")
-cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_XIAORUI.py")
+cfg = load_module_from_disk(r"E:\project\demo\Speech\KWS\demo\RMAI_KWS_ASR_options_XIAORUI.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_3s.py")
-cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_4s_16k_64dim.py")
+# cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_4s_16k_64dim.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_4s_8k_56dim.py")
 
 cfg = cfg.cfg

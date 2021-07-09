@@ -30,8 +30,8 @@ class OnlineAudio:
     audio_queue_wakeup = Queue()
     event = Event() 
     
-    # def __init__(self, chunk=int(api.cfg.general.sample_rate/10), format=pyaudio.paInt16, channels=1, rate=int(api.cfg.general.sample_rate)):
-    def __init__(self, chunk=int(16000), format=pyaudio.paInt16, channels=1, rate=int(16000)):
+    def __init__(self, chunk=int(api.cfg.general.sample_rate/10), format=pyaudio.paInt16, channels=1, rate=int(api.cfg.general.sample_rate)):
+    # def __init__(self, chunk=int(16000), format=pyaudio.paInt16, channels=1, rate=int(16000)):
         self._chunk = chunk
         self._format = format
         self._channels = channels
@@ -39,7 +39,8 @@ class OnlineAudio:
 
     def findInternalRecordingDevice(self, pyaudio_play):
         # 要找查的设备名称中的关键字
-        target = 'Line 1 (Virtual Audio Cable)'
+        # target = 'Line 1 (Virtual Audio Cable)'
+        target = 'VoiceMeeter Output'
         # target = '立体声混音'
 
         # 逐一查找声音设备
@@ -143,33 +144,35 @@ class OnlineAudio:
                 # 关闭文件
                 wf.close()
 
-    # def wakeup_asr(self, event, queue):
-    #     """
-    #     进程：语音唤醒 + 关键词检索
-    #     """
-    #     print("[Init:] wakeup & asr")
+    def wakeup_asr(self, event, queue):
+        """
+        进程：语音唤醒 + 关键词检索
+        """
+        print("[Init:] wakeup & asr")
         
-    #     # init
-    #     api.param_init()
-    #     api.kws_asr_init()
-    #     audio_data_list = []
-    #     while True:
-    #         if len(audio_data_list) < api.cfg.general.window_size_samples:
-    #             if queue.empty(): 
-    #                 # print("等待数据中..........")
-    #                 event.wait()
-    #             else:
-    #                 data = queue.get()
-    #                 data_np = np.frombuffer(data, np.int16).astype(np.float32) 
+        # init
+        api.param_init()
+        api.kws_asr_init()
+        audio_data_list = []
+
+        print("[Init:] wakeup & asr： Done!!!")
+        while True:
+            if len(audio_data_list) < api.cfg.general.window_size_samples:
+                if queue.empty(): 
+                    # print("等待数据中..........")
+                    event.wait()
+                else:
+                    data = queue.get()
+                    data_np = np.frombuffer(data, np.int16).astype(np.float32) 
                     
-    #                 if len(audio_data_list) == 0:
-    #                     audio_data_list = data_np.tolist()
-    #                 else:
-    #                     audio_data_list.extend(data_np.tolist())
+                    if len(audio_data_list) == 0:
+                        audio_data_list = data_np.tolist()
+                    else:
+                        audio_data_list.extend(data_np.tolist())
         
-    #         else:
-    #             api.run_kws_asr(np.array(audio_data_list))
-    #             audio_data_list = []
+            else:
+                api.run_kws_asr(np.array(audio_data_list))
+                audio_data_list = []
 
     def start(self):
         """
@@ -179,32 +182,32 @@ class OnlineAudio:
         print("[Information:] Current main-process pid is: {}".format(os.getpid()))
         print("[Information:] If you want to kill the main-process and sub-process, type: kill {}".format(os.getpid()))
 
-        # 监听
-        listen_process_play = Process(target=self.listen, args=(self.event, self.audio_queue_play))
-        listen_process_play.start()
+        # # 监听
+        # listen_process_play = Process(target=self.listen, args=(self.event, self.audio_queue_play))
+        # listen_process_play.start()
 
         # # 播放
         # play_process = Process(target=self.play, args=(self.event, self.audio_queue_play))
         # play_process.start()
 
-        # 保存
-        save_process = Process(target=self.save, args=(self.event, self.audio_queue_play))
-        save_process.start()
+        # # 保存
+        # save_process = Process(target=self.save, args=(self.event, self.audio_queue_play))
+        # save_process.start()
 
-        # # 监听
-        # listen_process_wakeup = Process(target=self.listen, args=(self.event, self.audio_queue_wakeup))
-        # # listen_process_wakeup = Process(target=self.listen_file, args=(self.event, self.audio_queue_wakeup))
-        # listen_process_wakeup.start()
+        # 监听
+        listen_process_wakeup = Process(target=self.listen, args=(self.event, self.audio_queue_wakeup))
+        # listen_process_wakeup = Process(target=self.listen_file, args=(self.event, self.audio_queue_wakeup))
+        listen_process_wakeup.start()
 
-        # # 唤醒
-        # wakeup_asr_process = Process(target=self.wakeup_asr, args=(self.event, self.audio_queue_wakeup))
-        # wakeup_asr_process.start()
+        # 唤醒
+        wakeup_asr_process = Process(target=self.wakeup_asr, args=(self.event, self.audio_queue_wakeup))
+        wakeup_asr_process.start()
 
-        listen_process_play.join()
+        # listen_process_play.join()
         # play_process.join()
-        save_process.join()
-        # listen_process_wakeup.join()
-        # wakeup_asr_process.join()
+        # save_process.join()
+        listen_process_wakeup.join()
+        wakeup_asr_process.join()
 
 
 if __name__ == '__main__':

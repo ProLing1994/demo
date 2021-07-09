@@ -50,7 +50,8 @@ __C.general.feature_remove_before_time = 100        # 为保证特征一致，�
 # on-off
 __C.general.bool_do_kws_weakup = True
 __C.general.bool_do_asr = False
-__C.general.bool_output_wave = True
+# __C.general.bool_output_wave = True
+__C.general.bool_output_wave = False
 __C.general.bool_output_csv = False
 __C.general.gpu = True
 
@@ -88,7 +89,8 @@ __C.model.kws_chw_params = "1,64,192"
 __C.model.kws_transpose = True
 
 # pytorch param
-__C.model.kws_chk_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaorui16k_tc_resnet14/xiaorui16k_tc-resnet14-hisi_6_3_checkpoints_1999/xiaorui16k_tc-resnet14_hisi_6_3_checkpoints_1999.pkl"
+# __C.model.kws_chk_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaorui16k_tc_resnet14/xiaorui16k_tc-resnet14-hisi_6_3_checkpoints_1999/xiaorui16k_tc-resnet14_hisi_6_3_checkpoints_1999.pkl"
+__C.model.kws_chk_path = r"V:\model\audio_model\hisi_model\kws_xiaorui16k_tc_resnet14\xiaorui16k_tc-resnet14-hisi_6_3_checkpoints_1999\xiaorui16k_tc-resnet14_hisi_6_3_checkpoints_1999.pkl"
 __C.model.kws_model_name = "tc-resnet14-amab-hisi-novt-192"
 __C.model.kws_class_name = "SpeechResModel"
 __C.model.kws_num_classes = 2
@@ -118,7 +120,8 @@ __C.test = {}
 __C.test.test_mode = 0
 
 # input_Wav
-__C.test.input_wav = "/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_validation_60.wav"
+# __C.test.input_wav = "/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_validation_60.wav"
+__C.test.input_wav = r"V:\model\test_straming_wav\xiaorui_1_4_04302021_validation_60.wav"
 
 # input_folder
 __C.test.input_folder = ""
