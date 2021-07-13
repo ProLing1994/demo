@@ -17,18 +17,25 @@ def get_sub_filepaths_suffix(folder, suffix='.wav'):
 def format_converse(args):
     # init 
     temp_path = os.path.join(args.input_dir, '{}.wav'.format('temp'))
-
+    if os.path.exists(temp_path):
+        os.remove(temp_path)
+        
     wave_list = get_sub_filepaths_suffix(args.input_dir)
     for idx in tqdm(range(len(wave_list))):
         audio_path = wave_list[idx]
-        output_path = os.path.join(os.path.dirname(audio_path), os.path.splitext(os.path.basename(audio_path))[0] + '_temp.wav')
+
+        if audio_path.endswith('_temp.wav'):
+            continue
+
         shutil.copy(audio_path, temp_path)
+
+        output_path = os.path.join(os.path.dirname(audio_path), os.path.splitext(os.path.basename(audio_path))[0] + '_temp.wav')
         os.system('sox {} -c 1 -b 16 -e signed-integer {}'.format(temp_path, output_path))
 
 def main():
     parser = argparse.ArgumentParser(description="Sudio Format")
+    parser.add_argument('-i', '--input_dir', type=str, default="/home/huanyuan/temp/")
     args = parser.parse_args()
-    args.input_dir = "/home/huanyuan/temp/"
 
     format_converse(args)
     

@@ -84,6 +84,6 @@
         "set": "cpp",
         "string_view": "cpp"
     },
-    "python.pythonPath": "C:\\Users\\yh\\anaconda3\\python.exe",
+    "python.pythonPath": "/home/huanyuan/anaconda3/bin/python",
     "python.linting.enabled": false,
 }
