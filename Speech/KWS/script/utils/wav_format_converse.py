@@ -30,11 +30,12 @@ def format_converse(args):
         shutil.copy(audio_path, temp_path)
 
         output_path = os.path.join(os.path.dirname(audio_path), os.path.splitext(os.path.basename(audio_path))[0] + '_temp.wav')
-        os.system('sox {} -c 1 -b 16 -e signed-integer {}'.format(temp_path, output_path))
+        os.system('"{}" {} -c 1 -b 16 -e signed-integer {}'.format(args.sox_path, temp_path, output_path))
 
 def main():
     parser = argparse.ArgumentParser(description="Sudio Format")
-    parser.add_argument('-i', '--input_dir', type=str, default="/home/huanyuan/temp/")
+    parser.add_argument('-i', '--input_dir', type=str, default="E:\\test\\办公室_0624")
+    parser.add_argument('-s', '--sox_path', type=str, default="C:\\Program Files (x86)\\sox-14-4-2\\sox.exe")
     args = parser.parse_args()
 
     format_converse(args)
