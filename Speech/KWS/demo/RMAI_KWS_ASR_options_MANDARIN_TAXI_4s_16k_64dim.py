@@ -46,8 +46,8 @@ __C.general.feature_remove_after_time = 6           # 为保证特征一致，�
 __C.general.feature_remove_before_time = 100        # 为保证特征一致，拼接特征需要丢弃之前的时间维度 100
 
 # on-off
-# __C.general.bool_do_kws_weakup = True
-__C.general.bool_do_kws_weakup = False
+__C.general.bool_do_kws_weakup = True
+# __C.general.bool_do_kws_weakup = False
 __C.general.bool_do_asr = True
 # __C.general.bool_output_wave = True
 __C.general.bool_output_wave = False
@@ -66,11 +66,17 @@ __C.general.total_time_samples = int(__C.general.sample_rate * __C.general.total
 ##################################
 
 __C.model = {}
+__C.model = {}
+__C.model.bool_caffe = True
+# __C.model.bool_caffe = False
+# __C.model.bool_pytorch = True
 
 # kws
 # xiaorui
-__C.model.kws_model_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaorui16k_tc_resnet14/xiaorui16k_tc-resnet14_hisi_6_1_checkpoints_1999/kws_xiaorui16k_tc_resnet14_hisi_6_1_05312021.caffemodel"
-__C.model.kws_prototxt_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaorui16k_tc_resnet14/xiaorui16k_tc-resnet14_hisi_6_1_checkpoints_1999/kws_xiaorui16k_tc_resnet14_hisi_6_1_05312021.prototxt"
+# __C.model.kws_model_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaorui16k_tc_resnet14/xiaorui16k_tc-resnet14_hisi_6_1_checkpoints_1999/kws_xiaorui16k_tc_resnet14_hisi_6_1_05312021.caffemodel"
+# __C.model.kws_prototxt_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaorui16k_tc_resnet14/xiaorui16k_tc-resnet14_hisi_6_1_checkpoints_1999/kws_xiaorui16k_tc_resnet14_hisi_6_1_05312021.prototxt"
+__C.model.kws_model_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaorui16k_tc_resnet14/xiaorui16k_tc-resnet14-hisi_6_3_checkpoints_1999/kws_xiaorui16k_tc_resnet14_hisi_6_3_06302021.caffemodel"
+__C.model.kws_prototxt_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaorui16k_tc_resnet14/xiaorui16k_tc-resnet14-hisi_6_3_checkpoints_1999/kws_xiaorui16k_tc_resnet14_hisi_6_3_06302021.prototxt"
 __C.model.kws_label = "xiaorui"
 __C.model.kws_net_input_name = "data"
 __C.model.kws_net_output_name = "prob"
@@ -79,7 +85,7 @@ __C.model.kws_transpose = True
 
 # asr
 __C.model.asr_model_path = "/mnt/huanyuan/model/audio_model/hisi_model/asr_mandarin_taxi_16k/asr_mandarin_taxi_16k_64.caffemodel"
-__C.model.asr_prototxt_path = "/mnt/huanyuan/model/audio_model/hisi_model/asr_mandarin_taxi_16k/asr_mandarin_taxi_16k_64_296.prototxt"
+__C.model.asr_prototxt_path = "/mnt/huanyuan/model/audio_model/hisi_model/asr_mandarin_taxi_16k/asr_mandarin_taxi_16k_64_396.prototxt"
 __C.model.asr_net_input_name = "data"
 __C.model.asr_net_output_name = "prob"
 __C.model.asr_chw_params = "1,396,64"
@@ -103,7 +109,9 @@ __C.test.test_mode = 0
 # __C.test.input_wav = "/home/huanyuan/share/audio_data/mandarin_wav/taxi_phone/test/RM_Room_Taxi_Phone_S001T1P69.wav"
 # __C.test.input_wav = "/mnt/huanyuan/data/speech/Recording/Daily_Record/mobile_phone/test/test-kws-xiaorui-asr-mandarin-taxi.wav"
 # __C.test.input_wav = "/home/huanyuan/share/audio_data/mandarin_wav/taxi_phone/no_response/taxi_no_response.wav"
-__C.test.input_wav = "/home/huanyuan/share/audio_data/mandarin_wav/taxi_phone/no_response/taxi_no_response_dubingbing.wav"
+# __C.test.input_wav = "/home/huanyuan/share/audio_data/mandarin_wav/taxi_phone/no_response/taxi_no_response_dubingbing.wav"
+# __C.test.input_wav = "/home/huanyuan/share/audio_data/mandarin_wav/taxi/tpev/test/test-asr-mandarin-taxi-16k-lelangkang.wav"
+__C.test.input_wav = "/home/huanyuan/share/audio_data/weakup_asr/weakup_xiaorui_asr_mandarin_16k/test-kws-xiaorui-asr-mandarin-taxi_001.wav"
 
 # input_folder
 __C.test.input_folder = ""

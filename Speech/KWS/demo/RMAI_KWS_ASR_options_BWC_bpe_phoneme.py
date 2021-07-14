@@ -113,6 +113,9 @@ __C.general.total_time_samples = int(__C.general.sample_rate * __C.general.total
 ##################################
 
 __C.model = {}
+__C.model.bool_caffe = True
+# __C.model.bool_caffe = False
+# __C.model.bool_pytorch = True
 
 # kws
 # activate bwc
@@ -151,15 +154,17 @@ __C.test = {}
 # test_mode
 # 0: input_wav
 # 1: input_folder
-__C.test.test_mode = 0
+__C.test.test_mode = 1
 
 # input_Wav
 # __C.test.input_wav = "/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation_180.wav"
 # __C.test.input_wav = "/mnt/huanyuan/data/speech/Recording/Daily_Record/jabra_510/test/Jabra_510_test-kws-asr_0001.wav"
 # __C.test.input_wav = "/home/huanyuan/share/audio_data/weakup_asr/weakup_bwc_asr_english/phone_test-kws-asr_0002.wav"
-__C.test.input_wav = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/非常珍贵的外籍人士专门录制的语料/wav_list/foreigner_1_4.wav"
+# __C.test.input_wav = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/非常珍贵的外籍人士专门录制的语料/wav_list/foreigner_1_4.wav"
+# __C.test.input_wav = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/发音较好同事录制_0615/控制词/蔡长青/RM_Room_BWC_S15T1P2_R.wav"
 
 # input_folder
-__C.test.input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/路边场景/场景二/"
+# __C.test.input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/路边场景/场景二/"
+__C.test.input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/发音较好同事录制_0615/报警词/陈翌昕/"
 
 __C.test.output_folder = "/mnt/huanyuan/data/speech/Recording/demo_kws_asr_online_api/{}".format('-'.join('-'.join(str(datetime.now()).split('.')[0].split(' ')).split(':')))

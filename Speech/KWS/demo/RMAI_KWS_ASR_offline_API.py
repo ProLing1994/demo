@@ -5,24 +5,24 @@ import os
 import pandas as pd
 import sys
 
-# sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-sys.path.insert(0, r'E:\project\demo\Speech')
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+# sys.path.insert(0, r'E:\project\demo\Speech')
 from ASR.impl.asr_feature_pyimpl import Feature
 # from ASR.impl.asr_feature_cimpl import Feature
 import ASR.impl.asr_decode_pyimpl as Decode_Python
 import ASR.impl.asr_data_loader_pyimpl as WaveLoader_Python
 # import ASR.impl.asr_data_loader_cimpl as WaveLoader_C
 
-# sys.path.insert(0, '/home/huanyuan/code/demo')
-sys.path.insert(0, r'E:\project\demo')
+sys.path.insert(0, '/home/huanyuan/code/demo')
+# sys.path.insert(0, r'E:\project\demo')
 from common.common.utils.python.file_tools import load_module_from_disk
 
 # options 
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_bpe.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_phoneme.py")
-# cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_bpe_phoneme.py")
+cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_bpe_phoneme.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MTA_XIAOAN.py")
-cfg = load_module_from_disk(r"E:\project\demo\Speech\KWS\demo\RMAI_KWS_ASR_options_XIAORUI.py")
+# cfg = load_module_from_disk(r"E:\project\demo\Speech\KWS\demo\RMAI_KWS_ASR_options_XIAORUI.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_3s.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_4s_16k_64dim.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_4s_8k_56dim.py")
@@ -48,6 +48,7 @@ def param_init(bool_init_output_kws_id = True, subfolder_name=''):
     params_dict['feature_data_container_np'] = np.array([])
     params_dict['kws_container_np'] = np.array([])         # kws 结构容器中，用于滑窗输出结果
     params_dict['output_wave_list'] = []
+    params_dict['asr_duplicate_counter'] = {}
 
     params_dict['bool_weakup'] = False
     params_dict['counter_weakup'] = 0
@@ -65,7 +66,30 @@ def param_init(bool_init_output_kws_id = True, subfolder_name=''):
         if not os.path.exists(cfg.test.output_folder):
             os.makedirs(cfg.test.output_folder)
 
-    
+
+def asr_duplicate_update_counter():
+    for key in params_dict['asr_duplicate_counter']:
+        if params_dict['asr_duplicate_counter'][key] > 0:
+            params_dict['asr_duplicate_counter'][key] = params_dict['asr_duplicate_counter'][key] - cfg.general.window_size_ms
+            print(key, params_dict['asr_duplicate_counter'][key])
+
+
+def asr_duplicate_check(result_string):
+    res_string = ""
+    tmp_string = result_string.split(' ')
+    for idx in range(len(tmp_string)):
+        if tmp_string[idx] not in params_dict['asr_duplicate_counter']:
+            params_dict['asr_duplicate_counter'][tmp_string[idx]] = cfg.general.total_time_ms
+            res_string += tmp_string[idx] + " "
+        else:
+            if params_dict['asr_duplicate_counter'][tmp_string[idx]] > 0:
+                continue
+            else:
+                params_dict['asr_duplicate_counter'][tmp_string[idx]] = cfg.general.total_time_ms
+                res_string += tmp_string[idx] + " "
+    return res_string
+
+
 def model_init_caffe_nomal(prototxt, model, net_input_name, CHW_params, use_gpu=False):
     if use_gpu:
         caffe.set_device(0)
@@ -77,6 +101,7 @@ def model_init_caffe_nomal(prototxt, model, net_input_name, CHW_params, use_gpu=
     net = caffe.Net(prototxt, model, caffe.TEST)
     net.blobs[net_input_name].reshape(1, int(CHW_params[0]), int(CHW_params[1]), int(CHW_params[2])) 
     return net
+
 
 def model_init_pytorch_kws(chk_file, model_name, class_name, num_classes, image_height, image_weidth, use_gpu=False):
     # init model
@@ -99,13 +124,16 @@ def model_init_pytorch_kws(chk_file, model_name, class_name, num_classes, image_
     net.eval()
     return net
 
+
 def model_forward_caffe_mormal(net, feature_data, output_name, bool_kws_transpose):
     if bool_kws_transpose:
         feature_data = feature_data.T
 
-    net.blobs[cfg.model.kws_net_input_name].data[...] = np.expand_dims(feature_data, axis=0)
+    # net.blobs[cfg.model.kws_net_input_name].data[...] = np.expand_dims(feature_data, axis=0)
+    net.blobs[cfg.model.kws_net_input_name].data[...] = np.expand_dims(np.expand_dims(feature_data, axis=0), axis=0)
     net_output = net.forward()[output_name]
     return net_output
+
 
 def model_forward_pytorch_mormal(net, feature_data, use_gpu=False):
     data_tensor = torch.from_numpy(np.expand_dims(np.expand_dims(feature_data, axis=0), axis=0))
@@ -115,6 +143,7 @@ def model_forward_pytorch_mormal(net, feature_data, use_gpu=False):
         data_tensor = data_tensor.cuda()
     net_output = net(data_tensor).cpu().data.numpy()
     return net_output
+
 
 def kws_asr_init_normal():
     global kws_net
@@ -507,9 +536,13 @@ def run_asr_bpe_phoneme(contorl_kws_bool=True):
 def run_asr(contorl_kws_bool=True):
 
     if not cfg.general.asr_bpe_phoneme_on:
-        return run_asr_normal(contorl_kws_bool)
+        result_string = run_asr_normal(contorl_kws_bool)
     else:
-        return run_asr_bpe_phoneme(contorl_kws_bool)
+        result_string = run_asr_bpe_phoneme(contorl_kws_bool)
+
+    # if len(result_string) and result_string != "cfg.general.bool_do_asr = False":
+    #     result_string = asr_duplicate_check(result_string)
+    return result_string
 
 
 def run_kws_asr(audio_data):
@@ -519,6 +552,9 @@ def run_kws_asr(audio_data):
     # 如果语音特征未装满容器，不进行唤醒和关键词检测
     if params_dict['feature_data_container_np'].shape[0] < cfg.general.feature_container_time:
         return
+
+    # asr_duplicate_update_counter，更新计数器，防止重复检测
+    # asr_duplicate_update_counter()
 
     # 方案一：进行 kws 唤醒词检测，若检测到唤醒词，未来三秒进行 asr 检测
     # kws
@@ -530,7 +566,7 @@ def run_kws_asr(audio_data):
             print("\n===============!!!!!!!!!!!!!!===============")
             print("********************************************")
             print("** ")
-            print("** [Information:] Device Weakup: ", "Weakup")
+            print("** [Information:] Device Weakup:", "Weakup")
             print("** ")
             print("********************************************\n")
 
@@ -562,7 +598,7 @@ def run_kws_asr(audio_data):
                 print("\n===============!!!!!!!!!!!!!!===============")
                 print("********************************************")
                 print("** ")
-                print("** [Information:] Detect Command: ", result_string)
+                print("** [Information:] Detect Command:", result_string)
                 print("** ")
                 print("********************************************\n")
 
@@ -594,7 +630,7 @@ def run_kws_asr(audio_data):
             print("\n===============!!!!!!!!!!!!!!===============")
             print("********************************************")
             print("** ")
-            print("** [Information:] Detect Command: ", result_string)
+            print("** [Information:] Detect Command:", result_string)
             print("** ")
             print("********************************************\n")
             # save audio
