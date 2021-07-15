@@ -33,7 +33,7 @@ __C.general.kws_suppression_counter = 3             # kws 激活后抑制时间 
 # asr
 __C.general.language_id = 1			                # 0： chinese  1： english
 __C.general.asr_feature_time = 296                  # asr 网络特征时间维度，与语音特征容器长度相同
-__C.general.asr_suppression_counter = 2             # asr 激活后抑制时间，间隔 2s 执行一次 asr 检测
+__C.general.asr_suppression_counter = 1             # asr 激活后抑制时间，间隔 2s 执行一次 asr 检测
 
 __C.general.asr_second_on = False                    # asr 使用 bpe 和 phoneme 两个 model
 __C.general.decode_id = 1			                # 0： greedy   1： beamsearch
@@ -128,8 +128,9 @@ __C.general.feature_remove_before_time = 100        # 为保证特征一致，�
 __C.general.bool_do_kws_weakup = True
 # __C.general.bool_do_kws_weakup = False
 __C.general.bool_do_asr = True
-__C.general.bool_output_wave = True
-# __C.general.bool_output_wave = False
+# __C.general.bool_do_asr = False
+# __C.general.bool_output_wave = True
+__C.general.bool_output_wave = False
 # __C.general.bool_output_csv = True
 __C.general.bool_output_csv = False
 __C.general.gpu = True
@@ -146,9 +147,9 @@ __C.general.total_time_samples = int(__C.general.sample_rate * __C.general.total
 ##################################
 
 __C.model = {}
-__C.model.bool_caffe = True
-# __C.model.bool_caffe = False
-# __C.model.bool_pytorch = True
+# __C.model.bool_caffe = True
+__C.model.bool_caffe = False
+__C.model.bool_pytorch = True
 
 # kws
 # activate bwc
@@ -159,15 +160,33 @@ __C.model.kws_net_output_name = "Softmax"
 __C.model.kws_chw_params = "1,64,196"
 __C.model.kws_transpose = True
 
+# pytorch param
+__C.model.kws_chk_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/parameter.pkl"
+__C.model.kws_model_name = "tc-resnet14-amba-novt-196"
+__C.model.kws_class_name = "SpeechResModel"
+__C.model.kws_num_classes = 2
+__C.model.image_height = 196
+__C.model.image_weidth = 64
+
 # asr
-__C.model.asr_model_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06082021/asr_english_phoneme_16k_64_0608.caffemodel"
-__C.model.asr_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06082021/asr_english_phoneme_16k_64_0608.prototxt"
+# __C.model.asr_model_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06082021/asr_english_phoneme_16k_64_0608.caffemodel"
+# __C.model.asr_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06082021/asr_english_phoneme_16k_64_0608.prototxt"
+__C.model.asr_model_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_07142021/asr_english_phoneme_16k_64_0714.caffemodel"
+__C.model.asr_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_07142021/asr_english_phoneme_16k_64_0714.prototxt"
 __C.model.asr_net_input_name = "data"
 __C.model.asr_net_output_name = "prob"
 __C.model.asr_chw_params = "1,296,64"
 __C.model.asr_dict_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06032021/asr_english_phoneme_dict.txt"
 __C.model.asr_lm_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06032021/4gram_asr_english_phoneme.bin"
+__C.model.asr_dict_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06032021/asr_english_phoneme_dict.txt"
+__C.model.asr_lm_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06032021/4gram_asr_english_phoneme.bin"
 
+# pytorch param
+# __C.model.asr_chk_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06082021/asr_english_phoneme_16k_64_0608.pth"
+__C.model.asr_chk_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_07142021/asr_english_phoneme_16k_64_0714.pth"
+__C.model.asr_model_name = "ASR_english_phoneme"
+__C.model.asr_class_name = "ASR_English_Net"
+__C.model.asr_num_classes = 136
 
 ##################################
 # test parameters

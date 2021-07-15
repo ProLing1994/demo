@@ -125,12 +125,28 @@ def pytorch_kws_model_init(chk_file, model_name, class_name, num_classes, image_
     return net
 
 
-def caffe_model_forward(net, feature_data, output_name, bool_kws_transpose):
+def pytorch_asr_model_init(chk_file, model_name, class_name, num_classes, use_gpu=False):
+    # init model 
+    net_module = importlib.import_module('network.' + model_name)
+    net = net_module.__getattribute__(class_name)(num_classes)
+
+    if use_gpu:
+        net = net.cuda()
+
+    # load state
+    checkpoint=torch.load(os.path.join(chk_file))
+    net.load_state_dict(checkpoint['state_dict'], strict=True)
+
+    net.eval()
+    return net
+
+
+def caffe_model_forward(net, feature_data, input_name, output_name, bool_kws_transpose=False):
     if bool_kws_transpose:
         feature_data = feature_data.T
 
     # net.blobs[cfg.model.kws_net_input_name].data[...] = np.expand_dims(feature_data, axis=0)
-    net.blobs[cfg.model.kws_net_input_name].data[...] = np.expand_dims(np.expand_dims(feature_data, axis=0), axis=0)
+    net.blobs[input_name].data[...] = np.expand_dims(np.expand_dims(feature_data, axis=0), axis=0)
     net_output = net.forward()[output_name]
     return net_output
 
@@ -167,6 +183,9 @@ def asr_init_normal():
     if cfg.general.bool_do_asr:
         if cfg.model.bool_caffe:
             asr_net = caffe_model_init(cfg.model.asr_prototxt_path, cfg.model.asr_model_path, cfg.model.asr_net_input_name, cfg.model.asr_chw_params.split(","), cfg.general.gpu)
+        elif cfg.model.bool_pytorch:
+            asr_net = pytorch_asr_model_init(cfg.model.asr_chk_path, cfg.model.asr_model_name, cfg.model.asr_class_name, cfg.model.asr_num_classes, cfg.general.gpu)
+            pass
         else:
             asr_net = None
         # init bpe dict 
@@ -286,7 +305,7 @@ def run_kws():
         feature_data_kws = feature_data_kws.astype(np.float32)
         
         if cfg.model.bool_caffe:
-            net_output = caffe_model_forward(kws_net, feature_data_kws, cfg.model.kws_net_output_name, cfg.model.kws_transpose)
+            net_output = caffe_model_forward(kws_net, feature_data_kws, cfg.model.kws_net_input_name, cfg.model.kws_net_output_name, cfg.model.kws_transpose)
         elif cfg.model.bool_pytorch:
             net_output = pytorch_model_forward(kws_net, feature_data_kws, cfg.general.gpu)
 
@@ -330,10 +349,14 @@ def run_asr_normal(contorl_kws_bool=True):
     # print(feature_data_asr)
 
     # 模型前向传播
-    asr_net.blobs[cfg.model.asr_net_input_name].data[...] = np.expand_dims(feature_data_asr, axis=0)
-    net_output = asr_net.forward()[cfg.model.asr_net_output_name]
-    net_output = np.squeeze(net_output)
-    net_output = net_output.T
+    if cfg.model.bool_caffe:
+        net_output = caffe_model_forward(asr_net, feature_data_asr, cfg.model.asr_net_input_name, cfg.model.asr_net_output_name)
+        net_output = np.squeeze(net_output)
+        net_output = net_output.T
+    elif cfg.model.bool_pytorch:
+        net_output = pytorch_model_forward(asr_net, feature_data_asr, cfg.general.gpu)
+        net_output = np.squeeze(net_output)
+
     # print(net_output.shape)
     # print(net_output)
 
@@ -463,8 +486,8 @@ def run_asr(contorl_kws_bool=True):
                 result_string = run_asr_second(contorl_kws_bool)
                 print("Phoneme Detect Command: ", result_string)
 
-    # if len(result_string) and result_string != "cfg.general.bool_do_asr = False":
-    #     result_string = asr_duplicate_check(result_string)
+    if len(result_string) and result_string != "cfg.general.bool_do_asr = False":
+        result_string = asr_duplicate_check(result_string)
     return result_string
 
 
@@ -477,7 +500,7 @@ def run_kws_asr(audio_data):
         return
 
     # asr_duplicate_update_counter，更新计数器，防止重复检测
-    # asr_duplicate_update_counter()
+    asr_duplicate_update_counter()
 
     # 方案一：进行 kws 唤醒词检测，若检测到唤醒词，未来三秒进行 asr 检测
     # kws
@@ -528,7 +551,7 @@ def run_kws_asr(audio_data):
                 # save audio
                 output_wave("ASR_" + result_string)
             else:
-                print("\n** [Information:] Detecting ... ")
+                print("\n** [Information:] Detecting ...\n")
         
         # if cfg.general.bool_output_csv:
         #     _, kws_score_list = run_kws()
