@@ -32,12 +32,14 @@ __C.general.kws_suppression_counter = 3             # kws 激活后抑制时间 
 
 # asr
 __C.general.language_id = 1			                # 0： chinese  1： english
-__C.general.decode_id = 0			                # 0： greedy  1： beamsearch
 __C.general.asr_feature_time = 296                  # asr 网络特征时间维度，与语音特征容器长度相同
-__C.general.asr_suppression_counter = 1             # asr 激活后抑制时间，间隔 1s 执行一次 asr 检测
-__C.general.asr_bpe_phoneme_on = True               # asr 使用 bpe 和 phoneme 两个 model
-__C.general.bpe_decode_id = 0			            # 0： greedy  1： beamsearch
-__C.general.phoneme_decode_id = 1			        # 0： greedy  1： beamsearch
+__C.general.asr_suppression_counter = 1             # asr 激活后抑制时间，间隔 1s 执行一 次 asr 检测
+
+__C.general.asr_second_on = True                    # asr 使用 bpe 和 phoneme 两个 model
+__C.general.decode_id = 0			                # 0： greedy  1： beamsearch
+__C.general.match_id = 0                            # 0:  bpe      1:  phoneme_robust  2:  phoneme_strict  3:  phoneme_combine
+__C.general.second_decode_id = 1			        # 0： greedy  1： beamsearch
+__C.general.second_match_id = 2                     # 0:  bpe      1:  phoneme_robust  2:  phoneme_strict  3:  phoneme_combine
 
 # bpe
 __C.general.kws_list = ['start_record', 'stop_record', 'mute_audio', 'unmute_audio', 'shot_fire', 'freeze', 'drop_gun', 'keep_hand', 'put_hand', 'down_ground']
@@ -127,22 +129,22 @@ __C.model.kws_chw_params = "1,64,196"
 __C.model.kws_transpose = True
 
 # asr bpe
-__C.model.asr_bpe_model_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_16k_0202/english_0202_better.caffemodel"
-__C.model.asr_bpe_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_16k_0202/english_0202_mark.prototxt"
-__C.model.asr_bpe_net_input_name = "data"
-__C.model.asr_bpe_net_output_name = "conv39"
-__C.model.asr_bpe_chw_params = "1,296,64"
-__C.model.asr_bpe_dict = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_16k_0202/english_bpe.txt"
-__C.model.asr_bpe_lm_path = ""
+__C.model.asr_model_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_16k_0202/english_0202_better.caffemodel"
+__C.model.asr_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_16k_0202/english_0202_mark.prototxt"
+__C.model.asr_net_input_name = "data"
+__C.model.asr_net_output_name = "conv39"
+__C.model.asr_chw_params = "1,296,64"
+__C.model.asr_dict_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_16k_0202/english_bpe.txt"
+__C.model.asr_lm_path = ""
 
 # asr phoneme
-__C.model.asr_phoneme_model_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06082021/asr_english_phoneme_16k_64_0608.caffemodel"
-__C.model.asr_phoneme_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06082021/asr_english_phoneme_16k_64_0608.prototxt"
-__C.model.asr_phoneme_net_input_name = "data"
-__C.model.asr_phoneme_net_output_name = "prob"
-__C.model.asr_phoneme_chw_params = "1,296,64"
-__C.model.asr_phoneme_dict = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06032021/asr_english_phoneme_dict.txt"
-__C.model.asr_phoneme_lm_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06032021/4gram_asr_english_phoneme.bin"
+__C.model.asr_second_model_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06082021/asr_english_phoneme_16k_64_0608.caffemodel"
+__C.model.asr_second_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06082021/asr_english_phoneme_16k_64_0608.prototxt"
+__C.model.asr_second_net_input_name = "data"
+__C.model.asr_second_net_output_name = "prob"
+__C.model.asr_second_chw_params = "1,296,64"
+__C.model.asr_second_dict_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06032021/asr_english_phoneme_dict.txt"
+__C.model.asr_second_lm_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06032021/4gram_asr_english_phoneme.bin"
 
 ##################################
 # test parameters
@@ -154,7 +156,7 @@ __C.test = {}
 # test_mode
 # 0: input_wav
 # 1: input_folder
-__C.test.test_mode = 1
+__C.test.test_mode = 0
 
 # input_Wav
 # __C.test.input_wav = "/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation_180.wav"
@@ -162,6 +164,7 @@ __C.test.test_mode = 1
 # __C.test.input_wav = "/home/huanyuan/share/audio_data/weakup_asr/weakup_bwc_asr_english/phone_test-kws-asr_0002.wav"
 # __C.test.input_wav = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/非常珍贵的外籍人士专门录制的语料/wav_list/foreigner_1_4.wav"
 # __C.test.input_wav = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/发音较好同事录制_0615/控制词/蔡长青/RM_Room_BWC_S15T1P2_R.wav"
+__C.test.input_wav = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/发音较好同事录制_0615/报警词/蔡长青/freeze/RM_Room_BWC_S15T1P7_R.wav"
 
 # input_folder
 # __C.test.input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/路边场景/场景二/"

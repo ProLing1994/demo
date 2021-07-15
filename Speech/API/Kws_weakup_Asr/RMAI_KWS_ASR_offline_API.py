@@ -67,7 +67,7 @@ default_asr_prototxt_path = os.path.join(os.path.dirname(os.path.abspath(__file_
 default_asr_net_input_name = "data"
 default_asr_net_output_name = "conv39"
 default_asr_chw_params = "1,296,64"
-default_asr_bpe = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "english_bpe.txt")
+default_dict_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "english_bpe.txt")
 
 default_input_wav = os.path.join(os.path.dirname(os.path.abspath(__file__)), "audio", "test-kws-asr.wav")
 default_output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output", "{}".format(datetime.now()))
@@ -86,7 +86,7 @@ parser.add_argument('--asr_prototxt_path', type=str, default=default_asr_prototx
 parser.add_argument('--asr_net_input_name', type=str, default=default_asr_net_input_name)
 parser.add_argument('--asr_net_output_name', type=str, default=default_asr_net_output_name)
 parser.add_argument('--asr_chw_params', type=str, default=default_asr_chw_params)
-parser.add_argument('--asr_bpe', type=str, default=default_asr_bpe)
+parser.add_argument('--dict_path', type=str, default=default_dict_path)
 parser.add_argument('--output_folder', type=str, default=default_output_folder)
 parser.add_argument('--gpu', action='store_true', default=default_gpu)
 args = parser.parse_args()
@@ -248,7 +248,7 @@ def kws_asr_init():
 
     # init bpe
     decode_python = Decode_Python.Decode()
-    decode_python.init_symbol_list(args.asr_bpe)
+    decode_python.init_symbol_list(args.dict_path)
 
     # mkdir
     if not os.path.exists(args.output_folder):

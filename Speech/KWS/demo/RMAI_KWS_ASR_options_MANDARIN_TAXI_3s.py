@@ -81,7 +81,7 @@ __C.model.asr_prototxt_path = "/mnt/huanyuan/model/audio_model/hisi_model/asr_ma
 __C.model.asr_net_input_name = "data"
 __C.model.asr_net_output_name = "prob"
 __C.model.asr_chw_params = "1,296,64"
-__C.model.asr_bpe = "/mnt/huanyuan/model/audio_model/hisi_model/asr_mandarin_taxi_16k/asr_mandarin_dict_taxi.txt"
+__C.model.asr_dict_path = "/mnt/huanyuan/model/audio_model/hisi_model/asr_mandarin_taxi_16k/asr_mandarin_dict_taxi.txt"
 
 
 ##################################

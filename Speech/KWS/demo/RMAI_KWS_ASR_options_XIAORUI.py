@@ -103,8 +103,8 @@ __C.model.asr_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_en
 __C.model.asr_net_input_name = "data"
 __C.model.asr_net_output_name = "conv39"
 __C.model.asr_chw_params = "1,296,64"
-__C.model.asr_bpe = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/english_bpe.txt"
-__C.model.lm_path = "/mnt/huanyuan/model/audio_model/hisi_model/asr_mandarin_taxi_16k/3gram_asr_mandarin_taxi_408.bin" 
+__C.model.asr_dict_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/english_bpe.txt"
+__C.model.asr_lm_path = "/mnt/huanyuan/model/audio_model/hisi_model/asr_mandarin_taxi_16k/3gram_asr_mandarin_taxi_408.bin" 
 
 
 ##################################

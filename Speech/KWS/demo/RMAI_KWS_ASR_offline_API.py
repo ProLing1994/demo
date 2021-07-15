@@ -19,8 +19,8 @@ from common.common.utils.python.file_tools import load_module_from_disk
 
 # options 
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_bpe.py")
-# cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_phoneme.py")
-cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_bpe_phoneme.py")
+cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_phoneme.py")
+# cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_bpe_phoneme.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MTA_XIAOAN.py")
 # cfg = load_module_from_disk(r"E:\project\demo\Speech\KWS\demo\RMAI_KWS_ASR_options_XIAORUI.py")
 # cfg = load_module_from_disk("/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_3s.py")
@@ -72,7 +72,7 @@ def asr_duplicate_update_counter():
         if params_dict['asr_duplicate_counter'][key] > 0:
             params_dict['asr_duplicate_counter'][key] = params_dict['asr_duplicate_counter'][key] - cfg.general.window_size_ms
             print(key, params_dict['asr_duplicate_counter'][key])
-
+ 
 
 def asr_duplicate_check(result_string):
     res_string = ""
@@ -90,7 +90,7 @@ def asr_duplicate_check(result_string):
     return res_string
 
 
-def model_init_caffe_nomal(prototxt, model, net_input_name, CHW_params, use_gpu=False):
+def caffe_model_init(prototxt, model, net_input_name, CHW_params, use_gpu=False):
     if use_gpu:
         caffe.set_device(0)
         caffe.set_mode_gpu()
@@ -103,7 +103,7 @@ def model_init_caffe_nomal(prototxt, model, net_input_name, CHW_params, use_gpu=
     return net
 
 
-def model_init_pytorch_kws(chk_file, model_name, class_name, num_classes, image_height, image_weidth, use_gpu=False):
+def pytorch_kws_model_init(chk_file, model_name, class_name, num_classes, image_height, image_weidth, use_gpu=False):
     # init model
     net_module = importlib.import_module('network.' + model_name)
     net = net_module.__getattribute__(class_name)(num_classes=num_classes,
@@ -125,7 +125,7 @@ def model_init_pytorch_kws(chk_file, model_name, class_name, num_classes, image_
     return net
 
 
-def model_forward_caffe_mormal(net, feature_data, output_name, bool_kws_transpose):
+def caffe_model_forward(net, feature_data, output_name, bool_kws_transpose):
     if bool_kws_transpose:
         feature_data = feature_data.T
 
@@ -135,7 +135,7 @@ def model_forward_caffe_mormal(net, feature_data, output_name, bool_kws_transpos
     return net_output
 
 
-def model_forward_pytorch_mormal(net, feature_data, use_gpu=False):
+def pytorch_model_forward(net, feature_data, use_gpu=False):
     data_tensor = torch.from_numpy(np.expand_dims(np.expand_dims(feature_data, axis=0), axis=0))
     data_tensor = data_tensor.float()
 
@@ -145,96 +145,73 @@ def model_forward_pytorch_mormal(net, feature_data, use_gpu=False):
     return net_output
 
 
-def kws_asr_init_normal():
+def kws_init():
     global kws_net
-    global asr_net, decode_python
 
     # init model
     if cfg.general.bool_do_kws_weakup:
         if cfg.model.bool_caffe:
-            kws_net = model_init_caffe_nomal(cfg.model.kws_prototxt_path, cfg.model.kws_model_path, cfg.model.kws_net_input_name, cfg.model.kws_chw_params.split(","), cfg.general.gpu)
+            kws_net = caffe_model_init(cfg.model.kws_prototxt_path, cfg.model.kws_model_path, cfg.model.kws_net_input_name, cfg.model.kws_chw_params.split(","), cfg.general.gpu)
         elif cfg.model.bool_pytorch:
-            kws_net = model_init_pytorch_kws(cfg.model.kws_chk_path, cfg.model.kws_model_name, cfg.model.kws_class_name, cfg.model.kws_num_classes, cfg.model.image_height, cfg.model.image_weidth, cfg.general.gpu)
+            kws_net = pytorch_kws_model_init(cfg.model.kws_chk_path, cfg.model.kws_model_name, cfg.model.kws_class_name, cfg.model.kws_num_classes, cfg.model.image_height, cfg.model.image_weidth, cfg.general.gpu)
         else:
             kws_net = None
     else:
         kws_net = None
 
+
+def asr_init_normal():
+    global asr_net, decode_python
+
+    # init model
     if cfg.general.bool_do_asr:
         if cfg.model.bool_caffe:
-            asr_net = model_init_caffe_nomal(cfg.model.asr_prototxt_path, cfg.model.asr_model_path, cfg.model.asr_net_input_name, cfg.model.asr_chw_params.split(","), cfg.general.gpu)
+            asr_net = caffe_model_init(cfg.model.asr_prototxt_path, cfg.model.asr_model_path, cfg.model.asr_net_input_name, cfg.model.asr_chw_params.split(","), cfg.general.gpu)
         else:
-            kws_net = None
+            asr_net = None
         # init bpe dict 
         decode_python = Decode_Python.Decode()
-        decode_python.init_symbol_list(cfg.model.asr_bpe)
+        decode_python.init_symbol_list(cfg.model.asr_dict_path)
 
         # init lm
         if cfg.general.decode_id == 1:
-            decode_python.init_lm_model(cfg.model.lm_path)
+            decode_python.init_lm_model(cfg.model.asr_lm_path)
     else:
         asr_net = None
         decode_python = None
 
 
-def kws_asr_init_bpe_phoneme():
-    global kws_net
-    global asr_net_bpe, decode_python_bpe
-    global asr_net_phoneme, decode_python_phoneme
+def asr_init_second():
+    global asr_net_second, decode_python_second
 
     # init model
-    if cfg.general.bool_do_kws_weakup:
-        if cfg.model.bool_caffe:
-            kws_net = model_init_caffe_nomal(cfg.model.kws_prototxt_path, cfg.model.kws_model_path, cfg.model.kws_net_input_name, cfg.model.kws_chw_params.split(","), cfg.general.gpu)
-        elif cfg.model.bool_pytorch:
-            kws_net = model_init_pytorch_kws(cfg.model.kws_chk_path, cfg.model.kws_model_name, cfg.model.kws_class_name, cfg.model.kws_num_classes, cfg.model.image_height, cfg.model.image_weidth, cfg.general.gpu)
-        else:
-            kws_net = None
-    else:
-        kws_net = None
-
     if cfg.general.bool_do_asr:
-        # init bpe net
-        if cfg.model.bool_caffe:
-            asr_net_bpe = model_init_caffe_nomal(cfg.model.asr_bpe_prototxt_path, cfg.model.asr_bpe_model_path, cfg.model.asr_bpe_net_input_name, cfg.model.asr_bpe_chw_params.split(","), cfg.general.gpu)
-        else:
-            kws_net = None
-
-        # init bpe dict 
-        decode_python_bpe = Decode_Python.Decode()
-        decode_python_bpe.init_symbol_list(cfg.model.asr_bpe_dict)
-
-        # init lm
-        if cfg.general.bpe_decode_id == 1:
-            decode_python_bpe.init_lm_model(cfg.model.asr_bpe_lm_path)
-
         # init phoneme net
         if cfg.model.bool_caffe:
-            asr_net_phoneme = model_init_caffe_nomal(cfg.model.asr_phoneme_prototxt_path, cfg.model.asr_phoneme_model_path, cfg.model.asr_phoneme_net_input_name, cfg.model.asr_phoneme_chw_params.split(","), cfg.general.gpu)
+            asr_net_second = caffe_model_init(cfg.model.asr_second_prototxt_path, cfg.model.asr_second_model_path, cfg.model.asr_second_net_input_name, cfg.model.asr_second_chw_params.split(","), cfg.general.gpu)
         else:
-            kws_net = None
+            asr_net_second = None
 
         # init phoneme dict 
-        decode_python_phoneme = Decode_Python.Decode()
-        decode_python_phoneme.init_symbol_list(cfg.model.asr_phoneme_dict)
+        decode_python_second = Decode_Python.Decode()
+        decode_python_second.init_symbol_list(cfg.model.asr_second_dict_path)
 
         # init lm
-        if cfg.general.phoneme_decode_id == 1:
-            decode_python_phoneme.init_lm_model(cfg.model.asr_phoneme_lm_path)
+        if cfg.general.second_decode_id == 1:
+            decode_python_second.init_lm_model(cfg.model.asr_second_lm_path)
 
     else:
-        asr_net_bpe = None
-        decode_python_bpe = None
-
-        asr_net_phoneme = None
-        decode_python_phoneme = None
+        asr_net_second = None
+        decode_python_second = None
 
 
 def kws_asr_init():
-    if not cfg.general.asr_bpe_phoneme_on :
-        kws_asr_init_normal()
-    else:
-        kws_asr_init_bpe_phoneme()
+    # init model
+    kws_init()
+    asr_init_normal()
+
+    if cfg.general.asr_second_on:
+        asr_init_second()
 
 
 def papare_data_and_feature(audio_data):
@@ -309,9 +286,9 @@ def run_kws():
         feature_data_kws = feature_data_kws.astype(np.float32)
         
         if cfg.model.bool_caffe:
-            net_output = model_forward_caffe_mormal(kws_net, feature_data_kws, cfg.model.kws_net_output_name, cfg.model.kws_transpose)
+            net_output = caffe_model_forward(kws_net, feature_data_kws, cfg.model.kws_net_output_name, cfg.model.kws_transpose)
         elif cfg.model.bool_pytorch:
-            net_output = model_forward_pytorch_mormal(kws_net, feature_data_kws, cfg.general.gpu)
+            net_output = pytorch_model_forward(kws_net, feature_data_kws, cfg.general.gpu)
 
         net_output = np.squeeze(net_output)
         kws_score_list.append(net_output.copy())
@@ -394,25 +371,24 @@ def run_asr_normal(contorl_kws_bool=True):
         decode_python.show_symbol()
         decode_python.show_symbol_english()
 
-        # bpe
-        decode_python.match_keywords_english_bpe(cfg.general.kws_list, cfg.general.kws_bpe_dict)
-        result_string = decode_python.output_control_result_string(cfg.general.control_kws_list, contorl_kws_bool)
+        if cfg.general.match_id == 0:
+            # bpe
+            decode_python.match_keywords_english_bpe(cfg.general.kws_list, cfg.general.kws_bpe_dict)
         
-        # phoneme
-        # # 鲁邦的匹配方式  
-        # decode_python.match_keywords_english_phoneme_robust(cfg.general.kws_list, cfg.general.kws_phoneme_dict, cfg.general.control_kws_list, contorl_kws_bool)
-        # # result_string = decode_python.output_result_string()
-        # result_string = decode_python.output_control_result_string(cfg.general.control_kws_list, contorl_kws_bool)
+        elif cfg.general.match_id == 1:
+            # phoneme 鲁邦的匹配方式  
+            decode_python.match_keywords_english_phoneme_robust(cfg.general.kws_list, cfg.general.kws_phoneme_dict, cfg.general.control_kws_list, contorl_kws_bool)
 
-        # # 严格匹配方式
-        # decode_python.match_keywords_english_phoneme_strict(cfg.general.kws_list, cfg.general.kws_phoneme_dict, cfg.general.control_kws_list, contorl_kws_bool, cfg.general.kws_phoneme_param_dict)
-        # # result_string = decode_python.output_result_string()
-        # result_string = decode_python.output_control_result_string(cfg.general.control_kws_list, contorl_kws_bool)
+        elif cfg.general.match_id == 2:
+            # phoneme 严格匹配方式
+            decode_python.match_keywords_english_phoneme_strict(cfg.general.kws_list, cfg.general.kws_phoneme_dict, cfg.general.control_kws_list, contorl_kws_bool, cfg.general.kws_phoneme_param_dict)
 
-        # # 自定义的匹配方式       
-        # decode_python.match_keywords_english_phoneme_combine(cfg.general.kws_list, cfg.general.kws_phoneme_dict, cfg.general.control_kws_list, contorl_kws_bool, cfg.general.kws_phoneme_param_dict)
-        # # result_string = decode_python.output_result_string()
-        # result_string = decode_python.output_control_result_string(cfg.general.control_kws_list, contorl_kws_bool)
+        elif cfg.general.match_id == 3:
+            # phoneme 自定义的匹配方式       
+            decode_python.match_keywords_english_phoneme_combine(cfg.general.kws_list, cfg.general.kws_phoneme_dict, cfg.general.control_kws_list, contorl_kws_bool, cfg.general.kws_phoneme_param_dict)
+
+        # result_string = decode_python.output_result_string()
+        result_string = decode_python.output_control_result_string(cfg.general.control_kws_list, contorl_kws_bool)
 
     else:
         print("[Unknow:] cfg.general.language_id. ")
@@ -420,51 +396,7 @@ def run_asr_normal(contorl_kws_bool=True):
     return result_string
 
 
-def run_asr_bpe(contorl_kws_bool=True):
-    if not cfg.general.bool_do_asr:
-        return "cfg.general.bool_do_asr = False"
-
-    # 获取特征
-    feature_data_asr = params_dict['feature_data_container_np'].astype(np.float32)
-    # print(feature_data_asr)
-
-    # 模型前向传播：bpe
-    asr_net_bpe.blobs[cfg.model.asr_bpe_net_input_name].data[...] = np.expand_dims(feature_data_asr, axis=0)
-    net_output = asr_net_bpe.forward()[cfg.model.asr_bpe_net_output_name]
-    net_output = np.squeeze(net_output)
-    net_output = net_output.T
-    # print(net_output.shape)
-    # print(net_output)
-    
-    # decode：bpe
-    if cfg.general.bpe_decode_id == 0:
-        decode_python_bpe.ctc_decoder(net_output)
-    elif cfg.general.bpe_decode_id == 1:
-        decode_python_bpe.beamsearch_decoder(net_output, 5, 0, bswt=1.0, lmwt=0.3)
-    else:
-        print("[Unknow:] cfg.general.decode_id. ")
-
-    if cfg.general.language_id == 0:
-        decode_python_bpe.show_result_id()
-        decode_python_bpe.show_symbol()
-
-        result_string = decode_python_bpe.output_symbol()
-    elif cfg.general.language_id == 1:
-        decode_python_bpe.show_result_id()
-        decode_python_bpe.show_symbol()
-        decode_python_bpe.show_symbol_english()
-
-        # bpe
-        decode_python_bpe.match_keywords_english_bpe(cfg.general.kws_list, cfg.general.kws_bpe_dict)
-        result_string = decode_python_bpe.output_control_result_string(cfg.general.control_kws_list, contorl_kws_bool)
-        # result_string = decode_python_bpe.output_result_string()
-    else:
-        print("[Unknow:] cfg.general.language_id. ")
-
-    return result_string
-
-
-def run_asr_phoneme(contorl_kws_bool=True):
+def run_asr_second(contorl_kws_bool=True):
     
     if not cfg.general.bool_do_asr:
         return "cfg.general.bool_do_asr = False"
@@ -473,72 +405,63 @@ def run_asr_phoneme(contorl_kws_bool=True):
     feature_data_asr = params_dict['feature_data_container_np'].astype(np.float32)
     # print(feature_data_asr)
 
-    # 模型前向传播：phoneme
-    asr_net_phoneme.blobs[cfg.model.asr_phoneme_net_input_name].data[...] = np.expand_dims(feature_data_asr, axis=0)
-    net_output = asr_net_phoneme.forward()[cfg.model.asr_phoneme_net_output_name]
+    # 模型前向传播
+    asr_net_second.blobs[cfg.model.asr_second_net_input_name].data[...] = np.expand_dims(feature_data_asr, axis=0)
+    net_output = asr_net_second.forward()[cfg.model.asr_second_net_output_name]
     net_output = np.squeeze(net_output)
     net_output = net_output.T
     # print(net_output.shape)
     # print(net_output)
     
-    # decode：phoneme
-    if cfg.general.phoneme_decode_id == 0:
-        decode_python_phoneme.ctc_decoder(net_output)
-    elif cfg.general.phoneme_decode_id == 1:
-        decode_python_phoneme.beamsearch_decoder(net_output, 5, 0, bswt=1.0, lmwt=0.3)
+    # decode
+    if cfg.general.second_decode_id == 0:
+        decode_python_second.ctc_decoder(net_output)
+    elif cfg.general.second_decode_id == 1:
+        decode_python_second.beamsearch_decoder(net_output, 5, 0, bswt=1.0, lmwt=0.3)
     else:
         print("[Unknow:] cfg.general.decode_id. ")
 
     if cfg.general.language_id == 0:
-        decode_python_phoneme.show_result_id()
-        decode_python_phoneme.show_symbol()
+        decode_python_second.show_result_id()
+        decode_python_second.show_symbol()
 
-        result_string = decode_python_phoneme.output_symbol()
+        result_string = decode_python_second.output_symbol()
     elif cfg.general.language_id == 1:
-        decode_python_phoneme.show_result_id()
-        decode_python_phoneme.show_symbol()
-        decode_python_phoneme.show_symbol_english()
+        decode_python_second.show_result_id()
+        decode_python_second.show_symbol()
+        decode_python_second.show_symbol_english()
 
-        # phoneme
-        # # 鲁邦的匹配方式  
-        # decode_python_phoneme.match_keywords_english_phoneme_robust(cfg.general.kws_list, cfg.general.kws_phoneme_dict, cfg.general.control_kws_list, contorl_kws_bool)
-        # # result_string = decode_python_phoneme.output_result_string()
-        # result_string = decode_python_phoneme.output_control_result_string(cfg.general.control_kws_list, contorl_kws_bool)
 
-        # 严格匹配方式
-        decode_python_phoneme.match_keywords_english_phoneme_strict(cfg.general.kws_list, cfg.general.kws_phoneme_dict, cfg.general.control_kws_list, contorl_kws_bool, cfg.general.kws_phoneme_param_dict)
-        result_string = decode_python_phoneme.output_control_result_string(cfg.general.control_kws_list, contorl_kws_bool)
-        # result_string = decode_python_phoneme.output_result_string()
+        if cfg.general.second_match_id == 1:
+            # phoneme 鲁邦的匹配方式  
+            decode_python_second.match_keywords_english_phoneme_robust(cfg.general.kws_list, cfg.general.kws_phoneme_dict, cfg.general.control_kws_list, contorl_kws_bool)
 
-        # # 自定义的匹配方式       
-        # decode_python_phoneme.match_keywords_english_phoneme_combine(cfg.general.kws_list, cfg.general.kws_phoneme_dict, cfg.general.control_kws_list, contorl_kws_bool, cfg.general.kws_phoneme_param_dict)
-        # # result_string = decode_python_phoneme.output_result_string()
-        # result_string = decode_python_phoneme.output_control_result_string(cfg.general.control_kws_list, contorl_kws_bool)
+        elif cfg.general.second_match_id == 2:
+            # phoneme 严格匹配方式
+            decode_python_second.match_keywords_english_phoneme_strict(cfg.general.kws_list, cfg.general.kws_phoneme_dict, cfg.general.control_kws_list, contorl_kws_bool, cfg.general.kws_phoneme_param_dict)
+
+        elif cfg.general.second_match_id == 3:
+            # phoneme 自定义的匹配方式       
+            decode_python_second.match_keywords_english_phoneme_combine(cfg.general.kws_list, cfg.general.kws_phoneme_dict, cfg.general.control_kws_list, contorl_kws_bool, cfg.general.kws_phoneme_param_dict)
+
+        # result_string = decode_python_second.output_result_string()
+        result_string = decode_python_second.output_control_result_string(cfg.general.control_kws_list, contorl_kws_bool)
     else:
         print("[Unknow:] cfg.general.language_id. ")
 
-    return result_string
-
-
-def run_asr_bpe_phoneme(contorl_kws_bool=True):
-
-    result_string = run_asr_bpe(contorl_kws_bool)
-
-    if len(result_string) and result_string != "cfg.general.bool_do_asr = False":
-        print("Bpe Detect Command: ", result_string)
-
-        if not contorl_kws_bool:
-            result_string = run_asr_phoneme(contorl_kws_bool)
-            print("Phoneme Detect Command: ", result_string)
     return result_string
 
 
 def run_asr(contorl_kws_bool=True):
 
-    if not cfg.general.asr_bpe_phoneme_on:
-        result_string = run_asr_normal(contorl_kws_bool)
-    else:
-        result_string = run_asr_bpe_phoneme(contorl_kws_bool)
+    result_string = run_asr_normal(contorl_kws_bool)
+    if cfg.general.asr_second_on:
+        if len(result_string) and result_string != "cfg.general.bool_do_asr = False":
+            print("Bpe Detect Command: ", result_string)
+
+            if not contorl_kws_bool:
+                result_string = run_asr_second(contorl_kws_bool)
+                print("Phoneme Detect Command: ", result_string)
 
     # if len(result_string) and result_string != "cfg.general.bool_do_asr = False":
     #     result_string = asr_duplicate_check(result_string)
