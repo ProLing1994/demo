@@ -32,10 +32,12 @@ __C.general.kws_suppression_counter = 4             # kws 激活后抑制时间 
 
 # asr mandarin taxi
 __C.general.language_id = 0			                # 0： chinese  1： english
-__C.general.decode_id = 1			                # 0： greedy  1： beamsearch
 __C.general.asr_feature_time = 396                  # asr 网络特征时间维度，与语音特征容器长度相同
 __C.general.asr_suppression_counter = 2             # asr 激活后抑制时间，间隔 2s 执行一次 asr 检测
-__C.general.asr_bpe_phoneme_on = False               # asr 使用 bpe 和 phoneme 两个 model
+
+__C.general.asr_second_on = False                    # asr 使用 bpe 和 phoneme 两个 model
+__C.general.decode_id = 1			                # 0： greedy   1： beamsearch
+__C.general.match_id = 0                            # 0:  bpe      1:  phoneme_robust  2:  phoneme_strict  3:  phoneme_combine (ONLF FOR ENGLISH)
 
 # container
 __C.general.audio_container_ms = 100                # 语音数据容器中，装有音频数据 100 ms
@@ -47,7 +49,8 @@ __C.general.feature_remove_before_time = 100        # 为保证特征一致，�
 # on-off
 __C.general.bool_do_kws_weakup = True
 # __C.general.bool_do_kws_weakup = False
-__C.general.bool_do_asr = True
+# __C.general.bool_do_asr = True
+__C.general.bool_do_asr = False
 # __C.general.bool_output_wave = True
 __C.general.bool_output_wave = False
 __C.general.bool_output_csv = False
@@ -71,8 +74,10 @@ __C.model.bool_caffe = True
 
 # kws
 # xiaorui
-__C.model.kws_model_path = "/mnt/huanyuan/model/audio_model/novt_model/kws_xiaorui8k_tc_resnet14/xiaorui8k_56_196_1_0_resnet14_checkpoints_1600/kws_xiaorui8k_56_196_1_0_resnet14_checkpoints_1600_07132021.caffemodel"
-__C.model.kws_prototxt_path = "/mnt/huanyuan/model/audio_model/novt_model/kws_xiaorui8k_tc_resnet14/xiaorui8k_56_196_1_0_resnet14_checkpoints_1600/kws_xiaorui8k_56_196_1_0_resnet14_checkpoints_1600_07132021.prototxt"
+# __C.model.kws_model_path = "/mnt/huanyuan/model/audio_model/novt_model/kws_xiaorui8k_tc_resnet14/xiaorui8k_56_196_1_0_resnet14_checkpoints_1600/kws_xiaorui8k_56_196_1_0_resnet14_checkpoints_1600_07132021.caffemodel"
+# __C.model.kws_prototxt_path = "/mnt/huanyuan/model/audio_model/novt_model/kws_xiaorui8k_tc_resnet14/xiaorui8k_56_196_1_0_resnet14_checkpoints_1600/kws_xiaorui8k_56_196_1_0_resnet14_checkpoints_1600_07132021.prototxt"
+__C.model.kws_model_path = "/mnt/huanyuan/model/audio_model/novt_model/kws_xiaorui8k_tc_resnet14/xiaorui8k_56_196_1_0_resnet14_checkpoints_1999/kws_xiaorui8k_56_196_1_0_resnet14_checkpoints_1999_07162021.caffemodel"
+__C.model.kws_prototxt_path = "/mnt/huanyuan/model/audio_model/novt_model/kws_xiaorui8k_tc_resnet14/xiaorui8k_56_196_1_0_resnet14_checkpoints_1999/kws_xiaorui8k_56_196_1_0_resnet14_checkpoints_1999_07162021.prototxt"
 __C.model.kws_label = "xiaorui"
 __C.model.kws_net_input_name = "data"
 __C.model.kws_net_output_name = "prob"

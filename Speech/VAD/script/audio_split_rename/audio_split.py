@@ -4,11 +4,12 @@ import os
 import pandas as pd
 
 parser = argparse.ArgumentParser(description="Audio Split Using Auditok")
-parser.add_argument('--audio_path', type=str, default='/mnt/huanyuan/data/TODO/01.wav')
-parser.add_argument('--output_dir', type=str, default='/mnt/huanyuan/data/TODO/')
+parser.add_argument('--audio_path', type=str, default="/mnt/huanyuan/data/speech/Recording/RM_QingEnglish/car/danbing_ori_16k/danbing_ori_qingenglish_record_001.wav")
+parser.add_argument('--output_dir', type=str, default="/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/QingEnglish_07162021/QingEnglish/")
 # parser.add_argument('--output_format', type=str, default="RM_KWS_XIAORUI_{}_S{:0>3d}M{:0>1d}D{:0>2d}T{:0>3d}.wav")
 # parser.add_argument('--output_format', type=str, default="RM_MOVIE_{}_S{:0>4d}T{:0>3d}.wav")
-parser.add_argument('--output_format', type=str, default="RM_PlatformAlarm_adpro0420_S{:0>4d}T{:0>4d}.wav")
+# parser.add_argument('--output_format', type=str, default="RM_PlatformAlarm_adpro0420_S{:0>4d}T{:0>4d}.wav")
+parser.add_argument('--output_format', type=str, default="RM_QingEnglish_S{:0>4d}T{:0>4d}.wav")
 parser.add_argument('--min_dur', type=float, default=3.5)
 parser.add_argument('--max_dur', type=float, default=12)
 parser.add_argument('--max_silence', type=float, default=2.3)

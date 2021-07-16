@@ -38,7 +38,9 @@ def mutil_channel_audio_split(args):
 
         if file_name.endswith('.txt'):
             input_txt_path = os.path.join(args.input_folder, file_name)
-            output_txt_path = os.path.join(args.output_folder, file_name)
+            # output_txt_path = os.path.join(args.output_folder, file_name)
+            output_file_name = file_name.split('_temp.txt')[0] + '.txt'
+            output_txt_path = os.path.join(args.output_folder, output_file_name)
             shutil.copy(input_txt_path, output_txt_path)
 
         if not file_name.endswith('.wav'):
@@ -83,10 +85,11 @@ def mutil_channel_audio_split(args):
 def main():
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
-    args.input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_05132021/原始音频数据/0421/"
-    args.output_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_05132021/处理音频_0421/"
+    args.input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/ActivateBWC_07162021/activatebwc/原始音频/0707/"
+    args.output_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/ActivateBWC_07162021/activatebwc/数据处理/0707/"
     args.sample_rate = 16000
-    args.name_list = ['adpro', 'mic', 'danbin_ori', 'danbin_asr']
+    # args.name_list = ['adpro', 'mic', 'danbin_ori', 'danbin_asr']
+    args.name_list = ['danbin_asr', 'danbin_ori']
 
     mutil_channel_audio_split(args)
 

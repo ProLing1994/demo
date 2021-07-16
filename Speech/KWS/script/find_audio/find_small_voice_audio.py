@@ -8,7 +8,7 @@ import shutil
 from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-from ASR.impl.asr_data_loader_pyimpl import WaveLoader
+from ASR.impl.asr_data_loader_pyimpl import WaveLoader_Librosa as WaveLoader
 
 # 计算每一帧的能量 256个采样点为一帧
 def cal_short_term_energy(wave_data) :
@@ -47,11 +47,17 @@ def find_small_voice_audio():
 
 
 if __name__ == "__main__":
-    # xiaoan 8k
-    default_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_05132021/xiaoanxiaoan_8k_cut/"
-    default_output_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_05132021/small_voice/"
-    default_sample_rate = 8000
-    default_threshold = '0.10'
+    # # xiaoan 8k
+    # default_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_05132021/xiaoanxiaoan_8k_cut/"
+    # default_output_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_05132021/small_voice/"
+    # default_sample_rate = 8000
+    # default_threshold = '0.10'
+
+    # activate bwc
+    default_input_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/ActivateBWC_07162021/activatebwc/danbin_ori/"
+    default_output_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/ActivateBWC_07162021/activatebwc/small_voice/"
+    default_sample_rate = 16000
+    default_threshold = '0.02'
     
     parser = argparse.ArgumentParser(description='Streamax KWS Engine')
     parser.add_argument('--input_dir', type=str, default=default_input_dir)

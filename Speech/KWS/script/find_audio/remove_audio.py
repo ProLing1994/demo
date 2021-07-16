@@ -1,8 +1,13 @@
 import argparse
 import os
+import sys
+
 from tqdm import tqdm
 
-def remove_audio():
+sys.path.insert(0, '/home/huanyuan/code/demo/common/common')
+from utils.python.folder_tools import *
+
+def remove_audio_samename():
     wave_list = os.listdir(args.input_dir)
 
     for idx in tqdm(range(len(wave_list))):
@@ -12,14 +17,31 @@ def remove_audio():
         if os.path.exists(output_path):
             print(output_path)
             # os.remove(output_path)
-    
-if __name__ == "__main__":
-    default_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_16k_small_voice/"
-    default_output_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_16k/"
-    
-    parser = argparse.ArgumentParser(description='Streamax KWS Engine')
-    parser.add_argument('--input_dir', type=str, default=default_input_dir)
-    parser.add_argument('--output_dir', type=str, default=default_output_dir)
-    args = parser.parse_args()
 
-    remove_audio()
+
+def remove_audio_suffix():
+    path_list = get_sub_filepaths_suffix(args.input_dir, args.suffix)
+
+    for idx in tqdm(range(len(path_list))):
+        if os.path.exists(path_list[idx]):
+            print(path_list[idx])
+            # os.remove(path_list[idx])
+
+
+if __name__ == "__main__":
+
+    # # 方法：删除同名文件
+    # parser = argparse.ArgumentParser(description='Streamax KWS Engine')
+    # args = parser.parse_args()
+    # args.input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_16k_small_voice/"
+    # args.output_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_16k/"
+
+    # remove_audio_samename()
+
+    # 方法：删除制定后缀
+    parser = argparse.ArgumentParser(description='Streamax KWS Engine')
+    args = parser.parse_args()
+    args.input_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/ActivateBWC_07162021/activatebwc/原始音频/"
+    args.suffix = '_temp.wav'
+
+    remove_audio_suffix()

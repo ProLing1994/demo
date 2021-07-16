@@ -213,7 +213,7 @@ def main():
     # 0: from input_wav_list
     # 1: from csv
     # 2: from folder
-    default_mode = "0"    # ["0", "1" ,"2"]
+    default_mode = "2"    # ["0", "1" ,"2"]
 
     # mode 0: from input_wav_list
     # test
@@ -416,7 +416,9 @@ def main():
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_2_tc-resnet14-hisi_fbankcpu_kd_05302021/kws_config_xiaorui_api_08.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_2_tc-resnet14-hisi_fbankcpu_kd_05302021/kws_config_xiaorui_difficult_sample_mining.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_3_tc-resnet14-hisi_fbankcpu_kd_05302021/kws_config_xiaorui16k.py"
-    default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_3_tc-resnet14-hisi_fbankcpu_kd_05302021/kws_config_xiaorui16k_api.py"
+    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_3_tc-resnet14-hisi_fbankcpu_kd_05302021/kws_config_xiaorui16k_api.py"
+    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_xiaorui/kws_xiaorui8k_56_196_1_0_resnet14_fbankcpu_06252021/kws_config_xiaorui8k.py"
+    default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_xiaorui/kws_xiaorui8k_56_196_1_0_resnet14_fbankcpu_06252021/kws_config_xiaorui8k_api.py"
 
     parser = argparse.ArgumentParser(description='Streamax KWS Testing Engine')
     parser.add_argument('--mode', type=str, default=default_mode)
