@@ -50,6 +50,8 @@ def get_frequency_feature(signal, sample_rate, winlen, winstep):
         data_line = data_line * w  # 加窗
         data_line = np.abs(fft(data_line)) / window_size
         data_input[i] = data_line[0:int(window_size / 2)] 
+
+    # data_input = np.log(data_input + 1)
     return data_input
 
 

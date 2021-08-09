@@ -97,8 +97,8 @@ __C.general.feature_remove_before_time = 100        # 为保证特征一致，�
 __C.general.bool_do_kws_weakup = True
 # __C.general.bool_do_kws_weakup = False
 __C.general.bool_do_asr = True
-__C.general.bool_output_wave = True
-# __C.general.bool_output_wave = False
+# __C.general.bool_output_wave = True
+__C.general.bool_output_wave = False
 # __C.general.bool_output_csv = True
 __C.general.bool_output_csv = False
 __C.general.gpu = True
@@ -138,8 +138,10 @@ __C.model.asr_dict_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_englis
 __C.model.asr_lm_path = ""
 
 # asr phoneme
-__C.model.asr_second_model_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06082021/asr_english_phoneme_16k_64_0608.caffemodel"
-__C.model.asr_second_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06082021/asr_english_phoneme_16k_64_0608.prototxt"
+# __C.model.asr_second_model_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06082021/asr_english_phoneme_16k_64_0608.caffemodel"
+# __C.model.asr_second_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06082021/asr_english_phoneme_16k_64_0608.prototxt"
+__C.model.asr_second_model_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_07192021/asr_english_phoneme_16k_64_0719.caffemodel"
+__C.model.asr_second_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_07192021/asr_english_phoneme_16k_64_0719.prototxt"
 __C.model.asr_second_net_input_name = "data"
 __C.model.asr_second_net_output_name = "prob"
 __C.model.asr_second_chw_params = "1,296,64"
@@ -162,9 +164,16 @@ __C.test.test_mode = 0
 # __C.test.input_wav = "/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation_180.wav"
 # __C.test.input_wav = "/mnt/huanyuan/data/speech/Recording/Daily_Record/jabra_510/test/Jabra_510_test-kws-asr_0001.wav"
 # __C.test.input_wav = "/home/huanyuan/share/audio_data/weakup_asr/weakup_bwc_asr_english/phone_test-kws-asr_0002.wav"
+# __C.test.input_wav = "/home/huanyuan/share/audio_data/english_wav/test/test_asr_english_jiguanyu_freeze.wav"
+# __C.test.input_wav = "/home/huanyuan/share/audio_data/english_wav/test/test_asr_english_jiguyanyu_activatebwc.wav"
+__C.test.input_wav = "/home/huanyuan/share/audio_data/english_wav/test/test_asr_english_jiguyanyu_001.wav"
+# __C.test.input_wav = "/home/huanyuan/share/audio_data/demo_test/T3长时间录音/test/AFTERWeakup_2021-07-17_2.wav"
+# __C.test.input_wav = "/home/huanyuan/share/audio_data/demo_test/T3长时间录音/test/AFTERWeakup_2021-07-17_3.wav"
+# __C.test.input_wav = "/home/huanyuan/share/audio_data/demo_test/T3长时间录音/test/AFTERWeakup_2021-07-17_4.wav"
+# __C.test.input_wav = "/home/huanyuan/share/audio_data/demo_test/T3长时间录音/test/AFTERWeakup_2021-07-17_5.wav"
 # __C.test.input_wav = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/非常珍贵的外籍人士专门录制的语料/wav_list/foreigner_1_4.wav"
 # __C.test.input_wav = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/发音较好同事录制_0615/控制词/蔡长青/RM_Room_BWC_S15T1P2_R.wav"
-__C.test.input_wav = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/发音较好同事录制_0615/报警词/蔡长青/freeze/RM_Room_BWC_S15T1P7_R.wav"
+# __C.test.input_wav = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/发音较好同事录制_0615/报警词/蔡长青/freeze/RM_Room_BWC_S15T1P7_R.wav"
 
 # input_folder
 # __C.test.input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/路边场景/场景二/"
