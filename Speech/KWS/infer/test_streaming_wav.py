@@ -227,11 +227,11 @@ def main():
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_testing_3600_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
-    # xiaorui
-    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_training_60.wav",
-                                "/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_validation_60.wav"]
-    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_validation_3600.wav",
-    #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
+    # # xiaorui
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_training_60.wav",
+    #                             "/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_validation_60.wav"]
+    # # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_validation_3600.wav",
+    # #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
     # xiaole
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaole_11252020_training_60_001.wav",
@@ -267,9 +267,8 @@ def main():
     # activatebwc
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_training_60_001.wav",
     #                             "/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_validation_60_001.wav"]
-    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoyu_12042020_testing_3600_001.wav",
-    #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
-    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation.wav"]
+    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation.wav",
+                            "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
     # heybodycam
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/heybodycam_03232021_training_60_001.wav",
@@ -360,12 +359,20 @@ def main():
     # default_output_subfolder_name = "Dataset_Lenovo_xiaole/other/"
     # default_input_folder = "/mnt/huanyuan/data/speech/kws/lenovo/experimental_dataset/LenovoDataset_11242020/xiaole/"
     # default_output_subfolder_name = "Dataset_Lenovo_xiaole/xiaole/"
-    # default_input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/第二批数据_0425/安静场景/"
-    # default_output_subfolder_name = "Activatebwc_test"
-    default_input_folder = "/mnt/huanyuan/data/speech/Recording/Daily_Record/TPEV/test/"
-    default_output_subfolder_name = "tpev_daily_record_test"
+    # default_input_folder = "/mnt/huanyuan/data/speech/Recording/Daily_Record/TPEV/test/"
+    # default_output_subfolder_name = "tpev_daily_record_test"
     # default_input_folder = "/mnt/huanyuan/data/speech/Recording/Daily_Record/TPEV/wav/"
     # default_output_subfolder_name = "tpev_daily_record"
+
+    # activate bwc
+    # default_input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/安静场景/"
+    # default_output_subfolder_name = "海外同事录制_0425/阈值_05_05/安静场景"
+    # default_input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/办公室场景/"
+    # default_output_subfolder_name = "海外同事录制_0425/阈值_05_05/办公室场景"
+    default_input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/路边场景/"
+    default_output_subfolder_name = "海外同事录制_0425/阈值_05_05/路边场景"
+
+    # xiaoan
     # default_input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/处理音频/"
     # default_output_subfolder_name = "实车录制_0427_pytorch/阈值_05_05/货车怠速场景/"
     # default_input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/其他录音/"
@@ -418,7 +425,11 @@ def main():
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_3_tc-resnet14-hisi_fbankcpu_kd_05302021/kws_config_xiaorui16k.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_3_tc-resnet14-hisi_fbankcpu_kd_05302021/kws_config_xiaorui16k_api.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_xiaorui/kws_xiaorui8k_56_196_1_0_resnet14_fbankcpu_06252021/kws_config_xiaorui8k.py"
-    default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_xiaorui/kws_xiaorui8k_56_196_1_0_resnet14_fbankcpu_06252021/kws_config_xiaorui8k_api.py"
+    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_xiaorui/kws_xiaorui8k_56_196_1_0_resnet14_fbankcpu_06252021/kws_config_xiaorui8k_api.py"
+
+    # activate bwc
+    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_5_tc-resnet14-amba_fbankcpu_kd_07162021/kws_config_activatebwc.py"
+    default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_5_tc-resnet14-amba_fbankcpu_kd_07162021/kws_config_activatebwc_api.py"
 
     parser = argparse.ArgumentParser(description='Streamax KWS Testing Engine')
     parser.add_argument('--mode', type=str, default=default_mode)

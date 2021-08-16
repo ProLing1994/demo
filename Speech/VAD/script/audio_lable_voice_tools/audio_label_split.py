@@ -39,7 +39,7 @@ def audio_lable_split(args):
         f = open(label_path, 'r', encoding='utf-8')
         lines = f.readlines()
         for line in lines:
-            audio_segments.append([int(line.split(':')[0].split('~')[0]), int(line.split(':')[0].split('~')[1])])
+            audio_segments.append([int(line.split(':')[0].split('~')[0]) + args.expansion_rate_front * args.sample_rate , int(line.split(':')[0].split('~')[1]) + args.expansion_rate_back * args.sample_rate, int(line.split(':')[-1])])
         f.close()
 
         # output audio_segment
@@ -49,7 +49,8 @@ def audio_lable_split(args):
             audio_segment_data = audio_data[int(audio_segment[0]) : int(audio_segment[1])]
 
             # output 
-            output_path = os.path.join(args.output_folder, args.output_format.format(speaker_id, segment_idx + 1))
+            # output_path = os.path.join(args.output_folder, args.output_format.format(speaker_id, segment_idx + 1))
+            output_path = os.path.join(args.output_folder, args.output_format.format(speaker_id, audio_segment[2]))
             temp_path = os.path.join(args.output_folder, '{}{}'.format('temp', args.audio_suffix))
             librosa.output.write_wav(temp_path, audio_segment_data, sr=args.sample_rate) 
             os.system('sox {} -b 16 -e signed-integer {}'.format(temp_path, output_path))
@@ -60,15 +61,18 @@ def audio_lable_split(args):
         
 def main():
     parser = argparse.ArgumentParser(description="")
-    parser.add_argument('--input_folder', type=str, default="/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_05102021/已标注/") 
-    parser.add_argument('--output_folder', type=str, default="/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/XiaoRuiDataset_05102021/xiaorui/") 
-    parser.add_argument('--output_format', type=str, default="RM_KWS_XIAORUI_xiaorui_S{:0>3d}M0D51T{:0>3d}.wav")
-    parser.add_argument('--id_name_csv', type=str, default="/mnt/huanyuan/data/speech/kws/xiaorui_dataset/original_dataset/唤醒词记录.csv") 
+    parser.add_argument('--input_folder', type=str, default="/mnt/huanyuan/data/speech/Recording/RM_Mandarin_YunNanBus/office/mobile_phone/原始数据/") 
+    parser.add_argument('--output_folder', type=str, default="/mnt/huanyuan/data/speech/Recording/RM_Mandarin_YunNanBus/office/mobile_phone/wav/") 
+    # parser.add_argument('--output_format', type=str, default="RM_KWS_XIAORUI_xiaorui_S{:0>3d}M0D51T{:0>3d}.wav")
+    parser.add_argument('--output_format', type=str, default="RM_YunNanBus_Mandarin_SP_S{:0>3d}P{:0>5d}.wav")
+    parser.add_argument('--id_name_csv', type=str, default="/mnt/huanyuan/data/speech/Recording/RM_Mandarin_YunNanBus/office/mobile_phone/唤醒词记录_YunNanBus.csv") 
     args = parser.parse_args()
 
     # params
     args.sample_rate = 16000
     args.audio_suffix = ".wav"
+    args.expansion_rate_front = -0.0
+    args.expansion_rate_back = 0.0
     audio_lable_split(args)
 
 

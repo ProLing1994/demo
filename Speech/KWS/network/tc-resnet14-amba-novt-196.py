@@ -1,3 +1,9 @@
+'''
+网络结构：tc-resnet14
+平台：amba、novt
+输入数据：2s 音频，图像输入长度为 196，宽度自适应
+'''
+
 import sys
 import torch
 import torch.nn as nn

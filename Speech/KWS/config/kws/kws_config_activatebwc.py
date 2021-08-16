@@ -29,7 +29,7 @@ __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_da
 __C.general.is_test = True
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws_english_test"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws_english_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_0_res15_fbankcpu_03222021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_1_res15_fbankcpu_03222021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_2_res15_fbankcpu_03222021/"
@@ -40,7 +40,8 @@ __C.general.save_dir = "/mnt/huanyuan/model/kws_english_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_1_tc-resnet14-amba_fbankcpu_kd_03222021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_2_tc-resnet14-amba_fbankcpu_kd_03222021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_3_tc-resnet14-amba_fbankcpu_dml_04012021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_4_tc-resnet14-amba_fbankcpu_kd_04012021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_4_tc-resnet14-amba_fbankcpu_kd_04012021/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_5_tc-resnet14-amba_fbankcpu_kd_07162021/"
 
 # finetune model
 __C.general.finetune_on = False
@@ -294,7 +295,7 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'cnn-trad-pool2'
 # __C.net.model_name = 'cnn-one-fstride1'
 # __C.net.model_name = 'cnn-tpool2'
-__C.net.model_name = 'res15'
+# __C.net.model_name = 'res15'
 # __C.net.model_name = 'res15-narrow'
 # __C.net.model_name = 'res15-narrow-amba'
 # __C.net.model_name = 'res15-narrow-novt'
@@ -310,8 +311,7 @@ __C.net.model_name = 'res15'
 # __C.net.model_name = 'tc-resnet8-dropout'
 # __C.net.model_name = 'tc-resnet14-dropout'
 # __C.net.model_name = 'tc-resnet18-dropout'
-# __C.net.model_name = 'tc-resnet14-amba-novt-2s'
-# __C.net.model_name = 'tc-resnet14-hisi-2s'
+__C.net.model_name = 'tc-resnet14-amba-novt-196'
 
 ######################################
 # training parameters

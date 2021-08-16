@@ -15,6 +15,7 @@ class Ken_LM:
         state.append(word)
         sentence = " ".join(state)
         # 输入需要显式指定 <s> 起始符，不会默认添加，然后忽略 eos 终止符，不会为输入的 sentence 添加默认终止符 </s>
+        # list(self.__model.full_scores(sentence, bos=False, eos=False))[-1][0] 获取最后一个时刻的得分（而不是将每个时刻的得分累加）
         # prob = self.__model.score(sentence, bos=True, eos=True)
         # prob = self.__model.score(sentence, bos=False, eos=False)
         prob = list(self.__model.full_scores(sentence, bos=False, eos=False))[-1][0]
