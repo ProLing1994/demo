@@ -23,6 +23,7 @@ def TTS_pyttsx3(args):
     https://blog.csdn.net/u014663232/article/details/103834543
     '''
     import pyttsx3
+    # demo
     # engine = pyttsx3.init()
     # engine.say('Good morning.')
     # engine.runAndWait()
@@ -85,6 +86,7 @@ def TTS_gTTS(args):
     Google Text to Speech (TTS) API.
     '''
     from gtts import gTTS
+    # demo
     # tts = gTTS(text=args.text, lang='en')
     # tts = gTTS(text=args.text, lang='en', slow=True)
     # tts.save("./good.mp3")
@@ -137,6 +139,7 @@ def TTS_watson(args):
     from ibm_watson import TextToSpeechV1
     from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 
+    # demo
     # authenticator = IAMAuthenticator('hCGxBbsosLhiraIpCRQCq70hirhWk_Cy2K42_t2hoTYM')
     # text_to_speech = TextToSpeechV1(
     #     authenticator=authenticator

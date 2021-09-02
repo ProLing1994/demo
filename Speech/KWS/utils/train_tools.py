@@ -57,7 +57,7 @@ def setup_workshop(cfg):
 
 
 def init_torch_and_numpy(cfg, local_rank=0):
-    """ enable cudnn and control randomness during training
+    """ enable cudnn and control randomness during training, 设置随机种子，以使得结果是确定的
     :param cfg:         configuration file
     :param local_rank:  the device index
     :return:     None
@@ -65,10 +65,11 @@ def init_torch_and_numpy(cfg, local_rank=0):
     os.environ['CUDA_VISIBLE_DEVICES'] = cfg.general.gpu_ids
     assert torch.cuda.is_available(), \
         'CUDA is not available! Please check nvidia driver!'
-    torch.backends.cudnn.benchmark = True
+    os.environ['PYTHONHASHSEED'] = str(cfg.debug.seed)
     np.random.seed(cfg.debug.seed)
     torch.manual_seed(cfg.debug.seed)
     torch.cuda.manual_seed(cfg.debug.seed)
+    torch.backends.cudnn.benchmark = True
 
     if cfg.general.data_parallel_mode == 0:
         pass

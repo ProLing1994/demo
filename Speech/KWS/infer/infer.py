@@ -13,12 +13,10 @@ from dataset.kws.dataset_helper import *
 from utils.train_tools import *
 
 
-def longterm_audio_align_post_processing(cfg, score_list, audio_label_idx, result_mode, timeshift_ms, average_window_duration_ms):
+def longterm_audio_align_post_processing(cfg, score_list, result_mode, timeshift_ms, average_window_duration_ms):
     """
     后处理操作，基于帧对齐模式
     """
-    num_classes = cfg.dataset.label.num_classes
-
     final_scores = []
     final_scores.append(0.0)
     if result_mode == 'double_edge_triggered_detecting':
@@ -109,7 +107,7 @@ def longterm_audio_post_processing(cfg, score_list, audio_label_idx, result_mode
     return pred, average_scores
 
 
-def longterm_audio_predict(cfg, net, lmdb_env, audio_file, audio_mode, audio_label, audio_label_idx, background_data, add_noise_on, timeshift_ms, align_bool):
+def longterm_audio_predict(cfg, net, lmdb_env, audio_file, audio_mode, audio_label, background_data, add_noise_on, timeshift_ms, align_bool):
     """
     加载语音，前向传播预测结果
     """
@@ -159,15 +157,15 @@ def longterm_audio_predict(cfg, net, lmdb_env, audio_file, audio_mode, audio_lab
     return score_list
 
 
-def infer(args, config_file, epoch_num, dataset_mode, add_noise_on, timeshift_ms, average_window_duration_ms, result_mode):
+def infer(args, dataset_mode):
     """
     模型推理，通过滑窗的方式测试每一小段音频数据，随后进行后处理操作
     """
     # load configuration file
-    cfg = load_cfg_file(config_file)
+    cfg = load_cfg_file(args.input)
 
     # align bool
-    align_bool = 'align' in config_file
+    align_bool = 'align' in args.input
 
     # init 
     num_classes = cfg.dataset.label.num_classes
@@ -175,7 +173,7 @@ def infer(args, config_file, epoch_num, dataset_mode, add_noise_on, timeshift_ms
     negative_label_together = cfg.dataset.label.negative_label_together
 
     # load prediction model
-    model = kws_load_model(cfg.general.save_dir, int(cfg.general.gpu_ids), epoch_num, args.sub_folder_name)
+    model = kws_load_model(cfg.general.save_dir, int(cfg.general.gpu_ids), cfg.test.model_epoch)
     net = model['prediction']['net']
     net.eval()
 
@@ -224,13 +222,13 @@ def infer(args, config_file, epoch_num, dataset_mode, add_noise_on, timeshift_ms
             results_dict['label_idx'] = label_index[results_dict['label']]
         assert results_dict['mode']  == dataset_mode, "[ERROR:] Something wronge about mode, please check"
 
-        score_list = longterm_audio_predict(cfg, net, lmdb_env, results_dict['file'], results_dict['mode'], results_dict['label'], results_dict['label_idx'], 
-                                            background_data, add_noise_on, timeshift_ms, align_bool)
+        score_list = longterm_audio_predict(cfg, net, lmdb_env, results_dict['file'], results_dict['mode'], results_dict['label'], 
+                                            background_data, args.add_noise_on, args.timeshift_ms, align_bool)
         
         if align_bool:
-            pred, score = longterm_audio_align_post_processing(cfg, score_list, results_dict['label_idx'], result_mode, timeshift_ms, average_window_duration_ms)
+            pred, score = longterm_audio_align_post_processing(cfg, score_list, args.result_mode, args.timeshift_ms, args.average_window_duration_ms)
         else:
-            pred, score = longterm_audio_post_processing(cfg, score_list, results_dict['label_idx'], result_mode, timeshift_ms, average_window_duration_ms)
+            pred, score = longterm_audio_post_processing(cfg, score_list, results_dict['label_idx'], args.result_mode, args.timeshift_ms, args.average_window_duration_ms)
 
         preds.append(pred)
         labels.append(results_dict['label_idx'])
@@ -248,7 +246,7 @@ def infer(args, config_file, epoch_num, dataset_mode, add_noise_on, timeshift_ms
 
     # out csv
     csv_data_pd = pd.DataFrame(results_list)
-    csv_data_pd.to_csv(os.path.join(cfg.general.save_dir, 'infer_longterm_{}_augmentation_{}_{}.csv'.format(dataset_mode, add_noise_on, result_mode)), index=False, encoding="utf_8_sig")
+    csv_data_pd.to_csv(os.path.join(cfg.general.save_dir, 'infer_longterm_{}_augmentation_{}_{}.csv'.format(dataset_mode, args.add_noise_on, args.result_mode)), index=False, encoding="utf_8_sig")
 
 
 def main():
@@ -260,8 +258,6 @@ def main():
     """
 
     default_mode = "validation"     # ["testing,validation,training"]
-    default_model_epoch = -1
-    default_model_sub_folder_name = "checkpoints"
     default_add_noise_on = False    # [True,False]
     # default_timeshift_ms = 30       # [30]
     # default_average_window_duration_ms = 800                   # [800, 1500] only for mode: average_duration_ms/double_edge_triggered_detecting
@@ -282,8 +278,6 @@ def main():
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_nihaoxiaoan16k.py", help='config file')
     
     parser.add_argument('--mode', type=str, default=default_mode)
-    parser.add_argument('--epoch', type=int, default=default_model_epoch)
-    parser.add_argument('--sub_folder_name', type=str, default=default_model_sub_folder_name)
     parser.add_argument('--add_noise_on', type=bool, default=default_add_noise_on)
     parser.add_argument('--timeshift_ms', type=int, default=default_timeshift_ms)
     parser.add_argument('--average_window_duration_ms', type=int, default=default_average_window_duration_ms)
@@ -292,7 +286,7 @@ def main():
 
     mode_list = args.mode.strip().split(',')
     for mode_type in mode_list:
-        infer(args, args.input, args.epoch, mode_type, args.add_noise_on, args.timeshift_ms, args.average_window_duration_ms, args.result_mode)
+        infer(args, mode_type)
 
 
 if __name__ == "__main__":

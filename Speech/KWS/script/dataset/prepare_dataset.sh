@@ -9,7 +9,7 @@
 # 4. 若步骤 2、步骤 3 效果不理想，则手动进行检测（目前英文关键词只能通过手动检查的方法）
 # 4. 自行检测数据的完整性和正确性
 
-stage=1
+stage=2
 
 # init
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_speech.py

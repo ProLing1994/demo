@@ -19,22 +19,23 @@ def copy_audio():
         wave_path = file_list[idx]
 
         # mkdir
-        # output_subfolder_path = (os.path.dirname(wave_path) + '/').replace(args.input_dir, '')
-        # output_dir = os.path.join(args.output_dir, args.output_folder_name, output_subfolder_path)
-        output_dir = os.path.join(args.output_dir, args.output_folder_name)
+        output_subfolder_path = (os.path.dirname(wave_path) + '/').replace(args.input_dir, '')
+        output_dir = os.path.join(args.output_dir, args.output_folder_name, output_subfolder_path)
+        # output_dir = os.path.join(args.output_dir, args.output_folder_name)
         if not os.path.exists(output_dir):    
             os.makedirs(output_dir)
 
         output_path = os.path.join(output_dir, os.path.basename(wave_path))
         print(wave_path, '->', output_path)
-        # shutil.copy(wave_path, output_path)
-        shutil.move(wave_path, output_path)
+        shutil.copy(wave_path, output_path)
+        # shutil.move(wave_path, output_path)
 
 
 if __name__ == "__main__":
-    default_input_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/ActivateBWC_07162021/activatebwc/0707/"
-    default_output_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/ActivateBWC_07162021/activatebwc/原始音频/"
-    default_output_folder_name = "0707"
+    # input_dir must endswith "/"
+    default_input_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_5_tc-resnet14-amba_fbankcpu_kd_07162021/test_straming_wav/difficult_sample_mining/"
+    default_output_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/Meiguo_BwcKeyword_08192021/"
+    default_output_folder_name = "danbing_record/"
     
     parser = argparse.ArgumentParser(description='Streamax KWS Engine')
     parser.add_argument('--input_dir', type=str, default=default_input_dir)

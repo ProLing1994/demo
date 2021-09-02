@@ -14,34 +14,59 @@ __C.general.data_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experi
 __C.general.sub_data_dir = []
 
 # data version
-__C.general.version = "1.6"
+# __C.general.version = "1.5"     # 重庆人录制唤醒词
+# __C.general.version = "1.5.10"  # 重庆人录制唤醒词
+__C.general.version = "1.6"     # + 深圳人录制唤醒词
+# __C.general.version = "1.7"
+# __C.general.version = "1.8"     # tts 
+# __C.general.version = "1.9"     # tts + 100% 重庆人录制唤醒词
+# __C.general.version = "1.9.10"  # tts + 10% 重庆人录制唤醒词
 
 # data date
-__C.general.date = "07162021"
+# __C.general.date = "03312021"
+# __C.general.date = "07162021"
+__C.general.date = "08192021"
+# __C.general.date = "08272021"
+# __C.general.date = "08302021"
 
 # data path
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.5_03312021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.5.10_03312021/total_data_files.csv"
 __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.6_07162021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.7_08192021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_tts_2s_1.8_08272021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_tts_2s_1.9_08302021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_tts_2s_1.9.10_08302021/total_data_files.csv"
 
 # background noise path
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.5_03312021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.5.10_03312021/background_noise_files.csv"
 __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.6_07162021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.7_08192021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_tts_2s_1.8_08272021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_tts_2s_1.9_08302021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_tts_2s_1.9.10_08302021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # the output of training models and logging files
 # __C.general.save_dir = "/mnt/huanyuan/model/kws_english_test"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_0_res15_fbankcpu_03222021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_1_res15_fbankcpu_03222021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_2_res15_fbankcpu_03222021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_3_res15_fbankcpu_03222021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_4_res15_fbankcpu_03222021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_5_res15_fbankcpu_03222021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_1_6_res15_fbankcpu_03222021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_1_tc-resnet14-amba_fbankcpu_kd_03222021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_2_tc-resnet14-amba_fbankcpu_kd_03222021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_activatebwc_2_3_tc-resnet14-amba_fbankcpu_dml_04012021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_1_0_res15_fbankcpu_03222021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_1_1_res15_fbankcpu_03222021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_1_2_res15_fbankcpu_03222021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_1_3_res15_fbankcpu_03222021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_1_4_res15_fbankcpu_03222021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_1_5_res15_fbankcpu_03222021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_1_6_res15_fbankcpu_03222021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_1_tc-resnet14-amba_fbankcpu_kd_03222021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_2_tc-resnet14-amba_fbankcpu_kd_03222021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_3_tc-resnet14-amba_fbankcpu_dml_04012021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_4_tc-resnet14-amba_fbankcpu_kd_04012021/"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_5_tc-resnet14-amba_fbankcpu_kd_07162021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_5_tc-resnet14-amba_fbankcpu_kd_07162021/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_wntts_1_0_res15_fbankcpu_07162021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_tts_1_0_res15_fbankcpu_07162021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_tts_1_1_res15_fbankcpu_07162021/"
 
 # finetune model
 __C.general.finetune_on = False
@@ -157,6 +182,7 @@ __C.dataset.label = {}
 
 # label
 __C.dataset.label.positive_label = ["activatebwc"]
+# __C.dataset.label.positive_label = ["tts"]
 __C.dataset.label.positive_label_chinese_name_list = [""]
 __C.dataset.label.positive_label_together = False
 __C.dataset.label.positive_label_together_label = ["positive"]
@@ -165,7 +191,8 @@ __C.dataset.label.negative_label_together = True
 __C.dataset.label.negative_label_together_label = ["negative"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
 __C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[1]
-__C.dataset.label.ignore_label = [""]
+__C.dataset.label.ignore_label = ["activate", "bwc", "tts", "temp"]
+# __C.dataset.label.ignore_label = ["activatebwc", "activate", "bwc", "temp"]
 __C.dataset.label.label_list = __C.dataset.label.negative_label + __C.dataset.label.positive_label
 __C.dataset.label.num_classes = 2
 
@@ -295,7 +322,7 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'cnn-trad-pool2'
 # __C.net.model_name = 'cnn-one-fstride1'
 # __C.net.model_name = 'cnn-tpool2'
-# __C.net.model_name = 'res15'
+__C.net.model_name = 'res15'
 # __C.net.model_name = 'res15-narrow'
 # __C.net.model_name = 'res15-narrow-amba'
 # __C.net.model_name = 'res15-narrow-novt'
@@ -311,7 +338,7 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'tc-resnet8-dropout'
 # __C.net.model_name = 'tc-resnet14-dropout'
 # __C.net.model_name = 'tc-resnet18-dropout'
-__C.net.model_name = 'tc-resnet14-amba-novt-196'
+# __C.net.model_name = 'tc-resnet14-amba-novt-196'
 
 ######################################
 # training parameters
@@ -430,7 +457,9 @@ __C.debug.seed = 0
 __C.test = {}
 
 # the number of testing epochs
-__C.test.model_epoch = -1
+# __C.test.model_epoch = -1
+__C.test.model_epoch = 200
+# __C.test.model_epoch = 500
 
 # mode, support [0: RecognizeCommands, 1: RecognizeCommandsCountNumber, 2:RecognizeCommandsAlign]
 __C.test.method_mode = 0
