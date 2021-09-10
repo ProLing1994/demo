@@ -60,6 +60,10 @@ def add_dataset(args):
     merge_data_pd = merge_data_pd[merge_data_pd['mode'] == "training"]
     merge_data_pd = merge_data_pd[merge_data_pd['select_id'] == True]
     merge_data_pd = pd.concat([data_pd, merge_data_pd])
+
+    tts_data_pd = merge_data_pd[merge_data_pd['label'] == "tts"]
+    merge_data_pd = add_data_pd[add_data_pd['label'] != "tts"]
+    merge_data_pd = pd.concat([tts_data_pd, merge_data_pd])
     merge_data_pd.to_csv(os.path.join(args.output_tts_folder, "total_data_files.csv"), index=False, encoding="utf_8_sig")
     
     # 生成对比数据，用于对比实验结果
@@ -77,7 +81,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     args.tts_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_tts_2s_1.8_08272021/"
     args.add_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.5_03312021/"
-    args.output_tts_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_tts_2s_1.9.10_08302021/"
-    args.output_add_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.5.10_03312021/"
-    args.add_frequency = 0.1
+    args.output_tts_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_tts_2s_1.9.50_08302021/"
+    args.output_add_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.5.50_03312021/"
+    args.add_frequency = 0.5
     add_dataset(args)

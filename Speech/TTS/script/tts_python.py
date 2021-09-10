@@ -195,7 +195,6 @@ if __name__ == "__main__":
     # args.output_dir = "/mnt/huanyuan/data/speech/Recording/RM_Activatebwc/tts"
     args.output_dir = r"\\192.168.151.112\mnt\data\speech\Recording\RM_Activatebwc\tts"
 
-    # pyttsx3
     # TTS_pyttsx3(args)
     # TTS_gTTS(args)
     # TTS_win32com(args)

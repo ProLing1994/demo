@@ -85,9 +85,6 @@ def import_network(cfg, model_name, class_name='SpeechResModel'):
     :param cfg:
     :return:
     """
-    assert torch.cuda.is_available(), \
-        'CUDA is not available! Please check nvidia driver!'
-
     net_module = importlib.import_module('network.' + model_name)
     net = net_module.__getattribute__(class_name)(num_classes=cfg.dataset.label.num_classes,
                                                     image_height=cfg.dataset.data_size[1],

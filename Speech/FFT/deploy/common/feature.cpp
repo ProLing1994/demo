@@ -1,0 +1,480 @@
+#include <algorithm>
+
+#include "feature.hpp"
+
+namespace ASR
+{
+    float hz_to_mel(float freq)
+    {
+        float b;
+        b = 2595 * log10(1 + freq / 700.0);
+        return b;
+    }
+
+    float mel_to_hz(float mel)
+    {
+        float b;
+        b = 700 * (pow(10, (mel / 2595.0)) - 1);
+        return b;
+    }
+
+    void show_mat_int(cv::Mat feature_mat, int rows, int cols)
+    {
+        int *p_data = (int *)feature_mat.data;
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                std::cout << (int)*(p_data + j + i * feature_mat.cols) << " ";
+            }
+            std::cout << std::endl;
+        }
+    }
+
+    void show_mat_uchar(cv::Mat feature_mat, int rows, int cols)
+    {
+        unsigned char *p_data = (unsigned char *)feature_mat.data;
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                std::cout << (int)*(p_data + j + i * feature_mat.cols) << " ";
+            }
+            std::cout << std::endl;
+        }
+    }
+
+    void show_mat_float(cv::Mat feature_mat, int rows, int cols)
+    {
+        float *p_data = (float *)feature_mat.data;
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                std::cout << (float)*(p_data + j + i * feature_mat.cols) << " ";
+            }
+            std::cout << std::endl;
+        }
+    }
+
+    void serial_multiplication(cv::Mat matrix_a, cv::Mat matrix_b, cv::Mat *result)
+    {
+        int M = matrix_a.rows;
+        int N = matrix_a.cols;
+        int O = matrix_b.cols;
+        float *p_a = (float *)matrix_a.data;
+        float *p_b = (float *)matrix_b.data;
+        float *p_o = (float *)result->data;
+
+        for (int i = 0; i < M; ++i)
+        {
+            for (int j = 0; j < O; ++j)
+            {
+                double temp = 0;
+                for (int k = 0; k < N; ++k)
+                {
+                    temp += *(p_a + i * N + k) * *(p_b + k * O + j);
+                }
+                *(p_o + i * O + j) = temp;
+            }
+        }
+    }
+
+    void get_mfsc_feature(cv::Mat &frequency_feature, cv::Mat &mel_filter, cv::Mat *MFSC, int n_mel)
+    {
+        (void) n_mel;
+        serial_multiplication(frequency_feature, mel_filter, MFSC);
+        return;
+    }
+
+    void get_pcen_feature(cv::Mat &pcen_feature, bool mask)
+    {
+        float s = 0.025;
+        float m_s = 1 - s;
+        // float a = 1.00;
+        float o = 2;
+        float r = 0.5;
+        float e = 0.00001;
+        float o_r = pow(o, r);
+        int freq_num = pcen_feature.cols;
+        int frame_num = pcen_feature.rows;
+        int channel = pcen_feature.channels();
+        mask = false;
+        cv::Mat M;
+        cv::Mat PCEN;
+        if (channel == 3)
+        {
+            M = cv::Mat::zeros(freq_num, 1, CV_32FC3);
+            PCEN = cv::Mat::zeros(frame_num, freq_num, CV_32FC3);
+        }
+        else
+        {
+            M = cv::Mat::zeros(freq_num, 1, CV_32FC1);
+            PCEN = cv::Mat::zeros(frame_num, freq_num, CV_32FC1);
+        }
+        float temp_m[channel];
+        for (int i = 0; i < freq_num; i++)
+        {
+            for (int k = 0; k < channel; k++)
+            {
+                temp_m[k] = 0;
+                for (int j = 0; j < 20; j++)
+                {
+                    temp_m[k] += pcen_feature.at<float>(j, i, k);
+                }
+                M.at<float>(i, 0, k) = temp_m[k] / 20;
+            }
+        }
+
+        if (mask)
+        {
+            // TO Do
+        }
+        else
+        {
+            for (int i = 0; i < frame_num; i++)
+            {
+                for (int j = 0; j < freq_num; j++)
+                {
+                    for (int k = 0; k < channel; k++)
+                    {
+                        M.at<float>(j, 0, k) = m_s * M.at<float>(j, 0, k) + s * pcen_feature.at<float>(i, j, k);
+                        PCEN.at<float>(i, j, k) = pow((pcen_feature.at<float>(i, j, k) / (e + M.at<float>(j, 0, k) + 10.0) + o), r) - o_r;
+                    }
+                }
+            }
+        }
+        pcen_feature = PCEN.clone();
+    }
+
+    void get_int_feature(cv::Mat &input, cv::Mat *output, int scale_num)
+    {   
+        // 下面这种方式，有的时候会导致 opencv 的 error
+        // " error: (-215:Assertion failed) dims >= 3 in function 'ptr' "
+        // 
+        // int u8_data = 0;
+        // for (int r = 0; r < input.rows; r++)
+        // {
+        //     for (int c = 0; c < input.cols; c++)
+        //     {
+        //         for (int k = 0; k < input.channels(); k++)
+        //         {
+        //             u8_data = (int)(input.at<float>(r, c, k) * 255 / scale_num);
+        //             u8_data = u8_data < 0 ? 0 : u8_data;
+        //             u8_data = u8_data > 255 ? 255 : u8_data;
+        //             output->at<unsigned char>(r, c, k) = u8_data;
+        //         }
+        //     }
+        // }
+        assert( (input.dims == 2) and (output->dims == 2) );
+
+        int u8_data = 0;
+        for (int r = 0; r < input.rows; r++)
+        {
+            for (int c = 0; c < input.cols; c++)
+            {
+                u8_data = (int)(input.at<float>(r, c) * 255 / scale_num);
+                u8_data = u8_data < 0 ? 0 : u8_data;
+                u8_data = u8_data > 255 ? 255 : u8_data;
+                output->at<unsigned char>(r, c) = u8_data;
+            }
+        }
+    }
+    
+    Feature::Feature():
+        m_feature_options()
+    {    
+        feature_mat_init();
+        mel_filter_init();
+        m_fft.reset( new rm_FFT(m_feature_options.n_fft) );
+        m_fftw.reset( new rm_FFTW(m_feature_options.n_fft) );
+    }
+
+    Feature::Feature(const Feature_Options_S &feature_options):
+        m_feature_options(feature_options)
+    {
+        feature_mat_init();
+        mel_filter_init();
+        m_fft.reset( new rm_FFT(m_feature_options.n_fft) );
+        m_fftw.reset( new rm_FFTW(m_feature_options.n_fft) );
+    }
+
+    Feature::Feature(int data_len_samples, int sample_rate, int n_fft, int nfilt, int feature_freq)
+    {
+        Feature_Options_S feature_options;
+        feature_options.data_len_samples = data_len_samples;
+        feature_options.sample_rate = sample_rate;
+        feature_options.n_fft = n_fft; 
+        feature_options.nfilt = nfilt; 
+        feature_options.feature_freq = feature_freq;
+
+        feature_options_init(feature_options);
+        feature_mat_init();
+        mel_filter_init();
+        m_fft.reset( new rm_FFT(m_feature_options.n_fft) );
+        m_fftw.reset( new rm_FFTW(m_feature_options.n_fft) );
+    }
+
+    Feature::~Feature()
+    {
+        m_fft.reset( nullptr );
+        m_fftw.reset( nullptr );
+    }
+
+    void Feature::feature_options_init(const Feature_Options_S &feature_options)
+    {
+        m_feature_options = Feature_Options_S(feature_options);
+    }
+
+    void Feature::mel_filter_init()
+    {
+        // check 
+        if (m_feature_options.feature_freq > m_feature_options.nfilt && !m_feature_options.fft_flag)
+        {
+            printf("[ERROR:] %s, %d: feature freq must <= nfilt\n", __FUNCTION__, __LINE__);
+        }
+
+        // init 
+        get_mel_filter(&m_mel_filter, m_feature_options.feature_freq, m_feature_options.nfilt);
+    }
+
+    void Feature::feature_mat_init()
+    {   
+        m_mel_filter = cv::Mat::zeros(m_feature_options.n_fft / 2, m_feature_options.feature_freq, CV_32FC1);
+
+        m_frequency_feature = cv::Mat::zeros(m_feature_options.data_mat_time, m_feature_options.n_fft / 2, CV_32FC1);
+        m_mfsc_feature = cv::Mat::zeros(m_feature_options.data_mat_time, m_feature_options.feature_freq, CV_32FC1);
+        m_mfsc_feature_int = cv::Mat::zeros(m_feature_options.data_mat_time, m_feature_options.feature_freq, CV_8UC1);
+        m_single_feature = cv::Mat::zeros(m_feature_options.feature_time, m_feature_options.feature_freq, CV_8UC1);
+    }
+
+    int Feature::check_data_length(int data_len_samples)
+    {
+        if(data_len_samples == m_feature_options.data_len_samples)
+            return 0;
+        else
+            return -1;
+    }
+
+    void Feature::copy_mfsc_feature_int_to(unsigned char *feature_data)
+    {
+        memcpy(feature_data, m_mfsc_feature_int.data, m_feature_options.data_mat_time * m_feature_options.feature_freq * sizeof(unsigned char));
+    }
+
+    void Feature::copy_mfsc_feature_to(float *feature_data)
+    {
+        memcpy(feature_data, m_mfsc_feature.data, m_feature_options.data_mat_time * m_feature_options.feature_freq * sizeof(float));
+    }
+
+    void Feature::get_frequency_feature(short *pdata, int data_len_samples, cv::Mat *frequency_feature)
+    {
+        // init
+        bool with_log = false;
+        float w[m_feature_options.n_fft];
+        float data_line[m_feature_options.n_fft];
+
+        for (int i = 0; i < m_feature_options.n_fft; i++) { data_line[i] = 0;}
+        for (int i = 0; i < m_feature_options.n_fft; i++)
+        {
+            w[i] = 0.54 - 0.46 * cos((float)2 * PI * i / (m_feature_options.n_fft - 1));
+        }
+
+        // wav time step 10ms
+        int range0_end = std::min(16000.0, (data_len_samples * 1.0 / m_feature_options.sample_rate * 1000 - m_feature_options.n_fft * 1000 / m_feature_options.sample_rate) / m_feature_options.time_step_ms); // 10 #
+
+        if (!frequency_feature->isContinuous())
+            return;
+        for (int i = 0; i < range0_end; i++)
+        {
+
+            int p_start = i * m_feature_options.sample_rate * m_feature_options.time_step_ms / 1000;
+            for (int j = 0; j < m_feature_options.n_fft; j++)
+            {
+                data_line[j] = *(pdata + p_start + j) * w[j];
+            }
+
+            // fft.m_in_sequence
+            m_fft->clear();
+            for (int j = 0; j < m_feature_options.n_fft; j++)
+                m_fft->m_in_sequence[j].rl = data_line[j];
+
+            // fft
+            m_fft->fft();
+
+            // fft.m_out_sequence
+            if (with_log)
+            {
+                for (int j = 0; j < m_feature_options.n_fft / 2; j++)
+                {
+                    frequency_feature->at<float>(i, j) = log((sqrt(pow(m_fft->m_out_sequence[j].rl, 2) + pow(m_fft->m_out_sequence[j].im, 2)) / m_feature_options.n_fft) + 1);
+                }
+            }
+            else
+            {
+                for (int j = 0; j < m_feature_options.n_fft / 2; j++)
+                {
+                    frequency_feature->at<float>(i, j) = sqrt(pow(m_fft->m_out_sequence[j].rl, 2) + pow(m_fft->m_out_sequence[j].im, 2)) / m_feature_options.n_fft;
+                }
+            }
+        }
+        return;
+    }
+
+    void Feature::get_frequency_feature_fftw(short *pdata, int data_len_samples, cv::Mat *frequency_feature)
+    {
+        // init
+        bool with_log = false;
+        float w[m_feature_options.n_fft];
+        float fft_in[m_feature_options.n_fft];
+        float fft_out[m_feature_options.n_fft / 2];
+
+        for (int i = 0; i < m_feature_options.n_fft; i++) { fft_in[i] = 0;}
+        for (int i = 0; i < m_feature_options.n_fft; i++) { fft_out[i] = 0;}
+        for (int i = 0; i < m_feature_options.n_fft; i++)
+        {
+            w[i] = 0.54 - 0.46 * cos((float)2 * PI * i / (m_feature_options.n_fft - 1));
+        }
+
+        // check
+        if (!frequency_feature->isContinuous())
+            return;
+
+        // wav time step 10ms
+        int range_end = std::min(16000.0, (data_len_samples * 1.0 / m_feature_options.sample_rate * 1000 - m_feature_options.n_fft * 1000 / m_feature_options.sample_rate) / m_feature_options.time_step_ms); // 10 #
+
+        for (int i = 0; i < range_end; i++)
+        {
+
+            int p_start = i * m_feature_options.sample_rate * m_feature_options.time_step_ms / 1000;
+            for (int j = 0; j < m_feature_options.n_fft; j++)
+            {
+                fft_in[j] = *(pdata + p_start + j) * w[j];
+            }
+
+            // fft
+            // m_fftw->psd_double(fft_in, fft_out, with_log);
+            m_fftw->psd_float(fft_in, fft_out, with_log);
+
+            for (int j = 0; j < m_feature_options.n_fft / 2; j++)
+            {
+                frequency_feature->at<float>(i, j) = fft_out[j];
+            }
+        }
+        return;
+    }
+
+    void Feature::get_mel_filter(cv::Mat *mel_filter, int n_mel, int nfilt)
+    {
+        int low_freq = 10;
+        int high_freq = m_feature_options.sample_rate / 2;
+        int samplerate = m_feature_options.sample_rate;
+        if (high_freq > samplerate / 2)
+        {
+            high_freq = samplerate / 2;
+        }
+        float low_mel = hz_to_mel(low_freq);
+        float high_mel = hz_to_mel(high_freq);
+
+        float bin[nfilt + 2];
+        float melpoints[nfilt + 2];
+        for (int i = 0; i < nfilt + 2; i++)
+        {
+            melpoints[i] = (high_mel - low_mel) * i / (nfilt + 1) + low_mel;
+            bin[i] = floor((m_feature_options.n_fft + 1) * mel_to_hz(melpoints[i]) / samplerate);
+        }
+        for (int j = 0; j < n_mel; j++)
+        {
+            for (int i = bin[j]; i < bin[j + 1]; i++)
+            {
+                mel_filter->at<float>(i, j) = (i - bin[j]) / (bin[j + 1] - bin[j]);
+            }
+            for (int i = bin[j + 1]; i < bin[j + 2]; i++)
+            {
+                mel_filter->at<float>(i, j) = (bin[j + 2] - i) / (bin[j + 2] - bin[j + 1]);
+            }
+        }
+        return;
+    }
+
+    void Feature::get_mel_feature(short *pdata, int data_len_samples)
+    {
+        get_frequency_feature(pdata, data_len_samples, &m_frequency_feature);
+        get_mfsc_feature(m_frequency_feature, m_mel_filter, &m_mfsc_feature, m_feature_options.feature_freq);
+        cv::log(m_mfsc_feature + 1, m_mfsc_feature);
+    }
+    
+    void Feature::get_mel_int_feature(short *pdata, int data_len_samples)
+    {
+        // get_frequency_feature(pdata, data_len_samples, &m_frequency_feature);
+        get_frequency_feature_fftw(pdata, data_len_samples, &m_frequency_feature);
+
+        // std::cout << m_frequency_feature.rows << std::endl;
+        // std::cout << m_frequency_feature.cols << std::endl;
+        // show_mat_float(m_frequency_feature, 2, m_frequency_feature.cols);
+
+        #ifdef _CQTAXI
+        // 重庆出租
+        cv::log(m_frequency_feature + 1, m_frequency_feature);
+        get_mfsc_feature(m_frequency_feature, m_mel_filter, &m_mfsc_feature, m_feature_options.feature_freq);
+        get_int_feature(m_mfsc_feature, &m_mfsc_feature_int, m_feature_options.mel_int_scale_num);
+        #else
+        get_mfsc_feature(m_frequency_feature, m_mel_filter, &m_mfsc_feature, m_feature_options.feature_freq);
+        cv::log(m_mfsc_feature + 1, m_mfsc_feature);
+        get_int_feature(m_mfsc_feature, &m_mfsc_feature_int, m_feature_options.mel_int_scale_num);      
+        #endif
+    }
+
+
+    void Feature::get_fft_int_feature(short *pdata, int data_len_samples)
+    {
+        get_frequency_feature(pdata, data_len_samples, &m_frequency_feature);
+        cv::log(m_frequency_feature + 1, m_frequency_feature);
+        get_int_feature(m_frequency_feature, &m_mfsc_feature_int, m_feature_options.mel_int_scale_num);      
+    }
+
+    void Feature::get_mel_pcen_feature(short *pdata, int data_len_samples)
+    {
+        get_frequency_feature(pdata, data_len_samples, &m_frequency_feature);
+        get_mfsc_feature(m_frequency_feature, m_mel_filter, &m_mfsc_feature, m_feature_options.feature_freq);
+		get_pcen_feature(m_mfsc_feature);
+        get_int_feature(m_mfsc_feature, &m_mfsc_feature_int, m_feature_options.mel_pecn_scale_num);
+    }
+
+    void Feature::get_featuer_total_window(short *pdata, int data_len_samples)
+    {
+        if(m_feature_options.pcen_flag == true)
+            get_mel_pcen_feature(pdata, data_len_samples);
+        else if(m_feature_options.fft_flag == true)
+            get_fft_int_feature(pdata, data_len_samples);
+        else 
+            get_mel_int_feature(pdata, data_len_samples);
+    }
+
+    void Feature::get_featuer_slides_window(short *pdata, int data_len_samples)
+    {
+        if(m_feature_options.pcen_flag == true)
+        {
+            // do FFT to all wav, then do PCEN to each fragment
+            get_frequency_feature(pdata, data_len_samples, &m_frequency_feature);
+            get_mfsc_feature(m_frequency_feature, m_mel_filter, &m_mfsc_feature, m_feature_options.feature_freq);
+        }
+        else
+        {
+            get_mel_int_feature(pdata, data_len_samples);
+        }
+    }
+    
+    // void Feature::get_single_feature(int start_feature_time)
+    // {
+    //     if (m_feature_options.pcen_flag == true)
+    //     {
+    //         cv::Mat pcen_feature = m_mfsc_feature(cv::Range(start_feature_time, start_feature_time + m_feature_options.feature_time), cv::Range(0, m_feature_options.feature_freq)).clone();
+    //         get_pcen_feature(pcen_feature);
+    //         get_int_feature(pcen_feature, &m_single_feature, m_feature_options.mel_pecn_scale_num);
+    //     }
+    //     else
+    //     {
+    //         m_single_feature = m_mfsc_feature_int(cv::Range(start_feature_time, start_feature_time + m_feature_options.feature_time), cv::Range(0, m_feature_options.feature_freq)).clone();
+    //     }
+    // }
+} // namespace ASR

@@ -1,12 +1,8 @@
 import librosa
-import multiprocessing
 import numpy as np
 import os
 import sys
 import pandas as pd
-import pcen
-import pickle
-import time
 import torch
 
 from torch.utils.data import Dataset
@@ -188,14 +184,14 @@ class SpeechDataset(Dataset):
         background_sample = self.background_data[background_idx]
 
         # alignment background data
-        background_sample = self.dataset_alignment(background_sample, True) 
+        background_clipped = self.dataset_alignment(background_sample, True) 
 
         # if np.random.uniform(0, 1) < self.background_frequency or bool_silence_label:
         if np.random.uniform(0, 1) < self.background_frequency:
             background_volume = np.random.uniform(0, self.background_volume)
 
         data_max_value = data.max()
-        background_max_value = (background_volume * background_clipped).max() * 0.8
+        background_max_value = (background_volume * background_sample).max() * 0.8
         if background_max_value < data_max_value or bool_silence_label:
             data = background_volume * background_clipped + data
 

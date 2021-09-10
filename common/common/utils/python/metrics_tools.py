@@ -1,6 +1,7 @@
 import numpy as np
 import sklearn.metrics
-
+from scipy.optimize import brentq
+from scipy.interpolate import interp1d
 
 def get_fpr_tpr(y_true, y_scores):
     fpr, tpr, thresholds = sklearn.metrics.roc_curve(y_true, y_scores, drop_intermediate=False)
@@ -53,6 +54,13 @@ def get_roc_auc(y_true, y_pred, average=None):
 def get_precision_recall(y_true, y_pred):
     precisions, recalls, thresholds = sklearn.metrics.precision_recall_curve(y_true, y_pred)
     return precisions, recalls, thresholds
+
+def get_eer(y_true, y_pred):
+    # Snippet from https://yangcha.github.io/EER-ROC/
+    fpr, tpr, thresholds = sklearn.metrics.roc_curve(y_true, y_pred)           
+    eer = brentq(lambda x : 1. - x - interp1d(fpr, tpr)(x), 0., 1.)
+    thresh = interp1d(fpr, thresholds)(eer)
+    return eer, thresh
 
 if __name__ == "__main__":
     y_true = np.array([[0, 0, 1, 0], [0, 1, 0, 0], [1, 0, 0, 1]])

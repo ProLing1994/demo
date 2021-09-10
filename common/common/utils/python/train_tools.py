@@ -4,7 +4,7 @@ from torch.utils.data.distributed import DistributedSampler
 
 
 class EpochConcateSampler(Sampler):
-    """Concatenate  all epoch index arrays into one index array.
+    """Concatenate all epoch index arrays into one index array.
 
     Arguments:
         data_source (Dataset): dataset to sample from

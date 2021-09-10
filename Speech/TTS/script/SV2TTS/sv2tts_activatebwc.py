@@ -211,7 +211,7 @@ if __name__ == '__main__':
                         default= SV2TTS_path + "vocoder/saved_models/pretrained/pretrained.pt",
                         help="Path to a saved vocoder")
     
-    # # LibriSpeech, example
+    # # LibriSpeech
     # parser.add_argument("--LibriSpeech_path", type=Path, 
     #                     # default= "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-clean-100/")
     #                     # default= "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-clean-360/")
@@ -235,7 +235,7 @@ if __name__ == '__main__':
     # speech_generation_LibriSpeech(args)
 
 
-    # RM_Meiguo_BwcKeyword, 深圳录音, example
+    # RM_Meiguo_BwcKeyword, 深圳录音
     parser.add_argument("--data_path", type=Path, 
                         default= "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_BwcKeyword/office/danbing_16k/all/")
     parser.add_argument("--output_folder", type=Path, 

@@ -1,7 +1,9 @@
 easydict==1.9
 ffmpeg
 librosa==0.6.3
+lmdb
 numba==0.48.0
+opencv-python
 plotly
 soundfile
 thop

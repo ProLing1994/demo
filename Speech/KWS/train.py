@@ -91,6 +91,10 @@ def train(config_file, training_mode):
     # define loss function
     loss_func = define_loss_function(cfg)
 
+    # ema
+    if cfg.loss.ema_on:
+        ema = EMA(net, 0.9999)
+
     # load checkpoint if finetune_on == True or resume epoch > 0
     if cfg.general.finetune_on == True:
         # fintune, Load model, reset learning rate
@@ -118,7 +122,7 @@ def train(config_file, training_mode):
                                     cfg.knowledge_distillation.teacher_model_dir)
         teacher_model.eval()
 
-    # get training data set and test data set
+    # define training dataset and testing dataset
     train_dataloader, len_dataset = generate_dataset(cfg, 'training', training_mode)
     if cfg.general.is_test:
         eval_validation_dataloader = generate_test_dataset(cfg, 'validation', training_mode=training_mode)
@@ -133,10 +137,6 @@ def train(config_file, training_mode):
     batch_number = len(train_dataloader)
     data_iter = iter(train_dataloader)
     batch_idx = start_batch
-
-    # ema
-    if cfg.loss.ema_on:
-        ema = EMA(net, 0.9999)
 
     # # save model 
     # os.makedirs('/mnt/huanyuan/model/kws_xiaorui_12162020_test/checkpoints/chk_1/')
