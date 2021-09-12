@@ -105,13 +105,15 @@ class Speaker:
 
 
 class SpeakerVerificationDataset(Dataset):
-    def __init__(self, cfg, data_pd):
+    def __init__(self, cfg, mode):
         # init
-        self.speaker_list = list(set(data_pd['speaker'].to_list()))
+        self.cfg = cfg
+        self.data_pd = load_data_pd(cfg, mode)
+        self.speaker_list = list(set(self.data_pd['speaker'].to_list()))
         if len(self.speaker_list) == 0:
             raise Exception("No speakers found. ")
 
-        self.speakers = [Speaker(cfg, data_pd, speaker_name) \
+        self.speakers = [Speaker(cfg, self.data_pd, speaker_name) \
                             for speaker_name in self.speaker_list]
         self.speaker_cycler = RandomCycler(self.speakers)
 
@@ -119,16 +121,27 @@ class SpeakerVerificationDataset(Dataset):
         return len(self.speaker_list)
         
     def __getitem__(self, index):
-        return next(self.speaker_cycler)
+        if not hasattr(self, 'lmdb_dict'):
+            self.lmdb_dict = load_lmdb(self.cfg)
+
+        if not hasattr(self, 'background_data'):
+            self.background_data = load_background_data(self.cfg)
+
+        speakers = next(self.speaker_cycler)
+        utterances = speakers.random_partial(self.cfg.train.utterances_per_speaker)
+        assert len(utterances) == self.cfg.train.utterances_per_speaker
+
+        # Array of shape (n_utterances, n_frames, mel_n), e.g. for 1 speakers with
+        # 10 utterances each of 160 frames of 40 mel coefficients: (10, 160, 40)
+        data = np.array(gen_data(self.cfg, self.lmdb_dict, self.background_data, utterances))
+    
+        return data
 
 
 class SpeakerVerificationDataLoader(DataLoader):
-    def __init__(self, cfg, dataset, speakers_per_batch, utterances_per_speaker, sampler=None, 
-                 batch_sampler=None, num_workers=0, pin_memory=True, timeout=0, 
-                 worker_init_fn=None):
-        self.cfg = cfg
-        self.utterances_per_speaker = utterances_per_speaker
-
+    def __init__(self, dataset, speakers_per_batch, sampler=None, 
+                 batch_sampler=None, num_workers=0, pin_memory=True,
+                 timeout=0, worker_init_fn=None):
         super().__init__(
             dataset=dataset, 
             batch_size=speakers_per_batch, 
@@ -143,20 +156,34 @@ class SpeakerVerificationDataLoader(DataLoader):
             worker_init_fn=worker_init_fn
         )
 
-    def collate(self, speakers):
-        return speaker_batch(speakers, self.cfg, self.utterances_per_speaker) 
+    def collate(self, data):
+        return data_batch(data) 
 
 
-def speaker_batch(speakers, cfg, utterances_per_speaker):
-    partials = {s: s.random_partial(utterances_per_speaker) for s in speakers}
-
-    # Array of shape (n_speakers * n_utterances, n_frames, mel_n), e.g. for 3 speakers with
-    # 4 utterances each of 160 frames of 40 mel coefficients: (12, 160, 40)
-    data = np.array(gen_data(cfg, utterances_per_speaker, speakers, partials))
+def data_batch(data):
+    # Array of shape (n_speakers * n_utterances, n_frames, mel_n), e.g. for 2 speakers with
+    # 10 utterances each of 160 frames of 40 mel coefficients: (20, 160, 40)
+    data = np.array([frames for speaker_data in data for frames in speaker_data])
     return data
 
 
-def open_lmdb(cfg):
+def load_data_pd(cfg, mode):
+    # load data_pd
+    for dataset_idx in range(len(cfg.general.TISV_dataset_list)):
+        dataset_name = cfg.general.TISV_dataset_list[dataset_idx]
+        csv_path = os.path.join(cfg.general.data_dir, dataset_name + '.csv')
+    
+        data_pd_temp = pd.read_csv(csv_path)
+        if dataset_idx == 0:
+            data_pd = data_pd_temp
+        else:
+            data_pd = pd.concat([data_pd, data_pd_temp])
+
+    data_pd = data_pd[data_pd["mode"] == mode]
+    return data_pd
+
+
+def load_lmdb(cfg):
     # load lmdb_dict
     lmdb_dict = {}
     for dataset_idx in range(len(cfg.general.TISV_dataset_list)):
@@ -166,7 +193,11 @@ def open_lmdb(cfg):
         lmdb_env = load_lmdb_env(lmdb_path)
         lmdb_dict[dataset_name] = lmdb_env
 
-    # init background_data
+    return lmdb_dict
+
+
+def load_background_data(cfg):
+    # load background_data
     background_data_pd = pd.read_csv(os.path.join(cfg.general.data_dir, 'background_noise_files.csv'))
     background_data_lmdb_path = os.path.join(cfg.general.data_dir, 'dataset_audio_lmdb', '{}.lmdb'.format(BACKGROUND_NOISE_DIR_NAME))
     background_data = []
@@ -174,34 +205,27 @@ def open_lmdb(cfg):
     for _, row in background_data_pd.iterrows():
         background_data.append(read_audio_lmdb(background_data_lmdb_env, row.file))
     
-    return lmdb_dict, background_data
+    return background_data
 
-
-def gen_data(cfg, utterances_per_speaker, speakers, partials):
-    lmdb_dict, background_data = open_lmdb(cfg)
-
+def gen_data(cfg, lmdb_dict, background_data, utterances):
     data_list = []
-    for s in speakers:
-        data_pd_list = partials[s]
-        assert len(data_pd_list) == utterances_per_speaker
 
-        for wav_id in range(len(data_pd_list)):
-            data_pd = data_pd_list[wav_id]
-            data = read_audio_lmdb(lmdb_dict[str(data_pd['dataset'].values[0])], str(data_pd['file'].values[0]))
+    for utterance_id in range(len(utterances)):
+        utterance_pd = utterances[utterance_id]
+        data = read_audio_lmdb(lmdb_dict[str(utterance_pd['dataset'].values[0])], str(utterance_pd['file'].values[0]))
 
-            # data augmentation
-            if cfg.dataset.augmentation.on:
-                data = dataset_augmentation_waveform(cfg, data, background_data)
-                pass
-            else:
-                data = dataset_alignment(cfg, data)
+        # data augmentation
+        if cfg.dataset.augmentation.on:
+            data = dataset_augmentation_waveform(cfg, data, background_data)
+        else:
+            data = dataset_alignment(cfg, data)
 
-            # audio preprocess, get mfcc data
-            data = audio_preprocess(cfg, data)
+        # audio preprocess, get mfcc data
+        data = audio_preprocess(cfg, data)
 
-            # # data augmentation
-            if cfg.dataset.augmentation.on and cfg.dataset.augmentation.spec_on:
-                data = dataset_augmentation_spectrum(cfg, data)
-            
-            data_list.append(data)
+        # # data augmentation
+        if cfg.dataset.augmentation.on and cfg.dataset.augmentation.spec_on:
+            data = dataset_augmentation_spectrum(cfg, data)
+        
+        data_list.append(data)
     return data_list

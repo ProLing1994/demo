@@ -1,8 +1,8 @@
 easydict==1.9
 ffmpeg
-librosa==0.6.3
+librosa==0.8.0
 lmdb
-numba==0.48.0
+numba-0.54.0
 opencv-python
 plotly
 soundfile

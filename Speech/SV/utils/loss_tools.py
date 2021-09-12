@@ -25,52 +25,7 @@ def loss_function(cfg):
     return loss_func.cuda()
 
 
-def similarity_matrix(self, embeds):
-    """
-    Computes the similarity matrix according to GE2E.
-
-    :param embeds: the embeddings as a tensor of shape (speakers_per_batch, 
-    utterances_per_speaker, embedding_size)
-    :return: the similarity matrix as a tensor of shape (speakers_per_batch,
-    utterances_per_speaker, speakers_per_batch)
-    """
-    speakers_per_batch, utterances_per_speaker = embeds.shape[:2]
-    
-    # Inclusive centroids (1 per speaker). Cloning is needed for reverse differentiation
-    centroids_incl = torch.mean(embeds, dim=1, keepdim=True)
-    centroids_incl = centroids_incl.clone() / (torch.norm(centroids_incl, dim=2, keepdim=True) + 1e-5)
-
-    # Exclusive centroids (1 per utterance)
-    centroids_excl = (torch.sum(embeds, dim=1, keepdim=True) - embeds)
-    centroids_excl /= (utterances_per_speaker - 1)
-    centroids_excl = centroids_excl.clone() / (torch.norm(centroids_excl, dim=2, keepdim=True) + 1e-5)
-
-    # Similarity matrix. The cosine similarity of already 2-normed vectors is simply the dot
-    # product of these vectors (which is just an element-wise multiplication reduced by a sum).
-    # We vectorize the computation for efficiency.
-    sim_matrix = torch.zeros(speakers_per_batch, utterances_per_speaker,
-                                speakers_per_batch).to(self.loss_device)
-    mask_matrix = 1 - np.eye(speakers_per_batch, dtype=np.int)
-    for j in range(speakers_per_batch):
-        mask = np.where(mask_matrix[j])[0]
-        sim_matrix[mask, :, j] = (embeds[mask] * centroids_incl[j]).sum(dim=2)
-        sim_matrix[j, :, j] = (embeds[j] * centroids_excl[j]).sum(dim=1)
-    
-    ## Even more vectorized version (slower maybe because of transpose)
-    # sim_matrix2 = torch.zeros(speakers_per_batch, speakers_per_batch, utterances_per_speaker
-    #                           ).to(self.loss_device)
-    # eye = np.eye(speakers_per_batch, dtype=np.int)
-    # mask = np.where(1 - eye)
-    # sim_matrix2[mask] = (embeds[mask[0]] * centroids_incl[mask[1]]).sum(dim=2)
-    # mask = np.where(eye)
-    # sim_matrix2[mask] = (embeds * centroids_excl).sum(dim=2)
-    # sim_matrix2 = sim_matrix2.transpose(1, 2)
-    
-    sim_matrix = sim_matrix * self.similarity_weight + self.similarity_bias
-    return sim_matrix
-
-
-def ge2e_loss(self, embeds, loss_fn):
+def ge2e_loss(embeds, sim_matrix, loss_fn):
     """
     Computes the softmax loss according to GE2E.
     
@@ -80,13 +35,16 @@ def ge2e_loss(self, embeds, loss_fn):
     :return: the loss and the EER for this batch of embeddings.
     """
     speakers_per_batch, utterances_per_speaker = embeds.shape[:2]
-    
-    # Loss
-    sim_matrix = self.similarity_matrix(embeds)
+
+    # sim_matrix
     sim_matrix = sim_matrix.reshape((speakers_per_batch * utterances_per_speaker, 
                                         speakers_per_batch))
+
+    # target
     ground_truth = np.repeat(np.arange(speakers_per_batch), utterances_per_speaker)
-    target = torch.from_numpy(ground_truth).long()
+    target = torch.from_numpy(ground_truth).long().cuda()
+
+    # Loss
     loss = loss_fn(sim_matrix, target)
     
     # EER (not backpropagated)

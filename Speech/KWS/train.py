@@ -158,8 +158,8 @@ def train(config_file, training_mode):
         if cfg.debug.save_inputs:
             save_intermediate_results(cfg, "training", epoch_idx, inputs, labels, indexs)
 
+        # Forward pass
         inputs, labels = inputs.cuda(), labels.cuda()
-
         if cfg.dataset.h_alignment == True:
             hisi_input = inputs[:, :, :(inputs.shape[2] // 16) * 16, :]
             scores = net(hisi_input)
@@ -167,13 +167,14 @@ def train(config_file, training_mode):
             scores = net(inputs)
         scores = scores.view(scores.size()[0], scores.size()[1])
         
-        # calculate loss
+        # Calculate loss
         loss = loss_func(scores, labels)
         if cfg.knowledge_distillation.on:
             teacher_model.eval()
             teacher_scores = teacher_model(inputs)
             loss = loss_fn_kd(cfg, scores, teacher_scores, loss)
 
+        # Backward pass
         loss.backward()
         optimizer.step()
         update_scheduler(cfg, scheduler, epoch_idx)

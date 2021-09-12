@@ -8,8 +8,9 @@ import shutil
 import torch
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
-from common.common.utils.python.file_tools import load_module_from_disk
 from common.common.utils.python.train_tools import EpochConcateSampler
+from common.common.utils.python.file_tools import load_module_from_disk
+from common.common.utils.python.plotly_tools import plot_loss4d, plot_loss2d, plot_loss
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/SV')
 from dataset.sv_dataset_preload_audio_lmdb import SpeakerVerificationDataset, SpeakerVerificationDataLoader
@@ -131,6 +132,19 @@ def set_scheduler(cfg, optimizer):
     return scheduler
 
 
+def update_scheduler(cfg, scheduler, epoch_idx):
+    """
+    :param cfg:   training configure file
+    :param scheduler:   pytorch scheduler
+    :param epoch_idx:   
+    :return:
+    """
+    if cfg.train.optimizer == 'SGD':
+        scheduler.step(epoch_idx)
+    else:
+        pass
+
+
 def load_checkpoint(net, epoch_num, net_dir, optimizer=None, sub_folder_name='checkpoints'):
     """
     load network parameters from directory
@@ -153,6 +167,54 @@ def load_checkpoint(net, epoch_num, net_dir, optimizer=None, sub_folder_name='ch
     return state['epoch'], state['batch']
 
 
+def plot_tool(cfg, log_file):
+    """
+    plot loss or accuracy
+    :param cfg:                 config contain data set information
+    :param log_file:            log_file
+    """
+    train_loss_file = os.path.join(cfg.general.save_dir, 'train_loss.html')
+    train_accuracy_file = os.path.join(cfg.general.save_dir, 'train_accuracy.html')
+    if cfg.general.is_test:
+        plot_loss2d(log_file, train_loss_file, name=['train_loss', 'eval_loss'],
+                    display='Training/Validation Loss ({})'.format(cfg.loss.name))
+        plot_loss2d(log_file, train_accuracy_file, name=['train_eer', 'eval_eer'],
+                    display='Training/Validation Accuracy ({})'.format(cfg.loss.name))
+    else:
+        plot_loss(log_file, train_loss_file, name='train_loss',
+                display='Training Loss ({})'.format(cfg.loss.name))
+        plot_loss(log_file, train_accuracy_file, name='train_eer',
+                display='Training Accuracy ({})'.format(cfg.loss.name))
+
+
+def save_checkpoint(cfg, config_file, net, optimizer, epoch_idx, batch_idx, output_folder_name='checkpoints'):
+    """
+    save model and parameters into a checkpoint file (.pth)
+    :param cfg: the configuration object
+    :param config_file: the configuration file path
+    :param net: the network object
+    :param optimizer: the optimizer object
+    :param epoch_idx: the epoch index
+    :param batch_idx: the batch index
+    :return: None
+    """
+    chk_folder = os.path.join(cfg.general.save_dir, output_folder_name, 'chk_{}'.format(epoch_idx))
+    if not os.path.isdir(chk_folder):
+        os.makedirs(chk_folder)
+    filename = os.path.join(chk_folder, 'parameter.pkl')
+
+    state = {'epoch': epoch_idx,
+             'batch': batch_idx,
+             'net': cfg.net.model_name,
+             'state_dict': net.state_dict(),
+             'optimizer': optimizer.state_dict(),
+             }
+    torch.save(state, filename)
+    # 用于在单卡和cpu上加载模型
+    # torch.save(net.cpu().module.state_dict(), os.path.join(chk_folder, 'net_parameter.pkl'))
+    shutil.copy(config_file, os.path.join(chk_folder, 'config.py'))
+
+
 def generate_dataset(cfg, mode):
     """
     :param cfg:            config contain data set information
@@ -162,25 +224,11 @@ def generate_dataset(cfg, mode):
     assert mode in ['training', 'testing',
                     'validation'], "[ERROR:] Unknow mode: {}".format(mode)
 
-    # load data_pd
-    for dataset_idx in range(len(cfg.general.TISV_dataset_list)):
-        dataset_name = cfg.general.TISV_dataset_list[dataset_idx]
-        csv_path = os.path.join(cfg.general.data_dir, dataset_name + '.csv')
-    
-        data_pd_temp = pd.read_csv(csv_path)
-        if dataset_idx == 0:
-            data_pd = data_pd_temp
-        else:
-            data_pd = pd.concat([data_pd, data_pd_temp])
-    data_pd = data_pd[data_pd["mode"] == mode]
-
-    dataset = SpeakerVerificationDataset(cfg, data_pd)
+    dataset = SpeakerVerificationDataset(cfg, mode)
     sampler = EpochConcateSampler(dataset, cfg.train.num_epochs - (cfg.general.resume_epoch if cfg.general.resume_epoch != -1 else 0))
     dataloader = SpeakerVerificationDataLoader(
-                    cfg,
                     dataset,
                     cfg.train.speakers_per_batch,
-                    cfg.train.utterances_per_speaker,
                     num_workers=cfg.train.num_threads,
                     sampler=sampler)
     return dataloader, len(dataset)

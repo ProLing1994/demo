@@ -19,13 +19,17 @@ __C.general = {}
 #                                     "background_noise":"/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/_background_noise_",
 #                                     }
 
-__C.general.TISV_dataset_list = ['test']
+# __C.general.TISV_dataset_list = ['test']
+__C.general.TISV_dataset_list = ['librispeech_other']
 
 # data path
 __C.general.data_dir = "/mnt/huanyuan/data/speech/sv/TI_SV_dataset/dataset/"
 
 # the output of training models and logging files
 __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/sv/test/"
+
+# test after save pytorch model
+__C.general.is_test = True
 
 # finetune model
 __C.general.finetune_on = False
@@ -110,8 +114,8 @@ __C.dataset.data_size = [64, 156]
 __C.dataset.augmentation = {}
 
 # based on audio waveform: on
-__C.dataset.augmentation.on = True
-# __C.dataset.augmentation.on = False
+# __C.dataset.augmentation.on = True
+__C.dataset.augmentation.on = False
 
 # How many of the training samples have background noise mixed in.
 __C.dataset.augmentation.background_frequency = 0.8
@@ -136,8 +140,8 @@ __C.dataset.augmentation.synthetic_prob = 0.001
 __C.dataset.augmentation.time_shift_ms = 100.0
 
 # based on audio waveform: on.
-__C.dataset.augmentation.speed_volume_on = True
-# __C.dataset.augmentation.speed_volume_on = False
+# __C.dataset.augmentation.speed_volume_on = True
+__C.dataset.augmentation.speed_volume_on = False
 
 # How fast the audio should be.
 __C.dataset.augmentation.speed = [0.9, 1.1]
@@ -146,19 +150,19 @@ __C.dataset.augmentation.speed = [0.9, 1.1]
 __C.dataset.augmentation.volume = [1.0, 1.0]
 
 # How pitch the audio should be.
-__C.dataset.augmentation.pitch_on = True
-# __C.dataset.augmentation.pitch_on = False
+# __C.dataset.augmentation.pitch_on = True
+__C.dataset.augmentation.pitch_on = False
 __C.dataset.augmentation.pitch = [-5, 5]
 
 # based on audio vtlp: on
 # vtlp: http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=34DDD4B0CDCE76942A879204E8B7716C?doi=10.1.1.369.733&rep=rep1&type=pdf
-__C.dataset.augmentation.vtlp_on = True
-# __C.dataset.augmentation.vtlp_on = False
+# __C.dataset.augmentation.vtlp_on = True
+__C.dataset.augmentation.vtlp_on = False
 
 # based on audio spectrum: on
 # spec_aug
-__C.dataset.augmentation.spec_on = True
-# __C.dataset.augmentation.spec_on = False
+# __C.dataset.augmentation.spec_on = True
+__C.dataset.augmentation.spec_on = False
 __C.dataset.augmentation.F = 5
 __C.dataset.augmentation.T = 10
 __C.dataset.augmentation.num_masks = 2
@@ -182,21 +186,27 @@ __C.net.class_name = "SpeakerEncoder"
 __C.train = {}
 
 # the number of training epochs
-__C.train.num_epochs = 1
+__C.train.num_epochs = 1000
 
 # the number of samples in a batch
-__C.train.speakers_per_batch = 2
+__C.train.speakers_per_batch = 32
 __C.train.utterances_per_speaker = 10
 __C.train.batch_size = __C.train.speakers_per_batch
 
 # the number of threads for IO
-__C.train.num_threads = 0
+__C.train.num_threads = 8
+
+# the number of batches to show log
+__C.train.show_log = 10
+
+# the number of batches to plot umap
+__C.train.plot_umap = 100
 
 # the number of batches to update loss curve
-__C.train.plot_snapshot = 5
+__C.train.plot_snapshot = 10
 
 # the number of epochs to save model
-__C.train.save_epochs = 1
+__C.train.save_epochs = 25
 
 
 ######################################
