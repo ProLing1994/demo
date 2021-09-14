@@ -59,8 +59,10 @@ if __name__ == "__main__":
     args = parser.parse_args()
     # args.input_scv = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_1_6_res15_fbankcpu_03222021/dataset_1_6_infer_longterm_validation_augmentation_False_mean.csv"
     # args.input_scv = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_wntts_1_0_res15_fbankcpu_07162021/dataset_1_6_infer_longterm_validation_augmentation_False_mean_epoch_999.csv"
-    args.input_scv = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_tts_1_0_res15_fbankcpu_07162021/dataset_1_6_infer_longterm_validation_augmentation_False_mean_epoch_1000.csv"
-    # args.input_scv = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_tts_1_1_res15_fbankcpu_07162021/dataset_1_6_infer_longterm_validation_augmentation_False_mean_epoch_500.csv"
-    # args.input_scv = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_sztts_1_1_res15_fbankcpu_07162021/dataset_1_6_infer_longterm_validation_augmentation_False_mean_epoch_999.csv"
+    # args.input_scv = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_tts_1_0_res15_fbankcpu_07162021/dataset_1_6_infer_longterm_validation_augmentation_False_mean_epoch_1000.csv"
+    # args.input_scv = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_tts_1_1_res15_fbankcpu_07162021/dataset_1_6_infer_longterm_validation_augmentation_False_mean_epoch_1000.csv"
+    # args.input_scv = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_sztts_1_1_res15_fbankcpu_07162021/dataset_1_6_infer_longterm_validation_augmntation_False_mean_epoch_999.csv"
+
+    args.input_scv = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_tts_1_1_10_res15_fbankcpu_07162021/dataset_1_6_infer_longterm_validation_augmentation_False_mean_epoch_500.csv"
 
     cal_fpr_tpr(args)

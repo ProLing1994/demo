@@ -105,9 +105,11 @@ class Speaker:
 
 
 class SpeakerVerificationDataset(Dataset):
-    def __init__(self, cfg, mode):
+    def __init__(self, cfg, mode, augmentation_on=True):
         # init
         self.cfg = cfg
+        self.mode = mode
+        self.augmentation_on = augmentation_on
         self.data_pd = load_data_pd(cfg, mode)
         self.speaker_list = list(set(self.data_pd['speaker'].to_list()))
         if len(self.speaker_list) == 0:
@@ -122,7 +124,7 @@ class SpeakerVerificationDataset(Dataset):
         
     def __getitem__(self, index):
         if not hasattr(self, 'lmdb_dict'):
-            self.lmdb_dict = load_lmdb(self.cfg)
+            self.lmdb_dict = load_lmdb(self.cfg, self.mode)
 
         if not hasattr(self, 'background_data'):
             self.background_data = load_background_data(self.cfg)
@@ -133,7 +135,7 @@ class SpeakerVerificationDataset(Dataset):
 
         # Array of shape (n_utterances, n_frames, mel_n), e.g. for 1 speakers with
         # 10 utterances each of 160 frames of 40 mel coefficients: (10, 160, 40)
-        data = np.array(gen_data(self.cfg, self.lmdb_dict, self.background_data, utterances))
+        data = np.array(gen_data(self.cfg, self.lmdb_dict, self.background_data, utterances, self.augmentation_on))
     
         return data
 
@@ -183,13 +185,13 @@ def load_data_pd(cfg, mode):
     return data_pd
 
 
-def load_lmdb(cfg):
+def load_lmdb(cfg, mode):
     # load lmdb_dict
     lmdb_dict = {}
     for dataset_idx in range(len(cfg.general.TISV_dataset_list)):
         dataset_name = cfg.general.TISV_dataset_list[dataset_idx]
         # lmdb
-        lmdb_path = os.path.join(cfg.general.data_dir, 'dataset_audio_lmdb', '{}.lmdb'.format(dataset_name))
+        lmdb_path = os.path.join(cfg.general.data_dir, 'dataset_audio_lmdb', '{}.lmdb'.format(dataset_name+'_'+mode))
         lmdb_env = load_lmdb_env(lmdb_path)
         lmdb_dict[dataset_name] = lmdb_env
 
@@ -207,7 +209,7 @@ def load_background_data(cfg):
     
     return background_data
 
-def gen_data(cfg, lmdb_dict, background_data, utterances):
+def gen_data(cfg, lmdb_dict, background_data, utterances, augmentation_on=True):
     data_list = []
 
     for utterance_id in range(len(utterances)):
@@ -215,7 +217,7 @@ def gen_data(cfg, lmdb_dict, background_data, utterances):
         data = read_audio_lmdb(lmdb_dict[str(utterance_pd['dataset'].values[0])], str(utterance_pd['file'].values[0]))
 
         # data augmentation
-        if cfg.dataset.augmentation.on:
+        if cfg.dataset.augmentation.on and augmentation_on:
             data = dataset_augmentation_waveform(cfg, data, background_data)
         else:
             data = dataset_alignment(cfg, data)
@@ -224,7 +226,7 @@ def gen_data(cfg, lmdb_dict, background_data, utterances):
         data = audio_preprocess(cfg, data)
 
         # # data augmentation
-        if cfg.dataset.augmentation.on and cfg.dataset.augmentation.spec_on:
+        if cfg.dataset.augmentation.on and cfg.dataset.augmentation.spec_on and augmentation_on:
             data = dataset_augmentation_spectrum(cfg, data)
         
         data_list.append(data)

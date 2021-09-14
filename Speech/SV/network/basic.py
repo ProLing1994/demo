@@ -16,6 +16,7 @@ class SpeakerEncoder(nn.Module):
 
         self.speakers_per_batch = cfg.train.speakers_per_batch
         self.utterances_per_speaker = cfg.train.utterances_per_speaker
+        self.model_embedding_size = model_embedding_size
 
         # Network defition
         self.lstm = nn.LSTM(input_size=mel_n_channels,
@@ -38,7 +39,7 @@ class SpeakerEncoder(nn.Module):
         # Gradient clipping
         clip_grad_norm_(self.parameters(), 3, norm_type=2)
     
-    def forward(self, utterances, hidden_init=None):
+    def forward(self, utterances, hidden_init=None, bool_only_embeds=False):
         """
         Computes the embeddings of a batch of utterance spectrograms.
         
@@ -57,7 +58,10 @@ class SpeakerEncoder(nn.Module):
         
         # L2-normalize it
         embeds = embeds_raw / (torch.norm(embeds_raw, dim=1, keepdim=True) + 1e-5)        
-        embeds = embeds.view(self.speakers_per_batch, self.utterances_per_speaker, -1)
+        embeds = embeds.view(-1, self.utterances_per_speaker, self.model_embedding_size)
+
+        if bool_only_embeds:
+            return embeds
 
         # Loss
         sim_matrix = self.similarity_matrix(embeds)
@@ -106,4 +110,38 @@ class SpeakerEncoder(nn.Module):
         # sim_matrix2 = sim_matrix2.transpose(1, 2)
         
         sim_matrix = sim_matrix * self.similarity_weight + self.similarity_bias
+        return sim_matrix
+
+    def similarity_matrix_cpu(self, embeds):
+        """
+        Computes the similarity matrix according the section 2.1 of GE2E.
+
+        :param embeds: the embeddings as a tensor of shape (speakers_per_batch, 
+        utterances_per_speaker, embedding_size)
+        :return: the similarity matrix as a tensor of shape (speakers_per_batch,
+        utterances_per_speaker, speakers_per_batch)
+        """
+        speakers_per_batch, utterances_per_speaker = embeds.shape[:2]
+        
+        # Inclusive centroids (1 per speaker). Cloning is needed for reverse differentiation
+        centroids_incl = np.mean(embeds, axis=1, keepdims=True)
+        centroids_incl = centroids_incl / (np.linalg.norm(centroids_incl, axis=2, keepdims=True) + 1e-5)
+
+        # Exclusive centroids (1 per utterance)
+        centroids_excl = (np.sum(embeds, axis=1, keepdims=True) - embeds)
+        centroids_excl /= (utterances_per_speaker - 1)
+        centroids_excl = centroids_excl / (np.linalg.norm(centroids_excl, axis=2, keepdims=True) + 1e-5)
+
+        # Similarity matrix. The cosine similarity of already 2-normed vectors is simply the dot
+        # product of these vectors (which is just an element-wise multiplication reduced by a sum).
+        # We vectorize the computation for efficiency.
+        sim_matrix = np.zeros((speakers_per_batch, utterances_per_speaker,
+                                 speakers_per_batch))
+        mask_matrix = 1 - np.eye(speakers_per_batch, dtype=np.int)
+        for j in range(speakers_per_batch):
+            mask = np.where(mask_matrix[j])[0]
+            sim_matrix[mask, :, j] = (embeds[mask] * centroids_incl[j]).sum(axis=2)
+            sim_matrix[j, :, j] = (embeds[j] * centroids_excl[j]).sum(axis=1)
+        
+        sim_matrix = sim_matrix * self.similarity_weight.detach().cpu().numpy() + self.similarity_bias.detach().cpu().numpy()
         return sim_matrix

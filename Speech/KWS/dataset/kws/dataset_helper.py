@@ -97,8 +97,8 @@ class AudioPreprocessor(object):
         self.hop_length = int(self.sr * self.winstep)
         self.data_length = data_length
 
-        self.dct_filters = librosa.filters.dct(self.n_dct_filters, self.n_mels)
-        self.pcen_transform = pcen.StreamingPCENTransform(n_mels=self.n_mels, n_fft=self.win_length, hop_length=self.hop_length, trainable=True)
+        # self.dct_filters = librosa.filters.dct(self.n_dct_filters, self.n_mels)
+        # self.pcen_transform = pcen.StreamingPCENTransform(n_mels=self.n_mels, n_fft=self.win_length, hop_length=self.hop_length, trainable=True)
 
     def compute_mfccs(self, data):
         data = librosa.feature.melspectrogram(

@@ -21,10 +21,10 @@ colormap = np.array([
 ], dtype=np.float) / 255 
 
 
-def draw_projections(cfg, embeds, step, out_fpath=None, max_speakers=10):
+def draw_projections(embeds, epoch, out_fpath=None, max_speakers=10):
     # init 
-    speakers_per_batch = cfg.train.speakers_per_batch
-    utterances_per_speaker = cfg.train.utterances_per_speaker
+    speakers_per_batch = embeds.shape[0]
+    utterances_per_speaker = embeds.shape[1]
 
     max_speakers = min(max_speakers, len(colormap))
     embeds = embeds.reshape((speakers_per_batch * utterances_per_speaker, -1))
@@ -38,7 +38,7 @@ def draw_projections(cfg, embeds, step, out_fpath=None, max_speakers=10):
     projected = reducer.fit_transform(embeds)
     plt.scatter(projected[:, 0], projected[:, 1], c=colors)
     plt.gca().set_aspect("equal", "datalim")
-    plt.title("UMAP projection (step %d)" % step)
+    plt.title("UMAP projection (epoch %d)" % epoch)
     if out_fpath is not None:
         plt.savefig(out_fpath)
     plt.clf()

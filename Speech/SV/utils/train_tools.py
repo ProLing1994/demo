@@ -232,3 +232,21 @@ def generate_dataset(cfg, mode):
                     num_workers=cfg.train.num_threads,
                     sampler=sampler)
     return dataloader, len(dataset)
+
+
+def generate_test_dataset(cfg, mode):
+    """
+    :param cfg:            config contain data set information
+    :param mode:           Which partition to use, must be 'training', 'validation', or 'testing'.
+    :return:               data loader, length of data set
+    """
+    assert mode in ['training', 'testing',
+                    'validation'], "[ERROR:] Unknow mode: {}".format(mode)
+
+    dataset = SpeakerVerificationDataset(cfg, mode, augmentation_on=False)
+    dataloader = SpeakerVerificationDataLoader(
+                    dataset,
+                    1,
+                    pin_memory=False,
+                    num_workers=1)
+    return dataloader

@@ -10,23 +10,21 @@ cfg = __C
 
 __C.general = {}
 
-# __C.general.TISV_dataset_list = ['librispeech_other', 'VoxCeleb1']
-# __C.general.TISV_dataset_path_dict = {"librispeech_other_training": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-other-500",
-#                                     "librispeech_other_testing": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/test-other",
-#                                     "VoxCeleb1_training": "/mnt/huanyuan/data/speech/sv/VoxCeleb1/wav",
-#                                     "VoxCeleb1_testing": "/mnt/huanyuan/data/speech/sv/VoxCeleb1/test_wav",
-#                                     "VoxCeleb1_csv": "/mnt/huanyuan/data/speech/sv/VoxCeleb1/vox1_meta.csv",
-#                                     "background_noise":"/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/_background_noise_",
-#                                     }
-
+__C.general.TISV_dataset_list = ['librispeech_other', 'VoxCeleb1']
 # __C.general.TISV_dataset_list = ['test']
-__C.general.TISV_dataset_list = ['librispeech_other']
+__C.general.TISV_dataset_path_dict = {"librispeech_other_training": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-other-500",
+                                    "librispeech_other_testing": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/test-other",
+                                    "VoxCeleb1_training": "/mnt/huanyuan/data/speech/sv/VoxCeleb1/wav",
+                                    "VoxCeleb1_testing": "/mnt/huanyuan/data/speech/sv/VoxCeleb1/test_wav",
+                                    "VoxCeleb1_csv": "/mnt/huanyuan/data/speech/sv/VoxCeleb1/vox1_meta.csv",
+                                    "background_noise":"/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/_background_noise_",
+                                    }
 
 # data path
 __C.general.data_dir = "/mnt/huanyuan/data/speech/sv/TI_SV_dataset/dataset/"
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/sv/test/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/sv/test_0912/"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -189,21 +187,22 @@ __C.train = {}
 __C.train.num_epochs = 1000
 
 # the number of samples in a batch
-__C.train.speakers_per_batch = 32
+# __C.train.speakers_per_batch = 32
+__C.train.speakers_per_batch = 4
 __C.train.utterances_per_speaker = 10
 __C.train.batch_size = __C.train.speakers_per_batch
 
 # the number of threads for IO
-__C.train.num_threads = 8
+__C.train.num_threads = 64
 
 # the number of batches to show log
 __C.train.show_log = 10
 
-# the number of batches to plot umap
-__C.train.plot_umap = 100
-
 # the number of batches to update loss curve
 __C.train.plot_snapshot = 10
+
+# the number of epochs to plot umap
+__C.train.plot_umap = 5
 
 # the number of epochs to save model
 __C.train.save_epochs = 25
@@ -249,8 +248,8 @@ __C.train.betas = (0.9, 0.999)
 __C.loss = {}
 
 # the loss name, support ['softmax','focal']
-# __C.loss.name = 'softmax'
-__C.loss.name = 'focal'
+__C.loss.name = 'softmax'
+# __C.loss.name = 'focal'
 
 # the number of class
 __C.loss.num_classes =  __C.train.batch_size

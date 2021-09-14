@@ -23,9 +23,11 @@ args = parser.parse_args()
 args.commit_interval = 100
 
 
-def general_lmdb(cfg, lmdb_path, csv_path, bool_background_audio=False):
+def general_lmdb(cfg, lmdb_path, csv_path, mode_type='testing', bool_background_audio=False):
     assert lmdb_path.endswith('.lmdb'), "[ERROR] lmdb_path must end with 'lmdb'."
-    assert not os.path.exists(lmdb_path), "[ERROR] Folder [{:s}] already exists. Exit...".format(lmdb_path)
+    if os.path.exists(lmdb_path):
+        print("[Information] Folder [{:s}] already exists. Exit...".format(lmdb_path))
+        return 
 
     # init
     sample_rate = cfg.dataset.sample_rate
@@ -33,8 +35,13 @@ def general_lmdb(cfg, lmdb_path, csv_path, bool_background_audio=False):
     desired_samples = int(sample_rate * clip_duration_ms / 1000)
 
     data_pd = pd.read_csv(csv_path)
-    file_list = data_pd['file'].tolist()
+    if bool_background_audio:
+        mode_data_pd = data_pd
+    else:
+        mode_data_pd = data_pd[data_pd['mode'] == mode_type]
+    file_list = mode_data_pd['file'].tolist()
     if not len(file_list):
+        print("[Information] file:{} empty. Exit...".format(csv_path))
         return
 
     # 估算映射空间大小（大概）
@@ -49,7 +56,7 @@ def general_lmdb(cfg, lmdb_path, csv_path, bool_background_audio=False):
     txn = env.begin(write=True)
 
     drop_list = []
-    for idx, row in tqdm(data_pd.iterrows(), total=len(file_list)):
+    for idx, row in tqdm(mode_data_pd.iterrows(), total=len(file_list)):
         file_path = row['file']
 
         # key 
@@ -81,7 +88,7 @@ def general_lmdb(cfg, lmdb_path, csv_path, bool_background_audio=False):
     data_pd.to_csv(csv_path, index=False, encoding="utf_8_sig")
 
 
-def preload_audio_lmdb():
+def preload_audio_lmdb(mode_type):
     """ data preprocess engine
     :return:              None
     """
@@ -96,13 +103,13 @@ def preload_audio_lmdb():
     for dataset_idx in range(len(cfg.general.TISV_dataset_list)):
         dataset_name = cfg.general.TISV_dataset_list[dataset_idx]
 
-        print("Start preload dataset: {}: ".format(dataset_name))
+        print("Start preload dataset: {}, mode_type: {}".format(dataset_name, mode_type))
         # init 
-        lmdb_path = os.path.join(output_dir, '{}.lmdb'.format(dataset_name))
+        lmdb_path = os.path.join(output_dir, '{}.lmdb'.format(dataset_name+'_'+mode_type))
         csv_path = os.path.join(cfg.general.data_dir, dataset_name + '.csv')
 
         # general lmdb
-        general_lmdb(cfg, lmdb_path, csv_path)
+        general_lmdb(cfg, lmdb_path, csv_path, mode_type=mode_type)
         print("Preload dataset:{}  Done!".format(dataset_name))
 
 
@@ -128,7 +135,8 @@ def preload_background_audio_lmdb():
 
 def main():
     print("[Begin] Data Preload")
-    preload_audio_lmdb()
+    preload_audio_lmdb('training')
+    preload_audio_lmdb('testing')
     preload_background_audio_lmdb()
     print("[Done] Data Preload")
 

@@ -60,6 +60,32 @@ def ge2e_loss(embeds, sim_matrix, loss_fn):
     return loss, eer
 
 
+def compute_eer(embeds, sim_matrix):
+    """
+    Computes EER.
+    
+    :param embeds: the embeddings as a tensor of shape (speakers_per_batch, 
+    utterances_per_speaker, embedding_size)
+    :return: the loss and the EER for this batch of embeddings.
+    """
+    speakers_per_batch, utterances_per_speaker = embeds.shape[:2]
+
+    # sim_matrix
+    sim_matrix = sim_matrix.reshape((speakers_per_batch * utterances_per_speaker, 
+                                        speakers_per_batch))
+
+    # target
+    ground_truth = np.repeat(np.arange(speakers_per_batch), utterances_per_speaker)
+
+    inv_argmax = lambda i: np.eye(1, speakers_per_batch, i, dtype=np.int)[0]
+    labels = np.array([inv_argmax(i) for i in ground_truth])
+    preds = sim_matrix
+
+    # Snippet from https://yangcha.github.io/EER-ROC/
+    fpr, tpr, thresholds = roc_curve(labels.flatten(), preds.flatten())           
+    eer = brentq(lambda x: 1. - x - interp1d(fpr, tpr)(x), 0., 1.)
+    return eer
+
 def label_smoothing(inputs, num_classes=2, epsilon=0.1):
     '''Applies label smoothing. See 5.4 and https://arxiv.org/abs/1512.00567.
     inputs: 

@@ -14,6 +14,52 @@ sys.path.insert(0, '/home/huanyuan/code/demo/common/common')
 from utils.python.logging_helpers import setup_logger
 
 
+def test(cfg, net, epoch_idx, batch_idx, logger, test_data_loader, mode='eval'):
+    """
+    :param cfg:                config contain data set information
+    :param net:                net
+    :param epoch_idx:          epoch index
+    :param batch_idx:          batch index
+    :param logger:             log for save testing result
+    :param test_data_loader:   testing data loader
+    :param mode:               evaluate either training set or testing set
+    :return:                   None
+    """
+    net.eval()
+
+    embeds_list = []
+    for _, inputs in tqdm(enumerate(test_data_loader)):
+        inputs = torch.from_numpy(inputs).float().cuda()
+
+        if cfg.dataset.h_alignment == True:
+            hisi_input = inputs[:, :, :(inputs.shape[2] // 16) * 16, :]
+            embeds = net(hisi_input, bool_only_embeds=True)
+        else:
+            embeds = net(inputs, bool_only_embeds=True)
+        embeds_list.append(embeds.detach().cpu().numpy())
+
+    # Calculate loss
+    embeds_np = np.array(embeds_list)
+    embeds_np = embeds_np.reshape((embeds_np.shape[0] * embeds_np.shape[1], 
+                                    embeds_np.shape[2], embeds_np.shape[3]))
+    if isinstance(net, torch.nn.parallel.DataParallel):
+        sim_matrix = net.module.similarity_matrix_cpu(embeds_np)
+    else:
+        sim_matrix = net.similarity_matrix_cpu(embeds_np)
+    eer = compute_eer(embeds_np, sim_matrix)
+
+    # Show information
+    msg = 'epoch: {}, batch: {}, {}_eer: {:.4f}'.format(
+        epoch_idx, batch_idx, mode, eer, mode)
+    logger.info(msg)
+
+    # Draw projections and save them to the backup folder
+    umap_dir = os.path.join(cfg.general.save_dir, 'umap')
+    create_folder(umap_dir)
+    projection_fpath = os.path.join(umap_dir, "umap_testing_%05d.png" % (epoch_idx))
+    draw_projections(embeds_np, epoch_idx, projection_fpath)
+
+
 def train(args):
     """ training engine
     :param config_file:   the input configuration file
@@ -74,7 +120,9 @@ def train(args):
 
     # define training dataset and testing dataset
     train_dataloader, len_train_dataset = generate_dataset(cfg, TRAINING_NAME)
-    
+    if cfg.general.is_test:
+        testing_dataloader = generate_test_dataset(cfg, TESTING_NAME)
+
     msg = 'Training dataset number: {}'.format(len_train_dataset)
     logger.info(msg)
 
@@ -151,19 +199,16 @@ def train(args):
         profiler.tick("Plot snapshot")
 
         # Draw projections and save them to the backup folder
-        # if umap_every != 0 and step % umap_every == 0:
-        if (batch_idx % cfg.train.plot_umap) == 0:
+        if (epoch_idx % cfg.train.plot_umap) == 0:
             umap_dir = os.path.join(cfg.general.save_dir, 'umap')
             create_folder(umap_dir)
-
-            projection_fpath = os.path.join(umap_dir, "umap_%06d.png" % (batch_idx))
-            embeds = embeds.detach().cpu().numpy()
-            draw_projections(cfg, embeds, batch_idx, projection_fpath)
+            projection_fpath = os.path.join(umap_dir, "umap_training_%05d.png" % (epoch_idx))
+            embeds_cpu = embeds.detach().cpu().numpy()
+            draw_projections(embeds_cpu, epoch_idx, projection_fpath)
         profiler.tick("Draw projections")
 
         # Save model
         if epoch_idx % cfg.train.save_epochs == 0 or epoch_idx == cfg.train.num_epochs - 1:
-            # if epoch_idx == 0 or epoch_idx == cfg.train.num_epochs - 1:
             if last_save_epoch != epoch_idx:
                 last_save_epoch = epoch_idx
 
@@ -174,10 +219,8 @@ def train(args):
                 save_checkpoint(cfg, args.config_file, net, optimizer, epoch_idx, batch_idx)
 
                 if cfg.general.is_test:
-                    # TO
-                    pass
-                    # test(cfg, net, loss_func, epoch_idx, batch_idx,
-                    #      logger, eval_validation_dataloader, mode='eval')
+                    test(cfg, net, epoch_idx, batch_idx,
+                         logger, testing_dataloader, mode='eval')
             
                 if cfg.loss.ema_on:
                     ema.restore() # resume the model parameters
