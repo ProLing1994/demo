@@ -37,8 +37,7 @@ def ge2e_loss(embeds, sim_matrix, loss_fn):
     speakers_per_batch, utterances_per_speaker = embeds.shape[:2]
 
     # sim_matrix
-    sim_matrix = sim_matrix.reshape((speakers_per_batch * utterances_per_speaker, 
-                                        speakers_per_batch))
+    sim_matrix = sim_matrix.reshape((speakers_per_batch * utterances_per_speaker, speakers_per_batch))
 
     # target
     ground_truth = np.repeat(np.arange(speakers_per_batch), utterances_per_speaker)

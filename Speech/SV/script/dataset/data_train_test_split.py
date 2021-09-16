@@ -38,6 +38,10 @@ def load_dataset(dataset_name, dataset_path, data_files, mode, keep_speaker_ids=
 def data_split_normal(cfg, dataset_name):
         dataset_training_path = cfg.general.TISV_dataset_path_dict[dataset_name+ "_training"]
         dataset_testing_path = cfg.general.TISV_dataset_path_dict[dataset_name+ "_testing"]
+        output_csv = os.path.join(cfg.general.data_dir, dataset_name + '.csv')
+
+        if os.path.exists(output_csv):
+            return 
 
         # init
         data_files = []                 # {'speaker': [], 'section': [], 'utterance': [], 'file': [], 'mode': []}
@@ -55,7 +59,11 @@ def data_split_voxceleb1(cfg, dataset_name):
         dataset_training_path = cfg.general.TISV_dataset_path_dict[dataset_name+ "_training"]
         dataset_testing_path = cfg.general.TISV_dataset_path_dict[dataset_name+ "_testing"]
         dataset_csv_path = cfg.general.TISV_dataset_path_dict[dataset_name+ "_csv"]
-
+        output_csv = os.path.join(cfg.general.data_dir, dataset_name + '.csv')
+        
+        if os.path.exists(output_csv):
+            return 
+            
         # Get the contents of the meta file
         with open(dataset_csv_path, "r") as metafile:
             metadata = [line.split("\t") for line in metafile][1:]
@@ -82,11 +90,16 @@ def data_split_voxceleb1(cfg, dataset_name):
 def data_split_background_noise(cfg, dataset_name):
     # init
     background_noise_files = []           # {'label': [], 'file': []}
-    
     background_noise_dir = cfg.general.TISV_dataset_path_dict[dataset_name]
     background_noise_list = os.listdir(background_noise_dir)
     background_noise_list.sort()
-    
+
+    output_csv = os.path.join(cfg.general.data_dir, 'background_noise_files.csv')
+
+    if os.path.exists(output_csv):
+        return 
+
+
     print("[Begin] dataset: {}".format(dataset_name))
     for background_noise_idx in tqdm(range(len(background_noise_list))):
         background_noise_id = background_noise_list[background_noise_idx]
@@ -95,7 +108,7 @@ def data_split_background_noise(cfg, dataset_name):
             background_noise_files.append({'label': BACKGROUND_NOISE_DIR_NAME, 'file':background_noise_path})
 
     background_noise_pd = pd.DataFrame(background_noise_files)
-    background_noise_pd.to_csv(os.path.join(cfg.general.data_dir, 'background_noise_files.csv'), index=False, encoding="utf_8_sig")
+    background_noise_pd.to_csv(output_csv, index=False, encoding="utf_8_sig")
 
 
 def data_split(args):
@@ -112,6 +125,8 @@ def data_split(args):
             data_split_normal(cfg, dataset_name)
         elif dataset_name == 'VoxCeleb1':
             data_split_voxceleb1(cfg, dataset_name)
+        elif dataset_name == 'VoxCeleb2':
+            data_split_normal(cfg, dataset_name)
 
     # background_noise dataset
     data_split_background_noise(cfg, "background_noise")

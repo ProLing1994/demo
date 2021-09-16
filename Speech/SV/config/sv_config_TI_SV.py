@@ -10,13 +10,16 @@ cfg = __C
 
 __C.general = {}
 
-__C.general.TISV_dataset_list = ['librispeech_other', 'VoxCeleb1']
+__C.general.TISV_dataset_list = ['librispeech_other', 'VoxCeleb1', 'VoxCeleb2']
 # __C.general.TISV_dataset_list = ['test']
 __C.general.TISV_dataset_path_dict = {"librispeech_other_training": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-other-500",
                                     "librispeech_other_testing": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/test-other",
                                     "VoxCeleb1_training": "/mnt/huanyuan/data/speech/sv/VoxCeleb1/wav",
                                     "VoxCeleb1_testing": "/mnt/huanyuan/data/speech/sv/VoxCeleb1/test_wav",
                                     "VoxCeleb1_csv": "/mnt/huanyuan/data/speech/sv/VoxCeleb1/vox1_meta.csv",
+                                    "VoxCeleb2_training": "/mnt/huanyuan/data/speech/sv/VoxCeleb2/dev/aac",
+                                    "VoxCeleb2_testing": "/mnt/huanyuan/data/speech/sv/VoxCeleb2/test/aac",
+                                    "VoxCeleb2_csv": "/mnt/huanyuan/data/speech/sv/VoxCeleb2/vox2_meta.csv",
                                     "background_noise":"/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/_background_noise_",
                                     }
 
@@ -187,25 +190,24 @@ __C.train = {}
 __C.train.num_epochs = 1000
 
 # the number of samples in a batch
-# __C.train.speakers_per_batch = 32
 __C.train.speakers_per_batch = 4
 __C.train.utterances_per_speaker = 10
 __C.train.batch_size = __C.train.speakers_per_batch
 
 # the number of threads for IO
-__C.train.num_threads = 64
+__C.train.num_threads = 1
 
 # the number of batches to show log
-__C.train.show_log = 10
+__C.train.show_log = 5
 
 # the number of batches to update loss curve
-__C.train.plot_snapshot = 10
+__C.train.plot_snapshot = 5
 
 # the number of epochs to plot umap
 __C.train.plot_umap = 5
 
 # the number of epochs to save model
-__C.train.save_epochs = 25
+__C.train.save_epochs = 1
 
 
 ######################################

@@ -39,7 +39,7 @@ class SpeakerEncoder(nn.Module):
         # Gradient clipping
         clip_grad_norm_(self.parameters(), 3, norm_type=2)
     
-    def forward(self, utterances, hidden_init=None, bool_only_embeds=False):
+    def forward(self, utterances, hidden_init=None):
         """
         Computes the embeddings of a batch of utterance spectrograms.
         
@@ -51,6 +51,7 @@ class SpeakerEncoder(nn.Module):
         """
         # Pass the input through the LSTM layers and retrieve all outputs, the final hidden state
         # and the final cell state.
+        self.lstm.flatten_parameters()
         out, (hidden, cell) = self.lstm(utterances, hidden_init)
         
         # We take only the hidden state of the last layer
@@ -58,15 +59,11 @@ class SpeakerEncoder(nn.Module):
         
         # L2-normalize it
         embeds = embeds_raw / (torch.norm(embeds_raw, dim=1, keepdim=True) + 1e-5)        
+        return embeds
+    
+    def embeds_view(self, embeds):
         embeds = embeds.view(-1, self.utterances_per_speaker, self.model_embedding_size)
-
-        if bool_only_embeds:
-            return embeds
-
-        # Loss
-        sim_matrix = self.similarity_matrix(embeds)
-
-        return embeds, sim_matrix
+        return embeds
 
     def similarity_matrix(self, embeds):
         """

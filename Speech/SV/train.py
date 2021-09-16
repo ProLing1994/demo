@@ -33,15 +33,13 @@ def test(cfg, net, epoch_idx, batch_idx, logger, test_data_loader, mode='eval'):
 
         if cfg.dataset.h_alignment == True:
             hisi_input = inputs[:, :, :(inputs.shape[2] // 16) * 16, :]
-            embeds = net(hisi_input, bool_only_embeds=True)
+            embeds = net(hisi_input)
         else:
-            embeds = net(inputs, bool_only_embeds=True)
+            embeds = net(inputs)
         embeds_list.append(embeds.detach().cpu().numpy())
 
     # Calculate loss
     embeds_np = np.array(embeds_list)
-    embeds_np = embeds_np.reshape((embeds_np.shape[0] * embeds_np.shape[1], 
-                                    embeds_np.shape[2], embeds_np.shape[3]))
     if isinstance(net, torch.nn.parallel.DataParallel):
         sim_matrix = net.module.similarity_matrix_cpu(embeds_np)
     else:
@@ -95,18 +93,21 @@ def train(args):
     # load checkpoint if finetune_on == True or resume epoch > 0
     if cfg.general.finetune_on == True:
         # fintune, Load model, reset learning rate
-        last_save_epoch, start_batch = load_checkpoint(net, cfg.general.finetune_epoch, 
+        _, _ = load_checkpoint(net, cfg.general.finetune_epoch, 
                                                         cfg.general.finetune_model_dir, 
                                                         sub_folder_name='pretrain_model')
-        start_epoch, last_save_epoch, start_batch = 0, 0, 0
+        start_epoch, start_batch = 0, 0
+        last_save_epoch, last_plot_epoch = 0, 0
     if cfg.general.resume_epoch >= 0:
         # resume, Load the model, continue the previous learning rate
-        last_save_epoch, start_batch = load_checkpoint(net, cfg.general.resume_epoch,
+        start_epoch, start_batch = load_checkpoint(net, cfg.general.resume_epoch,
                                                         cfg.general.save_dir, 
                                                         optimizer=optimizer)
-        start_epoch = last_save_epoch
+        last_save_epoch = start_epoch
+        last_plot_epoch = start_epoch
     else:
-        start_epoch, last_save_epoch, start_batch = 0, 0, 0
+        start_epoch, start_batch = 0, 0
+        last_save_epoch, last_plot_epoch = 0, 0
 
     # knowledge distillation
     if cfg.knowledge_distillation.on:
@@ -152,10 +153,17 @@ def train(args):
         # Forward pass
         if cfg.dataset.h_alignment == True:
             hisi_input = inputs[:, :, :(inputs.shape[2] // 16) * 16, :]
-            embeds, sim_matrix = net(hisi_input)
+            embeds = net(hisi_input)
         else:
-            embeds, sim_matrix = net(inputs)
+            embeds = net(inputs)
         profiler.tick("Forward pass")
+
+        if isinstance(net, torch.nn.parallel.DataParallel):
+            embeds = net.module.embeds_view(embeds)
+            sim_matrix = net.module.similarity_matrix(embeds)
+        else:
+            embeds = net.embeds_view(embeds)
+            sim_matrix = net.similarity_matrix(embeds)
 
         # Calculate loss
         loss, eer = ge2e_loss(embeds, sim_matrix, loss_func)
@@ -200,11 +208,14 @@ def train(args):
 
         # Draw projections and save them to the backup folder
         if (epoch_idx % cfg.train.plot_umap) == 0:
-            umap_dir = os.path.join(cfg.general.save_dir, 'umap')
-            create_folder(umap_dir)
-            projection_fpath = os.path.join(umap_dir, "umap_training_%05d.png" % (epoch_idx))
-            embeds_cpu = embeds.detach().cpu().numpy()
-            draw_projections(embeds_cpu, epoch_idx, projection_fpath)
+            if last_plot_epoch != epoch_idx:
+                last_plot_epoch = epoch_idx
+
+                umap_dir = os.path.join(cfg.general.save_dir, 'umap')
+                create_folder(umap_dir)
+                projection_fpath = os.path.join(umap_dir, "umap_training_%05d.png" % (epoch_idx))
+                embeds_cpu = embeds.detach().cpu().numpy()
+                draw_projections(embeds_cpu, epoch_idx, projection_fpath)
         profiler.tick("Draw projections")
 
         # Save model
@@ -228,8 +239,8 @@ def train(args):
 
 def main(): 
     parser = argparse.ArgumentParser(description='Streamax SV Training Engine')
+    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_TI_SV.py", nargs='?', help='config file')
     args = parser.parse_args()
-    args.config_file = "/home/huanyuan/code/demo/Speech/SV/config/sv_config_TI_SV.py"
     train(args)
 
 

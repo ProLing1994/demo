@@ -1,6 +1,6 @@
 import argparse
 import os
-import shutil
+import soundfile as sf
 
 from tqdm import tqdm
 
@@ -14,22 +14,24 @@ def get_sub_filepaths_suffix(folder, suffix='.wav'):
             paths.append(path)
     return paths
 
-def float32_to_int16(args):
+def volume_increase(args):
     # init 
-    temp_path = os.path.join(args.input_dir, '{}.wav'.format('temp'))
-
     wave_list = get_sub_filepaths_suffix(args.input_dir)
     for idx in tqdm(range(len(wave_list))):
         audio_path = wave_list[idx]
-        shutil.move(audio_path, temp_path)
-        os.system('sox {} -b 16 -e signed-integer {}'.format(temp_path, audio_path))
+        wav, source_sr = sf.read(audio_path)
+        wav = wav * args.volume_increase_scale 
+
+        output_path = str(audio_path).split('.')[0] + "volume_increase_{}.wav".format(args.volume_increase_scale)
+        sf.write(output_path, wav, source_sr)
 
 def main():
     parser = argparse.ArgumentParser(description="Sudio Format")
     args = parser.parse_args()
-    args.input_dir = "/mnt/huanyuan/data/speech/Recording/RM_Movie/MKV_movie_sample/"
+    args.input_dir = "/home/huanyuan/share/audio_data/weakup/weakup_xiaoan8k/adpro2_1_录制声音较小音频/"
+    args.volume_increase_scale = 10
 
-    float32_to_int16(args)
+    volume_increase(args)
     
 
 if __name__ == "__main__":

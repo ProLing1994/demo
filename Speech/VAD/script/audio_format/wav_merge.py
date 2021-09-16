@@ -8,7 +8,7 @@ sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 import ASR.impl.asr_data_loader_pyimpl as WaveLoader_Python
 from KWS.utils.folder_tools import *
 
-def wav_synthesis(args):
+def wav_merge(args):
     # init 
     wave_loader = WaveLoader_Python.WaveLoader_Librosa(args.sample_rate)
     wave_loader = WaveLoader_Python.WaveLoader_Soundfile(args.sample_rate)
@@ -26,7 +26,7 @@ def wav_synthesis(args):
             wave_data = wave_loader.to_numpy()
             wave_data_list.extend(list(wave_data))
 
-    output_path = os.path.join(args.output_dir, args.prefix + "synthesis.wav")
+    output_path = os.path.join(args.output_dir, args.prefix + "merge.wav")
     wave_loader.save_data(np.array(wave_data_list), output_path)
 
 if __name__ == "__main__":
@@ -36,4 +36,4 @@ if __name__ == "__main__":
     args.output_dir = "/home/huanyuan/temp/"
     args.prefix = "demo_output_"
     args.sample_rate = 16000
-    wav_synthesis(args)
+    wav_merge(args)

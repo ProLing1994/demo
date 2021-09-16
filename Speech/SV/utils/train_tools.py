@@ -59,6 +59,7 @@ def init_torch_and_numpy(cfg, local_rank=0):
     torch.manual_seed(cfg.debug.seed)
     torch.cuda.manual_seed(cfg.debug.seed)
     torch.backends.cudnn.benchmark = True
+    torch.set_num_threads(cfg.train.num_threads) 
 
     if cfg.general.data_parallel_mode == 0:
         pass
