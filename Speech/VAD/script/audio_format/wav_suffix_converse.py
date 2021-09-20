@@ -15,13 +15,15 @@ def get_sub_filepaths_suffix(folder, suffix='.wav'):
             paths.append(path)
     return paths
 
-def multiprocessing_format_transform(args):
-    input_path, output_path = args[0], args[1]
+def multiprocessing_format_transform(in_args):
+    args, input_path, output_path = in_args[0], in_args[1], in_args[2]
+    if os.path.exists(output_path):
+        return
+
     if args.bool_windows:
         os.system('"{}" {} -c 1 -b 16 -e signed-integer {}'.format(args.sox_path, input_path, output_path))
     else:
         os.system("ffmpeg -loglevel panic -i {} {} ".format(input_path, output_path))
-        os.system("rm {}".format(input_path))
 
 def wav_suffix_converse(args):
     # mkdir 
@@ -47,10 +49,10 @@ def wav_suffix_converse(args):
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
-        in_args = [input_path, output_path]
+        in_args = [args, input_path, output_path]
         in_params.append(in_args)
 
-    p = multiprocessing.Pool(16)
+    p = multiprocessing.Pool(args.num_processing)
     out = list(tqdm(p.imap(multiprocessing_format_transform, in_params), total=len(in_params)))
     p.close()
     p.join()
@@ -62,8 +64,8 @@ if __name__ == '__main__':
     parser.add_argument('--output_folder', type=str, default="/mnt/huanyuan/data/speech/sv/VoxCeleb2/dev_wav/")
     parser.add_argument('--input_suffix', type=str, default=".m4a")
     parser.add_argument('--output_suffix', type=str, default=".wav")
-    parser.add_argument('-w', '--bool_windows', type=bool, default=False)
-    parser.add_argument('-s', '--sox_path', type=str, default="C:\\Program Files (x86)\\sox-14-4-2\\sox.exe")
+    parser.add_argument('--num_processing', type=int, default=16)
+    parser.add_argument('--bool_windows', action='store_true', default=False)
+    parser.add_argument('--sox_path', type=str, default="C:\\Program Files (x86)\\sox-14-4-2\\sox.exe")
     args = parser.parse_args()
-
     wav_suffix_converse(args)

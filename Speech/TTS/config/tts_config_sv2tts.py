@@ -1,5 +1,9 @@
 from easydict import EasyDict as edict
 import numpy as np
+import sys
+
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech/TTS')
+from dataset.symbols import *
 
 __C = edict()
 cfg = __C
@@ -10,24 +14,18 @@ cfg = __C
 
 __C.general = {}
 
-# __C.general.TISV_dataset_list = ['librispeech_other', 'VoxCeleb1', 'VoxCeleb2']
-__C.general.TISV_dataset_list = ['test']
-__C.general.TISV_dataset_path_dict = {"librispeech_other_training": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-other-500",
-                                    "librispeech_other_testing": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/test-other",
-                                    "VoxCeleb1_training": "/mnt/huanyuan/data/speech/sv/VoxCeleb1/wav",
-                                    "VoxCeleb1_testing": "/mnt/huanyuan/data/speech/sv/VoxCeleb1/test_wav",
-                                    "VoxCeleb1_csv": "/mnt/huanyuan/data/speech/sv/VoxCeleb1/vox1_meta.csv",
-                                    "VoxCeleb2_training": "/mnt/huanyuan/data/speech/sv/VoxCeleb2/dev/aac",
-                                    "VoxCeleb2_testing": "/mnt/huanyuan/data/speech/sv/VoxCeleb2/test/aac",
-                                    "VoxCeleb2_csv": "/mnt/huanyuan/data/speech/sv/VoxCeleb2/vox2_meta.csv",
-                                    "background_noise":"/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/_background_noise_",
-                                    }
+__C.general.dataset_list = ['librispeech_clean_360', 'librispeech_clean_100', 'test_clean']
+# __C.general.dataset_list = ['test']
+__C.general.dataset_path_dict = {"librispeech_clean_360_training": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-clean-360",
+                                "librispeech_clean_100_training": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-clean-100",
+                                "test_clean_testing": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/test-clean",
+                                }
 
 # data path
-__C.general.data_dir = "/mnt/huanyuan/data/speech/sv/TI_SV_dataset/dataset/"
+__C.general.data_dir = "/mnt/huanyuan/data/speech/tts/dataset/"
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/sv/test_0912/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/tts/test/"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -53,19 +51,16 @@ __C.general.data_parallel_mode = 0
 
 
 ##################################
-# knowledge distillation parameters
+# speaker verification parameters
 ##################################
 
-__C.knowledge_distillation = {}
+__C.speaker_verification = {}
 
-# knowledge distillation: on
-__C.knowledge_distillation.on = False
-
-# teacher model
-__C.knowledge_distillation.teacher_model_name = ''
-__C.knowledge_distillation.teacher_class_name = ''
-__C.knowledge_distillation.teacher_model_dir = ""
-__C.knowledge_distillation.epoch = 0
+__C.speaker_verification.model_name = 'basic'
+__C.speaker_verification.class_name = 'SpeakerEncoder'
+__C.speaker_verification.model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/sv/ti_sv_1_0_09142021/"
+__C.speaker_verification.model_path = "SV."
+__C.speaker_verification.epoch = 250
 
 
 ##################################
@@ -106,6 +101,15 @@ __C.dataset.h_alignment = False
 
 # input size of training data (w, h), unit: voxel
 __C.dataset.data_size = [64, 156]
+
+# num_chars
+__C.dataset.num_chars = len(symbols)
+
+# speaker_embedding_size
+__C.dataset.speaker_embedding_size = 256
+
+# tts_cleaner_names
+__C.dataset.tts_cleaner_names = ["english_cleaners"]
 
 
 ##################################
@@ -177,9 +181,11 @@ __C.dataset.augmentation.num_masks = 2
 __C.net = {}
 
 # the network name
-__C.net.model_name = 'basic'
-__C.net.class_name = 'SpeakerEncoder'
+__C.net.model_name = 'tacotron'
+__C.net.class_name = "Tacotron"
 
+# r frames
+__C.net.r = 2
 
 ######################################
 # training parameters
@@ -188,12 +194,10 @@ __C.net.class_name = 'SpeakerEncoder'
 __C.train = {}
 
 # the number of training epochs
-__C.train.num_epochs = 1000
+__C.train.num_epochs = 10
 
 # the number of samples in a batch
-__C.train.speakers_per_batch = 4
-__C.train.utterances_per_speaker = 10
-__C.train.batch_size = __C.train.speakers_per_batch
+__C.train.batch_size = 1
 
 # the number of threads for IO
 __C.train.num_threads = 1
@@ -203,9 +207,6 @@ __C.train.show_log = 5
 
 # the number of batches to update loss curve
 __C.train.plot_snapshot = 5
-
-# the number of epochs to plot umap
-__C.train.plot_umap = 5
 
 # the number of epochs to save model
 __C.train.save_epochs = 1
@@ -250,18 +251,7 @@ __C.train.betas = (0.9, 0.999)
 
 __C.loss = {}
 
-# the loss name, support ['softmax','focal']
-__C.loss.name = 'softmax'
-# __C.loss.name = 'focal'
-
-# the number of class
-__C.loss.num_classes =  __C.train.batch_size
-
-# the weight matrix for each class in focal loss, including background class
-__C.loss.obj_weight = None
-
-# the gamma parameter in focal loss
-__C.loss.focal_gamma = 2
+__C.loss.name = 'None'
 
 # EMA: expontential moving average on
 # EMA: https://github.com/ProLing1994/pytorch-loss/blob/master/ema.py
@@ -270,17 +260,6 @@ __C.loss.ema_on = False
 
 # the alpha parameter in EMA: each parameter p should be computed as p_hat = alpha * p + (1. - alpha) * p_hat
 __C.loss.ema_alpha = 0.995
-
-# loss
-# kd: https://github.com/peterliht/knowledge-distillation-pytorch
-# cd: https://github.com/zhouzaida/channel-distillation
-__C.knowledge_distillation.loss_name = 'kd'
-
-# kd, alpha
-__C.knowledge_distillation.alpha = 0.95
-
-# kd, temperature
-__C.knowledge_distillation.temperature = 6
 
 
 ##################################

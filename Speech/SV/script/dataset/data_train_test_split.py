@@ -133,7 +133,7 @@ def data_split(args):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Streamax KWS Data Split Engine')
+    parser = argparse.ArgumentParser(description='Streamax SV Data Split Engine')
     parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_TI_SV.py", help='config file')
     args = parser.parse_args()
 

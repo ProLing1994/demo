@@ -1,3 +1,5 @@
+import sys
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS/demo')
 from network.resnet_phoneme import *
 import torch.nn as nn
 import torch

@@ -17,7 +17,7 @@ from encoder import inference as encoder
 from vocoder import inference as vocoder
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-from TTS.utils.folder_tools import *
+from Basic.utils.folder_tools import *
 
 def embedding(in_fpath):
     ## Computing the embedding
@@ -65,12 +65,17 @@ def speech_generation(args):
                 wav_id = wav_list[random.randint(0, len(wav_list) - 1)]
                 if not wav_id.endswith("mp3") and not wav_id.endswith("wav") and not wav_id.endswith("flac"):
                     continue
+
+                audio_path = os.path.join(args.output_folder, args.sub_folder_list[0], args.output_format.format(int(speaker_id), int(section_id), time_id))
+                if os.path.exists(audio_path):
+                    continue
+                
                 wav_path = os.path.join(args.data_path, speaker_id, section_id, wav_id)
                 print("speaker_id: {}, section_id: {}, wav_id: {}".format(speaker_id, section_id, wav_id))
                 embed = embedding(wav_path) 
 
                 # The synthesizer works in batch, so you need to put your data in a list or numpy array
-                texts = [" ".join(((args.text_list[text_idx] + ' ') * 5).split(' ')[:-1]) for text_idx in range(len(args.text_list))]
+                texts = [" ".join(((args.text_list[text_idx] + ' ') * args.repeat_time).split(' ')[:-1]) for text_idx in range(len(args.text_list))]
                 embeds = [embed] * len(args.text_list)
                 # If you know what the attention layer alignments are, you can retrieve them here by
                 # passing return_alignments=True
@@ -79,7 +84,7 @@ def speech_generation(args):
 
                 for spec_idx in range(len(specs)):
                     spec = specs[spec_idx]
-                    text = texts[spec_idx].split(' ')[0]
+                    sub_folder_name = args.sub_folder_list[spec_idx]
 
                     ## Generating the waveform
                     print("Synthesizing the waveform: ", texts[spec_idx])
@@ -98,15 +103,18 @@ def speech_generation(args):
                         
                     # Save it on the disk
                     # create_folder 
-                    create_folder(os.path.join(args.output_folder, text))
-                    audio_path = os.path.join(args.output_folder, text, args.output_format.format(int(speaker_id), int(section_id), time_id))
+                    create_folder(os.path.join(args.output_folder, sub_folder_name))
+                    audio_path = os.path.join(args.output_folder, sub_folder_name, args.output_format.format(int(speaker_id), int(section_id), time_id))
                     print(generated_wav.dtype)
                     sf.write(audio_path, generated_wav.astype(np.float32), synthesizer.sample_rate)
                     print("\nSaved output as %s\n\n" % audio_path)
 
+                    tqdm.write("Done: {}/{} ".format(speaker_idx, len(speaker_id_list)))
+
             # output txt
             with open(os.path.join(args.output_folder, "sv2tts.txt"), "a") as f :
                 f.write("speaker: {}, equipment_id: {}. \n".format(speaker_id, section_id))
+        
 
 
 if __name__ == '__main__':
@@ -124,24 +132,49 @@ if __name__ == '__main__':
     parser.add_argument("-v", "--voc_model_fpath", type=Path, 
                         default= SV2TTS_path + "vocoder/saved_models/pretrained/pretrained.pt",
                         help="Path to a saved vocoder")
-    
     # LibriSpeech
     parser.add_argument("--data_path", type=Path, 
-                        # default= "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-clean-100/")
-                        default= "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-clean-360/")
+                        default= "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-clean-100/")
+                        # default= "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-clean-360/")
                         # default= "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-other-500/")
                         # default= "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/test-clean/")
+
+    # activate bwc 
     parser.add_argument("--output_folder", type=Path, 
-                        # default= "/mnt/huanyuan/data/speech/kws/tf_speech_commands/tts/sv2tts/LibriSpeech/train-clean-100/")
-                        default= "/mnt/huanyuan/data/speech/kws/tf_speech_commands/tts/sv2tts/LibriSpeech/train-clean-360/")
+                        default= "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_Activatebwc/tts/sv2tts/LibriSpeech/train-clean-100/")
+                        # default= "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_Activatebwc/tts/sv2tts/LibriSpeech/train-clean-360/")
+                        # default= "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_Activatebwc/tts/sv2tts/LibriSpeech/train-other-500/")
+                        # default= "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_Activatebwc/tts/sv2tts/LibriSpeech/test-clean/")
     parser.add_argument("--output_format", type=str, 
-                        default= "S{:0>6d}_TTSsv2tts_P{:0>8d}T{:0>6d}.wav")
+                        default= "RM_KWS_ACTIVATEBWC_TTSsv2tts_S{:0>6d}P{:0>8d}T{:0>6d}.wav")
     parser.add_argument("--text_list", type=list, 
-                        default= ["backward", "bed", "bird", "cat", "dog", "down", "eight", "five", "follow", "forward", "four", "go", 
-                                    "happy", "house", "learn", "left", "marvin", "nine", "no", "off", "on", "one", "right", "seven", 
-                                    "sheila", "six", "stop", "three", "tree", "two", "up", "visual", "wow", "yes", "zero"])
+                        default= ["activate be double you see."])
+    parser.add_argument("--sub_folder_list", type=list, 
+                        default= ["activatebwc"])
     parser.add_argument("--random_time", type=int, 
                         default= 5)
+    parser.add_argument("--repeat_time", type=int, 
+                        default= 1)
+
+    # # tf_speech_commands
+    # parser.add_argument("--output_folder", type=Path, 
+    #                     # default= "/mnt/huanyuan/data/speech/kws/tf_speech_commands/tts/sv2tts/LibriSpeech/train-clean-100/")
+    #                     default= "/mnt/huanyuan/data/speech/kws/tf_speech_commands/tts/sv2tts/LibriSpeech/train-clean-360/")
+    # parser.add_argument("--output_format", type=str, 
+    #                     default= "S{:0>6d}_TTSsv2tts_P{:0>8d}T{:0>6d}.wav")
+    # parser.add_argument("--text_list", type=list, 
+    #                     default= ["backward", "bed", "bird", "cat", "dog", "down", "eight", "five", "follow", "forward", "four", "go", 
+    #                                 "happy", "house", "learn", "left", "marvin", "nine", "no", "off", "on", "one", "right", "seven", 
+    #                                 "sheila", "six", "stop", "three", "tree", "two", "up", "visual", "wow", "yes", "zero"])
+    # parser.add_argument("--sub_folder_list", type=list, 
+    #                 default= ["backward", "bed", "bird", "cat", "dog", "down", "eight", "five", "follow", "forward", "four", "go", 
+    #                                 "happy", "house", "learn", "left", "marvin", "nine", "no", "off", "on", "one", "right", "seven", 
+    #                                 "sheila", "six", "stop", "three", "tree", "two", "up", "visual", "wow", "yes", "zero"])
+    # parser.add_argument("--random_time", type=int, 
+    #                     default= 5)
+    # parser.add_argument("--repeat_time", type=int, 
+    #                     default= 5)
+
     args = parser.parse_args()
     print_args(args, parser)
 

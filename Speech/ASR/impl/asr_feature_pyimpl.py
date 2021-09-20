@@ -209,7 +209,7 @@ class Feature(object):
         return
 
     def get_mel_int_feature(self, data, data_len_samples, bool_vtlp_augmentation=False):
-        assert data_len_samples == self.data_len_samples
+        # assert data_len_samples == self.data_len_samples
         self.mel_int_feature = gen_fbank_feature(data, self.sample_rate, winlen=self.winlen, winstep=self.winstep, 
                                                 numcep=self.feature_freq, nfilt=self.nfilt, nfft=self.nfft, 
                                                 lowfreq=10, highfreq=None, appendEnergy=False, bool_vtlp_augmentation=bool_vtlp_augmentation)

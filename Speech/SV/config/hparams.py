@@ -19,3 +19,7 @@ audio_norm_target_dBFS = -30            # 目标 dbFS，-30
 
 # VoxCeleb1 nationalites
 Anglophone_Nationalites = ["australia", "canada", "ireland", "uk", "usa"]
+
+## infer Audio
+# Number of spectrogram frames in a partial utterance
+partials_n_frames = 160     # 1600 ms

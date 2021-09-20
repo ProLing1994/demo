@@ -189,7 +189,7 @@ __C.model.bool_pytorch = True
 __C.model.kws_model_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/kws_activatebwc16k_tc_resnet14_amba_2_4_04012021/tc_resnet14_amba_2_4_04012021.caffemodel"
 __C.model.kws_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/kws_activatebwc16k_tc_resnet14_amba_2_4_04012021/tc_resnet14_amba_2_4_04012021.prototxt"
 __C.model.kws_net_input_name = "data"
-__C.model.kws_net_output_name = "Softmax"
+__C.model.kws_net_output_name = " Softmax"
 __C.model.kws_chw_params = "1,64,196"
 __C.model.kws_transpose = True
 

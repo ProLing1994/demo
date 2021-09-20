@@ -14,8 +14,8 @@ class SpeakerEncoder(nn.Module):
         model_embedding_size = 256
         model_num_layers = 3
 
-        self.speakers_per_batch = cfg.train.speakers_per_batch
-        self.utterances_per_speaker = cfg.train.utterances_per_speaker
+        self.speakers_per_batch = cfg.train.speakers_per_batch if 'speakers_per_batch' in cfg.train else None
+        self.utterances_per_speaker = cfg.train.utterances_per_speaker if 'utterances_per_speaker' in cfg.train else None
         self.model_embedding_size = model_embedding_size
 
         # Network defition

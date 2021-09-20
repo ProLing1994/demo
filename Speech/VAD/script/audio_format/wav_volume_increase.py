@@ -29,7 +29,7 @@ def main():
     parser = argparse.ArgumentParser(description="Sudio Format")
     args = parser.parse_args()
     args.input_dir = "/home/huanyuan/share/audio_data/weakup/weakup_xiaoan8k/adpro2_1_录制声音较小音频/"
-    args.volume_increase_scale = 10
+    args.volume_increase_scale = 100
 
     volume_increase(args)
     
