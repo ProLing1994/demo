@@ -149,9 +149,12 @@ def main():
     args.nfilt = 64
     args.use_gpu = True
 
-    args.input_folder = "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_Activatebwc/tts/sv2tts/RM_Meiguo_BwcKeyword/danbing_16k/wav/"
-    args.output_folder = "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_Activatebwc/tts/sv2tts/RM_Meiguo_BwcKeyword/danbing_16k/wav_check/"
-    args.output_remove_folder = "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_Activatebwc/tts/sv2tts/RM_Meiguo_BwcKeyword/danbing_16k/wav_check_remove/"
+    # args.input_folder = "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_Activatebwc/tts/sv2tts/RM_Meiguo_BwcKeyword/danbing_16k/wav/"
+    # args.output_folder = "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_Activatebwc/tts/sv2tts/RM_Meiguo_BwcKeyword/danbing_16k/wav_check/"
+    # args.output_remove_folder = "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_Activatebwc/tts/sv2tts/RM_Meiguo_BwcKeyword/danbing_16k/wav_check_remove/"
+    args.input_folder = "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_Activatebwc/tts/sv2tts/LibriSpeech/train-other-500/activatebwc/"
+    args.output_folder = "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_Activatebwc/tts/sv2tts/LibriSpeech/train-other-500_check/activatebwc/"
+    args.output_remove_folder = "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_Activatebwc/tts/sv2tts/LibriSpeech/train-other-500_check_remove/activatebwc/"
     args.check_list = ['activate', ' be ', 'double', 'you', 'see', 'say']
 
     ASR_offine(args)

@@ -1,9 +1,11 @@
 import argparse
+from datetime import datetime
 import os 
 import sys
 from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
 from Basic.utils.folder_tools import *
 from Basic.utils.train_tools import *
 from Basic.utils.loss_tools import *
@@ -12,10 +14,34 @@ from Basic.utils.profiler_tools import *
 from SV.utils.infer_tools import *
 
 from TTS.config.hparams import *
+from TTS.dataset.text import *
 from TTS.utils.train_tools import *
+from TTS.utils.visualizations_tools import *
 
 sys.path.insert(0, '/home/huanyuan/code/demo/common')
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/common')
 from common.utils.python.logging_helpers import setup_logger
+
+
+def show_ressult(attention, mel_prediction, target_spectrogram, input_seq, step,
+               plot_dir, mel_output_dir, sample_num, loss):
+    # Save some results for evaluation
+    create_folder(plot_dir)
+    attention_path = os.path.join(plot_dir, "attention_step_{}_sample_{}".format(step, sample_num))
+    save_attention(attention, attention_path)
+
+    # save predicted mel spectrogram to disk (debug)
+    create_folder(mel_output_dir)
+    mel_output_fpath = os.path.join(mel_output_dir, "mel_prediction_step_{}_sample_{}.npy".format(step, sample_num))
+    np.save(str(mel_output_fpath), mel_prediction, allow_pickle=False)
+
+    # save real and predicted mel-spectrogram plot to disk (control purposes)
+    spec_fpath = os.path.join(plot_dir, "mel_spectrogram_step_{}_sample_{}.png".format(step, sample_num))
+    title_str = "{}, {}, step={}, loss={:.5f}".format("Tacotron", datetime.now().strftime("%Y-%m-%d %H:%M"), step, loss)
+    plot_spectrogram(mel_prediction, spec_fpath, title=title_str,
+                     target_spectrogram=target_spectrogram,
+                     max_len=target_spectrogram.shape[0])
+    print("Input at step {}: {}".format(step, sequence_to_text(input_seq)))
 
 
 def train(args):
@@ -51,16 +77,22 @@ def train(args):
     # load checkpoint if finetune_on == True or resume epoch > 0
     if cfg.general.finetune_on == True:
         # fintune, Load model, reset learning rate
-        _, _ = load_checkpoint(net, cfg.general.finetune_epoch, 
-                                                        cfg.general.finetune_model_dir, 
-                                                        sub_folder_name='pretrain_model')
+        if cfg.general.finetune_model_path == "":
+            load_checkpoint(net, cfg.general.finetune_epoch, 
+                            cfg.general.finetune_model_dir, 
+                            sub_folder_name='pretrain_model')
+        # fintune, 
+        else:
+            load_checkpoint_from_path(net, cfg.general.finetune_model_path, 
+                                        state_name='model_state',
+                                        finetune_ignore_key_list=cfg.general.finetune_ignore_key_list)
         start_epoch, start_batch = 0, 0
         last_save_epoch, last_plot_epoch = 0, 0
     if cfg.general.resume_epoch >= 0:
         # resume, Load the model, continue the previous learning rate
         start_epoch, start_batch = load_checkpoint(net, cfg.general.resume_epoch,
-                                                        cfg.general.save_dir, 
-                                                        optimizer=optimizer)
+                                                    cfg.general.save_dir, 
+                                                    optimizer=optimizer)
         last_save_epoch = start_epoch
         last_plot_epoch = start_epoch
     else:
@@ -169,11 +201,24 @@ def train(args):
                 save_checkpoint(cfg, args.config_file, net, optimizer, epoch_idx, batch_idx)
 
                 if cfg.general.is_test:
-                    # TO Do
-                    pass
-                    # test(cfg, net, epoch_idx, batch_idx,
-                    #      logger, testing_dataloader, mode='eval')
-            
+                    # show result
+                    sample_idx = 0
+                    mel_prediction = m2_hat[sample_idx].detach().cpu().numpy().T
+                    target_spectrogram = mels[sample_idx].detach().cpu().numpy().T
+                    mel_length = mel_prediction.shape[0]
+                    attention_len = mel_length // net.r
+                    attention_prediction = attention[sample_idx][:, :attention_len].detach().cpu().numpy()
+                    target_text = texts[sample_idx].detach().cpu().numpy()
+                    show_ressult(attention=attention_prediction,
+                                mel_prediction=mel_prediction,
+                                target_spectrogram=target_spectrogram,
+                                input_seq=target_text,
+                                step=epoch_idx,
+                                plot_dir=os.path.join(cfg.general.save_dir, 'plots'),
+                                mel_output_dir=os.path.join(cfg.general.save_dir, 'mel-spectrograms'),
+                                sample_num=sample_idx + 1,
+                                loss=loss)
+
                 if cfg.loss.ema_on:
                     ema.restore() # resume the model parameters
         profiler.tick("Save model")

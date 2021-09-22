@@ -8,9 +8,11 @@ import shutil
 import torch
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo')
 from common.common.utils.python.file_tools import load_module_from_disk
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/Basic')
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/Basic')
 from utils.lmdb_tools import *
 
 def load_cfg_file(config_file):
@@ -143,7 +145,10 @@ def update_scheduler(cfg, scheduler, epoch_idx):
         pass
 
 
-def load_checkpoint(net, epoch_num, net_dir, optimizer=None, sub_folder_name='checkpoints'):
+def load_checkpoint(net, epoch_num, net_dir, optimizer=None, 
+                    sub_folder_name='checkpoints', 
+                    state_name='state_dict',
+                    optimizer_name='optimizer'):
     """
     load network parameters from directory
     :param epoch_num: the epoch idx of model to load
@@ -155,14 +160,35 @@ def load_checkpoint(net, epoch_num, net_dir, optimizer=None, sub_folder_name='ch
                             'chk_{}'.format(epoch_num), 'parameter.pkl')
     if not os.path.isfile(chk_file):
         raise ValueError('checkpoint file not found: {}'.format(chk_file))
-
+    
+    # 方案一:
     state = torch.load(chk_file)
-    net.load_state_dict(state['state_dict'])
-
+    net.load_state_dict(state[state_name])
+    
     if optimizer:
-        optimizer.load_state_dict(state['optimizer'])
+        optimizer.load_state_dict(state[optimizer_name])
 
     return state['epoch'], state['batch']
+
+
+def load_checkpoint_from_path(net, chk_file,
+                                state_name='state_dict',
+                                finetune_ignore_key_list=None):
+    # 方案二: 需要添加 module. 字段
+    state = torch.load(chk_file)
+    new_pre = {}
+    for k,v in state[state_name].items():
+        name = 'module.' + k
+        if finetune_ignore_key_list:
+            if name in finetune_ignore_key_list:
+                continue
+            else:
+                new_pre[name] = v
+        else:
+            new_pre[name] = v
+    net.load_state_dict(new_pre, strict=False)
+
+    return
 
 
 def save_checkpoint(cfg, config_file, net, optimizer, epoch_idx, batch_idx, output_folder_name='checkpoints'):

@@ -33,9 +33,13 @@ __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/sv/test_0912
 __C.general.is_test = True
 
 # finetune model
-__C.general.finetune_on = False
+# 方式一：模型训练过程中，保存模型
+__C.general.finetune_on = True
 __C.general.finetune_model_dir = ""
 __C.general.finetune_epoch = 0
+# 方式二：加载其他模型结构
+__C.general.finetune_model_path = "/mnt/huanyuan/model/model_10_30_25_21/model/sv/pretrained/pretrain_model/parameter.pkl"
+__C.general.finetune_ignore_key_list = []
 
 # set certain epoch to continue training, set -1 to train from scratch
 __C.general.resume_epoch = -1
@@ -93,10 +97,12 @@ __C.dataset.window_stride_ms = 10.0
 __C.dataset.preprocess = "fbank_cpu"
 
 # How many bins to use for the Mel feature
-__C.dataset.feature_bin_count = 64
+# __C.dataset.feature_bin_count = 64
+__C.dataset.feature_bin_count = 40
 
 # How many nfilt to use for the Mel feature, only support preprocess=fbank_cpu
-__C.dataset.nfilt = 64
+# __C.dataset.nfilt = 64
+__C.dataset.nfilt = 40
 
 # input size of training data (w, h), whether input size is a multiple of 16, unit: voxel
 # __C.dataset.h_alignment = True, [hisi], 模型需要图像输入长度为 16 的倍数
@@ -208,7 +214,7 @@ __C.train.plot_snapshot = 5
 __C.train.plot_umap = 5
 
 # the number of epochs to save model
-__C.train.save_epochs = 1
+__C.train.save_epochs = 25
 
 
 ######################################

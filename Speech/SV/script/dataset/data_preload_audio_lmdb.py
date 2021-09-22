@@ -8,7 +8,8 @@ import sys
 from pandas.io.parsers import read_csv
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/SV')
+# sys.path.insert(0, '/home/huanyuan/code/demo/Speech/SV')
+sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/SV')
 from utils.train_tools import load_cfg_file
 from utils.folder_tools import *
 from config.hparams import *
@@ -16,7 +17,8 @@ from dataset.audio import *
 
 
 parser = argparse.ArgumentParser(description='Streamax SV Data Split Engine')
-parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_TI_SV.py", help='config file')
+# parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_TI_SV.py", help='config file')
+parser.add_argument('--config_file', type=str,  default="/home/engineers/yh_rmai/code/demo/Speech/SV/config/sv_config_TI_SV.py", help='config file')
 args = parser.parse_args()
 
 # params

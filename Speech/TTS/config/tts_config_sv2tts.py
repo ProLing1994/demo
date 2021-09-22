@@ -3,6 +3,7 @@ import numpy as np
 import sys
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/TTS')
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/TTS')
 from dataset.symbols import *
 
 __C = edict()
@@ -14,8 +15,8 @@ cfg = __C
 
 __C.general = {}
 
-__C.general.dataset_list = ['librispeech_clean_360', 'librispeech_clean_100', 'test_clean']
-# __C.general.dataset_list = ['test']
+# __C.general.dataset_list = ['librispeech_clean_360', 'librispeech_clean_100', 'test_clean']
+__C.general.dataset_list = ['test']
 __C.general.dataset_path_dict = {"librispeech_clean_360_training": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-clean-360",
                                 "librispeech_clean_100_training": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-clean-100",
                                 "test_clean_testing": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/test-clean",
@@ -31,9 +32,19 @@ __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/tts/test/"
 __C.general.is_test = True
 
 # finetune model
-__C.general.finetune_on = False
+__C.general.finetune_on = True
+# 方式一：模型训练过程中，保存模型
 __C.general.finetune_model_dir = ""
 __C.general.finetune_epoch = 0
+# 方式二：加载其他模型结构
+__C.general.finetune_model_path = "/mnt/huanyuan/model/model_10_30_25_21/model/tts/pretrained/pretrain_model/parameter.pkl"
+__C.general.finetune_ignore_key_list = ['module.decoder.prenet.fc1.weight', 'module.decoder.mel_proj.weight', 
+                                        'module.postnet.conv1d_bank.0.conv.weight', 'module.postnet.conv1d_bank.1.conv.weight', 
+                                        'module.postnet.conv1d_bank.2.conv.weight', 'module.postnet.conv1d_bank.3.conv.weight',
+                                        'module.postnet.conv1d_bank.4.conv.weight', 'module.postnet.conv_project2.conv.weight',
+                                        'module.postnet.conv_project2.bnorm.weight', 'module.postnet.conv_project2.bnorm.bias',
+                                        'module.postnet.conv_project2.bnorm.running_mean', 'module.postnet.conv_project2.bnorm.running_var',
+                                        'module.postnet.pre_highway.weight', 'module.post_proj.weight']
 
 # set certain epoch to continue training, set -1 to train from scratch
 __C.general.resume_epoch = -1
@@ -74,9 +85,6 @@ __C.dataset.input_channel = 1
 
 # Number of audio samples per second
 __C.dataset.sample_rate = 16000
-
-# Length of each audio clip to be analyzed
-__C.dataset.clip_duration_ms = 1600
 
 # Duration of frequency analysis window
 __C.dataset.window_size_ms = 32.0
@@ -194,7 +202,7 @@ __C.net.r = 2
 __C.train = {}
 
 # the number of training epochs
-__C.train.num_epochs = 10
+__C.train.num_epochs = 1000
 
 # the number of samples in a batch
 __C.train.batch_size = 1
@@ -209,7 +217,7 @@ __C.train.show_log = 5
 __C.train.plot_snapshot = 5
 
 # the number of epochs to save model
-__C.train.save_epochs = 1
+__C.train.save_epochs = 25
 
 
 ######################################
@@ -260,23 +268,6 @@ __C.loss.ema_on = False
 
 # the alpha parameter in EMA: each parameter p should be computed as p_hat = alpha * p + (1. - alpha) * p_hat
 __C.loss.ema_alpha = 0.995
-
-
-##################################
-# regularization parameters
-##################################
-
-# regularization parameters
-__C.regularization = {}
-
-# regularization: label smoothing parameters
-__C.regularization.label_smoothing = {}
-
-# regularization: label smoothing on
-__C.regularization.label_smoothing.on = False
-
-# regularization: label smoothing epsilon 
-__C.regularization.label_smoothing.epsilon = 0.1
 
 
 ######################################

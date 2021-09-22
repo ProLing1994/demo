@@ -10,9 +10,11 @@ import webrtcvad
 import torch
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/SV')
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/SV')
 from config.hparams import *
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
 from ASR.impl.asr_feature_pyimpl import Feature
 
 

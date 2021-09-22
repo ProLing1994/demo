@@ -25,6 +25,7 @@ def load_data_pd(cfg, mode):
             data_pd = pd.concat([data_pd, data_pd_temp])
 
     data_pd = data_pd[data_pd["mode"] == mode]
+    data_pd.reset_index(drop=True, inplace=True) 
     return data_pd
 
 
@@ -35,6 +36,9 @@ def load_lmdb(cfg, mode):
         dataset_name = cfg.general.dataset_list[dataset_idx]
         # lmdb
         lmdb_path = os.path.join(cfg.general.data_dir, 'dataset_audio_lmdb', '{}.lmdb'.format(dataset_name+'_'+mode))
+        if not os.path.exists(lmdb_path):
+            print("[Warning] data do not exists: {}".format(lmdb_path))
+            continue
         lmdb_env = load_lmdb_env(lmdb_path)
         lmdb_dict[dataset_name] = lmdb_env
 

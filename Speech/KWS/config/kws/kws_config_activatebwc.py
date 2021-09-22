@@ -17,7 +17,7 @@ __C.general.sub_data_dir = []
 # __C.general.version = "1.5"     # 重庆人录制唤醒词
 # __C.general.version = "1.5.10"  # 10% 重庆人录制唤醒词
 # __C.general.version = "1.5.50"  # 50% 重庆人录制唤醒
-__C.general.version = "1.6"     # + 深圳人录制唤醒词（测试 tts 精度）
+# __C.general.version = "1.6"     # 重庆人录制唤醒词 + 深圳人录制唤醒词（测试 tts 精度）
 # __C.general.version = "1.7"
 # __C.general.version = "1.8"     # tts（LibriSpeech）
 # __C.general.version = "1.9.100" # tts（LibriSpeech）+ 100% 重庆人录制唤醒词
@@ -25,19 +25,21 @@ __C.general.version = "1.6"     # + 深圳人录制唤醒词（测试 tts 精度
 # __C.general.version = "1.9.50"  # tts（LibriSpeech）+ 50% 重庆人录制唤醒词
 # __C.general.version = "1.10"    # tts（深圳口音生成）
 # __C.general.version = "1.10.100"# tts（深圳口音生成）+ 100% 重庆人录制唤醒词
+__C.general.version = "1.11"    # 重庆人录制唤醒词 + 深圳人录制唤醒词 + tts
 
 # data date
-__C.general.date = "03312021"
+# __C.general.date = "03312021"
 # __C.general.date = "07162021"
 # __C.general.date = "08192021"
 # __C.general.date = "08272021"
 # __C.general.date = "08302021"
+__C.general.date = "09222021"
 
 # data path
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.5_03312021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.5.10_03312021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.5.50_03312021/total_data_files.csv"
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.6_07162021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.6_07162021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.7_08192021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_tts_2s_1.8_08272021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_tts_2s_1.9_08302021/total_data_files.csv"
@@ -45,12 +47,13 @@ __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/e
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_tts_2s_1.9.50_08302021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_sztts_2s_1.10_08302021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_sztts_2s_1.10.100_08302021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1_11_09222021/total_data_files.csv"
 
 # background noise path
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.5_03312021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.5.10_03312021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.5.50_03312021/background_noise_files.csv"
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.6_07162021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.6_07162021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.7_08192021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_tts_2s_1.8_08272021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_tts_2s_1.9_08302021/background_noise_files.csv"
@@ -58,6 +61,7 @@ __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_da
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_tts_2s_1.9.50_08302021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_sztts_2s_1.10_08302021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_sztts_2s_1.10.100_08302021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1_11_09222021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -197,18 +201,20 @@ __C.dataset.data_size = [64, 196]
 __C.dataset.label = {}
 
 # label
-__C.dataset.label.positive_label = ["activatebwc"]
+# __C.dataset.label.positive_label = ["activatebwc"]
 # __C.dataset.label.positive_label = ["tts"]
+__C.dataset.label.positive_label = ["activatebwc", "tts"]
 __C.dataset.label.positive_label_chinese_name_list = [""]
-__C.dataset.label.positive_label_together = False
+__C.dataset.label.positive_label_together = True
 __C.dataset.label.positive_label_together_label = ["positive"]
 __C.dataset.label.negative_label = ["_silence_", "_unknown_"]
 __C.dataset.label.negative_label_together = True
 __C.dataset.label.negative_label_together_label = ["negative"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
 __C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[1]
-__C.dataset.label.ignore_label = ["activate", "bwc", "tts", "temp"]
-# __C.dataset.label.ignore_label = ["activatebwc", "activate", "bwc", "temp"]
+# __C.dataset.label.ignore_label = ["tts", "activate", "bwc"]
+# __C.dataset.label.ignore_label = ["activatebwc", "activate", "bwc"]
+__C.dataset.label.ignore_label = ["activate", "bwc"]
 __C.dataset.label.label_list = __C.dataset.label.negative_label + __C.dataset.label.positive_label
 __C.dataset.label.num_classes = 2
 

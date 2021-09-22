@@ -6,6 +6,7 @@ import pcen
 import sys
 import struct
 from scipy.ndimage.morphology import binary_dilation
+from scipy.io import wavfile
 from typing import Optional, Union
 import torch
 import webrtcvad

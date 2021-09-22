@@ -2,16 +2,21 @@ import argparse
 import sys
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/SV')
-from utils.folder_tools import *
-from utils.train_tools import *
-from utils.loss_tools import *
-from utils.profiler_tools import *
-from utils.visualizations_tools import *
-from config.hparams import *
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
+from Basic.utils.folder_tools import *
+from Basic.utils.profiler_tools import *
+from Basic.utils.loss_tools import *
+from Basic.utils.train_tools import *
 
-sys.path.insert(0, '/home/huanyuan/code/demo/common/common')
-from utils.python.logging_helpers import setup_logger
+from SV.config.hparams import *
+from SV.utils.train_tools import *
+from SV.utils.loss_tools import *
+from SV.utils.visualizations_tools import *
+
+sys.path.insert(0, '/home/huanyuan/code/demo/common')
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/common')
+from common.utils.python.logging_helpers import setup_logger
 
 
 def test(cfg, net, epoch_idx, batch_idx, logger, test_data_loader, mode='eval'):
@@ -93,9 +98,15 @@ def train(args):
     # load checkpoint if finetune_on == True or resume epoch > 0
     if cfg.general.finetune_on == True:
         # fintune, Load model, reset learning rate
-        _, _ = load_checkpoint(net, cfg.general.finetune_epoch, 
-                                                        cfg.general.finetune_model_dir, 
-                                                        sub_folder_name='pretrain_model')
+        if cfg.general.finetune_model_path == "":
+            load_checkpoint(net, cfg.general.finetune_epoch, 
+                            cfg.general.finetune_model_dir, 
+                            sub_folder_name='pretrain_model')
+        # fintune, 
+        else:
+            load_checkpoint_from_path(net, cfg.general.finetune_model_path, 
+                                        state_name='model_state',
+                                        finetune_ignore_key_list=cfg.general.finetune_ignore_key_list)
         start_epoch, start_batch = 0, 0
         last_save_epoch, last_plot_epoch = 0, 0
     if cfg.general.resume_epoch >= 0:
