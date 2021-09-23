@@ -8,8 +8,21 @@ import wave
 from datetime import datetime
 from multiprocessing import Process, Event, Queue, freeze_support
 
-import RMAI_KWS_ASR_offline_API as api
+from RMAI_KWS_ASR_API import KwsAsrApi
 
+
+# options 
+## English
+# cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_bpe.py"
+# cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_phoneme.py"
+# cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_bpe_phoneme.py"
+
+## Chinese
+cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_16k_64dim.py"
+# cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_8k_56dim.py"
+# cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MTA_XIAOAN.py"
+# cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_XIAORUI.py"
+# cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_CQ_TAXI_3s.py"
 
 def term(sig_num, addtion):
     """
@@ -30,8 +43,7 @@ class OnlineAudio:
     audio_queue_wakeup = Queue()
     event = Event() 
     
-    def __init__(self, chunk=int(api.cfg.general.sample_rate/10), format=pyaudio.paInt16, channels=1, rate=int(api.cfg.general.sample_rate)):
-    # def __init__(self, chunk=int(16000), format=pyaudio.paInt16, channels=1, rate=int(16000)):
+    def __init__(self, chunk=1600, format=pyaudio.paInt16, channels=1, rate=16000):
         self._chunk = chunk
         self._format = format
         self._channels = channels
@@ -76,9 +88,7 @@ class OnlineAudio:
         进程：监听本地音乐
         """
         print("[Init:] Listen")
-        # wave_path = "/mnt/huanyuan/data/speech/Recording_sample/iphone/test-kws-asr.wav"
-        # wave_path = "/home/huanyuan/share/audio_data/english_wav/1-0127-asr_16k.wav"
-        wave_path = "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_validation_60.wav"
+        wave_path = "/home/huanyuan/code/demo/Speech/API/Kws_weakup_Asr/audio/test-kws-xiaorui-asr-mandarin-taxi_001.wav"
     
         # 打开音频流，output=True 表示音频输出
         pyaudio_play = pyaudio.PyAudio()
@@ -151,13 +161,11 @@ class OnlineAudio:
         print("[Init:] wakeup & asr")
         
         # init
-        api.param_init()
-        api.kws_asr_init()
+        kws_asr_api = KwsAsrApi(cfg_path = cfg_path, bool_do_kws_weakup=True, bool_do_asr=True, bool_gpu=True)
         audio_data_list = []
-
         print("[Init:] wakeup & asr： Done!!!")
         while True:
-            if len(audio_data_list) < api.cfg.general.window_size_samples:
+            if len(audio_data_list) < kws_asr_api.window_size_samples():
                 if queue.empty(): 
                     # print("等待数据中..........")
                     event.wait()
@@ -171,7 +179,7 @@ class OnlineAudio:
                         audio_data_list.extend(data_np.tolist())
         
             else:
-                api.run_kws_asr(np.array(audio_data_list))
+                kws_asr_api.run_kws_asr(np.array(audio_data_list))
                 audio_data_list = []
 
     def start(self):

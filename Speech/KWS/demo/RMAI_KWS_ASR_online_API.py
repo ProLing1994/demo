@@ -10,13 +10,17 @@ from RMAI_KWS_ASR_API import KwsAsrApi
 
 
 # options 
+## English
 # cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_bpe.py"
 # cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_phoneme.py"
 # cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_bpe_phoneme.py"
+
+## Chinese
+cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_16k_64dim.py"
+# cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_8k_56dim.py"
 # cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MTA_XIAOAN.py"
-cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_4s_16k_64dim.py"
-# cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_4s_8k_56dim.py"
-# cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_cq_taxi_3s.py"
+# cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_XIAORUI.py"
+# cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_CQ_TAXI_3s.py"
 
 def term(sig_num, addtion):
     """
