@@ -5,18 +5,19 @@ import os
 import pcen
 import sys
 import struct
+from scipy import signal
 from scipy.ndimage.morphology import binary_dilation
 from scipy.io import wavfile
 from typing import Optional, Union
 import torch
 import webrtcvad
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/TTS')
-from config.hparams import *
-from dataset import logmmse
-
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 from ASR.impl.asr_feature_pyimpl import Feature
+
+from TTS.config.hparams import *
+from TTS.dataset import logmmse
+
 
 def preprocess_speaker(cfg, data_files, row, no_alignments=False):
     file_path = row['file']
@@ -233,27 +234,30 @@ def audio_preprocess(cfg, data):
     audio_processor = AudioPreprocessor(sr=cfg.dataset.sample_rate,
                                         n_mels=cfg.dataset.feature_bin_count,
                                         nfilt=cfg.dataset.nfilt,
+                                        f_max=cfg.dataset.fmax, 
+                                        f_min=cfg.dataset.fmin,
                                         winlen=cfg.dataset.window_size_ms / 1000, 
-                                        winstep=cfg.dataset.window_stride_ms / 1000,
-                                        data_length=cfg.dataset.clip_duration_ms / 1000)
+                                        winstep=cfg.dataset.window_stride_ms / 1000)
 
     # check
-    assert audio_preprocess_type in ["pcen", "fbank", "fbank_cpu"], "[ERROR:] Audio preprocess type is wronge, please check"
+    assert audio_preprocess_type in ["fbank", "fbank_log", "fbank_log_sv2tts", "pcen", "fbank_cpu"], "[ERROR:] Audio preprocess type is wronge, please check"
 
     # preprocess
-    # if self.audio_preprocess_type == "mfcc":
-    #     audio_data = self.audio_processor.compute_mfccs(data)
-    if audio_preprocess_type == "pcen":
-        audio_data = audio_processor.compute_pcen(data)
-    elif audio_preprocess_type == "fbank":
+    if audio_preprocess_type == "fbank":
         audio_data = audio_processor.compute_fbanks(data)
+    elif audio_preprocess_type == "fbank_log":
+        audio_data = audio_processor.compute_fbanks_log(data)
+    elif audio_preprocess_type == "fbank_log_sv2tts":
+        audio_data = audio_processor.compute_fbank_log_sv2tts(data)
+    elif audio_preprocess_type == "pcen":
+        audio_data = audio_processor.compute_pcen(data)
     elif audio_preprocess_type == "fbank_cpu":
         audio_data = audio_processor.compute_fbanks_cpu(data, cfg.dataset.augmentation.vtlp_on)
     return audio_data.astype(np.float32)
 
 
 class AudioPreprocessor(object):
-    def __init__(self, sr=16000, n_mels=40, nfilt=40, n_dct_filters=40, f_max=4000, f_min=20, winlen=0.032, winstep=0.010, data_length=2):
+    def __init__(self, sr=16000, n_mels=40, nfilt=40, n_dct_filters=40, f_max=4000, f_min=20, winlen=0.032, winstep=0.010):
         super().__init__()
         self.sr = sr
         self.n_mels = n_mels
@@ -265,10 +269,22 @@ class AudioPreprocessor(object):
         self.winstep = winstep
         self.win_length = int(self.sr * self.winlen)
         self.hop_length = int(self.sr * self.winstep)
-        self.data_length = data_length
         self.pcen_transform = pcen.StreamingPCENTransform(n_mels=self.n_mels, n_fft=self.win_length, hop_length=self.hop_length, trainable=True)
 
+        # init 
+        self.mel_basis = None
+
     def compute_fbanks(self, data):
+        data = librosa.feature.melspectrogram(
+            data,
+            sr=self.sr,
+            n_fft=self.win_length,
+            hop_length=self.hop_length,
+            n_mels=self.n_mels)
+        data = data.astype(np.float32).T
+        return data
+
+    def compute_fbanks_log(self, data):
         data = librosa.feature.melspectrogram(
             data,
             sr=self.sr,
@@ -280,6 +296,14 @@ class AudioPreprocessor(object):
         data[data > 0] = np.log(data[data > 0])
         data = data.T
         return data
+
+    def compute_fbank_log_sv2tts(self, data):
+        D = self.stft(self.preemphasis(data, preemphasis, preemphasize))
+        S = self.amp_to_db(self.linear_to_mel(np.abs(D))) - ref_level_db
+        
+        if signal_normalization:
+            return self.normalize(S).T
+        return S.T
 
     def compute_pcen(self, data):
         data = torch.from_numpy(np.expand_dims(data, axis=0))
@@ -296,7 +320,43 @@ class AudioPreprocessor(object):
         # print(data[:10])
         
         # compute fbank cpu
-        featurefbanks_cpu = Feature(sample_rate=self.sr, data_length=self.data_length, feature_freq=self.n_mels, nfilt=self.nfilt, winlen=self.winlen , winstep=self.winstep)
+        featurefbanks_cpu = Feature(sample_rate=self.sr, feature_freq=self.n_mels, nfilt=self.nfilt, winlen=self.winlen , winstep=self.winstep)
         featurefbanks_cpu.get_mel_int_feature(data, len(data), bool_vtlp_augmentation)
         feature_data = featurefbanks_cpu.copy_mfsc_feature_int_to()
         return feature_data
+    
+    def preemphasis(self, wav, k, preemphasize=True):
+        if preemphasize:
+            return signal.lfilter([1, -k], [1], wav)
+        return wav
+
+    def stft(self, y):
+        return librosa.stft(y=y, n_fft=self.win_length, hop_length=self.hop_length, win_length=self.win_length)
+
+    def build_mel_basis(self):
+        assert self.f_max <= self.sr // 2
+        return librosa.filters.mel(self.sr, self.win_length, n_mels=self.n_mels,
+                                fmin=self.f_min, fmax=self.f_max)
+
+    def linear_to_mel(self, spectogram):
+        if self.mel_basis is None:
+            self.mel_basis = self.build_mel_basis()
+        return np.dot(self.mel_basis, spectogram)
+
+    def amp_to_db(self, x):
+        min_level = np.exp(min_level_db / 20 * np.log(10))
+        return 20 * np.log10(np.maximum(min_level, x))
+
+    def normalize(self, S):
+        if allow_clipping_in_normalization:
+            if symmetric_mels:
+                return np.clip((2 * max_abs_value) * ((S - min_level_db) / (-min_level_db)) - max_abs_value,
+                            -max_abs_value, max_abs_value)
+            else:
+                return np.clip(max_abs_value * ((S - min_level_db) / (-min_level_db)), 0, max_abs_value)
+        
+        assert S.max() <= 0 and S.min() - min_level_db >= 0
+        if symmetric_mels:
+            return (2 * max_abs_value) * ((S - min_level_db) / (-min_level_db)) - max_abs_value
+        else:
+            return max_abs_value * ((S - min_level_db) / (-min_level_db))

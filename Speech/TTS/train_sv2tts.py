@@ -81,32 +81,36 @@ def train(args):
             load_checkpoint(net, cfg.general.finetune_epoch, 
                             cfg.general.finetune_model_dir, 
                             sub_folder_name='pretrain_model')
-        # fintune, 
+        # fintune,
         else:
             load_checkpoint_from_path(net, cfg.general.finetune_model_path, 
                                         state_name='model_state',
                                         finetune_ignore_key_list=cfg.general.finetune_ignore_key_list)
         start_epoch, start_batch = 0, 0
-        last_save_epoch, last_plot_epoch = 0, 0
+        last_save_epoch = 0
     if cfg.general.resume_epoch >= 0:
         # resume, Load the model, continue the previous learning rate
         start_epoch, start_batch = load_checkpoint(net, cfg.general.resume_epoch,
                                                     cfg.general.save_dir, 
                                                     optimizer=optimizer)
         last_save_epoch = start_epoch
-        last_plot_epoch = start_epoch
     else:
         start_epoch, start_batch = 0, 0
-        last_save_epoch, last_plot_epoch = 0, 0
+        last_save_epoch = 0
 
     # speaker verification net
-    sv_net = import_network(cfg, 
+    cfg_speaker_verification = load_cfg_file(cfg.speaker_verification.config_file)
+    sv_net = import_network(cfg_speaker_verification, 
                             cfg.speaker_verification.model_name, 
                             cfg.speaker_verification.class_name,
-                            cfg.speaker_verification.model_path)
-    _, _ = load_checkpoint(sv_net, 
-                            cfg.speaker_verification.epoch, 
-                            cfg.speaker_verification.model_dir)
+                            cfg.speaker_verification.model_prefix_name)
+    if cfg.speaker_verification.model_path == "":
+        load_checkpoint(sv_net, cfg.speaker_verification.epoch, 
+                        cfg.speaker_verification.model_dir)
+    else:
+        load_checkpoint_from_path(net, cfg.speaker_verification.model_path, 
+                                    state_name='model_state',
+                                    finetune_ignore_key_list=cfg.speaker_verification.ignore_key_list)
     sv_net.eval()
 
     # define training dataset and testing dataset
@@ -135,7 +139,7 @@ def train(args):
         embeds = []
         for embed_wav_idx in range(len(embed_wavs)):
             embed_wav = embed_wavs[embed_wav_idx]
-            embed = embed_utterance(embed_wav, cfg, sv_net)
+            embed = embed_utterance(embed_wav, cfg_speaker_verification, sv_net)
             embeds.append(embed)
 
         embeds = torch.from_numpy(np.array(embeds))

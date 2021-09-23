@@ -7,10 +7,11 @@ import random
 import sys
 from torch.utils.data import Dataset, DataLoader
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/SV')
-from utils.lmdb_tools import *
-from config.hparams import *
-from dataset.audio import *
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech/')
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/')
+from Basic.utils.lmdb_tools import *
+from SV.config.hparams import *
+from SV.dataset.audio import *
 
 class RandomCycler:
     """

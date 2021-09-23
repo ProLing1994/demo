@@ -38,13 +38,7 @@ __C.general.finetune_model_dir = ""
 __C.general.finetune_epoch = 0
 # 方式二：加载其他模型结构
 __C.general.finetune_model_path = "/mnt/huanyuan/model/model_10_30_25_21/model/tts/pretrained/pretrain_model/parameter.pkl"
-__C.general.finetune_ignore_key_list = ['module.decoder.prenet.fc1.weight', 'module.decoder.mel_proj.weight', 
-                                        'module.postnet.conv1d_bank.0.conv.weight', 'module.postnet.conv1d_bank.1.conv.weight', 
-                                        'module.postnet.conv1d_bank.2.conv.weight', 'module.postnet.conv1d_bank.3.conv.weight',
-                                        'module.postnet.conv1d_bank.4.conv.weight', 'module.postnet.conv_project2.conv.weight',
-                                        'module.postnet.conv_project2.bnorm.weight', 'module.postnet.conv_project2.bnorm.bias',
-                                        'module.postnet.conv_project2.bnorm.running_mean', 'module.postnet.conv_project2.bnorm.running_var',
-                                        'module.postnet.pre_highway.weight', 'module.post_proj.weight']
+__C.general.finetune_ignore_key_list = []
 
 # set certain epoch to continue training, set -1 to train from scratch
 __C.general.resume_epoch = -1
@@ -67,11 +61,18 @@ __C.general.data_parallel_mode = 0
 
 __C.speaker_verification = {}
 
+__C.speaker_verification.config_file = "/home/huanyuan/code/demo/Speech/SV/config/sv_config_TI_SV.py"
 __C.speaker_verification.model_name = 'basic'
 __C.speaker_verification.class_name = 'SpeakerEncoder'
-__C.speaker_verification.model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/sv/ti_sv_1_0_09142021/"
-__C.speaker_verification.model_path = "SV."
-__C.speaker_verification.epoch = 250
+__C.speaker_verification.model_prefix_name = "SV."
+# 方式一：模型训练过程中，保存模型
+# __C.speaker_verification.model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/sv/ti_sv_1_0_09142021/"
+# __C.speaker_verification.epoch = 250
+__C.speaker_verification.model_dir = ""
+__C.speaker_verification.epoch = 0
+# 方式二：加载其他模型结构
+__C.speaker_verification.model_path = "/mnt/huanyuan/model/model_10_30_25_21/model/sv/pretrained/pretrain_model/parameter.pkl"
+__C.speaker_verification.ignore_key_list = []
 
 
 ##################################
@@ -87,19 +88,25 @@ __C.dataset.input_channel = 1
 __C.dataset.sample_rate = 16000
 
 # Duration of frequency analysis window
-__C.dataset.window_size_ms = 32.0
+__C.dataset.window_size_ms = 50.0
 
 # How far to move in time between frequency windows
-__C.dataset.window_stride_ms = 10.0
+__C.dataset.window_stride_ms = 12.5
 
-# How the spectrogram is processed to produce features, support ["mfcc", "pcen", "fbank", "fbank"]
-__C.dataset.preprocess = "fbank_cpu"
+# How the spectrogram is processed to produce features, support ["fbank", "fbank_log", "fbank_log_sv2tts", "pcen", "fbank_cpu"]
+__C.dataset.preprocess = "fbank_log_sv2tts"
 
 # How many bins to use for the Mel feature
-__C.dataset.feature_bin_count = 64
+__C.dataset.feature_bin_count = 80
 
-# How many nfilt to use for the Mel feature, only support preprocess=fbank_cpu
-__C.dataset.nfilt = 64
+# How many nfilt to use for the Mel feature, only support preprocess ["fbank_cpu"]
+__C.dataset.nfilt = 80
+
+# fmin, only support preprocess ["fbank_log", "fbank_log_sv2tts"]
+__C.dataset.fmin = 55
+
+# fmax, only support preprocess ["fbank_log", "fbank_log_sv2tts"]
+__C.dataset.fmax = 7600
 
 # input size of training data (w, h), whether input size is a multiple of 16, unit: voxel
 # __C.dataset.h_alignment = True, [hisi], 模型需要图像输入长度为 16 的倍数
@@ -108,7 +115,7 @@ __C.dataset.w_alignment = False
 __C.dataset.h_alignment = False
 
 # input size of training data (w, h), unit: voxel
-__C.dataset.data_size = [64, 156]
+__C.dataset.data_size = [80, -1]
 
 # num_chars
 __C.dataset.num_chars = len(symbols)
@@ -202,10 +209,10 @@ __C.net.r = 2
 __C.train = {}
 
 # the number of training epochs
-__C.train.num_epochs = 1000
+__C.train.num_epochs = 100
 
 # the number of samples in a batch
-__C.train.batch_size = 1
+__C.train.batch_size = 2
 
 # the number of threads for IO
 __C.train.num_threads = 1

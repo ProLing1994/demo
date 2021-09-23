@@ -83,7 +83,7 @@ def add_time_mask(spec, T=40, num_masks=1, replace_with_zero=False, static=False
     return spec
 
 class AudioPreprocessor(object):
-    def __init__(self, sr=16000, n_mels=40, nfilt=40, n_dct_filters=40, f_max=4000, f_min=20, winlen=0.032, winstep=0.010, data_length=2):
+    def __init__(self, sr=16000, n_mels=40, nfilt=40, n_dct_filters=40, f_max=4000, f_min=20, winlen=0.032, winstep=0.010):
         super().__init__()
         self.sr = sr
         self.n_mels = n_mels
@@ -95,7 +95,6 @@ class AudioPreprocessor(object):
         self.winstep = winstep
         self.win_length = int(self.sr * self.winlen)
         self.hop_length = int(self.sr * self.winstep)
-        self.data_length = data_length
 
         # self.dct_filters = librosa.filters.dct(self.n_dct_filters, self.n_mels)
         # self.pcen_transform = pcen.StreamingPCENTransform(n_mels=self.n_mels, n_fft=self.win_length, hop_length=self.hop_length, trainable=True)
@@ -143,8 +142,8 @@ class AudioPreprocessor(object):
         # print(data[:10])
         
         # compute fbank cpu
-        featurefbanks_cpu = Feature(sample_rate=self.sr, data_length=self.data_length, feature_freq=self.n_mels, nfilt=self.nfilt, winlen=self.winlen , winstep=self.winstep)
-        featurefbanks_cpu.get_mel_int_feature(data, len(data), bool_vtlp_augmentation)
+        featurefbanks_cpu = Feature(sample_rate=self.sr, feature_freq=self.n_mels, nfilt=self.nfilt, winlen=self.winlen, winstep=self.winstep)
+        featurefbanks_cpu.get_mel_int_feature(data, bool_vtlp_augmentation)
         feature_data = featurefbanks_cpu.copy_mfsc_feature_int_to()
         return feature_data
 

@@ -168,8 +168,7 @@ def gen_fbank_feature(signal, sample_rate=16000, winlen=0.025, winstep=0.01,
 
 class Feature(object):
     """ feature python wrapper """
-    def __init__(self, sample_rate=16000, data_length=3, feature_freq=48, nfilt=64, winlen=0.032, winstep=0.010, scale_num=10):
-        self.data_len_samples = int(sample_rate * data_length)
+    def __init__(self, sample_rate=16000, feature_freq=48, nfilt=64, winlen=0.032, winstep=0.010, scale_num=10):
         self.feature_freq = feature_freq
         self.nfilt = nfilt
         self.sample_rate = sample_rate
@@ -197,19 +196,14 @@ class Feature(object):
     def feature_freq(self):
         pass
 
-    def check_feature_time(self, data_len_samples):
-        pass
-
-    def get_mel_feature(self, data, data_len_samples, bool_vtlp_augmentation=False):
-        assert data_len_samples == self.data_len_samples
+    def get_mel_feature(self, data, bool_vtlp_augmentation=False):
         self.mel_feature = gen_fbank_feature(data, self.sample_rate, winlen=self.winlen, winstep=self.winstep, 
                                                 numcep=self.feature_freq, nfilt=self.nfilt, nfft=self.nfft, 
                                                 lowfreq=10, highfreq=None, appendEnergy=False, bool_vtlp_augmentation=bool_vtlp_augmentation)
         self.mel_feature = np.log(1 + self.mel_int_feature)
         return
 
-    def get_mel_int_feature(self, data, data_len_samples, bool_vtlp_augmentation=False):
-        # assert data_len_samples == self.data_len_samples
+    def get_mel_int_feature(self, data, bool_vtlp_augmentation=False):
         self.mel_int_feature = gen_fbank_feature(data, self.sample_rate, winlen=self.winlen, winstep=self.winstep, 
                                                 numcep=self.feature_freq, nfilt=self.nfilt, nfft=self.nfft, 
                                                 lowfreq=10, highfreq=None, appendEnergy=False, bool_vtlp_augmentation=bool_vtlp_augmentation)

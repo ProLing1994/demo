@@ -18,19 +18,26 @@ vad_max_silence_length = 6              # 利用膨胀腐蚀思想，减少空�
 normalize = False
 audio_norm_target_dBFS = -30            # 目标 dbFS，-30
 
-## Data Preprocessing
+### Signal Processing (used in both synthesizer and vocoder)
+min_level_db = -100
+ref_level_db = 20
+max_abs_value = 4.                         # Gradient explodes if too big, premature convergence if too small.
+preemphasis = 0.97                         # Filter coefficient to use if preemphasize is True
+preemphasize = True
+
+### Data Preprocessing
 rescale = True
 rescaling_max = 0.9
 
-## data clip
 clip_mels_length = True                    # If true, discards samples exceeding max_mel_frames
 max_mel_frames = 900    
 
-## symmetric mels
+### Audio processing options
+allow_clipping_in_normalization = True     # Used when signal_normalization = True
+signal_normalization = True
 symmetric_mels = True                      # Sets mel range to [-max_abs_value, max_abs_value] if True,
                                            #               and [0, max_abs_value] if False
-max_abs_value = 4.                         # Gradient explodes if too big, premature convergence if too small.
 
-## SV2TTS
+### SV2TTS
 silence_min_duration_split = 0.4           # Duration in seconds of a silence for an utterance to be split
 utterance_min_duration = 1.6               # Duration in seconds below which utterances are discarded

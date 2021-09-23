@@ -192,8 +192,7 @@ def audio_preprocess(cfg, data):
                                         n_mels=feature_bin_count, 
                                         nfilt=nfilt,
                                         winlen=window_size_ms / 1000, 
-                                        winstep=window_stride_ms / 1000,
-                                        data_length=clip_duration_ms / 1000)
+                                        winstep=window_stride_ms / 1000)
     # check
     assert audio_preprocess_type in [
         "mfcc", "pcen", "fbank", "fbank_cpu"], "[ERROR:] Audio preprocess type is wronge, please check"

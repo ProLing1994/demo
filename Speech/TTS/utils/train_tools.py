@@ -1,13 +1,13 @@
 import os
 import sys
 
-# sys.path.insert(0, '/home/huanyuan/code/demo')
-sys.path.insert(0, '/home/engineers/yh_rmai/code/demo')
-from common.common.utils.python.train_tools import EpochConcateSampler
-from common.common.utils.python.plotly_tools import plot_loss2d, plot_loss
+sys.path.insert(0, '/home/huanyuan/code/demo/common')
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/common')
+from common.utils.python.train_tools import EpochConcateSampler
+from common.utils.python.plotly_tools import plot_loss2d, plot_loss
 
-# sys.path.insert(0, '/home/huanyuan/code/demo/Speech/TTS')
-sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/TTS')
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech/TTS')
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/TTS')
 from dataset.sv2tts_dataset_preload_audio_lmdb import SynthesizerDataset, SynthesizerDataLoader
 
 

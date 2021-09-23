@@ -17,7 +17,7 @@ __C.general.sub_data_dir = []
 # __C.general.version = "1.5"     # 重庆人录制唤醒词
 # __C.general.version = "1.5.10"  # 10% 重庆人录制唤醒词
 # __C.general.version = "1.5.50"  # 50% 重庆人录制唤醒
-# __C.general.version = "1.6"     # 重庆人录制唤醒词 + 深圳人录制唤醒词（测试 tts 精度）
+__C.general.version = "1.6"     # 重庆人录制唤醒词 + 深圳人录制唤醒词（测试 tts 精度）
 # __C.general.version = "1.7"
 # __C.general.version = "1.8"     # tts（LibriSpeech）
 # __C.general.version = "1.9.100" # tts（LibriSpeech）+ 100% 重庆人录制唤醒词
@@ -25,21 +25,21 @@ __C.general.sub_data_dir = []
 # __C.general.version = "1.9.50"  # tts（LibriSpeech）+ 50% 重庆人录制唤醒词
 # __C.general.version = "1.10"    # tts（深圳口音生成）
 # __C.general.version = "1.10.100"# tts（深圳口音生成）+ 100% 重庆人录制唤醒词
-__C.general.version = "1.11"    # 重庆人录制唤醒词 + 深圳人录制唤醒词 + tts
+# __C.general.version = "1.11"    # 重庆人录制唤醒词 + 深圳人录制唤醒词 + tts
 
 # data date
 # __C.general.date = "03312021"
-# __C.general.date = "07162021"
+__C.general.date = "07162021"
 # __C.general.date = "08192021"
 # __C.general.date = "08272021"
 # __C.general.date = "08302021"
-__C.general.date = "09222021"
+# __C.general.date = "09222021"
 
 # data path
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.5_03312021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.5.10_03312021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.5.50_03312021/total_data_files.csv"
-# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.6_07162021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.6_07162021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.7_08192021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_tts_2s_1.8_08272021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_tts_2s_1.9_08302021/total_data_files.csv"
@@ -47,13 +47,13 @@ __C.general.date = "09222021"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_tts_2s_1.9.50_08302021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_sztts_2s_1.10_08302021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_sztts_2s_1.10.100_08302021/total_data_files.csv"
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1_11_09222021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1_11_09222021/total_data_files.csv"
 
 # background noise path
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.5_03312021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.5.10_03312021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.5.50_03312021/background_noise_files.csv"
-# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.6_07162021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.6_07162021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.7_08192021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_tts_2s_1.8_08272021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_tts_2s_1.9_08302021/background_noise_files.csv"
@@ -61,7 +61,7 @@ __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/e
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_tts_2s_1.9.50_08302021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_sztts_2s_1.10_08302021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_sztts_2s_1.10.100_08302021/background_noise_files.csv"
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1_11_09222021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1_11_09222021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -82,6 +82,7 @@ __C.general.is_test = True
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_5_tc-resnet14-amba_fbankcpu_kd_07162021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_wntts_1_0_res15_fbankcpu_07162021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_wntts_1_0_10_res15_fbankcpu_07162021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_wntts_1_0_50_res15_fbankcpu_07162021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_tts_1_0_res15_fbankcpu_07162021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_tts_1_1_res15_fbankcpu_07162021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_tts_1_1_10_res15_fbankcpu_07162021/"
@@ -480,9 +481,9 @@ __C.test = {}
 
 # the number of testing epochs
 # __C.test.model_epoch = -1
-__C.test.model_epoch = 200
+# __C.test.model_epoch = 200
 # __C.test.model_epoch = 500
-# __C.test.model_epoch = 999
+__C.test.model_epoch = 999
 
 # mode, support [0: RecognizeCommands, 1: RecognizeCommandsCountNumber, 2:RecognizeCommandsAlign]
 __C.test.method_mode = 0

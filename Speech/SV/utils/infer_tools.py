@@ -51,7 +51,7 @@ def compute_partial_slices(n_samples, cfg, min_pad_coverage=0.75, overlap=0.5):
     assert 0 < min_pad_coverage <= 1
     
     # 每一帧的帧长
-    partial_utterance_mel_length = cfg.dataset.data_size[1]             # 由于 fft bug 导致
+    partial_utterance_mel_length = cfg.dataset.data_size[1]             # fbank_cpu bug 导致
     partial_utterance_n_frames = partials_n_frames
     samples_per_frame = int((cfg.dataset.sample_rate * cfg.dataset.window_stride_ms / 1000))
     n_frames = int(np.ceil((n_samples + 1) / samples_per_frame))

@@ -7,13 +7,13 @@ import sys
 import shutil
 import torch
 
-sys.path.insert(0, '/home/huanyuan/code/demo')
-# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo')
-from common.common.utils.python.file_tools import load_module_from_disk
+sys.path.insert(0, '/home/huanyuan/code/demo/common')
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/common')
+from common.utils.python.file_tools import load_module_from_disk
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/Basic')
-# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/Basic')
-from utils.lmdb_tools import *
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
+from Basic.utils.lmdb_tools import *
 
 def load_cfg_file(config_file):
     """
@@ -69,12 +69,12 @@ def init_torch_and_numpy(cfg, local_rank=0):
         raise Exception("[ERROR:] Unknow data parallel mode, please check!")
 
 
-def import_network(cfg, model_name, class_name, model_path=''):
+def import_network(cfg, model_name, class_name, model_prefix_name=''):
     """ import network
     :param cfg:
     :return:
     """
-    net_module = importlib.import_module(model_path + 'network.' + model_name)
+    net_module = importlib.import_module(model_prefix_name + 'network.' + model_name)
     net = net_module.__getattribute__(class_name)(cfg)
     gpu_ids = list(range(cfg.general.num_gpus))
 

@@ -307,15 +307,15 @@ def audio_preprocess(cfg, data):
                                         data_length=cfg.dataset.clip_duration_ms / 1000)
 
     # check
-    assert audio_preprocess_type in ["pcen", "fbank", "fbank_cpu"], "[ERROR:] Audio preprocess type is wronge, please check"
+    assert audio_preprocess_type in ["fbank", "fbank_log", "pcen", "fbank_cpu"], "[ERROR:] Audio preprocess type is wronge, please check"
 
     # preprocess
-    # if self.audio_preprocess_type == "mfcc":
-    #     audio_data = self.audio_processor.compute_mfccs(data)
-    if audio_preprocess_type == "pcen":
-        audio_data = audio_processor.compute_pcen(data)
-    elif audio_preprocess_type == "fbank":
+    if audio_preprocess_type == "fbank":
         audio_data = audio_processor.compute_fbanks(data)
+    elif audio_preprocess_type == "fbank_log":
+        audio_data = audio_processor.compute_fbanks_log(data)
+    elif audio_preprocess_type == "pcen":
+        audio_data = audio_processor.compute_pcen(data)
     elif audio_preprocess_type == "fbank_cpu":
         audio_data = audio_processor.compute_fbanks_cpu(data, cfg.dataset.augmentation.vtlp_on)
     return audio_data.astype(np.float32)
@@ -338,6 +338,16 @@ class AudioPreprocessor(object):
         self.pcen_transform = pcen.StreamingPCENTransform(n_mels=self.n_mels, n_fft=self.win_length, hop_length=self.hop_length, trainable=True)
 
     def compute_fbanks(self, data):
+        data = librosa.feature.melspectrogram(
+            data,
+            sr=self.sr,
+            n_fft=self.win_length,
+            hop_length=self.hop_length,
+            n_mels=self.n_mels)
+        data = data.astype(np.float32).T
+        return data
+
+    def compute_fbanks_log(self, data):
         data = librosa.feature.melspectrogram(
             data,
             sr=self.sr,

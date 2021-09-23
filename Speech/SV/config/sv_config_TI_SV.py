@@ -88,13 +88,13 @@ __C.dataset.sample_rate = 16000
 __C.dataset.clip_duration_ms = 1600
 
 # Duration of frequency analysis window
-__C.dataset.window_size_ms = 32.0
+__C.dataset.window_size_ms = 25.0
 
 # How far to move in time between frequency windows
 __C.dataset.window_stride_ms = 10.0
 
-# How the spectrogram is processed to produce features, support ["mfcc", "pcen", "fbank", "fbank"]
-__C.dataset.preprocess = "fbank_cpu"
+# How the spectrogram is processed to produce features, support ["fbank", "fbank_log", "pcen", "fbank_cpu"]
+__C.dataset.preprocess = "fbank"
 
 # How many bins to use for the Mel feature
 # __C.dataset.feature_bin_count = 64
@@ -111,7 +111,7 @@ __C.dataset.w_alignment = False
 __C.dataset.h_alignment = False
 
 # input size of training data (w, h), unit: voxel
-__C.dataset.data_size = [64, 156]
+__C.dataset.data_size = [40, 160]
 
 
 ##################################
@@ -194,7 +194,7 @@ __C.net.class_name = 'SpeakerEncoder'
 __C.train = {}
 
 # the number of training epochs
-__C.train.num_epochs = 1000
+__C.train.num_epochs = 100
 
 # the number of samples in a batch
 __C.train.speakers_per_batch = 4
@@ -211,10 +211,10 @@ __C.train.show_log = 5
 __C.train.plot_snapshot = 5
 
 # the number of epochs to plot umap
-__C.train.plot_umap = 5
+__C.train.plot_umap = 1
 
 # the number of epochs to save model
-__C.train.save_epochs = 25
+__C.train.save_epochs = 5
 
 
 ######################################
@@ -257,8 +257,8 @@ __C.train.betas = (0.9, 0.999)
 __C.loss = {}
 
 # the loss name, support ['softmax','focal']
-__C.loss.name = 'softmax'
-# __C.loss.name = 'focal'
+# __C.loss.name = 'softmax'
+__C.loss.name = 'focal'
 
 # the number of class
 __C.loss.num_classes =  __C.train.batch_size
@@ -271,8 +271,8 @@ __C.loss.focal_gamma = 2
 
 # EMA: expontential moving average on
 # EMA: https://github.com/ProLing1994/pytorch-loss/blob/master/ema.py
-# __C.loss.ema_on = True
-__C.loss.ema_on = False
+__C.loss.ema_on = True
+# __C.loss.ema_on = False
 
 # the alpha parameter in EMA: each parameter p should be computed as p_hat = alpha * p + (1. - alpha) * p_hat
 __C.loss.ema_alpha = 0.995
