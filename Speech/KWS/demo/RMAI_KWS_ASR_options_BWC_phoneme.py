@@ -1,5 +1,3 @@
-import numpy as np
-
 from datetime import datetime
 from easydict import EasyDict as edict
 
@@ -38,6 +36,22 @@ __C.general.asr_suppression_counter = 1             # asr 激活后抑制时间�
 __C.general.asr_second_on = False                    # asr 使用 bpe 和 phoneme 两个 model
 __C.general.decode_id = 1			                # 0： greedy   1： beamsearch
 __C.general.match_id = 2                            # 0:  bpe      1:  phoneme_robust  2:  phoneme_strict  3:  phoneme_combine
+
+# containe
+__C.general.audio_container_ms = 100                # 语音数据容器中，装有音频数据 100 ms
+__C.general.audio_container_time = 10               # 语音数据容器中，装有音频数据 100 ms，对应特征维度 10
+__C.general.feature_container_time = 296            # 语音特征容器中，装有时间维度 296
+__C.general.feature_remove_after_time = 6           # 为保证特征一致，拼接特征需要丢弃最后的时间维度 6
+__C.general.feature_remove_before_time = 100        # 为保证特征一致，拼接特征需要丢弃之前的时间维度 100
+
+# on-off
+__C.general.bool_output_wave = True
+
+# init 
+__C.general.window_size_samples = int(__C.general.sample_rate * __C.general.window_size_ms / 1000)
+__C.general.window_stride_samples = int(__C.general.sample_rate * __C.general.window_stride_ms / 1000)
+__C.general.window_container_samples = int(__C.general.sample_rate * __C.general.audio_container_ms / 1000)
+__C.general.total_time_samples = int(__C.general.sample_rate * __C.general.total_time_ms / 1000)
 
 # # robust
 # __C.general.kws_list = ['start_record', 'stop_record','mute_audio', 'unmute_audio']
@@ -150,51 +164,28 @@ __C.general.control_kws_list = ['start_record', 'stop_record', 'mute_audio', 'un
 #                                                 'down_ground': {"verb_socres_threshold": -0.7, "strategy" : "strict"}}
 # __C.general.control_kws_list = ['start_record', 'stop_record', 'mute_audio', 'unmute_audio']
 
-# containe
-__C.general.audio_container_ms = 100                # 语音数据容器中，装有音频数据 100 ms
-__C.general.audio_container_time = 10               # 语音数据容器中，装有音频数据 100 ms，对应特征维度 10
-__C.general.feature_container_time = 296            # 语音特征容器中，装有时间维度 296
-__C.general.feature_remove_after_time = 6           # 为保证特征一致，拼接特征需要丢弃最后的时间维度 6
-__C.general.feature_remove_before_time = 100        # 为保证特征一致，拼接特征需要丢弃之前的时间维度 100
-
-# on-off
-__C.general.bool_do_kws_weakup = True
-# __C.general.bool_do_kws_weakup = False
-__C.general.bool_do_asr = True
-# __C.general.bool_do_asr = False
-# __C.general.bool_output_wave = True
-__C.general.bool_output_wave = False
-# __C.general.bool_output_csv = True
-__C.general.bool_output_csv = False
-__C.general.gpu = True
-
-# init 
-__C.general.window_size_samples = int(__C.general.sample_rate * __C.general.window_size_ms / 1000)
-__C.general.window_stride_samples = int(__C.general.sample_rate * __C.general.window_stride_ms / 1000)
-__C.general.window_container_samples = int(__C.general.sample_rate * __C.general.audio_container_ms / 1000)
-__C.general.total_time_samples = int(__C.general.sample_rate * __C.general.total_time_ms / 1000)
-
 
 ##################################
 # model parameters
 ##################################
 
 __C.model = {}
-__C.model.bool_caffe = True
-# __C.model.bool_caffe = False
+# __C.model.bool_caffe = True
+__C.model.bool_caffe = False
 __C.model.bool_pytorch = True
 
 # kws
 # activate bwc
+## caffe
 __C.model.kws_model_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/kws_activatebwc16k_tc_resnet14_amba_2_4_04012021/tc_resnet14_amba_2_4_04012021.caffemodel"
 __C.model.kws_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/kws_activatebwc16k_tc_resnet14_amba_2_4_04012021/tc_resnet14_amba_2_4_04012021.prototxt"
 __C.model.kws_net_input_name = "data"
-__C.model.kws_net_output_name = " Softmax"
+__C.model.kws_net_output_name = "Softmax"
 __C.model.kws_chw_params = "1,64,196"
 __C.model.kws_transpose = True
 
-# pytorch param
-__C.model.kws_chk_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/parameter.pkl"
+## pytorch
+__C.model.kws_chk_path = "/mnt/huanyuan/model/audio_model/amba_model/kws_activatebwc_tc_resnet14/kws_activatebwc16k_tc_resnet14_amba_2_5_07162021/kws_activatebwc16k_tc_resnet14_amba_2_5_07162021_checkpoint_3999.pkl"
 __C.model.kws_model_name = "tc-resnet14-amba-novt-196"
 __C.model.kws_class_name = "SpeechResModel"
 __C.model.kws_num_classes = 2
@@ -202,21 +193,17 @@ __C.model.image_height = 196
 __C.model.image_weidth = 64
 
 # asr
+## caffe
 __C.model.asr_model_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06082021/asr_english_phoneme_16k_64_0608.caffemodel"
 __C.model.asr_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06082021/asr_english_phoneme_16k_64_0608.prototxt"
-# __C.model.asr_model_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_07192021/asr_english_phoneme_16k_64_0719.caffemodel"
-# __C.model.asr_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_07192021/asr_english_phoneme_16k_64_0719.prototxt"
+__C.model.asr_dict_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06032021/asr_english_phoneme_dict.txt"
+__C.model.asr_lm_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06032021/4gram_asr_english_phoneme.bin"
 __C.model.asr_net_input_name = "data"
 __C.model.asr_net_output_name = "prob"
 __C.model.asr_chw_params = "1,296,64"
-__C.model.asr_dict_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06032021/asr_english_phoneme_dict.txt"
-__C.model.asr_lm_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06032021/4gram_asr_english_phoneme.bin"
-__C.model.asr_dict_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06032021/asr_english_phoneme_dict.txt"
-__C.model.asr_lm_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06032021/4gram_asr_english_phoneme.bin"
 
-# pytorch param
-# __C.model.asr_chk_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06082021/asr_english_phoneme_16k_64_0608.pth"
-__C.model.asr_chk_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_07142021/asr_english_phoneme_16k_64_0714.pth"
+## pytorch
+__C.model.asr_chk_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_phoneme_16k_06082021/asr_english_phoneme_16k_64_0608.pth"
 __C.model.asr_model_name = "ASR_english_phoneme"
 __C.model.asr_class_name = "ASR_English_Net"
 __C.model.asr_num_classes = 136
@@ -228,23 +215,7 @@ __C.model.asr_num_classes = 136
 # 用于 RMAI_KWS_ASR_offline_API.py
 __C.test = {}
 
-# test_mode
-# 0: input_wav
-# 1: input_folder
-__C.test.test_mode = 0
-
 # input_Wav
-# __C.test.input_wav = "/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation_180.wav"
-# __C.test.input_wav = "/mnt/huanyuan/data/speech/Recording/Daily_Record/jabra_510/test/Jabra_510_test-kws-asr_0001.wav"
-__C.test.input_wav = "/home/huanyuan/share/audio_data/weakup_asr/weakup_bwc_asr_english/phone_test-kws-asr_0002.wav"
-# __C.test.input_wav = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/非常珍贵的外籍人士专门录制的语料/wav_list/foreigner_1_4.wav"
-# __C.test.input_wav = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/发音较好同事录制_0615/控制词/蔡长青/RM_Room_BWC_S15T1P2_R.wav"
-# __C.test.input_wav = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/发音较好同事录制_0615/报警词/蔡长青/freeze/RM_Room_BWC_S15T1P7_R.wav"
-# __C.test.input_wav = "/home/huanyuan/share/audio_data/english_wav/test/test_asr_english_jiguyanyu_001.wav"
-# __C.test.input_wav = "/home/huanyuan/temp/demo_output_synthesis.wav"
+__C.test.input_wav = "/home/huanyuan/share/audio_data/weakup_asr/weakup_bwc_asr_english/Jabra_510_test-kws-asr_0001.wav"
 
-# input_folder
-# __C.test.input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/路边场景/场景二/"
-__C.test.input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/发音较好同事录制_0615/报警词/陈翌昕/"
-
-__C.test.output_folder = "/mnt/huanyuan/data/speech/Recording/demo_kws_asr_online_api/{}".format('-'.join('-'.join(str(datetime.now()).split('.')[0].split(' ')).split(':')))
+__C.test.output_folder = "/mnt/huanyuan/data/speech/Recording/demo_kws_asr_online_api/{}".format(datetime.now().strftime('%Y-%m-%d-%H-%M-%S'))

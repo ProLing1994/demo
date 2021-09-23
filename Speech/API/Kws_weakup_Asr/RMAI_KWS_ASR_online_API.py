@@ -6,7 +6,7 @@ import wave
 
 from multiprocessing import Process, Event, Queue, freeze_support
 
-import RMAI_KWS_ASR_offline_API
+from RMAI_KWS_ASR_API import KwsAsrApi
 
 def term(sig_num, addtion):
     """
@@ -55,7 +55,7 @@ class OnlineAudio:
         进程：监听本地音乐
         """
         print("[Init:] Listen")
-        wave_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "audio", "test-kws-asr.wav")
+        wave_path = "/home/huanyuan/code/demo/Speech/API/Kws_weakup_Asr/audio/test-kws-xiaorui-asr-mandarin-taxi_001.wav"
     
         # 打开音频流，output=True 表示音频输出
         pyaudio_play = pyaudio.PyAudio()
@@ -100,10 +100,11 @@ class OnlineAudio:
         print("[Init:] wakeup & asr")
         
         # init
-        RMAI_KWS_ASR_offline_API.kws_asr_init()
+        kws_asr_api = KwsAsrApi(bool_do_kws_weakup=True, bool_do_asr=True, bool_gpu=True)
+
         audio_data_list = []
         while True:
-            if len(audio_data_list) < RMAI_KWS_ASR_offline_API.window_size_samples:
+            if len(audio_data_list) < kws_asr_api.window_size_samples():
                 if queue.empty(): 
                     # print("等待数据中..........")
                     event.wait()
@@ -117,7 +118,7 @@ class OnlineAudio:
                         audio_data_list.extend(data_np.tolist())
         
             else:
-                RMAI_KWS_ASR_offline_API.run_kws_asr(np.array(audio_data_list))
+                kws_asr_api.run_kws_asr(np.array(audio_data_list))
                 audio_data_list = []
 
     def start(self):

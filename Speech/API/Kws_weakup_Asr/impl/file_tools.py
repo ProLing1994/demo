@@ -4,7 +4,6 @@ import sys
 
 from imp import reload
 
-
 def load_module_from_disk(pyfile):
     """
     load python module from disk dynamically
@@ -25,16 +24,3 @@ def load_module_from_disk(pyfile):
     os.sys.path.pop(0)
 
     return lib
-
-
-def load_cfg_file(config_file):
-    """
-    :param config_file:  configure file path
-    :return: cfg:        configuration file module
-    """
-    assert os.path.isfile(
-        config_file), 'Config not found: {}'.format(config_file)
-    cfg = load_module_from_disk(config_file)
-    cfg = cfg.cfg
-
-    return cfg

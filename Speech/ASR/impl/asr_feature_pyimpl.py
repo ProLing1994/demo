@@ -135,7 +135,7 @@ def fbank(signal, sample_rate=16000, winlen=0.025, winstep=0.01,
     elif(sample_rate == 32000):
         fb = fb[:, :512]
     else:
-        raise Exception("[ERROR] Unknow sample rate: {}/[8000, 16000, 32000]".format(self.sample_rate))
+        raise Exception("[ERROR] Unknow sample rate: {}/[8000, 16000, 32000]".format(sample_rate))
     feat = np.dot(pspec, fb.T) # compute the filterbank energies
     feat = np.where(feat == 0, np.finfo(float).eps, feat) # if feat is zero, we get problems with log
     return feat, energy

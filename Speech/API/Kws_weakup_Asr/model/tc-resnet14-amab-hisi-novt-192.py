@@ -1,9 +1,6 @@
-import sys
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
-from torch.autograd import Variable
 
 class TCBlock(nn.Module):
     expansion = 1
@@ -65,7 +62,10 @@ class SpeechResModel(nn.Module):
         self.conv2 = nn.Conv2d(int(self.planes[4] * self.width_multiplier), int(self.planes[4] * self.width_multiplier), kernel_size=(7, 1), stride=2, padding=(3, 0), bias=False)
         self.bn2 = nn.BatchNorm2d(int(self.planes[4] * self.width_multiplier))
 
-        self.conv3 = nn.Conv2d(int(self.planes[4] * self.width_multiplier), num_classes, kernel_size=(7, 1), stride=1, padding=(0, 0), bias=False)
+        self.conv3 = nn.Conv2d(int(self.planes[4] * self.width_multiplier), int(self.planes[4] * self.width_multiplier), kernel_size=(3, 1), stride=2, padding=(1, 0), bias=False)
+        self.bn3 = nn.BatchNorm2d(int(self.planes[4] * self.width_multiplier))
+
+        self.conv4 = nn.Conv2d(int(self.planes[4] * self.width_multiplier), num_classes, kernel_size=(3, 1), stride=1, padding=(0, 0), bias=False)
 
     def _make_layer(self, block, planes, stride):
         layers = []
@@ -74,18 +74,19 @@ class SpeechResModel(nn.Module):
         return nn.Sequential(*layers)
 
     def forward(self, x):
-        # x = x.permute(0, 2, 3, 1).contiguous()                          # shape: (batch, 1, 40, 201) ->  shape: (batch, 40, 201, 1) 
-        x = x.permute(0, 3, 2, 1).contiguous()                          # shape: (batch, 1, 201, 40) ->  shape: (batch, 40, 201, 1) 
-        out = self.relu(self.conv1(x))                                  # shape: (batch, 40, 201, 1) -> shape: (batch, 24, 201, 1)
-        out = self.layer1_1(out)                                        # shape: (batch, 24, 201, 1) -> shape: (batch, 36, 100, 1)
-        out = self.layer1_2(out)                                        # shape: (batch, 36, 101, 1) -> shape: (batch, 36, 101, 1)
-        out = self.layer2_1(out)                                        # shape: (batch, 36, 101, 1) -> shape: (batch, 48, 51, 1)
-        out = self.layer2_2(out)                                        # shape: (batch, 48, 51, 1) -> shape: (batch, 48, 51, 1)
-        out = self.layer3_1(out)                                        # shape: (batch, 48, 51, 1) -> shape: (batch, 72, 26, 1)
-        out = self.layer3_2(out)                                        # shape: (batch, 72, 26, 1) -> shape: (batch, 72, 26, 1)
-        out = self.layer4_1(out)                                        # shape: (batch, 72, 26, 1) -> shape: (batch, 96, 13, 1)
-        out = self.layer4_2(out)                                        # shape: (batch, 96, 13, 1) -> shape: (batch, 96, 13, 1)
+        # x = x.permute(0, 2, 3, 1).contiguous()                          # shape: (batch, 1, 64, 192) ->  shape: (batch, 64, 192, 1) 
+        x = x.permute(0, 3, 2, 1).contiguous()                          # shape: (batch, 1, 192, 64) ->  shape: (batch, 64, 192, 1) 
+        out = self.relu(self.conv1(x))                                  # shape: (batch, 64, 192, 1) -> shape: (batch, 24, 192, 1)
+        out = self.layer1_1(out)                                        # shape: (batch, 24, 192, 1) -> shape: (batch, 36, 96, 1)
+        out = self.layer1_2(out)                                        # shape: (batch, 36, 96, 1) -> shape: (batch, 36, 96, 1)
+        out = self.layer2_1(out)                                        # shape: (batch, 36, 96, 1) -> shape: (batch, 48, 48, 1)
+        out = self.layer2_2(out)                                        # shape: (batch, 48, 48, 1) -> shape: (batch, 48, 48, 1)
+        out = self.layer3_1(out)                                        # shape: (batch, 48, 48, 1) -> shape: (batch, 72, 24, 1)
+        out = self.layer3_2(out)                                        # shape: (batch, 72, 24, 1) -> shape: (batch, 72, 24, 1)
+        out = self.layer4_1(out)                                        # shape: (batch, 72, 24, 1) -> shape: (batch, 96, 12, 1)
+        out = self.layer4_2(out)                                        # shape: (batch, 96, 12, 1) -> shape: (batch, 96, 12, 1)
 
-        out = self.relu(self.bn2(self.conv2(out)))                      # shape: (batch, 96, 13, 1) -> shape: (batch, 96, 7, 1)
-        out = self.conv3(out)                                           # shape: (batch, 96, 7, 1) -> shape: (batch, 3, 1, 1)
+        out = self.relu(self.bn2(self.conv2(out)))                      # shape: (batch, 96, 12, 1) -> shape: (batch, 96, 6, 1)
+        out = self.relu(self.bn3(self.conv3(out)))                      # shape: (batch, 96, 6, 1) -> shape: (batch, 3, 3, 1)
+        out = self.conv4(out)                                           # shape: (batch, 96, 3, 1) -> shape: (batch, 3, 1, 1)
         return out

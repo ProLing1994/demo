@@ -321,7 +321,7 @@ class AudioPreprocessor(object):
         
         # compute fbank cpu
         featurefbanks_cpu = Feature(sample_rate=self.sr, feature_freq=self.n_mels, nfilt=self.nfilt, winlen=self.winlen , winstep=self.winstep)
-        featurefbanks_cpu.get_mel_int_feature(data, len(data), bool_vtlp_augmentation)
+        featurefbanks_cpu.get_mel_int_feature(data, bool_vtlp_augmentation)
         feature_data = featurefbanks_cpu.copy_mfsc_feature_int_to()
         return feature_data
     

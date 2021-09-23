@@ -1,5 +1,3 @@
-import numpy as np
-
 from datetime import datetime
 from easydict import EasyDict as edict
 
@@ -35,9 +33,11 @@ __C.general.kws_suppression_counter = 1             # kws 激活后抑制时间 
 
 # asr
 __C.general.language_id = 0			                # 0： chinese  1： english
-__C.general.decode_id = 0			                # 0： greedy  1： beamsearch
 __C.general.asr_feature_time = 296                  # asr 网络特征时间维度，与语音特征容器长度相同
 __C.general.asr_suppression_counter = 2             # asr 激活后抑制时间，间隔 2s 执行一次 asr 检测
+
+__C.general.asr_second_on = False                   # asr 使用 bpe 和 phoneme 两个 model（该方法，目前只在 RMAI_KWS_ASR_options_BWC_bpe_phoneme.py 中使用）
+__C.general.decode_id = 0			                # 0： greedy  1： beamsearch
 
 # container
 __C.general.audio_container_ms = 100                # 语音数据容器中，装有音频数据 100 ms
@@ -47,12 +47,7 @@ __C.general.feature_remove_after_time = 6           # 为保证特征一致，�
 __C.general.feature_remove_before_time = 100        # 为保证特征一致，拼接特征需要丢弃之前的时间维度 100
 
 # on-off
-__C.general.bool_do_kws_weakup = True
-__C.general.bool_do_asr = False
 __C.general.bool_output_wave = True
-__C.general.bool_output_csv = True
-# __C.general.bool_output_csv = False
-__C.general.gpu = True
 
 # init 
 __C.general.window_size_samples = int(__C.general.sample_rate * __C.general.window_size_ms / 1000)
@@ -66,20 +61,18 @@ __C.general.total_time_samples = int(__C.general.sample_rate * __C.general.total
 ##################################
 
 __C.model = {}
+__C.model.bool_caffe = True
+# __C.model.bool_caffe = False
+# __C.model.bool_pytorch = True
 
 # kws
 # xiaoan8k
+## caffe
 # __C.model.kws_model_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/xiaoan8k_tc_resnet14_2_5_checkpoints_1200/kws_xiaoan8k_tc_resnet14_2_5_05202021.caffemodel"
 # __C.model.kws_prototxt_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/xiaoan8k_tc_resnet14_2_5_checkpoints_1200/kws_xiaoan8k_tc_resnet14_2_5_05202021.prototxt"
 # __C.model.kws_net_input_name = "data"
 # __C.model.kws_net_output_name = "Softmax"
 # __C.model.kws_chw_params = "1,48,146"
-# __C.model.kws_transpose = True
-# __C.model.kws_model_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/xiaoan8k_tc_resnet14_hisi_3_1_checkpoints_425/kws_xiaoan8k_tc_resnet14_hisi_3_1_05272021.caffemodel"
-# __C.model.kws_prototxt_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/xiaoan8k_tc_resnet14_hisi_3_1_checkpoints_425/kws_xiaoan8k_tc_resnet14_hisi_3_1_05272021.prototxt"
-# __C.model.kws_net_input_name = "data"
-# __C.model.kws_net_output_name = "prob"
-# __C.model.kws_chw_params = "1,48,144"
 # __C.model.kws_transpose = True
 __C.model.kws_model_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/xiaoan8k_tc_resnet14_hisi_3_1_checkpoints_1999/kws_xiaoan8k_tc_resnet14_hisi_3_1_06112021.caffemodel"
 __C.model.kws_prototxt_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/xiaoan8k_tc_resnet14_hisi_3_1_checkpoints_1999/kws_xiaoan8k_tc_resnet14_hisi_3_1_06112021.prototxt"
@@ -89,12 +82,13 @@ __C.model.kws_chw_params = "1,48,144"
 __C.model.kws_transpose = True
 
 # asr
-__C.model.asr_model_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/english_0202_better.caffemodel"
-__C.model.asr_prototxt_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/english_0202_mark.prototxt"
-__C.model.asr_net_input_name = "data"
-__C.model.asr_net_output_name = "conv39"
-__C.model.asr_chw_params = "1,296,64"
-__C.model.asr_dict_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_english/asr_english_16k_0202/english_bpe.txt"
+## caffe
+__C.model.asr_model_path = ""
+__C.model.asr_prototxt_path = ""
+__C.model.asr_dict_path = ""
+__C.model.asr_net_input_name = ""
+__C.model.asr_net_output_name = ""
+__C.model.asr_chw_params = ""
 
 
 ##################################
@@ -104,27 +98,6 @@ __C.model.asr_dict_path = "/mnt/huanyuan/model/audio_model/amba_model/asr_englis
 # 用于 RMAI_KWS_ASR_offline_API.py
 __C.test = {}
 
-# test_mode
-# 0: input_wav
-# 1: input_folder
-__C.test.test_mode = 1
+__C.test.input_wav = "/home/huanyuan/share/audio_data/weakup/weakup_xiaoan8k/自测音频/xiaoan8k_1_1_04082021_validation_60.wav"
 
-# input_Wav
-# __C.test.input_wav = "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_training_60.wav"
-# __C.test.input_wav = "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_validation_60.wav"
-# __C.test.input_wav = "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_3_04152021_validation.wav"
-__C.test.input_wav = "/home/huanyuan/share/audio_data/weakup_xiaoan8k/test/xiaoan8k_1_1_04082021_validation_60.wav"
-
-# input_folder
-# __C.test.input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/处理音频/"
-# __C.test.input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/其他录音/adpro/"
-# __C.test.input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/其他录音/adpro-1/"
-__C.test.input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/其他录音/adpro-2/"
-
-# output_folder
-# __C.test.output_folder = "/mnt/huanyuan/data/speech/Recording/demo_kws_asr_online_api/{}".format('-'.join('-'.join(str(datetime.now()).split('.')[0].split(' ')).split(':')))
-# __C.test.output_folder = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/test_straming_wav/实车录制_0427_caffemodel/阈值_05_05_唤醒间隔时间1s/货车怠速场景/"
-# __C.test.output_folder = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/test_straming_wav/实车录制_0427_caffemodel/阈值_09_05_唤醒间隔时间1s/货车怠速场景/"
-# __C.test.output_folder = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/test_straming_wav/实车录制_0427_caffemodel/阈值_05_05_唤醒间隔时间1s/其他录音/adpro/"
-# __C.test.output_folder = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/test_straming_wav/实车录制_0427_caffemodel/阈值_05_05_唤醒间隔时间1s/其他录音/adpro-1/"
-__C.test.output_folder = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/test_straming_wav/实车录制_0427_caffemodel/阈值_05_05_唤醒间隔时间1s/其他录音/adpro-2/"
+__C.test.output_folder = "/mnt/huanyuan/data/speech/Recording/demo_kws_asr_online_api/{}".format(datetime.now().strftime('%Y-%m-%d-%H-%M-%S'))

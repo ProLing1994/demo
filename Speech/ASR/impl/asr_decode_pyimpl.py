@@ -881,6 +881,37 @@ class Decode(object):
                             matching_lable_list.append('unmute_audio')
         return
 
+    def match_keywords_chinese(self, kws_list, kws_dict):
+        # init 
+        index = 0
+        match_id_list = []
+        self.result_string = []
+        
+        symbol_list = [self.id2word[self.result_id[idx]] for idx in range(len(self.result_id))]
+        while index < len(symbol_list):
+            # init 
+            match_flag = False
+
+            for kws_idx in range(len(kws_list)):
+                keywords_list = kws_dict[kws_list[kws_idx]].split(' ')
+                if (symbol_list[index] == keywords_list[0] and (index + len(keywords_list)) <= len(symbol_list)):
+                    tmp_symbol = [symbol_list[index + idx] for idx in range(len(keywords_list))]
+                    dist = get_edit_distance(tmp_symbol, keywords_list)
+
+                    if (dist == 0 or (dist < 2 and len(keywords_list) > 4) or (dist < 3 and len(keywords_list) > 6)):
+                        match_flag = True
+                        match_id_list.append(kws_idx)
+                        break
+
+            if (match_flag):
+                index = index + len(kws_dict[kws_list[match_id_list[-1]]].split(' ')) - 1
+            else:
+                index += 1
+
+        if len(match_id_list):
+            for idx in range(len(match_id_list)):
+                self.result_string.append(kws_list[match_id_list[idx]])
+
     def ctc_decoder(self, input_data):
         # init
         self.result_id = []

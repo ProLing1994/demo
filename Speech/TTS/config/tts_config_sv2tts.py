@@ -89,11 +89,14 @@ __C.dataset.sample_rate = 16000
 
 # Duration of frequency analysis window
 __C.dataset.window_size_ms = 50.0
+# __C.dataset.window_size_ms = 32.0
 
 # How far to move in time between frequency windows
 __C.dataset.window_stride_ms = 12.5
+# __C.dataset.window_stride_ms = 10.0
 
 # How the spectrogram is processed to produce features, support ["fbank", "fbank_log", "fbank_log_sv2tts", "pcen", "fbank_cpu"]
+# __C.dataset.preprocess = "fbank_cpu"
 __C.dataset.preprocess = "fbank_log_sv2tts"
 
 # How many bins to use for the Mel feature
@@ -221,10 +224,10 @@ __C.train.num_threads = 1
 __C.train.show_log = 5
 
 # the number of batches to update loss curve
-__C.train.plot_snapshot = 5
+__C.train.plot_snapshot = 1
 
 # the number of epochs to save model
-__C.train.save_epochs = 25
+__C.train.save_epochs = 5
 
 
 ######################################

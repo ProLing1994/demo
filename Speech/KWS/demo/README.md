@@ -1,2 +1,4 @@
-11/20/2020，RMAI_KWS_API.py，实现语音在线唤醒，实时语音唤醒功能，唤醒词“小鱼小鱼”
-12/29/2012，RMAI_INTERACTION_API.py，实现语音交互功能，唤醒词“小锐小锐”唤醒设备，录制5s语音并播放；
+09/23/2021，RMAI_KWS_ASR_API.py
+09/23/2021，RMAI_KWS_ASR_offline_API.py
+09/23/2021，RMAI_KWS_ASR_online_API.py
+09/23/2021，RMAI_KWS_ASR_online_system_sound_API.py
