@@ -135,7 +135,7 @@ __C.model.kws_chw_params = "1,64,192"
 __C.model.kws_transpose = True
 
 ## pytorch 
-__C.model.kws_chk_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaorui16k_tc_resnet14/xiaorui16k_tc-resnet14-hisi_6_3_checkpoints_1999/xiaorui16k_tc-resnet14_hisi_6_3_checkpoints_1999.pkl"
+__C.model.kws_chk_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "xiaorui16k_tc-resnet14_hisi_6_3_checkpoints_1999.pkl")
 __C.model.kws_model_name = "tc-resnet14-amab-hisi-novt-192"
 __C.model.kws_class_name = "SpeechResModel"
 __C.model.kws_num_classes = 2
