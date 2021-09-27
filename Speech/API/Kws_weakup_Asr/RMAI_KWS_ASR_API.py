@@ -56,8 +56,8 @@ class KwsAsrApi():
         if self.params_dict['feature_data_container_np'].shape[0] < self.cfg.general.feature_container_time:
             return
 
-        # # asr_duplicate_update_counter，更新计数器，防止重复检测
-        # self.asr_duplicate_update_counter()
+        # asr_duplicate_update_counter，更新计数器，防止重复检测
+        self.asr_duplicate_update_counter()
 
         # 方案一：进行 kws 唤醒词检测，若检测到唤醒词，未来三秒进行 asr 检测
         # kws
@@ -87,6 +87,11 @@ class KwsAsrApi():
                 asr_output_string = self.run_asr(True)
             
                 # 打印结果
+                # 检测是否为 小锐小锐_唤醒词
+                if '小锐小锐_唤醒' in asr_output_string:
+                    self.params_dict['bool_weakup'] = True
+                    asr_output_string = "Weakup "
+
                 if len(asr_output_string):
                     print("\n===============!!!!!!!!!!!!!!===============")
                     print("********************************************")
@@ -112,6 +117,11 @@ class KwsAsrApi():
             asr_output_string = self.run_asr(False)
 
             # 打印结果
+            # 检测是否为 小锐小锐_唤醒词
+            if '小锐小锐_唤醒' in asr_output_string:
+                self.params_dict['bool_weakup'] = True
+                asr_output_string = "Weakup "
+
             if len(asr_output_string):
                 print("\n===============!!!!!!!!!!!!!!===============")
                 print("********************************************")
@@ -275,8 +285,8 @@ class KwsAsrApi():
 
         asr_string = self.run_asr_normal(contorl_kws_bool)
 
-        # if len(asr_string) and asr_string != "cfg.general.bool_do_asr = False":
-        #     asr_string = self.asr_duplicate_check(asr_string)
+        if len(asr_string):
+            asr_string = self.asr_duplicate_check(asr_string)
         return asr_string
 
     def run_asr_normal(self, contorl_kws_bool=True):
@@ -314,7 +324,8 @@ class KwsAsrApi():
             # result_string = self.asr_decoder.output_symbol()
 
             self.asr_decoder.match_keywords_chinese(self.cfg.general.kws_list, self.cfg.general.kws_dict)
-            result_string = self.asr_decoder.output_control_result_string(self.cfg.general.control_kws_list, contorl_kws_bool)
+            result_string = self.asr_decoder.output_control_result_string(self.cfg.general.control_kws_list, 
+                                                                            contorl_kws_bool)
         elif self.cfg.general.language_id == 1:
             pass
         else:
@@ -332,6 +343,9 @@ class KwsAsrApi():
         res_string = ""
         tmp_string = asr_string.split(' ')
         for idx in range(len(tmp_string)):
+            if '小锐小锐_唤醒' in tmp_string[idx]:
+                res_string += tmp_string[idx] + " "
+                continue
             if tmp_string[idx] not in self.params_dict['asr_duplicate_counter']:
                 self.params_dict['asr_duplicate_counter'][tmp_string[idx]] = self.cfg.general.total_time_ms
                 res_string += tmp_string[idx] + " "

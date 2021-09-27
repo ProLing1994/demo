@@ -10,8 +10,13 @@ cfg = __C
 
 __C.general = {}
 
-# __C.general.TISV_dataset_list = ['librispeech_other', 'VoxCeleb1', 'VoxCeleb2']
-__C.general.TISV_dataset_list = ['test']
+'''
+librispeech_other: 1166/33
+VoxCeleb1: 1088/35
+VoxCeleb2: 5994/118
+'''
+__C.general.TISV_dataset_list = ['librispeech_other', 'VoxCeleb1', 'VoxCeleb2']
+# __C.general.TISV_dataset_list = ['test']
 __C.general.TISV_dataset_path_dict = {"librispeech_other_training": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-other-500",
                                     "librispeech_other_testing": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/test-other",
                                     "VoxCeleb1_training": "/mnt/huanyuan/data/speech/sv/VoxCeleb1/wav",
@@ -27,7 +32,8 @@ __C.general.TISV_dataset_path_dict = {"librispeech_other_training": "/mnt/huanyu
 __C.general.data_dir = "/mnt/huanyuan/data/speech/sv/TI_SV_dataset/dataset/"
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/sv/test_0912/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/sv/test_0912/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/sv/ti_sv_1_0_09142021/"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -88,21 +94,23 @@ __C.dataset.sample_rate = 16000
 __C.dataset.clip_duration_ms = 1600
 
 # Duration of frequency analysis window
-__C.dataset.window_size_ms = 25.0
+__C.dataset.window_size_ms = 32.0
+# __C.dataset.window_size_ms = 25.0
 
 # How far to move in time between frequency windows
 __C.dataset.window_stride_ms = 10.0
 
 # How the spectrogram is processed to produce features, support ["fbank", "fbank_log", "pcen", "fbank_cpu"]
-__C.dataset.preprocess = "fbank"
+__C.dataset.preprocess = "fbank_cpu"
+# __C.dataset.preprocess = "fbank"
 
 # How many bins to use for the Mel feature
-# __C.dataset.feature_bin_count = 64
-__C.dataset.feature_bin_count = 40
+__C.dataset.feature_bin_count = 64
+# __C.dataset.feature_bin_count = 40
 
 # How many nfilt to use for the Mel feature, only support preprocess=fbank_cpu
-# __C.dataset.nfilt = 64
-__C.dataset.nfilt = 40
+__C.dataset.nfilt = 64
+# __C.dataset.nfilt = 40
 
 # input size of training data (w, h), whether input size is a multiple of 16, unit: voxel
 # __C.dataset.h_alignment = True, [hisi], 模型需要图像输入长度为 16 的倍数
@@ -111,7 +119,8 @@ __C.dataset.w_alignment = False
 __C.dataset.h_alignment = False
 
 # input size of training data (w, h), unit: voxel
-__C.dataset.data_size = [40, 160]
+__C.dataset.data_size = [64, 156]
+# __C.dataset.data_size = [40, 160]
 
 
 ##################################
@@ -314,3 +323,13 @@ __C.debug = {}
 
 # random seed used in training
 __C.debug.seed = 0
+
+
+##################################
+# test parameters
+##################################
+
+__C.test = {}
+
+# the number of testing epochs
+__C.test.model_epoch = -1

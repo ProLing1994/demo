@@ -354,7 +354,7 @@ if __name__ == "__main__":
     #                 ["nihaoxiaoan_16k"], positive_label_idx=positive_label_idx)
 
     # activatebwc
-    model_name = "kws_activatebwc_2_5_tc-resnet14-amba_fbankcpu_kd_07162021"
+    model_name = "kws_activatebwc_2_7_tc-resnet14-amba_fbankcpu_kd_09222021"
     threshold = "0.8"
     positive_label_idx = "1"
     show_score_line("/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_training_60_001.csv",

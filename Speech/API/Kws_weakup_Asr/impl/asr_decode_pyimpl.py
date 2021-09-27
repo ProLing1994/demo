@@ -106,7 +106,6 @@ class Decode(object):
 
         for idx in range(len(self.result_string)):
             find_control_kws = self.result_string[idx] in control_kws_list
-
             if contorl_kws_bool and find_control_kws:
                 result_string += "control_" + self.result_string[idx]
                 result_string += ' '

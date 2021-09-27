@@ -12,7 +12,7 @@ __C.general = {}
 
 __C.general.window_size_ms = 1000                   # 每次送入 1s 数据
 __C.general.window_stride_ms = 1000                 # 每次间隔 1s 时间
-__C.general.total_time_ms = 4000                    # 算法处理时长 4s 时间
+__C.general.total_time_ms = 4000                    # 算法处理时长 3s 时间
 
 __C.general.sample_rate = 16000
 __C.general.nfilt = 64                              # 计算特征中，Mel 滤波器个数
@@ -25,31 +25,34 @@ __C.general.kws_feature_time = 192                  # kws 网络特征时间维�
 __C.general.kws_stride_feature_time = 10            # kws 每间隔 10 个 feature_time 进行一次检索, 对应滑窗 100 ms，共检测 10 次
 __C.general.kws_detection_threshold = 0.5           # kws 检测阈值 0.5
 __C.general.kws_detection_number_threshold = 0.5    # kws 计数阈值 0.5
-__C.general.kws_suppression_counter = 4             # kws 激活后抑制时间 4s
+__C.general.kws_suppression_counter = 3             # kws 激活后抑制时间 3s
 
 # asr mandarin taxi
 __C.general.language_id = 0			                # 0： chinese  1： english
 __C.general.decode_id = 1			                # 0： greedy  1： beamsearch
-__C.general.asr_feature_time = 396                  # asr 网络特征时间维度，与语音特征容器长度相同
-__C.general.asr_suppression_counter = 3             # asr 激活后抑制时间，间隔 3s 执行一次 asr 检测
+__C.general.asr_feature_time = 296                  # asr 网络特征时间维度，与语音特征容器长度相同
+__C.general.asr_suppression_counter = 2             # asr 激活后抑制时间，间隔 2s 执行一次 asr 检测
 __C.general.asr_bpe_phoneme_on = False              # asr 使用 bpe 和 phoneme 两个 model
 
 # container
 __C.general.audio_container_ms = 100                # 语音数据容器中，装有音频数据 100 ms
 __C.general.audio_container_time = 10               # 语音数据容器中，装有音频数据 100 ms，对应特征维度 10
-__C.general.feature_container_time = 396            # 语音特征容器中，装有时间维度 296
+__C.general.feature_container_time = 296            # 语音特征容器中，装有时间维度 296
 __C.general.feature_remove_after_time = 6           # 为保证特征一致，拼接特征需要丢弃最后的时间维度 6
 __C.general.feature_remove_before_time = 100        # 为保证特征一致，拼接特征需要丢弃之前的时间维度 100
 
 # chinese key words
-__C.general.kws_list = ['他妈的_脏话', '傻逼_脏话', '我操_脏话', '脑残_脏话', '妈了个逼_脏话', 
+__C.general.kws_list = ['小锐小锐_唤醒', 
+                        '他妈的_脏话', '傻逼_脏话', '我操_脏话', '脑残_脏话', '妈了个逼_脏话', 
                         '去不了_拒载', '带不了你_拒载', '走不了_拒载', '不去不去_拒载', '不顺路_拒载',
                         '要加钱_议价', '打表就不去_议价', '打表不行_议价', 
                         '弄死你_威胁', '要是敢报警_威胁', '手机拿出来_威胁', '自己解锁还是我帮你_威胁', '要钱还是要命_威胁', '把钱拿出来_威胁',
                         '打开地图_控制', '关闭地图_控制', '退出地图_控制', '打开蓝牙_控制', '关闭蓝牙_控制', '退出蓝牙_控制', '打开收音机_控制', '关闭收音机_控制', '退出收音机_控制',
                         '上一频道_控制', '下一频道_控制', '音量加大_控制', '音量减小_控制', '导航到_控制', '深圳北站_控制', '竹子林地铁站_控制', '机场_控制', '世界之窗_控制', '查看营收_控制',
                         '高德电召_控制', '呼叫乘客_控制', '上个频道_控制', '下个频道_控制', '打电话_控制', '暂停_控制', '继续_控制', '电召_控制', '回拨_控制', '接单_控制', '抢单_控制']
-__C.general.kws_dict = {'他妈的_脏话':'ta ma de',
+__C.general.kws_dict = {'小锐小锐_唤醒':'xiao rui xiao rui',
+                        
+                        '他妈的_脏话':'ta ma de',
                         '傻逼_脏话':'sha bi',
                         '我操_脏话':'wo cao', 
                         '脑残_脏话':'nao can',
@@ -150,7 +153,7 @@ __C.model.asr_dict_path = os.path.join(os.path.dirname(os.path.abspath(__file__)
 __C.model.asr_lm_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "3gram_asr_mandarin_taxi_408.bin")
 __C.model.asr_net_input_name = "data"
 __C.model.asr_net_output_name = "prob"
-__C.model.asr_chw_params = "1,396,64"
+__C.model.asr_chw_params = "1,296,64"
 
 ## pytorch 
 __C.model.asr_chk_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "taxi_16k_64dim.pth")

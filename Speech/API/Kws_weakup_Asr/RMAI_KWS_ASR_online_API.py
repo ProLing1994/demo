@@ -118,7 +118,8 @@ class OnlineAudio:
                         audio_data_list.extend(data_np.tolist())
         
             else:
-                kws_asr_api.run_kws_asr(np.array(audio_data_list))
+                output_str = kws_asr_api.run_kws_asr(np.array(audio_data_list))
+                print("output_str: {}".format(output_str))
                 audio_data_list = []
 
     def start(self):

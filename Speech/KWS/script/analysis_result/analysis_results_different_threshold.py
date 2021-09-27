@@ -1,13 +1,8 @@
 import argparse
-import collections
-import multiprocessing 
 import pandas as pd
-import pickle
 import sys
-import time 
+from scipy.io import wavfile
 import torch.nn.functional as F
-
-from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from utils.train_tools import *
@@ -17,6 +12,11 @@ from impl.pred_pyimpl import kws_load_model, model_predict
 from script.analysis_result.plot_score_line import show_score_line
 from script.analysis_result.cal_fpr_tpr import cal_fpr_tpr
 from impl.recognizer_pyimpl import RecognizeResult, RecognizeCommands, RecognizeCommandsCountNumber
+
+
+def save_wav(wav, path, sr): 
+    wav *= 32767 / max(0.01, np.max(np.abs(wav)))
+    wavfile.write(path, sr, wav.astype(np.int16))
 
 
 def generate_results_threshold(args, input_wav, detection_threshold, detection_number_threshold):
@@ -89,20 +89,25 @@ def generate_results_threshold(args, input_wav, detection_threshold, detection_n
     
     # input dir 
     if args.mode == "0":
-        input_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', os.path.basename(input_wav).split('.')[0] + '_threshold_{}'.format('_'.join(str(cfg.test.detection_threshold).split('.'))))
+        input_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', 
+                                    os.path.basename(input_wav).split('.')[0] + '_threshold_{}'.format('_'.join(str(cfg.test.detection_threshold).split('.'))))
     elif args.mode == "2":
         output_subfolder_path = (os.path.dirname(input_wav) + '/').replace(args.input_folder, '')
-        input_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', args.output_subfolder_name, output_subfolder_path, os.path.basename(input_wav).split('.')[0])
+        input_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', 
+                                    args.output_subfolder_name, output_subfolder_path, 
+                                    os.path.basename(input_wav).split('.')[0])
     assert os.path.exists(input_dir), input_dir
 
     # mkdir 
     if args.mode == "0":
-        output_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', os.path.basename(input_wav).split('.')[0] + '_threshold_{}'.format('_'.join(str(detection_threshold).split('.'))))
+        output_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', 
+                                    os.path.basename(input_wav).split('.')[0],
+                                    'threshold_{}_{}'.format('_'.join(str(detection_threshold).split('.')), ''.join(str(detection_number_threshold).split('.'))))
     elif args.mode == "2":
-        # 实车录制_0427_pytorch
         output_subfolder_path = (os.path.dirname(input_wav) + '/').replace(args.input_folder, '')
         output_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', 
-                                    args.output_subfolder_name, output_subfolder_path + '阈值_{}'.format(''.join(str(detection_threshold).split('.'))) + '_{}'.format(''.join(str(detection_number_threshold).split('.'))), 
+                                    args.output_subfolder_name, 
+                                    output_subfolder_path + '阈值_{}_{}'.format(''.join(str(detection_threshold).split('.')), ''.join(str(detection_number_threshold).split('.'))), 
                                     os.path.basename(input_wav).split('.')[0])
     else:
         raise Exception("[ERROR:] Unknow mode, please check!")
@@ -127,7 +132,8 @@ def generate_results_threshold(args, input_wav, detection_threshold, detection_n
         # model infer
         output_score = [[0 for i in range(num_classes)]]
         for class_idx in range(num_classes):
-            output_score[0][class_idx] = float(row['score'].split(',')[class_idx])
+            # output_score[0][class_idx] = float(row['score'].split(',')[class_idx])
+            output_score[0][class_idx] = float(row['score'].split(',')[class_idx][2:-2])            # '[[0.99727255]]'
         output_score = np.array(output_score)
 
         # process result
@@ -148,7 +154,8 @@ def generate_results_threshold(args, input_wav, detection_threshold, detection_n
                 start_time = int(sample_rate * all_found_words_dict['start_time'] / 1000)
                 end_time = int(sample_rate * all_found_words_dict['end_time'] / 1000)
                 output_wav = audio_data[start_time: end_time]
-                librosa.output.write_wav(output_path, output_wav, sr=sample_rate)
+                # librosa.output.write_wav(output_path, output_wav, sr=sample_rate)
+                save_wav(output_wav, output_path, sample_rate)
 
         # time ++ 
         audio_data_offset += timeshift_samples
@@ -163,37 +170,27 @@ def main():
     1：RecognizeCommands，该脚本会通过滑窗的方式测试每一小段音频数据，计算连续 800ms(27帧) 音频的平均值结果，如果超过预设门限，则认为检测到关键词，否则认定未检测到关键词，最后分别计算假阳性和召回率。
     2：RecognizeCommandsCountNumber，该脚本会通过滑窗的方式测试每一小段音频数据，通过计数超过门限值的个数，判断是否为关键词。
     """
+    parser = argparse.ArgumentParser(description='Streamax KWS Testing Engine')
+    args = parser.parse_args()
+
     # mode: [0,1,2]
     # 0: from input_wav_list
     # 1: from csv
     # 2: from folder
-    default_mode = "2"    # ["0", "1" ,"2"]
+    args.mode = "0"    # ["0", "1" ,"2"]
 
     # mode 0: from input_wav_list
-    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaorui_12162020_validation_3600_001.wav",
-                                "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
+    args.input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation.wav"]
 
     # mode 2: from folder
-    default_input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/处理音频/"
-    default_output_subfolder_name = "实车录制_0427_pytorch/阈值_05_03/货车怠速场景/"
+    args.input_folder = ""
+    args.output_subfolder_name = ""
 
     # config file
-    default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_9_res15_fbankcpu_041262021/kws_config_xiaoan8k_api.py"
+    args.config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english//kws_activatebwc_2_7_tc-resnet14-amba_fbankcpu_kd_09222021/kws_config_activatebwc_api.py"
     
-    default_detection_threshold_list = [0.95]
-    default_detection_number_threshold_list = [0.3]
-
-    parser = argparse.ArgumentParser(description='Streamax KWS Testing Engine')
-    parser.add_argument('--config_file', type=str,
-                        default=default_config_file)
-    args = parser.parse_args()
-
-    args.mode = default_mode
-    args.input_wav_list = default_input_wav_list
-    args.input_folder = default_input_folder
-    args.output_subfolder_name = default_output_subfolder_name
-    args.detection_threshold_list = default_detection_threshold_list
-    args.detection_number_threshold_list = default_detection_number_threshold_list
+    args.detection_threshold_list = [0.7]
+    args.detection_number_threshold_list = [0.3, 0.4]
 
     if str(args.mode) == "0":
         for detection_threshold in args.detection_threshold_list:

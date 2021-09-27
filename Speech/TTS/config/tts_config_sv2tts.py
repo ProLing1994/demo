@@ -212,7 +212,8 @@ __C.net.r = 2
 __C.train = {}
 
 # the number of training epochs
-__C.train.num_epochs = 100
+# __C.train.num_epochs = 100
+__C.train.num_epochs = 10
 
 # the number of samples in a batch
 __C.train.batch_size = 2
@@ -227,7 +228,8 @@ __C.train.show_log = 5
 __C.train.plot_snapshot = 1
 
 # the number of epochs to save model
-__C.train.save_epochs = 5
+# __C.train.save_epochs = 5
+__C.train.save_epochs = 2
 
 
 ######################################

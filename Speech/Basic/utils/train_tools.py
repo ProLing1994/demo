@@ -1,4 +1,5 @@
 import builtins
+import glob
 import importlib
 import numpy as np
 import os
@@ -156,6 +157,9 @@ def load_checkpoint(net, epoch_num, net_dir, optimizer=None,
     :param net_dir: the network directory
     :return: loaded epoch index, loaded batch index
     """
+    if epoch_num < 0:
+        epoch_num = last_checkpoint(os.path.join(net_dir, sub_folder_name))
+
     chk_file = os.path.join(net_dir, sub_folder_name,
                             'chk_{}'.format(epoch_num), 'parameter.pkl')
     if not os.path.isfile(chk_file):
@@ -218,3 +222,26 @@ def save_checkpoint(cfg, config_file, net, optimizer, epoch_idx, batch_idx, outp
     # 用于在单卡和cpu上加载模型
     # torch.save(net.cpu().module.state_dict(), os.path.join(chk_folder, 'net_parameter.pkl'))
     shutil.copy(config_file, os.path.join(chk_folder, 'config.py'))
+
+
+def last_checkpoint(chk_root):
+    """
+    find the directory of last check point
+    :param chk_root: the check point root directory, which may contain multiple
+     checkpoints
+    :return: the last check point directory
+    """
+
+    last_epoch = -1
+    chk_folders = os.path.join(chk_root, 'chk_*')
+    for folder in glob.glob(chk_folders):
+        folder_name = os.path.basename(folder)
+        tokens = folder_name.split('_')
+        epoch = int(tokens[-1])
+        if epoch > last_epoch:
+            last_epoch = epoch
+
+    if last_epoch == -1:
+        raise OSError('No checkpoint folder found!')
+
+    return last_epoch

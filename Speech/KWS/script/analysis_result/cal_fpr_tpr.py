@@ -2,9 +2,15 @@ import librosa
 import os
 import pandas as pd
 import sys
+from scipy.io import wavfile
 
 sys.path.insert(0, '/home/huanyuan/code/demo/common')
 from common.utils.python.metrics_tools import *
+
+
+def save_wav(wav, path, sr): 
+    wav *= 32767 / max(0.01, np.max(np.abs(wav)))
+    wavfile.write(path, sr, wav.astype(np.int16))
 
 
 def cal_fpr_tpr(src_csv, pst_csv, positive_label_list, bool_write_audio):
@@ -131,7 +137,8 @@ def cal_fpr_tpr(src_csv, pst_csv, positive_label_list, bool_write_audio):
             start_time = int(sample_rate * fn_case['start_time'] / 1000)
             end_time = int(sample_rate * fn_case['end_time'] / 1000)
             output_wav = audio_data[start_time: end_time]
-            librosa.output.write_wav(output_path, output_wav, sr=sample_rate)
+            # librosa.output.write_wav(output_path, output_wav, sr=sample_rate)
+            save_wav(output_wav, output_path, sr=sample_rate)
 
         for fp_case in fp_list:
             # mkdirs
@@ -143,7 +150,8 @@ def cal_fpr_tpr(src_csv, pst_csv, positive_label_list, bool_write_audio):
             start_time = int(sample_rate * fp_case['start_time'] / 1000)
             end_time = int(sample_rate * fp_case['end_time'] / 1000)
             output_wav = audio_data[start_time: end_time]
-            librosa.output.write_wav(output_path, output_wav, sr=sample_rate)
+            # librosa.output.write_wav(output_path, output_wav, sr=sample_rate)
+            save_wav(output_wav, output_path, sr=sample_rate)
 
         for double_matched_case in double_matched_list:
             # mkdirs
@@ -155,7 +163,8 @@ def cal_fpr_tpr(src_csv, pst_csv, positive_label_list, bool_write_audio):
             start_time = int(sample_rate * double_matched_case['start_time'] / 1000)
             end_time = int(sample_rate * double_matched_case['end_time'] / 1000)
             output_wav = audio_data[start_time: end_time]
-            librosa.output.write_wav(output_path, output_wav, sr=sample_rate)
+            # librosa.output.write_wav(output_path, output_wav, sr=sample_rate)
+            save_wav(output_wav, output_path, sr=sample_rate)
 
         for unmatched_case in unmatched_list:
             # mkdirs
@@ -167,7 +176,8 @@ def cal_fpr_tpr(src_csv, pst_csv, positive_label_list, bool_write_audio):
             start_time = int(sample_rate * unmatched_case['start_time'] / 1000)
             end_time = int(sample_rate * unmatched_case['end_time'] / 1000)
             output_wav = audio_data[start_time: end_time]
-            librosa.output.write_wav(output_path, output_wav, sr=sample_rate)
+            # librosa.output.write_wav(output_path, output_wav, sr=sample_rate)
+            save_wav(output_wav, output_path, sr=sample_rate)
 
     return tn, fp, fn, tp
 
@@ -257,7 +267,7 @@ if __name__ == "__main__":
 
     # activatebwc
     # cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation.csv",
-    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_5_tc-resnet14-amba_fbankcpu_kd_07162021/test_straming_wav/activatebwc_1_5_03312021_validation_threshold_0_8/found_words.csv",
+    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_7_tc-resnet14-amba_fbankcpu_kd_09222021//test_straming_wav/activatebwc_1_5_03312021_validation/threshold_0_7_04/found_words.csv",
     #             "activatebwc",
     #             bool_write_audio)
     # cal_fpr_tpr("/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/安静场景/场景一/RM_KWS_ACTIVATEBWC_ovweseas_asr_S010M0D00T1.csv",
@@ -265,7 +275,7 @@ if __name__ == "__main__":
     #             "activatebwc",
     #             bool_write_audio)
     cal_fpr_tpr_per_folder("/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/路边场景/场景一/",
-                            "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_5_tc-resnet14-amba_fbankcpu_kd_07162021/test_straming_wav/海外同事录制_0425/阈值_05_05/路边场景/场景一/",
+                            "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_7_tc-resnet14-amba_fbankcpu_kd_09222021/test_straming_wav/海外同事录制_0425/阈值_08_05/路边场景/场景一/",
                             # ["RM_KWS_ACTIVATEBWC_ovweseas_ori_"],
                             ["RM_KWS_ACTIVATEBWC_ovweseas_asr_"],
                             "activatebwc",

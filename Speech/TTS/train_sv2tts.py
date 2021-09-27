@@ -14,6 +14,7 @@ from Basic.utils.profiler_tools import *
 from SV.utils.infer_tools import *
 
 from TTS.config.hparams import *
+from TTS.dataset.audio import *
 from TTS.dataset.text import *
 from TTS.utils.train_tools import *
 from TTS.utils.visualizations_tools import *
@@ -23,25 +24,33 @@ sys.path.insert(0, '/home/huanyuan/code/demo/common')
 from common.utils.python.logging_helpers import setup_logger
 
 
-def show_ressult(attention, mel_prediction, target_spectrogram, input_seq, step,
-               plot_dir, mel_output_dir, sample_num, loss):
+def show_ressult(cfg, attention, mel_prediction, target_spectrogram, input_seq, step,
+               plot_dir, wav_dir, sample_num, loss):
+    # text
+    text = '_'.join(sequence_to_text(input_seq).split('~')[0].split(' '))
+
     # Save some results for evaluation
     create_folder(plot_dir)
-    attention_path = os.path.join(plot_dir, "attention_step_{}_sample_{}".format(step, sample_num))
+    attention_path = os.path.join(plot_dir, "attention_step_{}_sample_{}_text_{}.png".format(step, sample_num, text))
     save_attention(attention, attention_path)
 
     # save predicted mel spectrogram to disk (debug)
-    create_folder(mel_output_dir)
-    mel_output_fpath = os.path.join(mel_output_dir, "mel_prediction_step_{}_sample_{}.npy".format(step, sample_num))
+    create_folder(wav_dir)
+    mel_output_fpath = os.path.join(wav_dir, "mel_prediction_step_{}_sample_{}_text_{}.npy".format(step, sample_num, text))
     np.save(str(mel_output_fpath), mel_prediction, allow_pickle=False)
 
+    # save griffin lim inverted wav for debug (mel -> wav)
+    wav = inv_mel_spectrogram(cfg, mel_prediction.T)
+    wav_fpath = os.path.join(wav_dir, "wave_from_mel_step_{}_sample_{}_text_{}.wav".format(step, sample_num, text))
+    save_wav(wav, str(wav_fpath), sr=cfg.dataset.sample_rate)
+
     # save real and predicted mel-spectrogram plot to disk (control purposes)
-    spec_fpath = os.path.join(plot_dir, "mel_spectrogram_step_{}_sample_{}.png".format(step, sample_num))
+    spec_fpath = os.path.join(plot_dir, "mel_spectrogram_step_{}_sample_{}_text_{}.png".format(step, sample_num, text))
     title_str = "{}, {}, step={}, loss={:.5f}".format("Tacotron", datetime.now().strftime("%Y-%m-%d %H:%M"), step, loss)
     plot_spectrogram(mel_prediction, spec_fpath, title=title_str,
                      target_spectrogram=target_spectrogram,
                      max_len=target_spectrogram.shape[0])
-    print("Input at step {}: {}".format(step, sequence_to_text(input_seq)))
+    print("Input at step {}: {}".format(step, text))
 
 
 def train(args):
@@ -213,13 +222,14 @@ def train(args):
                     attention_len = mel_length // net.r
                     attention_prediction = attention[sample_idx][:, :attention_len].detach().cpu().numpy()
                     target_text = texts[sample_idx].detach().cpu().numpy()
-                    show_ressult(attention=attention_prediction,
+                    show_ressult(cfg, 
+                                attention=attention_prediction,
                                 mel_prediction=mel_prediction,
                                 target_spectrogram=target_spectrogram,
                                 input_seq=target_text,
                                 step=epoch_idx,
                                 plot_dir=os.path.join(cfg.general.save_dir, 'plots'),
-                                mel_output_dir=os.path.join(cfg.general.save_dir, 'mel-spectrograms'),
+                                wav_dir=os.path.join(cfg.general.save_dir, 'wavs'),
                                 sample_num=sample_idx + 1,
                                 loss=loss)
 

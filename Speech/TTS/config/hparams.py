@@ -33,10 +33,14 @@ clip_mels_length = True                    # If true, discards samples exceeding
 max_mel_frames = 900    
 
 ### Audio processing options
-allow_clipping_in_normalization = True     # Used when signal_normalization = True
 signal_normalization = True
+allow_clipping_in_normalization = True     # Used when signal_normalization = True
 symmetric_mels = True                      # Sets mel range to [-max_abs_value, max_abs_value] if True,
                                            #               and [0, max_abs_value] if False
+
+### Griffin-Lim
+power = 1.5
+griffin_lim_iters = 60
 
 ### SV2TTS
 silence_min_duration_split = 0.4           # Duration in seconds of a silence for an utterance to be split

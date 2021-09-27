@@ -1,13 +1,10 @@
 import argparse
-import glob
 import multiprocessing 
 import pandas as pd
-import pickle
+from scipy.io import wavfile
 import sys
 import time 
-import torch.nn.functional as F
 
-from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from utils.train_tools import *
@@ -17,6 +14,11 @@ from impl.pred_pyimpl import kws_load_model, model_predict
 from impl.recognizer_pyimpl import RecognizeResult, RecognizeCommands, RecognizeCommandsCountNumber, RecognizeCommandsAlign
 from script.analysis_result.plot_score_line import show_score_line
 from script.analysis_result.cal_fpr_tpr import cal_fpr_tpr
+
+
+def save_wav(wav, path, sr): 
+    wav *= 32767 / max(0.01, np.max(np.abs(wav)))
+    wavfile.write(path, sr, wav.astype(np.int16))
 
 
 # def test(input_wav, args):
@@ -182,7 +184,8 @@ def test(in_args):
                 start_time = int(sample_rate * all_found_words_dict['start_time'] / 1000)
                 end_time = int(sample_rate * all_found_words_dict['end_time'] / 1000)
                 output_wav = audio_data[start_time: end_time]
-                librosa.output.write_wav(output_path, output_wav, sr=sample_rate)
+                # librosa.output.write_wav(output_path, output_wav, sr=sample_rate)
+                save_wav(output_wav, output_path, sample_rate)
 
         csv_original_scores.append({'start_time':current_time_ms, 'score':",".join([str(output_score[0][idx]) for idx in range(output_score.shape[1])])})
         csv_final_scores.append({'start_time':current_time_ms, 'score':recognize_element.score})
@@ -213,7 +216,7 @@ def main():
     # 0: from input_wav_list
     # 1: from csv
     # 2: from folder
-    default_mode = "0"    # ["0", "1" ,"2"]
+    default_mode = "2"    # ["0", "1" ,"2"]
 
     # mode 0: from input_wav_list
     # test
@@ -295,43 +298,6 @@ def main():
     #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_history_zhongdongwangshi_7200_001.wav",
     #                             "/mnt/huanyuan/data/speech/Negative_sample/test_straming_wav/QingTingFM_music_xingetuijian_21600_001.wav"]
 
-    # difficult sample mining
-    # default_input_wav_list = ["/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_history_baijiajiangtan_21600_noused_001.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_history_jinpingmei_21600_noused_001.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_history_yeshimiwen_21600_noused_001.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_history_yeshimiwen_21600_noused_002.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_history_yeshimiwen_21600_noused_003.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_history_yeshimiwen_21600_noused_004.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_history_yeshimiwen_21600_noused_005.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_history_yeshimiwen_21600_noused_006.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_history_yeshimiwen_21600_noused_007.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_history_yeshimiwen_21600_noused_008.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_history_yeshimiwen_21600_noused_009.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_history_zhongdongwangshi_21600_noused_001.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_21600_noused_001.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_21600_noused_002.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_21600_noused_003.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_21600_noused_004.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_21600_noused_005.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_21600_noused_006.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_21600_noused_007.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_21600_noused_008.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_music_station_qingtingkongzhongyinyuebang_21600_noused_009.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_music_xingetuijian_21600_noused_001.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_music_xingetuijian_21600_noused_002.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_news_cishicike_21600_noused_001.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_news_cishicike_21600_noused_002.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_news_cishicike_21600_noused_003.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_001.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_002.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_003.wav"
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_004.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_005.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_006.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_007.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_008.wav",
-    #                         "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/QingTingFM_novel_douluodalu_21600_noused_009.wav"]
-
     # mode 1: from csv
     default_csv_path = "/mnt/huanyuan/data/speech/Recording_sample/Real_vehicle_sample/20201218/Real_vehicle_sample_20201218.csv"
     default_type = 'idling_driving'                 # ['normal_driving', 'idling_driving']
@@ -339,40 +305,22 @@ def main():
 
     # mode 2: from folder
     # difficult sample mining
-    # default_input_folder = "/mnt/huanyuan/data/speech/Recording_sample/Jabra_510/"
-    # default_output_subfolder_name = "Jabra_510"
-    # default_input_folder = "/mnt/huanyuan/data/speech/Recording_sample/danbin/real_vehicle_sample/Original/"
-    # default_output_subfolder_name = "danbin_real_vehicle_sample"
-    # default_input_folder = "/mnt/huanyuan/data/speech/Recording/RM_Mandarin_Weibo/office/tpev_44.1k/wav/"
-    # default_output_subfolder_name = "tpev_Mandarin_Weibo"
-    # default_input_folder = "/mnt/huanyuan/data/speech/Recording/RM_Mandarin_Weibo/office/android_16k/wav/"
-    # default_output_subfolder_name = "android_Mandarin_Weibo"
-    # default_input_folder = "/mnt/huanyuan/data/speech/Recording/RM_Mandarin_Bus/office/tpev_44.1k/wav/"
-    # default_output_subfolder_name = "tpev_Mandarin_Bus"
-    # default_input_folder = "/mnt/huanyuan/data/speech/Recording/RM_Mandarin_Bus/office/android_16k/wav/"
-    # default_output_subfolder_name = "android_Mandarin_Bus"
-    # default_input_folder = "/mnt/huanyuan/data/speech/Recording_sample/danbin/daily_recording/"
-    # default_output_subfolder_name = "danbin_daily_record"
-    # default_input_folder = "/mnt/huanyuan/data/speech/Recording_sample/ADpro/real_vehicle_sample/platform_alarm_data/"
-    # default_output_subfolder_name = "ADpro_real_vehicle_sample"
-    # default_input_folder = "/mnt/huanyuan/data/speech/kws/lenovo/experimental_dataset/LenovoDataset_11242020/other/"
-    # default_output_subfolder_name = "Dataset_Lenovo_xiaole/other/"
-    # default_input_folder = "/mnt/huanyuan/data/speech/kws/lenovo/experimental_dataset/LenovoDataset_11242020/xiaole/"
-    # default_output_subfolder_name = "Dataset_Lenovo_xiaole/xiaole/"
-    # default_input_folder = "/mnt/huanyuan/data/speech/Recording/Daily_Record/TPEV/test/"
-    # default_output_subfolder_name = "tpev_daily_record_test"
-    # default_input_folder = "/mnt/huanyuan/data/speech/Recording/Daily_Record/TPEV/wav/"
-    # default_output_subfolder_name = "tpev_daily_record"
+    # default_input_folder = "/mnt/huanyuan/data/speech/Negative_sample/noused_straming_wav/noused_straming_wav/"
+    # default_output_subfolder_name = "difficult_sample_mining/qingtingfm_record/"
+    # default_input_folder = "/mnt/huanyuan/data/speech/Recording/Daily_Record/danbing/conversation/"
+    # default_output_subfolder_name = "difficult_sample_mining/danbing_record/conversation"
+    default_input_folder = "/mnt/huanyuan/data/speech/asr/LibriSpeech/"
+    default_output_subfolder_name = "difficult_sample_mining/LibriSpeech"
 
     # activate bwc
     # default_input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/安静场景/"
-    # default_output_subfolder_name = "海外同事录制_0425/阈值_05_05/安静场景"
+    # default_output_subfolder_name = "海外同事录制_0425/阈值_08_05/安静场景"
     # default_input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/办公室场景/"
-    # default_output_subfolder_name = "海外同事录制_0425/阈值_05_05/办公室场景"
+    # default_output_subfolder_name = "海外同事录制_0425/阈值_08_05/办公室场景"
     # default_input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/路边场景/"
-    # default_output_subfolder_name = "海外同事录制_0425/阈值_05_05/路边场景"
-    default_input_folder = "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_BwcKeyword/office/danbing_16k/"
-    default_output_subfolder_name = "difficult_sample_mining/RM_Meiguo_BwcKeyword/"
+    # default_output_subfolder_name = "海外同事录制_0425/阈值_08_05/路边场景"
+    # default_input_folder = "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_BwcKeyword/office/danbing_16k/"
+    # default_output_subfolder_name = "difficult_sample_mining/RM_Meiguo_BwcKeyword/"
 
 
     # xiaoan
@@ -434,7 +382,9 @@ def main():
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_5_tc-resnet14-amba_fbankcpu_kd_07162021/kws_config_activatebwc.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_5_tc-resnet14-amba_fbankcpu_kd_07162021/kws_config_activatebwc_api.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_5_tc-resnet14-amba_fbankcpu_kd_07162021/kws_config_activatebwc_difficult_sample_mining.py"
-    default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_tts_1_0_res15_fbankcpu_07162021/kws_config_activatebwc.py"
+    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_7_tc-resnet14-amba_fbankcpu_kd_09222021/kws_config_activatebwc.py"
+    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_7_tc-resnet14-amba_fbankcpu_kd_09222021/kws_config_activatebwc_api.py"
+    default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_7_tc-resnet14-amba_fbankcpu_kd_09222021/kws_config_activatebwc_difficult_sample_mining.py"
 
     parser = argparse.ArgumentParser(description='Streamax KWS Testing Engine')
     parser.add_argument('--mode', type=str, default=default_mode)
@@ -479,6 +429,7 @@ def main():
         #     test(row['path'], args)
     elif str(args.mode) == "2":
         file_list = get_sub_filepaths_suffix(args.input_folder)
+        file_list += get_sub_filepaths_suffix(args.input_folder, '.flac')
         file_list.sort()
 
         in_params = []

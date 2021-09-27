@@ -7,7 +7,6 @@ import sys
 import struct
 from scipy import signal
 from scipy.ndimage.morphology import binary_dilation
-from scipy.io import wavfile
 from typing import Optional, Union
 import torch
 import webrtcvad
@@ -227,35 +226,6 @@ def normalize_volume(wav, target_dBFS, increase_only=False, decrease_only=False)
         return wav
     return wav * (10 ** (dBFS_change / 20))
 
-
-def audio_preprocess(cfg, data):
-    # init 
-    audio_preprocess_type = cfg.dataset.preprocess
-    audio_processor = AudioPreprocessor(sr=cfg.dataset.sample_rate,
-                                        n_mels=cfg.dataset.feature_bin_count,
-                                        nfilt=cfg.dataset.nfilt,
-                                        f_max=cfg.dataset.fmax, 
-                                        f_min=cfg.dataset.fmin,
-                                        winlen=cfg.dataset.window_size_ms / 1000, 
-                                        winstep=cfg.dataset.window_stride_ms / 1000)
-
-    # check
-    assert audio_preprocess_type in ["fbank", "fbank_log", "fbank_log_sv2tts", "pcen", "fbank_cpu"], "[ERROR:] Audio preprocess type is wronge, please check"
-
-    # preprocess
-    if audio_preprocess_type == "fbank":
-        audio_data = audio_processor.compute_fbanks(data)
-    elif audio_preprocess_type == "fbank_log":
-        audio_data = audio_processor.compute_fbanks_log(data)
-    elif audio_preprocess_type == "fbank_log_sv2tts":
-        audio_data = audio_processor.compute_fbank_log_sv2tts(data)
-    elif audio_preprocess_type == "pcen":
-        audio_data = audio_processor.compute_pcen(data)
-    elif audio_preprocess_type == "fbank_cpu":
-        audio_data = audio_processor.compute_fbanks_cpu(data, cfg.dataset.augmentation.vtlp_on)
-    return audio_data.astype(np.float32)
-
-
 class AudioPreprocessor(object):
     def __init__(self, sr=16000, n_mels=40, nfilt=40, n_dct_filters=40, f_max=4000, f_min=20, winlen=0.032, winstep=0.010):
         super().__init__()
@@ -273,6 +243,7 @@ class AudioPreprocessor(object):
 
         # init 
         self.mel_basis = None
+        self.inv_mel_basis = None
 
     def compute_fbanks(self, data):
         data = librosa.feature.melspectrogram(
@@ -324,28 +295,46 @@ class AudioPreprocessor(object):
         featurefbanks_cpu.get_mel_int_feature(data, bool_vtlp_augmentation)
         feature_data = featurefbanks_cpu.copy_mfsc_feature_int_to()
         return feature_data
-    
+
     def preemphasis(self, wav, k, preemphasize=True):
         if preemphasize:
             return signal.lfilter([1, -k], [1], wav)
         return wav
 
+    def inv_preemphasis(self, wav, k, inv_preemphasize=True):
+        if inv_preemphasize:
+            return signal.lfilter([1], [1, -k], wav)
+        return wav
+
     def stft(self, y):
         return librosa.stft(y=y, n_fft=self.win_length, hop_length=self.hop_length, win_length=self.win_length)
 
-    def build_mel_basis(self):
-        assert self.f_max <= self.sr // 2
-        return librosa.filters.mel(self.sr, self.win_length, n_mels=self.n_mels,
-                                fmin=self.f_min, fmax=self.f_max)
+    def istft(self, y):
+        return librosa.istft(y, hop_length=self.hop_length, win_length=self.win_length)
 
     def linear_to_mel(self, spectogram):
         if self.mel_basis is None:
             self.mel_basis = self.build_mel_basis()
         return np.dot(self.mel_basis, spectogram)
 
+    def mel_to_linear(self, mel_spectrogram):
+        if self.inv_mel_basis is None:
+            self.inv_mel_basis = np.linalg.pinv(self.build_mel_basis())
+        return np.maximum(1e-10, np.dot(self.inv_mel_basis, mel_spectrogram))
+
+    def build_mel_basis(self):
+        assert self.f_max <= self.sr // 2
+        return librosa.filters.mel(self.sr, self.win_length, n_mels=self.n_mels,
+                                fmin=self.f_min, fmax=self.f_max)
+
     def amp_to_db(self, x):
         min_level = np.exp(min_level_db / 20 * np.log(10))
         return 20 * np.log10(np.maximum(min_level, x))
+
+
+    def db_to_amp(self, x):
+        return np.power(10.0, (x) * 0.05)
+
 
     def normalize(self, S):
         if allow_clipping_in_normalization:
@@ -360,3 +349,85 @@ class AudioPreprocessor(object):
             return (2 * max_abs_value) * ((S - min_level_db) / (-min_level_db)) - max_abs_value
         else:
             return max_abs_value * ((S - min_level_db) / (-min_level_db))
+
+
+    def denormalize(self, D):
+        if allow_clipping_in_normalization:
+            if symmetric_mels:
+                return (((np.clip(D, -max_abs_value, max_abs_value) + max_abs_value) * -min_level_db / (2 * max_abs_value))
+                        + min_level_db)
+            else:
+                return ((np.clip(D, 0, max_abs_value) * -min_level_db / max_abs_value) + min_level_db)
+        
+        if symmetric_mels:
+            return (((D + max_abs_value) * -min_level_db / (2 * max_abs_value)) + min_level_db)
+        else:
+            return ((D * -min_level_db / max_abs_value) + min_level_db)
+
+    def griffin_lim(self, S):
+        """librosa implementation of Griffin-Lim
+        Based on https://github.com/librosa/librosa/issues/434
+        """
+        angles = np.exp(2j * np.pi * np.random.rand(*S.shape))
+        S_complex = np.abs(S).astype(np.complex)
+        y = self.istft(S_complex * angles)
+        for i in range(griffin_lim_iters):
+            angles = np.exp(1j * np.angle(self.stft(y)))
+            y = self.istft(S_complex * angles)
+        return y
+
+
+def audio_preprocess(cfg, data):
+    # init 
+    audio_preprocess_type = cfg.dataset.preprocess
+    audio_processor = AudioPreprocessor(sr=cfg.dataset.sample_rate,
+                                        n_mels=cfg.dataset.feature_bin_count,
+                                        nfilt=cfg.dataset.nfilt,
+                                        f_max=cfg.dataset.fmax, 
+                                        f_min=cfg.dataset.fmin,
+                                        winlen=cfg.dataset.window_size_ms / 1000, 
+                                        winstep=cfg.dataset.window_stride_ms / 1000)
+
+    # check
+    assert audio_preprocess_type in ["fbank", "fbank_log", "fbank_log_sv2tts", "pcen", "fbank_cpu"], "[ERROR:] Audio preprocess type is wronge, please check"
+
+    # preprocess
+    if audio_preprocess_type == "fbank":
+        audio_data = audio_processor.compute_fbanks(data)
+    elif audio_preprocess_type == "fbank_log":
+        audio_data = audio_processor.compute_fbanks_log(data)
+    elif audio_preprocess_type == "fbank_log_sv2tts":
+        audio_data = audio_processor.compute_fbank_log_sv2tts(data)
+    elif audio_preprocess_type == "pcen":
+        audio_data = audio_processor.compute_pcen(data)
+    elif audio_preprocess_type == "fbank_cpu":
+        audio_data = audio_processor.compute_fbanks_cpu(data, cfg.dataset.augmentation.vtlp_on)
+    return audio_data.astype(np.float32)
+
+
+def inv_mel_spectrogram(cfg, mel_spectrogram):
+    """Converts mel spectrogram to waveform using librosa"""
+    # init 
+    audio_preprocess_type = cfg.dataset.preprocess
+    audio_processor = AudioPreprocessor(sr=cfg.dataset.sample_rate,
+                                        n_mels=cfg.dataset.feature_bin_count,
+                                        nfilt=cfg.dataset.nfilt,
+                                        f_max=cfg.dataset.fmax, 
+                                        f_min=cfg.dataset.fmin,
+                                        winlen=cfg.dataset.window_size_ms / 1000, 
+                                        winstep=cfg.dataset.window_stride_ms / 1000)
+
+    if not audio_preprocess_type == "fbank_log_sv2tts":
+        return None
+
+    # denormalize
+    if signal_normalization:
+        D = audio_processor.denormalize(mel_spectrogram)
+    else:
+        D = mel_spectrogram
+    
+    # mel to linear
+    S = audio_processor.mel_to_linear(audio_processor.db_to_amp(D + ref_level_db))  # Convert back to linear
+    
+    # griffin_lim
+    return audio_processor.inv_preemphasis(audio_processor.griffin_lim(S ** power), preemphasis, preemphasize)
