@@ -12,46 +12,19 @@ from Basic.utils.loss_tools import *
 from Basic.utils.profiler_tools import *
 
 from SV.utils.infer_tools import *
-
-from TTS.config.hparams import *
-from TTS.dataset.audio import *
-from TTS.dataset.text import *
-from TTS.utils.train_tools import *
-from TTS.utils.visualizations_tools import *
+from TTS.utils.vocoder.train_tools import *
 
 sys.path.insert(0, '/home/huanyuan/code/demo/common')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/common')
 from common.utils.python.logging_helpers import setup_logger
 
 
-def show_ressult(cfg, attention, mel_prediction, target_spectrogram, input_seq, step,
-               plot_dir, wav_dir, sample_num, loss):
-    # text
-    text = '_'.join(sequence_to_text(input_seq).split('~')[0].split(' '))
-
-    # Save some results for evaluation
-    create_folder(plot_dir)
-    attention_path = os.path.join(plot_dir, "attention_step_{}_sample_{}_text_{}.png".format(step, sample_num, text))
-    save_attention(attention, attention_path)
-
-    # save predicted mel spectrogram to disk (debug)
-    create_folder(wav_dir)
-    mel_output_fpath = os.path.join(wav_dir, "mel_prediction_step_{}_sample_{}_text_{}.npy".format(step, sample_num, text))
-    np.save(str(mel_output_fpath), mel_prediction, allow_pickle=False)
-
-    # save griffin lim inverted wav for debug (mel -> wav)
-    wav = inv_mel_spectrogram(cfg, mel_prediction.T)
-    wav_fpath = os.path.join(wav_dir, "wave_from_mel_step_{}_sample_{}_text_{}.wav".format(step, sample_num, text))
-    save_wav(wav, str(wav_fpath), sr=cfg.dataset.sample_rate)
-
-    # save real and predicted mel-spectrogram plot to disk (control purposes)
-    spec_fpath = os.path.join(plot_dir, "mel_spectrogram_step_{}_sample_{}_text_{}.png".format(step, sample_num, text))
-    title_str = "{}, {}, step={}, loss={:.5f}".format("Tacotron", datetime.now().strftime("%Y-%m-%d %H:%M"), step, loss)
-    plot_spectrogram(mel_prediction, spec_fpath, title=title_str,
-                     target_spectrogram=target_spectrogram,
-                     max_len=target_spectrogram.shape[0])
-    print("Input at step {}: {}".format(step, text))
-
+def prepare_data(cfg, mel_out, mel_frames, quant):
+    for idx in range(len(quant)):
+        quant_idx = quant[idx]
+        mel_out_idx = mel_out[idx]
+    print()
+    pass
 
 def train(args):
     """ training engine
@@ -69,11 +42,13 @@ def train(args):
 
     # enable logging
     log_file = os.path.join(cfg.general.save_dir, 'logging', 'train_log.txt')
-    logger = setup_logger(log_file, 'sv2tts_train')
+    logger = setup_logger(log_file, 'vocoder_train')
 
     # define network
     net = import_network(cfg, cfg.net.model_name, cfg.net.class_name)
-    net.r = cfg.net.r 
+
+    # define loss function
+    loss_func = loss_function(cfg)
 
     # set training optimizer, learning rate scheduler
     optimizer = set_optimizer(cfg, net)
@@ -97,6 +72,7 @@ def train(args):
                                         finetune_ignore_key_list=cfg.general.finetune_ignore_key_list)
         start_epoch, start_batch = 0, 0
         last_save_epoch = 0
+
     if cfg.general.resume_epoch >= 0:
         # resume, Load the model, continue the previous learning rate
         start_epoch, start_batch = load_checkpoint(net, cfg.general.resume_epoch,
@@ -122,6 +98,19 @@ def train(args):
                                     finetune_ignore_key_list=cfg.speaker_verification.ignore_key_list)
     sv_net.eval()
 
+    # synthesizer net
+    cfg_synthesizer = load_cfg_file(cfg.synthesizer.config_file)
+    synthesizer_net = import_network(cfg_synthesizer, cfg.synthesizer.model_name, cfg.synthesizer.class_name)
+    synthesizer_net.r = cfg_synthesizer.net.r 
+    if cfg.synthesizer.model_path == "":
+        load_checkpoint(synthesizer_net, cfg.synthesizer.epoch, 
+                        cfg.synthesizer.model_dir)
+    else:
+        load_checkpoint_from_path(synthesizer_net, cfg.synthesizer.model_path, 
+                                    state_name='model_state',
+                                    finetune_ignore_key_list=cfg.synthesizer.ignore_key_list)
+    synthesizer_net.eval()
+
     # define training dataset and testing dataset
     train_dataloader, len_train_dataset = generate_dataset(cfg, TRAINING_NAME)
 
@@ -143,8 +132,10 @@ def train(args):
         batch_idx += 1
 
         # Blocking, waiting for batch (threaded)
-        texts, mels, stop, embed_wavs = data_iter.next()
+        texts, mels, mel_frames, embed_wavs, quant = data_iter.next()
+        profiler.tick("Blocking, waiting for batch (threaded)")
 
+        # prepare embedding
         embeds = []
         for embed_wav_idx in range(len(embed_wavs)):
             embed_wav = embed_wavs[embed_wav_idx]
@@ -152,17 +143,22 @@ def train(args):
             embeds.append(embed)
 
         embeds = torch.from_numpy(np.array(embeds))
-        profiler.tick("Blocking, waiting for batch (threaded)")
+        profiler.tick("prepare embedding")
 
-        # Data to device
+        # prepare mel
         texts = texts.cuda()
         mels = mels.cuda()
         embeds = embeds.cuda()
-        stop = stop.cuda()
-        profiler.tick("Data to device")
+        _, mel_out, _, _ = synthesizer_net(texts, mels, embeds)
+        profiler.tick("prepare mel")
         
+        # prepare data
+        mel_out = mel_out.detach().cpu().numpy()
+        prepare_data(cfg, mel_out, mel_frames, quant)
+        profiler.tick("prepare data")
+
         # Forward pass
-        m1_hat, m2_hat, attention, stop_pred = net(texts, mels, embeds)
+        
         profiler.tick("Forward pass")
 
         # Calculate loss
@@ -214,24 +210,8 @@ def train(args):
                 save_checkpoint(cfg, args.config_file, net, optimizer, epoch_idx, batch_idx)
 
                 if cfg.general.is_test:
-                    # show result
-                    sample_idx = 0
-                    mel_prediction = m2_hat[sample_idx].detach().cpu().numpy().T
-                    target_spectrogram = mels[sample_idx].detach().cpu().numpy().T
-                    mel_length = mel_prediction.shape[0]
-                    attention_len = mel_length // net.r
-                    attention_prediction = attention[sample_idx][:, :attention_len].detach().cpu().numpy()
-                    target_text = texts[sample_idx].detach().cpu().numpy()
-                    show_ressult(cfg, 
-                                attention=attention_prediction,
-                                mel_prediction=mel_prediction,
-                                target_spectrogram=target_spectrogram,
-                                input_seq=target_text,
-                                step=epoch_idx,
-                                plot_dir=os.path.join(cfg.general.save_dir, 'plots'),
-                                wav_dir=os.path.join(cfg.general.save_dir, 'wavs'),
-                                sample_num=sample_idx + 1,
-                                loss=loss)
+                    # To Do
+                    pass
 
                 if cfg.loss.ema_on:
                     ema.restore() # resume the model parameters
@@ -239,8 +219,8 @@ def train(args):
 
 
 def main(): 
-    parser = argparse.ArgumentParser(description='Streamax SV2TTS Training Engine')
-    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/tts_config_sv2tts.py", nargs='?', help='config file')
+    parser = argparse.ArgumentParser(description='Streamax SV2TTS Vocoder Training Engine')
+    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/vocoder/tts_config_vocoder_wavernn.py", nargs='?', help='config file')
     args = parser.parse_args()
     train(args)
 

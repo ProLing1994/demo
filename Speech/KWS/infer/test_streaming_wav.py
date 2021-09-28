@@ -4,7 +4,7 @@ import pandas as pd
 from scipy.io import wavfile
 import sys
 import time 
-
+from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 from utils.train_tools import *
@@ -404,7 +404,7 @@ def main():
             in_params.append(in_args)
 
         p = multiprocessing.Pool(3)
-        out = p.map(test, in_params)
+        out = list(tqdm(p.imap(test, in_params), total=len(in_params)))
         p.close()
         p.join()
 
@@ -421,7 +421,7 @@ def main():
             in_params.append(in_args)
 
         p = multiprocessing.Pool(3)
-        out = p.map(test, in_params)
+        out = list(tqdm(p.imap(test, in_params), total=len(in_params)))
         p.close()
         p.join()
 
@@ -438,7 +438,7 @@ def main():
             in_params.append(in_args)
 
         p = multiprocessing.Pool(3)
-        out = p.map(test, in_params)
+        out = list(tqdm(p.imap(test, in_params), total=len(in_params)))
         p.close()
         p.join()
 

@@ -3,74 +3,33 @@ import pandas as pd
 import sys
 from torch.utils.data import Dataset, DataLoader
 
-
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
 from Basic.utils.lmdb_tools import *
 
-from TTS.config.hparams import *
 from TTS.dataset.text import *
 from TTS.dataset.audio import *
+from TTS.dataset.vocoder.audio import *
+from TTS.dataset.sv2tts_dataset_preload_audio_lmdb import *
 
-
-def load_data_pd(cfg, mode):
-    # load data_pd
-    for dataset_idx in range(len(cfg.general.dataset_list)):
-        dataset_name = cfg.general.dataset_list[dataset_idx]
-        csv_path = os.path.join(cfg.general.data_dir, dataset_name + '.csv')
-    
-        data_pd_temp = pd.read_csv(csv_path)
-        if dataset_idx == 0:
-            data_pd = data_pd_temp
-        else:
-            data_pd = pd.concat([data_pd, data_pd_temp])
-
-    data_pd = data_pd[data_pd["mode"] == mode]
-    data_pd.reset_index(drop=True, inplace=True) 
-    return data_pd
-
-
-def load_lmdb(cfg, mode):
-    # load lmdb_dict
-    lmdb_dict = {}
-    for dataset_idx in range(len(cfg.general.dataset_list)):
-        dataset_name = cfg.general.dataset_list[dataset_idx]
-        # lmdb
-        lmdb_path = os.path.join(cfg.general.data_dir, 'dataset_audio_lmdb', '{}.lmdb'.format(dataset_name+'_'+mode))
-        if not os.path.exists(lmdb_path):
-            print("[Warning] data do not exists: {}".format(lmdb_path))
-            continue
-        lmdb_env = load_lmdb_env(lmdb_path)
-        lmdb_dict[dataset_name] = lmdb_env
-
-    return lmdb_dict
-
-
-def pad1d(x, max_len, pad_value=0):
-    return np.pad(x, (0, max_len - len(x)), mode="constant", constant_values=pad_value)
-
-
-def pad2d(x, max_len, pad_value=0):
-    return np.pad(x, ((0, 0), (0, max_len - x.shape[-1])), mode="constant", constant_values=pad_value)
-
-
-class SynthesizerDataset(Dataset):
+class VocoderDataset(Dataset):
     def __init__(self, cfg, mode, augmentation_on=True):
         # init
         self.cfg = cfg
         self.mode = mode
         self.augmentation_on = augmentation_on
 
+        self.hop_length = int(self.cfg.dataset.sample_rate * self.cfg.dataset.window_stride_ms / 1000)
         self.data_pd = load_data_pd(cfg, mode)
         self.data_list = self.data_pd['sub_basename'].to_list()
         if len(self.data_list) == 0:
             raise Exception("No speakers found. ")
-
+        
         print("Found %d samples. " % len(self.data_list))
 
     def __len__(self):
         return len(self.data_list)
-    
+
     def __getitem__(self, index):
         if not hasattr(self, 'lmdb_dict'):
             self.lmdb_dict = load_lmdb(self.cfg, self.mode)
@@ -95,10 +54,27 @@ class SynthesizerDataset(Dataset):
 
         # embed wav
         embed_wav = preprocess_wav(wav, self.cfg.dataset.sample_rate)
-        return text, mel, mel_frames, embed_wav
+
+        # Quantize the wav
+        if preemphasize:
+            wav = pre_emphasis(wav)
+        wav = np.clip(wav, -1, 1)
+
+        # Fix for missing padding   # TODO: settle on whether this is any useful
+        r_pad =  (len(wav) // self.hop_length + 1) * self.hop_length - len(wav)
+        wav = np.pad(wav, (0, r_pad), mode='constant')
+
+        if voc_mode == 'RAW':
+            if mu_law:
+                quant = encode_mu_law(wav, mu=2 ** bits)
+            else:
+                quant = float_2_label(wav, bits=bits)
+        elif voc_mode == 'MOL':
+            quant = float_2_label(wav, bits=16)
+        return text, mel, mel_frames, embed_wav, quant.astype(np.int64)
 
 
-class SynthesizerDataLoader(DataLoader):
+class VocoderDataLoader(DataLoader):
     def __init__(self, dataset, sampler, cfg):
         super().__init__(
             dataset=dataset, 
@@ -107,14 +83,14 @@ class SynthesizerDataLoader(DataLoader):
             sampler=sampler, 
             batch_sampler=None, 
             num_workers=cfg.train.num_threads,
-            collate_fn=lambda data: self.collate_synthesizer(data, cfg),
+            collate_fn=lambda data: self.collate_vocoder(data, cfg),
             pin_memory=True, 
             drop_last=False, 
             timeout=0, 
             worker_init_fn=None
         )
 
-    def collate_synthesizer(self, data, cfg):
+    def collate_vocoder(self, data, cfg):
         # Text
         x_lens = [len(x[0]) for x in data]
         max_x_len = max(x_lens)
@@ -140,14 +116,14 @@ class SynthesizerDataLoader(DataLoader):
         
         # Mel Frames: stop
         mel_frames = [x[2] for x in data]
-        stop = torch.ones(mel.shape[0], mel.shape[-1])
-        for j, k in enumerate(mel_frames):
-            stop[j, :int(k)-1] = 0
 
         # Speaker embedding (SV2TTS)
         embed_wav = [x[3] for x in data]
 
+        # quant (vocoder)
+        quant = [x[4] for x in data]
+
         # Convert all to tensor
         chars = torch.tensor(chars).long()
         mel = torch.tensor(mel)
-        return chars, mel, stop, embed_wav
+        return chars, mel, mel_frames, embed_wav, quant

@@ -12,7 +12,7 @@ __C.general = {}
 
 __C.general.window_size_ms = 1000                   # 每次送入 1s 数据
 __C.general.window_stride_ms = 1000                 # 每次间隔 1s 时间
-__C.general.total_time_ms = 4000                    # 算法处理时长 3s 时间
+__C.general.total_time_ms = 4000                    # 算法处理时长 4s 时间
 
 __C.general.sample_rate = 16000
 __C.general.nfilt = 64                              # 计算特征中，Mel 滤波器个数

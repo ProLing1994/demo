@@ -532,5 +532,5 @@ class Tacotron(nn.Module):
         parameters = filter(lambda p: p.requires_grad, self.parameters())
         parameters = sum([np.prod(p.size()) for p in parameters]) / 1_000_000
         if print_out:
-            print("Trainable Parameters: %.3fM" % parameters)
+            print("Tacontron Parameters: %.3fM" % parameters)
         return parameters

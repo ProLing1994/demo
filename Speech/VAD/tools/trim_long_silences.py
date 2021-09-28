@@ -90,5 +90,8 @@ def trim_long_silences(wav):
 
 
 if __name__ == '__main__':
-    wav = preprocess_wav("/mnt/huanyuan/data/speech/Recording/RM_Meiguo_Activatebwc/tts/sv2tts/test.wav")
-    sf.write("/mnt/huanyuan/data/speech/Recording/RM_Meiguo_Activatebwc/tts/sv2tts/test_vad.wav", wav, sampling_rate)
+
+    input_wav = "/home/huanyuan/share/audio_data/demo_test/Weakup_2018-03-11-090527_0.wav"
+    output_wav = str(input_wav).split('.')[0] + '_vad.wav'
+    wav = preprocess_wav(input_wav)
+    sf.write(output_wav, wav, sampling_rate)
