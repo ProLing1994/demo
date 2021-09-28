@@ -11,6 +11,8 @@ from TTS.config.vocoder.hparams import *
 from TTS.dataset.vocoder.audio import *
 from TTS.dataset.vocoder.distribution import *
 from TTS.network.vocoder.hparams_wavernn import *
+from TTS.utils.vocoder.display_tools import *
+
 
 class ResBlock(nn.Module):
     def __init__(self, dims):
@@ -106,7 +108,7 @@ class WaveRNN(nn.Module):
         self.hop_length = int(self.sample_rate * cfg.dataset.window_stride_ms / 1000)
         
         self.mode = voc_mode
-        self.bits = bits
+        self.bits = voc_bits
         self.pad = voc_pad
         self.upsample_factors = voc_upsample_factors
 
@@ -268,6 +270,11 @@ class WaveRNN(nn.Module):
         self.train()
 
         return output
+
+    def gen_display(self, i, seq_len, b_size, gen_rate):
+        pbar = progbar(i, seq_len)
+        msg = f'| {pbar} {i*b_size}/{seq_len*b_size} | Batch Size: {b_size} | Gen Rate: {gen_rate:.1f}kHz | '
+        stream(msg)
 
     def get_gru_cell(self, gru):
         gru_cell = nn.GRUCell(gru.input_size, gru.hidden_size)

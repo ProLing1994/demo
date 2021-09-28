@@ -228,10 +228,10 @@ __C.net.r = 2
 __C.train = {}
 
 # the number of training epochs
-# __C.train.num_epochs = 100
-__C.train.num_epochs = 10
+__C.train.num_epochs = 100
 
 # the number of samples in a batch
+# __C.train.batch_size = 128
 __C.train.batch_size = 2
 
 # the number of threads for IO
@@ -244,8 +244,7 @@ __C.train.show_log = 5
 __C.train.plot_snapshot = 1
 
 # the number of epochs to save model
-# __C.train.save_epochs = 5
-__C.train.save_epochs = 2
+__C.train.save_epochs = 1
 
 
 ######################################
@@ -253,7 +252,7 @@ __C.train.save_epochs = 2
 ######################################
 
 # learning rate = lr*gamma**(epoch//step_size)
-__C.train.lr = 1e-4
+__C.train.lr = 1e-5
 
 # step size for step learning rate
 __C.train.lr_step_size = 0

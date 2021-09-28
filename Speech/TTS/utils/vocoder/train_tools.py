@@ -24,3 +24,17 @@ def generate_dataset(cfg, mode):
     sampler = EpochConcateSampler(dataset, cfg.train.num_epochs - (cfg.general.resume_epoch if cfg.general.resume_epoch != -1 else 0))
     dataloader = VocoderDataLoader(dataset, sampler, cfg)
     return dataloader, len(dataset)
+
+def plot_tool(cfg, log_file):
+    """
+    plot loss or accuracy
+    :param cfg:                 config contain data set information
+    :param log_file:            log_file
+    """
+    train_loss_file = os.path.join(cfg.general.save_dir, 'train_loss.html')
+    if cfg.general.is_test:
+        plot_loss2d(log_file, train_loss_file, name=['train_loss', 'eval_loss'],
+                    display='Training/Validation Loss ({})'.format(cfg.loss.name))
+    else:
+        plot_loss(log_file, train_loss_file, name='train_loss',
+                display='Training Loss ({})'.format(cfg.loss.name))

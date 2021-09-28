@@ -116,7 +116,7 @@ def train(args):
                             cfg.speaker_verification.model_name, 
                             cfg.speaker_verification.class_name,
                             cfg.speaker_verification.model_prefix_name)
-    if cfg.speaker_verification.model_path == "":
+    if not cfg.speaker_verification.model_dir == "":
         load_checkpoint(sv_net, cfg.speaker_verification.epoch, 
                         cfg.speaker_verification.model_dir)
     else:

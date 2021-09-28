@@ -12,19 +12,61 @@ from Basic.utils.loss_tools import *
 from Basic.utils.profiler_tools import *
 
 from SV.utils.infer_tools import *
+
+from TTS.dataset.text import *
+from TTS.utils.visualizations_tools import *
+
 from TTS.utils.vocoder.train_tools import *
+from TTS.config.vocoder.hparams import *
+from TTS.dataset.vocoder.audio import *
+from TTS.dataset.vocoder.vocoder_dataset_preload_audio_lmdb import prepare_data
+
 
 sys.path.insert(0, '/home/huanyuan/code/demo/common')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/common')
 from common.utils.python.logging_helpers import setup_logger
 
 
-def prepare_data(cfg, mel_out, mel_frames, quant):
-    for idx in range(len(quant)):
-        quant_idx = quant[idx]
-        mel_out_idx = mel_out[idx]
-    print()
-    pass
+def show_ressult(cfg, net, mel_list, quant_list, texts, samples, 
+                    target, overlap, 
+                    step, save_dir):
+    for idx in range(samples):
+        # init 
+        bits = 16 if voc_mode == 'MOL' else voc_bits
+
+        # text
+        texts = texts[idx].detach().cpu().numpy()
+        target_text = '_'.join(sequence_to_text(texts).split('~')[0].split(' '))
+
+        # wav_target
+        wav_target = quant_list[idx]
+        if mu_law and voc_mode != 'MOL' :
+            wav_target = decode_mu_law(wav_target, 2**bits, from_labels=True)
+        else :
+            wav_target = label_2_float(wav_target, bits) 
+
+        # save wav_target
+        create_folder(save_dir)
+        wav_fpath = os.path.join(save_dir, "step_{}_sample_{}_text_{}.wav".format(step, idx, target_text))
+        save_wav(wav_target, wav_fpath, sr=cfg.dataset.sample_rate)
+
+        # wav_forward
+        mel_forward = torch.tensor(mel_list[idx]).unsqueeze(0)
+
+        for bool_gen_batched in [True, False]:
+            print('\n| Generating: {}/{}, bool_gen_batched: {}'.format(idx, samples, bool_gen_batched))
+
+            if isinstance(net, torch.nn.parallel.DataParallel):
+                wav_forward = net.module.generate(mel_forward, bool_gen_batched, target, overlap, mu_law)
+            else:
+                wav_forward = net.generate(mel_forward, bool_gen_batched, target, overlap, mu_law)
+
+            # save wav_forward
+            batch_str = "gen_batched_target_%d_overlap_%d" % (target, overlap) if bool_gen_batched else \
+                "gen_not_batched"
+            wav_forward_fpath = os.path.join(save_dir, "step_{}_sample_{}_text_{}_{}.wav".format(step, idx, target_text, batch_str))
+            save_wav(wav_forward, wav_forward_fpath, sr=cfg.dataset.sample_rate)
+
 
 def train(args):
     """ training engine
@@ -89,7 +131,7 @@ def train(args):
                             cfg.speaker_verification.model_name, 
                             cfg.speaker_verification.class_name,
                             cfg.speaker_verification.model_prefix_name)
-    if cfg.speaker_verification.model_path == "":
+    if not cfg.speaker_verification.model_dir == "":
         load_checkpoint(sv_net, cfg.speaker_verification.epoch, 
                         cfg.speaker_verification.model_dir)
     else:
@@ -102,7 +144,7 @@ def train(args):
     cfg_synthesizer = load_cfg_file(cfg.synthesizer.config_file)
     synthesizer_net = import_network(cfg_synthesizer, cfg.synthesizer.model_name, cfg.synthesizer.class_name)
     synthesizer_net.r = cfg_synthesizer.net.r 
-    if cfg.synthesizer.model_path == "":
+    if not cfg.synthesizer.model_dir == "":
         load_checkpoint(synthesizer_net, cfg.synthesizer.epoch, 
                         cfg.synthesizer.model_dir)
     else:
@@ -154,18 +196,28 @@ def train(args):
         
         # prepare data
         mel_out = mel_out.detach().cpu().numpy()
-        prepare_data(cfg, mel_out, mel_frames, quant)
+        x, y, m, mel_list, quant_list = prepare_data(cfg, mel_out, mel_frames, quant)
+        x, m, y = x.cuda(), m.cuda(), y.cuda()
         profiler.tick("prepare data")
 
         # Forward pass
-        
+        y_hat = net(x, m)
+        if isinstance(net, torch.nn.parallel.DataParallel):
+            if net.module.mode == 'RAW':
+                y_hat = y_hat.transpose(1, 2).unsqueeze(-1)
+            elif net.module.mode == 'MOL':
+                y = y.float()
+        else:
+            if net.mode == 'RAW':
+                y_hat = y_hat.transpose(1, 2).unsqueeze(-1)
+            elif net.mode == 'MOL':
+                y = y.float()
+
+        y = y.unsqueeze(-1)
         profiler.tick("Forward pass")
 
         # Calculate loss
-        m1_loss = F.mse_loss(m1_hat, mels) + F.l1_loss(m1_hat, mels)
-        m2_loss = F.mse_loss(m2_hat, mels)
-        stop_loss = F.binary_cross_entropy(stop_pred, stop)
-        loss = m1_loss + m2_loss + stop_loss
+        loss = loss_func(y_hat, y)
         profiler.tick("Calculate Loss")
                     
         # Backward pass
@@ -175,11 +227,6 @@ def train(args):
         profiler.tick("Backward pass")
 
         # Parameter update
-        if isinstance(net, torch.nn.parallel.DataParallel):
-            net.module.do_gradient_ops()
-        else:
-            net.do_gradient_ops()
-        
         optimizer.step()
         update_scheduler(cfg, scheduler, epoch_idx)
         profiler.tick("Parameter update")
@@ -210,8 +257,10 @@ def train(args):
                 save_checkpoint(cfg, args.config_file, net, optimizer, epoch_idx, batch_idx)
 
                 if cfg.general.is_test:
-                    # To Do
-                    pass
+                    samples = 1
+                    show_ressult(cfg, net, mel_list, quant_list, texts, samples, 
+                                voc_target, voc_overlap, 
+                                step=epoch_idx, save_dir=os.path.join(cfg.general.save_dir, 'wavs'))
 
                 if cfg.loss.ema_on:
                     ema.restore() # resume the model parameters

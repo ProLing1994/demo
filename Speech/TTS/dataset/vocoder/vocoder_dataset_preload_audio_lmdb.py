@@ -66,9 +66,9 @@ class VocoderDataset(Dataset):
 
         if voc_mode == 'RAW':
             if mu_law:
-                quant = encode_mu_law(wav, mu=2 ** bits)
+                quant = encode_mu_law(wav, mu=2 ** voc_bits)
             else:
-                quant = float_2_label(wav, bits=bits)
+                quant = float_2_label(wav, bits=voc_bits)
         elif voc_mode == 'MOL':
             quant = float_2_label(wav, bits=16)
         return text, mel, mel_frames, embed_wav, quant.astype(np.int64)
@@ -127,3 +127,50 @@ class VocoderDataLoader(DataLoader):
         chars = torch.tensor(chars).long()
         mel = torch.tensor(mel)
         return chars, mel, mel_frames, embed_wav, quant
+
+
+def prepare_data(cfg, mel_out, mel_frames, quant):
+    # init 
+    hop_length = int(cfg.dataset.sample_rate * cfg.dataset.window_stride_ms / 1000)
+
+    mel_list = []
+    quant_list = []
+
+    for idx in range(len(quant)):
+        # mel
+        mel_idx = mel_out[idx].T[:int(mel_frames[idx])]
+        mel_idx = mel_idx.T.astype(np.float32) / max_abs_value
+        mel_list.append(mel_idx)
+        
+        # quant
+        quant_idx = quant[idx]
+        assert len(quant_idx) >= mel_idx.shape[1] * hop_length
+        quant_idx = quant_idx[:mel_idx.shape[1] * hop_length]
+        assert len(quant_idx) % hop_length == 0
+        quant_list.append(quant_idx)
+
+    voc_seq_len = voc_seq_multiple * hop_length
+    mel_win = voc_seq_len // hop_length + 2 * voc_pad
+    max_offsets = [x.shape[-1] -2 - (mel_win + 2 * voc_pad) for x in mel_list]
+    mel_offsets = [np.random.randint(0, offset) for offset in max_offsets]
+    sig_offsets = [(offset + voc_pad) * hop_length for offset in mel_offsets]
+
+    mels = [x[:, mel_offsets[i]:mel_offsets[i] + mel_win] for i, x in enumerate(mel_list)]
+    labels = [x[sig_offsets[i]:sig_offsets[i] + voc_seq_len + 1] for i, x in enumerate(quant_list)]
+
+    mels = np.stack(mels).astype(np.float32)
+    labels = np.stack(labels).astype(np.int64)
+
+    mels = torch.tensor(mels)
+    labels = torch.tensor(labels).long()
+
+    x = labels[:, : voc_seq_len]
+    y = labels[:, 1:]
+
+    bits = 16 if voc_mode == 'MOL' else voc_bits
+    
+    x = label_2_float(x.float(), bits)
+    if voc_mode == 'MOL' :
+        y = label_2_float(y.float(), bits)
+
+    return x, y, mels, mel_list, quant_list
