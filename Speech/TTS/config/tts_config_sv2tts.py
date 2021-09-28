@@ -26,15 +26,18 @@ __C.general.dataset_path_dict = {"librispeech_clean_360_training": "/mnt/huanyua
 __C.general.data_dir = "/mnt/huanyuan/data/speech/tts/dataset/"
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/tts/test/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/tts/test_01/"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # finetune model
 __C.general.finetune_on = True
+# __C.general.finetune_on = False
 # 方式一：模型训练过程中，保存模型
-__C.general.finetune_model_dir = ""
+# __C.general.finetune_model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/tts/sv2tts_1_0_09202021/"
+# __C.general.finetune_epoch = 5
+__C.general.finetune_model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/tts/test/"
 __C.general.finetune_epoch = 0
 # 方式二：加载其他模型结构
 __C.general.finetune_model_path = "/mnt/huanyuan/model/model_10_30_25_21/model/tts/pretrained/pretrain_model/parameter.pkl"

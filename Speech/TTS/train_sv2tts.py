@@ -73,7 +73,10 @@ def train(args):
 
     # define network
     net = import_network(cfg, cfg.net.model_name, cfg.net.class_name)
-    net.r = cfg.net.r 
+    if isinstance(net, torch.nn.parallel.DataParallel):
+        net.module.r = cfg.net.r 
+    else:
+        net.r = cfg.net.r 
 
     # set training optimizer, learning rate scheduler
     optimizer = set_optimizer(cfg, net)
@@ -86,7 +89,7 @@ def train(args):
     # load checkpoint if finetune_on == True or resume epoch > 0
     if cfg.general.finetune_on == True:
         # fintune, Load model, reset learning rate
-        if cfg.general.finetune_model_path == "":
+        if not cfg.general.finetune_model_dir == "":
             load_checkpoint(net, cfg.general.finetune_epoch, 
                             cfg.general.finetune_model_dir, 
                             sub_folder_name='pretrain_model')
@@ -219,7 +222,11 @@ def train(args):
                     mel_prediction = m2_hat[sample_idx].detach().cpu().numpy().T
                     target_spectrogram = mels[sample_idx].detach().cpu().numpy().T
                     mel_length = mel_prediction.shape[0]
-                    attention_len = mel_length // net.r
+                    if isinstance(net, torch.nn.parallel.DataParallel):
+                        attention_len = mel_length // net.module.r
+                    else:
+                        attention_len = mel_length // net.r
+                        
                     attention_prediction = attention[sample_idx][:, :attention_len].detach().cpu().numpy()
                     target_text = texts[sample_idx].detach().cpu().numpy()
                     show_ressult(cfg, 

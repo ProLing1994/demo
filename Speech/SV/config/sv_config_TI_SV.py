@@ -94,23 +94,23 @@ __C.dataset.sample_rate = 16000
 __C.dataset.clip_duration_ms = 1600
 
 # Duration of frequency analysis window
-__C.dataset.window_size_ms = 32.0
-# __C.dataset.window_size_ms = 25.0
+# __C.dataset.window_size_ms = 32.0
+__C.dataset.window_size_ms = 25.0
 
 # How far to move in time between frequency windows
 __C.dataset.window_stride_ms = 10.0
 
 # How the spectrogram is processed to produce features, support ["fbank", "fbank_log", "pcen", "fbank_cpu"]
-__C.dataset.preprocess = "fbank_cpu"
-# __C.dataset.preprocess = "fbank"
+# __C.dataset.preprocess = "fbank_cpu"
+__C.dataset.preprocess = "fbank"
 
 # How many bins to use for the Mel feature
-__C.dataset.feature_bin_count = 64
-# __C.dataset.feature_bin_count = 40
+# __C.dataset.feature_bin_count = 64
+__C.dataset.feature_bin_count = 40
 
 # How many nfilt to use for the Mel feature, only support preprocess=fbank_cpu
-__C.dataset.nfilt = 64
-# __C.dataset.nfilt = 40
+# __C.dataset.nfilt = 64
+__C.dataset.nfilt = 40
 
 # input size of training data (w, h), whether input size is a multiple of 16, unit: voxel
 # __C.dataset.h_alignment = True, [hisi], 模型需要图像输入长度为 16 的倍数
@@ -119,8 +119,8 @@ __C.dataset.w_alignment = False
 __C.dataset.h_alignment = False
 
 # input size of training data (w, h), unit: voxel
-__C.dataset.data_size = [64, 156]
-# __C.dataset.data_size = [40, 160]
+# __C.dataset.data_size = [64, 156]
+__C.dataset.data_size = [40, 160]
 
 
 ##################################
