@@ -8,7 +8,7 @@ from common.utils.python.plotly_tools import plot_loss2d, plot_loss
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/TTS')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/TTS')
-from dataset.sv2tts_dataset_preload_audio_lmdb import SynthesizerDataset, SynthesizerDataLoader
+from dataset.sv2tts.sv2tts_dataset_preload_audio_lmdb import SynthesizerDataset, SynthesizerDataLoader
 
 
 def generate_dataset(cfg, mode):

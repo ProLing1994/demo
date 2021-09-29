@@ -13,8 +13,8 @@ from Basic.utils.profiler_tools import *
 
 from SV.utils.infer_tools import *
 
-from TTS.dataset.text import *
-from TTS.utils.visualizations_tools import *
+from TTS.dataset.sv2tts.text import *
+from TTS.utils.sv2tts.visualizations_tools import *
 
 from TTS.utils.vocoder.train_tools import *
 from TTS.config.vocoder.hparams import *

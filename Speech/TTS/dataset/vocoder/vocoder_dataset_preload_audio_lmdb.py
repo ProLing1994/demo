@@ -7,10 +7,11 @@ sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
 from Basic.utils.lmdb_tools import *
 
-from TTS.dataset.text import *
-from TTS.dataset.audio import *
+from TTS.dataset.sv2tts.text import *
+from TTS.dataset.sv2tts.audio import *
+from TTS.dataset.sv2tts.sv2tts_dataset_preload_audio_lmdb import *
+
 from TTS.dataset.vocoder.audio import *
-from TTS.dataset.sv2tts_dataset_preload_audio_lmdb import *
 
 class VocoderDataset(Dataset):
     def __init__(self, cfg, mode, augmentation_on=True):

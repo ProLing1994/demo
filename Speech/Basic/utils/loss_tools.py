@@ -178,10 +178,7 @@ class EMA(object):
             )
         for name in self.buffer_keys:
             if self.buffer_ema:
-                self.shadow[name].copy_(
-                    decay * self.shadow[name]
-                    + (1 - decay) * state[name]
-                )
+                self.shadow[name].copy_(state[name])
             else:
                 self.shadow[name].copy_(state[name])
         self.step += 1

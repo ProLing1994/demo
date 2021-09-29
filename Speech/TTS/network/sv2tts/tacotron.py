@@ -7,7 +7,7 @@ from torch.nn.utils import clip_grad_norm_
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/TTS')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/TTS')
-from network.hparams_tacotron import *
+from network.sv2tts.hparams_tacotron import *
 
 
 class HighwayNetwork(nn.Module):

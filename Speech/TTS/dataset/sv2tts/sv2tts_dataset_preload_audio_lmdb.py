@@ -8,9 +8,9 @@ sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
 from Basic.utils.lmdb_tools import *
 
-from TTS.config.hparams import *
-from TTS.dataset.text import *
-from TTS.dataset.audio import *
+from TTS.config.sv2tts.hparams import *
+from TTS.dataset.sv2tts.text import *
+from TTS.dataset.sv2tts.audio import *
 
 
 def load_data_pd(cfg, mode):

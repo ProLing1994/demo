@@ -14,8 +14,8 @@ import webrtcvad
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 from ASR.impl.asr_feature_pyimpl import Feature
 
-from TTS.config.hparams import *
-from TTS.dataset import logmmse
+from TTS.config.sv2tts.hparams import *
+from TTS.dataset.sv2tts import logmmse
 
 
 def preprocess_speaker(cfg, data_files, row, no_alignments=False):

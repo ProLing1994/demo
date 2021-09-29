@@ -4,7 +4,7 @@ import sys
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/TTS')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/TTS')
-from dataset.symbols import *
+from dataset.sv2tts.symbols import *
 
 __C = edict()
 cfg = __C
@@ -79,8 +79,8 @@ __C.speaker_verification.ignore_key_list = []
 
 __C.synthesizer = {}
 
-__C.synthesizer.config_file = "/home/huanyuan/code/demo/Speech/TTS/config/tts_config_sv2tts.py"
-__C.synthesizer.model_name = 'tacotron'
+__C.synthesizer.config_file = "/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_sv2tts.py"
+__C.synthesizer.model_name = 'sv2tts.tacotron'
 __C.synthesizer.class_name = 'Tacotron'
 __C.synthesizer.model_prefix_name = ""
 # 方式一：模型训练过程中，保存模型

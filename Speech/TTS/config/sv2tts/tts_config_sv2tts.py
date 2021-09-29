@@ -4,7 +4,7 @@ import sys
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/TTS')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/TTS')
-from dataset.symbols import *
+from dataset.sv2tts.symbols import *
 
 __C = edict()
 cfg = __C
@@ -200,7 +200,7 @@ __C.dataset.augmentation.num_masks = 2
 __C.net = {}
 
 # the network name
-__C.net.model_name = 'tacotron'
+__C.net.model_name = 'sv2tts.tacotron'
 __C.net.class_name = "Tacotron"
 
 # r frames

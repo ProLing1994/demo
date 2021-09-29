@@ -13,11 +13,11 @@ from Basic.utils.profiler_tools import *
 
 from SV.utils.infer_tools import *
 
-from TTS.config.hparams import *
-from TTS.dataset.audio import *
-from TTS.dataset.text import *
-from TTS.utils.train_tools import *
-from TTS.utils.visualizations_tools import *
+from TTS.config.sv2tts.hparams import *
+from TTS.dataset.sv2tts.audio import *
+from TTS.dataset.sv2tts.text import *
+from TTS.utils.sv2tts.train_tools import *
+from TTS.utils.sv2tts.visualizations_tools import *
 
 sys.path.insert(0, '/home/huanyuan/code/demo/common')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/common')
@@ -74,6 +74,8 @@ def train(args):
     # define network
     net = import_network(cfg, cfg.net.model_name, cfg.net.class_name)
     assert(cfg.net.r == net.module.r)
+
+    print(net.module.state_dict()['decoder.r'])
 
     # set training optimizer, learning rate scheduler
     optimizer = set_optimizer(cfg, net)
@@ -243,7 +245,7 @@ def train(args):
 
 def main(): 
     parser = argparse.ArgumentParser(description='Streamax SV2TTS Training Engine')
-    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/tts_config_sv2tts.py", nargs='?', help='config file')
+    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_sv2tts.py", nargs='?', help='config file')
     args = parser.parse_args()
     train(args)
 
