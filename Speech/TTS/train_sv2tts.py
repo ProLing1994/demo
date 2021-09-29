@@ -73,10 +73,7 @@ def train(args):
 
     # define network
     net = import_network(cfg, cfg.net.model_name, cfg.net.class_name)
-    if isinstance(net, torch.nn.parallel.DataParallel):
-        net.module.r = cfg.net.r 
-    else:
-        net.r = cfg.net.r 
+    assert(cfg.net.r == net.module.r)
 
     # set training optimizer, learning rate scheduler
     optimizer = set_optimizer(cfg, net)
@@ -222,10 +219,8 @@ def train(args):
                     mel_prediction = m2_hat[sample_idx].detach().cpu().numpy().T
                     target_spectrogram = mels[sample_idx].detach().cpu().numpy().T
                     mel_length = mel_prediction.shape[0]
-                    if isinstance(net, torch.nn.parallel.DataParallel):
-                        attention_len = mel_length // net.module.r
-                    else:
-                        attention_len = mel_length // net.r
+                    attention_len = mel_length // cfg.net.r 
+                    assert(cfg.net.r == net.module.r)
                         
                     attention_prediction = attention[sample_idx][:, :attention_len].detach().cpu().numpy()
                     target_text = texts[sample_idx].detach().cpu().numpy()

@@ -357,6 +357,9 @@ class Tacotron(nn.Module):
                             [self.postnet_dims, self.fft_bins], self.num_highways)
         self.post_proj = nn.Linear(self.postnet_dims, self.fft_bins, bias=False)
 
+        # decoder.r 
+        self.decoder.r = self.decoder.r.new_tensor(cfg.net.r, requires_grad=False)
+
         self.init_model()
         self.num_params()
 

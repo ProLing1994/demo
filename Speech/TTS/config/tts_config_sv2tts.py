@@ -26,7 +26,7 @@ __C.general.dataset_path_dict = {"librispeech_clean_360_training": "/mnt/huanyua
 __C.general.data_dir = "/mnt/huanyuan/data/speech/tts/dataset/"
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/tts/test_01/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/tts/test/"
 
 # test after save pytorch model
 __C.general.is_test = True

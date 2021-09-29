@@ -143,7 +143,6 @@ def train(args):
     # synthesizer net
     cfg_synthesizer = load_cfg_file(cfg.synthesizer.config_file)
     synthesizer_net = import_network(cfg_synthesizer, cfg.synthesizer.model_name, cfg.synthesizer.class_name)
-    synthesizer_net.r = cfg_synthesizer.net.r 
     if not cfg.synthesizer.model_dir == "":
         load_checkpoint(synthesizer_net, cfg.synthesizer.epoch, 
                         cfg.synthesizer.model_dir)
