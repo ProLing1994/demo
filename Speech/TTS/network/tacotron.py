@@ -250,9 +250,9 @@ class Decoder(nn.Module):
     # yet ought to be scoped by class because its a property of a Decoder
     max_r = 20
     def __init__(self, n_mels, encoder_dims, decoder_dims, lstm_dims,
-                 dropout, speaker_embedding_size):
+                 dropout, decoder_r, speaker_embedding_size):
         super().__init__()
-        self.register_buffer("r", torch.tensor(1, dtype=torch.int))
+        self.register_buffer("r", torch.tensor(decoder_r, dtype=torch.int))
         self.n_mels = n_mels
         prenet_dims = (decoder_dims * 2, decoder_dims * 2)
         self.prenet = PreNet(n_mels, fc1_dims=prenet_dims[0], fc2_dims=prenet_dims[1],
@@ -335,6 +335,7 @@ class Tacotron(nn.Module):
         self.n_mels = cfg.dataset.feature_bin_count                 # 论文中，num_mels = 80
         self.fft_bins = cfg.dataset.feature_bin_count               # 论文中，num_mels = 80
         self.speaker_embedding_size = cfg.dataset.speaker_embedding_size
+        self.decoder_r = cfg.net.r
 
         self.embed_dims = tts_embed_dims
         self.encoder_dims = tts_encoder_dims
@@ -352,13 +353,10 @@ class Tacotron(nn.Module):
                                self.encoder_K, self.num_highways, self.dropout)
         self.encoder_proj = nn.Linear(self.encoder_dims + self.speaker_embedding_size, self.decoder_dims, bias=False)
         self.decoder = Decoder(self.n_mels, self.encoder_dims, self.decoder_dims, self.lstm_dims,
-                               self.dropout, self.speaker_embedding_size)
+                               self.dropout, self.decoder_r, self.speaker_embedding_size)
         self.postnet = CBHG(self.postnet_K, self.n_mels, self.postnet_dims,
                             [self.postnet_dims, self.fft_bins], self.num_highways)
         self.post_proj = nn.Linear(self.postnet_dims, self.fft_bins, bias=False)
-
-        # decoder.r 
-        self.decoder.r = self.decoder.r.new_tensor(cfg.net.r, requires_grad=False)
 
         self.init_model()
         self.num_params()

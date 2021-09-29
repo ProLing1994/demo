@@ -35,10 +35,8 @@ __C.general.is_test = True
 __C.general.finetune_on = True
 # __C.general.finetune_on = False
 # 方式一：模型训练过程中，保存模型
-# __C.general.finetune_model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/tts/sv2tts_1_0_09202021/"
-# __C.general.finetune_epoch = 5
-__C.general.finetune_model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/tts/test/"
-__C.general.finetune_epoch = 0
+__C.general.finetune_model_dir = ""
+__C.general.finetune_epoch = -1
 # 方式二：加载其他模型结构
 __C.general.finetune_model_path = "/mnt/huanyuan/model/model_10_30_25_21/model/tts/pretrained/pretrain_model/parameter.pkl"
 __C.general.finetune_ignore_key_list = []
@@ -219,7 +217,8 @@ __C.train = {}
 __C.train.num_epochs = 10
 
 # the number of samples in a batch
-__C.train.batch_size = 2
+# __C.train.batch_size = 16
+__C.train.batch_size = 1
 
 # the number of threads for IO
 __C.train.num_threads = 1
@@ -231,8 +230,7 @@ __C.train.show_log = 5
 __C.train.plot_snapshot = 1
 
 # the number of epochs to save model
-# __C.train.save_epochs = 5
-__C.train.save_epochs = 2
+__C.train.save_epochs = 1
 
 
 ######################################

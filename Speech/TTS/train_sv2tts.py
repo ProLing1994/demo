@@ -138,7 +138,8 @@ def train(args):
     # loop over batches
     for i in range(batch_number):
         net.train()
-
+        assert(cfg.net.r == net.module.r)
+        
         epoch_idx = start_epoch + i * cfg.train.batch_size // len_train_dataset
         batch_idx += 1
 
