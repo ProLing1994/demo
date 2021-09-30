@@ -70,12 +70,15 @@ def init_torch_and_numpy(cfg, local_rank=0):
         raise Exception("[ERROR:] Unknow data parallel mode, please check!")
 
 
-def import_network(cfg, model_name, class_name, model_prefix_name=''):
+def import_network(cfg, model_name, class_name):
     """ import network
     :param cfg:
     :return:
     """
-    net_module = importlib.import_module(model_prefix_name + 'network.' + model_name)
+    os.sys.path.insert(0, os.path.dirname(model_name))
+    net_module = importlib.import_module(os.path.splitext(os.path.basename(model_name))[0])
+    os.sys.path.pop(0)
+
     net = net_module.__getattribute__(class_name)(cfg)
     gpu_ids = list(range(cfg.general.num_gpus))
 

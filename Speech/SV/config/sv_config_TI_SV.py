@@ -15,8 +15,8 @@ librispeech_other: 1166/33
 VoxCeleb1: 1088/35
 VoxCeleb2: 5994/118
 '''
-__C.general.TISV_dataset_list = ['librispeech_other', 'VoxCeleb1', 'VoxCeleb2']
-# __C.general.TISV_dataset_list = ['test']
+# __C.general.TISV_dataset_list = ['librispeech_other', 'VoxCeleb1', 'VoxCeleb2']
+__C.general.TISV_dataset_list = ['test']
 __C.general.TISV_dataset_path_dict = {"librispeech_other_training": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-other-500",
                                     "librispeech_other_testing": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/test-other",
                                     "VoxCeleb1_training": "/mnt/huanyuan/data/speech/sv/VoxCeleb1/wav",

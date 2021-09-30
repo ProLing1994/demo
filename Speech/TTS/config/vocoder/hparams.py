@@ -7,7 +7,8 @@ preemphasis = 0.97                         # Filter coefficient to use if preemp
 preemphasize = True
 
 voc_mode = 'RAW'                    # either 'RAW' (softmax on raw bits) or 'MOL' (sample from mixture of logistics)
-voc_bits = 9                            # bit depth of signal
+# voc_mode = 'MOL'                    # either 'RAW' (softmax on raw bits) or 'MOL' (sample from mixture of logistics)
+voc_bits = 9                        # bit depth of signal
 mu_law = True                       # Recommended to suppress noise if using raw bits in hp.voc_mode
                                     # below
 

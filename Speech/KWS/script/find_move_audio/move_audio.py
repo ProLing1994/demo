@@ -30,8 +30,8 @@ def copy_audio():
 
 
 if __name__ == "__main__":
-    default_input_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/Tts_09222021/tts/"
-    default_output_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/tts/"
+    default_input_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_7_tc-resnet14-amba_fbankcpu_kd_09222021/test_straming_wav/difficult_sample_mining/LibriSpeech/LibriSpeech/train-clean-100/"
+    default_output_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/difficult_sample_mining/LibriSpeech_wav_09292021/train-clean-100/"
     
     parser = argparse.ArgumentParser(description='Streamax KWS Engine')
     parser.add_argument('--input_dir', type=str, default=default_input_dir)

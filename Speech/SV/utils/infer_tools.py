@@ -6,7 +6,7 @@ from SV.config.hparams import *
 from SV.dataset.audio import *
 
 
-def embed_frames_batch(frames_batch, sv_net):
+def embed_frames_batch(frames_batch, net):
     """
     Computes embeddings for a batch of mel spectrogram.
     
@@ -14,11 +14,15 @@ def embed_frames_batch(frames_batch, sv_net):
     (batch_size, n_frames, n_channels)
     :return: the embeddings as a numpy array of float32 of shape (batch_size, model_embedding_size)
     """
-    if sv_net is None:
+    if net is None:
         raise Exception("Model was not loaded. Call load_model() before inference.")
     
     frames = torch.from_numpy(frames_batch).cuda()
-    embed = sv_net.forward(frames).detach().cpu().numpy()
+    if isinstance(net, torch.nn.parallel.DataParallel):
+        embed = net.module.forward(frames).detach().cpu().numpy()
+    else:
+        embed = net.forward(frames).detach().cpu().numpy()
+
     return embed
 
 
@@ -96,4 +100,20 @@ def embed_utterance(wav, cfg, sv_net):
     raw_embed = np.mean(partial_embeds, axis=0)
     embed = raw_embed / np.linalg.norm(raw_embed, 2)
     
+    return embed
+
+
+def embedding(cfg, net, in_fpath):
+    ## Computing the embedding
+    # First, we load the wav using the function that the speaker encoder provides. This is 
+    # important: there is preprocessing that must be applied.
+    
+    # - Directly load from the filepath:
+    preprocessed_wav = preprocess_wav(in_fpath, cfg.dataset.sample_rate)
+    
+    # Then we derive the embedding. There are many functions and parameters that the 
+    # speaker encoder interfaces. These are mostly for in-depth research. You will typically
+    # only use this function (with its default parameters):
+    embed = embed_utterance(preprocessed_wav, cfg, net)
+    # print("Created the embedding")
     return embed

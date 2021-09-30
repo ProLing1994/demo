@@ -26,13 +26,15 @@ __C.general.dataset_path_dict = {"librispeech_clean_360_training": "/mnt/huanyua
 __C.general.data_dir = "/mnt/huanyuan/data/speech/tts/dataset/"
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/tts_vocoder/test/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/tts_vocoder/test/"
+__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/tts_vocoder/wavernn_2_0_09202021/"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # finetune model
-__C.general.finetune_on = True
+# __C.general.finetune_on = True
+__C.general.finetune_on = False
 # 方式一：模型训练过程中，保存模型
 __C.general.finetune_model_dir = ""
 __C.general.finetune_epoch = 0
@@ -61,15 +63,24 @@ __C.general.data_parallel_mode = 0
 
 __C.speaker_verification = {}
 
-__C.speaker_verification.config_file = "/home/huanyuan/code/demo/Speech/SV/config/sv_config_TI_SV.py"
-__C.speaker_verification.model_name = 'basic'
+# __C.speaker_verification.config_file = "/home/huanyuan/code/demo/Speech/SV/config/sv_config_TI_SV.py"
+# __C.speaker_verification.model_name = "/home/huanyuan/code/demo/Speech/SV/network/basic.py"
+# __C.speaker_verification.class_name = 'SpeakerEncoder'
+# # 方式一：模型训练过程中，保存模型
+# __C.speaker_verification.model_dir = ""
+# __C.speaker_verification.epoch = 0
+# # 方式二：加载其他模型结构
+# __C.speaker_verification.model_path = "/mnt/huanyuan/model/model_10_30_25_21/model/sv/pretrained/pretrain_model/parameter.pkl"
+# __C.speaker_verification.ignore_key_list = []
+
+__C.speaker_verification.config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/sv/ti_sv_1_0_09142021/sv_config_TI_SV.py"
+__C.speaker_verification.model_name = "/home/huanyuan/code/demo/Speech/SV/network/basic.py"
 __C.speaker_verification.class_name = 'SpeakerEncoder'
-__C.speaker_verification.model_prefix_name = "SV."
 # 方式一：模型训练过程中，保存模型
-__C.speaker_verification.model_dir = ""
-__C.speaker_verification.epoch = 0
+__C.speaker_verification.model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/sv/ti_sv_1_0_09142021/"
+__C.speaker_verification.epoch = -1
 # 方式二：加载其他模型结构
-__C.speaker_verification.model_path = "/mnt/huanyuan/model/model_10_30_25_21/model/sv/pretrained/pretrain_model/parameter.pkl"
+__C.speaker_verification.model_path = ""
 __C.speaker_verification.ignore_key_list = []
 
 
@@ -79,13 +90,22 @@ __C.speaker_verification.ignore_key_list = []
 
 __C.synthesizer = {}
 
-__C.synthesizer.config_file = "/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_sv2tts.py"
-__C.synthesizer.model_name = 'sv2tts.tacotron'
+# __C.synthesizer.config_file = "/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_sv2tts.py"
+# __C.synthesizer.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron.py"
+# __C.synthesizer.class_name = 'Tacotron'
+# # 方式一：模型训练过程中，保存模型
+# __C.synthesizer.model_dir = ""
+# __C.synthesizer.epoch = 0
+# # 方式二：加载其他模型结构
+# __C.synthesizer.model_path = "/mnt/huanyuan/model/model_10_30_25_21/model/tts/pretrained/pretrain_model/parameter.pkl"
+# __C.synthesizer.ignore_key_list = []
+
+__C.synthesizer.config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/tts/sv2tts_2_0_09202021/tts_config_sv2tts.py"
+__C.synthesizer.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron.py"
 __C.synthesizer.class_name = 'Tacotron'
-__C.synthesizer.model_prefix_name = ""
 # 方式一：模型训练过程中，保存模型
-__C.synthesizer.model_dir = ""
-__C.synthesizer.epoch = 0
+__C.synthesizer.model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/tts/sv2tts_2_0_09202021/"
+__C.synthesizer.epoch = -1
 # 方式二：加载其他模型结构
 __C.synthesizer.model_path = "/mnt/huanyuan/model/model_10_30_25_21/model/tts/pretrained/pretrain_model/parameter.pkl"
 __C.synthesizer.ignore_key_list = []
@@ -215,7 +235,7 @@ __C.dataset.augmentation.num_masks = 2
 __C.net = {}
 
 # the network name
-__C.net.model_name = 'vocoder.wavernn'
+__C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/vocoder/wavernn.py"
 __C.net.class_name = "WaveRNN"
 
 # r frames
@@ -307,3 +327,13 @@ __C.debug = {}
 
 # random seed used in training
 __C.debug.seed = 0
+
+
+##################################
+# test parameters
+##################################
+
+__C.test = {}
+
+# the number of testing epochs
+__C.test.model_epoch = -1

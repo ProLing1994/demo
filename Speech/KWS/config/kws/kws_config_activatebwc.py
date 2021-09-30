@@ -25,7 +25,8 @@ __C.general.sub_data_dir = []
 # __C.general.version = "1.9.50"  # tts（LibriSpeech）+ 50% 重庆人录制唤醒词
 # __C.general.version = "1.10"    # tts（深圳口音生成）
 # __C.general.version = "1.10.100"# tts（深圳口音生成）+ 100% 重庆人录制唤醒词
-__C.general.version = "1.11"    # 重庆人录制唤醒词 + 深圳人录制唤醒词 + tts
+# __C.general.version = "1.11"    # 重庆人录制唤醒词 + 深圳人录制唤醒词 + tts
+__C.general.version = "1.12"    # 重庆人录制唤醒词 + 深圳人录制唤醒词 + tts + 添加负样本
 
 # data date
 # __C.general.date = "03312021"
@@ -33,7 +34,8 @@ __C.general.version = "1.11"    # 重庆人录制唤醒词 + 深圳人录制唤�
 # __C.general.date = "08192021"
 # __C.general.date = "08272021"
 # __C.general.date = "08302021"
-__C.general.date = "09222021"
+# __C.general.date = "09222021"
+__C.general.date = "09292021"
 
 # data path
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.5_03312021/total_data_files.csv"
@@ -47,7 +49,8 @@ __C.general.date = "09222021"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_tts_2s_1.9.50_08302021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_sztts_2s_1.10_08302021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_sztts_2s_1.10.100_08302021/total_data_files.csv"
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1_11_09222021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1_11_09222021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1_12_09292021/total_data_files.csv"
 
 # background noise path
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1.5_03312021/background_noise_files.csv"
@@ -61,13 +64,14 @@ __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/e
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_tts_2s_1.9.50_08302021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_sztts_2s_1.10_08302021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_sztts_2s_1.10.100_08302021/background_noise_files.csv"
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1_11_09222021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1_11_09222021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/dataset_activatebwc_2s_1_12_09292021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan/model/kws_english_test"
+__C.general.save_dir = "/mnt/huanyuan/model/kws_english_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_1_0_res15_fbankcpu_03222021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_1_1_res15_fbankcpu_03222021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_1_2_res15_fbankcpu_03222021/"
@@ -79,7 +83,7 @@ __C.general.is_test = True
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_2_tc-resnet14-amba_fbankcpu_kd_03222021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_3_tc-resnet14-amba_fbankcpu_dml_04012021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_4_tc-resnet14-amba_fbankcpu_kd_04012021/"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_5_tc-resnet14-amba_fbankcpu_kd_07162021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_5_tc-resnet14-amba_fbankcpu_kd_07162021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_7_tc-resnet14-amba_fbankcpu_kd_09222021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_wntts_1_0_res15_fbankcpu_07162021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_wntts_1_0_10_res15_fbankcpu_07162021/"
@@ -241,13 +245,13 @@ __C.dataset.augmentation.on = True
 # __C.dataset.augmentation.on = False
 
 # How many of the training samples have background noise mixed in.
-__C.dataset.augmentation.background_frequency = 0.8
+__C.dataset.augmentation.background_frequency = 0.6
 
 # How loud the background noise should be, between 0 and 1.
 __C.dataset.augmentation.background_volume = 0.1
 
 # How many of the training samples have synthetic noise mixed in.
-__C.dataset.augmentation.synthetic_frequency = 0.8
+__C.dataset.augmentation.synthetic_frequency = 0.5
 
 # type of the synthetic noise, support ['white', 'salt_pepper'].
 # __C.dataset.augmentation.synthetic_type = 'white'
@@ -322,7 +326,8 @@ __C.loss = {}
 __C.loss.name = 'focal'
 
 # the weight matrix for each class in focal loss, including background class
-__C.loss.obj_weight = np.array([[1/9, 0], [0, 8/9]])
+# __C.loss.obj_weight = np.array([[1/9, 0], [0, 8/9]])
+__C.loss.obj_weight = None
 
 # the gamma parameter in focal loss
 __C.loss.focal_gamma = 2

@@ -75,8 +75,6 @@ def train(args):
     net = import_network(cfg, cfg.net.model_name, cfg.net.class_name)
     assert(cfg.net.r == net.module.r)
 
-    print(net.module.state_dict()['decoder.r'])
-
     # set training optimizer, learning rate scheduler
     optimizer = set_optimizer(cfg, net)
     scheduler = set_scheduler(cfg, optimizer)
@@ -113,8 +111,7 @@ def train(args):
     cfg_speaker_verification = load_cfg_file(cfg.speaker_verification.config_file)
     sv_net = import_network(cfg_speaker_verification, 
                             cfg.speaker_verification.model_name, 
-                            cfg.speaker_verification.class_name,
-                            cfg.speaker_verification.model_prefix_name)
+                            cfg.speaker_verification.class_name)
     if not cfg.speaker_verification.model_dir == "":
         load_checkpoint(sv_net, cfg.speaker_verification.epoch, 
                         cfg.speaker_verification.model_dir)

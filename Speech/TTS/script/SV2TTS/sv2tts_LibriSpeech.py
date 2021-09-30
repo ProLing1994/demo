@@ -19,6 +19,7 @@ from vocoder import inference as vocoder
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 from Basic.utils.folder_tools import *
 
+
 def embedding(in_fpath):
     ## Computing the embedding
     # First, we load the wav using the function that the speaker encoder provides. This is 
@@ -139,41 +140,41 @@ if __name__ == '__main__':
                         # default= "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-other-500/")
                         # default= "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/test-clean/")
 
-    # activate bwc 
-    parser.add_argument("--output_folder", type=Path, 
-                        default= "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_Activatebwc/tts/sv2tts/LibriSpeech/train-clean-100/")
-                        # default= "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_Activatebwc/tts/sv2tts/LibriSpeech/train-clean-360/")
-                        # default= "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_Activatebwc/tts/sv2tts/LibriSpeech/train-other-500/")
-                        # default= "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_Activatebwc/tts/sv2tts/LibriSpeech/test-clean/")
-    parser.add_argument("--output_format", type=str, 
-                        default= "RM_KWS_ACTIVATEBWC_TTSsv2tts_S{:0>6d}P{:0>8d}T{:0>6d}.wav")
-    parser.add_argument("--text_list", type=list, 
-                        default= ["activate be double you see."])
-    parser.add_argument("--sub_folder_list", type=list, 
-                        default= ["activatebwc"])
-    parser.add_argument("--random_time", type=int, 
-                        default= 5)
-    parser.add_argument("--repeat_time", type=int, 
-                        default= 1)
-
-    # # tf_speech_commands
+    # # activate bwc 
     # parser.add_argument("--output_folder", type=Path, 
-    #                     # default= "/mnt/huanyuan/data/speech/kws/tf_speech_commands/tts/sv2tts/LibriSpeech/train-clean-100/")
-    #                     default= "/mnt/huanyuan/data/speech/kws/tf_speech_commands/tts/sv2tts/LibriSpeech/train-clean-360/")
+    #                     default= "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_Activatebwc/tts/sv2tts/LibriSpeech/train-clean-100/")
+    #                     # default= "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_Activatebwc/tts/sv2tts/LibriSpeech/train-clean-360/")
+    #                     # default= "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_Activatebwc/tts/sv2tts/LibriSpeech/train-other-500/")
+    #                     # default= "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_Activatebwc/tts/sv2tts/LibriSpeech/test-clean/")
     # parser.add_argument("--output_format", type=str, 
-    #                     default= "S{:0>6d}_TTSsv2tts_P{:0>8d}T{:0>6d}.wav")
+    #                     default= "RM_KWS_ACTIVATEBWC_TTSsv2tts_S{:0>6d}P{:0>8d}T{:0>6d}.wav")
     # parser.add_argument("--text_list", type=list, 
-    #                     default= ["backward", "bed", "bird", "cat", "dog", "down", "eight", "five", "follow", "forward", "four", "go", 
-    #                                 "happy", "house", "learn", "left", "marvin", "nine", "no", "off", "on", "one", "right", "seven", 
-    #                                 "sheila", "six", "stop", "three", "tree", "two", "up", "visual", "wow", "yes", "zero"])
+    #                     default= ["activate be double you see."])
     # parser.add_argument("--sub_folder_list", type=list, 
-    #                 default= ["backward", "bed", "bird", "cat", "dog", "down", "eight", "five", "follow", "forward", "four", "go", 
-    #                                 "happy", "house", "learn", "left", "marvin", "nine", "no", "off", "on", "one", "right", "seven", 
-    #                                 "sheila", "six", "stop", "three", "tree", "two", "up", "visual", "wow", "yes", "zero"])
+    #                     default= ["activatebwc"])
     # parser.add_argument("--random_time", type=int, 
     #                     default= 5)
     # parser.add_argument("--repeat_time", type=int, 
-    #                     default= 5)
+    #                     default= 1)
+
+    # tf_speech_commands
+    parser.add_argument("--output_folder", type=Path, 
+                        # default= "/mnt/huanyuan/data/speech/kws/tf_speech_commands/tts/sv2tts/LibriSpeech/train-clean-100/")
+                        default= "/mnt/huanyuan/data/speech/kws/tf_speech_commands/tts/sv2tts/LibriSpeech/train-clean-360/")
+    parser.add_argument("--output_format", type=str, 
+                        default= "S{:0>6d}_TTSsv2tts_P{:0>8d}T{:0>6d}.wav")
+    parser.add_argument("--text_list", type=list, 
+                        default= ["backward", "bed", "bird", "cat", "dog", "down", "eight", "five", "follow", "forward", "four", "go", 
+                                    "happy", "house", "learn", "left", "marvin", "nine", "no", "off", "on", "one", "right", "seven", 
+                                    "sheila", "six", "stop", "three", "tree", "two", "up", "visual", "wow", "yes", "zero"])
+    parser.add_argument("--sub_folder_list", type=list, 
+                    default= ["backward", "bed", "bird", "cat", "dog", "down", "eight", "five", "follow", "forward", "four", "go", 
+                                    "happy", "house", "learn", "left", "marvin", "nine", "no", "off", "on", "one", "right", "seven", 
+                                    "sheila", "six", "stop", "three", "tree", "two", "up", "visual", "wow", "yes", "zero"])
+    parser.add_argument("--random_time", type=int, 
+                        default= 5)
+    parser.add_argument("--repeat_time", type=int, 
+                        default= 5)
 
     args = parser.parse_args()
     print_args(args, parser)

@@ -12,19 +12,23 @@ __C.general = {}
 
 # data folder
 __C.general.data_dir = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/speech_commands/"
-__C.general.sub_data_dir = []
+__C.general.sub_data_dir = ["/mnt/huanyuan/data/speech/kws/tf_speech_commands/tts/sv2tts/LibriSpeech/train-clean-100/"]
 
 # data version
-__C.general.version = "1.1"
+# __C.general.version = "1.1"
+__C.general.version = "1.2"
 
 # data date
-__C.general.date = "07072021"
+# __C.general.date = "07072021"
+__C.general.date = "09302021"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.1_07072021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.1_07072021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.2_09302021/total_data_files.csv"
 
 # background noise path
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.1_07072021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.1_07072021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.2_09302021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -248,7 +252,8 @@ __C.regularization = {}
 __C.regularization.label_smoothing = {}
 
 # regularization: label smoothing on
-__C.regularization.label_smoothing.on = False
+__C.regularization.label_smoothing.on = True
+# __C.regularization.label_smoothing.on = False
 
 # regularization: label smoothing epsilon 
 __C.regularization.label_smoothing.epsilon = 0.1
@@ -272,8 +277,8 @@ __C.loss.focal_gamma = 2
 
 # EMA: expontential moving average on
 # EMA: https://github.com/ProLing1994/pytorch-loss/blob/master/ema.py
-# __C.loss.ema_on = True
-__C.loss.ema_on = False
+__C.loss.ema_on = True
+# __C.loss.ema_on = False
 
 # the alpha parameter in EMA: each parameter p should be computed as p_hat = alpha * p + (1. - alpha) * p_hat
 __C.loss.ema_alpha = 0.995
@@ -289,7 +294,7 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'cnn-trad-pool2'
 # __C.net.model_name = 'cnn-one-fstride1'
 # __C.net.model_name = 'cnn-tpool2'
-# __C.net.model_name = 'res15'
+__C.net.model_name = 'res15'
 # __C.net.model_name = 'res15_basic'
 # __C.net.model_name = 'res15-narrow'
 # __C.net.model_name = 'res8'
@@ -299,7 +304,7 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'crnn-avg'
 # __C.net.model_name = 'crnn-attention'
 # __C.net.model_name = 'edge-speech-nets'
-__C.net.model_name = 'tc-resnet8'
+# __C.net.model_name = 'tc-resnet8'
 # __C.net.model_name = 'tc-resnet14'
 # __C.net.model_name = 'tc-resnet8-dropout'
 # __C.net.model_name = 'tc-resnet14-dropout'

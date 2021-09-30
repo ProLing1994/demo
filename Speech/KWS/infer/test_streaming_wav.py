@@ -101,18 +101,6 @@ def test(in_args):
                                     os.path.basename(args.csv_path).split('.')[0], args.type, 'bool_noise_reduction_' + str(args.bool_noise_reduction),
                                     os.path.basename(input_wav).split('.')[0] + '_threshold_{}'.format('_'.join(str(cfg.test.detection_threshold).split('.'))))
     elif args.mode == "2":
-        # normal
-        # output_subfolder_path = (os.path.dirname(input_wav) + '/').replace(args.input_folder, '')
-        # output_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', 
-        #                             args.output_subfolder_name, output_subfolder_path, 
-        #                             os.path.basename(input_wav).split('.')[0] + '_threshold_{}'.format('_'.join(str(cfg.test.detection_threshold).split('.'))))
-
-        # Dataset_Lenovo_xiaole
-        # output_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', 
-        #                             args.output_subfolder_name, os.path.basename(input_wav).split('_')[1].split('-')[0], output_subfolder_path, 
-        #                             os.path.basename(input_wav).split('.')[0] + '_threshold_{}'.format('_'.join(str(cfg.test.detection_threshold).split('.'))))
-
-        # 实车录制_0427_pytorch
         output_subfolder_path = (os.path.dirname(input_wav) + '/').replace(args.input_folder, '')
         output_dir = os.path.join(cfg.general.save_dir, 'test_straming_wav', 
                                     args.output_subfolder_name, output_subfolder_path, 
@@ -123,7 +111,10 @@ def test(in_args):
     if os.path.exists(output_dir):    
         return
     else:
-        os.makedirs(output_dir)
+        try:
+            os.makedirs(output_dir)
+        except:
+            pass
     
     # load model
     model = kws_load_model(cfg.general.save_dir, int(cfg.general.gpu_ids), cfg.test.model_epoch)

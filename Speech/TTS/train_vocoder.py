@@ -19,6 +19,7 @@ from TTS.utils.sv2tts.visualizations_tools import *
 from TTS.utils.vocoder.train_tools import *
 from TTS.config.vocoder.hparams import *
 from TTS.dataset.vocoder.audio import *
+from TTS.dataset.vocoder.distribution import *
 from TTS.dataset.vocoder.vocoder_dataset_preload_audio_lmdb import prepare_data
 
 
@@ -90,7 +91,7 @@ def train(args):
     net = import_network(cfg, cfg.net.model_name, cfg.net.class_name)
 
     # define loss function
-    loss_func = loss_function(cfg)
+    loss_func = loss_function(cfg) if net.module.mode == "RAW" else discretized_mix_logistic_loss
 
     # set training optimizer, learning rate scheduler
     optimizer = set_optimizer(cfg, net)
@@ -129,8 +130,7 @@ def train(args):
     cfg_speaker_verification = load_cfg_file(cfg.speaker_verification.config_file)
     sv_net = import_network(cfg_speaker_verification, 
                             cfg.speaker_verification.model_name, 
-                            cfg.speaker_verification.class_name,
-                            cfg.speaker_verification.model_prefix_name)
+                            cfg.speaker_verification.class_name)
     if not cfg.speaker_verification.model_dir == "":
         load_checkpoint(sv_net, cfg.speaker_verification.epoch, 
                         cfg.speaker_verification.model_dir)

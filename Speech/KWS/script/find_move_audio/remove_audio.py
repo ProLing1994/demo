@@ -30,18 +30,18 @@ def remove_audio_suffix():
 
 if __name__ == "__main__":
 
-    # # 方法：删除同名文件
-    # parser = argparse.ArgumentParser(description='Streamax KWS Engine')
-    # args = parser.parse_args()
-    # args.input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_16k_small_voice/"
-    # args.output_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_16k/"
-
-    # remove_audio_samename()
-
-    # 方法：删除制定后缀
+    # 方法：删除同名文件
     parser = argparse.ArgumentParser(description='Streamax KWS Engine')
     args = parser.parse_args()
-    args.input_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/ActivateBWC_07162021/activatebwc/原始音频/"
-    args.suffix = '_temp.wav'
+    args.input_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/tts/sv2tts/LibriSpeech/over_short/"
+    args.output_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/tts/sv2tts/LibriSpeech/train-other-500_check_vad/activatebwc/"
 
-    remove_audio_suffix()
+    remove_audio_samename()
+
+    # # 方法：删除制定后缀
+    # parser = argparse.ArgumentParser(description='Streamax KWS Engine')
+    # args = parser.parse_args()
+    # args.input_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/ActivateBWC_07162021/activatebwc/原始音频/"
+    # args.suffix = '_temp.wav'
+
+    # remove_audio_suffix()
