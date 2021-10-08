@@ -482,7 +482,6 @@ class Tacotron(nn.Module):
         postnet_out = self.postnet(mel_outputs)
         linear = self.post_proj(postnet_out)
 
-
         linear = linear.transpose(1, 2)
 
         # For easy visualisation

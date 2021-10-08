@@ -33,7 +33,8 @@ __C.general.data_dir = "/mnt/huanyuan/data/speech/sv/TI_SV_dataset/dataset/"
 
 # the output of training models and logging files
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/sv/test_0912/"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/sv/ti_sv_1_0_09142021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/sv/ti_sv_1_0_09142021/"
+__C.general.save_dir = "/mnt/huanyuan2/model/sv/ti_sv_english_finetune_2_0_09142021/"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -41,6 +42,7 @@ __C.general.is_test = True
 # finetune model
 # 方式一：模型训练过程中，保存模型
 __C.general.finetune_on = True
+# __C.general.finetune_on = False
 __C.general.finetune_model_dir = ""
 __C.general.finetune_epoch = 0
 # 方式二：加载其他模型结构

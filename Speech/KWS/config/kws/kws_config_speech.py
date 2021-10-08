@@ -15,26 +15,26 @@ __C.general.data_dir = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/speech_
 __C.general.sub_data_dir = ["/mnt/huanyuan/data/speech/kws/tf_speech_commands/tts/sv2tts/LibriSpeech/train-clean-100/"]
 
 # data version
-# __C.general.version = "1.1"
-__C.general.version = "1.2"
+__C.general.version = "1.1"
+# __C.general.version = "1.2"
 
 # data date
-# __C.general.date = "07072021"
-__C.general.date = "09302021"
+__C.general.date = "07072021"
+# __C.general.date = "09302021"
 
 # data path
-# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.1_07072021/total_data_files.csv"
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.2_09302021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.1_07072021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.2_09302021/total_data_files.csv"
 
 # background noise path
-# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.1_07072021/background_noise_files.csv"
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.2_09302021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.1_07072021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.2_09302021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # the output of training models and logging files
-__C.general.save_dir = "/home/huanyuan/model/kws_test"
+# __C.general.save_dir = "/home/huanyuan/model/kws_test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_0_res15_02042021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_1_edge-speech-nets_02042021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_2_tc-resnet8_02192021/"

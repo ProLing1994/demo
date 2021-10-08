@@ -27,13 +27,14 @@ __C.general.data_dir = "/mnt/huanyuan/data/speech/tts/dataset/"
 
 # the output of training models and logging files
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/tts/test/"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/tts/sv2tts_2_0_09202021/"
+__C.general.save_dir = "/mnt/huanyuan2/model/tts/sv2tts_english_finetune_2_0_09202021/"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # finetune model
-__C.general.finetune_on = True
+# __C.general.finetune_on = True
+__C.general.finetune_on = False
 # 方式一：模型训练过程中，保存模型
 __C.general.finetune_model_dir = ""
 __C.general.finetune_epoch = -1
@@ -72,11 +73,11 @@ __C.speaker_verification = {}
 # __C.speaker_verification.model_path = "/mnt/huanyuan/model/model_10_30_25_21/model/sv/pretrained/pretrain_model/parameter.pkl"
 # __C.speaker_verification.ignore_key_list = []
 
-__C.speaker_verification.config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/sv/ti_sv_1_0_09142021/sv_config_TI_SV.py"
+__C.speaker_verification.config_file = "/mnt/huanyuan2/model/sv/ti_sv_english_finetune_2_0_09142021/sv_config_TI_SV.py"
 __C.speaker_verification.model_name = "/home/huanyuan/code/demo/Speech/SV/network/basic.py"
 __C.speaker_verification.class_name = 'SpeakerEncoder'
 # 方式一：模型训练过程中，保存模型
-__C.speaker_verification.model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/sv/ti_sv_1_0_09142021/"
+__C.speaker_verification.model_dir = "/mnt/huanyuan2/model/sv/ti_sv_english_finetune_2_0_09142021/"
 __C.speaker_verification.epoch = -1
 # 方式二：加载其他模型结构
 __C.speaker_verification.model_path = ""

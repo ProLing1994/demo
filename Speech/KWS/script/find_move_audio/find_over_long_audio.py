@@ -7,6 +7,7 @@ from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 from ASR.impl.asr_data_loader_pyimpl import WaveLoader_Librosa as WaveLoader
+from Basic.utils.folder_tools import *
 
 
 def find_over_long_audio():
@@ -16,10 +17,10 @@ def find_over_long_audio():
 
     # init 
     sample_rate = args.sample_rate
-    wave_list = os.listdir(args.input_dir)
+    wave_list = get_sub_filepaths_suffix(args.input_dir)
 
     for idx in tqdm(range(len(wave_list))):
-        wave_path = os.path.join(args.input_dir, wave_list[idx])
+        wave_path = wave_list[idx]
 
         # load data
         wave_loader = WaveLoader(sample_rate)
@@ -27,7 +28,8 @@ def find_over_long_audio():
         data_length = wave_loader.data_length()
 
         if data_length > float(args.threshold):
-            output_path = os.path.join(args.output_dir, os.path.basename(wave_path).split('.')[0] + '.wav')
+            output_subfolder_path = (os.path.dirname(wave_path) + '/').replace(args.input_dir, '')
+            output_path = os.path.join(args.output_dir, output_subfolder_path, os.path.basename(wave_path).split('.')[0] + '.wav')
             print(wave_path, '->', output_path)
             shutil.copy(wave_path, output_path)
 
@@ -39,10 +41,10 @@ def find_over_short_audio():
 
     # init 
     sample_rate = args.sample_rate
-    wave_list = os.listdir(args.input_dir)
+    wave_list = get_sub_filepaths_suffix(args.input_dir)
 
     for idx in tqdm(range(len(wave_list))):
-        wave_path = os.path.join(args.input_dir, wave_list[idx])
+        wave_path = wave_list[idx]
 
         # load data
         wave_loader = WaveLoader(sample_rate)
@@ -50,7 +52,8 @@ def find_over_short_audio():
         data_length = wave_loader.data_length()
 
         if data_length < float(args.threshold):
-            output_path = os.path.join(args.output_dir, os.path.basename(wave_path).split('.')[0] + '.wav')
+            output_subfolder_path = (os.path.dirname(wave_path) + '/').replace(args.input_dir, '')
+            output_path = os.path.join(args.output_dir, output_subfolder_path, os.path.basename(wave_path).split('.')[0] + '.wav')
             print(wave_path, '->', output_path)
             shutil.copy(wave_path, output_path)
 

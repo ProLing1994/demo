@@ -1,6 +1,9 @@
 import copy
+import numba as nb
 import numpy as np
-from scipy.fftpack import fft
+# from scipy.fftpack import fft
+from numpy.fft import fft
+# from pyfftw.interfaces.numpy_fft import fft 
 
 
 def hz2mel(hz):
@@ -21,6 +24,7 @@ def mel2hz(mel):
     return 700 * (10 **(mel / 2595.0) - 1)
 
 
+@nb.jit()           # 运用 numba 加速 for 循环
 def get_frequency_feature(signal, sample_rate, winlen, winstep):
     """Compute FFT features from an audio signal.
 
@@ -37,8 +41,6 @@ def get_frequency_feature(signal, sample_rate, winlen, winstep):
     w = 0.54 - 0.46 * np.cos(2 * np.pi * x / (window_size - 1)) 
     wav_arr = np.array(signal)
 
-    wav_length = wav_arr.shape[0]
-    ww = len(signal)
     range0_end = int((len(signal) / float(sample_rate) * 1000 - time_window) // time_step) 
     data_input = np.zeros((range0_end, int(window_size / 2)), dtype=np.float)  
     for i in range(0, range0_end):
@@ -55,6 +57,7 @@ def get_frequency_feature(signal, sample_rate, winlen, winstep):
     return data_input
 
 
+@nb.jit()           # 运用 numba 加速 for 循环
 def get_filterbanks(nfilt=20, nfft=512, samplerate=16000, lowfreq=0, highfreq=None, bool_vtlp_augmentation=False):
     """Compute a Mel-filterbank. The filters are stored in the rows, the columns correspond
     to fft bins. The filters are returned as an array of size nfilt * (nfft/2 + 1)
@@ -169,16 +172,17 @@ def gen_fbank_feature(signal, sample_rate=16000, winlen=0.025, winstep=0.01,
 class Feature(object):
     """ feature python wrapper """
     def __init__(self, sample_rate=16000, feature_freq=48, nfilt=64, winlen=0.032, winstep=0.010, scale_num=10):
-        self.feature_freq = feature_freq
-        self.nfilt = nfilt
-        self.sample_rate = sample_rate
-        self.winlen = winlen
-        self.winstep = winstep
-        self.scale_num = scale_num
-        if self.sample_rate == 32000:
-            self.nfft = 1024
+        self.sample_rate = sample_rate          # 采样率
+        self.feature_freq = feature_freq        # 特征个数
+        self.nfilt = nfilt                      # mel 滤波器个数
+        self.winlen = winlen                    # 窗宽
+        self.winstep = winstep                  # 窗移
+        self.scale_num = scale_num              # 缩放
+
+        if self.sample_rate == 32000:           # fft 个数，跟采样率相关
+            self.nfft = 1024                    
         elif self.sample_rate == 16000:
-            self.nfft = 512
+            self.nfft = 512 
         elif self.sample_rate == 8000:  
             self.nfft = 256  
         else:
@@ -200,7 +204,7 @@ class Feature(object):
         self.mel_feature = gen_fbank_feature(data, self.sample_rate, winlen=self.winlen, winstep=self.winstep, 
                                                 numcep=self.feature_freq, nfilt=self.nfilt, nfft=self.nfft, 
                                                 lowfreq=10, highfreq=None, appendEnergy=False, bool_vtlp_augmentation=bool_vtlp_augmentation)
-        self.mel_feature = np.log(1 + self.mel_int_feature)
+        self.mel_feature = np.log(1 + self.mel_feature)
         return
 
     def get_mel_int_feature(self, data, bool_vtlp_augmentation=False):

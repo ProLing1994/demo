@@ -27,7 +27,7 @@ __C.general.data_dir = "/mnt/huanyuan/data/speech/tts/dataset/"
 
 # the output of training models and logging files
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/tts_vocoder/test/"
-__C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/tts_vocoder/wavernn_2_0_09202021/"
+__C.general.save_dir = "/mnt/huanyuan2/model/tts_vocoder/wavernn_english_finetune_2_0_09202021/"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -73,11 +73,11 @@ __C.speaker_verification = {}
 # __C.speaker_verification.model_path = "/mnt/huanyuan/model/model_10_30_25_21/model/sv/pretrained/pretrain_model/parameter.pkl"
 # __C.speaker_verification.ignore_key_list = []
 
-__C.speaker_verification.config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/sv/ti_sv_1_0_09142021/sv_config_TI_SV.py"
+__C.speaker_verification.config_file = "/mnt/huanyuan2/model/sv/ti_sv_english_finetune_2_0_09142021/sv_config_TI_SV.py"
 __C.speaker_verification.model_name = "/home/huanyuan/code/demo/Speech/SV/network/basic.py"
 __C.speaker_verification.class_name = 'SpeakerEncoder'
 # 方式一：模型训练过程中，保存模型
-__C.speaker_verification.model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/sv/ti_sv_1_0_09142021/"
+__C.speaker_verification.model_dir = "/mnt/huanyuan2/model/sv/ti_sv_english_finetune_2_0_09142021/"
 __C.speaker_verification.epoch = -1
 # 方式二：加载其他模型结构
 __C.speaker_verification.model_path = ""
@@ -100,14 +100,14 @@ __C.synthesizer = {}
 # __C.synthesizer.model_path = "/mnt/huanyuan/model/model_10_30_25_21/model/tts/pretrained/pretrain_model/parameter.pkl"
 # __C.synthesizer.ignore_key_list = []
 
-__C.synthesizer.config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/tts/sv2tts_2_0_09202021/tts_config_sv2tts.py"
+__C.synthesizer.config_file = "/mnt/huanyuan2/model/tts/sv2tts_english_finetune_2_0_09202021/tts_config_sv2tts.py"
 __C.synthesizer.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron.py"
 __C.synthesizer.class_name = 'Tacotron'
 # 方式一：模型训练过程中，保存模型
-__C.synthesizer.model_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/tts/sv2tts_2_0_09202021/"
+__C.synthesizer.model_dir = "/mnt/huanyuan2/model/tts/sv2tts_english_finetune_2_0_09202021/"
 __C.synthesizer.epoch = -1
 # 方式二：加载其他模型结构
-__C.synthesizer.model_path = "/mnt/huanyuan/model/model_10_30_25_21/model/tts/pretrained/pretrain_model/parameter.pkl"
+__C.synthesizer.model_path = ""
 __C.synthesizer.ignore_key_list = []
 
 
@@ -261,7 +261,7 @@ __C.train.num_threads = 1
 __C.train.show_log = 5
 
 # the number of batches to update loss curve
-__C.train.plot_snapshot = 1
+__C.train.plot_snapshot = 5
 
 # the number of epochs to save model
 __C.train.save_epochs = 1
