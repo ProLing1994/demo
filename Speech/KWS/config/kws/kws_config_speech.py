@@ -41,6 +41,7 @@ __C.general.is_test = True
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_3_tc-resnet14_02192021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_4_tc-resnet8-dropout_02192021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_5_tc-resnet14-dropout_02192021/"
+__C.general.save_dir = "/mnt/huanyuan2/model/kws/kws_speech/kws_speech_2_7_res15_basic_label_smooth_ema_augmentation_tts_8000_epoch_09302021/"
 
 # finetune model
 __C.general.finetune_on = False

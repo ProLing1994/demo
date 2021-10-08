@@ -1,9 +1,5 @@
-import glob
 import librosa
 import numpy as np
-import os
-import pcen
-import pickle
 import random
 import sys
 import torch
@@ -96,7 +92,7 @@ class AudioPreprocessor(object):
         self.win_length = int(self.sr * self.winlen)
         self.hop_length = int(self.sr * self.winstep)
 
-        # self.dct_filters = librosa.filters.dct(self.n_dct_filters, self.n_mels)
+        # self.dct_filters = librosa.dct(self.n_dct_filters, self.n_mels)
         # self.pcen_transform = pcen.StreamingPCENTransform(n_mels=self.n_mels, n_fft=self.win_length, hop_length=self.hop_length, trainable=True)
 
     def compute_mfccs(self, data):

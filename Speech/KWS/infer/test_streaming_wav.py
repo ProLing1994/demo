@@ -207,7 +207,7 @@ def main():
     # 0: from input_wav_list
     # 1: from csv
     # 2: from folder
-    default_mode = "0"    # ["0", "1" ,"2"]
+    default_mode = "2"    # ["0", "1" ,"2"]
 
     # mode 0: from input_wav_list
     # test
@@ -259,10 +259,10 @@ def main():
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
     # activatebwc
-    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_training_60_001.wav",
-    #                             "/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_validation_60_001.wav"]
-    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation.wav",
-                            "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
+    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_training_60_001.wav",
+                                "/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_validation_60_001.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation.wav",
+    #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
     # heybodycam
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/heybodycam_03232021_training_60_001.wav",
@@ -300,19 +300,18 @@ def main():
     # default_output_subfolder_name = "difficult_sample_mining/qingtingfm_record/"
     # default_input_folder = "/mnt/huanyuan/data/speech/Recording/Daily_Record/danbing/conversation/"
     # default_output_subfolder_name = "difficult_sample_mining/danbing_record/conversation"
-    default_input_folder = "/mnt/huanyuan/data/speech/asr/LibriSpeech/"
-    default_output_subfolder_name = "difficult_sample_mining/LibriSpeech"
+    # default_input_folder = "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_BwcKeyword/office/danbing_16k/"
+    # default_output_subfolder_name = "difficult_sample_mining/RM_Meiguo_BwcKeyword/"
+    # default_input_folder = "/mnt/huanyuan/data/speech/asr/LibriSpeech/"
+    # default_output_subfolder_name = "difficult_sample_mining/LibriSpeech"
 
     # activate bwc
     # default_input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/安静场景/"
-    # default_output_subfolder_name = "海外同事录制_0425/阈值_08_05/安静场景"
+    # default_output_subfolder_name = "海外同事录制_0425/阈值_05_05/安静场景"
     # default_input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/办公室场景/"
-    # default_output_subfolder_name = "海外同事录制_0425/阈值_08_05/办公室场景"
-    # default_input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/路边场景/"
-    # default_output_subfolder_name = "海外同事录制_0425/阈值_08_05/路边场景"
-    # default_input_folder = "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_BwcKeyword/office/danbing_16k/"
-    # default_output_subfolder_name = "difficult_sample_mining/RM_Meiguo_BwcKeyword/"
-
+    # default_output_subfolder_name = "海外同事录制_0425/阈值_05_05/办公室场景"
+    default_input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/路边场景/"
+    default_output_subfolder_name = "海外同事录制_0425/阈值_05_05/路边场景"
 
     # xiaoan
     # default_input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/处理音频/"
