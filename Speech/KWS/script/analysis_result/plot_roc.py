@@ -161,13 +161,15 @@ def main():
     # show_roc(csv_list, color_list, linestyle_list, name_list, label_num, ignore_num)
 
     # activatebwc: 2 label 
-    csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_5_tc-resnet14-amba_fbankcpu_kd_07162021/dataset_1_6_infer_longterm_validation_augmentation_False_mean.csv",
-                "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_5_tc-resnet14-amba_fbankcpu_kd_07162021/dataset_1_11_infer_longterm_validation_augmentation_False_mean.csv",
-                "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_7_tc-resnet14-amba_fbankcpu_kd_09222021/dataset_1_6_infer_longterm_validation_augmentation_False_mean.csv",
-                "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_7_tc-resnet14-amba_fbankcpu_kd_09222021/dataset_1_11_infer_longterm_validation_augmentation_False_mean.csv",]
+    csv_list = ["/mnt/huanyuan2/model/kws/kws_english/kws_activatebwc_2_7_tc-resnet14-amba_fbankcpu_kd_09222021/dataset_1_6_infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan2/model/kws/kws_english/kws_activatebwc_2_7_tc-resnet14-amba_fbankcpu_kd_09222021/dataset_1_12_infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan2/model/kws/kws_english/kws_activatebwc_2_8_tc-resnet14-amba_fbankcpu_kd_09292021/dataset_1_6_infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan2/model/kws/kws_english/kws_activatebwc_2_8_tc-resnet14-amba_fbankcpu_kd_09292021/dataset_1_12_infer_longterm_validation_augmentation_False_mean.csv",
+                ]
     color_list = ["r", "r", "g", "g"]
     linestyle_list = ["-", "--", "-", "--"]
-    name_list = ["activatebwc-tcresnet14(2.5)-dataset(1.6)", "activatebwc-tcresnet14(2.5)-dataset(1.11)", "activatebwc-tcresnet14(2.7)-dataset(1.6)", "activatebwc-tcresnet14(2.7)-dataset(1.11)"]
+    name_list = ["activatebwc-tcresnet14(2.7)-dataset(1.6)", "activatebwc-tcresnet14(2.7)-dataset(1.12)", 
+                "activatebwc-tcresnet14(2.8)-dataset(1.6)", "activatebwc-tcresnet14(2.8)-dataset(1.12)"]
     label_num = 2
     ignore_num= 1
     show_roc(csv_list, color_list, linestyle_list, name_list, label_num, ignore_num)

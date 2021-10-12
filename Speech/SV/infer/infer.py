@@ -8,12 +8,12 @@ from Basic.utils.folder_tools import *
 from Basic.utils.profiler_tools import *
 from Basic.utils.loss_tools import *
 from Basic.utils.train_tools import *
+from Basic.config import hparams
 
 from SV.utils.train_tools import *
 from SV.utils.infer_tools import *
 from SV.utils.loss_tools import *
 from SV.utils.visualizations_tools import *
-from SV.config.hparams import *
 from SV.dataset.sv_dataset_preload_audio_lmdb import *
 
 
@@ -32,8 +32,8 @@ def infer(args):
     net.eval()
 
     # load data
-    data_pd = load_data_pd(cfg, TESTING_NAME)
-    lmdb_dict = load_lmdb(cfg, TESTING_NAME)
+    data_pd = load_data_pd(cfg, hparams.TESTING_NAME)
+    lmdb_dict = load_lmdb(cfg, hparams.TESTING_NAME)
     
     embeds_dict = {}
     for idx, row in tqdm(data_pd.iterrows(), total=len(data_pd)):
@@ -41,6 +41,29 @@ def infer(args):
         data = read_audio_lmdb(lmdb_dict[str(row['dataset'])], str(row['file']))
         speaker = str(row['speaker'])
         tqdm.write('{}: shape: {}, path :{}'.format(idx, data.shape, str(row['file'])))
+
+        # ## 预处理版本，在 data_preload_audio_lmdb.py（预处理版本）中，通过函数 preprocess_wav 进行预处理
+        # # embed_utterance
+        # embed = embed_utterance(data, cfg, net)
+        # if speaker in embeds_dict:
+        #     embeds_dict[speaker].append(embed)
+        # else:
+        #     embeds_dict[speaker] = []
+        #     embeds_dict[speaker].append(embed)
+
+        ## 普通版本
+        assert len(data) > 0, "{} {}".format(str(row['dataset']), str(row['file']))
+
+        # data trim_silence
+        if hparams.trim_silence:
+            data = audio.trim_silence(data)
+
+        # data alignment
+        data = dataset_augmentation.dataset_alignment(cfg, data, bool_replicate=True)
+
+        # data rescale
+        if hparams.rescale:
+            data = data / np.abs(data).max() * hparams.rescaling_max
 
         # embed_utterance
         embed = embed_utterance(data, cfg, net)
@@ -80,7 +103,8 @@ def infer(args):
 
 def main():
     parser = argparse.ArgumentParser(description='Streamax SV Training Engine')
-    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_TI_SV.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_english_TI_SV.py", nargs='?', help='config file')
+    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_chinese_TI_SV.py", nargs='?', help='config file')
     args = parser.parse_args()
     infer(args)
 

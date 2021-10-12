@@ -2,10 +2,11 @@ import argparse
 from datetime import datetime
 import os 
 import sys
-from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
+from Basic.dataset import audio
+from Basic.config import hparams
 from Basic.utils.folder_tools import *
 from Basic.utils.train_tools import *
 from Basic.utils.loss_tools import *
@@ -13,8 +14,6 @@ from Basic.utils.profiler_tools import *
 
 from SV.utils.infer_tools import *
 
-from TTS.config.sv2tts.hparams import *
-from TTS.dataset.sv2tts.audio import *
 from TTS.dataset.sv2tts.text import *
 from TTS.utils.sv2tts.train_tools import *
 from TTS.utils.sv2tts.visualizations_tools import *
@@ -40,7 +39,7 @@ def show_ressult(cfg, attention, mel_prediction, target_spectrogram, input_seq, 
     np.save(str(mel_output_fpath), mel_prediction, allow_pickle=False)
 
     # save griffin lim inverted wav for debug (mel -> wav)
-    wav = inv_mel_spectrogram(cfg, mel_prediction.T)
+    wav = audio.compute_inv_mel_spectrogram(cfg, mel_prediction.T)
     wav_fpath = os.path.join(wav_dir, "wave_from_mel_step_{}_sample_{}_text_{}.wav".format(step, sample_num, text))
     save_wav(wav, str(wav_fpath), sr=cfg.dataset.sample_rate)
 
@@ -122,7 +121,7 @@ def train(args):
     sv_net.eval()
 
     # define training dataset and testing dataset
-    train_dataloader, len_train_dataset = generate_dataset(cfg, TRAINING_NAME)
+    train_dataloader, len_train_dataset = generate_dataset(cfg, hparams.TRAINING_NAME)
 
     msg = 'Training dataset number: {}'.format(len_train_dataset)
     logger.info(msg)

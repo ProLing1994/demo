@@ -4,14 +4,14 @@ from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
+from Basic.config import hparams
 from Basic.utils.folder_tools import *
-from Basic.utils.profiler_tools import *
 from Basic.utils.loss_tools import *
+from Basic.utils.profiler_tools import *
 from Basic.utils.train_tools import *
 
-from SV.config.hparams import *
-from SV.utils.train_tools import *
 from SV.utils.loss_tools import *
+from SV.utils.train_tools import *
 from SV.utils.visualizations_tools import *
 
 sys.path.insert(0, '/home/huanyuan/code/demo/common')
@@ -131,9 +131,9 @@ def train(args):
         teacher_model.eval()
 
     # define training dataset and testing dataset
-    train_dataloader, len_train_dataset = generate_dataset(cfg, TRAINING_NAME)
+    train_dataloader, len_train_dataset = generate_dataset(cfg, hparams.TRAINING_NAME)
     if cfg.general.is_test:
-        testing_dataloader = generate_test_dataset(cfg, TESTING_NAME)
+        testing_dataloader = generate_test_dataset(cfg, hparams.TESTING_NAME)
 
     msg = 'Training dataset number: {}'.format(len_train_dataset)
     logger.info(msg)
@@ -182,7 +182,7 @@ def train(args):
         if cfg.knowledge_distillation.on:
             teacher_model.eval()
             teacher_embeds, _ = teacher_model(inputs)
-            # TO
+            # TO DO
             pass
         profiler.tick("Calculate Loss")
         
@@ -250,7 +250,8 @@ def train(args):
 
 def main(): 
     parser = argparse.ArgumentParser(description='Streamax SV Training Engine')
-    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_TI_SV.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_english_TI_SV.py", nargs='?', help='config file')
+    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_chinese_TI_SV.py", nargs='?', help='config file')
     args = parser.parse_args()
     train(args)
 

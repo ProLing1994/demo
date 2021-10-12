@@ -7,6 +7,7 @@ from torch.utils.data import Dataset, DataLoader
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
 from Basic.utils.lmdb_tools import *
+from Basic.dataset import audio
 
 from TTS.config.sv2tts.hparams import *
 from TTS.dataset.sv2tts.text import *
@@ -88,12 +89,13 @@ class SynthesizerDataset(Dataset):
 
         # mel
         wav = read_audio_lmdb(self.lmdb_dict[lmdb_dataset], str(data_name))
-        mel = audio_preprocess(self.cfg, wav).T.astype(np.float32)
+        mel = audio.compute_mel_spectrogram(self.cfg, wav).T.astype(np.float32)
 
         # stop length
         mel_frames = mel.shape[1]
 
         # embed wav
+        # [BUG]：这里加载的 wav 是有问题的。原因：在生成 lmdb 的时候，wav 数据进行了 rescale
         embed_wav = preprocess_wav(wav, self.cfg.dataset.sample_rate)
         return text, mel, mel_frames, embed_wav
 

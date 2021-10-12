@@ -1,24 +1,22 @@
 import argparse
 import lmdb
 import librosa 
-import numpy as np
 import os
 import pandas as pd
 import sys
 from pandas.io.parsers import read_csv
 from tqdm import tqdm
 
-# sys.path.insert(0, '/home/huanyuan/code/demo/Speech/SV')
-sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/SV')
-from utils.train_tools import load_cfg_file
-from utils.folder_tools import *
-from config.hparams import *
-from dataset.audio import *
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
+from Basic.config import hparams
+from Basic.utils.train_tools import load_cfg_file
+from Basic.utils.folder_tools import *
 
 
 parser = argparse.ArgumentParser(description='Streamax SV Data Split Engine')
-# parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_TI_SV.py", help='config file')
-parser.add_argument('--config_file', type=str,  default="/home/engineers/yh_rmai/code/demo/Speech/SV/config/sv_config_TI_SV.py", help='config file')
+# parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_english_TI_SV.py", help='config file')
+parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_chinese_TI_SV.py", help='config file')
 args = parser.parse_args()
 
 # params
@@ -33,8 +31,7 @@ def general_lmdb(cfg, lmdb_path, csv_path, mode_type='testing', bool_background_
 
     # init
     sample_rate = cfg.dataset.sample_rate
-    clip_duration_ms = cfg.dataset.clip_duration_ms
-    desired_samples = int(sample_rate * clip_duration_ms / 1000)
+    desired_samples = int(cfg.dataset.sample_rate * hparams.check_wave_length_ms / 1000)
 
     data_pd = pd.read_csv(csv_path)
     if bool_background_audio:
@@ -42,6 +39,7 @@ def general_lmdb(cfg, lmdb_path, csv_path, mode_type='testing', bool_background_
     else:
         mode_data_pd = data_pd[data_pd['mode'] == mode_type]
     file_list = mode_data_pd['file'].tolist()
+
     if not len(file_list):
         print("[Information] file:{} empty. Exit...".format(csv_path))
         return
@@ -57,7 +55,9 @@ def general_lmdb(cfg, lmdb_path, csv_path, mode_type='testing', bool_background_
     env = lmdb.open(lmdb_path, map_size=data_size * 10)
     txn = env.begin(write=True)
 
+    # init
     drop_list = []
+
     for idx, row in tqdm(mode_data_pd.iterrows(), total=len(file_list)):
         file_path = row['file']
 
@@ -65,11 +65,7 @@ def general_lmdb(cfg, lmdb_path, csv_path, mode_type='testing', bool_background_
         key_byte = file_path.encode()
 
         # value
-        if bool_background_audio:
-            data = preprocess_wav(file_path, sample_rate, True, False)
-        else:
-            data = preprocess_wav(file_path, sample_rate, True, True)
-
+        data = librosa.core.load(file_path, sr=sample_rate)[0]
         # check
         if len(data) == 0 or len(data) < desired_samples:
             drop_list.append(idx)
@@ -81,7 +77,7 @@ def general_lmdb(cfg, lmdb_path, csv_path, mode_type='testing', bool_background_
             txn.commit()
             # commit 之后需要再次 begin
             txn = env.begin(write=True)
-    
+            
     txn.commit()
     env.close()
 
@@ -89,6 +85,7 @@ def general_lmdb(cfg, lmdb_path, csv_path, mode_type='testing', bool_background_
     data_pd.drop(drop_list, inplace=True)
     data_pd.to_csv(csv_path, index=False, encoding="utf_8_sig")
 
+    
 
 def preload_audio_lmdb(mode_type):
     """ data preprocess engine
@@ -126,11 +123,11 @@ def preload_background_audio_lmdb():
     create_folder(output_dir)
 
     # init 
-    lmdb_path = os.path.join(output_dir, '{}.lmdb'.format(BACKGROUND_NOISE_DIR_NAME))
+    lmdb_path = os.path.join(output_dir, '{}.lmdb'.format(hparams.BACKGROUND_NOISE_DIR_NAME))
     csv_path = os.path.join(cfg.general.data_dir, 'background_noise_files.csv')
 
     # general lmdb
-    general_lmdb(cfg, lmdb_path, csv_path, True)
+    general_lmdb(cfg, lmdb_path, csv_path, bool_background_audio=True)
 
     print("Preload background audio Done!")
 

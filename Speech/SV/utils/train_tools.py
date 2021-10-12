@@ -30,6 +30,7 @@ def generate_dataset(cfg, mode):
     dataset = SpeakerVerificationDataset(cfg, mode)
     sampler = EpochConcateSampler(dataset, cfg.train.num_epochs - (cfg.general.resume_epoch if cfg.general.resume_epoch != -1 else 0))
     dataloader = SpeakerVerificationDataLoader(
+                    cfg, 
                     dataset,
                     cfg.train.speakers_per_batch,
                     num_workers=cfg.train.num_threads,
@@ -48,10 +49,12 @@ def generate_test_dataset(cfg, mode):
 
     dataset = SpeakerVerificationDataset(cfg, mode, augmentation_on=False)
     dataloader = SpeakerVerificationDataLoader(
+                    cfg,
                     dataset,
                     1,
                     pin_memory=False,
-                    num_workers=1)
+                    num_workers=1,
+                    dynamic_length_on=False)
     return dataloader
 
 

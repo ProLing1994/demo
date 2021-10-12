@@ -9,9 +9,10 @@ from torch.utils.data import Dataset, DataLoader
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/')
-from Basic.utils.lmdb_tools import *
-from SV.config.hparams import *
-from SV.dataset.audio import *
+from Basic.config import hparams
+from Basic.dataset import audio 
+from Basic.dataset import dataset_augmentation
+from Basic.utils import lmdb_tools
 
 class RandomCycler:
     """
@@ -142,9 +143,9 @@ class SpeakerVerificationDataset(Dataset):
 
 
 class SpeakerVerificationDataLoader(DataLoader):
-    def __init__(self, dataset, speakers_per_batch, sampler=None, 
+    def __init__(self, cfg, dataset, speakers_per_batch, sampler=None, 
                  batch_sampler=None, num_workers=0, pin_memory=True,
-                 timeout=0, worker_init_fn=None):
+                 timeout=0, worker_init_fn=None, dynamic_length_on=True):
         super().__init__(
             dataset=dataset, 
             batch_size=speakers_per_batch, 
@@ -158,15 +159,30 @@ class SpeakerVerificationDataLoader(DataLoader):
             timeout=timeout, 
             worker_init_fn=worker_init_fn
         )
+        self.cfg = cfg
+        self.dynamic_length_on = dynamic_length_on
 
     def collate(self, data):
-        return data_batch(data) 
+        return data_batch(self.cfg, self.dynamic_length_on, data) 
 
 
-def data_batch(data):
+def data_batch(cfg, dynamic_length_on, data):
     # Array of shape (n_speakers * n_utterances, n_frames, mel_n), e.g. for 2 speakers with
     # 10 utterances each of 160 frames of 40 mel coefficients: (20, 160, 40)
     data = np.array([frames for speaker_data in data for frames in speaker_data])
+
+    # data dynamic length
+    if dynamic_length_on:
+        # 由于模型的特殊性，输入音频数据可以是变长的
+        data_frames = data.shape[1]
+        min_frames = int(cfg.dataset.clip_duration_ratio[0] * data_frames)
+        max_frames = int(cfg.dataset.clip_duration_ratio[1] * data_frames)
+        
+        if min_frames >= max_frames:
+            real_frames = max_frames
+        else:
+            real_frames = np.random.randint(min_frames, max_frames)  
+        data = data[:, :real_frames, :]
     return data
 
 
@@ -192,12 +208,11 @@ def load_lmdb(cfg, mode):
     lmdb_dict = {}
     for dataset_idx in range(len(cfg.general.TISV_dataset_list)):
         dataset_name = cfg.general.TISV_dataset_list[dataset_idx]
-        # lmdb
         lmdb_path = os.path.join(cfg.general.data_dir, 'dataset_audio_lmdb', '{}.lmdb'.format(dataset_name+'_'+mode))
         if not os.path.exists(lmdb_path):
             print("[Warning] data do not exists: {}".format(lmdb_path))
             continue
-        lmdb_env = load_lmdb_env(lmdb_path)
+        lmdb_env = lmdb_tools.load_lmdb_env(lmdb_path)
         lmdb_dict[dataset_name] = lmdb_env
 
     return lmdb_dict
@@ -206,11 +221,11 @@ def load_lmdb(cfg, mode):
 def load_background_data(cfg):
     # load background_data
     background_data_pd = pd.read_csv(os.path.join(cfg.general.data_dir, 'background_noise_files.csv'))
-    background_data_lmdb_path = os.path.join(cfg.general.data_dir, 'dataset_audio_lmdb', '{}.lmdb'.format(BACKGROUND_NOISE_DIR_NAME))
+    background_data_lmdb_path = os.path.join(cfg.general.data_dir, 'dataset_audio_lmdb', '{}.lmdb'.format(hparams.BACKGROUND_NOISE_DIR_NAME))
     background_data = []
-    background_data_lmdb_env = load_lmdb_env(background_data_lmdb_path)
+    background_data_lmdb_env = lmdb_tools.load_lmdb_env(background_data_lmdb_path)
     for _, row in background_data_pd.iterrows():
-        background_data.append(read_audio_lmdb(background_data_lmdb_env, row.file))
+        background_data.append(lmdb_tools.read_audio_lmdb(background_data_lmdb_env, row.file))
     
     return background_data
 
@@ -219,20 +234,46 @@ def gen_data(cfg, lmdb_dict, background_data, utterances, augmentation_on=True):
 
     for utterance_id in range(len(utterances)):
         utterance_pd = utterances[utterance_id]
-        data = read_audio_lmdb(lmdb_dict[str(utterance_pd['dataset'].values[0])], str(utterance_pd['file'].values[0]))
+        data = lmdb_tools.read_audio_lmdb(lmdb_dict[str(utterance_pd['dataset'].values[0])], str(utterance_pd['file'].values[0]))
+
+        ## 预处理版本，在 data_preload_audio_lmdb.py（预处理版本）中，通过函数 preprocess_wav 进行预处理
+        # # data augmentation
+        # if cfg.dataset.augmentation.on and augmentation_on:
+        #     data = dataset_augmentation.dataset_augmentation_waveform(cfg, data, background_data)
+        # else:
+        #     data = dataset_augmentation.dataset_alignment(cfg, data)
+
+        # # Compute the mel spectrogram
+        # data = audio.compute_mel_spectrogram(cfg, data)
+
+        # # data augmentation
+        # if cfg.dataset.augmentation.on and cfg.dataset.augmentation.spec_on and augmentation_on:
+        #     data = dataset_augmentation.dataset_augmentation_spectrum(cfg, data)
+
+        ## 普通版本
+        assert len(data) > 0, "{} {}".format(str(utterance_pd['dataset'].values[0]), str(utterance_pd['file'].values[0]))
+
+        # data trim_silence
+        if hparams.trim_silence:
+            data = audio.trim_silence(data)
+
+        # data alignment
+        data = dataset_augmentation.dataset_alignment(cfg, data, bool_replicate=True)
+
+        # data rescale
+        if hparams.rescale:
+            data = data / np.abs(data).max() * hparams.rescaling_max
 
         # data augmentation
         if cfg.dataset.augmentation.on and augmentation_on:
-            data = dataset_augmentation_waveform(cfg, data, background_data)
-        else:
-            data = dataset_alignment(cfg, data)
+            data = dataset_augmentation.dataset_augmentation_waveform(cfg, data, background_data)
 
-        # audio preprocess, get mfcc data
-        data = audio_preprocess(cfg, data)
+        # Compute the mel spectrogram
+        data = audio.compute_mel_spectrogram(cfg, data)
 
-        # # data augmentation
+        # data augmentation
         if cfg.dataset.augmentation.on and cfg.dataset.augmentation.spec_on and augmentation_on:
-            data = dataset_augmentation_spectrum(cfg, data)
+            data = dataset_augmentation.dataset_augmentation_spectrum(cfg, data)
         
         data_list.append(data)
     return data_list

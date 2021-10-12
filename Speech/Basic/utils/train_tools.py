@@ -16,6 +16,7 @@ sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
 from Basic.utils.lmdb_tools import *
 
+
 def load_cfg_file(config_file):
     """
     :param config_file:  configure file path
@@ -80,6 +81,10 @@ def import_network(cfg, model_name, class_name):
     os.sys.path.pop(0)
 
     net = net_module.__getattribute__(class_name)(cfg)
+
+    if 'parameters_init' in net_module.__dict__:
+        net_module.parameters_init(net)
+        
     gpu_ids = list(range(cfg.general.num_gpus))
 
     if cfg.general.data_parallel_mode == 0:

@@ -22,7 +22,9 @@ args.commit_interval = 100
 
 def general_lmdb(cfg, lmdb_path, data_pd):
     assert lmdb_path.endswith('.lmdb'), "[ERROR] lmdb_path must end with 'lmdb'."
-    assert not os.path.exists(lmdb_path), "[ERROR] Folder [{:s}] already exists. Exit...".format(lmdb_path)
+    if os.path.exists(lmdb_path):
+        print("[Information] Folder [{:s}] already exists. Exit...".format(lmdb_path))
+        return 
 
     # init
     sample_rate = cfg.dataset.sample_rate

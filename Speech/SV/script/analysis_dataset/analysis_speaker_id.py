@@ -4,9 +4,8 @@ import pandas as pd
 import sys
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.config import hparams
 from Basic.utils.train_tools import *
-
-from SV.config.hparams import *
 
 
 def analysis_speaker_id(args):
@@ -19,19 +18,21 @@ def analysis_speaker_id(args):
         csv_path = os.path.join(cfg.general.data_dir, dataset_name + '.csv')
     
         data_pd = pd.read_csv(csv_path)
-        
-        data_pd_mode = data_pd[data_pd["mode"] == TRAINING_NAME]
+        total_speaker_num = len(list(set(data_pd['speaker'].to_list())))
+
+        data_pd_mode = data_pd[data_pd["mode"] == hparams.TRAINING_NAME]
         train_speaker_num = len(list(set(data_pd_mode['speaker'].to_list())))
 
-        data_pd_mode = data_pd[data_pd["mode"] == TESTING_NAME]
+        data_pd_mode = data_pd[data_pd["mode"] == hparams.TESTING_NAME]
         test_speaker_num = len(list(set(data_pd_mode['speaker'].to_list())))
 
-        print("dataset: {}, speaker_num: {}/{}".format(dataset_name, train_speaker_num, test_speaker_num))
+        print("dataset: {}, speaker_num: {}/{}({})".format(dataset_name, train_speaker_num, test_speaker_num, total_speaker_num))
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Streamax KWS Data Split Engine')
-    parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_TI_SV.py")
+    # parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_english_TI_SV.py")
+    parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_chinese_TI_SV.py")
     args = parser.parse_args()
     analysis_speaker_id(args)
     

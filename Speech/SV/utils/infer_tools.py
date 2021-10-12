@@ -1,9 +1,9 @@
 import numpy as np
 import sys
+import torch 
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-from SV.config.hparams import *
-from SV.dataset.audio import *
+from Basic.dataset import audio
 
 
 def embed_frames_batch(frames_batch, net):
@@ -29,7 +29,7 @@ def embed_frames_batch(frames_batch, net):
 def compute_partial_slices(n_samples, cfg, min_pad_coverage=0.75, overlap=0.5):
     """
     Computes where to split an utterance waveform and its corresponding mel spectrogram to obtain 
-    partial utterances of <partial_utterance_n_frames> each. Both the waveform and the mel 
+    partial utterances of <frame_num_realtime> each. Both the waveform and the mel 
     spectrogram slices are returned, so as to make each partial utterance waveform correspond to 
     its spectrogram. This function assumes that the mel spectrogram parameters used are those 
     defined in params_data.py.
@@ -38,10 +38,10 @@ def compute_partial_slices(n_samples, cfg, min_pad_coverage=0.75, overlap=0.5):
     recommended that you pad the waveform with zeros up to wave_slices[-1].stop.
     
     :param n_samples: the number of samples in the waveform
-    :param partial_utterance_n_frames: the number of mel spectrogram frames in each partial 
+    :param frame_num_realtime: the number of mel spectrogram frames in each partial 
     utterance
     :param min_pad_coverage: when reaching the last partial utterance, it may or may not have 
-    enough frames. If at least <min_pad_coverage> of <partial_utterance_n_frames> are present, 
+    enough frames. If at least <min_pad_coverage> of <frame_num_realtime> are present, 
     then the last partial utterance will be considered, as if we padded the audio. Otherwise, 
     it will be discarded, as if we trimmed the audio. If there aren't enough frames for 1 partial 
     utterance, this parameter is ignored so that the function always returns at least 1 slice.
@@ -55,19 +55,22 @@ def compute_partial_slices(n_samples, cfg, min_pad_coverage=0.75, overlap=0.5):
     assert 0 < min_pad_coverage <= 1
     
     # 每一帧的帧长
-    partial_utterance_mel_length = cfg.dataset.data_size[1]             # fbank_cpu bug 导致
-    partial_utterance_n_frames = partials_n_frames
+    # frame_num_model_forward：模型前向传播 mel 频率的长度，fbank_cpu bug 导致差异
+    # frame_num_realtime：真实时长 mel 频率的长度
+    frame_num_model_forward = cfg.dataset.data_size[1]
+    frame_num_realtime = int(cfg.dataset.clip_duration_ms / cfg.dataset.window_stride_ms)
+
     samples_per_frame = int((cfg.dataset.sample_rate * cfg.dataset.window_stride_ms / 1000))
     n_frames = int(np.ceil((n_samples + 1) / samples_per_frame))
-    frame_step = max(int(np.round(partial_utterance_n_frames * (1 - overlap))), 1)
+    frame_step = max(int(np.round(frame_num_realtime * (1 - overlap))), 1)
 
     # Compute the slices
     wav_slices, mel_slices = [], []
-    steps = max(1, n_frames - partial_utterance_n_frames + frame_step + 1)
+    steps = max(1, n_frames - frame_num_realtime + frame_step + 1)
     for i in range(0, steps, frame_step):
-        mel_range = np.array([i, i + partial_utterance_mel_length])
-        real_mel_range = np.array([i, i + partial_utterance_n_frames])
-        wav_range = real_mel_range * samples_per_frame
+        mel_range = np.array([i, i + frame_num_model_forward])
+        mel_range_realtime = np.array([i, i + frame_num_realtime])
+        wav_range = mel_range_realtime * samples_per_frame
         mel_slices.append(slice(*mel_range))
         wav_slices.append(slice(*wav_range))
         
@@ -92,7 +95,7 @@ def embed_utterance(wav, cfg, sv_net):
         wav = np.pad(wav, (0, max_wave_length - len(wav)), "constant")
     
     # Split the utterance into partials
-    frames = audio_preprocess(cfg, wav)
+    frames = audio.compute_mel_spectrogram(cfg, wav)
     frames_batch = np.array([frames[s] for s in mel_slices])
     partial_embeds = embed_frames_batch(frames_batch, sv_net)
     
@@ -109,7 +112,7 @@ def embedding(cfg, net, in_fpath):
     # important: there is preprocessing that must be applied.
     
     # - Directly load from the filepath:
-    preprocessed_wav = preprocess_wav(in_fpath, cfg.dataset.sample_rate)
+    preprocessed_wav = audio.preprocess_wav(in_fpath, cfg.dataset.sample_rate)
     
     # Then we derive the embedding. There are many functions and parameters that the 
     # speaker encoder interfaces. These are mostly for in-depth research. You will typically
