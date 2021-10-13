@@ -30,7 +30,7 @@ def analysis_speaker_id(args):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Streamax KWS Data Split Engine')
+    parser = argparse.ArgumentParser(description='Streamax KWS Data Analysis Engine')
     # parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_english_TI_SV.py")
     parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_chinese_TI_SV.py")
     args = parser.parse_args()

@@ -13,6 +13,9 @@ from Basic.utils.folder_tools import *
 def data_vad_multiprocessing(in_args):
     cfg = in_args[0]
     data_path = in_args[1]
+    
+    # 音频数据预处理：音频音量大小归一化、Vad 消除静音音频
+    # [讨论：] 声音大小归一化是否有存在必要
     wav = audio.preprocess_wav(data_path, cfg.dataset.sample_rate)
     sf.write(data_path, wav, cfg.dataset.sample_rate)
     print("Done: {}".format(data_path))
@@ -28,9 +31,12 @@ def data_vad_normal(cfg, dataset_name):
     '''
     dataset_path = cfg.general.TISV_dataset_path_dict[dataset_name]
 
-    in_params = []
+    # load data
     data_list = get_sub_filepaths_suffix(dataset_path)
+    data_list += get_sub_filepaths_suffix(dataset_path, suffix='.flac')
     data_list.sort()
+
+    in_params = []
     for idx in tqdm(range(len(data_list))):
         data_path = data_list[idx]
         in_args = [cfg, data_path]
@@ -38,7 +44,6 @@ def data_vad_normal(cfg, dataset_name):
 
     p = multiprocessing.Pool(8)
     list(tqdm(p.imap(data_vad_multiprocessing, in_params), total=len(in_params)))
-    # data_vad_multiprocessing(in_params[0])
 
 
 def data_vad(args):
@@ -54,15 +59,15 @@ def data_vad(args):
 
 def main():
     # Done:
-    # Chinese：SLR38/SLR68/Aishell3
-    parser = argparse.ArgumentParser(description='Streamax SV Data Split Engine')
+    # Chinese：SLR38/SLR68/Aishell3/CN-Celeb1/CN-Celeb2
+    parser = argparse.ArgumentParser(description='Streamax SV Data Vad Engine')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_english_TI_SV.py", help='config file')
     parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_chinese_TI_SV.py", help='config file')
     args = parser.parse_args()
 
-    print("[Begin] Train test dataset split")
+    print("[Begin] Data vad")
     data_vad(args)
-    print("[Done] Train test dataset split")
+    print("[Done] Data vad")
 
 
 if __name__ == "__main__":

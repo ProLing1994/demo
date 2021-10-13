@@ -125,9 +125,10 @@ def train(args):
         msg = 'Knowledge Distillation: {} -> {}'.format(cfg.knowledge_distillation.teacher_model_name, cfg.net.model_name)
         logger.info(msg)
 
-        teacher_model = import_network(cfg, cfg.knowledge_distillation.teacher_model_name, cfg.knowledge_distillation.teacher_class_name)
-        _, _ = load_checkpoint(teacher_model, cfg.knowledge_distillation.epoch, 
-                                cfg.knowledge_distillation.teacher_model_dir)
+        teacher_model = import_network(cfg, cfg.knowledge_distillation.teacher_model_name, 
+                                        cfg.knowledge_distillation.teacher_class_name)
+        load_checkpoint(teacher_model, cfg.knowledge_distillation.epoch, 
+                        cfg.knowledge_distillation.teacher_model_dir)
         teacher_model.eval()
 
     # define training dataset and testing dataset

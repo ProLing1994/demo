@@ -22,7 +22,6 @@ def data_check_normal(cfg, csv_path):
 
         if not os.path.exists(file_path):
             drop_list.append(idx)
-            print("remove file path: {}".format(file_path))
             continue
 
         # value
@@ -30,8 +29,8 @@ def data_check_normal(cfg, csv_path):
 
         # check
         if len(data) == 0 or len(data) < desired_samples:
-            drop_list.append(idx)
             os.remove(file_path)
+            drop_list.append(idx)
             print("remove file path: {}, wave length: {}".format(file_path, len(data)))
 
     print("[Information] Drop wav: {}/{}".format(len(drop_list), len(data_pd)))
@@ -57,14 +56,14 @@ def data_check(args):
 def main():
     # Done:
     # Chinese：SLR38/SLR68/Aishell3
-    parser = argparse.ArgumentParser(description='Streamax SV Data Split Engine')
+    parser = argparse.ArgumentParser(description='Streamax SV Data Check Engine')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_english_TI_SV.py", help='config file')
     parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_chinese_TI_SV.py", help='config file')
     args = parser.parse_args()
 
-    print("[Begin] Train test dataset split")
+    print("[Begin] Data check")
     data_check(args)
-    print("[Done] Train test dataset split")
+    print("[Done] Data check")
 
 
 if __name__ == "__main__":

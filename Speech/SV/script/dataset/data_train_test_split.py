@@ -6,11 +6,11 @@ from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
-from SV.utils.train_tools import *
-from SV.config.hparams import *
-
+from Basic.config import hparams
 from Basic.utils.train_tools import *
 from Basic.utils.folder_tools import *
+
+from SV.utils.train_tools import *
 
 
 def load_dataset_type_1(dataset_name, dataset_path, data_files, mode, keep_speaker_ids=None):
@@ -71,7 +71,8 @@ def load_dataset_type_2(dataset_name, dataset_path, data_files, mode):
             
             section_id = 0
             file_path = os.path.join(os.path.join(dataset_path, speaker_id, utterance_id))
-            data_files.append({'dataset': dataset_name, 'speaker': speaker_id, 'section': section_id, 'utterance': utterance_id, 'file': file_path, 'mode': mode})
+            # data_files.append({'dataset': dataset_name, 'speaker': speaker_id, 'section': section_id, 'utterance': utterance_id, 'file': file_path, 'mode': mode})
+            data_files.append({'dataset': dataset_name, 'speaker': speaker_id, 'section': section_id, 'utterance': speaker_id + '_' + utterance_id, 'file': file_path, 'mode': mode})
 
 
 def load_dataset_type_3(dataset_name, dataset_path, data_files, mode):
@@ -82,6 +83,7 @@ def load_dataset_type_3(dataset_name, dataset_path, data_files, mode):
     '''
     # load dataset
     wav_list = get_sub_filepaths_suffix(dataset_path, suffix='.wav')
+    wav_list.sort()
 
     for wav_idx in tqdm(range(len(wav_list))):
         file_path = wav_list[wav_idx]
@@ -121,10 +123,10 @@ def data_split_normal(cfg, dataset_name, type=1):
     # init
     data_files = []                 # {'speaker': [], 'section': [], 'utterance': [], 'file': [], 'mode': []}
     
-    print("[Begin] dataset: {}, set: {}".format(dataset_name, TRAINING_NAME))
-    load_dataset(dataset_name, dataset_training_path, data_files, TRAINING_NAME, type=type)
-    print("[Begin] dataset: {}, set: {}".format(dataset_name, TESTING_NAME))
-    load_dataset(dataset_name, dataset_testing_path, data_files, TESTING_NAME, type=type)
+    print("[Begin] dataset: {}, set: {}".format(dataset_name, hparams.TRAINING_NAME))
+    load_dataset(dataset_name, dataset_training_path, data_files, hparams.TRAINING_NAME, type=type)
+    print("[Begin] dataset: {}, set: {}".format(dataset_name, hparams.TESTING_NAME))
+    load_dataset(dataset_name, dataset_testing_path, data_files, hparams.TESTING_NAME, type=type)
 
     data_pd = pd.DataFrame(data_files)
     data_pd.to_csv(output_csv, index=False, encoding="utf_8_sig")
@@ -151,17 +153,17 @@ def data_split_voxceleb1(cfg, dataset_name, type=1):
     # Select the ID and the nationality, filter out non-anglophone speakers
     nationalities = {line[0]: line[3] for line in metadata}
     keep_speaker_ids = [speaker_id for speaker_id, nationality in nationalities.items() if 
-                        nationality.lower() in Anglophone_Nationalites]
+                        nationality.lower() in hparams.Anglophone_Nationalites]
     print("VoxCeleb1: using samples from %d (presumed anglophone) speakers out of %d." % 
         (len(keep_speaker_ids), len(nationalities)))
 
     # init
     data_files = []                 # {'dataset': [], 'speaker': [], 'section': [], 'utterance': [], 'file': [], 'mode': []}
     
-    print("[Begin] dataset: {}, set: {}".format(dataset_name, TRAINING_NAME))
-    load_dataset(dataset_name, dataset_training_path, data_files, TRAINING_NAME, keep_speaker_ids=keep_speaker_ids, type=type)
-    print("[Begin] dataset: {}, set: {}".format(dataset_name, TESTING_NAME))
-    load_dataset(dataset_name, dataset_testing_path, data_files, TESTING_NAME, keep_speaker_ids=keep_speaker_ids, type=type)
+    print("[Begin] dataset: {}, set: {}".format(dataset_name, hparams.TRAINING_NAME))
+    load_dataset(dataset_name, dataset_training_path, data_files, hparams.TRAINING_NAME, keep_speaker_ids=keep_speaker_ids, type=type)
+    print("[Begin] dataset: {}, set: {}".format(dataset_name, hparams.TESTING_NAME))
+    load_dataset(dataset_name, dataset_testing_path, data_files, hparams.TESTING_NAME, keep_speaker_ids=keep_speaker_ids, type=type)
 
     data_pd = pd.DataFrame(data_files)
     data_pd.to_csv(output_csv, index=False, encoding="utf_8_sig")
@@ -185,7 +187,7 @@ def data_split_background_noise(cfg, dataset_name):
         background_noise_id = background_noise_list[background_noise_idx]
         if background_noise_id.endswith('flac') or background_noise_id.endswith('wav'):
             background_noise_path = os.path.join(background_noise_dir, background_noise_id)
-            background_noise_files.append({'label': BACKGROUND_NOISE_DIR_NAME, 'file':background_noise_path})
+            background_noise_files.append({'label': hparams.BACKGROUND_NOISE_DIR_NAME, 'file':background_noise_path})
 
     background_noise_pd = pd.DataFrame(background_noise_files)
     background_noise_pd.to_csv(output_csv, index=False, encoding="utf_8_sig")
@@ -212,6 +214,10 @@ def data_split(args):
         elif dataset_name == 'SLR38':
             data_split_normal(cfg, dataset_name, type = 3)
         elif dataset_name == 'SLR68':
+            data_split_normal(cfg, dataset_name, type = 2)
+        elif dataset_name == 'CN-Celeb1':
+            data_split_normal(cfg, dataset_name, type = 2)
+        elif dataset_name == 'CN-Celeb2':
             data_split_normal(cfg, dataset_name, type = 2)
 
     # background_noise dataset

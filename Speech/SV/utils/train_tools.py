@@ -32,7 +32,7 @@ def generate_dataset(cfg, mode):
     dataloader = SpeakerVerificationDataLoader(
                     cfg, 
                     dataset,
-                    cfg.train.speakers_per_batch,
+                    speakers_per_batch=cfg.train.speakers_per_batch,
                     num_workers=cfg.train.num_threads,
                     sampler=sampler)
     return dataloader, len(dataset)
@@ -47,14 +47,14 @@ def generate_test_dataset(cfg, mode):
     assert mode in ['training', 'testing',
                     'validation'], "[ERROR:] Unknow mode: {}".format(mode)
 
-    dataset = SpeakerVerificationDataset(cfg, mode, augmentation_on=False)
+    dataset = SpeakerVerificationDataset(cfg, mode, bool_trainning=False)
     dataloader = SpeakerVerificationDataLoader(
                     cfg,
                     dataset,
-                    1,
-                    pin_memory=False,
+                    speakers_per_batch=1,
                     num_workers=1,
-                    dynamic_length_on=False)
+                    pin_memory=False,
+                    bool_trainning=False)
     return dataloader
 
 

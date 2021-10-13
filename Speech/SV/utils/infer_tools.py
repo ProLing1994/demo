@@ -1,10 +1,12 @@
+import librosa
 import numpy as np
 import sys
 import torch 
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-from Basic.dataset import audio
-
+from Basic.config import hparams
+from Basic.dataset import audio 
+from Basic.dataset import dataset_augmentation
 
 def embed_frames_batch(frames_batch, net):
     """
@@ -55,7 +57,7 @@ def compute_partial_slices(n_samples, cfg, min_pad_coverage=0.75, overlap=0.5):
     assert 0 < min_pad_coverage <= 1
     
     # 每一帧的帧长
-    # frame_num_model_forward：模型前向传播 mel 频率的长度，fbank_cpu bug 导致差异
+    # frame_num_model_forward：模型前向传播 mel 频率的长度
     # frame_num_realtime：真实时长 mel 频率的长度
     frame_num_model_forward = cfg.dataset.data_size[1]
     frame_num_realtime = int(cfg.dataset.clip_duration_ms / cfg.dataset.window_stride_ms)
@@ -106,17 +108,31 @@ def embed_utterance(wav, cfg, sv_net):
     return embed
 
 
-def embedding(cfg, net, in_fpath):
+def embedding(cfg, net, fpath_or_wav):
     ## Computing the embedding
     # First, we load the wav using the function that the speaker encoder provides. This is 
     # important: there is preprocessing that must be applied.
-    
-    # - Directly load from the filepath:
-    preprocessed_wav = audio.preprocess_wav(in_fpath, cfg.dataset.sample_rate)
-    
+
+    # Load the wav from disk if needed
+    if isinstance(fpath_or_wav, str):
+        data = librosa.load(str(fpath_or_wav), sr=cfg.dataset.sample_rate)[0]
+    else:
+        data = fpath_or_wav
+
+    # data trim_silence
+    if hparams.trim_silence:
+        data = audio.trim_silence(data)
+
+    # data alignment
+    data = dataset_augmentation.dataset_alignment(cfg, data, bool_replicate=True)
+
+    # data rescale
+    if hparams.rescale:
+        data = data / np.abs(data).max() * hparams.rescaling_max
+
     # Then we derive the embedding. There are many functions and parameters that the 
     # speaker encoder interfaces. These are mostly for in-depth research. You will typically
     # only use this function (with its default parameters):
-    embed = embed_utterance(preprocessed_wav, cfg, net)
+    embed = embed_utterance(data, cfg, net)
     # print("Created the embedding")
     return embed

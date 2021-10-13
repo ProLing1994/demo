@@ -79,14 +79,15 @@ def import_network(cfg, model_name, class_name):
     os.sys.path.insert(0, os.path.dirname(model_name))
     net_module = importlib.import_module(os.path.splitext(os.path.basename(model_name))[0])
     os.sys.path.pop(0)
-
+    
+    # load model
     net = net_module.__getattribute__(class_name)(cfg)
-
+    
+    # init model parameters
     if 'parameters_init' in net_module.__dict__:
         net_module.parameters_init(net)
         
     gpu_ids = list(range(cfg.general.num_gpus))
-
     if cfg.general.data_parallel_mode == 0:
         net = torch.nn.parallel.DataParallel(net, device_ids=gpu_ids)
         net = net.cuda()

@@ -107,11 +107,11 @@ class Speaker:
 
 
 class SpeakerVerificationDataset(Dataset):
-    def __init__(self, cfg, mode, augmentation_on=True):
+    def __init__(self, cfg, mode, bool_trainning=True):
         # init
         self.cfg = cfg
         self.mode = mode
-        self.augmentation_on = augmentation_on
+        self.bool_trainning = bool_trainning
         self.data_pd = load_data_pd(cfg, mode)
         self.speaker_list = list(set(self.data_pd['speaker'].to_list()))
         if len(self.speaker_list) == 0:
@@ -137,7 +137,7 @@ class SpeakerVerificationDataset(Dataset):
 
         # Array of shape (n_utterances, n_frames, mel_n), e.g. for 1 speakers with
         # 10 utterances each of 160 frames of 40 mel coefficients: (10, 160, 40)
-        data = np.array(gen_data(self.cfg, self.lmdb_dict, self.background_data, utterances, self.augmentation_on))
+        data = np.array(gen_data(self.cfg, self.lmdb_dict, self.background_data, utterances, self.bool_trainning))
     
         return data
 
@@ -145,7 +145,7 @@ class SpeakerVerificationDataset(Dataset):
 class SpeakerVerificationDataLoader(DataLoader):
     def __init__(self, cfg, dataset, speakers_per_batch, sampler=None, 
                  batch_sampler=None, num_workers=0, pin_memory=True,
-                 timeout=0, worker_init_fn=None, dynamic_length_on=True):
+                 timeout=0, worker_init_fn=None, bool_trainning=True):
         super().__init__(
             dataset=dataset, 
             batch_size=speakers_per_batch, 
@@ -160,28 +160,25 @@ class SpeakerVerificationDataLoader(DataLoader):
             worker_init_fn=worker_init_fn
         )
         self.cfg = cfg
-        self.dynamic_length_on = dynamic_length_on
+        self.bool_trainning = bool_trainning
 
     def collate(self, data):
-        return data_batch(self.cfg, self.dynamic_length_on, data) 
+        return data_batch(self.cfg, self.bool_trainning, data) 
 
 
-def data_batch(cfg, dynamic_length_on, data):
+def data_batch(cfg, bool_trainning, data):
     # Array of shape (n_speakers * n_utterances, n_frames, mel_n), e.g. for 2 speakers with
     # 10 utterances each of 160 frames of 40 mel coefficients: (20, 160, 40)
     data = np.array([frames for speaker_data in data for frames in speaker_data])
 
     # data dynamic length
-    if dynamic_length_on:
+    if cfg.dataset.clip_duration_dynamic_length_on and bool_trainning:
         # 由于模型的特殊性，输入音频数据可以是变长的
         data_frames = data.shape[1]
-        min_frames = int(cfg.dataset.clip_duration_ratio[0] * data_frames)
-        max_frames = int(cfg.dataset.clip_duration_ratio[1] * data_frames)
+        min_frames = int(cfg.dataset.clip_duration_dynamic_ratio[0] * data_frames)
+        max_frames = int(cfg.dataset.clip_duration_dynamic_ratio[1] * data_frames)
         
-        if min_frames >= max_frames:
-            real_frames = max_frames
-        else:
-            real_frames = np.random.randint(min_frames, max_frames)  
+        real_frames = np.random.randint(min_frames, max_frames)  
         data = data[:, :real_frames, :]
     return data
 
@@ -229,28 +226,12 @@ def load_background_data(cfg):
     
     return background_data
 
-def gen_data(cfg, lmdb_dict, background_data, utterances, augmentation_on=True):
+def gen_data(cfg, lmdb_dict, background_data, utterances, bool_trainning=True):
     data_list = []
 
     for utterance_id in range(len(utterances)):
         utterance_pd = utterances[utterance_id]
         data = lmdb_tools.read_audio_lmdb(lmdb_dict[str(utterance_pd['dataset'].values[0])], str(utterance_pd['file'].values[0]))
-
-        ## 预处理版本，在 data_preload_audio_lmdb.py（预处理版本）中，通过函数 preprocess_wav 进行预处理
-        # # data augmentation
-        # if cfg.dataset.augmentation.on and augmentation_on:
-        #     data = dataset_augmentation.dataset_augmentation_waveform(cfg, data, background_data)
-        # else:
-        #     data = dataset_augmentation.dataset_alignment(cfg, data)
-
-        # # Compute the mel spectrogram
-        # data = audio.compute_mel_spectrogram(cfg, data)
-
-        # # data augmentation
-        # if cfg.dataset.augmentation.on and cfg.dataset.augmentation.spec_on and augmentation_on:
-        #     data = dataset_augmentation.dataset_augmentation_spectrum(cfg, data)
-
-        ## 普通版本
         assert len(data) > 0, "{} {}".format(str(utterance_pd['dataset'].values[0]), str(utterance_pd['file'].values[0]))
 
         # data trim_silence
@@ -265,14 +246,14 @@ def gen_data(cfg, lmdb_dict, background_data, utterances, augmentation_on=True):
             data = data / np.abs(data).max() * hparams.rescaling_max
 
         # data augmentation
-        if cfg.dataset.augmentation.on and augmentation_on:
+        if cfg.dataset.augmentation.on and bool_trainning:
             data = dataset_augmentation.dataset_augmentation_waveform(cfg, data, background_data)
 
         # Compute the mel spectrogram
         data = audio.compute_mel_spectrogram(cfg, data)
 
         # data augmentation
-        if cfg.dataset.augmentation.on and cfg.dataset.augmentation.spec_on and augmentation_on:
+        if cfg.dataset.augmentation.on and cfg.dataset.augmentation.spec_on and bool_trainning:
             data = dataset_augmentation.dataset_augmentation_spectrum(cfg, data)
         
         data_list.append(data)

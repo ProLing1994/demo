@@ -14,7 +14,7 @@ from Basic.utils.train_tools import load_cfg_file
 from Basic.utils.folder_tools import *
 
 
-parser = argparse.ArgumentParser(description='Streamax SV Data Split Engine')
+parser = argparse.ArgumentParser(description='Streamax SV Data preload Engine')
 # parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_english_TI_SV.py", help='config file')
 parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_chinese_TI_SV.py", help='config file')
 args = parser.parse_args()
@@ -38,8 +38,8 @@ def general_lmdb(cfg, lmdb_path, csv_path, mode_type='testing', bool_background_
         mode_data_pd = data_pd
     else:
         mode_data_pd = data_pd[data_pd['mode'] == mode_type]
-    file_list = mode_data_pd['file'].tolist()
 
+    file_list = mode_data_pd['file'].tolist()
     if not len(file_list):
         print("[Information] file:{} empty. Exit...".format(csv_path))
         return
@@ -66,6 +66,7 @@ def general_lmdb(cfg, lmdb_path, csv_path, mode_type='testing', bool_background_
 
         # value
         data = librosa.core.load(file_path, sr=sample_rate)[0]
+
         # check
         if len(data) == 0 or len(data) < desired_samples:
             drop_list.append(idx)
@@ -84,7 +85,6 @@ def general_lmdb(cfg, lmdb_path, csv_path, mode_type='testing', bool_background_
     print("[Information] Drop wav: {}/{}".format(len(drop_list), len(data_pd)))
     data_pd.drop(drop_list, inplace=True)
     data_pd.to_csv(csv_path, index=False, encoding="utf_8_sig")
-
     
 
 def preload_audio_lmdb(mode_type):

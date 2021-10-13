@@ -2,7 +2,7 @@
 
 # 该脚本用于训练集、验证集、测试集的分配，以及数据的预先加载
 
-stage=2
+stage=1
 
 # init
 # config_file=/home/huanyuan/code/demo/Speech/SV/config/sv_config_english_TI_SV.py

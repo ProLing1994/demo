@@ -19,8 +19,8 @@ from Basic.config import hparams
 def preprocess_wav(fpath_or_wav: Union[str, np.ndarray],
                    sampling_rate: Union[int],
                    source_sr: Optional[int] = None,
-                   normalize: Optional[bool] = True,
-                   trim_silence: Optional[bool] = True):
+                   bool_normalize: Optional[bool] = True,
+                   bool_trim_silence: Optional[bool] = True):
     """
     Applies the preprocessing operations used in training the Speaker Encoder to a waveform 
     either on disk or in memory. The waveform will be resampled to match the data hyperparameters.
@@ -39,9 +39,9 @@ def preprocess_wav(fpath_or_wav: Union[str, np.ndarray],
         wav = librosa.resample(wav, source_sr, sampling_rate)
         
     # Apply the preprocessing: normalize volume and shorten long silences 
-    if normalize:
+    if bool_normalize:
         wav = normalize_volume(wav, hparams.audio_norm_target_dBFS, increase_only=True)
-    if trim_silence:
+    if bool_trim_silence:
         # wav = trim_silence(wav)
         wav = trim_long_silences(wav, sampling_rate)
     
@@ -97,11 +97,21 @@ def trim_long_silences(wav, sampling_rate):
 
 
 def normalize_volume(wav, target_dBFS, increase_only=False, decrease_only=False):
+    """
+    音频音量大小归一化，将音频规整到目标分贝 target_dBFS
+    计算公式：$N_{dB}=10 \lg \frac{pi}{p0}$，${pi}$、${p0}$ 为功率的单位
+             $N_{dB}=20 \lg \frac{pi}{p0}$，${pi}$、${p0}$ 为幅值的单位
+    """
     if increase_only and decrease_only:
         raise ValueError("Both increase only and decrease only are set")
+
+    # 计算公式：$N_{dB}=10 \lg \frac{pi}{p0}$，${pi}$、${p0}$ 为功率的单位
     dBFS_change = target_dBFS - 10 * np.log10(np.mean(wav ** 2))
+    
     if (dBFS_change < 0 and increase_only) or (dBFS_change > 0 and decrease_only):
         return wav
+
+    # 计算公式：$N_{dB}=20 \lg \frac{pi}{p0}$，${pi}$、${p0}$ 为幅值的单位
     return wav * (10 ** (dBFS_change / 20))
 
 
