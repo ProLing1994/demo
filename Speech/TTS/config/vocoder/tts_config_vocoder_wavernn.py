@@ -90,7 +90,7 @@ __C.speaker_verification.ignore_key_list = []
 
 __C.synthesizer = {}
 
-# __C.synthesizer.config_file = "/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_sv2tts.py"
+# __C.synthesizer.config_file = "/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_english_sv2tts.py"
 # __C.synthesizer.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron.py"
 # __C.synthesizer.class_name = 'Tacotron'
 # # 方式一：模型训练过程中，保存模型
@@ -100,7 +100,7 @@ __C.synthesizer = {}
 # __C.synthesizer.model_path = "/mnt/huanyuan/model/model_10_30_25_21/model/tts/pretrained/pretrain_model/parameter.pkl"
 # __C.synthesizer.ignore_key_list = []
 
-__C.synthesizer.config_file = "/mnt/huanyuan2/model/tts/sv2tts_english_finetune_2_0_09202021/tts_config_sv2tts.py"
+__C.synthesizer.config_file = "/mnt/huanyuan2/model/tts/sv2tts_english_finetune_2_0_09202021/tts_config_english_sv2tts.py"
 __C.synthesizer.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron.py"
 __C.synthesizer.class_name = 'Tacotron'
 # 方式一：模型训练过程中，保存模型

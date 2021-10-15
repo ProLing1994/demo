@@ -67,7 +67,7 @@ def infer(args):
 
 def main():
     parser = argparse.ArgumentParser(description='Streamax SV2TTS Training Engine')
-    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_sv2tts.py", nargs='?', help='config file')
+    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_english_sv2tts.py", nargs='?', help='config file')
     parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/1320_00000.mp3", nargs='?', help='config file')
     parser.add_argument('-t', '--text', type=str, default="activate be double you see.", nargs='?', help='config file')
     args = parser.parse_args()

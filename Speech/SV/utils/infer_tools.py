@@ -89,7 +89,10 @@ def compute_partial_slices(n_samples, cfg, min_pad_coverage=0.75, overlap=0.5):
 def embed_utterance(wav, cfg, sv_net):
     """
     Computes an embedding for a single utterance.
-    """   
+    """ 
+    # data alignment
+    wav = dataset_augmentation.dataset_alignment(cfg, wav, bool_replicate=True)
+
     # Compute where to split the utterance into partials and pad if necessary
     wave_slices, mel_slices = compute_partial_slices(len(wav), cfg)
     max_wave_length = wave_slices[-1].stop

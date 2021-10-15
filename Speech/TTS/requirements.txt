@@ -1,2 +1,4 @@
-Unidecode
 inflect
+jieba
+pypinyin
+Unidecode

@@ -22,7 +22,7 @@ class VocoderDataset(Dataset):
 
         self.hop_length = int(self.cfg.dataset.sample_rate * self.cfg.dataset.window_stride_ms / 1000)
         self.data_pd = load_data_pd(cfg, mode)
-        self.data_list = self.data_pd['sub_basename'].to_list()
+        self.data_list = self.data_pd['unique_utterance'].to_list()
         if len(self.data_list) == 0:
             raise Exception("No speakers found. ")
         
@@ -36,7 +36,7 @@ class VocoderDataset(Dataset):
             self.lmdb_dict = load_lmdb(self.cfg, self.mode)
 
         lmdb_dataset = self.data_pd.loc[index, 'dataset']
-        data_name = self.data_pd.loc[index, 'sub_basename']
+        data_name = self.data_pd.loc[index, 'unique_utterance']
         text = self.data_pd.loc[index, 'text']
 
         # text

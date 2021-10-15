@@ -13,8 +13,8 @@ def analysis_speaker_id(args):
     cfg = load_cfg_file(args.config_file)
 
     # load data_pd
-    for dataset_idx in range(len(cfg.general.TISV_dataset_list)):
-        dataset_name = cfg.general.TISV_dataset_list[dataset_idx]
+    for dataset_idx in range(len(cfg.general.dataset_list)):
+        dataset_name = cfg.general.dataset_list[dataset_idx]
         csv_path = os.path.join(cfg.general.data_dir, dataset_name + '.csv')
     
         data_pd = pd.read_csv(csv_path)

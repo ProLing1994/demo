@@ -185,8 +185,8 @@ def data_batch(cfg, bool_trainning, data):
 
 def load_data_pd(cfg, mode):
     # load data_pd
-    for dataset_idx in range(len(cfg.general.TISV_dataset_list)):
-        dataset_name = cfg.general.TISV_dataset_list[dataset_idx]
+    for dataset_idx in range(len(cfg.general.dataset_list)):
+        dataset_name = cfg.general.dataset_list[dataset_idx]
         csv_path = os.path.join(cfg.general.data_dir, dataset_name + '.csv')
     
         data_pd_temp = pd.read_csv(csv_path)
@@ -203,8 +203,8 @@ def load_data_pd(cfg, mode):
 def load_lmdb(cfg, mode):
     # load lmdb_dict
     lmdb_dict = {}
-    for dataset_idx in range(len(cfg.general.TISV_dataset_list)):
-        dataset_name = cfg.general.TISV_dataset_list[dataset_idx]
+    for dataset_idx in range(len(cfg.general.dataset_list)):
+        dataset_name = cfg.general.dataset_list[dataset_idx]
         lmdb_path = os.path.join(cfg.general.data_dir, 'dataset_audio_lmdb', '{}.lmdb'.format(dataset_name+'_'+mode))
         if not os.path.exists(lmdb_path):
             print("[Warning] data do not exists: {}".format(lmdb_path))

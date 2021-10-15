@@ -15,11 +15,12 @@ cfg = __C
 
 __C.general = {}
 
-# __C.general.dataset_list = ['librispeech_clean_360', 'librispeech_clean_100', 'test_clean']
+# __C.general.dataset_list = ['librispeech_clean_360', 'librispeech_clean_100', 'librispeech_test_clean']
 __C.general.dataset_list = ['test']
-__C.general.dataset_path_dict = {"librispeech_clean_360_training": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-clean-360",
+__C.general.dataset_path_dict = {
+                                "librispeech_clean_360_training": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-clean-360",
                                 "librispeech_clean_100_training": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-clean-100",
-                                "test_clean_testing": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/test-clean",
+                                "librispeech_test_clean_testing": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/test-clean",
                                 }
 
 # data path
@@ -134,6 +135,9 @@ __C.dataset.num_chars = len(symbols)
 
 # speaker_embedding_size
 __C.dataset.speaker_embedding_size = 256
+
+# language
+__C.dataset.language = 'english'
 
 # tts_cleaner_names
 __C.dataset.tts_cleaner_names = ["english_cleaners"]

@@ -1,13 +1,15 @@
 import os
 import pandas as pd
 import sys
+import torch
 from torch.utils.data import Dataset, DataLoader
 
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
-from Basic.utils.lmdb_tools import *
+from Basic.config import hparams
 from Basic.dataset import audio
+from Basic.utils.lmdb_tools import *
 
 from TTS.config.sv2tts.hparams import *
 from TTS.dataset.sv2tts.text import *
@@ -18,7 +20,7 @@ def load_data_pd(cfg, mode):
     # load data_pd
     for dataset_idx in range(len(cfg.general.dataset_list)):
         dataset_name = cfg.general.dataset_list[dataset_idx]
-        csv_path = os.path.join(cfg.general.data_dir, dataset_name + '.csv')
+        csv_path = os.path.join(cfg.general.data_dir, dataset_name + '_' + mode + '.csv')
     
         data_pd_temp = pd.read_csv(csv_path)
         if dataset_idx == 0:
@@ -63,7 +65,7 @@ class SynthesizerDataset(Dataset):
         self.augmentation_on = augmentation_on
 
         self.data_pd = load_data_pd(cfg, mode)
-        self.data_list = self.data_pd['sub_basename'].to_list()
+        self.data_list = self.data_pd['unique_utterance'].to_list()
         if len(self.data_list) == 0:
             raise Exception("No speakers found. ")
 
@@ -77,8 +79,14 @@ class SynthesizerDataset(Dataset):
             self.lmdb_dict = load_lmdb(self.cfg, self.mode)
 
         lmdb_dataset = self.data_pd.loc[index, 'dataset']
-        data_name = self.data_pd.loc[index, 'sub_basename']
-        text = self.data_pd.loc[index, 'text']
+        data_name = self.data_pd.loc[index, 'unique_utterance']
+
+        if self.cfg.dataset.language == 'chinese':
+            text = self.data_pd.loc[index, 'pinyin']
+        elif self.cfg.dataset.language == 'english':
+            text = self.data_pd.loc[index, 'text']
+        else:
+            raise Exception("[ERROR:] Unknow dataset language: {}".format(self.cfg.dataset.language))
 
         # text
         # Get the text and clean it
@@ -95,8 +103,7 @@ class SynthesizerDataset(Dataset):
         mel_frames = mel.shape[1]
 
         # embed wav
-        # [BUG]：这里加载的 wav 是有问题的。原因：在生成 lmdb 的时候，wav 数据进行了 rescale
-        embed_wav = preprocess_wav(wav, self.cfg.dataset.sample_rate)
+        embed_wav = wav
         return text, mel, mel_frames, embed_wav
 
 
@@ -132,8 +139,8 @@ class SynthesizerDataLoader(DataLoader):
 
         # WaveRNN mel spectrograms are normalized to [0, 1] so zero padding adds silence
         # By default, SV2TTS uses symmetric mels, where -1*max_abs_value is silence.
-        if symmetric_mels:
-            mel_pad_value = -1 * max_abs_value
+        if hparams.symmetric_mels:
+            mel_pad_value = -1 * hparams.max_abs_value
         else:
             mel_pad_value = 0
 

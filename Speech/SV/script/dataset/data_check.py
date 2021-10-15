@@ -43,8 +43,8 @@ def data_check(args):
     cfg = load_cfg_file(args.input)
 
     # dataset
-    for dataset_idx in range(len(cfg.general.TISV_dataset_list)):
-        dataset_name = cfg.general.TISV_dataset_list[dataset_idx]
+    for dataset_idx in range(len(cfg.general.dataset_list)):
+        dataset_name = cfg.general.dataset_list[dataset_idx]
         csv_path = os.path.join(cfg.general.data_dir, dataset_name + '.csv')
 
         # data_check

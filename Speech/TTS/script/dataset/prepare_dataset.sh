@@ -3,17 +3,19 @@
 # 该脚本用于训练集、验证集、测试集的分配，以及数据的预先加载
 
 stage=2
+# languague="english"
+languague="chinese"
 
 # init
-# config_file=/home/huanyuan/code/demo/Speech/SV/config/sv_config_english_TI_SV.py
-config_file=/home/huanyuan/code/demo/Speech/SV/config/sv_config_chinese_TI_SV.py
+# config_file=/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_english_sv2tts.py
+config_file=/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_chinese_sv2tts.py
 
 echo "script/dataset/prepare_dataset.sh"
 
 # vad 
 # 功能：vad，数据清洗剔除静音音频部分
 if [ $stage -le 1 ];then
-	python data_vad.py -i $config_file || exit 1
+	python /home/huanyuan/code/demo/Speech/SV/script/dataset/data_vad.py -i $config_file || exit 1
 fi
 
 # train test dataset split 
@@ -29,5 +31,11 @@ fi
 if [ $stage -le 3 ];then
 	python data_preload_audio_lmdb.py --config_file $config_file || exit 1
 fi
+
+# if [ $stage -le 4 ];then
+# 	if [ $languague = "chinese" ];then
+# 		python data_pinyin.py --config_file $config_file || exit 1
+# 	fi
+# fi
 
 echo "script/dataset/prepare_dataset.sh succeeded"

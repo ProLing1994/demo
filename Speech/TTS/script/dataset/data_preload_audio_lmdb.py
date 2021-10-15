@@ -1,5 +1,5 @@
 import argparse
-import lmdb/home/huanyuan/code/demo/Speech/TTS/script/dataset/data_preload_audio_lmdb.py
+import lmdb
 import librosa 
 import numpy as np
 import os
@@ -9,22 +9,23 @@ from pandas.io.parsers import read_csv
 from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.config import hparams
 from Basic.utils.train_tools import load_cfg_file
 from Basic.utils.folder_tools import *
 
-from TTS.config.hparams import *
-from TTS.dataset.audio import *
+from TTS.dataset.sv2tts import audio
 
 
 parser = argparse.ArgumentParser(description='Streamax SV Data Split Engine')
-parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/TTS/config/tts_config_sv2tts.py", help='config file')
+# parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/TTS/config/tts_config_english_sv2tts.py", help='config file')
+parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_chinese_sv2tts.py", help='config file')
 args = parser.parse_args()
 
 # params
 args.commit_interval = 100
 
 
-def general_lmdb(cfg, lmdb_path, csv_path, mode_type='testing'):
+def general_lmdb(cfg, lmdb_path, csv_path, dataset_name, mode_type='testing'):
     assert lmdb_path.endswith('.lmdb'), "[ERROR] lmdb_path must end with 'lmdb'."
     if os.path.exists(lmdb_path):
         print("[Information] Folder [{:s}] already exists. Exit...".format(lmdb_path))
@@ -35,6 +36,7 @@ def general_lmdb(cfg, lmdb_path, csv_path, mode_type='testing'):
 
     data_pd = pd.read_csv(csv_path)
     mode_data_pd = data_pd[data_pd['mode'] == mode_type]
+
     file_list = mode_data_pd['file'].tolist()
     if not len(file_list):
         print("[Information] file:{} empty. Exit...".format(csv_path))
@@ -52,11 +54,11 @@ def general_lmdb(cfg, lmdb_path, csv_path, mode_type='testing'):
     txn = env.begin(write=True)
 
     # init
-    data_files = []                 # {'speaker': [], 'section': [], 'utterance': [], 'file': [], 'mode': []}
+    data_files = []                 # {'dataset': [], 'speaker': [], 'section': [], 'utterance': [], 'file': [], text': [], 'unique_utterance', [], 'mode': []}
 
     for idx, row in tqdm(mode_data_pd.iterrows(), total=len(file_list)):
 
-        metadata = preprocess_speaker(cfg, data_files, row, no_alignments=False)
+        metadata = audio.preprocess_speaker(cfg, data_files, row, dataset_name)
         
         for idy in range(len(metadata)):
             # key 
@@ -79,7 +81,8 @@ def general_lmdb(cfg, lmdb_path, csv_path, mode_type='testing'):
     env.close()
 
     data_pd = pd.DataFrame(data_files) 
-    data_pd.to_csv(csv_path, index=False, encoding="utf_8_sig")
+    out_put_csv = str(csv_path).split('.csv')[0] + '_' + mode_type + '.csv'
+    data_pd.to_csv(out_put_csv, index=False, encoding="utf_8_sig")
 
 
 def preload_audio_lmdb(mode_type):
@@ -103,14 +106,14 @@ def preload_audio_lmdb(mode_type):
         csv_path = os.path.join(cfg.general.data_dir, dataset_name + '.csv')
 
         # general lmdb
-        general_lmdb(cfg, lmdb_path, csv_path, mode_type=mode_type) 
+        general_lmdb(cfg, lmdb_path, csv_path, dataset_name, mode_type=mode_type) 
         print("Preload dataset:{}  Done!".format(dataset_name))
 
 
 def main():
     print("[Begin] Data Preload")
-    preload_audio_lmdb('training')
-    preload_audio_lmdb('testing')
+    preload_audio_lmdb(hparams.TESTING_NAME)
+    preload_audio_lmdb(hparams.TRAINING_NAME)
     print("[Done] Data Preload")
 
 

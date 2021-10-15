@@ -12,7 +12,11 @@ hyperparameter. Some cleaners are English-specific. You"ll typically want to use
 
 import re
 from unidecode import unidecode
-from .numbers import normalize_numbers
+import sys 
+
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from TTS.dataset.sv2tts.numbers import normalize_numbers
+
 
 # Regular expression matching whitespace:
 _whitespace_re = re.compile(r"\s+")
@@ -86,3 +90,11 @@ def english_cleaners(text):
   text = expand_abbreviations(text)
   text = collapse_whitespace(text)
   return text
+
+if __name__ == "__main__":
+  print(basic_cleaners("持起红缨枪追赶对方半公里"))
+  print(transliteration_cleaners("持起红缨枪追赶对方半公里"))
+  print(english_cleaners("持起红缨枪追赶对方半公里"))
+  print(basic_cleaners("chi2 qi3 / hong2 ying1 qiang1 / zhui1 gan3 / dui4 fang1 / ban4 gong1 li3 ,"))
+  print(transliteration_cleaners("chi2 qi3 / hong2 ying1 qiang1 / zhui1 gan3 / dui4 fang1 / ban4 gong1 li3 ,"))
+  print(english_cleaners("chi2 qi3 / hong2 ying1 qiang1 / zhui1 gan3 / dui4 fang1 / ban4 gong1 li3 ,"))

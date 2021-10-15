@@ -65,7 +65,11 @@ def general_lmdb(cfg, lmdb_path, csv_path, mode_type='testing', bool_background_
         key_byte = file_path.encode()
 
         # value
-        data = librosa.core.load(file_path, sr=sample_rate)[0]
+        try:
+            data = librosa.core.load(file_path, sr=sample_rate)[0]
+        except:
+            drop_list.append(idx)
+            continue
 
         # check
         if len(data) == 0 or len(data) < desired_samples:
@@ -99,8 +103,8 @@ def preload_audio_lmdb(mode_type):
     create_folder(output_dir)
 
     # dataset
-    for dataset_idx in range(len(cfg.general.TISV_dataset_list)):
-        dataset_name = cfg.general.TISV_dataset_list[dataset_idx]
+    for dataset_idx in range(len(cfg.general.dataset_list)):
+        dataset_name = cfg.general.dataset_list[dataset_idx]
 
         print("Start preload dataset: {}, mode_type: {}".format(dataset_name, mode_type))
         # init 

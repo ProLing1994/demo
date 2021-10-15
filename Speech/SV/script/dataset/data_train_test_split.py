@@ -98,7 +98,7 @@ def load_dataset_type_3(dataset_name, dataset_path, data_files, mode):
 
 def load_dataset(dataset_name, dataset_path, data_files, mode, keep_speaker_ids=None, type=1):
     # dataset_path == None, return
-    if not dataset_path:
+    if dataset_path == None:
         return 
 
     if type == 1:
@@ -113,8 +113,8 @@ def data_split_normal(cfg, dataset_name, type=1):
     '''
     data_split_normal
     '''
-    dataset_training_path = cfg.general.TISV_dataset_path_dict[dataset_name+ "_training"]
-    dataset_testing_path = cfg.general.TISV_dataset_path_dict[dataset_name+ "_testing"]
+    dataset_training_path = cfg.general.dataset_path_dict[dataset_name+ "_training"]
+    dataset_testing_path = cfg.general.dataset_path_dict[dataset_name+ "_testing"]
     output_csv = os.path.join(cfg.general.data_dir, dataset_name + '.csv')
 
     if os.path.exists(output_csv):
@@ -138,9 +138,9 @@ def data_split_voxceleb1(cfg, dataset_name, type=1):
     说明：
         voxceleb1 中包含 vox1_meta.csv，用于挑选不同国家的数据集
     '''
-    dataset_training_path = cfg.general.TISV_dataset_path_dict[dataset_name+ "_training"]
-    dataset_testing_path = cfg.general.TISV_dataset_path_dict[dataset_name+ "_testing"]
-    dataset_csv_path = cfg.general.TISV_dataset_path_dict[dataset_name+ "_csv"]
+    dataset_training_path = cfg.general.dataset_path_dict[dataset_name+ "_training"]
+    dataset_testing_path = cfg.general.dataset_path_dict[dataset_name+ "_testing"]
+    dataset_csv_path = cfg.general.dataset_path_dict[dataset_name+ "_csv"]
     output_csv = os.path.join(cfg.general.data_dir, dataset_name + '.csv')
     
     if os.path.exists(output_csv):
@@ -170,9 +170,12 @@ def data_split_voxceleb1(cfg, dataset_name, type=1):
 
 
 def data_split_background_noise(cfg, dataset_name):
+    if not dataset_name in cfg.general.dataset_path_dict:
+        return 
+
     # init
     background_noise_files = []           # {'label': [], 'file': []}
-    background_noise_dir = cfg.general.TISV_dataset_path_dict[dataset_name]
+    background_noise_dir = cfg.general.dataset_path_dict[dataset_name]
     background_noise_list = os.listdir(background_noise_dir)
     background_noise_list.sort()
 
@@ -200,8 +203,8 @@ def data_split(args):
     create_folder(cfg.general.data_dir)
 
     # dataset
-    for dataset_idx in range(len(cfg.general.TISV_dataset_list)):
-        dataset_name = cfg.general.TISV_dataset_list[dataset_idx]
+    for dataset_idx in range(len(cfg.general.dataset_list)):
+        dataset_name = cfg.general.dataset_list[dataset_idx]
 
         if dataset_name == 'librispeech_other':
             data_split_normal(cfg, dataset_name, type = 1)

@@ -29,7 +29,7 @@ def data_vad_normal(cfg, dataset_name):
     说明：
         对文件夹下所有音频数据执行 vad 操作，同时替换原有数据
     '''
-    dataset_path = cfg.general.TISV_dataset_path_dict[dataset_name]
+    dataset_path = cfg.general.dataset_path_dict[dataset_name]
 
     # load data
     data_list = get_sub_filepaths_suffix(dataset_path)
@@ -51,8 +51,8 @@ def data_vad(args):
     cfg = load_cfg_file(args.input)
 
     # dataset
-    for dataset_idx in range(len(cfg.general.TISV_dataset_list)):
-        dataset_name = cfg.general.TISV_dataset_list[dataset_idx]
+    for dataset_idx in range(len(cfg.general.dataset_list)):
+        dataset_name = cfg.general.dataset_list[dataset_idx]
 
         data_vad_normal(cfg, dataset_name)
 

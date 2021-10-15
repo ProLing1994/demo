@@ -1,6 +1,9 @@
-from .symbols import symbols
-from . import cleaners
 import re
+import sys 
+
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from TTS.dataset.sv2tts.symbols import symbols
+from TTS.dataset.sv2tts import cleaners
 
 # Mappings from symbol to numeric ID and vice versa:
 _symbol_to_id = {s: i for i, s in enumerate(symbols)}
@@ -72,3 +75,18 @@ def _arpabet_to_sequence(text):
 
 def _should_keep_symbol(s):
   return s in _symbol_to_id and s not in ("_", "~")
+
+
+if __name__ == "__main__":
+  symbols = text_to_sequence("持起红缨枪追赶对方半公里", cleaner_names=["transliteration_cleaners"])
+  print(symbols)
+  print([_id_to_symbol[s] for s in symbols])
+
+  symbols = text_to_sequence("chi2 qi3 / hong2 ying1 qiang1 / zhui1 gan3 / dui4 fang1 / ban4 gong1 li3 ", cleaner_names=["basic_cleaners"])
+  print(symbols)
+  print([_id_to_symbol[s] for s in symbols])
+
+  symbols = text_to_sequence("CHAPTER ONE MISSUS RACHEL LYNDE IS SURPRISED", cleaner_names=["english_cleaners"])
+  print(symbols)
+  print([_id_to_symbol[s] for s in symbols])
+

@@ -200,8 +200,8 @@ def load_checkpoint_from_path(net, chk_file,
         else:
             new_pre[name] = v
     
-    net.load_state_dict(new_pre)
-    # net.load_state_dict(new_pre, strict=False)
+    # net.load_state_dict(new_pre)
+    net.load_state_dict(new_pre, strict=False)
 
     return
 

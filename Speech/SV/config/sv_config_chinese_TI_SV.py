@@ -14,11 +14,12 @@ __C.general = {}
 SLR38: http://www.openslr.org/38/, 854/0(854)
 SLR68: http://www.openslr.org/68/, 1016/43(1059)
 Aishell3: http://www.openslr.org/93/, 171/156(218)
+CN-Celeb1: https://www.openslr.org/82/, 992/0(992)
+CN-Celeb2: https://www.openslr.org/82/, 1996/0(1996)
 '''
-__C.general.TISV_dataset_list = ['SLR38', 'SLR68', 'Aishell3']
-# __C.general.TISV_dataset_list = ['CN-Celeb1', 'CN-Celeb2']
-# __C.general.TISV_dataset_list = ['test']
-__C.general.TISV_dataset_path_dict = {
+__C.general.dataset_list = ['SLR38', 'SLR68', 'Aishell3', 'CN-Celeb1', 'CN-Celeb2']
+# __C.general.dataset_list = ['test']
+__C.general.dataset_path_dict = {
                                     "SLR38": "/mnt/huanyuan/data/speech/asr/Chinese/SLR38/ST-CMDS-20170001_1-OS/",
                                     "SLR38_training": "/mnt/huanyuan/data/speech/asr/Chinese/SLR38/ST-CMDS-20170001_1-OS/",
                                     "SLR38_testing": None,
@@ -42,7 +43,8 @@ __C.general.data_dir = "/mnt/huanyuan2/data/speech/sv/Chinese_TI_SV_dataset/data
 
 # the output of training models and logging files
 # __C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/test"
-__C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_0_basic_10122021"
+# __C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_0_basic_10122021"
+__C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_1_basic_10122021"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -50,12 +52,12 @@ __C.general.is_test = True
 
 # finetune model
 # 方式一：模型训练过程中，保存模型
-# __C.general.finetune_on = True
-__C.general.finetune_on = False
-__C.general.finetune_model_dir = ""
-__C.general.finetune_epoch = 0
+__C.general.finetune_on = True
+# __C.general.finetune_on = False
+__C.general.finetune_model_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_0_basic_10122021/"
+__C.general.finetune_epoch = 400
 # 方式二：加载其他模型结构
-__C.general.finetune_model_path = "/mnt/huanyuan2/model/sv/pretrained/pretrain_model/parameter.pkl"
+__C.general.finetune_model_path = ""
 __C.general.finetune_ignore_key_list = []
 
 # set certain epoch to continue training, set -1 to train from scratch
@@ -227,14 +229,14 @@ __C.train = {}
 __C.train.num_epochs = 1000
 
 # the number of samples in a batch
-# __C.train.speakers_per_batch = 64
-__C.train.speakers_per_batch = 4
+__C.train.speakers_per_batch = 64
+# __C.train.speakers_per_batch = 4
 __C.train.utterances_per_speaker = 10
 __C.train.batch_size = __C.train.speakers_per_batch
 
 # the number of threads for IO
-__C.train.num_threads = 1
-# __C.train.num_threads = 2
+# __C.train.num_threads = 1
+__C.train.num_threads = 2
 
 # the number of batches to show log
 __C.train.show_log = 5

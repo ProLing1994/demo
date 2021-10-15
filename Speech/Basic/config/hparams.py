@@ -44,12 +44,6 @@ trim_top_db=23
 rescale = True                              # Whether to rescale audio prior to preprocessing
 rescaling_max = 0.9                         # Rescaling value
 
-## Whether to clip silence in Audio (at beginning and end of audio only, not the middle)
-# train samples of lengths between 3sec and 14sec are more than enough to make a model capable
-# of good parallelization.
-clip_mels_length = True                     # If true, discards samples exceeding max_mel_frames
-max_mel_frames = 900    
-
 ## Spectrogram Pre-Emphasis (Lfilter: Reduce spectrogram noise and helps model certitude 
 # levels. Also allows for better G&L phase reconstruction)
 # 在模型训练阶段，特征计算参数，预加重
@@ -79,3 +73,8 @@ max_abs_value = 4.                          # Gradient explodes if too big, prem
 power = 1.5
 # Number of G&L iterations, typically 30 is enough but we use 60 to ensure convergence.
 griffin_lim_iters = 60
+
+### 模型测试阶段
+## test
+# 在模型测试阶段，每个说话人最少音频数量，用于计算等错误率 EER
+min_embedding_len_per_speaker = 10

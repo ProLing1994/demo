@@ -52,6 +52,7 @@ def infer(args):
             embeds_dict[speaker] = []
             embeds_dict[speaker].append(embed)
 
+    # dict to list
     embeds_list = []
     for speaker_name in embeds_dict.keys():
         embedding_per_speaker_list = []
@@ -59,6 +60,9 @@ def infer(args):
         for embed_idx in range(len(embeds_dict[speaker_name])):
             embedding_per_speaker_list.append(embeds_dict[speaker_name][embed_idx])
         
+        if len(embedding_per_speaker_list) < hparams.min_embedding_len_per_speaker:
+            continue
+
         embeds_list.append(embedding_per_speaker_list)
 
     # Calculate loss
