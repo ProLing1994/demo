@@ -5,11 +5,12 @@ import os
 import pandas as pd
 import sys
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
-from utils.train_tools import load_cfg_file
-from dataset.kws.dataset_helper import *
-from impl.pred_pyimpl import load_background_noise, dataset_add_noise
-from script.dataset.generate_streaming_wav import mix_in_audio_sample
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.dataset import audio
+
+from KWS.utils.train_tools import load_cfg_file
+from KWS.dataset.kws.dataset_helper import *
+from KWS.script.dataset_streaming_wav.generate_streaming_wav import mix_in_audio_sample
 
 
 def straming_dataset_generator(input_dir, output_format, nosed_csv, config_file, mode, test_duration_seconds, word_gap_ms):
@@ -91,7 +92,7 @@ def straming_dataset_generator(input_dir, output_format, nosed_csv, config_file,
 
         output_path = output_format + '{:0>3d}.wav'.format(file_idx)
         file_idx += 1
-        librosa.output.write_wav(output_path, output_audio, sr=sample_rate)
+        audio.save_wav(output_audio.copy(), output_path, sample_rate)
         output_file_pd = pd.DataFrame(output_file_list)
         output_file_pd.to_csv(output_path.split('.')[0] + '.csv', index=False, encoding="utf_8_sig")
         print("Wav Done: {}".format(output_path))

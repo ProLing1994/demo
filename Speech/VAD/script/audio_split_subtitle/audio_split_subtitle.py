@@ -1,12 +1,15 @@
 import argparse
-import audioread
-import chardet
 import librosa
 import os
 import pandas as pd
 import re
+import sys
 
 from tqdm import tqdm
+
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.dataset import audio
+
 
 def is_chinese(uchar):
     """判断一个unicode是否是汉字"""
@@ -364,7 +367,7 @@ def audio_split_subtitle(args):
         # out 
         output_path = os.path.join(output_dir, args.output_format.format(args.movie_id, srt['idx']))
         temp_path = os.path.join(output_dir, '{}.wav'.format('temp'))
-        librosa.output.write_wav(temp_path, audio_sample, sample_rate) 
+        audio.save_wav(audio_sample, temp_path, sample_rate)
         os.system('sox {} -b 16 -e signed-integer {}'.format(temp_path, output_path))
     print("Split audio Done!")
 

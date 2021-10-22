@@ -2,8 +2,13 @@ import argparse
 import glob
 import librosa
 import os
+import sys
 
 from tqdm import tqdm
+
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.dataset import audio
+
 
 def main():
     # init 
@@ -49,7 +54,7 @@ def main():
                 input_path = wave_path.replace(args.record_folder, args.input_folder)
                 os.system("cp {} {}".format(input_path, output_path))
             elif mode == 1:
-                librosa.output.write_wav(output_path, data, sr=sample_rate) 
+                audio.save_wav(data, output_path, sample_rate)
             elif mode == 2:
                 print(wave_path)
                 os.remove(wave_path)

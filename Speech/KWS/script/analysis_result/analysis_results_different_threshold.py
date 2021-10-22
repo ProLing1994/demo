@@ -4,19 +4,16 @@ import sys
 from scipy.io import wavfile
 import torch.nn.functional as F
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
-from utils.train_tools import *
-from utils.folder_tools import *
-from dataset.kws.dataset_helper import *
-from impl.pred_pyimpl import kws_load_model, model_predict
-from script.analysis_result.plot_score_line import show_score_line
-from script.analysis_result.cal_fpr_tpr import cal_fpr_tpr
-from impl.recognizer_pyimpl import RecognizeResult, RecognizeCommands, RecognizeCommandsCountNumber
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.dataset import audio
 
-
-def save_wav(wav, path, sr): 
-    wav *= 32767 / max(0.01, np.max(np.abs(wav)))
-    wavfile.write(path, sr, wav.astype(np.int16))
+from KWS.utils.train_tools import *
+from KWS.utils.folder_tools import *
+from KWS.dataset.kws.dataset_helper import *
+from KWS.impl.pred_pyimpl import kws_load_model, model_predict
+from KWS.script.analysis_result.plot_score_line import show_score_line
+from KWS.script.analysis_result.cal_fpr_tpr import cal_fpr_tpr
+from KWS.impl.recognizer_pyimpl import RecognizeResult, RecognizeCommands, RecognizeCommandsCountNumber, RecognizeCommandsAlign
 
 
 def generate_results_threshold(args, input_wav, detection_threshold, detection_number_threshold):
@@ -154,8 +151,7 @@ def generate_results_threshold(args, input_wav, detection_threshold, detection_n
                 start_time = int(sample_rate * all_found_words_dict['start_time'] / 1000)
                 end_time = int(sample_rate * all_found_words_dict['end_time'] / 1000)
                 output_wav = audio_data[start_time: end_time]
-                # librosa.output.write_wav(output_path, output_wav, sr=sample_rate)
-                save_wav(output_wav, output_path, sample_rate)
+                audio.save_wav(output_wav, output_path, sample_rate)
 
         # time ++ 
         audio_data_offset += timeshift_samples

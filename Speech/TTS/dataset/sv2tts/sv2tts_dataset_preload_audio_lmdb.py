@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import sys
+import random
 import torch
 from torch.utils.data import Dataset, DataLoader
 
@@ -80,6 +81,7 @@ class SynthesizerDataset(Dataset):
 
         lmdb_dataset = self.data_pd.loc[index, 'dataset']
         data_name = self.data_pd.loc[index, 'unique_utterance']
+        speaker = self.data_pd.loc[index, 'speaker']
 
         if self.cfg.dataset.language == 'chinese':
             text = self.data_pd.loc[index, 'pinyin']
@@ -103,7 +105,9 @@ class SynthesizerDataset(Dataset):
         mel_frames = mel.shape[1]
 
         # embed wav
-        embed_wav = wav
+        speaker_pd = self.data_pd[self.data_pd['speaker'] == speaker]
+        speaker_data_name = random.choice(speaker_pd['unique_utterance'].to_list()) 
+        embed_wav = read_audio_lmdb(self.lmdb_dict[lmdb_dataset], str(speaker_data_name))
         return text, mel, mel_frames, embed_wav
 
 

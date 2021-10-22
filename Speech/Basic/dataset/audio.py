@@ -5,6 +5,7 @@ import sys
 import struct
 from scipy import signal
 from scipy.ndimage.morphology import binary_dilation
+import soundfile as sf
 from typing import Optional, Union
 import torch
 import webrtcvad
@@ -14,6 +15,14 @@ sys.path.insert(0, '/home/huanyuan/code/demo/Speech/')
 from ASR.impl.asr_feature_pyimpl import Feature
 
 from Basic.config import hparams
+
+
+def load_wav(path, sr):
+    return librosa.core.load(path, sr=sr)[0]
+
+
+def save_wav(wav, path, sr): 
+    sf.write(path, wav, sr)
 
 
 def preprocess_wav(fpath_or_wav: Union[str, np.ndarray],

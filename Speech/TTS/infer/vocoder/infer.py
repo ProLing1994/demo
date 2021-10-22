@@ -4,6 +4,7 @@ from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
+from Basic.dataset import audio
 from Basic.utils.folder_tools import *
 from Basic.utils.train_tools import *
 
@@ -78,13 +79,13 @@ def infer(args):
         
         ## Post-generation
         # Trim excess silences to compensate for gaps in spectrograms
-        generated_wav = preprocess_wav(generated_wav, cfg.dataset.sample_rate)
+        generated_wav = audio.preprocess_wav(generated_wav, cfg.dataset.sample_rate)
 
         # Save it on the disk
         output_dir = os.path.join(cfg.general.save_dir, "infer")
         create_folder(output_dir)
         wav_fpath = os.path.join(output_dir, "wave_from_mel_sample_{}_text_{}_batched_{}.wav".format(os.path.splitext(os.path.basename(args.wav_file))[0], texts[spec_idx], str(args.vocoder_batched)))
-        save_wav(generated_wav, str(wav_fpath), sr=cfg.dataset.sample_rate)
+        audio.save_wav(generated_wav, str(wav_fpath), sr=cfg.dataset.sample_rate)
 
 
 def main():

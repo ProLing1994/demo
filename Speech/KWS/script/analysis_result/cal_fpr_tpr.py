@@ -4,13 +4,11 @@ import pandas as pd
 import sys
 from scipy.io import wavfile
 
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.dataset import audio
+
 sys.path.insert(0, '/home/huanyuan/code/demo/common')
 from common.utils.python.metrics_tools import *
-
-
-def save_wav(wav, path, sr): 
-    wav *= 32767 / max(0.01, np.max(np.abs(wav)))
-    wavfile.write(path, sr, wav.astype(np.int16))
 
 
 def cal_fpr_tpr(src_csv, pst_csv, positive_label_list, bool_write_audio):
@@ -137,8 +135,7 @@ def cal_fpr_tpr(src_csv, pst_csv, positive_label_list, bool_write_audio):
             start_time = int(sample_rate * fn_case['start_time'] / 1000)
             end_time = int(sample_rate * fn_case['end_time'] / 1000)
             output_wav = audio_data[start_time: end_time]
-            # librosa.output.write_wav(output_path, output_wav, sr=sample_rate)
-            save_wav(output_wav, output_path, sr=sample_rate)
+            audio.save_wav(output_wav, output_path, sr=sample_rate)
 
         for fp_case in fp_list:
             # mkdirs
@@ -150,8 +147,7 @@ def cal_fpr_tpr(src_csv, pst_csv, positive_label_list, bool_write_audio):
             start_time = int(sample_rate * fp_case['start_time'] / 1000)
             end_time = int(sample_rate * fp_case['end_time'] / 1000)
             output_wav = audio_data[start_time: end_time]
-            # librosa.output.write_wav(output_path, output_wav, sr=sample_rate)
-            save_wav(output_wav, output_path, sr=sample_rate)
+            audio.save_wav(output_wav, output_path, sr=sample_rate)
 
         for double_matched_case in double_matched_list:
             # mkdirs
@@ -163,8 +159,7 @@ def cal_fpr_tpr(src_csv, pst_csv, positive_label_list, bool_write_audio):
             start_time = int(sample_rate * double_matched_case['start_time'] / 1000)
             end_time = int(sample_rate * double_matched_case['end_time'] / 1000)
             output_wav = audio_data[start_time: end_time]
-            # librosa.output.write_wav(output_path, output_wav, sr=sample_rate)
-            save_wav(output_wav, output_path, sr=sample_rate)
+            audio.save_wav(output_wav, output_path, sr=sample_rate)
 
         for unmatched_case in unmatched_list:
             # mkdirs
@@ -176,8 +171,7 @@ def cal_fpr_tpr(src_csv, pst_csv, positive_label_list, bool_write_audio):
             start_time = int(sample_rate * unmatched_case['start_time'] / 1000)
             end_time = int(sample_rate * unmatched_case['end_time'] / 1000)
             output_wav = audio_data[start_time: end_time]
-            # librosa.output.write_wav(output_path, output_wav, sr=sample_rate)
-            save_wav(output_wav, output_path, sr=sample_rate)
+            audio.save_wav(output_wav, output_path, sr=sample_rate)
 
     return tn, fp, fn, tp
 

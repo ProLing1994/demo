@@ -3,12 +3,12 @@ import librosa
 import os
 import pandas as pd
 import sys
-import wave 
 
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo/common/common')
-from utils.python.folder_tools import *
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.dataset import audio
+from Basic.utils.folder_tools import *
 
 
 def find_time_id(args, speaker_id):
@@ -36,6 +36,7 @@ def find_time_id(args, speaker_id):
         if temp_time_id > time_id:
             time_id = temp_time_id
     return time_id + 1
+
 
 def audio_lable_split(args):
     # id_name_list
@@ -84,6 +85,7 @@ def audio_lable_split(args):
                 expansion_rate_front = args.expansion_rate_front_list[equipment_idx]
                 expansion_rate_back = args.expansion_rate_back_list[equipment_idx]
                 segment_sample_rate = args.segment_sample_rate_list[0] if audio_name in args.segment_sample_rate_8k_name_list else args.segment_sample_rate_list[1]
+                expansion_fixed_samples = int(segment_sample_rate * args.expansion_fixed_length_s)
 
                 audio_path = label_path.split('.')[0] + '_' + equipment_name + args.audio_suffix
                 if not os.path.exists(audio_path):
@@ -96,7 +98,13 @@ def audio_lable_split(args):
                 for line_idx in range(len(lines)):
                     line = lines[line_idx]
                     if line.split(':')[-1].strip() == segment_label:
-                        audio_segments.append([max(0, int(line.split(':')[0].split('~')[0]) + expansion_rate_front * segment_sample_rate), int(line.split(':')[0].split('~')[1]) + expansion_rate_back * segment_sample_rate, time_id + line_idx])
+                        if args.bool_expansion_fixed_length:
+                            data_length = int(line.split(':')[0].split('~')[1]) - int(line.split(':')[0].split('~')[0])
+                            data_offset_front = (expansion_fixed_samples - data_length) // 2
+                            data_offset_back = (expansion_fixed_samples - data_length) // 2 + (expansion_fixed_samples - data_length) % 2
+                            audio_segments.append([max(0, int(line.split(':')[0].split('~')[0]) - data_offset_front), int(line.split(':')[0].split('~')[1]) + data_offset_back, time_id + line_idx])
+                        else:
+                            audio_segments.append([max(0, int(line.split(':')[0].split('~')[0]) + expansion_rate_front * segment_sample_rate), int(line.split(':')[0].split('~')[1]) + expansion_rate_back * segment_sample_rate, time_id + line_idx])
                 f.close()
 
                 # output audio_segment
@@ -105,13 +113,17 @@ def audio_lable_split(args):
                     audio_segment = audio_segments[segment_idx]
                     audio_segment_data = audio_data[int(audio_segment[0] * (args.sample_rate / segment_sample_rate)) : int(audio_segment[1] * (args.sample_rate / segment_sample_rate))]
 
+                    if not len(audio_segment_data):
+                        continue
+
                     # output 
                     output_dir = os.path.join(args.output_folder, segment_label, equipment_name)
                     if not os.path.exists(output_dir):
                         os.makedirs(output_dir)
+
                     output_path = os.path.join(output_dir, args.output_format.format(speaker_id, equipment_id, equipment_location, audio_segment[2]))
                     temp_path = os.path.join(args.output_folder, '{}{}'.format('temp', args.audio_suffix))
-                    librosa.output.write_wav(temp_path, audio_segment_data, sr=args.sample_rate) 
+                    audio.save_wav(audio_segment_data.copy(), temp_path, args.sample_rate)
                     os.system('sox {} -b 16 -e signed-integer {}'.format(temp_path, output_path))
 
     id_name_pd = pd.DataFrame(id_name_list)
@@ -121,43 +133,74 @@ def audio_lable_split(args):
 def main():
     parser = argparse.ArgumentParser(description="")
     args = parser.parse_args()
-    # args.input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_05132021/处理音频_0422/"
-    # args.output_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_05132021/xiaoan_0422/"
+
+    # xiaoanxiaoan 
     # args.output_format = "RM_KWS_XIAOAN_xiaoan_S{:0>3d}M0D{}{}T{:0>3d}.wav"
-    # args.id_name_csv = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/唤醒词记录.csv"
-    args.input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/ActivateBWC_07162021/activatebwc/数据处理/"
-    args.output_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/ActivateBWC_07162021/activatebwc/数据处理结果/"
-    args.output_format = "RM_KWS_ACTIVATEBWC_activatebwc_S{:0>3d}M0D{}{}T{:0>3d}.wav"
-    args.id_name_csv = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/唤醒词记录.csv"
-    args.id_name_test_csv = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/唤醒词记录_测试人员.csv"
-    args.find_folder_list = ["/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/ActivateBWC_07162021/activatebwc/数据处理结果/",
-                                "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/activatebwc/"]
+    # args.output_format = "RM_KWS_XIAOAN_test_S{:0>3d}M0D{}{}T{:0>3d}.wav"
+
+    args.input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/数据处理/"
+    args.output_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/数据处理_out/"
+    args.output_format = "RM_KWS_XIAOAN_xiaoan_S{:0>3d}M0D{}{}T{:0>3d}.wav"
+    args.id_name_csv = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/唤醒词记录.csv"
+    args.id_name_test_csv = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/唤醒词记录_测试人员.csv"
+
+    # 寻找相同说话人音频，记录末尾编号，新增数据向后延续
+    args.find_folder_list = [
+                                # "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_8k/",
+                                # "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_16k/",
+                            ]
 
     # params
-    # args.equipment_name_list = ['adpro', 'mic', 'danbin_ori', 'danbin_asr']
-    # args.equipment_id_list = [4, 6, 0, 7]
-    # args.equipment_location_list = [2, 1, 1, 1]
-    args.equipment_name_list = ['danbin_asr', 'danbin_ori']
-    args.equipment_id_list = [7, 0]
-    args.equipment_location_list = [1, 1]
+    args.equipment_name_list = ['adpro', 'mic', 'danbin_ori', 'danbin_asr']
+    args.equipment_id_list = [4, 6, 0, 7]
+    args.equipment_location_list = [2, 1, 1, 1]
 
     # xiaoan\xiaoan1\error\error1
-    # args.segment_label_list = ["xiaoan", "xiaoan1", "error", "error1"]
-    # args.segment_sample_rate_list = [8000, 16000]
-    # args.segment_sample_rate_8k_name_list = ["钟国胜", "梁昊", "林日丹", "李文达", "雍洪", "章钰雯", "陈彦芸", "黄凯龙", "张莹莹", "颜苑婷", "杨莹丽", "黄俊斌", "赵春海", "陈泽敏", "叶智豪", "梁嘉冠", "黄丽琼", "杨章林", "冯晓欣", "赵验", "吴玉如"]
-    # args.sample_rate = 16000
-    # args.expansion_rate_front_list = [-0.2, -0.2, -0.2, -0.2]
-    # args.expansion_rate_back_list = [0.1, 0.1, 0.1, 0.1]
-    # args.audio_suffix = ".wav"
-    args.segment_label_list = ["bwc1"]
+    args.segment_label_list = ["xiaoan", "xiaoan1", "error", "error1"]
     args.segment_sample_rate_list = [8000, 16000]
-    args.segment_sample_rate_8k_name_list = []
+    args.segment_sample_rate_8k_name_list = ["钟国胜", "梁昊", "林日丹", "李文达", "雍洪", "章钰雯", "陈彦芸", "黄凯龙", "张莹莹", "颜苑婷", "杨莹丽", "黄俊斌", "赵春海", "陈泽敏", "叶智豪", "梁嘉冠", "黄丽琼", "杨章林", "冯晓欣", "赵验", "吴玉如"]
     args.sample_rate = 16000
-    args.expansion_rate_front_list = [-0.2, -0.2]
-    args.expansion_rate_back_list = [0.1, 0.1]
-    args.audio_suffix = ".wav"
-    audio_lable_split(args)
+    
+    # 是否将音频扩展为固定的长度
+    args.bool_expansion_fixed_length = True
+    args.expansion_fixed_length_s = 3.0
 
+    # 若 args.expansion_fixed_length = True，下述无效
+    args.expansion_rate_front_list = [-0.2, -0.2, -0.2, -0.2]
+    args.expansion_rate_back_list = [0.1, 0.1, 0.1, 0.1]
+    args.audio_suffix = ".wav"
+
+    # # activate bwc
+    # args.input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/ActivateBWC_07162021/activatebwc/数据处理/"
+    # args.output_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/ActivateBWC_07162021/activatebwc/数据处理结果/"
+    # args.output_format = "RM_KWS_ACTIVATEBWC_activatebwc_S{:0>3d}M0D{}{}T{:0>3d}.wav"
+    # args.id_name_csv = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/唤醒词记录.csv"
+    # args.id_name_test_csv = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/唤醒词记录_测试人员.csv"
+
+    # # 寻找相同说话人音频，记录末尾编号，新增数据向后延续
+    # args.find_folder_list = ["/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/ActivateBWC_07162021/activatebwc/数据处理结果/",
+    #                             "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/activatebwc/"]
+
+    # params
+    # args.equipment_name_list = ['danbin_asr', 'danbin_ori']
+    # args.equipment_id_list = [7, 0]
+    # args.equipment_location_list = [1, 1]
+
+    # args.segment_label_list = ["bwc1"]
+    # args.segment_sample_rate_list = [8000, 16000]
+    # args.segment_sample_rate_8k_name_list = []
+    # args.sample_rate = 16000
+
+    # # 是否将音频扩展为固定的长度
+    # args.bool_expansion_fixed_length = True
+    # args.expansion_fixed_length_s = 3
+
+    # # 若 args.expansion_fixed_length = True，下述无效
+    # args.expansion_rate_front_list = [-0.2, -0.2]
+    # args.expansion_rate_back_list = [0.1, 0.1]
+    # args.audio_suffix = ".wav"
+
+    audio_lable_split(args)
 
 if __name__ == "__main__":
     main()

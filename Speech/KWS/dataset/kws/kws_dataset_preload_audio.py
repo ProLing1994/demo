@@ -1,19 +1,18 @@
 import librosa
-import multiprocessing
 import numpy as np
 import os
 import sys
 import pandas as pd
-import pcen
-import pickle
-import time
 import torch
 
 from torch.utils.data import Dataset
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
-from impl.pred_pyimpl import load_background_noise, load_preload_audio
-from dataset.kws.dataset_helper import *
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.dataset import audio
+
+from KWS.impl.pred_pyimpl import load_background_noise, load_preload_audio
+from KWS.dataset.kws.dataset_helper import *
+
 
 class SpeechDataset(Dataset):
     """
@@ -113,7 +112,8 @@ class SpeechDataset(Dataset):
                 pass
 
         filename = filename.split('.')[0] + '.wav'
-        librosa.output.write_wav(os.path.join(out_folder, filename), data, sr=self.sample_rate)
+        audio.save_wav(data.copy(), os.path.join(out_folder, filename), self.sample_rate)
+
 
     def audio_preprocess(self, data):
         # check

@@ -17,7 +17,9 @@ from encoder import inference as encoder
 from vocoder import inference as vocoder
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-from TTS.utils.folder_tools import *
+from Basic.dataset import audio
+from Basic.utils.folder_tools import *
+
 
 def embedding(in_fpath):
     ## Computing the embedding
@@ -102,7 +104,7 @@ def speech_generation_RM_Meiguo_BwcKeyword(args):
                     # Save it on the disk
                     audio_path = os.path.join(args.output_folder, args.output_format.format(int(speaker_idx), int(equipment_idx), time_id))
                     print(generated_wav.dtype)
-                    sf.write(audio_path, generated_wav.astype(np.float32), synthesizer.sample_rate)
+                    audio.save_wav(audio_path, generated_wav.astype(np.float32), synthesizer.sample_rate)
                     time_id += 1
                     print("\nSaved output as %s\n\n" % audio_path)
 

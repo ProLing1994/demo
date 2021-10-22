@@ -10,6 +10,10 @@ from tqdm import tqdm
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS/script/dataset_align')
 from src.utils.file_tool import read_file_gen
 
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.dataset import audio
+
+
 def read_utt2wav(wavscps):
     utt2wav = {}
     for wavscp in wavscps:
@@ -39,10 +43,10 @@ def cut_word_and_save(items):
     #sig = sig[:,0]
     if len(sig.shape) > 1:
         keyword_sample = sig[max(0, int(sr*tbegin)):min(int(sr*tend), len(sig)),:]
-        sf.write(word_save_dir + os.path.basename(utt2wav[utt_id]), keyword_sample, sr)
+        audio.save_wav(word_save_dir + os.path.basename(utt2wav[utt_id]), keyword_sample, sr)
     else:
         keyword_sample = sig[max(0, int(sr*tbegin)):min(int(sr*tend), len(sig))]
-        sf.write(word_save_dir + os.path.basename(utt2wav[utt_id]), keyword_sample, sr)
+        audio.save_wav(word_save_dir + os.path.basename(utt2wav[utt_id]), keyword_sample, sr)
     return 1
 
 def get_words_list(ctm_file, keyword_list):

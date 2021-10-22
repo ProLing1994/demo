@@ -2,18 +2,16 @@ import numpy as np
 import os
 import sys
 import pandas as pd
-import pcen
-import pickle
-import time
 import torch
 
 from torch.utils.data import Dataset
 
-# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/SED')
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/SED')
-from utils.folder_tools import *
-from utils.lmdb_tools import *
-from dataset.dataset_helper import *
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.dataset import audio
+
+from SED.utils.folder_tools import *
+from SED.utils.lmdb_tools import *
+from SED.dataset.dataset_helper import *
 
 class SpeechDataset(Dataset):
     """
@@ -144,7 +142,7 @@ class SpeechDataset(Dataset):
         except:
             pass
         filename = os.path.basename(audio_file)
-        librosa.output.write_wav(os.path.join(out_folder, filename), data, sr=self.sample_rate)
+        audio.save_wav(data.copy(), os.path.join(out_folder, filename), self.sample_rate)
 
     def audio_preprocess(self, data):
         # check

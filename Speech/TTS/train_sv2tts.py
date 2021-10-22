@@ -24,11 +24,11 @@ from common.utils.python.logging_helpers import setup_logger
 
 
 def show_ressult(cfg, attention, mel_prediction, target_spectrogram, input_seq, step,
-               plot_dir, wav_dir, sample_num, loss):
+                plot_dir, wav_dir, sample_num, loss):
     # text
     text = '_'.join(sequence_to_text(input_seq).split('~')[0].split(' '))
 
-    # Save some results for evaluation
+    # save some results for evaluation
     create_folder(plot_dir)
     attention_path = os.path.join(plot_dir, "attention_step_{}_sample_{}_text_{}.png".format(step, sample_num, text))
     save_attention(attention, attention_path)
@@ -41,7 +41,7 @@ def show_ressult(cfg, attention, mel_prediction, target_spectrogram, input_seq, 
     # save griffin lim inverted wav for debug (mel -> wav)
     wav = audio.compute_inv_mel_spectrogram(cfg, mel_prediction.T)
     wav_fpath = os.path.join(wav_dir, "wave_from_mel_step_{}_sample_{}_text_{}.wav".format(step, sample_num, text))
-    save_wav(wav, str(wav_fpath), sr=cfg.dataset.sample_rate)
+    audio.save_wav(wav, str(wav_fpath), sr=cfg.dataset.sample_rate)
 
     # save real and predicted mel-spectrogram plot to disk (control purposes)
     spec_fpath = os.path.join(plot_dir, "mel_spectrogram_step_{}_sample_{}_text_{}.png".format(step, sample_num, text))

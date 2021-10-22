@@ -2,9 +2,12 @@ import argparse
 import glob
 import librosa
 import os 
-import yaml
+import sys
 
 from tqdm import tqdm
+
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.dataset import audio
 
 
 def main():
@@ -27,7 +30,7 @@ def main():
         # output
         temp_path = os.path.join(args.output_folder, "temp.wav")
         output_path = wave_path.replace(args.input_folder, args.output_folder)
-        librosa.output.write_wav(temp_path, audio_data, sr=sample_rate) 
+        audio.save_wav(audio_data.copy(), temp_path, sample_rate)
         script = " ".join(['sox', temp_path, '-c 1', '-b 16', '-r', str(sample_rate), '-e signed-integer', output_path])
         os.system(script)
 

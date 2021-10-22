@@ -40,7 +40,7 @@ def audio_lable_csv(args):
         
 def main():
     parser = argparse.ArgumentParser(description="")
-    parser.add_argument('--input_folder', type=str, default="/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/实车场景/处理音频/") 
+    parser.add_argument('--input_folder', type=str, default="/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/更新数据处理/") 
     args = parser.parse_args()
 
     # params

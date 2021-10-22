@@ -2,9 +2,12 @@ import argparse
 import librosa
 import os
 import pandas as pd
-import wave 
+import sys
 
 from tqdm import tqdm
+
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.dataset import audio
 
 
 def audio_lable_split(args):
@@ -52,7 +55,7 @@ def audio_lable_split(args):
             # output_path = os.path.join(args.output_folder, args.output_format.format(speaker_id, segment_idx + 1))
             output_path = os.path.join(args.output_folder, args.output_format.format(speaker_id, audio_segment[2]))
             temp_path = os.path.join(args.output_folder, '{}{}'.format('temp', args.audio_suffix))
-            librosa.output.write_wav(temp_path, audio_segment_data, sr=args.sample_rate) 
+            audio.save_wav(audio_segment_data.copy(), temp_path, args.sample_rate)
             os.system('sox {} -b 16 -e signed-integer {}'.format(temp_path, output_path))
 
     id_name_pd = pd.DataFrame(id_name_list)

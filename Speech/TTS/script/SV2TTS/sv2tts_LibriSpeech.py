@@ -17,6 +17,7 @@ from encoder import inference as encoder
 from vocoder import inference as vocoder
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.dataset import audio
 from Basic.utils.folder_tools import *
 
 
@@ -107,7 +108,7 @@ def speech_generation(args):
                     create_folder(os.path.join(args.output_folder, sub_folder_name))
                     audio_path = os.path.join(args.output_folder, sub_folder_name, args.output_format.format(int(speaker_id), int(section_id), time_id))
                     print(generated_wav.dtype)
-                    sf.write(audio_path, generated_wav.astype(np.float32), synthesizer.sample_rate)
+                    audio.save_wav(audio_path, generated_wav.astype(np.float32), synthesizer.sample_rate)
                     print("\nSaved output as %s\n\n" % audio_path)
 
                     tqdm.write("Done: {}/{} ".format(speaker_idx, len(speaker_id_list)))

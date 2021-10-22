@@ -126,9 +126,6 @@ def embedding(cfg, net, fpath_or_wav):
     if hparams.trim_silence:
         data = audio.trim_silence(data)
 
-    # data alignment
-    data = dataset_augmentation.dataset_alignment(cfg, data, bool_replicate=True)
-
     # data rescale
     if hparams.rescale:
         data = data / np.abs(data).max() * hparams.rescaling_max

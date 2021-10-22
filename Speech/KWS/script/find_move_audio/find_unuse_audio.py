@@ -1,12 +1,8 @@
 import argparse
 import os
-import pandas as pd
-import sys
 import shutil
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-from ASR.impl.asr_data_loader_pyimpl import WaveLoader
 
 def find_audio():
     # mkdir
@@ -27,9 +23,9 @@ def find_audio():
 
 
 if __name__ == "__main__":
-    default_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_05132021/xiaoan_0422/error/mic/"
-    default_find_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_05132021/xiaoan_0422/error/kaldi_cut_keyword/mic/"
-    default_output_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_05132021/xiaoan_0422/error/kaldi_cut_keyword/unuse/"
+    default_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_10182021/xiaoan/mic/"
+    default_find_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_10182021/xiaoan/kaldi_cut_keyword/mic/"
+    default_output_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_10182021/xiaoan/kaldi_cut_keyword/unuse/"
     
     parser = argparse.ArgumentParser(description='Streamax KWS Engine')
     parser.add_argument('--input_dir', type=str, default=default_input_dir)

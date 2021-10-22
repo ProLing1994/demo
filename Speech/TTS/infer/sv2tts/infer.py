@@ -4,6 +4,7 @@ from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
+from Basic.dataset import audio
 from Basic.utils.folder_tools import *
 from Basic.utils.train_tools import *
 
@@ -58,11 +59,11 @@ def infer(args):
         print("Synthesizing the waveform: ", texts[spec_idx])
 
         # save griffin lim inverted wav for debug (mel -> wav)
-        wav = inv_mel_spectrogram(cfg, spec)
+        wav = audio.compute_inv_mel_spectrogram(cfg, spec)
         output_dir = os.path.join(cfg.general.save_dir, "infer")
         create_folder(output_dir)
         wav_fpath = os.path.join(output_dir, "wave_from_mel_sample_{}_text_{}.wav".format(os.path.splitext(os.path.basename(args.wav_file))[0], texts[spec_idx]))
-        save_wav(wav, str(wav_fpath), sr=cfg.dataset.sample_rate)
+        audio.save_wav(wav, str(wav_fpath), sr=cfg.dataset.sample_rate)
 
 
 def main():

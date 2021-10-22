@@ -6,19 +6,16 @@ import sys
 import time 
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
-from utils.train_tools import *
-from utils.folder_tools import *
-from dataset.kws.dataset_helper import *
-from impl.pred_pyimpl import kws_load_model, model_predict
-from impl.recognizer_pyimpl import RecognizeResult, RecognizeCommands, RecognizeCommandsCountNumber, RecognizeCommandsAlign
-from script.analysis_result.plot_score_line import show_score_line
-from script.analysis_result.cal_fpr_tpr import cal_fpr_tpr
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.dataset import audio 
 
-
-def save_wav(wav, path, sr): 
-    wav *= 32767 / max(0.01, np.max(np.abs(wav)))
-    wavfile.write(path, sr, wav.astype(np.int16))
+from KWS.utils.train_tools import *
+from KWS.utils.folder_tools import *
+from KWS.dataset.kws.dataset_helper import *
+from KWS.impl.pred_pyimpl import kws_load_model, model_predict
+from KWS.impl.recognizer_pyimpl import RecognizeResult, RecognizeCommands, RecognizeCommandsCountNumber, RecognizeCommandsAlign
+from KWS.script.analysis_result.plot_score_line import show_score_line
+from KWS.script.analysis_result.cal_fpr_tpr import cal_fpr_tpr
 
 
 # def test(input_wav, args):
@@ -175,8 +172,7 @@ def test(in_args):
                 start_time = int(sample_rate * all_found_words_dict['start_time'] / 1000)
                 end_time = int(sample_rate * all_found_words_dict['end_time'] / 1000)
                 output_wav = audio_data[start_time: end_time]
-                # librosa.output.write_wav(output_path, output_wav, sr=sample_rate)
-                save_wav(output_wav, output_path, sample_rate)
+                audio.save_wav(output_wav, output_path, sample_rate)
 
         csv_original_scores.append({'start_time':current_time_ms, 'score':",".join([str(output_score[0][idx]) for idx in range(output_score.shape[1])])})
         csv_final_scores.append({'start_time':current_time_ms, 'score':recognize_element.score})
@@ -304,6 +300,11 @@ def main():
     # default_output_subfolder_name = "difficult_sample_mining/RM_Meiguo_BwcKeyword/"
     # default_input_folder = "/mnt/huanyuan/data/speech/asr/LibriSpeech/"
     # default_output_subfolder_name = "difficult_sample_mining/LibriSpeech"
+    ## movie 需要在服务器 10.30.25.23 上进行测试
+    # default_input_folder = "/data/nas/Interns/Data_Intern_Workspace/hyuan/movie/english/original/"
+    # default_output_subfolder_name = "difficult_sample_mining/movie/english"
+    # default_input_folder = "/data/nas/Interns/Data_Intern_Workspace/hyuan/movie/chinese/original/"
+    # default_output_subfolder_name = "difficult_sample_mining/movie/chinese"
 
     # activate bwc
     # default_input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/海外同事录制_0425/安静场景/"
@@ -351,7 +352,7 @@ def main():
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_5_tc-resnet14-amba_fbankcpu_kd_05152021/kws_config_xiaoan8k_api.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/kws_config_xiaoan8k.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/kws_config_xiaoan8k_api.py"
-    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/kws_config_xiaoan8k_api_0_5.py"
+    default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/kws_config_xiaoan8k_api_0_5.py"
     
     # xiaorui 
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_5_0_tc-resnet14-amba_fbankcpu_kd_04302021/kws_config_xiaorui_api.py"
@@ -376,7 +377,7 @@ def main():
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_7_tc-resnet14-amba_fbankcpu_kd_09222021/kws_config_activatebwc_api.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_7_tc-resnet14-amba_fbankcpu_kd_09222021/kws_config_activatebwc_difficult_sample_mining.py"
     # default_config_file = "/mnt/huanyuan2/model/kws/kws_english/kws_activatebwc_2_8_tc-resnet14-amba_fbankcpu_kd_09292021/kws_config_activatebwc.py"
-    default_config_file = "/mnt/huanyuan2/model/kws/kws_english/kws_activatebwc_2_8_tc-resnet14-amba_fbankcpu_kd_09292021/kws_config_activatebwc_api.py"
+    # default_config_file = "/mnt/huanyuan2/model/kws/kws_english/kws_activatebwc_2_8_tc-resnet14-amba_fbankcpu_kd_09292021/kws_config_activatebwc_api.py"
 
     parser = argparse.ArgumentParser(description='Streamax KWS Testing Engine')
     parser.add_argument('--mode', type=str, default=default_mode)

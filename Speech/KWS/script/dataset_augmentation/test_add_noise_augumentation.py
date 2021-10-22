@@ -1,5 +1,10 @@
 import librosa
 import os 
+import sys
+
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.dataset import audio
+
 
 def main():
     input_wav = "/mnt/huanyuan/model/kws_xiaoan8k_test_lmdb/training_audio/xiaoanxiaoan_8k/RM_KWS_XIAOAN_xiaoan_S021M1D30T17.wav"
@@ -19,7 +24,8 @@ def main():
     audio_data = audio_data + noise_data
 
     output_path = os.path.join(output_dir, os.path.basename(input_wav).split('.')[0] + "_add_noise_{}.wav".format(background_volume_clipped))
-    librosa.output.write_wav(output_path, audio_data, sr=sample_rate)
+    audio.save_wav(audio_data.copy(), output_path, sample_rate)
+
 
 if __name__ == "__main__":
     main()

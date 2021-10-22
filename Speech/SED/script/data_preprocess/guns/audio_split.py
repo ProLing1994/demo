@@ -7,9 +7,13 @@ import librosa
 import os 
 import pandas as pd
 import wave
-import yaml
+import sys
 
 from tqdm import tqdm
+
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.dataset import audio
+
 
 def main():
     # mkdir 
@@ -52,7 +56,7 @@ def main():
         
             # output 
             output_path = os.path.join(args.output_folder, args.label, args.dataset_name + args.label + "_{}_{}_{:0>3d}{}".format(os.path.basename(wave_path).split('.')[0], 'Single', segment_idx, args.audio_suffix))
-            librosa.output.write_wav(output_path, single_data, sr=sample_rate) 
+            audio.save_wav(single_data.copy(), output_path, sample_rate)
             file_list.append({"input path": wave_path, "output": output_path})
         
         for segment_idx in range(len(continuous_segments)):
@@ -61,7 +65,7 @@ def main():
  
             # output
             output_path = os.path.join(args.output_folder, args.label, args.dataset_name + args.label + "_{}_{}_{:0>3d}{}".format(os.path.basename(wave_path).split('.')[0], 'Auto', segment_idx, args.audio_suffix))
-            librosa.output.write_wav(output_path, continuous_data, sr=sample_rate) 
+            audio.save_wav(continuous_data.copy(), output_path, sample_rate)
             file_list.append({"input path": wave_path, "output": output_path})
 
     file_pd = pd.DataFrame(file_list)

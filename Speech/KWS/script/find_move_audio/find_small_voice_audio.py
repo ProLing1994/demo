@@ -47,17 +47,17 @@ def find_small_voice_audio():
 
 
 if __name__ == "__main__":
-    # # xiaoan 8k
-    # default_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_05132021/xiaoanxiaoan_8k_cut/"
-    # default_output_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_05132021/small_voice/"
-    # default_sample_rate = 8000
-    # default_threshold = '0.10'
+    # xiaoan 8k
+    default_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/更新漏标注数据处理/xiaoan/adpro/"
+    default_output_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/更新漏标注数据处理/xiaoan/small_voice/"
+    default_sample_rate = 8000
+    default_threshold = '0.2'
 
-    # activate bwc
-    default_input_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/ActivateBWC_07162021/activatebwc/danbin_ori/"
-    default_output_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/ActivateBWC_07162021/activatebwc/small_voice/"
-    default_sample_rate = 16000
-    default_threshold = '0.02'
+    # # activate bwc
+    # default_input_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/ActivateBWC_07162021/activatebwc/danbin_ori/"
+    # default_output_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/ActivateBWC_07162021/activatebwc/small_voice/"
+    # default_sample_rate = 16000
+    # default_threshold = '0.02'
     
     parser = argparse.ArgumentParser(description='Streamax KWS Engine')
     parser.add_argument('--input_dir', type=str, default=default_input_dir)

@@ -17,7 +17,7 @@ def data_vad_multiprocessing(in_args):
     # 音频数据预处理：音频音量大小归一化、Vad 消除静音音频
     # [讨论：] 声音大小归一化是否有存在必要
     wav = audio.preprocess_wav(data_path, cfg.dataset.sample_rate)
-    sf.write(data_path, wav, cfg.dataset.sample_rate)
+    audio.save_wav(data_path, wav, cfg.dataset.sample_rate)
     print("Done: {}".format(data_path))
 
 

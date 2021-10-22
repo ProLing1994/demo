@@ -1,9 +1,11 @@
 import argparse
 import librosa
 import os
-import soundfile as sf
-
+import sys
 from tqdm import tqdm
+
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.dataset import audio
 
 
 def audio_lable_split(args):
@@ -46,7 +48,7 @@ def audio_lable_split(args):
             # output 
             output_path = os.path.join(args.output_folder, args.output_format.format(speaker_id, audio_segment[2]))
             temp_path = os.path.join(args.output_folder, '{}{}'.format('temp', args.audio_suffix))
-            sf.write(temp_path, audio_segment_data, args.sample_rate)
+            audio.save_wav(temp_path, audio_segment_data, args.sample_rate)
             os.system('sox {} -b 16 -e signed-integer {}'.format(temp_path, output_path))
 
         speaker_id += 1

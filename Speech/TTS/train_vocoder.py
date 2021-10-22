@@ -49,7 +49,7 @@ def show_ressult(cfg, net, mel_list, quant_list, texts, samples,
         # save wav_target
         create_folder(save_dir)
         wav_fpath = os.path.join(save_dir, "step_{}_sample_{}_text_{}.wav".format(step, idx, target_text))
-        save_wav(wav_target, wav_fpath, sr=cfg.dataset.sample_rate)
+        audio.save_wav(wav_target, wav_fpath, sr=cfg.dataset.sample_rate)
 
         # wav_forward
         mel_forward = torch.tensor(mel_list[idx]).unsqueeze(0)
@@ -66,7 +66,7 @@ def show_ressult(cfg, net, mel_list, quant_list, texts, samples,
             batch_str = "gen_batched_target_%d_overlap_%d" % (target, overlap) if bool_gen_batched else \
                 "gen_not_batched"
             wav_forward_fpath = os.path.join(save_dir, "step_{}_sample_{}_text_{}_{}.wav".format(step, idx, target_text, batch_str))
-            save_wav(wav_forward, wav_forward_fpath, sr=cfg.dataset.sample_rate)
+            audio.save_wav(wav_forward, wav_forward_fpath, sr=cfg.dataset.sample_rate)
 
 
 def train(args):

@@ -1,8 +1,12 @@
 import argparse
 import os
-import soundfile as sf
+import sys
 
 from tqdm import tqdm
+
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.dataset import audio
+
 
 def get_sub_filepaths_suffix(folder, suffix='.wav'):
     paths = []
@@ -14,6 +18,7 @@ def get_sub_filepaths_suffix(folder, suffix='.wav'):
             paths.append(path)
     return paths
 
+
 def volume_increase(args):
     # init 
     wave_list = get_sub_filepaths_suffix(args.input_dir)
@@ -23,7 +28,8 @@ def volume_increase(args):
         wav = wav * args.volume_increase_scale 
 
         output_path = str(audio_path).split('.')[0] + "volume_increase_{}.wav".format(args.volume_increase_scale)
-        sf.write(output_path, wav, source_sr)
+        audio.save_wav(output_path, wav, source_sr)
+
 
 def main():
     parser = argparse.ArgumentParser(description="Sudio Format")

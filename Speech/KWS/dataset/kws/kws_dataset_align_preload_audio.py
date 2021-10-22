@@ -7,9 +7,12 @@ import torch
 
 from torch.utils.data import Dataset
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
-from dataset.kws.dataset_helper import *
-from impl.pred_pyimpl import load_background_noise, load_preload_audio
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.dataset import audio
+
+from KWS.dataset.kws.dataset_helper import *
+from KWS.impl.pred_pyimpl import load_background_noise, load_preload_audio
+
 
 class SpeechDatasetAlign(Dataset):
   """
@@ -109,7 +112,7 @@ class SpeechDatasetAlign(Dataset):
       os.makedirs(out_folder)
 
     filename = filename.split('.')[0] + '.wav'
-    librosa.output.write_wav(os.path.join(out_folder, filename), data, sr=self.sample_rate)
+    audio.save_wav(data.copy(), os.path.join(out_folder, filename), self.sample_rate)
 
   def audio_preprocess(self, data):
     # check 

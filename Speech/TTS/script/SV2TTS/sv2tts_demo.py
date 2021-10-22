@@ -17,6 +17,9 @@ from synthesizer.inference import Synthesizer
 from encoder import inference as encoder
 from vocoder import inference as vocoder
 
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.dataset import audio
+
 
 def model_test(args):
     ## Load the models one by one.
@@ -164,7 +167,7 @@ def interactive_speech_generation(args):
         # Save it on the disk
         filename = "demo_output_%02d.wav" % num_generated
         print(generated_wav.dtype)
-        sf.write(filename, generated_wav.astype(np.float32), synthesizer.sample_rate)
+        audio.save_wav(filename, generated_wav.astype(np.float32), synthesizer.sample_rate)
         num_generated += 1
         print("\nSaved output as %s\n\n" % filename)
         

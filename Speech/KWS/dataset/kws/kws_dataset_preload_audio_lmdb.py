@@ -7,11 +7,14 @@ import torch
 
 from torch.utils.data import Dataset
 
-# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/SED')
-# sys.path.insert(0, '/yuanhuan/code/demo/Speech/KWS')
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
-from impl.pred_pyimpl import load_lmdb_env, read_audio_lmdb, load_background_noise_lmdb
-from dataset.kws.dataset_helper import *
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
+# sys.path.insert(0, '/yuanhuan/code/demo/Speech/')
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.dataset import audio
+
+from KWS.impl.pred_pyimpl import load_lmdb_env, read_audio_lmdb, load_background_noise_lmdb
+from KWS.dataset.kws.dataset_helper import *
+
 
 class SpeechDataset(Dataset):
     """
@@ -115,7 +118,8 @@ class SpeechDataset(Dataset):
             except:
                 pass
         filename = os.path.basename(audio_file)
-        librosa.output.write_wav(os.path.join(out_folder, filename), data, sr=self.sample_rate)
+        audio.save_wav(data.copy(), os.path.join(out_folder, filename), self.sample_rate)
+
 
     def audio_preprocess(self, data):
         # check

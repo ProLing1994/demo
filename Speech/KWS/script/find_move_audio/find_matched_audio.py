@@ -45,10 +45,11 @@ def find_matched_audio():
 
 if __name__ == "__main__":
     # # 剔除错误数据
-    # default_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_05132021/xiaoan_0422/error/"
-    # # default_find_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_05132021/xiaoan_0422/error/once/"
-    # default_find_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_05132021/xiaoan_0422/error/ignore/"
-    # default_output_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_05132021/xiaoan_0422/error/"
+    # default_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_10182021/xiaoan/"
+    # # default_find_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_10182021/xiaoan/once/"
+    # # default_find_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_10182021/xiaoan/error/"
+    # default_find_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_10182021/xiaoan/mic_long/"
+    # default_output_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_10182021/xiaoan/"
     
     # parser = argparse.ArgumentParser(description='Streamax KWS Engine')
     # parser.add_argument('--input_dir', type=str, default=default_input_dir)
@@ -57,30 +58,17 @@ if __name__ == "__main__":
     # args = parser.parse_args()
 
     # # args.input_sudfolder_list = ['danbin_ori', 'danbin_asr', 'mic', 'adpro']
-    # # args.output_sudfolder_list = ['16k_once', '16k_once', '16k_once', '8k_once']
+    # # args.output_sudfolder_list = ['danbin_ori_once', 'danbin_asr_once', 'mic_once', 'adpro_once']
+    # # args.input_sudfolder_list = ['danbin_ori', 'danbin_asr', 'mic', 'adpro']
+    # # args.output_sudfolder_list = ['danbin_ori_ignore', 'danbin_asr_ignore', 'mic_ignore', 'adpro_ignore']
     # args.input_sudfolder_list = ['danbin_ori', 'danbin_asr', 'mic', 'adpro']
-    # args.output_sudfolder_list = ['16k_ignore', '16k_ignore', '16k_ignore', '8k_ignore']
+    # args.output_sudfolder_list = ['danbin_ori_long', 'danbin_asr_long', 'mic_long', 'adpro_long']
     # find_matched_audio()
 
-    # 剔除超长语音数据
-    default_input_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/ActivateBWC_07162021/activatebwc/"
-    default_find_input_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/ActivateBWC_07162021/activatebwc/over_long/"
-    default_output_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/ActivateBWC_07162021/activatebwc/"
-    
-    parser = argparse.ArgumentParser(description='Streamax KWS Engine')
-    parser.add_argument('--input_dir', type=str, default=default_input_dir)
-    parser.add_argument('--find_input_dir', type=str, default=default_find_input_dir)
-    parser.add_argument('--output_dir', type=str, default=default_output_dir)
-    args = parser.parse_args()
-
-    args.input_sudfolder_list = ['danbin_asr', 'danbin_ori']
-    args.output_sudfolder_list = ['danbin_asr_over_long', 'danbin_ori_over_long']
-    find_matched_audio()
-
-    # # 剔除声音较小语音数据
-    # default_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_05132021/"
-    # default_find_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_05132021/small_voice/"
-    # default_output_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_05132021/"
+    # # 剔除超长语音数据
+    # default_input_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/ActivateBWC_07162021/activatebwc/"
+    # default_find_input_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/ActivateBWC_07162021/activatebwc/over_long/"
+    # default_output_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/ActivateBWC_07162021/activatebwc/"
     
     # parser = argparse.ArgumentParser(description='Streamax KWS Engine')
     # parser.add_argument('--input_dir', type=str, default=default_input_dir)
@@ -88,6 +76,21 @@ if __name__ == "__main__":
     # parser.add_argument('--output_dir', type=str, default=default_output_dir)
     # args = parser.parse_args()
 
-    # args.input_sudfolder_list = ['xiaoanxiaoan_16k', 'xiaoanxiaoan_8k']
-    # args.output_sudfolder_list = ['xiaoanxiaoan_16k_small_voice', 'xiaoanxiaoan_8k_small_voice']
+    # args.input_sudfolder_list = ['danbin_asr', 'danbin_ori']
+    # args.output_sudfolder_list = ['danbin_asr_over_long', 'danbin_ori_over_long']
     # find_matched_audio()
+
+    # 剔除声音较小语音数据
+    default_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/更新漏标注数据处理/xiaoan/"
+    default_find_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/更新漏标注数据处理/xiaoan/small_voice/"
+    default_output_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/更新漏标注数据处理/xiaoan/"
+    
+    parser = argparse.ArgumentParser(description='Streamax KWS Engine')
+    parser.add_argument('--input_dir', type=str, default=default_input_dir)
+    parser.add_argument('--find_input_dir', type=str, default=default_find_input_dir)
+    parser.add_argument('--output_dir', type=str, default=default_output_dir)
+    args = parser.parse_args()
+
+    args.input_sudfolder_list = ['adpro']
+    args.output_sudfolder_list = ['adpro_small_voice']
+    find_matched_audio()

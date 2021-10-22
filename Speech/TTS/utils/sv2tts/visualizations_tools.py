@@ -1,17 +1,8 @@
-import librosa
 import matplotlib
 matplotlib.use('agg')    
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.io import wavfile
-
-def load_wav(path, sr):
-    return librosa.core.load(path, sr=sr)[0]
-
-
-def save_wav(wav, path, sr): 
-    wav *= 32767 / max(0.01, np.max(np.abs(wav)))
-    wavfile.write(path, sr, wav.astype(np.int16))
 
 
 def split_title_line(title_text, max_words=5):

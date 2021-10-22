@@ -2,17 +2,17 @@ import argparse
 import multiprocessing
 import os
 import sys
-import soundfile as sf
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/VAD')
-from tools.trim_long_silences import *
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.dataset import audio
 
 def vad(in_params):
     data_path, output_folder = in_params[0], in_params[1]
     sampling_rate = 16000
-    wav = preprocess_wav(data_path)
-    sf.write(os.path.join(output_folder, os.path.basename(data_path)), wav, sampling_rate)
+    wav = audio.preprocess_wav(data_path, sampling_rate)
+    audio.save_wav(os.path.join(output_folder, os.path.basename(data_path)), wav, sampling_rate)
+
 
 def vad_multiprocessing(args):
     # mkdir 
@@ -28,6 +28,7 @@ def vad_multiprocessing(args):
 
     p = multiprocessing.Pool( 4 )
     out = list(tqdm(p.imap(vad, in_params), "vad", total=len(data_list)))
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

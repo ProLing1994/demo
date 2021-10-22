@@ -43,7 +43,7 @@ class WaveLoader_Librosa(object):
         data = data.astype(np.float32)
         audio_sample = data / float(pow(2, 15))
         temp_path = os.path.join(os.path.dirname(output_path), '{}.wav'.format('temp'))
-        librosa.output.write_wav(temp_path, audio_sample, sr=self.sample_rate)
+        sf.write(temp_path, audio_sample, self.sample_rate)
         os.system('sox {} -b 16 -e signed-integer {}'.format(temp_path, output_path))
         return
 
