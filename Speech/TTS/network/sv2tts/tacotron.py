@@ -130,6 +130,7 @@ class CBHG(nn.Module):
         # the model gets replicated, making it no longer guaranteed that the
         # weights are contiguous in GPU memory. Hence, we must call it again
         self._flatten_parameters()
+        self.rnn.flatten_parameters()
 
         # Save these for later
         residual = x

@@ -25,30 +25,36 @@ from common.utils.python.logging_helpers import setup_logger
 
 def show_ressult(cfg, attention, mel_prediction, target_spectrogram, input_seq, step,
                 plot_dir, wav_dir, sample_num, loss):
-    # text
-    text = '_'.join(sequence_to_text(input_seq).split('~')[0].split(' '))
+    # create_folder
+    create_folder(wav_dir)
+    create_folder(plot_dir)
+
+    # save text
+    text = sequence_to_text(input_seq).split('~')[0]
+    text_fpath = os.path.join(wav_dir, "text_step_{}_sample_{}.txt".format(step, sample_num))
+    with open(text_fpath, "w") as f:
+        f.write(text)
 
     # save some results for evaluation
-    create_folder(plot_dir)
-    attention_path = os.path.join(plot_dir, "attention_step_{}_sample_{}_text_{}.png".format(step, sample_num, text))
+    attention_path = os.path.join(plot_dir, "attention_step_{}_sample_{}.png".format(step, sample_num))
     save_attention(attention, attention_path)
 
+    # save real and predicted mel-spectrogram plot to disk (control purposes)
+    spec_fpath = os.path.join(plot_dir, "mel_spectrogram_step_{}_sample_{}.png".format(step, sample_num))
+    title_str = "{}, {}, step={}, loss={:.5f}".format("Tacotron", datetime.now().strftime("%Y-%m-%d %H:%M"), step, loss)
+    plot_spectrogram(mel_prediction, spec_fpath, title=title_str,
+                    target_spectrogram=target_spectrogram,
+                    max_len=target_spectrogram.shape[0])
+    
     # save predicted mel spectrogram to disk (debug)
-    create_folder(wav_dir)
-    mel_output_fpath = os.path.join(wav_dir, "mel_prediction_step_{}_sample_{}_text_{}.npy".format(step, sample_num, text))
+    mel_output_fpath = os.path.join(wav_dir, "mel_prediction_step_{}_sample_{}.npy".format(step, sample_num))
     np.save(str(mel_output_fpath), mel_prediction, allow_pickle=False)
 
     # save griffin lim inverted wav for debug (mel -> wav)
     wav = audio.compute_inv_mel_spectrogram(cfg, mel_prediction.T)
-    wav_fpath = os.path.join(wav_dir, "wave_from_mel_step_{}_sample_{}_text_{}.wav".format(step, sample_num, text))
-    audio.save_wav(wav, str(wav_fpath), sr=cfg.dataset.sample_rate)
-
-    # save real and predicted mel-spectrogram plot to disk (control purposes)
-    spec_fpath = os.path.join(plot_dir, "mel_spectrogram_step_{}_sample_{}_text_{}.png".format(step, sample_num, text))
-    title_str = "{}, {}, step={}, loss={:.5f}".format("Tacotron", datetime.now().strftime("%Y-%m-%d %H:%M"), step, loss)
-    plot_spectrogram(mel_prediction, spec_fpath, title=title_str,
-                     target_spectrogram=target_spectrogram,
-                     max_len=target_spectrogram.shape[0])
+    wav_fpath = os.path.join(wav_dir, "wave_from_mel_step_{}_sample_{}.wav".format(step, sample_num))
+    if wav:
+        audio.save_wav(wav, str(wav_fpath), sr=cfg.dataset.sample_rate)
     print("Input at step {}: {}".format(step, text))
 
 
@@ -72,8 +78,11 @@ def train(args):
 
     # define network
     net = import_network(cfg, cfg.net.model_name, cfg.net.class_name)
-    assert(cfg.net.r == net.module.r)
-
+    if isinstance(net, torch.nn.parallel.DataParallel):
+        assert(cfg.net.r == net.module.r)
+    else:
+        assert(cfg.net.r == net.r)
+        
     # set training optimizer, learning rate scheduler
     optimizer = set_optimizer(cfg, net)
     scheduler = set_scheduler(cfg, optimizer)
@@ -136,8 +145,11 @@ def train(args):
     # loop over batches
     for i in range(batch_number):
         net.train()
-        assert(cfg.net.r == net.module.r)
-        
+        if isinstance(net, torch.nn.parallel.DataParallel):
+            assert(cfg.net.r == net.module.r)
+        else:
+            assert(cfg.net.r == net.r)
+
         epoch_idx = start_epoch + i * cfg.train.batch_size // len_train_dataset
         batch_idx += 1
 
@@ -161,6 +173,10 @@ def train(args):
         profiler.tick("Data to device")
         
         # Forward pass
+        # Parallelize model onto GPUS using workaround due to python bug
+        if cfg.general.data_parallel_mode == 2 and cfg.general.num_gpus > 1:
+            m1_hat, m2_hat, attention, stop_pred = data_parallel_workaround(cfg, net, texts,
+                                                                            mels, embeds)
         m1_hat, m2_hat, attention, stop_pred = net(texts, mels, embeds)
         profiler.tick("Forward pass")
 
@@ -219,7 +235,10 @@ def train(args):
                     target_spectrogram = mels[sample_idx].detach().cpu().numpy().T
                     mel_length = mel_prediction.shape[0]
                     attention_len = mel_length // cfg.net.r 
-                    assert(cfg.net.r == net.module.r)
+                    if isinstance(net, torch.nn.parallel.DataParallel):
+                        assert(cfg.net.r == net.module.r)
+                    else:
+                        assert(cfg.net.r == net.r)
                         
                     attention_prediction = attention[sample_idx][:, :attention_len].detach().cpu().numpy()
                     target_text = texts[sample_idx].detach().cpu().numpy()

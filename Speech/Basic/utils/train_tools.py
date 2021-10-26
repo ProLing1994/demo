@@ -67,6 +67,8 @@ def init_torch_and_numpy(cfg, local_rank=0):
     elif cfg.general.data_parallel_mode == 1:
         torch.distributed.init_process_group(backend='nccl', init_method='env://')
         torch.cuda.set_device(local_rank)
+    elif cfg.general.data_parallel_mode == 2:
+        pass
     else:
         raise Exception("[ERROR:] Unknow data parallel mode, please check!")
 
@@ -94,9 +96,39 @@ def import_network(cfg, model_name, class_name):
     elif cfg.general.data_parallel_mode == 1:
         net = net.cuda()
         net = torch.nn.parallel.DistributedDataParallel(net)
+    elif cfg.general.data_parallel_mode == 2:
+        net = net.cuda()
     else:
         raise Exception("[ERROR:] Unknow data parallel mode, please check!")
     return net
+
+
+_output_ref = None
+_replicas_ref = None
+
+def data_parallel_workaround(cfg, model, *input):
+    """ data parallel workaround
+    单机多卡，在数据加载后进行手动并行（目前仅用于 sv2tts 数据并行方式）
+    cfg.general.data_parallel_mode == 2 and cfg.general.num_gpus > 1
+    :param cfg:
+    :param model:
+    :param input:
+    :return:
+    """
+    global _output_ref
+    global _replicas_ref
+    device_ids = list(range(cfg.general.num_gpus))
+    output_device = device_ids[0]
+    replicas = torch.nn.parallel.replicate(model, device_ids)
+    # input.shape = (num_args, batch, ...)
+    inputs = torch.nn.parallel.scatter(input, device_ids)
+    # inputs.shape = (num_gpus, num_args, batch/num_gpus, ...)
+    replicas = replicas[:len(inputs)]
+    outputs = torch.nn.parallel.parallel_apply(replicas, inputs)
+    y_hat = torch.nn.parallel.gather(outputs, output_device)
+    _output_ref = outputs
+    _replicas_ref = replicas
+    return y_hat
 
 
 def set_optimizer(cfg, net):

@@ -48,8 +48,8 @@ def find_small_voice_audio():
 
 if __name__ == "__main__":
     # xiaoan 8k
-    default_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/更新漏标注数据处理/xiaoan/adpro/"
-    default_output_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/更新漏标注数据处理/xiaoan/small_voice/"
+    default_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_10182021/xiaoanxiaoan_8k/"
+    default_output_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_10182021/small_voice/"
     default_sample_rate = 8000
     default_threshold = '0.2'
 

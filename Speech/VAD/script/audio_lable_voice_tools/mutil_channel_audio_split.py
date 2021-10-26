@@ -85,8 +85,8 @@ def mutil_channel_audio_split(args):
 def main():
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
-    args.input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/更新标注结果/"
-    args.output_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/更新数据处理/"
+    args.input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_10182021/处理音频_0423/"
+    args.output_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_10182021/处理音频/"
     args.sample_rate = 16000
     args.name_list = ['adpro', 'mic', 'danbin_ori', 'danbin_asr']
     # args.name_list = ['danbin_asr', 'danbin_ori']

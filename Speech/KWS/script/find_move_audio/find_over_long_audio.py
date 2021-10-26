@@ -61,9 +61,9 @@ def find_over_short_audio():
 if __name__ == "__main__":
     # find_over_long_audio
     # xiaoan 8k
-    default_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_10182021/xiaoan/mic/"
-    default_output_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_10182021/xiaoan/mic_long/"
-    default_sample_rate = 16000
+    default_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_10182021/xiaoanxiaoan_8k/"
+    default_output_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_10182021/over_long/"
+    default_sample_rate = 8000
     default_threshold = '1.8'
 
     # # activate bwc

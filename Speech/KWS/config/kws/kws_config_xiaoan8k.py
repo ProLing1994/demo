@@ -15,69 +15,38 @@ __C.general.sub_data_dir = ["/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experi
                             "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/XiaoRuiDataset/"]
 
 # data version
-# __C.general.version = "1.0"
-# __C.general.version = "1.1"
-# __C.general.version = "1.2"
-# __C.general.version = "1.3"
-# __C.general.version = "1.4"
-# __C.general.version = "1.5"
-# __C.general.version = "1.6"
-# __C.general.version = "1.7"
 __C.general.version = "1.8"
+# __C.general.version = "1.9"     # 数据集清洗（小声音频）+ 添加部分实车录制数据 + 困难样本挖掘（电影、实车误报）
 
 # data date
-# __C.general.date = "04062021"
-# __C.general.date = "04082021"
-# __C.general.date = "04122021"
-# __C.general.date = "04152021"
-# __C.general.date = "05132021"
-# __C.general.date = "05142021"
-# __C.general.date = "05152021"
 __C.general.date = "05202021"
+# __C.general.date = "10262021"
 
 # data path
-# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.0_04062021/total_data_files.csv"
-# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.1_04082021/total_data_files.csv"
-# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.2_04122021/total_data_files.csv"
-# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.3_04152021/total_data_files.csv"
-# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.5_05142021/total_data_files.csv"
-# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.6_05142021/total_data_files.csv"
-# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.7_05152021/total_data_files.csv"
 __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.8_05202021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_9_10262021/total_data_files.csv"
 
 # background noise path
-# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.0_04062021/background_noise_files.csv"
-# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.1_04082021/background_noise_files.csv"
-# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.2_04122021/background_noise_files.csv"
-# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.3_04152021/background_noise_files.csv"
-# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.5_05142021/background_noise_files.csv"
-# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.6_05142021/background_noise_files.csv"
-# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.7_05152021/background_noise_files.csv"
 __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.8_05202021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_9_10262021/background_noise_files.csv"
 
 # test after save pytorch model
-__C.general.is_test = True
+# __C.general.is_test = True
+__C.general.is_test = False
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws_xiaoan8k_test"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_0_res15_fbankcpu_04062021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_1_res15_fbankcpu_04062021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_2_res15_fbankcpu_041262021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_3_res15_fbankcpu_041262021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_4_res15_fbankcpu_64_041262021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_5_res15_fbankcpu_041262021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_9_res15_fbankcpu_041262021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_1_tc-resnet14-amba_fbankcpu_kd_041262021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_2_tc-resnet14-amba_fbankcpu_kd_041262021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_3_tc-resnet14-amba_fbankcpu_kd_041262021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_4_tc-resnet14-amba_fbankcpu_64_kd_041262021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_5_tc-resnet14-amba_fbankcpu_kd_05152021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/"
+__C.general.save_dir = "/mnt/huanyuan2/model/kws/kws_xiaoan/test"
+# __C.general.save_dir = "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_1_10_res15_fbankcpu_041262021/"
+# __C.general.save_dir = "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_1_11_res15_fbankcpu_10262021/"
+# __C.general.save_dir = "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/"
 
 # finetune model
 __C.general.finetune_on = False
 __C.general.finetune_model_dir = ""
 __C.general.finetune_epoch = 0
+# __C.general.finetune_on = True
+# __C.general.finetune_model_dir = "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_1_10_res15_fbankcpu_041262021/"
+# __C.general.finetune_epoch = 1999
 
 # set certain epoch to continue training, set -1 to train from scratch
 __C.general.resume_epoch = -1
@@ -147,14 +116,12 @@ __C.dataset = {}
 __C.dataset.input_channel = 1
 
 # Number of audio samples per second
-# __C.dataset.sample_rate = 16000
 __C.dataset.sample_rate = 8000
 
 # Length of each audio clip to be analyzed
 __C.dataset.clip_duration_ms = 1500
 
 # Duration of frequency analysis window
-# __C.dataset.window_size_ms = 30.0
 __C.dataset.window_size_ms = 32.0
 
 # How far to move in time between frequency windows
@@ -179,9 +146,7 @@ __C.dataset.w_alignment = False
 __C.dataset.h_alignment = False
 
 # input size of training data (w, h), unit: voxel
-# __C.dataset.data_size = [40, 201]
 __C.dataset.data_size = [48, 146]
-# __C.dataset.data_size = [48, 144]
 
 
 ##################################
@@ -225,10 +190,23 @@ __C.dataset.augmentation.on = True
 # __C.dataset.augmentation.on = False
 
 # How many of the training samples have background noise mixed in.
-__C.dataset.augmentation.background_frequency = 0.8
+__C.dataset.augmentation.background_frequency = 0.6
 
 # How loud the background noise should be, between 0 and 1.
 __C.dataset.augmentation.background_volume = 0.1
+
+# How many of the training samples have synthetic noise mixed in.
+__C.dataset.augmentation.synthetic_frequency = 0.5
+
+# type of the synthetic noise, support ['white', 'salt_pepper'].
+# __C.dataset.augmentation.synthetic_type = 'white'
+__C.dataset.augmentation.synthetic_type = 'salt_pepper'
+
+# the scale parameter in white synthetic noise
+__C.dataset.augmentation.synthetic_scale = 0.001
+
+# the prob parameter in salt pepper synthetic noise
+__C.dataset.augmentation.synthetic_prob = 0.001
 
 # Range to randomly shift the training audio by in time(ms).
 __C.dataset.augmentation.time_shift_ms = 100.0
@@ -252,12 +230,17 @@ __C.dataset.augmentation.volume = [0.4, 1.6]
 __C.dataset.augmentation.pitch_on = False
 __C.dataset.augmentation.pitch = [-5, 5]
 
+# based on audio vtlp: on
+# vtlp: http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=34DDD4B0CDCE76942A879204E8B7716C?doi=10.1.1.369.733&rep=rep1&type=pdf
+# __C.dataset.augmentation.vtlp_on = True
+__C.dataset.augmentation.vtlp_on = False
+
 # based on audio spectrum: on
 __C.dataset.augmentation.spec_on = True
 # __C.dataset.augmentation.spec_on = False
 __C.dataset.augmentation.F = 5
-__C.dataset.augmentation.T = 20
-__C.dataset.augmentation.num_masks = 1
+__C.dataset.augmentation.T = 10
+__C.dataset.augmentation.num_masks = 2
 
 
 ##################################
@@ -288,10 +271,19 @@ __C.loss = {}
 __C.loss.name = 'focal'
 
 # the weight matrix for each class in focal loss, including background class
-__C.loss.obj_weight = np.array([[1/9, 0], [0, 8/9]])
+# __C.loss.obj_weight = np.array([[1/9, 0], [0, 8/9]])
+__C.loss.obj_weight = None
 
 # the gamma parameter in focal loss
 __C.loss.focal_gamma = 2
+
+# EMA: expontential moving average on
+# EMA: https://github.com/ProLing1994/pytorch-loss/blob/master/ema.py
+__C.loss.ema_on = True
+# __C.loss.ema_on = False
+
+# the alpha parameter in EMA: each parameter p should be computed as p_hat = alpha * p + (1. - alpha) * p_hat
+__C.loss.ema_alpha = 0.995
 
 
 #####################################
@@ -305,7 +297,7 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'cnn-trad-pool2'
 # __C.net.model_name = 'cnn-one-fstride1'
 # __C.net.model_name = 'cnn-tpool2'
-# __C.net.model_name = 'res15'
+__C.net.model_name = 'res15'
 # __C.net.model_name = 'res15-narrow'
 # __C.net.model_name = 'res15-narrow-amba'
 # __C.net.model_name = 'res15-narrow-novt'
@@ -320,7 +312,7 @@ __C.net.class_name = "SpeechResModel"
 # __C.net.model_name = 'tc-resnet8-dropout'
 # __C.net.model_name = 'tc-resnet14-dropout'
 # __C.net.model_name = 'tc-resnet18-dropout'
-__C.net.model_name = 'tc-resnet14-amba-hisi-novt-1-5s'
+# __C.net.model_name = 'tc-resnet14-amba-hisi-novt-144-142'
 
 
 ######################################
@@ -333,12 +325,13 @@ __C.train = {}
 # __C.train.num_epochs = 16000
 # __C.train.num_epochs = 8000
 # __C.train.num_epochs = 4000
-# __C.train.num_epochs = 100
+# __C.train.num_epochs = 500
 __C.train.num_epochs = 1
 
 # the number of samples in a batch
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 1024
+# __C.train.batch_size = 512
 # __C.train.batch_size = 128
 # __C.train.batch_size = 64
 # __C.train.batch_size = 16
@@ -363,8 +356,8 @@ __C.train.save_epochs = 1
 
 # learning rate = lr*gamma**(epoch//step_size)
 # __C.train.lr = 1e-3
-__C.train.lr = 1e-4
-# __C.train.lr = 1e-5
+# __C.train.lr = 1e-4
+__C.train.lr = 1e-5
 
 # step size for step learning rate
 __C.train.lr_step_size = 0
@@ -389,6 +382,28 @@ __C.train.weight_decay = 0.0001
 
 # the beta in Adam optimizer
 __C.train.betas = (0.9, 0.999)
+
+
+######################################
+# scheduler parameters
+######################################
+
+# only with optimizer: SGD
+# scheduler, support StepLR and CosineAnnealingWarmRestarts
+# __C.train.scheduler = 'StepLR'
+__C.train.scheduler = 'CosineAnnealingWarmRestarts'
+
+# StepLR step_size
+__C.train.lr_step_size = 1000
+
+# StepLR lr_gamma
+__C.train.lr_gamma = 0.1
+
+# CosineAnnealingWarmRestarts T_0
+__C.train.T_0 = 2
+
+# CosineAnnealingWarmRestarts T_mult
+__C.train.T_mult = 2
 
 
 ######################################

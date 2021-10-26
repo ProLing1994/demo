@@ -138,16 +138,22 @@ def main():
     # args.output_format = "RM_KWS_XIAOAN_xiaoan_S{:0>3d}M0D{}{}T{:0>3d}.wav"
     # args.output_format = "RM_KWS_XIAOAN_test_S{:0>3d}M0D{}{}T{:0>3d}.wav"
 
-    args.input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/数据处理/"
-    args.output_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/数据处理_out/"
+    args.input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_10182021/处理音频_0425/"
+    args.output_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_10182021/out_0425/"
     args.output_format = "RM_KWS_XIAOAN_xiaoan_S{:0>3d}M0D{}{}T{:0>3d}.wav"
-    args.id_name_csv = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/唤醒词记录.csv"
-    args.id_name_test_csv = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/唤醒词记录_测试人员.csv"
+    args.id_name_csv = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/唤醒词记录.csv"
+    args.id_name_test_csv = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/唤醒词记录_测试人员.csv"
 
     # 寻找相同说话人音频，记录末尾编号，新增数据向后延续
     args.find_folder_list = [
-                                # "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_8k/",
-                                # "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_16k/",
+                                "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_8k/",
+                                "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_8k_once/",
+                                "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_8k_over_long/",
+                                "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_8k_small_voice/",
+                                "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_16k/",
+                                "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_16k_once/",
+                                "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_16k_over_long/",
+                                "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_16k_small_voice/",
                             ]
 
     # params
@@ -162,7 +168,8 @@ def main():
     args.sample_rate = 16000
     
     # 是否将音频扩展为固定的长度
-    args.bool_expansion_fixed_length = True
+    # args.bool_expansion_fixed_length = True
+    args.bool_expansion_fixed_length = False
     args.expansion_fixed_length_s = 3.0
 
     # 若 args.expansion_fixed_length = True，下述无效

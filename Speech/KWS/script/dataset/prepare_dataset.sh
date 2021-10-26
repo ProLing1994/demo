@@ -12,7 +12,7 @@
 stage=1
 
 # init
-config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_speech.py
+# config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_speech.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui8k.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui16k.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py
@@ -21,7 +21,7 @@ config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_speech.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_heybodycam.py
-# config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan8k.py
+config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan8k.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan16k.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_nihaoxiaoan8k.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_nihaoxiaoan16k.py

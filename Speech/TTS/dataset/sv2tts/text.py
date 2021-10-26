@@ -2,6 +2,7 @@ import re
 import sys 
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
 from TTS.dataset.sv2tts.symbols import symbols
 from TTS.dataset.sv2tts import cleaners
 

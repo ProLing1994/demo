@@ -43,10 +43,10 @@ def cut_word_and_save(items):
     #sig = sig[:,0]
     if len(sig.shape) > 1:
         keyword_sample = sig[max(0, int(sr*tbegin)):min(int(sr*tend), len(sig)),:]
-        audio.save_wav(word_save_dir + os.path.basename(utt2wav[utt_id]), keyword_sample, sr)
+        audio.save_wav(keyword_sample, word_save_dir + os.path.basename(utt2wav[utt_id]), sr)
     else:
         keyword_sample = sig[max(0, int(sr*tbegin)):min(int(sr*tend), len(sig))]
-        audio.save_wav(word_save_dir + os.path.basename(utt2wav[utt_id]), keyword_sample, sr)
+        audio.save_wav(keyword_sample, word_save_dir + os.path.basename(utt2wav[utt_id]), sr)
     return 1
 
 def get_words_list(ctm_file, keyword_list):

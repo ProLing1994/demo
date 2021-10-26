@@ -54,6 +54,8 @@ __C.general.gpu_ids = '0'
 # data_parallel_mode: [0, 1]
 # 0: 单机多卡，DataParallel
 # 1: 单/多级多卡、分布式，DistributedDataParallel
+# 2: 单机多卡，数据手动并行
+## TODO：目前在训练 sv2tts 过程中，多卡运行出现异常，原因未知，bug: terminate called after throwing an instance of 'c10::Error'
 __C.general.data_parallel_mode = 0
 
 

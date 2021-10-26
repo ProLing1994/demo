@@ -98,8 +98,7 @@ class SpeechDataset(Dataset):
                                                  n_mels=self.feature_bin_count,
                                                  nfilt=self.nfilt,
                                                  winlen=self.window_size_ms / 1000, 
-                                                 winstep=self.window_stride_ms / 1000,
-                                                 data_length = self.clip_duration_ms / 1000)
+                                                 winstep=self.window_stride_ms / 1000)
 
         self.save_audio_inputs_bool = cfg.debug.save_inputs
         self.save_audio_inputs_dir = cfg.general.save_dir

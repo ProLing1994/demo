@@ -8,7 +8,6 @@
 1、mutil_channel_audio_split.py，将多通道频转换为单通道音频，注意输入 args.name_list，要求多通道音频和 TXT 文件位于用一个目录
 2、mutil_channel_audio_label_split.py，按照 TXT 文件，将多个单通道音频按照标签进行拆分，注意标签区分 xiaoan/xiaoan1/error/error1
 3、audio_label_csv.py，若需要生成对应 CSV 文件，执行该文件
-4、依次处理数据合并到同一个文件夹，注意文件相对格式不要改变
 
 步骤二：处理异常数据
 1、dataset_align.sh，对单通道音频 mic 进行语音对齐，获得对齐数据（mic 音质理想），语音对齐思想：kaldi（只适用于中文标签）
