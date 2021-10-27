@@ -13,6 +13,7 @@ from KWS.utils.train_tools import *
 
 sys.path.insert(0, '/home/huanyuan/code/demo/common')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/common')
+# sys.path.insert(0, '/yuanhuan/code/demo/common')
 from common.utils.python.logging_helpers import setup_logger
 
 
@@ -100,7 +101,7 @@ def train(config_file, training_mode):
         load_checkpoint(net, cfg.general.finetune_epoch, 
                         cfg.general.finetune_model_dir, 
                         sub_folder_name='pretrain_model')
-        start_epoch, start_batch = 0, 0, 0
+        start_epoch, start_batch = 0, 0
         last_save_epoch = 0
     elif cfg.general.resume_epoch >= 0:
         # resume, Load the model, continue the previous learning rate
