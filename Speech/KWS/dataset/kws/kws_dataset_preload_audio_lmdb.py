@@ -68,12 +68,16 @@ class SpeechDataset(Dataset):
     def save_audio(self, data, audio_label, audio_file):
         out_folder = os.path.join(self.cfg.general.save_dir, self.mode_type + '_audio', audio_label)
 
+        # mkdir
         if not os.path.isdir(out_folder):
             try:
                 os.makedirs(out_folder)
             except:
                 pass
+
         filename = os.path.basename(audio_file)
+        if not str(filename).endswith('.wav'):
+            filename = str(filename).split('.')[0] + '.wav'
         audio.save_wav(data.copy(), os.path.join(out_folder, filename), self.cfg.dataset.sample_rate)
 
     def __getitem__(self, index):
@@ -106,7 +110,7 @@ class SpeechDataset(Dataset):
         if audio_label == hparams.SILENCE_LABEL:
             data = dataset_augmentation.dataset_add_noise(self.cfg, data, self.background_data, bool_force_add_noise=True)
         else:
-            if self.bool_trainning:
+            if self.cfg.dataset.augmentation.on and self.bool_trainning:
                 if audio_label == hparams.UNKNOWN_WORD_LABEL:
                     data = dataset_augmentation.dataset_augmentation_waveform(self.cfg, data, self.background_data, bool_time_shift_multiple=True)
                 else:
@@ -121,7 +125,7 @@ class SpeechDataset(Dataset):
         data = audio.compute_mel_spectrogram(self.cfg, data)
 
         # data augmentation
-        if self.cfg.dataset.augmentation.on and self.cfg.dataset.augmentation.spec_on and self.bool_trainning:
+        if self.cfg.dataset.augmentation.on and self.bool_trainning:
             data = dataset_augmentation.dataset_augmentation_spectrum(self.cfg, data)
 
         # To tensor

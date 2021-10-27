@@ -296,7 +296,10 @@ def compute_mel_spectrogram(cfg, data):
     elif audio_preprocess_type == "pcen":
         audio_data = audio_processor.compute_pcen(data)
     elif audio_preprocess_type == "fbank_cpu":
-        audio_data = audio_processor.compute_fbanks_cpu(data, cfg.dataset.augmentation.vtlp_on)
+        if cfg.dataset.augmentation.on and cfg.dataset.augmentation.vtlp_on:
+            audio_data = audio_processor.compute_fbanks_cpu(data, cfg.dataset.augmentation.vtlp_on)
+        else:
+            audio_data = audio_processor.compute_fbanks_cpu(data)
     return audio_data.astype(np.float32)
 
 

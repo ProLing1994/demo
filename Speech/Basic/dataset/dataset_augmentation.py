@@ -1,6 +1,15 @@
 import librosa
 import numpy as np
 import random
+import struct
+import sys
+import webrtcvad
+
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
+# sys.path.insert(0, '/yuanhuan/code/demo/Speech/')
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+
+from KWS.config.kws import hparams
 
 
 def dataset_alignment(cfg, data, bool_replicate=False):
@@ -54,6 +63,25 @@ def dataset_augmentation_pitch(cfg, data):
     return data
 
 
+def dataset_augmentation_time_shift(cfg, data, bool_time_shift_multiple=False):
+    time_shift_ms = cfg.dataset.augmentation.time_shift_ms
+    time_shift_samples = int(cfg.dataset.sample_rate * time_shift_ms / 1000)
+    
+    # Time shift enhancement multiple of negative samples,
+    # which is effective for advanced prediction and lag prediction
+    if bool_time_shift_multiple:
+        time_shift_multiple = cfg.dataset.augmentation.time_shift_multiple
+        time_shift_samples *= time_shift_multiple
+
+    if time_shift_samples > 0:
+        time_shift_amount = np.random.randint(-time_shift_samples, time_shift_samples)
+        time_shift_left = -min(0, time_shift_amount)
+        time_shift_right = max(0, time_shift_amount)
+        data = np.pad(data, (time_shift_left, time_shift_right), "constant")
+        data = data[:len(data) - time_shift_left] if time_shift_left else data[time_shift_right:]
+    return data
+
+
 def dataset_add_synthetic_noise(cfg, data):
     # init
     synthetic_type = cfg.dataset.augmentation.synthetic_type
@@ -63,7 +91,7 @@ def dataset_add_synthetic_noise(cfg, data):
 
     if not synthetic_frequency > 0:
         return data
-
+        
     if np.random.uniform(0, 1) < synthetic_frequency:
         if synthetic_type == "white":
             scale = synthetic_scale * np.random.uniform(0, 1)
@@ -81,7 +109,6 @@ def dataset_add_synthetic_noise(cfg, data):
 
 def dataset_add_noise(cfg, data, background_data, bool_force_add_noise=False):          
     # init
-    desired_samples = int(cfg.dataset.sample_rate * cfg.dataset.clip_duration_ms / 1000)
     background_frequency = cfg.dataset.augmentation.background_frequency 
     background_volume = cfg.dataset.augmentation.background_volume
 
@@ -89,10 +116,6 @@ def dataset_add_noise(cfg, data, background_data, bool_force_add_noise=False):
         return data
     
     assert len(background_data) > 0, "[ERROR:] Something wronge with background data, please check"
-
-    # init
-    background_clipped = np.zeros(desired_samples)
-    background_volume = 0
 
     background_idx = np.random.randint(len(background_data))
     background_sample = background_data[background_idx]
@@ -116,6 +139,40 @@ def dataset_add_noise(cfg, data, background_data, bool_force_add_noise=False):
     return data
 
 
+def dataset_augmentation_vad(cfg, data):
+    # init
+    sample_rate = cfg.dataset.sample_rate
+    vad_frequency = cfg.dataset.augmentation.vad_frequency 
+    vad_window_length = random.choice(cfg.dataset.augmentation.vad_window_length) 
+    vad_mode = random.choice(cfg.dataset.augmentation.vad_mode) 
+    vad_chunk_size = (vad_window_length * sample_rate) // 1000
+    
+    if np.random.uniform(0, 1) >= vad_frequency:
+        return data
+
+    # Trim the end of the audio to have a multiple of the window size
+    data = data[:len(data) - (len(data) % vad_chunk_size)]
+    
+    # Convert the float waveform to 16-bit mono PCM
+    pcm_wave = struct.pack("%dh" % len(data), *(np.round(data * hparams.int16_max)).astype(np.int16))
+    
+    # Perform voice activation detection
+    vad = webrtcvad.Vad(mode=vad_mode)
+    vad_flags = []
+    for window_start in range(0, len(data), vad_chunk_size):
+        window_end = window_start + vad_chunk_size
+        vad_flags.append(vad.is_speech(pcm_wave[window_start * 2 : window_end * 2],
+                                         sample_rate=sample_rate))
+    
+    for vad_idx in range(len(vad_flags)):
+        if vad_flags[vad_idx] == 0:
+            window_start = vad_idx * vad_chunk_size
+            window_end = window_start + vad_chunk_size
+            data[window_start: window_end] = 0
+            
+    return data
+
+
 def dataset_augmentation_waveform(cfg, data, background_data, bool_time_shift_multiple=False):
     # data augmentation
     if cfg.dataset.augmentation.speed_volume_on:
@@ -125,25 +182,21 @@ def dataset_augmentation_waveform(cfg, data, background_data, bool_time_shift_mu
     if cfg.dataset.augmentation.pitch_on:
         data = dataset_augmentation_pitch(cfg, data)
 
-    # alignment data
+    # data alignment
     data = dataset_alignment(cfg, data) 
 
     # add time_shift
-    time_shift_ms = cfg.dataset.augmentation.time_shift_ms
-    time_shift_samples = int(cfg.dataset.sample_rate * time_shift_ms / 1000)
-    if bool_time_shift_multiple:
-        time_shift_multiple = cfg.dataset.augmentation.time_shift_multiple
-        time_shift_samples *= time_shift_multiple
-
-    if time_shift_samples > 0:
-        time_shift_amount = np.random.randint(-time_shift_samples, time_shift_samples)
-        time_shift_left = -min(0, time_shift_amount)
-        time_shift_right = max(0, time_shift_amount)
-        data = np.pad(data, (time_shift_left, time_shift_right), "constant")
-        data = data[:len(data) - time_shift_left] if time_shift_left else data[time_shift_right:]
+    data = dataset_augmentation_time_shift(cfg, data, bool_time_shift_multiple)
 
     # add noise
     data = dataset_add_noise(cfg, data, background_data)
+
+    # vad augmentation
+    if cfg.dataset.augmentation.vad_on:
+        data = dataset_augmentation_vad(cfg, data)
+
+    # data alignment
+    data = dataset_alignment(cfg, data) 
     return data
 
 
@@ -202,6 +255,7 @@ def dataset_augmentation_spectrum(cfg, audio_data):
     num_masks = cfg.dataset.augmentation.num_masks
 
     # add SpecAugment
-    audio_data = add_frequence_mask(audio_data, F=F, num_masks=num_masks, replace_with_zero=True)
-    audio_data = add_time_mask(audio_data, T=T, num_masks=num_masks, replace_with_zero=True)
+    if cfg.dataset.augmentation.spec_on:
+        audio_data = add_frequence_mask(audio_data, F=F, num_masks=num_masks, replace_with_zero=True)
+        audio_data = add_time_mask(audio_data, T=T, num_masks=num_masks, replace_with_zero=True)
     return audio_data

@@ -194,22 +194,22 @@ __C.dataset.label.testing_percentage = 0.0     # 0%
 # data augmentation parameters
 __C.dataset.augmentation = {}
 
-# based on audio waveform: on
+# based on audio waveform: on.
 __C.dataset.augmentation.on = True
 # __C.dataset.augmentation.on = False
 
 # How many of the training samples have background noise mixed in.
-__C.dataset.augmentation.background_frequency = 0.6
+__C.dataset.augmentation.background_frequency = 0.8
 
 # How loud the background noise should be, between 0 and 1.
-__C.dataset.augmentation.background_volume = 0.1
+__C.dataset.augmentation.background_volume = 0.5
 
 # How many of the training samples have synthetic noise mixed in.
-__C.dataset.augmentation.synthetic_frequency = 0.5
+__C.dataset.augmentation.synthetic_frequency = 0.4
 
 # type of the synthetic noise, support ['white', 'salt_pepper'].
-# __C.dataset.augmentation.synthetic_type = 'white'
-__C.dataset.augmentation.synthetic_type = 'salt_pepper'
+__C.dataset.augmentation.synthetic_type = 'white'
+# __C.dataset.augmentation.synthetic_type = 'salt_pepper'
 
 # the scale parameter in white synthetic noise
 __C.dataset.augmentation.synthetic_scale = 0.001
@@ -221,8 +221,7 @@ __C.dataset.augmentation.synthetic_prob = 0.001
 __C.dataset.augmentation.time_shift_ms = 100.0
 
 # Time shift enhancement multiple of negative samples, which is effective for advanced prediction and lag prediction
-__C.dataset.augmentation.time_shift_multiple = 10
-# __C.dataset.augmentation.time_shift_multiple = 5
+__C.dataset.augmentation.time_shift_multiple = 5
 
 # based on audio waveform: on.
 __C.dataset.augmentation.speed_volume_on = True
@@ -232,12 +231,30 @@ __C.dataset.augmentation.speed_volume_on = True
 __C.dataset.augmentation.speed = [0.9, 1.1]
 
 # How loud the audio should be.
-__C.dataset.augmentation.volume = [0.4, 1.6]
+# __C.dataset.augmentation.volume = [0.4, 1.6]
+__C.dataset.augmentation.volume = [0.6, 1.6]
 
-# How pitch the audio should be.
+# based on audio waveform: on.
 # __C.dataset.augmentation.pitch_on = True
 __C.dataset.augmentation.pitch_on = False
+
+# How pitch the audio should be.
 __C.dataset.augmentation.pitch = [-5, 5]
+
+# based on audio waveform: on.
+__C.dataset.augmentation.vad_on = True
+# __C.dataset.augmentation.vad_on = False
+
+# How many of the training samples have vad augmentation.
+cfg.dataset.augmentation.vad_frequency = 0.4
+
+# window size of the vad. 
+# Must be either 10, 20 or 30 milliseconds. This sets the granularity of the VAD. Should not need to be changed.
+__C.dataset.augmentation.vad_window_length = [10, 20, 30]
+
+# vad mode
+# 0: Normal，1：low Bitrate，2：Aggressive，3：Very Aggressive
+__C.dataset.augmentation.vad_mode = [0, 1, 2]
 
 # based on audio vtlp: on
 # vtlp: http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=34DDD4B0CDCE76942A879204E8B7716C?doi=10.1.1.369.733&rep=rep1&type=pdf
@@ -283,8 +300,8 @@ __C.loss.name = 'focal'
 __C.loss.num_classes =  __C.dataset.label.num_classes
 
 # the weight matrix for each class in focal loss, including background class
-# __C.loss.obj_weight = np.array([[1/9, 0], [0, 8/9]])
-__C.loss.obj_weight = None
+__C.loss.obj_weight = np.array([[3/9, 0], [0, 6/9]])
+# __C.loss.obj_weight = None
 
 # the gamma parameter in focal loss
 __C.loss.focal_gamma = 2
@@ -409,12 +426,12 @@ __C.train.T_mult = 2
 __C.debug = {}
 
 # whether to save input images
-# __C.debug.save_inputs = True
-__C.debug.save_inputs = False
+__C.debug.save_inputs = True
+# __C.debug.save_inputs = False
 
 # the number of processing for save input images
-__C.debug.num_processing = 64
-# __C.debug.num_processing = 16
+# __C.debug.num_processing = 64
+__C.debug.num_processing = 16
 
 # random seed used in training
 __C.debug.seed = 0

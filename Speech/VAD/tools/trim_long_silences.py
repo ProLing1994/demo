@@ -10,8 +10,8 @@ if __name__ == '__main__':
     # output_wav = '/home/huanyuan/temp/vad.wav'
     # sampling_rate = 16000
 
-    input_wav = "/home/huanyuan/temp/1017S001D01017_38_1.wav"
-    output_wav = "/home/huanyuan/temp/1017S001D01017_38_1_vad.wav"
+    input_wav = "/home/huanyuan/temp/output.wav"
+    output_wav = "/home/huanyuan/temp/output_vad.wav"
     sampling_rate = 8000
 
     wav = audio.preprocess_wav(input_wav, sampling_rate)
