@@ -11,3 +11,4 @@ if __name__ == "__main__":
     print(" ".join(get_pinyin("放一首情歌")))
     print(" ".join(get_pinyin("校园青春校园小说有什么")))
     print(" ".join(get_pinyin("大智慧阿思达克通讯社")))
+    print(" ".join(get_pinyin("今天星期五，好开心啊")))

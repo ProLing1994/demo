@@ -32,10 +32,10 @@ if [ $stage -le 3 ];then
 	python data_preload_audio_lmdb.py --config_file $config_file || exit 1
 fi
 
-# if [ $stage -le 4 ];then
-# 	if [ $languague = "chinese" ];then
-# 		python data_pinyin.py --config_file $config_file || exit 1
-# 	fi
-# fi
+if [ $stage -le 4 ];then
+	if [ $languague = "chinese" ];then
+		python data_pinyin.py --config_file $config_file || exit 1
+	fi
+fi
 
 echo "script/dataset/prepare_dataset.sh succeeded"

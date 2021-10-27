@@ -26,8 +26,8 @@ __C.general.dataset_path_dict = {
 __C.general.data_dir = "/mnt/huanyuan2/data/speech/tts/Chinese_dataset/"
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/test/"
-# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_1_0_10132021/"
+# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/test/"
+__C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_1_1_10232021/"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -69,7 +69,7 @@ __C.speaker_verification.config_file = "/home/huanyuan/code/demo/Speech/SV/confi
 __C.speaker_verification.model_name = "/home/huanyuan/code/demo/Speech/SV/network/basic.py"
 __C.speaker_verification.class_name = 'SpeakerEncoder'
 # 方式一：模型训练过程中，保存模型
-__C.speaker_verification.model_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_0_basic_10122021"
+__C.speaker_verification.model_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_1_basic_10122021"
 __C.speaker_verification.epoch = -1
 # 方式二：加载其他模型结构
 __C.speaker_verification.model_path = ""

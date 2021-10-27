@@ -5,6 +5,7 @@ from tqdm import tqdm
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
 from Basic.dataset import audio
+from Basic.text.mandarin.pinyin import get_pinyin
 from Basic.utils.folder_tools import *
 from Basic.utils.train_tools import *
 
@@ -47,6 +48,7 @@ def infer(args):
 
     # load text
     texts = [args.text]
+    texts_name = [args.text_name]
 
     # synthesize_spectrograms
     specs = synthesize_spectrograms(cfg_synthesizer, net_synthesizer, texts, embeds)
@@ -62,15 +64,27 @@ def infer(args):
         wav = audio.compute_inv_mel_spectrogram(cfg, spec)
         output_dir = os.path.join(cfg.general.save_dir, "infer")
         create_folder(output_dir)
-        wav_fpath = os.path.join(output_dir, "wave_from_mel_sample_{}_text_{}.wav".format(os.path.splitext(os.path.basename(args.wav_file))[0], texts[spec_idx]))
+        wav_fpath = os.path.join(output_dir, "wave_from_mel_sample_{}_text_{}.wav".format(os.path.splitext(os.path.basename(args.wav_file))[0], texts_name[spec_idx]))
         audio.save_wav(wav, str(wav_fpath), sr=cfg.dataset.sample_rate)
 
 
 def main():
     parser = argparse.ArgumentParser(description='Streamax SV2TTS Training Engine')
-    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_english_sv2tts.py", nargs='?', help='config file')
-    parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/1320_00000.mp3", nargs='?', help='config file')
-    parser.add_argument('-t', '--text', type=str, default="activate be double you see.", nargs='?', help='config file')
+
+    # # english
+    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_english_sv2tts.py", nargs='?', help='config file')
+    # parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/1320_00000.mp3", nargs='?', help='config file')
+    # parser.add_argument('-t', '--text', type=str, default="activate be double you see.", nargs='?', help='config file')
+    # parser.add_argument('-tn', '--text_name', type=str, default="activate_b_w_c", nargs='?', help='config file')
+
+    # chinese
+    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
+    parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00050001.wav", nargs='?', help='config file')
+    # parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00730005.wav", nargs='?', help='config file')
+    # parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/1320_00000.mp3", nargs='?', help='config file')
+    parser.add_argument('-t', '--text', type=str, default=" ".join(get_pinyin("道路千万条安全第一条")), nargs='?', help='config file')
+    parser.add_argument('-tn', '--text_name', type=str, default="道路千万条安全第一条", nargs='?', help='config file')
+
     args = parser.parse_args()
     infer(args)
 
