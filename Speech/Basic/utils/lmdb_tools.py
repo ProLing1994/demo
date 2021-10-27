@@ -1,6 +1,5 @@
 import lmdb
 import numpy as np
-import os
 
 def load_lmdb_env(lmdb_path):
     lmdb_env = lmdb.open(lmdb_path, readonly=True, lock=False, readahead=False, meminit=False)

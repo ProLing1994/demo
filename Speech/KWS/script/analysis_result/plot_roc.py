@@ -10,9 +10,6 @@ from scipy import interp
 sys.path.insert(0, '/home/huanyuan/code/demo/common')
 from common.utils.python.metrics_tools import get_fpr_tpr, get_auc
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
-from dataset.kws.dataset_helper import SILENCE_LABEL, UNKNOWN_WORD_LABEL
-
 
 def plot_roc(fpr, tpr, color, linestyle, label):
     plt.plot(fpr, tpr, color = color,  linewidth=1.0, linestyle=linestyle, marker = 'o', label = label)

@@ -15,20 +15,20 @@ __C.general.sub_data_dir = ["/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experi
                             "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/XiaoRuiDataset/"]
 
 # data version
-__C.general.version = "1.8"
-# __C.general.version = "1.9"     # 数据集清洗（小声音频）+ 添加部分实车录制数据 + 困难样本挖掘（电影、实车误报）
+# __C.general.version = "1.8"
+__C.general.version = "1.9"     # 数据集清洗（小声音频）+ 添加部分实车录制数据 + 困难样本挖掘（电影、实车误报）
 
 # data date
-__C.general.date = "05202021"
-# __C.general.date = "10262021"
+# __C.general.date = "05202021"
+__C.general.date = "10262021"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.8_05202021/total_data_files.csv"
-# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_9_10262021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.8_05202021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_9_10262021/total_data_files.csv"
 
 # background noise path
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.8_05202021/background_noise_files.csv"
-# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_9_10262021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.8_05202021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_9_10262021/background_noise_files.csv"
 
 # test after save pytorch model
 # __C.general.is_test = True
@@ -138,6 +138,15 @@ __C.dataset.feature_bin_count = 48
 
 # How many nfilt to use for the Mel feature, only support preprocess = fbank_cpu
 __C.dataset.nfilt = 48
+
+# fmin, only support preprocess ["fbank_log", "fbank_log_manual"]
+# Set this to 55 if your speaker is male! if female, 95 should help taking off noise. (To 
+# test depending on dataset. Pitch info: male~[65, 260], female~[100, 525])
+__C.dataset.fmin = None
+
+# fmax, only support preprocess ["fbank_log", "fbank_log_manual"]
+# To be increased/reduced depending on data.
+__C.dataset.fmax = None
 
 # input size of training data (w, h), whether input size is a multiple of 16, unit: voxel
 # __C.dataset.h_alignment = True, [hisi], 模型需要图像输入长度为 16 的倍数
@@ -270,6 +279,9 @@ __C.loss = {}
 # __C.loss.name = 'softmax'
 __C.loss.name = 'focal'
 
+# the number of class
+__C.loss.num_classes =  __C.dataset.label.num_classes
+
 # the weight matrix for each class in focal loss, including background class
 # __C.loss.obj_weight = np.array([[1/9, 0], [0, 8/9]])
 __C.loss.obj_weight = None
@@ -293,27 +305,8 @@ __C.loss.ema_alpha = 0.995
 __C.net = {}
 
 # the network name
+__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/res15.py"
 __C.net.class_name = "SpeechResModel"
-# __C.net.model_name = 'cnn-trad-pool2'
-# __C.net.model_name = 'cnn-one-fstride1'
-# __C.net.model_name = 'cnn-tpool2'
-__C.net.model_name = 'res15'
-# __C.net.model_name = 'res15-narrow'
-# __C.net.model_name = 'res15-narrow-amba'
-# __C.net.model_name = 'res15-narrow-novt'
-# __C.net.model_name = 'res8'
-# __C.net.model_name = 'res8-narrow'
-# __C.net.model_name = 'lstm-avg'
-# __C.net.model_name = 'lstm-attention'
-# __C.net.model_name = 'crnn-avg'
-# __C.net.model_name = 'crnn-attention'
-# __C.net.model_name = 'tc-resnet8'
-# __C.net.model_name = 'tc-resnet14'
-# __C.net.model_name = 'tc-resnet8-dropout'
-# __C.net.model_name = 'tc-resnet14-dropout'
-# __C.net.model_name = 'tc-resnet18-dropout'
-# __C.net.model_name = 'tc-resnet14-amba-hisi-novt-144-142'
-
 
 ######################################
 # training parameters
@@ -341,6 +334,9 @@ __C.train.batch_size = 1
 # __C.train.num_threads = 64
 # __C.train.num_threads = 16
 __C.train.num_threads = 1
+
+# the number of batches to show log
+__C.train.show_log = 5
 
 # the number of batches to update loss curve
 __C.train.plot_snapshot = 5

@@ -1,18 +1,20 @@
 import argparse
 import sys
-import time
 from tqdm import tqdm
 
-# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/KWS')
-# sys.path.insert(0, '/yuanhuan/code/demo/Speech/KWS')
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
-from utils.train_tools import *
-from utils.loss_tools import *
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
+# sys.path.insert(0, '/yuanhuan/code/demo/Speech')
+from Basic.utils.loss_tools import *
+from Basic.utils.profiler_tools import Profiler
+from Basic.utils.train_tools import *
 
-# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo')
-# sys.path.insert(0, '/yuanhuan/code/demo')
-sys.path.insert(0, '/home/huanyuan/code/demo')
-from common.common.utils.python.logging_helpers import setup_logger
+from KWS.utils.train_tools import *
+
+sys.path.insert(0, '/home/huanyuan/code/demo/common')
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/common')
+from common.utils.python.logging_helpers import setup_logger
+
 
 def test(cfg, net, loss_func, epoch_idx, batch_idx, logger, test_data_loader, mode='eval'):
     """
@@ -61,9 +63,6 @@ def train(config_file, training_mode):
     :param training_mode: the model training mode
     :return:              None
     """
-    # record time
-    begin_t = time.time()
-
     # load configuration file
     cfg = load_cfg_file(config_file)
 
@@ -89,7 +88,7 @@ def train(config_file, training_mode):
     scheduler = set_scheduler(cfg, optimizer)
 
     # define loss function
-    loss_func = define_loss_function(cfg)
+    loss_func = loss_function(cfg)
 
     # ema
     if cfg.loss.ema_on:
@@ -98,76 +97,78 @@ def train(config_file, training_mode):
     # load checkpoint if finetune_on == True or resume epoch > 0
     if cfg.general.finetune_on == True:
         # fintune, Load model, reset learning rate
-        last_save_epoch, start_batch = load_checkpoint(cfg.general.finetune_epoch, net,
-                                                        cfg.general.finetune_model_dir, 
-                                                        sub_folder_name='pretrain_model')
-        start_epoch, last_save_epoch, start_batch = 0, 0, 0
+        load_checkpoint(net, cfg.general.finetune_epoch, 
+                        cfg.general.finetune_model_dir, 
+                        sub_folder_name='pretrain_model')
+        start_epoch, start_batch = 0, 0, 0
+        last_save_epoch = 0
     elif cfg.general.resume_epoch >= 0:
         # resume, Load the model, continue the previous learning rate
-        last_save_epoch, start_batch = load_checkpoint(cfg.general.resume_epoch, net,
+        start_epoch, start_batch = load_checkpoint(net, cfg.general.resume_epoch,
                                                         cfg.general.save_dir, 
                                                         optimizer=optimizer)
-        start_epoch = last_save_epoch
+        last_save_epoch = start_epoch
     else:
-        start_epoch, last_save_epoch, start_batch = 0, 0, 0
-        # start_epoch, last_save_epoch, start_batch = 0, -1, 0
+        start_epoch, start_batch = 0, 0
+        last_save_epoch = 0
 
     # knowledge distillation
     if cfg.knowledge_distillation.on:
         msg = 'Knowledge Distillation: {} -> {}'.format(cfg.knowledge_distillation.teacher_model_name, cfg.net.model_name)
         logger.info(msg)
 
-        teacher_model = import_network(cfg, model_name=cfg.knowledge_distillation.teacher_model_name)
-        _, _ = load_checkpoint(cfg.knowledge_distillation.epoch, teacher_model,
-                                    cfg.knowledge_distillation.teacher_model_dir)
+        teacher_model = import_network(cfg, cfg.knowledge_distillation.teacher_model_name, 
+                                        cfg.knowledge_distillation.teacher_class_name)
+        load_checkpoint(teacher_model, cfg.knowledge_distillation.epoch, 
+                        cfg.knowledge_distillation.teacher_model_dir)
         teacher_model.eval()
 
     # define training dataset and testing dataset
-    train_dataloader, len_dataset = generate_dataset(cfg, 'training', training_mode)
+    train_dataloader, len_train_dataset = generate_dataset(cfg, 'training', training_mode)
     if cfg.general.is_test:
         eval_validation_dataloader = generate_test_dataset(cfg, 'validation', training_mode=training_mode)
         # eval_train_dataloader = generate_test_dataset(cfg, 'training')
 
-    msg = 'Training dataset number: {}'.format(len_dataset)
-    logger.info(msg)
-
-    msg = 'Init Time: {}'.format((time.time() - begin_t) * 1.0)
+    msg = 'Training dataset number: {}'.format(len_train_dataset)
     logger.info(msg)
 
     batch_number = len(train_dataloader)
     data_iter = iter(train_dataloader)
     batch_idx = start_batch
 
-    # # save model 
-    # os.makedirs('/mnt/huanyuan/model/kws_xiaorui_12162020_test/checkpoints/chk_1/')
-    # torch.save(net.cpu().module.state_dict(), '/mnt/huanyuan/model/kws_xiaorui_12162020_test/checkpoints/chk_1/net_parameter.pth')
+    # profiler
+    profiler = Profiler(summarize_every=cfg.train.show_log, disabled=False)
 
     # loop over batches
     for i in range(batch_number):
 
         net.train()
-        begin_t = time.time()
-        optimizer.zero_grad()
 
-        epoch_idx = start_epoch + i * cfg.train.batch_size // len_dataset
+        epoch_idx = start_epoch + i * cfg.train.batch_size // len_train_dataset
         batch_idx += 1
 
+        # Blocking, waiting for batch (threaded)
         inputs, labels, indexs = data_iter.next()
+        profiler.tick("Blocking, waiting for batch (threaded)")
 
         # save training images for visualization
         if cfg.debug.save_inputs:
             save_intermediate_results(cfg, "training", epoch_idx, inputs, labels, indexs)
+        
+        # Data to device
+        inputs, labels = inputs.cuda(), labels.cuda()
+        profiler.tick("Data to device")
 
         # Forward pass
         # h_alignment，模型需要图像输入长度为 16 的倍数
         # 此处进行该操作的原因，便于后面使用知识蒸馏，teacher 模型可以使用原数据作为输入
-        inputs, labels = inputs.cuda(), labels.cuda()
         if cfg.dataset.h_alignment == True:
             hisi_input = inputs[:, :, :(inputs.shape[2] // 16) * 16, :]
             scores = net(hisi_input)
         else:
             scores = net(inputs)
         scores = scores.view(scores.size()[0], scores.size()[1])
+        profiler.tick("Forward pass")
         
         # Calculate loss
         loss = loss_func(scores, labels)
@@ -175,31 +176,43 @@ def train(config_file, training_mode):
             teacher_model.eval()
             teacher_scores = teacher_model(inputs)
             loss = loss_fn_kd(cfg, scores, teacher_scores, loss)
+        profiler.tick("Calculate Loss")
 
         # Backward pass
+        net.zero_grad()
+        optimizer.zero_grad()
         loss.backward()
+
+        profiler.tick("Backward pass")
+
+        # Parameter update
         optimizer.step()
         update_scheduler(cfg, scheduler, epoch_idx)
+        profiler.tick("Parameter update")
 
         if cfg.loss.ema_on:
             ema.update_params()     # apply ema
 
-        # caltulate accuracy
+        # Caltulate accuracy
         pred_y = torch.max(scores, 1)[1].cpu().data.numpy()
         accuracy = float((pred_y == labels.cpu().data.numpy()).astype(
             int).sum()) / float(labels.size(0))
+        profiler.tick("Caltulate accuracy")
 
-        # print training information
-        sample_duration = (time.time() - begin_t) * 1.0 / cfg.train.batch_size
-        msg = 'epoch: {}, batch: {}, train_accuracy: {:.4f}, train_loss: {:.4f}, time: {:.4f} s/vol' \
-            .format(epoch_idx, batch_idx, accuracy, loss.item(), sample_duration)
-        logger.info(msg)
+        # Show information
+        if (batch_idx % cfg.train.show_log) == 0:
+            msg = 'epoch: {}, batch: {}, train_accuracy: {:.4f}, train_loss: {:.4f}' \
+                .format(epoch_idx, batch_idx, accuracy, loss.item())
+            logger.info(msg)
+        profiler.tick("Show information")
 
+        # Plot snapshot
         if (batch_idx % cfg.train.plot_snapshot) == 0:
             plot_tool(cfg, log_file)
+        profiler.tick("Plot snapshot")
 
+        # Save model
         if epoch_idx % cfg.train.save_epochs == 0 or epoch_idx == cfg.train.num_epochs - 1:
-        # if epoch_idx == 0 or epoch_idx == cfg.train.num_epochs - 1:
             if last_save_epoch != epoch_idx:
                 last_save_epoch = epoch_idx
 
@@ -212,10 +225,10 @@ def train(config_file, training_mode):
                 if cfg.general.is_test:
                     test(cfg, net, loss_func, epoch_idx, batch_idx,
                          logger, eval_validation_dataloader, mode='eval')
-                    # test(cfg, net, loss_func, epoch_idx, batch_idx, logger, eval_train_dataloader, mode='eval')
             
                 if cfg.loss.ema_on:
                     ema.restore() # resume the model parameters
+        profiler.tick("Save model")
 
 
 def main():

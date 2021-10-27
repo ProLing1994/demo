@@ -15,9 +15,12 @@ def parameters_init(net):
   net.apply(kaiming_weight_init)
 
 class SpeechResModel(nn.Module):
-  def __init__(self, num_classes, image_height, image_weidth):
+  def __init__(self, cfg):
     super().__init__()
+    # init
+    num_classes = cfg.dataset.label.num_classes
     num_features = 45
+    
     self.conv0 = nn.Conv2d(in_channels=1, out_channels=num_features,
                            kernel_size=(3, 3), padding=(1, 1), 
                            stride=(1, 1), bias=False)

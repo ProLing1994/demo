@@ -1,10 +1,11 @@
-from dataset.kws.dataset_helper import *
 import collections
+import numpy as np
 import sys
 import time
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
-
+from KWS.config.kws import hparams
+from dataset.kws.dataset_helper import *
 
 class DoubleEdgeDetecting(object):
     def __init__(self, detection_threshold_low, detection_threshold_high):
@@ -107,7 +108,7 @@ class RecognizeResult(object):
     """
 
     def __init__(self):
-        self._founded_command = SILENCE_LABEL
+        self._founded_command = hparams.SILENCE_LABEL
         self._score = 0
         self._is_new_command = False
         self._start_time = 0
@@ -243,7 +244,7 @@ class RecognizeCommands(object):
                 sample_duration < self._average_window_duration_ms / 4):
             recognize_element.score = 0.0
             recognize_element.is_new_command = False
-            recognize_element.founded_command = SILENCE_LABEL
+            recognize_element.founded_command = hparams.SILENCE_LABEL
             return
 
         # Calculate the average score across all the results in the window.
@@ -269,7 +270,7 @@ class RecognizeCommands(object):
                 self._previous_results[0][2]
         else:
             recognize_element.is_new_command = False
-            recognize_element.founded_command = SILENCE_LABEL
+            recognize_element.founded_command = hparams.SILENCE_LABEL
 
 
 class RecognizeCommandsCountNumber(object):
@@ -353,7 +354,7 @@ class RecognizeCommandsCountNumber(object):
                 sample_duration < self._average_window_duration_ms / 4):
             recognize_element.score = 0.0
             recognize_element.is_new_command = False
-            recognize_element.founded_command = SILENCE_LABEL
+            recognize_element.founded_command = hparams.SILENCE_LABEL
             return
 
         # Calculate the number of score greater than the threshold.
@@ -381,7 +382,7 @@ class RecognizeCommandsCountNumber(object):
                 self._previous_results[0][2]
         else:
             recognize_element.is_new_command = False
-            recognize_element.founded_command = SILENCE_LABEL
+            recognize_element.founded_command = hparams.SILENCE_LABEL
 
 
 class RecognizeCommandsAlign(object):
@@ -468,7 +469,7 @@ class RecognizeCommandsAlign(object):
                 sample_duration < self._average_window_duration_ms / 4):
             recognize_element.score = 0.0
             recognize_element.is_new_command = False
-            recognize_element.founded_command = SILENCE_LABEL
+            recognize_element.founded_command = hparams.SILENCE_LABEL
             return
 
         # 后处理操作，基于帧对齐模式，双边缘检测算法
@@ -494,7 +495,7 @@ class RecognizeCommandsAlign(object):
             recognize_element.score = score
         else:
             raise Exception(
-                "[ERROR] Unknow align_type: {}, please check!".fomrat(align_type))
+                "[ERROR] Unknow align_type: {}, please check!".fomrat(self._align_type))
 
         time_since_last_top = current_time_ms - self._previous_top_time
         if self._previous_top_time == 0:
@@ -515,4 +516,4 @@ class RecognizeCommandsAlign(object):
                 self._previous_results[0][2]
         else:
             recognize_element.is_new_command = False
-            recognize_element.founded_command = SILENCE_LABEL
+            recognize_element.founded_command = hparams.SILENCE_LABEL

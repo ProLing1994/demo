@@ -12,10 +12,11 @@ import re
 import sys 
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
-from utils.train_tools import *
-from utils.folder_tools import *
-from dataset.kws.dataset_helper import *
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from KWS.config.kws import hparams
+from Basic.utils.folder_tools import *
+from Basic.utils.train_tools import *
+from KWS.dataset.kws.dataset_helper import *
 
 MAX_NUM_WAVS_PER_CLASS = 2**27 - 1    # ~134M
 RANDOM_SEED = 59185
@@ -122,8 +123,8 @@ def data_split(config_file):
 
         # Treat the '_background_noise_' folder as a special case, since we expect
         # it to contain long audio samples we mix in to improve training.
-        if word == BACKGROUND_NOISE_DIR_NAME:
-            background_noise_files.append({'label': BACKGROUND_NOISE_DIR_NAME, 'file':wav_path})
+        if word == hparams.BACKGROUND_NOISE_DIR_NAME:
+            background_noise_files.append({'label': hparams.BACKGROUND_NOISE_DIR_NAME, 'file':wav_path})
             continue
         
         if word in ignore_label:
@@ -150,7 +151,7 @@ def data_split(config_file):
     
     total_data_files.extend(positive_data_files)
     # silence and unknowns samples
-    silence_name_format = SILENCE_LABEL + '{}_{}' # _silence_mode_idx
+    silence_name_format = hparams.SILENCE_LABEL + '{}_{}' # _silence_mode_idx
     random.shuffle(unknown_files)
     for set_index in ['validation', 'testing', 'training']:
         set_size = np.array([x['mode'] == set_index for x in positive_data_files]).astype(int).sum()
@@ -159,7 +160,7 @@ def data_split(config_file):
         if 'silence_percentage' in cfg.dataset.label:
             silence_size = int(math.ceil(set_size * silence_percentage / 100))
             for idx in range(silence_size):
-                silence_wav = {'label': SILENCE_LABEL, 'file': silence_name_format.format(set_index, idx), 'mode':set_index}
+                silence_wav = {'label': hparams.SILENCE_LABEL, 'file': silence_name_format.format(set_index, idx), 'mode':set_index}
                 silence_files.append(silence_wav)
                 total_data_files.append(silence_wav)
 
@@ -169,7 +170,7 @@ def data_split(config_file):
         unknown_files_set = copy.deepcopy(unknown_files_set)
         unknown_files_set = unknown_files_set[:unknown_size]
         for idx in range(len(unknown_files_set)):
-            unknown_files_set[idx]['label'] = UNKNOWN_WORD_LABEL
+            unknown_files_set[idx]['label'] = hparams.UNKNOWN_WORD_LABEL
         total_data_files.extend(unknown_files_set)
 
     # random

@@ -5,9 +5,11 @@ import sys
 
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
-from utils.train_tools import *
-from dataset.kws.dataset_helper import *
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.utils.train_tools import *
+
+from KWS.config.kws import hparams
+from KWS.dataset.kws.dataset_helper import *
 
 def analysis_data_distribution(config_file):
     # load configuration file
@@ -36,7 +38,7 @@ def analysis_data_distribution(config_file):
             label_pd = mode_pd[mode_pd['label'] == label]
             data_number_dict[mode][label] = label_pd.shape[0]
 
-            if label == SILENCE_LABEL:
+            if label == hparams.SILENCE_LABEL:
                 data_length_dict[mode][label] = 0.0
             else:
                 audio_length_list = []

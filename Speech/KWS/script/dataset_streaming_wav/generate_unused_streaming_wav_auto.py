@@ -8,8 +8,8 @@ import sys
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 from Basic.dataset import audio
 
+from KWS.config.kws import hparams
 from KWS.utils.train_tools import load_cfg_file
-from KWS.dataset.kws.dataset_helper import *
 from KWS.script.dataset_streaming_wav.generate_streaming_wav import mix_in_audio_sample
 
 
@@ -39,7 +39,7 @@ def straming_dataset_generator(input_dir, output_format, nosed_csv, config_file,
         for _, row in data_pd.iterrows():
             audio_dict = {}
             audio_dict['file'] = row['file']
-            audio_dict['label'] = UNKNOWN_WORD_LABEL
+            audio_dict['label'] = hparams.UNKNOWN_WORD_LABEL
             audio_list.append(audio_dict)
     else:
         pass
@@ -71,7 +71,7 @@ def straming_dataset_generator(input_dir, output_format, nosed_csv, config_file,
                 pass 
             
             # load data
-            if found_label == SILENCE_LABEL:
+            if found_label == hparams.SILENCE_LABEL:
                 found_audio = np.zeros(desired_samples, dtype=np.float32)
             else:
                 found_audio = librosa.core.load(found_data, sr=sample_rate)[0]

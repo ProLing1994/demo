@@ -84,8 +84,8 @@ __C.general.is_test = True
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_3_tc-resnet14-amba_fbankcpu_dml_04012021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_4_tc-resnet14-amba_fbankcpu_kd_04012021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_2_5_tc-resnet14-amba_fbankcpu_kd_07162021/"
-__C.general.save_dir = "/mnt/huanyuan2/model/kws/kws_english/kws_activatebwc_2_7_tc-resnet14-amba_fbankcpu_kd_09222021/"
-# __C.general.save_dir = "/mnt/huanyuan2/model/kws/kws_english/kws_activatebwc_2_8_tc-resnet14-amba_fbankcpu_kd_09292021/"
+# __C.general.save_dir = "/mnt/huanyuan2/model/kws/kws_english/kws_activatebwc_2_7_tc-resnet14-amba_fbankcpu_kd_09222021/"
+__C.general.save_dir = "/mnt/huanyuan2/model/kws/kws_english/kws_activatebwc_2_8_tc-resnet14-amba_fbankcpu_kd_09292021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_wntts_1_0_res15_fbankcpu_07162021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_wntts_1_0_10_res15_fbankcpu_07162021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws/kws_english/kws_activatebwc_wntts_1_0_50_res15_fbankcpu_07162021/"
@@ -190,6 +190,15 @@ __C.dataset.feature_bin_count = 64
 
 # How many nfilt to use for the Mel feature, only support preprocess=fbank_cpu
 __C.dataset.nfilt = 64
+
+# fmin, only support preprocess ["fbank_log", "fbank_log_manual"]
+# Set this to 55 if your speaker is male! if female, 95 should help taking off noise. (To 
+# test depending on dataset. Pitch info: male~[65, 260], female~[100, 525])
+__C.dataset.fmin = None
+
+# fmax, only support preprocess ["fbank_log", "fbank_log_manual"]
+# To be increased/reduced depending on data.
+__C.dataset.fmax = None
 
 # input size of training data (w, h), whether input size is a multiple of 16, unit: voxel
 # __C.dataset.h_alignment = True, [hisi], 模型需要图像输入长度为 16 的倍数
@@ -326,6 +335,9 @@ __C.loss = {}
 # __C.loss.name = 'softmax'
 __C.loss.name = 'focal'
 
+# the number of class
+__C.loss.num_classes =  __C.dataset.label.num_classes
+
 # the weight matrix for each class in focal loss, including background class
 # __C.loss.obj_weight = np.array([[1/9, 0], [0, 8/9]])
 __C.loss.obj_weight = None
@@ -348,27 +360,9 @@ __C.loss.ema_alpha = 0.995
 __C.net = {}
 
 # the network name
+# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/res15.py"
+__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-196.py"
 __C.net.class_name = "SpeechResModel"
-# __C.net.model_name = 'cnn-trad-pool2'
-# __C.net.model_name = 'cnn-one-fstride1'
-# __C.net.model_name = 'cnn-tpool2'
-__C.net.model_name = 'res15'
-# __C.net.model_name = 'res15-narrow'
-# __C.net.model_name = 'res15-narrow-amba'
-# __C.net.model_name = 'res15-narrow-novt'
-# __C.net.model_name = 'res15_stochastic_depth'
-# __C.net.model_name = 'res8'
-# __C.net.model_name = 'res8-narrow'
-# __C.net.model_name = 'lstm-avg'
-# __C.net.model_name = 'lstm-attention'
-# __C.net.model_name = 'crnn-avg'
-# __C.net.model_name = 'crnn-attention'
-# __C.net.model_name = 'tc-resnet8'
-# __C.net.model_name = 'tc-resnet14'
-# __C.net.model_name = 'tc-resnet8-dropout'
-# __C.net.model_name = 'tc-resnet14-dropout'
-# __C.net.model_name = 'tc-resnet18-dropout'
-# __C.net.model_name = 'tc-resnet14-amba-novt-196'
 
 ######################################
 # training parameters

@@ -1,4 +1,3 @@
-import librosa
 import numpy as np
 import os
 import sys
@@ -12,8 +11,10 @@ from torch.utils.data import Dataset
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 from Basic.dataset import audio
 
-from KWS.impl.pred_pyimpl import load_lmdb_env, read_audio_lmdb, load_background_noise_lmdb
-from KWS.dataset.kws.dataset_helper import *
+from KWS.config.kws import hparams
+from KWS.dataset.kws.dataset_helper import load_label_index
+from KWS.dataset.kws import dataset_augmentation
+from KWS.utils import lmdb_tools 
 
 
 class SpeechDataset(Dataset):
@@ -24,6 +25,9 @@ class SpeechDataset(Dataset):
     def __init__(self, cfg, mode, augmentation_on=True):
         # init
         super().__init__()
+
+        self.cfg = cfg
+        self.bool_trainning = augmentation_on
 
         # data index
         self.positive_label_list = cfg.dataset.label.positive_label
@@ -53,63 +57,16 @@ class SpeechDataset(Dataset):
         self.data_mode_list = self.data_pd['mode'].tolist()
         self.data_label_list = self.data_pd['label'].tolist()
 
-        # lmdb
-        self.lmdb_path = os.path.join(os.path.dirname(cfg.general.data_csv_path), 'dataset_audio_lmdb', '{}.lmdb'.format(mode))
-        self.lmdb_env = load_lmdb_env(self.lmdb_path)
-        self.background_data = load_background_noise_lmdb(cfg)
-
-        self.sample_rate = cfg.dataset.sample_rate
-        self.clip_duration_ms = cfg.dataset.clip_duration_ms
-        self.window_size_ms = cfg.dataset.window_size_ms
-        self.window_stride_ms = cfg.dataset.window_stride_ms
-        self.feature_bin_count = cfg.dataset.feature_bin_count
-        self.nfilt = cfg.dataset.nfilt
-
         self.input_channel = cfg.dataset.input_channel
         self.data_size_h = cfg.dataset.data_size[1]
         self.data_size_w = cfg.dataset.data_size[0]
-
-        self.augmentation_on = cfg.dataset.augmentation.on and augmentation_on
-        self.augmentation_speed_volume_on = cfg.dataset.augmentation.speed_volume_on
-        self.augmentation_pitch_on = cfg.dataset.augmentation.pitch_on
-        self.background_frequency = cfg.dataset.augmentation.background_frequency
-        self.background_volume = cfg.dataset.augmentation.background_volume
-        self.synthetic_frequency = cfg.dataset.augmentation.synthetic_frequency
-        self.synthetic_type = cfg.dataset.augmentation.synthetic_type
-        self.synthetic_scale = cfg.dataset.augmentation.synthetic_scale
-        self.synthetic_prob = cfg.dataset.augmentation.synthetic_prob
-        self.time_shift_ms = cfg.dataset.augmentation.time_shift_ms
-        self.time_shift_multiple = cfg.dataset.augmentation.time_shift_multiple
-        self.speed_list = cfg.dataset.augmentation.speed
-        self.volume_list = cfg.dataset.augmentation.volume
-        self.pitch_list = cfg.dataset.augmentation.pitch 
-        self.vtlp_on = cfg.dataset.augmentation.vtlp_on
-
-        self.augmentation_spec_on = cfg.dataset.augmentation.spec_on
-        self.F = cfg.dataset.augmentation.F
-        self.T = cfg.dataset.augmentation.T
-        self.num_masks = cfg.dataset.augmentation.num_masks
-
-        self.desired_samples = int(self.sample_rate * self.clip_duration_ms / 1000)
-        self.time_shift_samples = int(self.sample_rate * self.time_shift_ms / 1000)
-
-        self.audio_preprocess_type = cfg.dataset.preprocess
-        self.audio_processor = AudioPreprocessor(sr=self.sample_rate,
-                                                 n_mels=self.feature_bin_count,
-                                                 nfilt=self.nfilt,
-                                                 winlen=self.window_size_ms / 1000, 
-                                                 winstep=self.window_stride_ms / 1000)
-
-        self.save_audio_inputs_bool = cfg.debug.save_inputs
-        self.save_audio_inputs_dir = cfg.general.save_dir
 
     def __len__(self):
         """ get the number of images in this dataset """
         return len(self.data_file_list)
 
     def save_audio(self, data, audio_label, audio_file):
-        out_folder = os.path.join(
-            self.save_audio_inputs_dir, self.mode_type + '_audio', audio_label)
+        out_folder = os.path.join(self.cfg.general.save_dir, self.mode_type + '_audio', audio_label)
 
         if not os.path.isdir(out_folder):
             try:
@@ -117,161 +74,21 @@ class SpeechDataset(Dataset):
             except:
                 pass
         filename = os.path.basename(audio_file)
-        audio.save_wav(data.copy(), os.path.join(out_folder, filename), self.sample_rate)
-
-
-    def audio_preprocess(self, data):
-        # check
-        assert self.audio_preprocess_type in [
-            "mfcc", "pcen", "fbank", "fbank_cpu"], "[ERROR:] Audio preprocess type is wronge, please check"
-
-        # preprocess
-        if self.audio_preprocess_type == "mfcc":
-            audio_data = self.audio_processor.compute_mfccs(data)
-        elif self.audio_preprocess_type == "pcen":
-            audio_data = self.audio_processor.compute_pcen(data)
-        elif self.audio_preprocess_type == "fbank":
-            audio_data = self.audio_processor.compute_fbanks(data)
-        elif self.audio_preprocess_type == "fbank_cpu":
-            audio_data = self.audio_processor.compute_fbanks_cpu(data, self.vtlp_on)
-        return audio_data
-
-    def dataset_alignment(self, data, bool_replicate=False):
-        # alignment data
-        if len(data) < self.desired_samples:
-            data_length = len(data)
-            if bool_replicate:
-                tile_size = (self.desired_samples // data_length) + 1
-                data = np.tile(data, tile_size)[:self.desired_samples]
-            else:
-                data_offset = np.random.randint(0, self.desired_samples - data_length)
-                data = np.pad(data, (data_offset, 0), "constant")
-                data = np.pad(data, (0, self.desired_samples - data_length - data_offset), "constant")
-
-        if len(data) > self.desired_samples:
-            data_offset = np.random.randint(0, len(data) - self.desired_samples)
-            data = data[data_offset:(data_offset + self.desired_samples)]
-
-        assert len(data) == self.desired_samples, "[ERROR:] Something wronge with audio length, please check"
-        return data
-
-    def dataset_add_synthetic_noise(self, data):
-        if not self.synthetic_frequency > 0:
-            return data
-
-        if np.random.uniform(0, 1) < self.synthetic_frequency:
-            if self.synthetic_type == "white":
-                scale = self.synthetic_scale * np.random.uniform(0, 1)
-                synthetic_noise = np.random.normal(loc=0, scale=scale, size=data.shape)
-                data = (data + synthetic_noise)
-            elif self.synthetic_type == "salt_pepper": 
-                prob = self.synthetic_prob * np.random.uniform(0, 1)
-                synthetic_noise = np.random.binomial(1, prob, size=data.shape) - np.random.binomial(1, prob, size=data.shape) 
-                data = (data + synthetic_noise)
-
-        # data clip
-        data = np.clip(data, -1.0, 1.0)
-        return data
-
-    def dataset_add_noise(self, data, bool_silence_label=False):
-        if not self.background_frequency > 0:
-            return data
-        
-        assert len(self.background_data) > 0, "[ERROR:] Something wronge with background data, please check"
-
-        # init
-        background_clipped = np.zeros(self.desired_samples)
-        background_volume = 0
-
-        background_idx = np.random.randint(len(self.background_data))
-        background_sample = self.background_data[background_idx]
-
-        # alignment background data
-        background_clipped = self.dataset_alignment(background_sample, True) 
-
-        # if np.random.uniform(0, 1) < self.background_frequency or bool_silence_label:
-        if np.random.uniform(0, 1) < self.background_frequency:
-            background_volume = np.random.uniform(0, self.background_volume)
-
-        data_max_value = data.max()
-        background_max_value = (background_volume * background_sample).max() * 0.8
-        if background_max_value < data_max_value or bool_silence_label:
-            data = background_volume * background_clipped + data
-
-        # add synthetic noise
-        data = self.dataset_add_synthetic_noise(data)
-
-        # data clip
-        data = np.clip(data, -1.0, 1.0)
-        return data
-
-    def dataset_augmentation_pitch(self, data):
-        pitch = np.random.randint(self.pitch_list[0], self.pitch_list[1])  
-        
-        # 音调调节
-        data = librosa.effects.pitch_shift(data, sr=self.sample_rate, n_steps=pitch)
-        return data
-
-    def dataset_augmentation_volume_speed(self, data):
-        speed = np.random.uniform(self.speed_list[0], self.speed_list[1])  
-        volume = np.random.uniform(self.volume_list[0], self.volume_list[1])  
-        
-        # speed > 1, 加快速度
-        # speed < 1, 放慢速度
-        data = librosa.effects.time_stretch(data, speed)
-
-        # 音量大小调节
-        data = data * volume
-        return data
-
-    def dataset_augmentation_waveform(self, data, audio_label):
-        # data augmentation
-        if self.augmentation_speed_volume_on:
-            data = self.dataset_augmentation_volume_speed(data)
-        
-        # data augmentation
-        if self.augmentation_pitch_on:
-            data = self.dataset_augmentation_pitch(data)
-
-        # alignment data
-        data = self.dataset_alignment(data) 
-
-        # add time_shift
-        time_shift_amount = 0
-
-        # Time shift enhancement multiple of negative samples
-        time_shift_samples = self.time_shift_samples
-        if audio_label == UNKNOWN_WORD_LABEL:
-            time_shift_samples *= self.time_shift_multiple
-
-        if time_shift_samples > 0:
-            time_shift_amount = np.random.randint(-time_shift_samples, time_shift_samples)
-            time_shift_left = -min(0, time_shift_amount)
-            time_shift_right = max(0, time_shift_amount)
-            data = np.pad(data, (time_shift_left, time_shift_right), "constant")
-            data = data[:len(data) - time_shift_left] if time_shift_left else data[time_shift_right:]
-
-        # add noise
-        data = self.dataset_add_noise(data)
-        return data
-
-    def dataset_augmentation_spectrum(self, audio_data):
-        # add SpecAugment
-        audio_data = add_frequence_mask(audio_data, F=self.F, num_masks=self.num_masks, replace_with_zero=True)
-        audio_data = add_time_mask(audio_data, T=self.T, num_masks=self.num_masks, replace_with_zero=True)
-        return audio_data
+        audio.save_wav(data.copy(), os.path.join(out_folder, filename), self.cfg.dataset.sample_rate)
 
     def __getitem__(self, index):
         """ get the item """
-        # record time
-        # begin_t = time.time()
+        if not hasattr(self, 'lmdb_env'):
+            self.lmdb_path = os.path.join(os.path.dirname(self.cfg.general.data_csv_path), 'dataset_audio_lmdb', '{}.lmdb'.format(self.mode_type))
+            self.lmdb_env = lmdb_tools.load_lmdb_env(self.lmdb_path)
+
+        if not hasattr(self, 'background_data'):
+            self.background_data = lmdb_tools.load_background_noise_lmdb(self.cfg)
 
         audio_file = self.data_file_list[index]
         audio_mode = self.data_mode_list[index]
         audio_label = self.data_label_list[index]
         assert audio_mode == self.mode_type, "[ERROR:] Something wronge about mode, please check"
-        # print('Init Time: {}'.format((time.time() - begin_t) * 1.0))
-        # begin_t = time.time()
 
         # load label idx
         if self.positive_label_together and audio_label in self.positive_label_list:
@@ -282,38 +99,35 @@ class SpeechDataset(Dataset):
             audio_label_idx = self.label_index[audio_label]
 
         # load data
-        # data, filename = load_preload_audio(audio_file, index, audio_label, input_dir)
-        data = read_audio_lmdb(self.lmdb_env, audio_file)
+        data = lmdb_tools.read_audio_lmdb(self.lmdb_env, audio_file)
         assert len(data) != 0, "[ERROR:] Something wronge about load data, please check"
-        # print('Load data Time: {}'.format((time.time() - begin_t) * 1.0))
-        # begin_t = time.time()
 
         # data augmentation
-        if audio_label == SILENCE_LABEL:
-            data = self.dataset_add_noise(data, bool_silence_label=True)
-        elif self.augmentation_on:
-            data = self.dataset_augmentation_waveform(data, audio_label)
+        if audio_label == hparams.SILENCE_LABEL:
+            data = dataset_augmentation.dataset_add_noise(self.cfg, data, self.background_data, bool_force_add_noise=True)
         else:
-            data = self.dataset_alignment(data)
-        # print('Data augmentation Time: {}'.format((time.time() - begin_t) * 1.0))
-        # begin_t = time.time()
+            if self.bool_trainning:
+                if audio_label == hparams.UNKNOWN_WORD_LABEL:
+                    data = dataset_augmentation.dataset_augmentation_waveform(self.cfg, data, self.background_data, bool_time_shift_multiple=True)
+                else:
+                    data = dataset_augmentation.dataset_augmentation_waveform(self.cfg, data, self.background_data)
+            else:
+                data = dataset_augmentation.dataset_alignment(self.cfg, data) 
 
-        if self.save_audio_inputs_bool:
+        if self.cfg.debug.save_inputs:
             self.save_audio(data, audio_label, audio_file)
 
-        # audio preprocess, get mfcc data
-        data = self.audio_preprocess(data)
-        # print('Audio preprocess Time: {}'.format((time.time() - begin_t) * 1.0))
+        # Compute the mel spectrogram
+        data = audio.compute_mel_spectrogram(self.cfg, data)
 
         # data augmentation
-        if self.augmentation_on and self.augmentation_spec_on:
-            data = self.dataset_augmentation_spectrum(data)
+        if self.cfg.dataset.augmentation.on and self.cfg.dataset.augmentation.spec_on and self.bool_trainning:
+            data = dataset_augmentation.dataset_augmentation_spectrum(self.cfg, data)
 
         # To tensor
         data_tensor = torch.from_numpy(np.expand_dims(data, axis=0))
         data_tensor = data_tensor.float()
         label_tensor = torch.tensor(audio_label_idx)
-        # label_tensor = label_tensor.float()
         label_tensor = label_tensor.type(torch.LongTensor)
 
         # check tensor

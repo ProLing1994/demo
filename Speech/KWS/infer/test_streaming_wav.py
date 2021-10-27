@@ -1,21 +1,19 @@
 import argparse
+import librosa
 import multiprocessing 
 import pandas as pd
-from scipy.io import wavfile
 import sys
 import time 
 from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 from Basic.dataset import audio 
+from Basic.utils.folder_tools import *
+from Basic.utils.train_tools import *
 
-from KWS.utils.train_tools import *
-from KWS.utils.folder_tools import *
-from KWS.dataset.kws.dataset_helper import *
-from KWS.impl.pred_pyimpl import kws_load_model, model_predict
+from KWS.dataset.kws.dataset_helper import load_label_index
+from KWS.impl.pred_pyimpl import model_predict
 from KWS.impl.recognizer_pyimpl import RecognizeResult, RecognizeCommands, RecognizeCommandsCountNumber, RecognizeCommandsAlign
-from KWS.script.analysis_result.plot_score_line import show_score_line
-from KWS.script.analysis_result.cal_fpr_tpr import cal_fpr_tpr
 
 
 # def test(input_wav, args):
@@ -113,9 +111,11 @@ def test(in_args):
         except:
             pass
     
-    # load model
-    model = kws_load_model(cfg.general.save_dir, int(cfg.general.gpu_ids), cfg.test.model_epoch)
-    net = model['prediction']['net']
+    # define network
+    net = import_network(cfg, cfg.net.model_name, cfg.net.class_name)
+
+    # load prediction model
+    load_checkpoint(net, cfg.test.model_epoch, cfg.general.save_dir)
     net.eval()
 
     # load data
@@ -203,7 +203,7 @@ def main():
     # 0: from input_wav_list
     # 1: from csv
     # 2: from folder
-    default_mode = "2"    # ["0", "1" ,"2"]
+    default_mode = "0"    # ["0", "1" ,"2"]
 
     # mode 0: from input_wav_list
     # test
@@ -230,9 +230,9 @@ def main():
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaole_11252020_testing_3600_001.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
     
-    # # xiaoan8k
-    # # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_training_60.wav",
-    # #                             "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_validation_60.wav"]
+    # xiaoan8k
+    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_training_60.wav",
+                                "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_validation_60.wav"]
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_3_04152021_validation.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
@@ -255,8 +255,8 @@ def main():
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
     # activatebwc
-    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_training_60_001.wav",
-                                "/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_validation_60_001.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_training_60_001.wav",
+    #                             "/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_validation_60_001.wav"]
     # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation.wav",
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
@@ -328,7 +328,7 @@ def main():
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_heybodycam.py"
-    # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan8k.py"
+    default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan8k.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan16k.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_nihaoxiaoan8k.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_nihaoxiaoan16k.py"
@@ -352,7 +352,7 @@ def main():
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_2_5_tc-resnet14-amba_fbankcpu_kd_05152021/kws_config_xiaoan8k_api.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/kws_config_xiaoan8k.py"
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/kws_config_xiaoan8k_api.py"
-    default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/kws_config_xiaoan8k_api_0_5.py"
+    # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/kws_config_xiaoan8k_api_0_5.py"
     
     # xiaorui 
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_5_0_tc-resnet14-amba_fbankcpu_kd_04302021/kws_config_xiaorui_api.py"

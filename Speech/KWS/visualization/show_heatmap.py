@@ -10,10 +10,12 @@ import sys
 
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
-from impl.pred_pyimpl import kws_load_model
-from impl.pred_pyimpl import audio_preprocess
-from utils.train_tools import *
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.utils.train_tools import *
+
+from KWS.impl.pred_pyimpl import kws_load_model
+from KWS.impl.pred_pyimpl import audio_preprocess
+from KWS.utils.train_tools import *
  
 
 def load_data(input_wav, cfg, sample_rate, desired_samples):

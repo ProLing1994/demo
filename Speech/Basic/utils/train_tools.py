@@ -3,7 +3,6 @@ import glob
 import importlib
 import numpy as np
 import os
-import pandas as pd
 import sys
 import shutil
 import torch
@@ -11,10 +10,6 @@ import torch
 sys.path.insert(0, '/home/huanyuan/code/demo/common')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/common')
 from common.utils.python.file_tools import load_module_from_disk
-
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
-from Basic.utils.lmdb_tools import *
 
 
 def load_cfg_file(config_file):
@@ -193,8 +188,8 @@ def load_checkpoint(net, epoch_num, net_dir, optimizer=None,
                     optimizer_name='optimizer'):
     """
     load network parameters from directory
-    :param epoch_num: the epoch idx of model to load
     :param net: the network object
+    :param epoch_num: the epoch idx of model to load
     :param net_dir: the network directory
     :return: loaded epoch index, loaded batch index
     """

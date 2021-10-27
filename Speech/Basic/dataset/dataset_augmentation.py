@@ -79,7 +79,7 @@ def dataset_add_synthetic_noise(cfg, data):
     return data
 
 
-def dataset_add_noise(cfg, data, background_data):          
+def dataset_add_noise(cfg, data, background_data, bool_force_add_noise=False):          
     # init
     desired_samples = int(cfg.dataset.sample_rate * cfg.dataset.clip_duration_ms / 1000)
     background_frequency = cfg.dataset.augmentation.background_frequency 
@@ -100,12 +100,12 @@ def dataset_add_noise(cfg, data, background_data):
     # alignment background data
     background_clipped = dataset_alignment(cfg, background_sample, True) 
 
-    if np.random.uniform(0, 1) < background_frequency:
+    if np.random.uniform(0, 1) < background_frequency or bool_force_add_noise:
         background_volume = np.random.uniform(0, background_volume)
 
     data_max_value = data.max()
     background_max_value = (background_volume * background_clipped).max() * 0.8
-    if background_max_value < data_max_value:
+    if background_max_value < data_max_value or bool_force_add_noise:
         data = background_volume * background_clipped + data
 
     # add synthetic noise
@@ -116,7 +116,7 @@ def dataset_add_noise(cfg, data, background_data):
     return data
 
 
-def dataset_augmentation_waveform(cfg, data, background_data):
+def dataset_augmentation_waveform(cfg, data, background_data, bool_time_shift_multiple=False):
     # data augmentation
     if cfg.dataset.augmentation.speed_volume_on:
         data = dataset_augmentation_volume_speed(cfg, data)
@@ -131,6 +131,9 @@ def dataset_augmentation_waveform(cfg, data, background_data):
     # add time_shift
     time_shift_ms = cfg.dataset.augmentation.time_shift_ms
     time_shift_samples = int(cfg.dataset.sample_rate * time_shift_ms / 1000)
+    if bool_time_shift_multiple:
+        time_shift_multiple = cfg.dataset.augmentation.time_shift_multiple
+        time_shift_samples *= time_shift_multiple
 
     if time_shift_samples > 0:
         time_shift_amount = np.random.randint(-time_shift_samples, time_shift_samples)

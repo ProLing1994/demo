@@ -1,16 +1,18 @@
 import argparse
 import pandas as pd
-import pickle
 import sys
-import torch.nn.functional as F
 
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
-from impl.pred_pyimpl import kws_load_model, load_lmdb_env, read_audio_lmdb, load_background_noise_lmdb, dataset_add_noise, model_predict
-from impl.recognizer_pyimpl import DoubleEdgeDetecting
-from dataset.kws.dataset_helper import *
-from utils.train_tools import *
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.utils.train_tools import *
+
+from KWS.config.kws import hparams
+from KWS.dataset.kws import dataset_augmentation
+from KWS.dataset.kws.dataset_helper import load_label_index
+from KWS.impl.pred_pyimpl import model_predict
+from KWS.impl.recognizer_pyimpl import DoubleEdgeDetecting
+from KWS.utils.lmdb_tools import load_background_noise_lmdb, load_lmdb_env, read_audio_lmdb
 
 
 def longterm_audio_align_post_processing(cfg, score_list, result_mode, timeshift_ms, average_window_duration_ms):
@@ -44,7 +46,7 @@ def longterm_audio_align_post_processing(cfg, score_list, result_mode, timeshift
                     score = DoubleEdgeDetecting.compute_conf(score_list_window, word_num=4)
                     scores_list.append(score)
                 else:
-                    raise Exception("[ERROR] Unknow align_type: {}, please check!".fomrat(align_type))
+                    raise Exception("[ERROR] Unknow align_type: {}, please check!".fomrat(cfg.dataset.label.align_type))
 
             # Sort the averaged results.
             scores_list.sort()
@@ -134,8 +136,8 @@ def longterm_audio_predict(cfg, net, lmdb_env, audio_file, audio_mode, audio_lab
         data = np.pad(data, (0, max(0, (desired_data_samples - data_length + 1)//2)), "constant")
 
     # add noise 
-    if audio_label == SILENCE_LABEL or add_noise_on:
-        data = dataset_add_noise(cfg, data, background_data, bool_silence_label=True)
+    if audio_label == hparams.SILENCE_LABEL or add_noise_on:
+        data = dataset_augmentation.dataset_add_noise(cfg, data, background_data, bool_force_add_noise=True)
 
     # gen data list
     # 基于滑窗的方式，获得数据列表
@@ -172,9 +174,11 @@ def infer(args, dataset_mode):
     positive_label_together = cfg.dataset.label.positive_label_together
     negative_label_together = cfg.dataset.label.negative_label_together
 
+    # define network
+    net = import_network(cfg, cfg.net.model_name, cfg.net.class_name)
+
     # load prediction model
-    model = kws_load_model(cfg.general.save_dir, int(cfg.general.gpu_ids), cfg.test.model_epoch)
-    net = model['prediction']['net']
+    load_checkpoint(net, cfg.test.model_epoch, cfg.general.save_dir)
     net.eval()
 
     # load label index 
@@ -241,7 +245,7 @@ def infer(args, dataset_mode):
 
     # caltulate accuracy
     accuracy = float((np.array(preds) == np.array(labels)).astype(int).sum()) / float(len(labels))
-    msg = 'epoch: {}, batch: {}, {}_accuracy: {:.4f}'.format(model['prediction']['epoch'], model['prediction']['batch'], dataset_mode, accuracy)
+    msg = '{}_accuracy: {:.4f}'.format(dataset_mode, accuracy)
     print(msg)
 
     # out csv
@@ -266,13 +270,13 @@ def main():
     default_result_mode = 'mean'     # ['min','mean','max', 'average_duration_ms'] align：["double_edge_triggered_detecting"]
     
     parser = argparse.ArgumentParser(description='Streamax KWS Infering Engine')
-    parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_speech.py", help='config file')
+    # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_speech.py", help='config file')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaoyu.py", help='config file')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui16k.py", help='config file')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py", help='config file')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_heybodycam.py", help='config file')
-    # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan8k.py", help='config file')
+    parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan8k.py", help='config file')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan16k.py", help='config file')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_nihaoxiaoan8k.py", help='config file')
     # parser.add_argument('--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_nihaoxiaoan16k.py", help='config file')

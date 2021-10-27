@@ -5,8 +5,9 @@ import sys
 
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
-from utils.train_tools import *
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.utils.train_tools import *
+from KWS.utils.train_tools import *
 
 
 def plot_hist(data, bins, xlabel='', ylabel='', title='', savefig=''):

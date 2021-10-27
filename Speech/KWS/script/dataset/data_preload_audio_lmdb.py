@@ -1,4 +1,5 @@
 import argparse
+import librosa
 import lmdb
 import numpy as np
 import os
@@ -6,10 +7,11 @@ import pandas as pd
 import sys
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
-from dataset.kws.dataset_helper import *
-# from dataset.kws.kws_dataset import *
-from utils.train_tools import load_cfg_file
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.utils.train_tools import load_cfg_file
+
+from KWS.config.kws import hparams
+from KWS.dataset.kws.dataset_helper import *
 
 parser = argparse.ArgumentParser(description='Streamax KWS Data Split Engine')
 parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan8k.py", help='config file')
@@ -38,7 +40,7 @@ def general_lmdb(cfg, lmdb_path, data_pd):
         return
 
     # 估算映射空间大小（大概）
-    if label_list[0] == SILENCE_LABEL:
+    if label_list[0] == hparams.SILENCE_LABEL:
         data_size_per_audio = np.zeros(desired_samples, dtype=np.float32).nbytes
     else:
         data_size_per_audio = librosa.core.load(file_list[0], sr=sample_rate)[0].nbytes
@@ -59,7 +61,7 @@ def general_lmdb(cfg, lmdb_path, data_pd):
         key_byte = file_path.encode()
 
         # value
-        if file_label == SILENCE_LABEL:
+        if file_label == hparams.SILENCE_LABEL:
             data = np.zeros(desired_samples, dtype=np.float32)
         else:
             data = librosa.core.load(file_path, sr=sample_rate)[0]
@@ -116,7 +118,7 @@ def preload_background_audio_lmdb():
         os.makedirs(output_dir)
 
     # init 
-    lmdb_path = os.path.join(output_dir, '{}.lmdb'.format(BACKGROUND_NOISE_DIR_NAME))
+    lmdb_path = os.path.join(output_dir, '{}.lmdb'.format(hparams.BACKGROUND_NOISE_DIR_NAME))
 
     # load csv
     background_data_pd = pd.read_csv(cfg.general.background_data_path)

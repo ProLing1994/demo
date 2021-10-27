@@ -7,10 +7,12 @@ import sys
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 from Basic.dataset import audio
+from Basic.utils.train_tools import load_cfg_file
 
-from KWS.utils.train_tools import load_cfg_file
+from KWS.config.kws import hparams
+from KWS.dataset.kws import dataset_augmentation
 from KWS.dataset.kws.dataset_helper import *
-from KWS.impl.pred_pyimpl import load_background_noise, dataset_add_noise
+from KWS.utils.lmdb_tools import load_background_noise_lmdb
 
 
 def mix_in_audio_sample(track_data, track_offset, sample_data, sample_offset,
@@ -78,7 +80,7 @@ def straming_dataset_generator(input_dir, output_path, nosed_csv, config_file, a
         for file in file_list:
             audio_dict = {}
             audio_dict['file'] = os.path.join(input_dir, file)
-            audio_dict['label'] = UNKNOWN_WORD_LABEL
+            audio_dict['label'] = hparams.UNKNOWN_WORD_LABEL
             audio_list.append(audio_dict)
     elif mode == 2:
         print("Generator Straming Dataset From Unused Csv")
@@ -90,7 +92,7 @@ def straming_dataset_generator(input_dir, output_path, nosed_csv, config_file, a
         for _, row in data_pd.iterrows():
             audio_dict = {}
             audio_dict['file'] = row['file']
-            audio_dict['label'] = UNKNOWN_WORD_LABEL
+            audio_dict['label'] = hparams.UNKNOWN_WORD_LABEL
             audio_list.append(audio_dict)
     elif mode == 3:
         print("Generator Straming Dataset From Config File")
@@ -112,7 +114,7 @@ def straming_dataset_generator(input_dir, output_path, nosed_csv, config_file, a
     # Mix the background audio into the main track.
     if add_noise_on:
 
-        background_data = load_background_noise(cfg)
+        background_data = load_background_noise_lmdb(cfg)
         output_offset = 0
         while(output_offset < output_audio_sample_count):
             print('Mix background audio, Done : [{}/{}]'.format(output_offset, output_audio_sample_count), end='\r')
@@ -122,7 +124,7 @@ def straming_dataset_generator(input_dir, output_path, nosed_csv, config_file, a
         
             # load data
             audio_data = np.zeros(desired_samples, dtype=np.float32)
-            audio_data = dataset_add_noise(cfg, audio_data, background_data)
+            audio_data = dataset_augmentation.dataset_add_noise(cfg, audio_data, background_data)
 
             audio_length = len(audio_data)
             mix_in_audio_sample(output_audio, output_offset, audio_data, 0, audio_length, 1.0, 500, 500)
@@ -165,7 +167,7 @@ def straming_dataset_generator(input_dir, output_path, nosed_csv, config_file, a
             pass 
 
         # load data
-        if found_label == SILENCE_LABEL:
+        if found_label == hparams.SILENCE_LABEL:
             found_audio = np.zeros(desired_samples, dtype=np.float32)
         else:
             found_audio = librosa.core.load(found_data, sr=sample_rate)[0]
