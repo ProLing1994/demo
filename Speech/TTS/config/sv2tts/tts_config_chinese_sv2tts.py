@@ -26,15 +26,15 @@ __C.general.dataset_path_dict = {
 __C.general.data_dir = "/mnt/huanyuan2/data/speech/tts/Chinese_dataset/"
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/test/"
-__C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_1_1_10232021/"
+__C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/test/"
+# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_1_1_10232021/"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # finetune model
-__C.general.finetune_on = True
-# __C.general.finetune_on = False
+# __C.general.finetune_on = True
+__C.general.finetune_on = False
 # 方式一：模型训练过程中，保存模型
 __C.general.finetune_model_dir = ""
 __C.general.finetune_epoch = -1
@@ -65,7 +65,7 @@ __C.general.data_parallel_mode = 0
 
 __C.speaker_verification = {}
 
-__C.speaker_verification.config_file = "/home/huanyuan/code/demo/Speech/SV/config/sv_config_chinese_TI_SV.py"
+__C.speaker_verification.config_file = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_1_basic_10122021/sv_config_chinese_TI_SV.py"
 __C.speaker_verification.model_name = "/home/huanyuan/code/demo/Speech/SV/network/basic.py"
 __C.speaker_verification.class_name = 'SpeakerEncoder'
 # 方式一：模型训练过程中，保存模型
@@ -123,9 +123,6 @@ __C.dataset.data_size = [80, -1]
 
 # num_chars
 __C.dataset.num_chars = len(symbols)
-
-# speaker_embedding_size
-__C.dataset.speaker_embedding_size = 256
 
 # language
 __C.dataset.language = 'chinese'
@@ -202,12 +199,17 @@ __C.dataset.augmentation.num_masks = 2
 
 __C.net = {}
 
-# the network name
-__C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron.py"
-__C.net.class_name = "Tacotron"
+# # the network name
+# __C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron.py"
+# __C.net.class_name = "Tacotron"
+# # r frames
+# __C.net.r = 2
 
+# the network name
+__C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron2.py"
+__C.net.class_name = "Tacotron2"
 # r frames
-__C.net.r = 2
+__C.net.r = 1
 
 ######################################
 # training parameters

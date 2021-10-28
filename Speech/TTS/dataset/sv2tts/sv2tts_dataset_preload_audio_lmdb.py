@@ -1,4 +1,5 @@
 import os
+from re import X
 import pandas as pd
 import sys
 import random
@@ -101,14 +102,11 @@ class SynthesizerDataset(Dataset):
         wav = read_audio_lmdb(self.lmdb_dict[lmdb_dataset], str(data_name))
         mel = audio.compute_mel_spectrogram(self.cfg, wav).T.astype(np.float32)
 
-        # stop length
-        mel_frames = mel.shape[1]
-
         # embed wav
         speaker_pd = self.data_pd[self.data_pd['speaker'] == speaker]
         speaker_data_name = random.choice(speaker_pd['unique_utterance'].to_list()) 
         embed_wav = read_audio_lmdb(self.lmdb_dict[lmdb_dataset], str(speaker_data_name))
-        return text, mel, mel_frames, embed_wav
+        return text, mel, embed_wav
 
 
 class SynthesizerDataLoader(DataLoader):
@@ -128,18 +126,21 @@ class SynthesizerDataLoader(DataLoader):
         )
 
     def collate_synthesizer(self, data, cfg):
-        # Text
-        x_lens = [len(x[0]) for x in data]
-        max_x_len = max(x_lens)
+        # Sort 
+        data = sorted(data, key=lambda x: len(x[0]), reverse=True)
 
-        chars = [pad1d(x[0], max_x_len) for x in data]
+        # Text
+        char_lengths = [len(x[0]) for x in data]
+        max_char_length = max(char_lengths)
+
+        chars = [pad1d(x[0], max_char_length) for x in data]
         chars = np.stack(chars)
 
         # Mel spectrogram
-        spec_lens = [x[1].shape[-1] for x in data]
-        max_spec_len = max(spec_lens) + 1 
-        if max_spec_len % cfg.net.r != 0:
-            max_spec_len += cfg.net.r - max_spec_len % cfg.net.r
+        mel_lengths = [x[1].shape[1] for x in data]
+        max_mel_length = max(mel_lengths)
+        if max_mel_length % cfg.net.r != 0:
+            max_mel_length += cfg.net.r - max_mel_length % cfg.net.r
 
         # WaveRNN mel spectrograms are normalized to [0, 1] so zero padding adds silence
         # By default, SV2TTS uses symmetric mels, where -1*max_abs_value is silence.
@@ -148,19 +149,20 @@ class SynthesizerDataLoader(DataLoader):
         else:
             mel_pad_value = 0
 
-        mel = [pad2d(x[1], max_spec_len, pad_value=mel_pad_value) for x in data]
-        mel = np.stack(mel)
+        mels = [pad2d(x[1], max_mel_length, pad_value=mel_pad_value) for x in data]
+        mels = np.stack(mels)
         
         # Mel Frames: stop
-        mel_frames = [x[2] for x in data]
-        stop = torch.ones(mel.shape[0], mel.shape[-1])
-        for j, k in enumerate(mel_frames):
-            stop[j, :int(k)-1] = 0
+        stops = torch.zeros(mels.shape[0], mels.shape[-1])
+        for j, k in enumerate(mel_lengths):
+            stops[j, int(k)-1:] = 1
 
         # Speaker embedding (SV2TTS)
-        embed_wav = [x[3] for x in data]
+        embed_wavs = [x[2] for x in data]
 
         # Convert all to tensor
         chars = torch.tensor(chars).long()
-        mel = torch.tensor(mel)
-        return chars, mel, stop, embed_wav
+        char_lengths = torch.tensor(char_lengths)
+        mels = torch.tensor(mels)
+        mel_lengths = torch.tensor(mel_lengths)
+        return chars, char_lengths, mels, mel_lengths, stops, embed_wavs

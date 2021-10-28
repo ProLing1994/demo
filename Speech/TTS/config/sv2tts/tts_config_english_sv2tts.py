@@ -133,9 +133,6 @@ __C.dataset.data_size = [80, -1]
 # num_chars
 __C.dataset.num_chars = len(symbols)
 
-# speaker_embedding_size
-__C.dataset.speaker_embedding_size = 256
-
 # language
 __C.dataset.language = 'english'
 

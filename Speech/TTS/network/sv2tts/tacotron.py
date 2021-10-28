@@ -5,9 +5,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.nn.utils import clip_grad_norm_
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/TTS')
-# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/TTS')
-from network.sv2tts.hparams_tacotron import *
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
+from TTS.network.sv2tts import hparams_tacotron
 
 
 class HighwayNetwork(nn.Module):
@@ -335,20 +335,21 @@ class Tacotron(nn.Module):
         self.num_chars = cfg.dataset.num_chars
         self.n_mels = cfg.dataset.feature_bin_count                 # 论文中，num_mels = 80
         self.fft_bins = cfg.dataset.feature_bin_count               # 论文中，num_mels = 80
-        self.speaker_embedding_size = cfg.dataset.speaker_embedding_size
         self.decoder_r = cfg.net.r
 
-        self.embed_dims = tts_embed_dims
-        self.encoder_dims = tts_encoder_dims
-        self.encoder_K = tts_encoder_K
-        self.num_highways = tts_num_highways
+        self.embed_dims = hparams_tacotron.tts_embed_dims
+        self.encoder_dims = hparams_tacotron.tts_encoder_dims
+        self.encoder_K = hparams_tacotron.tts_encoder_K
+        self.num_highways = hparams_tacotron.tts_num_highways
 
-        self.decoder_dims = tts_decoder_dims
-        self.lstm_dims = tts_lstm_dims
-        self.dropout = tts_dropout
+        self.decoder_dims = hparams_tacotron.tts_decoder_dims
+        self.lstm_dims = hparams_tacotron.tts_lstm_dims
+        self.dropout = hparams_tacotron.tts_dropout
 
-        self.postnet_dims = tts_postnet_dims
-        self.postnet_K = tts_postnet_K
+        self.postnet_dims = hparams_tacotron.tts_postnet_dims
+        self.postnet_K = hparams_tacotron.tts_postnet_K
+
+        self.speaker_embedding_size = hparams_tacotron.speaker_embedding_size
 
         self.encoder = Encoder(self.embed_dims, self.num_chars, self.encoder_dims,
                                self.encoder_K, self.num_highways, self.dropout)
@@ -363,7 +364,7 @@ class Tacotron(nn.Module):
         self.num_params()
 
         self.register_buffer("step", torch.zeros(1, dtype=torch.long))
-        self.register_buffer("stop_threshold", torch.tensor(tts_stop_threshold, dtype=torch.float32))
+        self.register_buffer("stop_threshold", torch.tensor(hparams_tacotron.tts_stop_threshold, dtype=torch.float32))
 
     @property
     def r(self):
@@ -375,9 +376,10 @@ class Tacotron(nn.Module):
 
     def do_gradient_ops(self):
         # Gradient clipping
-        clip_grad_norm_(self.parameters(), tts_clip_grad_norm)
+        clip_grad_norm_(self.parameters(), hparams_tacotron.tts_clip_grad_norm)
 
-    def forward(self, x, m, speaker_embedding):
+    def forward(self, x, x_len, m, m_len, speaker_embedding):
+        del x_len, m_len
         device = next(self.parameters()).device  # use same device as parameters
 
         self.step += 1
@@ -423,15 +425,15 @@ class Tacotron(nn.Module):
 
         # Post-Process for Linear Spectrograms，生成线性频谱图
         postnet_out = self.postnet(mel_outputs)
-        linear = self.post_proj(postnet_out)
-        linear = linear.transpose(1, 2)
+        mel_outputs_postnet = self.post_proj(postnet_out)
+        mel_outputs_postnet = mel_outputs_postnet.transpose(1, 2)
 
         # For easy visualisation
         attn_scores = torch.cat(attn_scores, 1)
         # attn_scores = attn_scores.cpu().data.numpy()
         stop_outputs = torch.cat(stop_outputs, 1)
 
-        return mel_outputs, linear, attn_scores, stop_outputs
+        return mel_outputs, mel_outputs_postnet, stop_outputs, attn_scores
 
     def generate(self, x, speaker_embedding=None, steps=2000):
         self.eval()
@@ -481,9 +483,9 @@ class Tacotron(nn.Module):
 
         # Post-Process for Linear Spectrograms
         postnet_out = self.postnet(mel_outputs)
-        linear = self.post_proj(postnet_out)
+        mel_outputs_postnet = self.post_proj(postnet_out)
 
-        linear = linear.transpose(1, 2)
+        mel_outputs_postnet = mel_outputs_postnet.transpose(1, 2)
 
         # For easy visualisation
         attn_scores = torch.cat(attn_scores, 1)
@@ -491,7 +493,7 @@ class Tacotron(nn.Module):
 
         self.train()
 
-        return mel_outputs, linear, attn_scores
+        return mel_outputs, mel_outputs_postnet, stop_outputs, attn_scores
 
     def init_model(self):
         for p in self.parameters():

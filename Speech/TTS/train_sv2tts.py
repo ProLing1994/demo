@@ -78,10 +78,6 @@ def train(args):
 
     # define network
     net = import_network(cfg, cfg.net.model_name, cfg.net.class_name)
-    if isinstance(net, torch.nn.parallel.DataParallel):
-        assert(cfg.net.r == net.module.r)
-    else:
-        assert(cfg.net.r == net.r)
         
     # set training optimizer, learning rate scheduler
     optimizer = set_optimizer(cfg, net)
@@ -145,16 +141,12 @@ def train(args):
     # loop over batches
     for i in range(batch_number):
         net.train()
-        if isinstance(net, torch.nn.parallel.DataParallel):
-            assert(cfg.net.r == net.module.r)
-        else:
-            assert(cfg.net.r == net.r)
 
         epoch_idx = start_epoch + i * cfg.train.batch_size // len_train_dataset
         batch_idx += 1
 
         # Blocking, waiting for batch (threaded)
-        texts, mels, stop, embed_wavs = data_iter.next()
+        texts, text_lengths, mels, mel_lengths, stops, embed_wavs = data_iter.next()
 
         embeds = []
         for embed_wav_idx in range(len(embed_wavs)):
@@ -167,9 +159,11 @@ def train(args):
 
         # Data to device
         texts = texts.cuda()
+        text_lengths = text_lengths.cuda()
         mels = mels.cuda()
+        mel_lengths = mel_lengths.cuda()
         embeds = embeds.cuda()
-        stop = stop.cuda()
+        stops = stops.cuda()
         profiler.tick("Data to device")
         
         # Forward pass
@@ -177,13 +171,13 @@ def train(args):
         if cfg.general.data_parallel_mode == 2 and cfg.general.num_gpus > 1:
             m1_hat, m2_hat, attention, stop_pred = data_parallel_workaround(cfg, net, texts,
                                                                             mels, embeds)
-        m1_hat, m2_hat, attention, stop_pred = net(texts, mels, embeds)
+        m1_hat, m2_hat, stop_pred, attention = net(texts, text_lengths, mels, mel_lengths, embeds)
         profiler.tick("Forward pass")
 
         # Calculate loss
         m1_loss = F.mse_loss(m1_hat, mels) + F.l1_loss(m1_hat, mels)
         m2_loss = F.mse_loss(m2_hat, mels)
-        stop_loss = F.binary_cross_entropy(stop_pred, stop)
+        stop_loss = F.binary_cross_entropy(stop_pred, stops)
         loss = m1_loss + m2_loss + stop_loss
         profiler.tick("Calculate Loss")
                     
@@ -235,10 +229,6 @@ def train(args):
                     target_spectrogram = mels[sample_idx].detach().cpu().numpy().T
                     mel_length = mel_prediction.shape[0]
                     attention_len = mel_length // cfg.net.r 
-                    if isinstance(net, torch.nn.parallel.DataParallel):
-                        assert(cfg.net.r == net.module.r)
-                    else:
-                        assert(cfg.net.r == net.r)
                         
                     attention_prediction = attention[sample_idx][:, :attention_len].detach().cpu().numpy()
                     target_text = texts[sample_idx].detach().cpu().numpy()

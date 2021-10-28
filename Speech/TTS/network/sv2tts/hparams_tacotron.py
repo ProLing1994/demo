@@ -1,3 +1,6 @@
+################################
+# Model Parameters             #
+################################
 ### Tacotron Text-to-Speech (TTS)
 tts_embed_dims = 512                        # Embedding dimension for the graphemes/phoneme inputs
 tts_encoder_dims = 256
@@ -14,4 +17,10 @@ tts_stop_threshold = -3.4                   # Value below which audio generation
                                             # will terminate the sequence at the first
                                             # frame that has all values < -3.4
 
+# speaker embedding 
+speaker_embedding_size = 256
+
+################################
+# Optimization Hyperparameters #
+################################
 tts_clip_grad_norm = 1.0
