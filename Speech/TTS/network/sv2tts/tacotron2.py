@@ -246,7 +246,8 @@ class Encoder(nn.Module):
             outputs, batch_first=True)
 
         # add embedding
-        outputs = self.add_speaker_embedding(outputs, speaker_embeds)
+        if speaker_embeds is not None:
+            outputs = self.add_speaker_embedding(outputs, speaker_embeds)
         return outputs
 
     def inference(self, x, speaker_embeds):
@@ -258,7 +259,8 @@ class Encoder(nn.Module):
         self.lstm.flatten_parameters()
         outputs, _ = self.lstm(x)
 
-        outputs = self.add_speaker_embedding(outputs, speaker_embeds)
+        if speaker_embeds is not None:
+            outputs = self.add_speaker_embedding(outputs, speaker_embeds)
         return outputs
 
     def add_speaker_embedding(self, x, speaker_embeds):
@@ -595,7 +597,7 @@ class Tacotron2(nn.Module):
         # Gradient clipping
         clip_grad_norm_(self.parameters(), hparams_tacotron2.grad_clip_thresh)
 
-    def forward(self, texts, text_lengths, mels, mel_lengths, speaker_embeds):
+    def forward(self, texts, text_lengths, mels, mel_lengths, speaker_embeds=None):
         text_lengths, mel_lengths = text_lengths.data, mel_lengths.data
 
         embedded_inputs = self.embedding(texts).transpose(1, 2)
@@ -612,7 +614,7 @@ class Tacotron2(nn.Module):
             [mel_outputs, mel_outputs_postnet, gate_outputs, alignments],
             mel_lengths)
 
-    def inference(self, texts, speaker_embeds):
+    def inference(self, texts, speaker_embeds=None):
         embedded_inputs = self.embedding(texts).transpose(1, 2)
         encoder_outputs = self.encoder.inference(embedded_inputs, speaker_embeds)
         mel_outputs, gate_outputs, alignments = self.decoder.inference(

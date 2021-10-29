@@ -17,7 +17,8 @@ Aishell3: http://www.openslr.org/93/, 171/156(218)
 CN-Celeb1: https://www.openslr.org/82/, 992/0(992)
 CN-Celeb2: https://www.openslr.org/82/, 1996/0(1996)
 '''
-__C.general.dataset_list = ['SLR38', 'SLR68', 'Aishell3', 'CN-Celeb1', 'CN-Celeb2']
+# __C.general.dataset_list = ['SLR38', 'SLR68', 'Aishell3', 'CN-Celeb1', 'CN-Celeb2']
+__C.general.dataset_list = ['Aishell3']
 # __C.general.dataset_list = ['test']
 __C.general.dataset_path_dict = {
                                     "SLR38": "/mnt/huanyuan/data/speech/asr/Chinese/SLR38/ST-CMDS-20170001_1-OS/",
@@ -51,13 +52,18 @@ __C.general.is_test = True
 # __C.general.is_test = False
 
 # finetune model
-# 方式一：模型训练过程中，保存模型
 __C.general.finetune_on = True
 # __C.general.finetune_on = False
+
+# 模型加载方式，[0: 方式一, 1: 方式二]
+__C.general.finetune_mode = 0
+
+# 方式一：加载模型训练过程中保存模型
 __C.general.finetune_model_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_0_basic_10122021/"
 __C.general.finetune_epoch = 400
 # 方式二：加载其他模型结构
 __C.general.finetune_model_path = ""
+__C.general.finetune_model_state = 'model_state'
 __C.general.finetune_ignore_key_list = []
 
 # set certain epoch to continue training, set -1 to train from scratch
@@ -359,3 +365,4 @@ __C.test = {}
 
 # the number of testing epochs
 __C.test.model_epoch = -1
+# __C.test.model_epoch = 999

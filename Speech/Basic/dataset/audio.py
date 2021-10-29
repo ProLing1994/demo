@@ -307,8 +307,7 @@ def compute_inv_mel_spectrogram(cfg, mel):
     """Converts mel spectrogram to waveform using librosa"""
     # init 
     audio_preprocess_type = cfg.dataset.preprocess
-    if not audio_preprocess_type == "fbank_log_manual":
-        return None
+    assert audio_preprocess_type == "fbank_log_manual", "only support audio preprocess type: fbank_log_manual"
 
     audio_processor = AudioPreprocessor(sr=cfg.dataset.sample_rate,
                                         n_mels=cfg.dataset.feature_bin_count,

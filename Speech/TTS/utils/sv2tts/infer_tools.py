@@ -38,9 +38,9 @@ def synthesize_spectrograms(cfg, net, texts, embeddings):
 
         # Inference
         if isinstance(net, torch.nn.parallel.DataParallel):
-            _, mels, _, _ = net.module.generate(chars, speaker_embeddings)
+            _, mels, _, _ = net.module.inference(chars, speaker_embeddings)
         else:
-            _, mels, _, _ = net.generate(chars, speaker_embeddings)
+            _, mels, _, _ = net.inference(chars, speaker_embeddings)
 
         mels = mels.detach().cpu().numpy()
         for m in mels:

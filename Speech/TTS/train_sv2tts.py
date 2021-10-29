@@ -53,7 +53,7 @@ def show_ressult(cfg, attention, mel_prediction, target_spectrogram, input_seq, 
     # save griffin lim inverted wav for debug (mel -> wav)
     wav = audio.compute_inv_mel_spectrogram(cfg, mel_prediction.T)
     wav_fpath = os.path.join(wav_dir, "wave_from_mel_step_{}_sample_{}.wav".format(step, sample_num))
-    if wav:
+    if len(wav):
         audio.save_wav(wav, str(wav_fpath), sr=cfg.dataset.sample_rate)
     print("Input at step {}: {}".format(step, text))
 
@@ -90,15 +90,17 @@ def train(args):
     # load checkpoint if finetune_on == True or resume epoch > 0
     if cfg.general.finetune_on == True:
         # fintune, Load model, reset learning rate
-        if not cfg.general.finetune_model_dir == "":
+        if cfg.general.finetune_mode == 0: 
             load_checkpoint(net, cfg.general.finetune_epoch, 
                             cfg.general.finetune_model_dir, 
                             sub_folder_name='pretrain_model')
         # fintune,
-        else:
+        elif cfg.general.finetune_mode == 1:
             load_checkpoint_from_path(net, cfg.general.finetune_model_path, 
-                                        state_name='model_state',
+                                        state_name=cfg.general.finetune_model_state,
                                         finetune_ignore_key_list=cfg.general.finetune_ignore_key_list)
+        else:
+            raise Exception("[ERROR:] Unknow finetune mode: {}".format(cfg.general.finetune_mode))
         start_epoch, start_batch = 0, 0
         last_save_epoch = 0
     if cfg.general.resume_epoch >= 0:
@@ -111,20 +113,28 @@ def train(args):
         start_epoch, start_batch = 0, 0
         last_save_epoch = 0
 
-    # speaker verification net
-    cfg_speaker_verification = load_cfg_file(cfg.speaker_verification.config_file)
-    sv_net = import_network(cfg_speaker_verification, 
-                            cfg.speaker_verification.model_name, 
-                            cfg.speaker_verification.class_name)
-    if not cfg.speaker_verification.model_dir == "":
-        load_checkpoint(sv_net, cfg.speaker_verification.epoch, 
-                        cfg.speaker_verification.model_dir)
-    else:
-        load_checkpoint_from_path(sv_net, cfg.speaker_verification.model_path, 
-                                    state_name='model_state',
-                                    finetune_ignore_key_list=cfg.speaker_verification.ignore_key_list)
-    sv_net.eval()
+    # 选择是否开启多说话人模式（SV2TTS）
+    if cfg.general.mutil_speaker:
+        msg = '训练模式：多说话人模式'
+        logger.info(msg)
 
+        # speaker verification net
+        cfg_speaker_verification = load_cfg_file(cfg.speaker_verification.config_file)
+        sv_net = import_network(cfg_speaker_verification, 
+                                cfg.speaker_verification.model_name, 
+                                cfg.speaker_verification.class_name)
+        if not cfg.speaker_verification.model_dir == "":
+            load_checkpoint(sv_net, cfg.speaker_verification.epoch, 
+                            cfg.speaker_verification.model_dir)
+        else:
+            load_checkpoint_from_path(sv_net, cfg.speaker_verification.model_path, 
+                                        state_name='model_state',
+                                        finetune_ignore_key_list=cfg.speaker_verification.ignore_key_list)
+        sv_net.eval()
+    else:
+        msg = '训练模式：单说话人模式'
+        logger.info(msg)
+        
     # define training dataset and testing dataset
     train_dataloader, len_train_dataset = generate_dataset(cfg, hparams.TRAINING_NAME)
 
@@ -148,13 +158,16 @@ def train(args):
         # Blocking, waiting for batch (threaded)
         texts, text_lengths, mels, mel_lengths, stops, embed_wavs = data_iter.next()
 
-        embeds = []
-        for embed_wav_idx in range(len(embed_wavs)):
-            embed_wav = embed_wavs[embed_wav_idx]
-            embed = embed_utterance(embed_wav, cfg_speaker_verification, sv_net)
-            embeds.append(embed)
-
-        embeds = torch.from_numpy(np.array(embeds))
+        # 选择是否开启多说话人模式（SV2TTS）
+        if cfg.general.mutil_speaker:
+            embeds = []
+            for embed_wav_idx in range(len(embed_wavs)):
+                embed_wav = embed_wavs[embed_wav_idx]
+                embed = embed_utterance(embed_wav, cfg_speaker_verification, sv_net)
+                embeds.append(embed)
+            embeds = torch.from_numpy(np.array(embeds))
+        else:
+            embeds = None
         profiler.tick("Blocking, waiting for batch (threaded)")
 
         # Data to device
@@ -162,7 +175,10 @@ def train(args):
         text_lengths = text_lengths.cuda()
         mels = mels.cuda()
         mel_lengths = mel_lengths.cuda()
-        embeds = embeds.cuda()
+        if cfg.general.mutil_speaker:
+            embeds = embeds.cuda()
+        else:
+            pass
         stops = stops.cuda()
         profiler.tick("Data to device")
         

@@ -35,11 +35,16 @@ __C.general.is_test = True
 # finetune model
 # __C.general.finetune_on = True
 __C.general.finetune_on = False
-# 方式一：模型训练过程中，保存模型
+
+# 模型加载方式，[0: 方式一, 1: 方式二]
+__C.general.finetune_mode = 0
+
+# 方式一：加载模型训练过程中保存模型
 __C.general.finetune_model_dir = ""
 __C.general.finetune_epoch = 0
 # 方式二：加载其他模型结构
 __C.general.finetune_model_path = "/mnt/huanyuan/model/model_10_30_25_21/model/tts_vocoder/pretrained/pretrain_model/parameter.pkl"
+__C.general.finetune_model_state = 'model_state'
 __C.general.finetune_ignore_key_list = []
 
 # set certain epoch to continue training, set -1 to train from scratch

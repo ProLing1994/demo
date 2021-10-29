@@ -13,9 +13,9 @@ config_file=/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_chinese
 echo "script/dataset/prepare_dataset.sh"
 
 # vad 
-# 功能：vad，数据清洗剔除静音音频部分
+# 功能：vad，数据清洗剔除静音音频部分，数据重采样为期望采样率
 if [ $stage -le 1 ];then
-	python /home/huanyuan/code/demo/Speech/SV/script/dataset/data_vad.py -i $config_file || exit 1
+	python data_vad.py -i $config_file || exit 1
 fi
 
 # train test dataset split 

@@ -22,6 +22,7 @@ __C.general.dataset_path_dict = {
                                 "librispeech_clean_100_training": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-clean-100",
                                 "librispeech_test_clean_testing": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/test-clean",
                                 }
+__C.general.mutil_speaker = True
 
 # data path
 __C.general.data_dir = "/mnt/huanyuan2/data/speech/tts/dataset/"
@@ -36,11 +37,16 @@ __C.general.is_test = True
 # finetune model
 # __C.general.finetune_on = True
 __C.general.finetune_on = False
-# 方式一：模型训练过程中，保存模型
+
+# 模型加载方式，[0: 方式一, 1: 方式二]
+__C.general.finetune_mode = 0
+
+# 方式一：加载模型训练过程中保存模型
 __C.general.finetune_model_dir = ""
 __C.general.finetune_epoch = -1
 # 方式二：加载其他模型结构
 __C.general.finetune_model_path = "/mnt/huanyuan/model/model_10_30_25_21/model/tts/pretrained/pretrain_model/parameter.pkl"
+__C.general.finetune_model_state = 'model_state'
 __C.general.finetune_ignore_key_list = []
 
 # set certain epoch to continue training, set -1 to train from scratch

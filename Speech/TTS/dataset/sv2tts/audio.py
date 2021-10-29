@@ -51,7 +51,7 @@ def preprocess_speaker_librispeech(cfg, data_files, row):
     return metadata
 
 
-def preprocess_speaker_aishell3(cfg, data_files, row):
+def preprocess_speaker_normal(cfg, data_files, row):
     # init 
     metadata = []
     wav_fpath = row['file']
@@ -82,7 +82,9 @@ def preprocess_speaker(cfg, data_files, row, dataset_name):
     if dataset_name == 'librispeech_clean_360' or dataset_name == 'librispeech_clean_100' or dataset_name == 'librispeech_test_clean': 
         metadata = preprocess_speaker_librispeech(cfg, data_files, row)
     elif dataset_name == 'Aishell3': 
-        metadata = preprocess_speaker_aishell3(cfg, data_files, row)
+        metadata = preprocess_speaker_normal(cfg, data_files, row)
+    elif dataset_name == 'BZNSYP': 
+        metadata = preprocess_speaker_normal(cfg, data_files, row)
     return [m for m in metadata if m is not None]
 
 

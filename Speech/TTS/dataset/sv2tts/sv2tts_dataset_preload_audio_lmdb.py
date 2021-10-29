@@ -71,7 +71,7 @@ class SynthesizerDataset(Dataset):
         if len(self.data_list) == 0:
             raise Exception("No speakers found. ")
 
-        print("Found %d samples. " % len(self.data_list))
+        # print("Found %d samples. " % len(self.data_list))
 
     def __len__(self):
         return len(self.data_list)

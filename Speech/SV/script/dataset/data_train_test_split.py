@@ -88,12 +88,19 @@ def load_dataset_type_3(dataset_name, dataset_path, data_files, mode):
     for wav_idx in tqdm(range(len(wav_list))):
         file_path = wav_list[wav_idx]
 
-        # 20170001P00001A0001.wav
-        # 20170001P00001I0001.wav
-        speaker_id = str(os.path.split(os.path.basename(file_path))).split('P')[1][:6]
+        # # 20170001P00001A0001.wav
+        # # 20170001P00001I0001.wav
+        # speaker_id = str(os.path.split(os.path.basename(file_path))).split('P')[1][:6]
+        # section_id = 0
+        # utterance_id = os.path.basename(file_path)
+
+        # 000001.wav
+        # 010000.wav
+        speaker_id = '{}_{}'.format('BZNSYP', '0')
         section_id = 0
         utterance_id = os.path.basename(file_path)
-        data_files.append({'dataset': dataset_name, 'speaker': speaker_id, 'section': section_id, 'utterance': utterance_id, 'file': file_path, 'mode': mode})
+
+        data_files.append({'dataset': dataset_name, 'speaker': speaker_id, 'section': section_id, 'utterance': speaker_id + '_' + utterance_id, 'file': file_path, 'mode': mode})
 
 
 def load_dataset(dataset_name, dataset_path, data_files, mode, keep_speaker_ids=None, type=1):
@@ -222,6 +229,8 @@ def data_split(args):
             data_split_normal(cfg, dataset_name, type = 2)
         elif dataset_name == 'CN-Celeb2':
             data_split_normal(cfg, dataset_name, type = 2)
+        elif dataset_name == 'BZNSYP':
+            data_split_normal(cfg, dataset_name, type = 3)
 
     # background_noise dataset
     data_split_background_noise(cfg, "background_noise")

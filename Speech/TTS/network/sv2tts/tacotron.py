@@ -435,7 +435,7 @@ class Tacotron(nn.Module):
 
         return mel_outputs, mel_outputs_postnet, stop_outputs, attn_scores
 
-    def generate(self, x, speaker_embedding=None, steps=2000):
+    def inference(self, x, speaker_embedding=None, steps=2000):
         self.eval()
         device = next(self.parameters()).device  # use same device as parameters
 

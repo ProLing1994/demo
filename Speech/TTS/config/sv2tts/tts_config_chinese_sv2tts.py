@@ -15,13 +15,22 @@ cfg = __C
 
 __C.general = {}
 
-__C.general.dataset_list = ['Aishell3']
+# __C.general.dataset_list = ['Aishell3']
+# __C.general.dataset_path_dict = {
+#                                 "Aishell3": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/", 
+#                                 "Aishell3_training": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/train/wav", 
+#                                 "Aishell3_testing": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/test/wav", 
+#                                 }
+# __C.general.mutil_speaker = True
+
+__C.general.dataset_list = ['BZNSYP']
 __C.general.dataset_path_dict = {
-                                "Aishell3": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/", 
-                                "Aishell3_training": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/train/wav", 
-                                "Aishell3_testing": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/test/wav", 
+                                "BZNSYP": "/mnt/huanyuan/data/speech/asr/Chinese/BZNSYP/", 
+                                "BZNSYP_training": "/mnt/huanyuan/data/speech/asr/Chinese/BZNSYP/Wave", 
+                                "BZNSYP_testing": None, 
                                 }
-                                    
+__C.general.mutil_speaker = False
+
 # data path
 __C.general.data_dir = "/mnt/huanyuan2/data/speech/tts/Chinese_dataset/"
 
@@ -33,14 +42,30 @@ __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/test/"
 __C.general.is_test = True
 
 # finetune model
-# __C.general.finetune_on = True
-__C.general.finetune_on = False
-# 方式一：模型训练过程中，保存模型
+__C.general.finetune_on = True
+# __C.general.finetune_on = False
+
+# 模型加载方式，[0: 方式一, 1: 方式二]
+__C.general.finetune_mode = 1
+
+# 方式一：加载模型训练过程中保存模型
 __C.general.finetune_model_dir = ""
 __C.general.finetune_epoch = -1
 # 方式二：加载其他模型结构
-__C.general.finetune_model_path = "/mnt/huanyuan2/model/tts/pretrained/pretrain_model/parameter.pkl"
-__C.general.finetune_ignore_key_list = ['module.encoder.embedding.weight']
+# __C.general.finetune_model_path = "/mnt/huanyuan2/model/tts/pretrained/tacotron/pretrain_model/parameter.pkl"
+# __C.general.finetune_model_state = 'model_state'
+# __C.general.finetune_ignore_key_list = ['module.encoder.embedding.weight']
+__C.general.finetune_model_path = "/mnt/huanyuan2/model/tts/pretrained/tacotron2/pretrain_model/parameter.pkl"
+__C.general.finetune_model_state = 'state_dict'
+__C.general.finetune_ignore_key_list = ['module.embedding.weight']
+# __C.general.finetune_ignore_key_list = [
+#                                         'module.embedding.weight', 
+#                                         'module.decoder.attention_rnn.weight_ih', 
+#                                         'module.decoder.attention_layer.memory_layer.linear_layer.weight',
+#                                         'module.decoder.decoder_rnn.weight_ih',
+#                                         'module.decoder.linear_projection.linear_layer.weight',
+#                                         'module.decoder.gate_layer.linear_layer.weight',
+#                                         ]
 
 # set certain epoch to continue training, set -1 to train from scratch
 __C.general.resume_epoch = -1

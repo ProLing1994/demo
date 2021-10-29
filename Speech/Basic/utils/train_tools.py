@@ -218,7 +218,7 @@ def load_checkpoint_from_path(net, chk_file,
     # 方案二: 需要添加 module. 字段
     state = torch.load(chk_file)
     new_pre = {}
-    for k,v in state[state_name].items():
+    for k, v in state[state_name].items():
         name = 'module.' + k
         if finetune_ignore_key_list:
             if name in finetune_ignore_key_list:
