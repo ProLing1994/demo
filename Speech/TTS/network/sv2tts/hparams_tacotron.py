@@ -17,10 +17,6 @@ tts_stop_threshold = -3.4                   # Value below which audio generation
                                             # will terminate the sequence at the first
                                             # frame that has all values < -3.4
 
-# speaker embedding 
-# SV2TTS, 多说话人
-speaker_embedding_size = 256
-
 ################################
 # Optimization Hyperparameters #
 ################################

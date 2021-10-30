@@ -16,7 +16,10 @@ def split_title_line(title_text, max_words=5):
 
 def save_attention(attn, path):
     fig = plt.figure(figsize=(12, 6))
+    plt.xlabel('Dncoder states: mel time', fontsize=15)
+    plt.ylabel('Encoder states: text time', fontsize=15)
     plt.imshow(attn.T, interpolation='nearest', aspect='auto')
+    plt.colorbar() 
     fig.savefig(path, bbox_inches='tight')
     plt.close(fig)
 

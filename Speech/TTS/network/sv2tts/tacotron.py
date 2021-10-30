@@ -349,7 +349,7 @@ class Tacotron(nn.Module):
         self.postnet_dims = hparams_tacotron.tts_postnet_dims
         self.postnet_K = hparams_tacotron.tts_postnet_K
 
-        self.speaker_embedding_size = hparams_tacotron.speaker_embedding_size
+        self.speaker_embedding_size = cfg.net.speaker_embedding_size
 
         self.encoder = Encoder(self.embed_dims, self.num_chars, self.encoder_dims,
                                self.encoder_K, self.num_highways, self.dropout)
@@ -378,7 +378,7 @@ class Tacotron(nn.Module):
         # Gradient clipping
         clip_grad_norm_(self.parameters(), hparams_tacotron.tts_clip_grad_norm)
 
-    def forward(self, x, x_len, m, m_len, speaker_embedding):
+    def forward(self, x, x_len, m, m_len, speaker_embedding=None):
         del x_len, m_len
         device = next(self.parameters()).device  # use same device as parameters
 

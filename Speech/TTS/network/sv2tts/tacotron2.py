@@ -301,7 +301,7 @@ class Decoder(nn.Module):
         self.n_frames_per_step = cfg.net.r                                # r = 1 
         assert self.n_frames_per_step == hparams_tacotron2.n_frames_per_step, "currently only 1 is supported"
 
-        self.speaker_embedding_size = hparams_tacotron2.speaker_embedding_size
+        self.speaker_embedding_size = cfg.net.speaker_embedding_size
         self.encoder_embedding_dim = hparams_tacotron2.encoder_embedding_dim + self.speaker_embedding_size
         self.attention_rnn_dim = hparams_tacotron2.attention_rnn_dim
         self.decoder_rnn_dim = hparams_tacotron2.decoder_rnn_dim

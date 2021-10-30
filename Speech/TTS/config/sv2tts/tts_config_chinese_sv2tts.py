@@ -52,12 +52,19 @@ __C.general.finetune_mode = 1
 __C.general.finetune_model_dir = ""
 __C.general.finetune_epoch = -1
 # 方式二：加载其他模型结构
-# __C.general.finetune_model_path = "/mnt/huanyuan2/model/tts/pretrained/tacotron/pretrain_model/parameter.pkl"
-# __C.general.finetune_model_state = 'model_state'
+__C.general.finetune_model_path = "/mnt/huanyuan2/model/tts/pretrained/tacotron/pretrain_model/parameter.pkl"
+__C.general.finetune_model_state = 'model_state'
 # __C.general.finetune_ignore_key_list = ['module.encoder.embedding.weight']
-__C.general.finetune_model_path = "/mnt/huanyuan2/model/tts/pretrained/tacotron2/pretrain_model/parameter.pkl"
-__C.general.finetune_model_state = 'state_dict'
-__C.general.finetune_ignore_key_list = ['module.embedding.weight']
+__C.general.finetune_ignore_key_list = [
+                                        'module.encoder.embedding.weight',
+                                        'module.encoder_proj.weight',
+                                        'module.decoder.attn_rnn.weight_ih',
+                                        'module.decoder.rnn_input.weight',
+                                        'module.decoder.stop_proj.weight'
+                                        ]
+# __C.general.finetune_model_path = "/mnt/huanyuan2/model/tts/pretrained/tacotron2/pretrain_model/parameter.pkl"
+# __C.general.finetune_model_state = 'state_dict'
+# __C.general.finetune_ignore_key_list = ['module.embedding.weight']
 # __C.general.finetune_ignore_key_list = [
 #                                         'module.embedding.weight', 
 #                                         'module.decoder.attention_rnn.weight_ih', 
@@ -83,6 +90,22 @@ __C.general.gpu_ids = '0'
 ## TODO：目前在训练 sv2tts 过程中，多卡运行出现异常，原因未知，bug: terminate called after throwing an instance of 'c10::Error'
 __C.general.data_parallel_mode = 0
 
+
+##################################
+# guiding model parameters
+##################################
+
+__C.guiding_model = {}
+
+__C.guiding_model.on = True
+# __C.guiding_model.on = False
+
+# guide model 用于引导模型，学会 attention 信息
+__C.guiding_model.config_file = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_1_1_10232021/tts_config_chinese_sv2tts.py"
+__C.guiding_model.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron.py"
+__C.guiding_model.class_name = 'Tacotron'
+__C.guiding_model.model_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_1_1_10232021/"
+__C.guiding_model.epoch = -1
 
 ##################################
 # speaker verification parameters
@@ -224,17 +247,23 @@ __C.dataset.augmentation.num_masks = 2
 
 __C.net = {}
 
-# # the network name
-# __C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron.py"
-# __C.net.class_name = "Tacotron"
-# # r frames
-# __C.net.r = 2
-
 # the network name
-__C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron2.py"
-__C.net.class_name = "Tacotron2"
+__C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron.py"
+__C.net.class_name = "Tacotron"
 # r frames
-__C.net.r = 1
+__C.net.r = 2
+
+# # the network name
+# __C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron2.py"
+# __C.net.class_name = "Tacotron2"
+# # r frames
+# __C.net.r = 1
+
+# speaker embedding 
+# # SV2TTS, 多说话人
+# __C.net.speaker_embedding_size = 256
+# 单说话人
+__C.net.speaker_embedding_size = 0
 
 ######################################
 # training parameters

@@ -44,12 +44,6 @@ postnet_embedding_dim=512
 postnet_kernel_size=5
 postnet_n_convolutions=5
 
-# speaker embedding 
-# # SV2TTS, 多说话人
-# speaker_embedding_size = 256
-# 单说话人
-speaker_embedding_size = 0
-
 ################################
 # Optimization Hyperparameters #
 ################################

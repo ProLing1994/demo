@@ -113,11 +113,31 @@ def train(args):
         start_epoch, start_batch = 0, 0
         last_save_epoch = 0
 
+    # 选择是否开启引导者模式
+    if cfg.guiding_model.on:
+        msg = '引导者模式：学习 attention weight'
+        logger.info(msg)
+
+        # guide net
+        cfg_guiding = load_cfg_file(cfg.guiding_model.config_file)
+        guiding_net = import_network(cfg_guiding, 
+                                    cfg.guiding_model.model_name, 
+                                    cfg.guiding_model.class_name)
+        load_checkpoint(guiding_net, cfg.guiding_model.epoch, 
+                        cfg.guiding_model.model_dir)
+        guiding_net.eval()
+
+
     # 选择是否开启多说话人模式（SV2TTS）
     if cfg.general.mutil_speaker:
         msg = '训练模式：多说话人模式'
         logger.info(msg)
+    else:
+        msg = '训练模式：单说话人模式'
+        logger.info(msg)
 
+    # 引导者模式 和 多说话人模式 均需要加载 sv model
+    if cfg.general.mutil_speaker or cfg.guiding_model.on:
         # speaker verification net
         cfg_speaker_verification = load_cfg_file(cfg.speaker_verification.config_file)
         sv_net = import_network(cfg_speaker_verification, 
@@ -131,10 +151,7 @@ def train(args):
                                         state_name='model_state',
                                         finetune_ignore_key_list=cfg.speaker_verification.ignore_key_list)
         sv_net.eval()
-    else:
-        msg = '训练模式：单说话人模式'
-        logger.info(msg)
-        
+
     # define training dataset and testing dataset
     train_dataloader, len_train_dataset = generate_dataset(cfg, hparams.TRAINING_NAME)
 
@@ -159,7 +176,7 @@ def train(args):
         texts, text_lengths, mels, mel_lengths, stops, embed_wavs = data_iter.next()
 
         # 选择是否开启多说话人模式（SV2TTS）
-        if cfg.general.mutil_speaker:
+        if cfg.general.mutil_speaker or cfg.guiding_model.on:
             embeds = []
             for embed_wav_idx in range(len(embed_wavs)):
                 embed_wav = embed_wavs[embed_wav_idx]
@@ -175,7 +192,7 @@ def train(args):
         text_lengths = text_lengths.cuda()
         mels = mels.cuda()
         mel_lengths = mel_lengths.cuda()
-        if cfg.general.mutil_speaker:
+        if cfg.general.mutil_speaker or cfg.guiding_model.on:
             embeds = embeds.cuda()
         else:
             pass
@@ -187,14 +204,24 @@ def train(args):
         if cfg.general.data_parallel_mode == 2 and cfg.general.num_gpus > 1:
             m1_hat, m2_hat, attention, stop_pred = data_parallel_workaround(cfg, net, texts,
                                                                             mels, embeds)
-        m1_hat, m2_hat, stop_pred, attention = net(texts, text_lengths, mels, mel_lengths, embeds)
+        if cfg.general.mutil_speaker: 
+            m1_hat, m2_hat, stop_pred, attention = net(texts, text_lengths, mels, mel_lengths, embeds)
+        else:
+            m1_hat, m2_hat, stop_pred, attention = net(texts, text_lengths, mels, mel_lengths, None)
+
+        if cfg.guiding_model.on:
+            _, _, _, guiding_attention = guiding_net(texts, text_lengths, mels, mel_lengths, embeds)
         profiler.tick("Forward pass")
 
         # Calculate loss
         m1_loss = F.mse_loss(m1_hat, mels) + F.l1_loss(m1_hat, mels)
         m2_loss = F.mse_loss(m2_hat, mels)
         stop_loss = F.binary_cross_entropy(stop_pred, stops)
-        loss = m1_loss + m2_loss + stop_loss
+        if cfg.guiding_model.on:
+            guding_loss = F.mse_loss(attention, guiding_attention)
+            loss = m1_loss + m2_loss + stop_loss + 10.0 * guding_loss
+        else:
+            loss = m1_loss + m2_loss + stop_loss
         profiler.tick("Calculate Loss")
                     
         # Backward pass
