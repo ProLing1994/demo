@@ -39,7 +39,7 @@ __C.general.is_test = True
 __C.general.finetune_on = False
 
 # 模型加载方式，[0: 方式一, 1: 方式二]
-__C.general.finetune_mode = 0
+__C.general.load_mode_type = 0
 
 # 方式一：加载模型训练过程中保存模型
 __C.general.finetune_model_dir = ""

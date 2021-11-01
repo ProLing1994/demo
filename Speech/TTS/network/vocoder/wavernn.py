@@ -7,10 +7,13 @@ import torch.nn.functional as F
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
-from TTS.config.vocoder.hparams import *
+from Basic.config import hparams
+from Basic.dataset import audio
+
+import TTS.config.vocoder.hparams as vocoder_hparams
 from TTS.dataset.vocoder.audio import *
 from TTS.dataset.vocoder.distribution import *
-from TTS.network.vocoder.hparams_wavernn import *
+from TTS.network.vocoder import hparams_wavernn
 from TTS.utils.vocoder.display_tools import *
 
 
@@ -97,20 +100,20 @@ class WaveRNN(nn.Module):
     def __init__(self, cfg):
         super().__init__()
         self.feat_dims = cfg.dataset.feature_bin_count
-        self.rnn_dims = voc_rnn_dims
-        self.fc_dims = voc_fc_dims
-        self.compute_dims = voc_compute_dims
-        self.res_out_dims = voc_res_out_dims
-        self.res_blocks = voc_res_blocks
+        self.rnn_dims = hparams_wavernn.voc_rnn_dims
+        self.fc_dims = hparams_wavernn.voc_fc_dims
+        self.compute_dims = hparams_wavernn.voc_compute_dims
+        self.res_out_dims = hparams_wavernn.voc_res_out_dims
+        self.res_blocks = hparams_wavernn.voc_res_blocks
 
         self.aux_dims = self.res_out_dims // 4
         self.sample_rate = cfg.dataset.sample_rate
         self.hop_length = int(self.sample_rate * cfg.dataset.window_stride_ms / 1000)
         
-        self.mode = voc_mode
-        self.bits = voc_bits
-        self.pad = voc_pad
-        self.upsample_factors = voc_upsample_factors
+        self.mode = vocoder_hparams.voc_mode
+        self.bits = vocoder_hparams.voc_bits
+        self.pad = vocoder_hparams.voc_pad
+        self.upsample_factors = hparams_wavernn.voc_upsample_factors
 
         if self.mode == 'RAW' :
             self.n_classes = 2 ** self.bits
@@ -259,8 +262,8 @@ class WaveRNN(nn.Module):
 
         if mu_law:
             output = decode_mu_law(output, self.n_classes, False)
-        if preemphasize:
-            output = de_emphasis(output)
+        if hparams.preemphasize:
+            output = audio.compute_de_emphasis(output)
 
         # Fade-out at the end to avoid signal cutting out suddenly
         fade_out = np.linspace(1, 0, 20 * self.hop_length)

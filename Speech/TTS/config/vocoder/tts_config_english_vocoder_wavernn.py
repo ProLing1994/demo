@@ -14,30 +14,20 @@ cfg = __C
 
 __C.general = {}
 
-# __C.general.dataset_list = ['Aishell3']
-# __C.general.dataset_path_dict = {
-#                                 "Aishell3": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/", 
-#                                 "Aishell3_training": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/train/wav", 
-#                                 "Aishell3_testing": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/test/wav", 
-#                                 }
-# __C.general.mutil_speaker = True
-
-__C.general.dataset_list = ['BZNSYP']
-__C.general.dataset_path_dict = {
-                                "BZNSYP": "/mnt/huanyuan/data/speech/asr/Chinese/BZNSYP/", 
-                                "BZNSYP_training": "/mnt/huanyuan/data/speech/asr/Chinese/BZNSYP/Wave", 
-                                "BZNSYP_testing": None, 
+# __C.general.dataset_list = ['librispeech_clean_360', 'librispeech_clean_100', 'test_clean']
+__C.general.dataset_list = ['test']
+__C.general.dataset_path_dict = {"librispeech_clean_360_training": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-clean-360",
+                                "librispeech_clean_100_training": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-clean-100",
+                                "test_clean_testing": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/test-clean",
                                 }
-__C.general.mutil_speaker = False
+__C.general.mutil_speaker = True
 
 # data path
-__C.general.data_dir = "/mnt/huanyuan2/data/speech/tts/Chinese_dataset/"
+__C.general.data_dir = "/mnt/huanyuan/data/speech/tts/dataset/"
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/test/"
-# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_1_1_10232021/"
-# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_finetune_1_2_10232021/"
-__C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_tacotron_singlespeaker_guaiding_4_2_10292021/"
+# __C.general.save_dir = "/mnt/huanyuan2/model/tts_vocoder/english_tts_vocoder/test/"
+__C.general.save_dir = "/mnt/huanyuan2/model/tts_vocoder/english_tts_vocoder/wavernn_english_finetune_2_0_09202021/"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -51,29 +41,11 @@ __C.general.load_mode_type = 1
 
 # 方式一：加载模型训练过程中保存模型
 __C.general.finetune_model_dir = ""
-__C.general.finetune_epoch = -1
+__C.general.finetune_epoch = 0
 # 方式二：加载其他模型结构
-# __C.general.finetune_model_path = "/mnt/huanyuan2/model/tts/pretrained/tacotron/pretrain_model/parameter.pkl"
-# __C.general.finetune_model_state = 'model_state'
-# # __C.general.finetune_ignore_key_list = ['module.encoder.embedding.weight']
-# __C.general.finetune_ignore_key_list = [
-#                                         'module.encoder.embedding.weight',
-#                                         'module.encoder_proj.weight',
-#                                         'module.decoder.attn_rnn.weight_ih',
-#                                         'module.decoder.rnn_input.weight',
-#                                         'module.decoder.stop_proj.weight'
-#                                         ]
-__C.general.finetune_model_path = "/mnt/huanyuan2/model/tts/pretrained/tacotron2/pretrain_model/parameter.pkl"
-__C.general.finetune_model_state = 'state_dict'
-__C.general.finetune_ignore_key_list = ['module.embedding.weight']
-# __C.general.finetune_ignore_key_list = [
-#                                         'module.embedding.weight', 
-#                                         'module.decoder.attention_rnn.weight_ih', 
-#                                         'module.decoder.attention_layer.memory_layer.linear_layer.weight',
-#                                         'module.decoder.decoder_rnn.weight_ih',
-#                                         'module.decoder.linear_projection.linear_layer.weight',
-#                                         'module.decoder.gate_layer.linear_layer.weight',
-#                                         ]
+__C.general.finetune_model_path = "/mnt/huanyuan/model/model_10_30_25_21/model/tts_vocoder/pretrained/wavernn/pretrain_model/parameter.pkl"
+__C.general.finetune_model_state = 'model_state'
+__C.general.finetune_ignore_key_list = []
 
 # set certain epoch to continue training, set -1 to train from scratch
 __C.general.resume_epoch = -1
@@ -87,26 +59,8 @@ __C.general.gpu_ids = '0'
 # data_parallel_mode: [0, 1]
 # 0: 单机多卡，DataParallel
 # 1: 单/多级多卡、分布式，DistributedDataParallel
-# 2: 单机多卡，数据手动并行
-## TODO：目前在训练 sv2tts 过程中，多卡运行出现异常，原因未知，bug: terminate called after throwing an instance of 'c10::Error'
 __C.general.data_parallel_mode = 0
 
-
-##################################
-# guiding model parameters
-##################################
-
-__C.guiding_model = {}
-
-# __C.guiding_model.on = True
-__C.guiding_model.on = False
-
-# guide model 用于引导模型，学会 attention 信息
-__C.guiding_model.config_file = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_1_1_10232021/tts_config_chinese_sv2tts.py"
-__C.guiding_model.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron.py"
-__C.guiding_model.class_name = 'Tacotron'
-__C.guiding_model.model_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_1_1_10232021/"
-__C.guiding_model.epoch = -1
 
 ##################################
 # speaker verification parameters
@@ -114,17 +68,60 @@ __C.guiding_model.epoch = -1
 
 __C.speaker_verification = {}
 
-__C.speaker_verification.config_file = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_1_basic_10122021/sv_config_chinese_TI_SV.py"
+# __C.speaker_verification.config_file = "/home/huanyuan/code/demo/Speech/SV/config/sv_config_english_TI_SV.py"
+# __C.speaker_verification.model_name = "/home/huanyuan/code/demo/Speech/SV/network/basic.py"
+# __C.speaker_verification.class_name = 'SpeakerEncoder'
+# # 模型加载方式，[0: 方式一, 1: 方式二]
+# __C.speaker_verification.load_mode_type = 0
+# # 方式一：模型训练过程中，保存模型
+# __C.speaker_verification.model_dir = ""
+# __C.speaker_verification.epoch = 0
+# # 方式二：加载其他模型结构
+# __C.speaker_verification.model_path = "/mnt/huanyuan/model/model_10_30_25_21/model/sv/pretrained/pretrain_model/parameter.pkl"
+# __C.speaker_verification.ignore_key_list = []
+
+__C.speaker_verification.config_file = "/mnt/huanyuan2/model/sv/ti_sv_english_finetune_2_0_09142021/sv_config_english_TI_SV.py"
 __C.speaker_verification.model_name = "/home/huanyuan/code/demo/Speech/SV/network/basic.py"
 __C.speaker_verification.class_name = 'SpeakerEncoder'
 # 模型加载方式，[0: 方式一, 1: 方式二]
 __C.speaker_verification.load_mode_type = 0
 # 方式一：模型训练过程中，保存模型
-__C.speaker_verification.model_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_1_basic_10122021"
+__C.speaker_verification.model_dir = "/mnt/huanyuan2/model/sv/ti_sv_english_finetune_2_0_09142021/"
 __C.speaker_verification.epoch = -1
 # 方式二：加载其他模型结构
 __C.speaker_verification.model_path = ""
 __C.speaker_verification.ignore_key_list = []
+
+
+##################################
+# synthesizer parameters
+##################################
+
+__C.synthesizer = {}
+
+# __C.synthesizer.config_file = "/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_english_sv2tts.py"
+# __C.synthesizer.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron.py"
+# __C.synthesizer.class_name = 'Tacotron'
+# # 模型加载方式，[0: 方式一, 1: 方式二]
+# __C.synthesizer.load_mode_type = 0
+# # 方式一：模型训练过程中，保存模型
+# __C.synthesizer.model_dir = ""
+# __C.synthesizer.epoch = 0
+# # 方式二：加载其他模型结构
+# __C.synthesizer.model_path = "/mnt/huanyuan/model/model_10_30_25_21/model/tts/pretrained/pretrain_model/parameter.pkl"
+# __C.synthesizer.ignore_key_list = []
+
+__C.synthesizer.config_file = "/mnt/huanyuan2/model/tts/sv2tts_english_finetune_2_0_09202021/tts_config_english_sv2tts.py"
+__C.synthesizer.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron.py"
+__C.synthesizer.class_name = 'Tacotron'
+# 模型加载方式，[0: 方式一, 1: 方式二]
+__C.synthesizer.load_mode_type = 0
+# 方式一：模型训练过程中，保存模型
+__C.synthesizer.model_dir = "/mnt/huanyuan2/model/tts/sv2tts_english_finetune_2_0_09202021/"
+__C.synthesizer.epoch = -1
+# 方式二：加载其他模型结构
+__C.synthesizer.model_path = ""
+__C.synthesizer.ignore_key_list = []
 
 
 ##################################
@@ -155,12 +152,9 @@ __C.dataset.feature_bin_count = 80
 __C.dataset.nfilt = 80
 
 # fmin, only support preprocess ["fbank_log", "fbank_log_manual"]
-# Set this to 55 if your speaker is male! if female, 95 should help taking off noise. (To
-# test depending on dataset. Pitch info: male~[65, 260], female~[100, 525])
 __C.dataset.fmin = 55
 
 # fmax, only support preprocess ["fbank_log", "fbank_log_manual"]
-# To be increased/reduced depending on data.
 __C.dataset.fmax = 7600
 
 # input size of training data (w, h), whether input size is a multiple of 16, unit: voxel
@@ -176,10 +170,10 @@ __C.dataset.data_size = [80, -1]
 __C.dataset.num_chars = len(symbols)
 
 # language
-__C.dataset.language = 'chinese'
+__C.dataset.language = 'english'
 
 # tts_cleaner_names
-__C.dataset.tts_cleaner_names = ["basic_cleaners"]
+__C.dataset.tts_cleaner_names = ["english_cleaners"]
 
 
 ##################################
@@ -251,22 +245,8 @@ __C.dataset.augmentation.num_masks = 2
 __C.net = {}
 
 # the network name
-__C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron.py"
-__C.net.class_name = "Tacotron"
-# r frames
-__C.net.r = 2
-
-# # the network name
-# __C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron2.py"
-# __C.net.class_name = "Tacotron2"
-# # r frames
-# __C.net.r = 1
-
-# speaker embedding 
-# # SV2TTS, 多说话人
-# __C.net.speaker_embedding_size = 256
-# 单说话人
-__C.net.speaker_embedding_size = 0
+__C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/vocoder/wavernn.py"
+__C.net.class_name = "WaveRNN"
 
 ######################################
 # training parameters
@@ -275,11 +255,10 @@ __C.net.speaker_embedding_size = 0
 __C.train = {}
 
 # the number of training epochs
-# __C.train.num_epochs = 100
-__C.train.num_epochs = 10
+__C.train.num_epochs = 100
 
 # the number of samples in a batch
-# __C.train.batch_size = 16
+# __C.train.batch_size = 128
 __C.train.batch_size = 2
 
 # the number of threads for IO
@@ -289,7 +268,7 @@ __C.train.num_threads = 1
 __C.train.show_log = 5
 
 # the number of batches to update loss curve
-__C.train.plot_snapshot = 1
+__C.train.plot_snapshot = 5
 
 # the number of epochs to save model
 __C.train.save_epochs = 1
@@ -300,8 +279,7 @@ __C.train.save_epochs = 1
 ######################################
 
 # learning rate = lr*gamma**(epoch//step_size)
-__C.train.lr = 1e-3
-# __C.train.lr = 1e-4
+__C.train.lr = 1e-5
 
 # step size for step learning rate
 __C.train.lr_step_size = 0
@@ -335,7 +313,9 @@ __C.train.betas = (0.9, 0.999)
 
 __C.loss = {}
 
-__C.loss.name = 'None'
+# the loss name, support ['softmax','focal']
+__C.loss.name = 'softmax'
+# __C.loss.name = 'focal'
 
 # EMA: expontential moving average on
 # EMA: https://github.com/ProLing1994/pytorch-loss/blob/master/ema.py

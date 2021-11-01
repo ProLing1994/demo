@@ -1,11 +1,10 @@
 import argparse
-from datetime import datetime
 import os 
 import sys
-from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
+from Basic.config import hparams
 from Basic.utils.folder_tools import *
 from Basic.utils.train_tools import *
 from Basic.utils.loss_tools import *
@@ -17,7 +16,7 @@ from TTS.dataset.sv2tts.text import *
 from TTS.utils.sv2tts.visualizations_tools import *
 
 from TTS.utils.vocoder.train_tools import *
-from TTS.config.vocoder.hparams import *
+import TTS.config.vocoder.hparams as vocoder_hparams
 from TTS.dataset.vocoder.audio import *
 from TTS.dataset.vocoder.distribution import *
 from TTS.dataset.vocoder.vocoder_dataset_preload_audio_lmdb import prepare_data
@@ -31,24 +30,27 @@ from common.utils.python.logging_helpers import setup_logger
 def show_ressult(cfg, net, mel_list, quant_list, texts, samples, 
                     target, overlap, 
                     step, save_dir):
+    # create_folder
+    create_folder(save_dir)
+
     for idx in range(samples):
         # init 
-        bits = 16 if voc_mode == 'MOL' else voc_bits
+        bits = 16 if vocoder_hparams.voc_mode == 'MOL' else vocoder_hparams.voc_bits
 
         # text
         texts = texts[idx].detach().cpu().numpy()
-        target_text = '_'.join(sequence_to_text(texts).split('~')[0].split(' '))
+        target_text = sequence_to_text(texts).split('~')[0]
+        text_fpath = os.path.join(save_dir, "text_step_{}_sample_{}.txt".format(step, idx))
+        with open(text_fpath, "w") as f:
+            f.write(target_text)
 
         # wav_target
         wav_target = quant_list[idx]
-        if mu_law and voc_mode != 'MOL' :
+        if vocoder_hparams.mu_law and vocoder_hparams.voc_mode != 'MOL' :
             wav_target = decode_mu_law(wav_target, 2**bits, from_labels=True)
         else :
             wav_target = label_2_float(wav_target, bits) 
-
-        # save wav_target
-        create_folder(save_dir)
-        wav_fpath = os.path.join(save_dir, "step_{}_sample_{}_text_{}.wav".format(step, idx, target_text))
+        wav_fpath = os.path.join(save_dir, "wav_target_step_{}_sample_{}.wav".format(step, idx))
         audio.save_wav(wav_target, wav_fpath, sr=cfg.dataset.sample_rate)
 
         # wav_forward
@@ -58,14 +60,13 @@ def show_ressult(cfg, net, mel_list, quant_list, texts, samples,
             print('\n| Generating: {}/{}, bool_gen_batched: {}'.format(idx, samples, bool_gen_batched))
 
             if isinstance(net, torch.nn.parallel.DataParallel):
-                wav_forward = net.module.generate(mel_forward, bool_gen_batched, target, overlap, mu_law)
+                wav_forward = net.module.generate(mel_forward, bool_gen_batched, target, overlap, vocoder_hparams.mu_law)
             else:
-                wav_forward = net.generate(mel_forward, bool_gen_batched, target, overlap, mu_law)
+                wav_forward = net.generate(mel_forward, bool_gen_batched, target, overlap, vocoder_hparams.mu_law)
 
-            # save wav_forward
             batch_str = "gen_batched_target_%d_overlap_%d" % (target, overlap) if bool_gen_batched else \
                 "gen_not_batched"
-            wav_forward_fpath = os.path.join(save_dir, "step_{}_sample_{}_text_{}_{}.wav".format(step, idx, target_text, batch_str))
+            wav_forward_fpath = os.path.join(save_dir, "wav_forward_step_{}_sample_{}_{}.wav".format(step, idx, batch_str))
             audio.save_wav(wav_forward, wav_forward_fpath, sr=cfg.dataset.sample_rate)
 
 
@@ -104,17 +105,17 @@ def train(args):
     # load checkpoint if finetune_on == True or resume epoch > 0
     if cfg.general.finetune_on == True:
         # fintune, Load model, reset learning rate
-        if cfg.general.finetune_mode == 0: 
+        if cfg.general.load_mode_type == 0: 
             load_checkpoint(net, cfg.general.finetune_epoch, 
                             cfg.general.finetune_model_dir, 
                             sub_folder_name='pretrain_model')
         # fintune,
-        elif cfg.general.finetune_mode == 1:
+        elif cfg.general.load_mode_type == 1:
             load_checkpoint_from_path(net, cfg.general.finetune_model_path, 
                                         state_name=cfg.general.finetune_model_state,
                                         finetune_ignore_key_list=cfg.general.finetune_ignore_key_list)
         else:
-            raise Exception("[ERROR:] Unknow finetune mode: {}".format(cfg.general.finetune_mode))
+            raise Exception("[ERROR:] Unknow load mode type: {}".format(cfg.general.load_mode_type))
         start_epoch, start_batch = 0, 0
         last_save_epoch = 0
 
@@ -128,34 +129,47 @@ def train(args):
         start_epoch, start_batch = 0, 0
         last_save_epoch = 0
 
-    # speaker verification net
-    cfg_speaker_verification = load_cfg_file(cfg.speaker_verification.config_file)
-    sv_net = import_network(cfg_speaker_verification, 
-                            cfg.speaker_verification.model_name, 
-                            cfg.speaker_verification.class_name)
-    if not cfg.speaker_verification.model_dir == "":
-        load_checkpoint(sv_net, cfg.speaker_verification.epoch, 
-                        cfg.speaker_verification.model_dir)
+    # 选择是否开启多说话人模式（SV2TTS）
+    if cfg.general.mutil_speaker:
+        msg = '训练模式：多说话人模式'
+        logger.info(msg)
     else:
-        load_checkpoint_from_path(sv_net, cfg.speaker_verification.model_path, 
-                                    state_name='model_state',
-                                    finetune_ignore_key_list=cfg.speaker_verification.ignore_key_list)
-    sv_net.eval()
+        msg = '训练模式：单说话人模式'
+        logger.info(msg)
+
+    # speaker verification net
+    if cfg.general.mutil_speaker:
+        cfg_speaker_verification = load_cfg_file(cfg.speaker_verification.config_file)
+        sv_net = import_network(cfg_speaker_verification, 
+                                cfg.speaker_verification.model_name, 
+                                cfg.speaker_verification.class_name)
+        if cfg.speaker_verification.load_mode_type == 0: 
+            load_checkpoint(sv_net, cfg.speaker_verification.epoch, 
+                            cfg.speaker_verification.model_dir)
+        elif cfg.speaker_verification.load_mode_type == 1:
+            load_checkpoint_from_path(sv_net, cfg.speaker_verification.model_path, 
+                                        state_name='model_state',
+                                        finetune_ignore_key_list=cfg.speaker_verification.ignore_key_list)
+        else:
+            raise Exception("[ERROR:] Unknow load mode type: {}".format(cfg.speaker_verification.load_mode_type))
+        sv_net.eval()
 
     # synthesizer net
     cfg_synthesizer = load_cfg_file(cfg.synthesizer.config_file)
     synthesizer_net = import_network(cfg_synthesizer, cfg.synthesizer.model_name, cfg.synthesizer.class_name)
-    if not cfg.synthesizer.model_dir == "":
+    if cfg.synthesizer.load_mode_type == 0: 
         load_checkpoint(synthesizer_net, cfg.synthesizer.epoch, 
                         cfg.synthesizer.model_dir)
-    else:
+    elif cfg.synthesizer.load_mode_type == 1:
         load_checkpoint_from_path(synthesizer_net, cfg.synthesizer.model_path, 
                                     state_name='model_state',
                                     finetune_ignore_key_list=cfg.synthesizer.ignore_key_list)
+    else:
+        raise Exception("[ERROR:] Unknow load mode type: {}".format(cfg.synthesizer.load_mode_type))
     synthesizer_net.eval()
 
     # define training dataset and testing dataset
-    train_dataloader, len_train_dataset = generate_dataset(cfg, TRAINING_NAME)
+    train_dataloader, len_train_dataset = generate_dataset(cfg, hparams.TRAINING_NAME)
 
     msg = 'Training dataset number: {}'.format(len_train_dataset)
     logger.info(msg)
@@ -175,29 +189,36 @@ def train(args):
         batch_idx += 1
 
         # Blocking, waiting for batch (threaded)
-        texts, mels, mel_frames, embed_wavs, quant = data_iter.next()
+        texts, text_lengths, mels, mel_lengths, embed_wavs, quant = data_iter.next()
         profiler.tick("Blocking, waiting for batch (threaded)")
 
         # prepare embedding
-        embeds = []
-        for embed_wav_idx in range(len(embed_wavs)):
-            embed_wav = embed_wavs[embed_wav_idx]
-            embed = embed_utterance(embed_wav, cfg_speaker_verification, sv_net)
-            embeds.append(embed)
-
-        embeds = torch.from_numpy(np.array(embeds))
+        if cfg.general.mutil_speaker:
+            embeds = []
+            for embed_wav_idx in range(len(embed_wavs)):
+                embed_wav = embed_wavs[embed_wav_idx]
+                embed = embed_utterance(embed_wav, cfg_speaker_verification, sv_net)
+                embeds.append(embed)
+            embeds = torch.from_numpy(np.array(embeds))
+        else: 
+            embeds = None
         profiler.tick("prepare embedding")
 
         # prepare mel
         texts = texts.cuda()
+        text_lengths = text_lengths.cuda()
         mels = mels.cuda()
-        embeds = embeds.cuda()
-        _, mel_out, _, _ = synthesizer_net(texts, mels, embeds)
+        mel_lengths = mel_lengths.cuda()
+        if cfg.general.mutil_speaker:
+            embeds = embeds.cuda()
+        else:
+            embeds = None
+        _, mel_out, _, _ = synthesizer_net(texts, text_lengths, mels, mel_lengths, embeds)
         profiler.tick("prepare mel")
         
         # prepare data
         mel_out = mel_out.detach().cpu().numpy()
-        x, y, m, mel_list, quant_list = prepare_data(cfg, mel_out, mel_frames, quant)
+        x, y, m, mel_list, quant_list = prepare_data(cfg, mel_out, mel_lengths, quant)
         x, m, y = x.cuda(), m.cuda(), y.cuda()
         profiler.tick("prepare data")
 
@@ -260,7 +281,7 @@ def train(args):
                 if cfg.general.is_test:
                     samples = 1
                     show_ressult(cfg, net, mel_list, quant_list, texts, samples, 
-                                voc_target, voc_overlap, 
+                                vocoder_hparams.voc_target, vocoder_hparams.voc_overlap, 
                                 step=epoch_idx, save_dir=os.path.join(cfg.general.save_dir, 'wavs'))
 
                 if cfg.loss.ema_on:
@@ -270,7 +291,8 @@ def train(args):
 
 def main(): 
     parser = argparse.ArgumentParser(description='Streamax SV2TTS Vocoder Training Engine')
-    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/vocoder/tts_config_vocoder_wavernn.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/vocoder/tts_config_vocoder_wavernn.py", nargs='?', help='config file')
+    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/vocoder/tts_config_chinese_vocoder_wavernn.py", nargs='?', help='config file')
     args = parser.parse_args()
     train(args)
 

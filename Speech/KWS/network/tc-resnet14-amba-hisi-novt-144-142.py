@@ -50,9 +50,13 @@ class TCBlock(nn.Module):
 class SpeechResModel(nn.Module):
     # tc-resnet14: https://arxiv.org/abs/1904.03814
     # 1.5s 音频建模
-    def __init__(self, num_classes, image_height, image_weidth, width_multiplier=1.5):
+    def __init__(self, cfg, width_multiplier=1.5):
         super().__init__()
-        del image_height
+
+        # init
+        num_classes = cfg.dataset.label.num_classes
+        image_weidth = cfg.dataset.data_size[0]
+        image_height = cfg.dataset.data_size[1]
 
         # init
         self.planes = [16, 24, 32, 48, 64]

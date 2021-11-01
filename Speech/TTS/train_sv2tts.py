@@ -90,19 +90,20 @@ def train(args):
     # load checkpoint if finetune_on == True or resume epoch > 0
     if cfg.general.finetune_on == True:
         # fintune, Load model, reset learning rate
-        if cfg.general.finetune_mode == 0: 
+        if cfg.general.load_mode_type == 0: 
             load_checkpoint(net, cfg.general.finetune_epoch, 
                             cfg.general.finetune_model_dir, 
                             sub_folder_name='pretrain_model')
         # fintune,
-        elif cfg.general.finetune_mode == 1:
+        elif cfg.general.load_mode_type == 1:
             load_checkpoint_from_path(net, cfg.general.finetune_model_path, 
                                         state_name=cfg.general.finetune_model_state,
                                         finetune_ignore_key_list=cfg.general.finetune_ignore_key_list)
         else:
-            raise Exception("[ERROR:] Unknow finetune mode: {}".format(cfg.general.finetune_mode))
+            raise Exception("[ERROR:] Unknow load mode type: {}".format(cfg.general.load_mode_type))
         start_epoch, start_batch = 0, 0
         last_save_epoch = 0
+
     if cfg.general.resume_epoch >= 0:
         # resume, Load the model, continue the previous learning rate
         start_epoch, start_batch = load_checkpoint(net, cfg.general.resume_epoch,
@@ -143,13 +144,15 @@ def train(args):
         sv_net = import_network(cfg_speaker_verification, 
                                 cfg.speaker_verification.model_name, 
                                 cfg.speaker_verification.class_name)
-        if not cfg.speaker_verification.model_dir == "":
+        if cfg.speaker_verification.load_mode_type == 0: 
             load_checkpoint(sv_net, cfg.speaker_verification.epoch, 
                             cfg.speaker_verification.model_dir)
-        else:
+        elif cfg.speaker_verification.load_mode_type == 1:
             load_checkpoint_from_path(sv_net, cfg.speaker_verification.model_path, 
                                         state_name='model_state',
                                         finetune_ignore_key_list=cfg.speaker_verification.ignore_key_list)
+        else:
+            raise Exception("[ERROR:] Unknow load mode type: {}".format(cfg.general.load_mode_type))
         sv_net.eval()
 
     # define training dataset and testing dataset
@@ -195,7 +198,7 @@ def train(args):
         if cfg.general.mutil_speaker or cfg.guiding_model.on:
             embeds = embeds.cuda()
         else:
-            pass
+            embeds = None
         stops = stops.cuda()
         profiler.tick("Data to device")
         
@@ -211,6 +214,7 @@ def train(args):
 
         if cfg.guiding_model.on:
             _, _, _, guiding_attention = guiding_net(texts, text_lengths, mels, mel_lengths, embeds)
+            guiding_attention = guiding_attention.detach()
         profiler.tick("Forward pass")
 
         # Calculate loss
@@ -218,12 +222,17 @@ def train(args):
         m2_loss = F.mse_loss(m2_hat, mels)
         stop_loss = F.binary_cross_entropy(stop_pred, stops)
         if cfg.guiding_model.on:
+            if attention.shape != guiding_attention.shape:
+                guiding_attention = guiding_attention.permute(0, 2, 1).contiguous()
+                guiding_attention = torch.nn.functional.interpolate(guiding_attention, size=attention.shape[1], mode='nearest')
+                guiding_attention = guiding_attention.permute(0, 2, 1).contiguous()
+                assert attention.shape == guiding_attention.shape
             guding_loss = F.mse_loss(attention, guiding_attention)
             loss = m1_loss + m2_loss + stop_loss + 10.0 * guding_loss
         else:
             loss = m1_loss + m2_loss + stop_loss
         profiler.tick("Calculate Loss")
-                    
+  
         # Backward pass
         net.zero_grad()
         optimizer.zero_grad()

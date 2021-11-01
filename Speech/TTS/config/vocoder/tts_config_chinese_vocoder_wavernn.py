@@ -1,5 +1,4 @@
 from easydict import EasyDict as edict
-import numpy as np
 import sys
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/TTS')
@@ -15,35 +14,43 @@ cfg = __C
 
 __C.general = {}
 
-# __C.general.dataset_list = ['librispeech_clean_360', 'librispeech_clean_100', 'test_clean']
-__C.general.dataset_list = ['test']
-__C.general.dataset_path_dict = {"librispeech_clean_360_training": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-clean-360",
-                                "librispeech_clean_100_training": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-clean-100",
-                                "test_clean_testing": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/test-clean",
+__C.general.dataset_list = ['Aishell3']
+__C.general.dataset_path_dict = {
+                                "Aishell3": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/", 
+                                "Aishell3_training": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/train/wav", 
+                                "Aishell3_testing": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/test/wav", 
                                 }
+__C.general.mutil_speaker = True
+
+# __C.general.dataset_list = ['BZNSYP']
+# __C.general.dataset_path_dict = {
+#                                 "BZNSYP": "/mnt/huanyuan/data/speech/asr/Chinese/BZNSYP/", 
+#                                 "BZNSYP_training": "/mnt/huanyuan/data/speech/asr/Chinese/BZNSYP/Wave", 
+#                                 "BZNSYP_testing": None, 
+#                                 }
+# __C.general.mutil_speaker = False
 
 # data path
-__C.general.data_dir = "/mnt/huanyuan/data/speech/tts/dataset/"
+__C.general.data_dir = "/mnt/huanyuan2/data/speech/tts/Chinese_dataset/"
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/tts_vocoder/test/"
-__C.general.save_dir = "/mnt/huanyuan2/model/tts_vocoder/wavernn_english_finetune_2_0_09202021/"
+__C.general.save_dir = "/mnt/huanyuan2/model/tts_vocoder/chinese_tts_vocoder/test/"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # finetune model
-# __C.general.finetune_on = True
-__C.general.finetune_on = False
+__C.general.finetune_on = True
+# __C.general.finetune_on = False
 
 # 模型加载方式，[0: 方式一, 1: 方式二]
-__C.general.finetune_mode = 0
+__C.general.load_mode_type = 1
 
 # 方式一：加载模型训练过程中保存模型
 __C.general.finetune_model_dir = ""
 __C.general.finetune_epoch = 0
 # 方式二：加载其他模型结构
-__C.general.finetune_model_path = "/mnt/huanyuan/model/model_10_30_25_21/model/tts_vocoder/pretrained/pretrain_model/parameter.pkl"
+__C.general.finetune_model_path = "/mnt/huanyuan2/model/tts_vocoder/pretrained/wavernn/pretrain_model/parameter.pkl"
 __C.general.finetune_model_state = 'model_state'
 __C.general.finetune_ignore_key_list = []
 
@@ -68,21 +75,13 @@ __C.general.data_parallel_mode = 0
 
 __C.speaker_verification = {}
 
-# __C.speaker_verification.config_file = "/home/huanyuan/code/demo/Speech/SV/config/sv_config_english_TI_SV.py"
-# __C.speaker_verification.model_name = "/home/huanyuan/code/demo/Speech/SV/network/basic.py"
-# __C.speaker_verification.class_name = 'SpeakerEncoder'
-# # 方式一：模型训练过程中，保存模型
-# __C.speaker_verification.model_dir = ""
-# __C.speaker_verification.epoch = 0
-# # 方式二：加载其他模型结构
-# __C.speaker_verification.model_path = "/mnt/huanyuan/model/model_10_30_25_21/model/sv/pretrained/pretrain_model/parameter.pkl"
-# __C.speaker_verification.ignore_key_list = []
-
-__C.speaker_verification.config_file = "/mnt/huanyuan2/model/sv/ti_sv_english_finetune_2_0_09142021/sv_config_english_TI_SV.py"
+__C.speaker_verification.config_file = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_1_basic_10122021/sv_config_chinese_TI_SV.py"
 __C.speaker_verification.model_name = "/home/huanyuan/code/demo/Speech/SV/network/basic.py"
 __C.speaker_verification.class_name = 'SpeakerEncoder'
+# 模型加载方式，[0: 方式一, 1: 方式二]
+__C.speaker_verification.load_mode_type = 0
 # 方式一：模型训练过程中，保存模型
-__C.speaker_verification.model_dir = "/mnt/huanyuan2/model/sv/ti_sv_english_finetune_2_0_09142021/"
+__C.speaker_verification.model_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_1_basic_10122021"
 __C.speaker_verification.epoch = -1
 # 方式二：加载其他模型结构
 __C.speaker_verification.model_path = ""
@@ -95,21 +94,15 @@ __C.speaker_verification.ignore_key_list = []
 
 __C.synthesizer = {}
 
-# __C.synthesizer.config_file = "/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_english_sv2tts.py"
-# __C.synthesizer.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron.py"
-# __C.synthesizer.class_name = 'Tacotron'
-# # 方式一：模型训练过程中，保存模型
-# __C.synthesizer.model_dir = ""
-# __C.synthesizer.epoch = 0
-# # 方式二：加载其他模型结构
-# __C.synthesizer.model_path = "/mnt/huanyuan/model/model_10_30_25_21/model/tts/pretrained/pretrain_model/parameter.pkl"
-# __C.synthesizer.ignore_key_list = []
-
-__C.synthesizer.config_file = "/mnt/huanyuan2/model/tts/sv2tts_english_finetune_2_0_09202021/tts_config_english_sv2tts.py"
+# __C.synthesizer.config_file = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_tacotron_singlespeaker_guaiding_4_2_10292021/tts_config_chinese_sv2tts.py"
+__C.synthesizer.config_file = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_finetune_1_2_10232021/tts_config_chinese_sv2tts.py"
 __C.synthesizer.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron.py"
 __C.synthesizer.class_name = 'Tacotron'
+# 模型加载方式，[0: 方式一, 1: 方式二]
+__C.synthesizer.load_mode_type = 0
 # 方式一：模型训练过程中，保存模型
-__C.synthesizer.model_dir = "/mnt/huanyuan2/model/tts/sv2tts_english_finetune_2_0_09202021/"
+# __C.synthesizer.model_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_tacotron_singlespeaker_guaiding_4_2_10292021/"
+__C.synthesizer.model_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_finetune_1_2_10232021/"
 __C.synthesizer.epoch = -1
 # 方式二：加载其他模型结构
 __C.synthesizer.model_path = ""
@@ -130,14 +123,11 @@ __C.dataset.sample_rate = 16000
 
 # Duration of frequency analysis window
 __C.dataset.window_size_ms = 50.0
-# __C.dataset.window_size_ms = 32.0
 
 # How far to move in time between frequency windows
 __C.dataset.window_stride_ms = 12.5
-# __C.dataset.window_stride_ms = 10.0
 
 # How the spectrogram is processed to produce features, support ["fbank", "fbank_log", "fbank_log_manual", "pcen", "fbank_cpu"]
-# __C.dataset.preprocess = "fbank_cpu"
 __C.dataset.preprocess = "fbank_log_manual"
 
 # How many bins to use for the Mel feature
@@ -164,8 +154,11 @@ __C.dataset.data_size = [80, -1]
 # num_chars
 __C.dataset.num_chars = len(symbols)
 
+# language
+__C.dataset.language = 'chinese'
+
 # tts_cleaner_names
-__C.dataset.tts_cleaner_names = ["english_cleaners"]
+__C.dataset.tts_cleaner_names = ["basic_cleaners"]
 
 
 ##################################
@@ -239,7 +232,6 @@ __C.net = {}
 # the network name
 __C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/vocoder/wavernn.py"
 __C.net.class_name = "WaveRNN"
-
 # r frames
 __C.net.r = 2
 
@@ -250,7 +242,7 @@ __C.net.r = 2
 __C.train = {}
 
 # the number of training epochs
-__C.train.num_epochs = 100
+__C.train.num_epochs = 10
 
 # the number of samples in a batch
 # __C.train.batch_size = 128
@@ -274,7 +266,8 @@ __C.train.save_epochs = 1
 ######################################
 
 # learning rate = lr*gamma**(epoch//step_size)
-__C.train.lr = 1e-5
+__C.train.lr = 1e-4
+# __C.train.lr = 1e-5
 
 # step size for step learning rate
 __C.train.lr_step_size = 0

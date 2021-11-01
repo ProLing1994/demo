@@ -7,19 +7,20 @@ from TTS.config.sv2tts.hparams import *
 from TTS.dataset.sv2tts.sv2tts_dataset_preload_audio_lmdb import *
 
 
-def synthesize_spectrograms(cfg, net, texts, embeddings):
+def synthesize_spectrograms(cfg, net, texts, embeddings=None):
     # Preprocess text inputs
     inputs = [text_to_sequence(text.strip(), cfg.dataset.tts_cleaner_names) for text in texts]
-
-    # Preprocess embeddings inputs
-    if not isinstance(embeddings, list):
-        embeddings = [embeddings]
 
     # Batch inputs, 16 个放到一个 batch 进行传播
     batched_inputs = [inputs[i: i + synthesis_batch_size]
                             for i in range(0, len(inputs), synthesis_batch_size)]
-    batched_embeds = [embeddings[i: i + synthesis_batch_size]
-                            for i in range(0, len(embeddings), synthesis_batch_size)]
+
+    if embeddings is not None:
+        # Preprocess embeddings inputs
+        if not isinstance(embeddings, list):
+            embeddings = [embeddings]
+            
+        batched_embeds = [embeddings[i: i + synthesis_batch_size] for i in range(0, len(embeddings), synthesis_batch_size)]
 
     specs = []
     for i, batch in enumerate(batched_inputs, 1):
@@ -30,11 +31,11 @@ def synthesize_spectrograms(cfg, net, texts, embeddings):
         chars = np.stack(chars)
 
         # Stack speaker embeddings into 2D array for batch processing
-        speaker_embeds = np.stack(batched_embeds[i-1])
+        speaker_embeds = np.stack(batched_embeds[i-1]) if embeddings is not None else None
 
         # Convert to tensor
         chars = torch.tensor(chars).long().cuda()
-        speaker_embeddings = torch.tensor(speaker_embeds).float().cuda()
+        speaker_embeddings = torch.tensor(speaker_embeds).float().cuda() if embeddings is not None else None
 
         # Inference
         if isinstance(net, torch.nn.parallel.DataParallel):

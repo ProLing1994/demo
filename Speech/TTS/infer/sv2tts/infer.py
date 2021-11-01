@@ -1,6 +1,5 @@
 import argparse
 import sys
-from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
@@ -23,14 +22,15 @@ def infer(args):
     cfg = load_cfg_file(args.config_file)
 
     # load speaker verification net
-    cfg_speaker_verification = load_cfg_file(cfg.speaker_verification.config_file)
-    sv_net = import_network(cfg_speaker_verification, 
-                            cfg.speaker_verification.model_name, 
-                            cfg.speaker_verification.class_name)
-    load_checkpoint(sv_net, 
-                    cfg.speaker_verification.epoch, 
-                    cfg.speaker_verification.model_dir)
-    sv_net.eval()
+    if cfg.general.mutil_speaker:
+        cfg_speaker_verification = load_cfg_file(cfg.speaker_verification.config_file)
+        sv_net = import_network(cfg_speaker_verification, 
+                                cfg.speaker_verification.model_name, 
+                                cfg.speaker_verification.class_name)
+        load_checkpoint(sv_net, 
+                        cfg.speaker_verification.epoch, 
+                        cfg.speaker_verification.model_dir)
+        sv_net.eval()
 
     # load synthesizer net
     cfg_synthesizer = cfg
@@ -43,8 +43,11 @@ def infer(args):
     net_synthesizer.eval()
 
     # load embedding
-    embed = embedding(cfg_speaker_verification, sv_net, args.wav_file) 
-    embeds = [embed]
+    if cfg.general.mutil_speaker:
+        embed = embedding(cfg_speaker_verification, sv_net, args.wav_file) 
+        embeds = [embed]
+    else:
+        embeds = None
 
     # load text
     texts = [args.text]
@@ -79,13 +82,15 @@ def main():
 
     # chinese
     # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
-    parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_1_1_10232021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
-    parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00050001.wav", nargs='?', help='config file')
-    # parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00730005.wav", nargs='?', help='config file')
-    # parser.add_argument('-t', '--text', type=str, default=" ".join(get_pinyin("道路千万条安全第一条")), nargs='?', help='config file')
-    # parser.add_argument('-tn', '--text_name', type=str, default="道路千万条安全第一条", nargs='?', help='config file')
-    parser.add_argument('-t', '--text', type=str, default=" ".join(get_pinyin("今天星期五天气好真开心")), nargs='?', help='config file')
-    parser.add_argument('-tn', '--text_name', type=str, default="今天星期五天气好真开心", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_1_1_10232021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
+    parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_finetune_1_2_10232021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_tacotron_singlespeaker_guaiding_4_2_10292021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
+    # parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00050001.wav", nargs='?', help='config file')
+    parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00730005.wav", nargs='?', help='config file')
+    parser.add_argument('-t', '--text', type=str, default=" ".join(get_pinyin("道路千万条安全第一条")), nargs='?', help='config file')
+    parser.add_argument('-tn', '--text_name', type=str, default="道路千万条安全第一条", nargs='?', help='config file')
+    # parser.add_argument('-t', '--text', type=str, default=" ".join(get_pinyin("今天星期五天气好真开心")), nargs='?', help='config file')
+    # parser.add_argument('-tn', '--text_name', type=str, default="今天星期五天气好真开心", nargs='?', help='config file')
 
     args = parser.parse_args()
     infer(args)

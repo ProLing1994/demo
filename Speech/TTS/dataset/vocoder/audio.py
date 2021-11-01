@@ -1,11 +1,5 @@
 import math
 import numpy as np
-from scipy.signal import lfilter
-import sys
-
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
-from TTS.config.vocoder.hparams import *
 
 
 def label_2_float(x, bits) :
@@ -16,14 +10,6 @@ def float_2_label(x, bits) :
     assert abs(x).max() <= 1.0
     x = (x + 1.) * (2**bits - 1) / 2
     return x.clip(0, 2**bits - 1)
-
-
-def pre_emphasis(x):
-    return lfilter([1, -preemphasis], [1], x)
-
-
-def de_emphasis(x):
-    return lfilter([1], [1, -preemphasis], x)
 
 
 def encode_mu_law(x, mu) :

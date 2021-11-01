@@ -98,17 +98,17 @@ def train(args):
     # load checkpoint if finetune_on == True or resume epoch > 0
     if cfg.general.finetune_on == True:
         # fintune, Load model, reset learning rate
-        if cfg.general.finetune_mode == 0: 
+        if cfg.general.load_mode_type == 0: 
             load_checkpoint(net, cfg.general.finetune_epoch, 
                             cfg.general.finetune_model_dir, 
                             sub_folder_name='pretrain_model')
         # fintune, 
-        elif cfg.general.finetune_mode == 1:
+        elif cfg.general.load_mode_type == 1:
             load_checkpoint_from_path(net, cfg.general.finetune_model_path, 
                                         state_name=cfg.general.finetune_model_state,
                                         finetune_ignore_key_list=cfg.general.finetune_ignore_key_list)
         else:
-            raise Exception("[ERROR:] Unknow finetune mode: {}".format(cfg.general.finetune_mode))
+            raise Exception("[ERROR:] Unknow load mode type: {}".format(cfg.general.load_mode_type))
         start_epoch, start_batch = 0, 0
         last_save_epoch, last_plot_epoch = 0, 0
     if cfg.general.resume_epoch >= 0:

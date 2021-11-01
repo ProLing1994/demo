@@ -77,6 +77,7 @@ __C.knowledge_distillation.on = False
 
 # teacher model
 __C.knowledge_distillation.teacher_model_name = ''
+__C.knowledge_distillation.teacher_class_name = ''
 __C.knowledge_distillation.teacher_model_dir = ""
 __C.knowledge_distillation.epoch = 0
 

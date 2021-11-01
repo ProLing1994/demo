@@ -194,11 +194,13 @@ class AudioPreprocessor(object):
         feature_data = featurefbanks_cpu.copy_mfsc_feature_int_to()
         return feature_data
 
+    @classmethod
     def preemphasis(self, wav, k, preemphasize=True):
         if preemphasize:
             return signal.lfilter([1, -k], [1], wav)
         return wav
 
+    @classmethod
     def inv_preemphasis(self, wav, k, inv_preemphasize=True):
         if inv_preemphasize:
             return signal.lfilter([1], [1, -k], wav)
@@ -328,3 +330,10 @@ def compute_inv_mel_spectrogram(cfg, mel):
     
     # griffin_lim
     return audio_processor.inv_preemphasis(audio_processor.griffin_lim(S ** hparams.power), hparams.preemphasis, hparams.preemphasize)
+
+
+def compute_pre_emphasis(data):
+    return AudioPreprocessor.preemphasis(data, hparams.preemphasis, hparams.preemphasize)
+
+def compute_de_emphasis(data):
+    return AudioPreprocessor.inv_preemphasis(data, hparams.preemphasis, hparams.preemphasize)

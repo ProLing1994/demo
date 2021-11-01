@@ -1,4 +1,5 @@
 from math import sqrt
+import numpy as np
 import sys
 import torch
 from torch.autograd import Variable
@@ -574,6 +575,8 @@ class Tacotron2(nn.Module):
         self.decoder = Decoder(cfg)
         self.postnet = Postnet(cfg)
 
+        self.num_params()
+
     def parse_output(self, outputs, output_lengths=None):
         if self.mask_padding and output_lengths is not None:
             mask = ~get_mask_from_lengths(output_lengths)
@@ -627,3 +630,10 @@ class Tacotron2(nn.Module):
             [mel_outputs, mel_outputs_postnet, gate_outputs, alignments])
 
         return outputs
+
+    def num_params(self, print_out=True):
+        parameters = filter(lambda p: p.requires_grad, self.parameters())
+        parameters = sum([np.prod(p.size()) for p in parameters]) / 1_000_000
+        if print_out:
+            print("Tacontron2 Parameters: %.3fM" % parameters)
+        return parameters
