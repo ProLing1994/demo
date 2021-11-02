@@ -16,7 +16,7 @@ from TTS.dataset.sv2tts.text import *
 from TTS.utils.sv2tts.visualizations_tools import *
 
 from TTS.utils.vocoder.train_tools import *
-import TTS.config.vocoder.hparams as vocoder_hparams
+import TTS.config.vocoder.hparams as hparams_vocoder
 from TTS.dataset.vocoder.audio import *
 from TTS.dataset.vocoder.distribution import *
 from TTS.dataset.vocoder.vocoder_dataset_preload_audio_lmdb import prepare_data
@@ -35,7 +35,7 @@ def show_ressult(cfg, net, mel_list, quant_list, texts, samples,
 
     for idx in range(samples):
         # init 
-        bits = 16 if vocoder_hparams.voc_mode == 'MOL' else vocoder_hparams.voc_bits
+        bits = 16 if hparams_vocoder.voc_mode == 'MOL' else hparams_vocoder.voc_bits
 
         # text
         texts = texts[idx].detach().cpu().numpy()
@@ -46,7 +46,7 @@ def show_ressult(cfg, net, mel_list, quant_list, texts, samples,
 
         # wav_target
         wav_target = quant_list[idx]
-        if vocoder_hparams.mu_law and vocoder_hparams.voc_mode != 'MOL' :
+        if hparams_vocoder.mu_law and hparams_vocoder.voc_mode != 'MOL' :
             wav_target = decode_mu_law(wav_target, 2**bits, from_labels=True)
         else :
             wav_target = label_2_float(wav_target, bits) 
@@ -60,9 +60,9 @@ def show_ressult(cfg, net, mel_list, quant_list, texts, samples,
             print('\n| Generating: {}/{}, bool_gen_batched: {}'.format(idx, samples, bool_gen_batched))
 
             if isinstance(net, torch.nn.parallel.DataParallel):
-                wav_forward = net.module.generate(mel_forward, bool_gen_batched, target, overlap, vocoder_hparams.mu_law)
+                wav_forward = net.module.generate(mel_forward, bool_gen_batched, target, overlap, hparams_vocoder.mu_law)
             else:
-                wav_forward = net.generate(mel_forward, bool_gen_batched, target, overlap, vocoder_hparams.mu_law)
+                wav_forward = net.generate(mel_forward, bool_gen_batched, target, overlap, hparams_vocoder.mu_law)
 
             batch_str = "gen_batched_target_%d_overlap_%d" % (target, overlap) if bool_gen_batched else \
                 "gen_not_batched"
@@ -281,7 +281,7 @@ def train(args):
                 if cfg.general.is_test:
                     samples = 1
                     show_ressult(cfg, net, mel_list, quant_list, texts, samples, 
-                                vocoder_hparams.voc_target, vocoder_hparams.voc_overlap, 
+                                hparams_vocoder.voc_target, hparams_vocoder.voc_overlap, 
                                 step=epoch_idx, save_dir=os.path.join(cfg.general.save_dir, 'wavs'))
 
                 if cfg.loss.ema_on:

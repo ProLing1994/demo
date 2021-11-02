@@ -10,7 +10,7 @@ sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 from Basic.config import hparams
 from Basic.dataset import audio
 
-import TTS.config.vocoder.hparams as vocoder_hparams
+import TTS.config.vocoder.hparams as hparams_vocoder
 from TTS.dataset.vocoder.audio import *
 from TTS.dataset.vocoder.distribution import *
 from TTS.network.vocoder import hparams_wavernn
@@ -110,9 +110,9 @@ class WaveRNN(nn.Module):
         self.sample_rate = cfg.dataset.sample_rate
         self.hop_length = int(self.sample_rate * cfg.dataset.window_stride_ms / 1000)
         
-        self.mode = vocoder_hparams.voc_mode
-        self.bits = vocoder_hparams.voc_bits
-        self.pad = vocoder_hparams.voc_pad
+        self.mode = hparams_vocoder.voc_mode
+        self.bits = hparams_vocoder.voc_bits
+        self.pad = hparams_vocoder.voc_pad
         self.upsample_factors = hparams_wavernn.voc_upsample_factors
 
         if self.mode == 'RAW' :

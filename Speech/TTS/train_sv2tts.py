@@ -228,7 +228,7 @@ def train(args):
                 guiding_attention = guiding_attention.permute(0, 2, 1).contiguous()
                 assert attention.shape == guiding_attention.shape
             guding_loss = F.mse_loss(attention, guiding_attention)
-            loss = m1_loss + m2_loss + stop_loss + 10.0 * guding_loss
+            loss = m1_loss + m2_loss + stop_loss + 1000.0 * guding_loss
         else:
             loss = m1_loss + m2_loss + stop_loss
         profiler.tick("Calculate Loss")
@@ -254,7 +254,12 @@ def train(args):
 
         # Show information
         if (batch_idx % cfg.train.show_log) == 0:
-            msg = 'epoch: {}, batch: {}, train_loss: {:.4f}'.format(epoch_idx, batch_idx, loss.item())
+            if cfg.guiding_model.on:
+                msg = 'epoch: {}, batch: {}, train_loss: {:.4f}, (m1_loss: {:.4f}, m2_loss: {:.4f}, stop_loss: {:.4f}, guding_loss: {:.4f})'.format(
+                        epoch_idx, batch_idx, loss.item(), m1_loss.item(), m2_loss.item(), stop_loss.item(), guding_loss.item())
+            else:
+                msg = 'epoch: {}, batch: {}, train_loss: {:.4f}, (m1_loss: {:.4f}, m2_loss: {:.4f}, stop_loss: {:.4f})'.format(
+                        epoch_idx, batch_idx, loss.item(), m1_loss.item(), m2_loss.item(), stop_loss.item())
             logger.info(msg)
         profiler.tick("Show information")
 

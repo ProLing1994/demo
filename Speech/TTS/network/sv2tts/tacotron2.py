@@ -303,7 +303,7 @@ class Decoder(nn.Module):
         assert self.n_frames_per_step == hparams_tacotron2.n_frames_per_step, "currently only 1 is supported"
 
         self.speaker_embedding_size = cfg.net.speaker_embedding_size
-        self.encoder_embedding_dim = hparams_tacotron2.encoder_embedding_dim + self.speaker_embedding_size
+        self.encoder_embedding_dim = hparams_tacotron2.encoder_embedding_dim
         self.attention_rnn_dim = hparams_tacotron2.attention_rnn_dim
         self.decoder_rnn_dim = hparams_tacotron2.decoder_rnn_dim
         self.prenet_dim = hparams_tacotron2.prenet_dim
@@ -320,17 +320,35 @@ class Decoder(nn.Module):
             [self.prenet_dim, self.prenet_dim])
 
         self.attention_rnn = nn.LSTMCell(
-            self.prenet_dim + self.encoder_embedding_dim,
+            self.prenet_dim + self.encoder_embedding_dim + self.speaker_embedding_size,
             self.attention_rnn_dim)
+
+        # 为 self.speaker_embedding_size 添加额外的线性层
+        if self.speaker_embedding_size:
+            self.attention_layer_linear_projection = LinearNorm(
+                self.encoder_embedding_dim + self.speaker_embedding_size,
+                self.encoder_embedding_dim) 
 
         self.attention_layer = Attention(
             self.attention_rnn_dim, self.encoder_embedding_dim,
             self.attention_dim, self.attention_location_n_filters,
             self.attention_location_kernel_size)
 
+        # 为 self.speaker_embedding_size 添加额外的线性层
+        if self.speaker_embedding_size:
+            self.decoder_rnn_linear_projection = LinearNorm(
+                self.attention_rnn_dim + self.encoder_embedding_dim + self.speaker_embedding_size,
+                self.attention_rnn_dim + self.encoder_embedding_dim) 
+
         self.decoder_rnn = nn.LSTMCell(
             self.attention_rnn_dim + self.encoder_embedding_dim,
             self.decoder_rnn_dim, 1)
+
+        # 为 self.speaker_embedding_size 添加额外的线性层
+        if self.speaker_embedding_size:
+            self.projection_linear_projection = LinearNorm(
+                self.decoder_rnn_dim + self.encoder_embedding_dim + self.speaker_embedding_size,
+                self.decoder_rnn_dim + self.encoder_embedding_dim) 
 
         self.linear_projection = LinearNorm(
             self.decoder_rnn_dim + self.encoder_embedding_dim,
@@ -382,10 +400,14 @@ class Decoder(nn.Module):
         self.attention_weights_cum = Variable(memory.data.new(
             B, MAX_TIME).zero_())
         self.attention_context = Variable(memory.data.new(
-            B, self.encoder_embedding_dim).zero_())
+            B, self.encoder_embedding_dim + self.speaker_embedding_size).zero_())
 
         self.memory = memory
-        self.processed_memory = self.attention_layer.memory_layer(memory)
+        if self.speaker_embedding_size:
+            self.processed_memory = self.attention_layer_linear_projection(memory)
+            self.processed_memory = self.attention_layer.memory_layer(self.processed_memory)
+        else:
+            self.processed_memory = self.attention_layer.memory_layer(memory)
         self.mask = mask
 
     def parse_decoder_inputs(self, decoder_inputs):
@@ -461,10 +483,12 @@ class Decoder(nn.Module):
         self.attention_context, self.attention_weights = self.attention_layer(
             self.attention_hidden, self.memory, self.processed_memory,
             attention_weights_cat, self.mask)
-
         self.attention_weights_cum += self.attention_weights
+
         decoder_input = torch.cat(
             (self.attention_hidden, self.attention_context), -1)
+        if self.speaker_embedding_size:
+            decoder_input = self.decoder_rnn_linear_projection(decoder_input)
         self.decoder_hidden, self.decoder_cell = self.decoder_rnn(
             decoder_input, (self.decoder_hidden, self.decoder_cell))
         self.decoder_hidden = F.dropout(
@@ -472,8 +496,9 @@ class Decoder(nn.Module):
 
         decoder_hidden_attention_context = torch.cat(
             (self.decoder_hidden, self.attention_context), dim=1)
-        decoder_output = self.linear_projection(
-            decoder_hidden_attention_context)
+        if self.speaker_embedding_size:
+            decoder_hidden_attention_context = self.projection_linear_projection(decoder_hidden_attention_context)
+        decoder_output = self.linear_projection(decoder_hidden_attention_context)
 
         gate_prediction = self.gate_layer(decoder_hidden_attention_context)
         gate_prediction = torch.sigmoid(gate_prediction)

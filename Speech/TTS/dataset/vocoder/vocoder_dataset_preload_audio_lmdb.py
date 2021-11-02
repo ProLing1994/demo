@@ -14,7 +14,7 @@ from TTS.dataset.sv2tts.audio import *
 from TTS.dataset.sv2tts.sv2tts_dataset_preload_audio_lmdb import *
 
 from TTS.dataset.vocoder.audio import *
-import TTS.config.vocoder.hparams as vocoder_hparams
+import TTS.config.vocoder.hparams as hparams_vocoder
 
 class VocoderDataset(Dataset):
     def __init__(self, cfg, mode, augmentation_on=True):
@@ -70,12 +70,12 @@ class VocoderDataset(Dataset):
         r_pad =  (len(wav) // self.hop_length + 1) * self.hop_length - len(wav)
         wav = np.pad(wav, (0, r_pad), mode='constant')
 
-        if vocoder_hparams.voc_mode == 'RAW':
-            if vocoder_hparams.mu_law:
-                quant = encode_mu_law(wav, mu=2 ** vocoder_hparams.voc_bits)
+        if hparams_vocoder.voc_mode == 'RAW':
+            if hparams_vocoder.mu_law:
+                quant = encode_mu_law(wav, mu=2 ** hparams_vocoder.voc_bits)
             else:
-                quant = float_2_label(wav, bits=vocoder_hparams.voc_bits)
-        elif vocoder_hparams.voc_mode == 'MOL':
+                quant = float_2_label(wav, bits=hparams_vocoder.voc_bits)
+        elif hparams_vocoder.voc_mode == 'MOL':
             quant = float_2_label(wav, bits=16)
         return text, mel, embed_wav, quant.astype(np.int64)
 
@@ -154,11 +154,11 @@ def prepare_data(cfg, mel_out, mel, quant):
         assert len(quant_idx) % hop_length == 0
         quant_list.append(quant_idx)
 
-    voc_seq_len = vocoder_hparams.voc_seq_multiple * hop_length
-    mel_win = voc_seq_len // hop_length + 2 * vocoder_hparams.voc_pad
-    max_offsets = [x.shape[-1] -2 - (mel_win + 2 * vocoder_hparams.voc_pad) for x in mel_list]
+    voc_seq_len = hparams_vocoder.voc_seq_multiple * hop_length
+    mel_win = voc_seq_len // hop_length + 2 * hparams_vocoder.voc_pad
+    max_offsets = [x.shape[-1] -2 - (mel_win + 2 * hparams_vocoder.voc_pad) for x in mel_list]
     mel_offsets = [np.random.randint(0, offset) for offset in max_offsets]
-    sig_offsets = [(offset + vocoder_hparams.voc_pad) * hop_length for offset in mel_offsets]
+    sig_offsets = [(offset + hparams_vocoder.voc_pad) * hop_length for offset in mel_offsets]
 
     mels = [x[:, mel_offsets[i]:mel_offsets[i] + mel_win] for i, x in enumerate(mel_list)]
     labels = [x[sig_offsets[i]:sig_offsets[i] + voc_seq_len + 1] for i, x in enumerate(quant_list)]
@@ -172,10 +172,10 @@ def prepare_data(cfg, mel_out, mel, quant):
     x = labels[:, : voc_seq_len]
     y = labels[:, 1:]
 
-    bits = 16 if vocoder_hparams.voc_mode == 'MOL' else vocoder_hparams.voc_bits
+    bits = 16 if hparams_vocoder.voc_mode == 'MOL' else hparams_vocoder.voc_bits
     
     x = label_2_float(x.float(), bits)
-    if vocoder_hparams.voc_mode == 'MOL' :
+    if hparams_vocoder.voc_mode == 'MOL' :
         y = label_2_float(y.float(), bits)
 
     return x, y, mels, mel_list, quant_list

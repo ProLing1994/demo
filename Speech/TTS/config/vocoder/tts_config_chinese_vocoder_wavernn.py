@@ -14,27 +14,28 @@ cfg = __C
 
 __C.general = {}
 
-__C.general.dataset_list = ['Aishell3']
-__C.general.dataset_path_dict = {
-                                "Aishell3": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/", 
-                                "Aishell3_training": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/train/wav", 
-                                "Aishell3_testing": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/test/wav", 
-                                }
-__C.general.mutil_speaker = True
-
-# __C.general.dataset_list = ['BZNSYP']
+# __C.general.dataset_list = ['Aishell3']
 # __C.general.dataset_path_dict = {
-#                                 "BZNSYP": "/mnt/huanyuan/data/speech/asr/Chinese/BZNSYP/", 
-#                                 "BZNSYP_training": "/mnt/huanyuan/data/speech/asr/Chinese/BZNSYP/Wave", 
-#                                 "BZNSYP_testing": None, 
+#                                 "Aishell3": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/", 
+#                                 "Aishell3_training": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/train/wav", 
+#                                 "Aishell3_testing": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/test/wav", 
 #                                 }
-# __C.general.mutil_speaker = False
+# __C.general.mutil_speaker = True
+
+__C.general.dataset_list = ['BZNSYP']
+__C.general.dataset_path_dict = {
+                                "BZNSYP": "/mnt/huanyuan/data/speech/asr/Chinese/BZNSYP/", 
+                                "BZNSYP_training": "/mnt/huanyuan/data/speech/asr/Chinese/BZNSYP/Wave", 
+                                "BZNSYP_testing": None, 
+                                }
+__C.general.mutil_speaker = False
 
 # data path
 __C.general.data_dir = "/mnt/huanyuan2/data/speech/tts/Chinese_dataset/"
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan2/model/tts_vocoder/chinese_tts_vocoder/test/"
+# __C.general.save_dir = "/mnt/huanyuan2/model/tts_vocoder/chinese_tts_vocoder/test/"
+__C.general.save_dir = "/mnt/huanyuan2/model/tts_vocoder/chinese_tts_vocoder/wavernn_chinese_mutil_speaker_1_0_11012021/"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -94,15 +95,15 @@ __C.speaker_verification.ignore_key_list = []
 
 __C.synthesizer = {}
 
-# __C.synthesizer.config_file = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_tacotron_singlespeaker_guaiding_4_2_10292021/tts_config_chinese_sv2tts.py"
-__C.synthesizer.config_file = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_finetune_1_2_10232021/tts_config_chinese_sv2tts.py"
+__C.synthesizer.config_file = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_tacotron_singlespeaker_guaiding_4_2_10292021/tts_config_chinese_sv2tts.py"
+# __C.synthesizer.config_file = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_finetune_1_2_10232021/tts_config_chinese_sv2tts.py"
 __C.synthesizer.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron.py"
 __C.synthesizer.class_name = 'Tacotron'
 # 模型加载方式，[0: 方式一, 1: 方式二]
 __C.synthesizer.load_mode_type = 0
 # 方式一：模型训练过程中，保存模型
-# __C.synthesizer.model_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_tacotron_singlespeaker_guaiding_4_2_10292021/"
-__C.synthesizer.model_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_finetune_1_2_10232021/"
+__C.synthesizer.model_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_tacotron_singlespeaker_guaiding_4_2_10292021/"
+# __C.synthesizer.model_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_finetune_1_2_10232021/"
 __C.synthesizer.epoch = -1
 # 方式二：加载其他模型结构
 __C.synthesizer.model_path = ""
@@ -233,7 +234,8 @@ __C.net = {}
 __C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/vocoder/wavernn.py"
 __C.net.class_name = "WaveRNN"
 # r frames
-__C.net.r = 2
+# __C.net.r = 2
+__C.net.r = 1
 
 ######################################
 # training parameters

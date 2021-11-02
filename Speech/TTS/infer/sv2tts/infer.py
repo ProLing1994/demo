@@ -42,16 +42,16 @@ def infer(args):
                     cfg.general.save_dir)
     net_synthesizer.eval()
 
+    # load text
+    texts = args.text_list
+    texts_name = args.text_name_list
+
     # load embedding
     if cfg.general.mutil_speaker:
         embed = embedding(cfg_speaker_verification, sv_net, args.wav_file) 
-        embeds = [embed]
+        embeds = [embed] * len(args.text_list)
     else:
         embeds = None
-
-    # load text
-    texts = [args.text]
-    texts_name = [args.text_name]
 
     # synthesize_spectrograms
     specs = synthesize_spectrograms(cfg_synthesizer, net_synthesizer, texts, embeds)
@@ -67,7 +67,7 @@ def infer(args):
         wav = audio.compute_inv_mel_spectrogram(cfg, spec)
         output_dir = os.path.join(cfg.general.save_dir, "infer")
         create_folder(output_dir)
-        wav_fpath = os.path.join(output_dir, "wave_from_mel_sample_{}_text_{}.wav".format(os.path.splitext(os.path.basename(args.wav_file))[0], texts_name[spec_idx]))
+        wav_fpath = os.path.join(output_dir, "wave_griffin_from_mel_sample_{}_text_{}.wav".format(os.path.splitext(os.path.basename(args.wav_file))[0], texts_name[spec_idx]))
         audio.save_wav(wav, str(wav_fpath), sr=cfg.dataset.sample_rate)
 
 
@@ -77,22 +77,27 @@ def main():
     # # english
     # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_english_sv2tts.py", nargs='?', help='config file')
     # parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/1320_00000.mp3", nargs='?', help='config file')
-    # parser.add_argument('-t', '--text', type=str, default="activate be double you see.", nargs='?', help='config file')
-    # parser.add_argument('-tn', '--text_name', type=str, default="activate_b_w_c", nargs='?', help='config file')
+    # args = parser.parse_args()
+    # args.text_list = ["activate be double you see."]
+    # args.text_name_list = ["activate_b_w_c"]
 
     # chinese
     # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
-    # parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_1_1_10232021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
     parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_finetune_1_2_10232021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
     # parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_tacotron_singlespeaker_guaiding_4_2_10292021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
-    # parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00050001.wav", nargs='?', help='config file')
-    parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00730005.wav", nargs='?', help='config file')
-    parser.add_argument('-t', '--text', type=str, default=" ".join(get_pinyin("道路千万条安全第一条")), nargs='?', help='config file')
-    parser.add_argument('-tn', '--text_name', type=str, default="道路千万条安全第一条", nargs='?', help='config file')
-    # parser.add_argument('-t', '--text', type=str, default=" ".join(get_pinyin("今天星期五天气好真开心")), nargs='?', help='config file')
-    # parser.add_argument('-tn', '--text_name', type=str, default="今天星期五天气好真开心", nargs='?', help='config file')
-
+    parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00050001.wav", nargs='?', help='config file')
+    # parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00730005.wav", nargs='?', help='config file')
     args = parser.parse_args()
+    # chinese
+    args.text_list = [
+                        " ".join(get_pinyin("道路千万条安全第一条")),
+                        " ".join(get_pinyin("今天星期五天气好真开心")),
+                        ]
+    args.text_name_list = [
+                            "道路千万条安全第一条",
+                            "今天星期五天气好真开心",
+                            ]
+
     infer(args)
 
 

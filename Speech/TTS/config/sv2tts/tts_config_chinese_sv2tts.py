@@ -34,17 +34,17 @@ __C.general.mutil_speaker = False
 __C.general.data_dir = "/mnt/huanyuan2/data/speech/tts/Chinese_dataset/"
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/test/"
+__C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/test/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_1_1_10232021/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_finetune_1_2_10232021/"
-__C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_tacotron_singlespeaker_guaiding_4_2_10292021/"
+# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_tacotron_singlespeaker_guaiding_4_2_10292021/"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # finetune model
-# __C.general.finetune_on = True
-__C.general.finetune_on = False
+__C.general.finetune_on = True
+# __C.general.finetune_on = False
 
 # 模型加载方式，[0: 方式一, 1: 方式二]
 __C.general.load_mode_type = 1
@@ -69,10 +69,6 @@ __C.general.finetune_ignore_key_list = ['module.embedding.weight']
 # __C.general.finetune_ignore_key_list = [
 #                                         'module.embedding.weight', 
 #                                         'module.decoder.attention_rnn.weight_ih', 
-#                                         'module.decoder.attention_layer.memory_layer.linear_layer.weight',
-#                                         'module.decoder.decoder_rnn.weight_ih',
-#                                         'module.decoder.linear_projection.linear_layer.weight',
-#                                         'module.decoder.gate_layer.linear_layer.weight',
 #                                         ]
 
 # set certain epoch to continue training, set -1 to train from scratch
@@ -250,17 +246,17 @@ __C.dataset.augmentation.num_masks = 2
 
 __C.net = {}
 
-# the network name
-__C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron.py"
-__C.net.class_name = "Tacotron"
-# r frames
-__C.net.r = 2
-
 # # the network name
-# __C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron2.py"
-# __C.net.class_name = "Tacotron2"
+# __C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron.py"
+# __C.net.class_name = "Tacotron"
 # # r frames
-# __C.net.r = 1
+# __C.net.r = 2
+
+# the network name
+__C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron2.py"
+__C.net.class_name = "Tacotron2"
+# r frames
+__C.net.r = 1
 
 # speaker embedding 
 # # SV2TTS, 多说话人

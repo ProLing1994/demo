@@ -4,10 +4,12 @@ import torch
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
-from TTS.config.vocoder.hparams import *
+from Basic.config import hparams
+
+import TTS.config.vocoder.hparams as hparams_vocoder
 
 
-def infer_waveform(net, mel, batched=True, target=voc_target, overlap=voc_overlap, 
+def infer_waveform(net, mel, batched=True, target=hparams_vocoder.voc_target, overlap=hparams_vocoder.voc_overlap, 
                    progress_callback=None):
     """
     Infers the waveform of a mel spectrogram output by the synthesizer (the format must match 
@@ -19,16 +21,13 @@ def infer_waveform(net, mel, batched=True, target=voc_target, overlap=voc_overla
     :param overlap: 
     :return: 
     """ 
-    mel = mel.astype(np.float32) / max_abs_value
+    mel = mel.astype(np.float32) / hparams.max_abs_value
     mel = torch.tensor(mel).unsqueeze(0)
 
     # Inference
     if isinstance(net, torch.nn.parallel.DataParallel):
-        wav = net.module.generate(mel, batched, target, overlap, mu_law, progress_callback)
+        wav = net.module.generate(mel, batched, target, overlap, hparams_vocoder.mu_law, progress_callback)
     else:
-        wav = net.generate(mel, batched, target, overlap, mu_law, progress_callback)
+        wav = net.generate(mel, batched, target, overlap, hparams_vocoder.mu_law, progress_callback)
         
     return wav
-
-
-    wav_forward = net.generate(mel_forward, bool_gen_batched, target, overlap, mu_law)
