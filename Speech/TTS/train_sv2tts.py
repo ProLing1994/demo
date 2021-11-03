@@ -205,8 +205,10 @@ def train(args):
         # Forward pass
         # Parallelize model onto GPUS using workaround due to python bug
         if cfg.general.data_parallel_mode == 2 and cfg.general.num_gpus > 1:
-            m1_hat, m2_hat, attention, stop_pred = data_parallel_workaround(cfg, net, texts,
-                                                                            mels, embeds)
+            if cfg.general.mutil_speaker: 
+                m1_hat, m2_hat, attention, stop_pred = data_parallel_workaround(cfg, net, texts, text_lengths, mels, mel_lengths, embeds)
+            if cfg.general.mutil_speaker: 
+                m1_hat, m2_hat, attention, stop_pred = data_parallel_workaround(cfg, net, texts, text_lengths, mels, mel_lengths, None)
         if cfg.general.mutil_speaker: 
             m1_hat, m2_hat, stop_pred, attention = net(texts, text_lengths, mels, mel_lengths, embeds)
         else:

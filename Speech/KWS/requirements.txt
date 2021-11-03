@@ -12,5 +12,8 @@ easydict==1.9
 librosa==0.8.0
 numba==0.54.0
 
+# librosa==0.6.0
+# umba==0.48.0
+
 git+https://github.com/daemon/pytorch-pcen
 git+https://github.com/amsehili/auditok

@@ -205,7 +205,15 @@ def load_checkpoint(net, epoch_num, net_dir, optimizer=None,
     # 方案一:
     state = torch.load(chk_file)
     net.load_state_dict(state[state_name])
-    
+
+    # # 方案二: 去除 module. 字段
+    # state = torch.load(chk_file)
+    # new_pre = {}
+    # for k, v in state[state_name].items():
+    #     name = k[7:]
+    #     new_pre[name] = v
+    # net.load_state_dict(new_pre)
+
     if optimizer:
         optimizer.load_state_dict(state[optimizer_name])
 

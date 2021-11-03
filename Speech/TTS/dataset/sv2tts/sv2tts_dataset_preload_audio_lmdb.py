@@ -138,9 +138,10 @@ class SynthesizerDataLoader(DataLoader):
 
         # Mel spectrogram
         mel_lengths = [x[1].shape[1] for x in data]
-        max_mel_length = max(mel_lengths)
+        max_mel_length = mel_lengths[0]
         if max_mel_length % cfg.net.r != 0:
             max_mel_length += cfg.net.r - max_mel_length % cfg.net.r
+            mel_lengths[0] = max_mel_length
 
         # WaveRNN mel spectrograms are normalized to [0, 1] so zero padding adds silence
         # By default, SV2TTS uses symmetric mels, where -1*max_abs_value is silence.

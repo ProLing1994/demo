@@ -23,7 +23,6 @@ encoder_n_convolutions=3
 encoder_embedding_dim=512
 
 # Decoder parameters
-n_frames_per_step=1                 # currently only 1 is supported
 decoder_rnn_dim=1024
 prenet_dim=256
 max_decoder_steps=1000

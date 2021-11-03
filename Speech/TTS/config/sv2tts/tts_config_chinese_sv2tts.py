@@ -43,8 +43,8 @@ __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/test/"
 __C.general.is_test = True
 
 # finetune model
-__C.general.finetune_on = True
-# __C.general.finetune_on = False
+# __C.general.finetune_on = True
+__C.general.finetune_on = False
 
 # 模型加载方式，[0: 方式一, 1: 方式二]
 __C.general.load_mode_type = 1
@@ -65,7 +65,7 @@ __C.general.finetune_epoch = -1
 #                                         ]
 __C.general.finetune_model_path = "/mnt/huanyuan2/model/tts/pretrained/tacotron2/pretrain_model/parameter.pkl"
 __C.general.finetune_model_state = 'state_dict'
-__C.general.finetune_ignore_key_list = ['module.embedding.weight']
+# __C.general.finetune_ignore_key_list = ['module.embedding.weight']
 # __C.general.finetune_ignore_key_list = [
 #                                         'module.embedding.weight', 
 #                                         'module.decoder.attention_rnn.weight_ih', 
@@ -256,7 +256,8 @@ __C.net = {}
 __C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron2.py"
 __C.net.class_name = "Tacotron2"
 # r frames
-__C.net.r = 1
+# __C.net.r = 1
+__C.net.r = 2
 
 # speaker embedding 
 # # SV2TTS, 多说话人

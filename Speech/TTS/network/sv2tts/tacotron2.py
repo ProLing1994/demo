@@ -300,7 +300,6 @@ class Decoder(nn.Module):
         # init
         self.n_mel_channels = cfg.dataset.feature_bin_count               # n_mel_channels = 80
         self.n_frames_per_step = cfg.net.r                                # r = 1 
-        assert self.n_frames_per_step == hparams_tacotron2.n_frames_per_step, "currently only 1 is supported"
 
         self.speaker_embedding_size = cfg.net.speaker_embedding_size
         self.encoder_embedding_dim = hparams_tacotron2.encoder_embedding_dim
@@ -423,7 +422,7 @@ class Decoder(nn.Module):
         """
         # (B, n_mel_channels, T_out) -> (B, T_out, n_mel_channels)
         decoder_inputs = decoder_inputs.transpose(1, 2)
-        decoder_inputs = decoder_inputs.view(
+        decoder_inputs = decoder_inputs.reshape(
             decoder_inputs.size(0),
             int(decoder_inputs.size(1)/self.n_frames_per_step), -1)
         # (B, T_out, n_mel_channels) -> (T_out, B, n_mel_channels)
@@ -533,7 +532,7 @@ class Decoder(nn.Module):
             mel_output, gate_output, attention_weights = self.decode(
                 decoder_input)
             mel_outputs += [mel_output.squeeze(1)]
-            gate_outputs += [gate_output.squeeze(1)]
+            gate_outputs.extend([gate_output.squeeze(1)] * self.n_frames_per_step)
             alignments += [attention_weights]
 
         mel_outputs, gate_outputs, alignments = self.parse_decoder_outputs(
