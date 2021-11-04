@@ -153,7 +153,12 @@ def train(args):
                                         finetune_ignore_key_list=cfg.speaker_verification.ignore_key_list)
         else:
             raise Exception("[ERROR:] Unknow load mode type: {}".format(cfg.general.load_mode_type))
-        sv_net.eval()
+        
+        if cfg.speaker_verification.feedback_on:
+            for param in sv_net.parameters():
+                param.requires_grad = False
+        else:
+            sv_net.eval()
 
     # define training dataset and testing dataset
     train_dataloader, len_train_dataset = generate_dataset(cfg, hparams.TRAINING_NAME)
@@ -186,8 +191,6 @@ def train(args):
                 embed = embed_utterance(embed_wav, cfg_speaker_verification, sv_net)
                 embeds.append(embed)
             embeds = torch.from_numpy(np.array(embeds))
-        else:
-            embeds = None
         profiler.tick("Blocking, waiting for batch (threaded)")
 
         # Data to device
@@ -197,8 +200,6 @@ def train(args):
         mel_lengths = mel_lengths.cuda()
         if cfg.general.mutil_speaker or cfg.guiding_model.on:
             embeds = embeds.cuda()
-        else:
-            embeds = None
         stops = stops.cuda()
         profiler.tick("Data to device")
         
@@ -207,8 +208,9 @@ def train(args):
         if cfg.general.data_parallel_mode == 2 and cfg.general.num_gpus > 1:
             if cfg.general.mutil_speaker: 
                 m1_hat, m2_hat, attention, stop_pred = data_parallel_workaround(cfg, net, texts, text_lengths, mels, mel_lengths, embeds)
-            if cfg.general.mutil_speaker: 
+            else: 
                 m1_hat, m2_hat, attention, stop_pred = data_parallel_workaround(cfg, net, texts, text_lengths, mels, mel_lengths, None)
+
         if cfg.general.mutil_speaker: 
             m1_hat, m2_hat, stop_pred, attention = net(texts, text_lengths, mels, mel_lengths, embeds)
         else:
@@ -217,6 +219,10 @@ def train(args):
         if cfg.guiding_model.on:
             _, _, _, guiding_attention = guiding_net(texts, text_lengths, mels, mel_lengths, embeds)
             guiding_attention = guiding_attention.detach()
+
+        if cfg.speaker_verification.feedback_on:
+            m2_embeds, mel_embeds = embed_mel(m2_hat, mels, mel_lengths, cfg, sv_net)
+
         profiler.tick("Forward pass")
 
         # Calculate loss
@@ -231,6 +237,15 @@ def train(args):
                 assert attention.shape == guiding_attention.shape
             guding_loss = F.mse_loss(attention, guiding_attention)
             loss = m1_loss + m2_loss + stop_loss + 1000.0 * guding_loss
+        elif cfg.speaker_verification.feedback_on:
+            if cfg.speaker_verification.embed_loss_func == 'cos':
+                embed_loss = 1 - torch.cosine_similarity(m2_embeds, mel_embeds, dim=1)
+                embed_loss = embed_loss.sum()
+                embed_loss = cfg.speaker_verification.embed_loss_scale * embed_loss
+            elif cfg.speaker_verification.embed_loss_func == 'mse':
+                embed_loss = F.mse_loss(m2_embeds, mel_embeds)
+                embed_loss = cfg.speaker_verification.embed_loss_scale * embed_loss
+            loss = m1_loss + m2_loss + stop_loss + embed_loss
         else:
             loss = m1_loss + m2_loss + stop_loss
         profiler.tick("Calculate Loss")
@@ -259,6 +274,9 @@ def train(args):
             if cfg.guiding_model.on:
                 msg = 'epoch: {}, batch: {}, train_loss: {:.4f}, (m1_loss: {:.4f}, m2_loss: {:.4f}, stop_loss: {:.4f}, guding_loss: {:.4f})'.format(
                         epoch_idx, batch_idx, loss.item(), m1_loss.item(), m2_loss.item(), stop_loss.item(), guding_loss.item())
+            elif cfg.speaker_verification.feedback_on:
+                msg = 'epoch: {}, batch: {}, train_loss: {:.4f}, (m1_loss: {:.4f}, m2_loss: {:.4f}, stop_loss: {:.4f}, embed_loss: {:.4f})'.format(
+                        epoch_idx, batch_idx, loss.item(), m1_loss.item(), m2_loss.item(), stop_loss.item(), embed_loss.item())
             else:
                 msg = 'epoch: {}, batch: {}, train_loss: {:.4f}, (m1_loss: {:.4f}, m2_loss: {:.4f}, stop_loss: {:.4f})'.format(
                         epoch_idx, batch_idx, loss.item(), m1_loss.item(), m2_loss.item(), stop_loss.item())

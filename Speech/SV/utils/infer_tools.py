@@ -9,6 +9,7 @@ from Basic.config import hparams
 from Basic.dataset import audio 
 from Basic.dataset import dataset_augmentation
 
+
 def embed_frames_batch(frames_batch, net):
     """
     Computes embeddings for a batch of mel spectrogram.
@@ -25,6 +26,25 @@ def embed_frames_batch(frames_batch, net):
         embed = net.module.forward(frames).detach().cpu().numpy()
     else:
         embed = net.forward(frames).detach().cpu().numpy()
+
+    return embed
+
+
+def embed_mel_torch(mel_torch, net):
+    """
+    Computes embeddings for a batch of mel spectrogram.
+    
+    :param frames_batch: a batch mel of spectrogram as a numpy array of float32 of shape 
+    (batch_size, n_frames, n_channels)
+    :return: the embeddings as a numpy array of float32 of shape (batch_size, model_embedding_size)
+    """
+    if net is None:
+        raise Exception("Model was not loaded. Call load_model() before inference.")
+    
+    if isinstance(net, torch.nn.parallel.DataParallel):
+        embed = net.module.forward(mel_torch)
+    else:
+        embed = net.forward(mel_torch)
 
     return embed
 
@@ -85,6 +105,30 @@ def compute_partial_slices(n_samples, cfg, min_pad_coverage=0.75, overlap=0.5):
         wav_slices = wav_slices[:-1]
     
     return wav_slices, mel_slices
+
+
+def embed_mel(mel_pred, mel_label, mel_length, cfg, sv_net):
+    """
+    Computes an embedding for mel.
+    """ 
+    # init 
+    batch = len(mel_length)
+    mel_pred = mel_pred.permute(0, 2, 1).contiguous() 
+    mel_label = mel_label.permute(0, 2, 1).contiguous() 
+    
+    mel_pred_partial_embeds, mel_label_partial_embeds = [] , []
+    for batch_idx in range(batch):
+        mel_length_idx = mel_length[batch_idx]
+        mel_pred_idx = torch.unsqueeze(mel_pred[batch_idx], dim =0)[:, : mel_length_idx, :]
+        mel_label_idx = torch.unsqueeze(mel_label[batch_idx], dim =0)[:, : mel_length_idx, :]
+        
+        mel_pred_partial_embeds += [ embed_mel_torch(mel_pred_idx, sv_net).squeeze(0) ]
+        mel_label_partial_embeds += [ embed_mel_torch(mel_label_idx, sv_net).squeeze(0) ]
+        
+    mel_pred_partial_embeds = torch.stack(mel_pred_partial_embeds).contiguous()
+    mel_label_partial_embeds = torch.stack(mel_label_partial_embeds).contiguous().detach()
+    
+    return mel_pred_partial_embeds, mel_label_partial_embeds
 
 
 def embed_utterance(wav, cfg, sv_net):

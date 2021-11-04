@@ -14,21 +14,21 @@ cfg = __C
 
 __C.general = {}
 
-# __C.general.dataset_list = ['Aishell3']
-# __C.general.dataset_path_dict = {
-#                                 "Aishell3": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/", 
-#                                 "Aishell3_training": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/train/wav", 
-#                                 "Aishell3_testing": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/test/wav", 
-#                                 }
-# __C.general.mutil_speaker = True
-
-__C.general.dataset_list = ['BZNSYP']
+__C.general.dataset_list = ['Aishell3']
 __C.general.dataset_path_dict = {
-                                "BZNSYP": "/mnt/huanyuan/data/speech/asr/Chinese/BZNSYP/", 
-                                "BZNSYP_training": "/mnt/huanyuan/data/speech/asr/Chinese/BZNSYP/Wave", 
-                                "BZNSYP_testing": None, 
+                                "Aishell3": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/", 
+                                "Aishell3_training": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/train/wav", 
+                                "Aishell3_testing": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/test/wav", 
                                 }
-__C.general.mutil_speaker = False
+__C.general.mutil_speaker = True
+
+# __C.general.dataset_list = ['BZNSYP']
+# __C.general.dataset_path_dict = {
+#                                 "BZNSYP": "/mnt/huanyuan/data/speech/asr/Chinese/BZNSYP/", 
+#                                 "BZNSYP_training": "/mnt/huanyuan/data/speech/asr/Chinese/BZNSYP/Wave", 
+#                                 "BZNSYP_testing": None, 
+#                                 }
+# __C.general.mutil_speaker = False
 
 # data path
 __C.general.data_dir = "/mnt/huanyuan2/data/speech/tts/Chinese_dataset/"
@@ -53,18 +53,18 @@ __C.general.load_mode_type = 1
 __C.general.finetune_model_dir = ""
 __C.general.finetune_epoch = -1
 # 方式二：加载其他模型结构
-# __C.general.finetune_model_path = "/mnt/huanyuan2/model/tts/pretrained/tacotron/pretrain_model/parameter.pkl"
-# __C.general.finetune_model_state = 'model_state'
-# # __C.general.finetune_ignore_key_list = ['module.encoder.embedding.weight']
-# __C.general.finetune_ignore_key_list = [
-#                                         'module.encoder.embedding.weight',
-#                                         'module.encoder_proj.weight',
-#                                         'module.decoder.attn_rnn.weight_ih',
-#                                         'module.decoder.rnn_input.weight',
-#                                         'module.decoder.stop_proj.weight'
-#                                         ]
-__C.general.finetune_model_path = "/mnt/huanyuan2/model/tts/pretrained/tacotron2/pretrain_model/parameter.pkl"
-__C.general.finetune_model_state = 'state_dict'
+__C.general.finetune_model_path = "/mnt/huanyuan2/model/tts/pretrained/tacotron/pretrain_model/parameter.pkl"
+__C.general.finetune_model_state = 'model_state'
+# __C.general.finetune_ignore_key_list = ['module.encoder.embedding.weight']
+__C.general.finetune_ignore_key_list = [
+                                        'module.encoder.embedding.weight',
+                                        'module.encoder_proj.weight',
+                                        'module.decoder.attn_rnn.weight_ih',
+                                        'module.decoder.rnn_input.weight',
+                                        'module.decoder.stop_proj.weight'
+                                        ]
+# __C.general.finetune_model_path = "/mnt/huanyuan2/model/tts/pretrained/tacotron2/pretrain_model/parameter.pkl"
+# __C.general.finetune_model_state = 'state_dict'
 # __C.general.finetune_ignore_key_list = ['module.embedding.weight']
 # __C.general.finetune_ignore_key_list = [
 #                                         'module.embedding.weight', 
@@ -121,6 +121,17 @@ __C.speaker_verification.epoch = -1
 # 方式二：加载其他模型结构
 __C.speaker_verification.model_path = ""
 __C.speaker_verification.ignore_key_list = []
+
+# feedback 模式：反馈约束的多说话人语音合成
+# [tf_multispeakerTTS_fc](https://github.com/caizexin/tf_multispeakerTTS_fc)
+# 仅用于多说话人合成任务，__C.general.mutil_speaker = True
+__C.speaker_verification.feedback_on = True
+
+__C.speaker_verification.embed_loss_scale = 1.0
+
+# loss function, support ["cos", "mse"]
+__C.speaker_verification.embed_loss_func = 'cos'
+# __C.speaker_verification.embed_loss_func = 'mse'
 
 
 ##################################
@@ -246,24 +257,24 @@ __C.dataset.augmentation.num_masks = 2
 
 __C.net = {}
 
-# # the network name
-# __C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron.py"
-# __C.net.class_name = "Tacotron"
-# # r frames
-# __C.net.r = 2
-
 # the network name
-__C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron2.py"
-__C.net.class_name = "Tacotron2"
+__C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron.py"
+__C.net.class_name = "Tacotron"
 # r frames
-# __C.net.r = 1
 __C.net.r = 2
 
+# # the network name
+# __C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron2.py"
+# __C.net.class_name = "Tacotron2"
+# # r frames
+# # __C.net.r = 1
+# __C.net.r = 2
+
 # speaker embedding 
-# # SV2TTS, 多说话人
-# __C.net.speaker_embedding_size = 256
-# 单说话人
-__C.net.speaker_embedding_size = 0
+# SV2TTS, 多说话人
+__C.net.speaker_embedding_size = 256
+# # 单说话人
+# __C.net.speaker_embedding_size = 0
 
 ######################################
 # training parameters
