@@ -48,11 +48,14 @@ def test(cfg, net, loss_func, epoch_idx, batch_idx, logger, test_data_loader, mo
         labels.append(label.cpu().data.numpy())
         losses.append(loss.item())
 
-    # caltulate accuracy
+    # Calculate accuracy
     accuracy = float((np.array(scores) == np.array(labels)
                       ).astype(int).sum()) / float(len(labels))
+    
+    # Calculate loss
     loss = np.array(losses).sum()/float(len(labels))
 
+    # Show information
     msg = 'epoch: {}, batch: {}, {}_accuracy: {:.4f}, {}_loss: {:.4f}'.format(
         epoch_idx, batch_idx, mode, accuracy, mode, loss)
     logger.info(msg)

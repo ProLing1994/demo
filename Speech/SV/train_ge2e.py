@@ -19,7 +19,7 @@ sys.path.insert(0, '/home/huanyuan/code/demo/common')
 from common.utils.python.logging_helpers import setup_logger
 
 
-def test(cfg, net, epoch_idx, batch_idx, logger, test_data_loader, mode='eval'):
+def test(cfg, net, loss_func, epoch_idx, batch_idx, logger, test_data_loader, mode='eval'):
     """
     :param cfg:                config contain data set information
     :param net:                net
@@ -32,28 +32,57 @@ def test(cfg, net, epoch_idx, batch_idx, logger, test_data_loader, mode='eval'):
     """
     net.eval()
 
-    embeds_list = []
-    for _, inputs in tqdm(enumerate(test_data_loader)):
-        inputs = torch.from_numpy(inputs).float().cuda()
+    embeds = []
+    scores = []
+    labels = []
+    losses = []
+    for _, (input, label) in tqdm(enumerate(test_data_loader)):
+        input = input.cuda()
+        label = label.cuda()
 
         if cfg.dataset.h_alignment == True:
-            hisi_input = inputs[:, :, :(inputs.shape[2] // 16) * 16, :]
-            embeds = net(hisi_input)
+            hisi_input = input[:, :, :(input.shape[2] // 16) * 16, :]
+            if cfg.loss.method == 'ge2e':
+                embed = net(hisi_input)
+            elif cfg.loss.method == 'softmax':
+                embed, score = net(hisi_input)
         else:
-            embeds = net(inputs)
-        embeds_list.append(embeds.detach().cpu().numpy())
+            if cfg.loss.method == 'ge2e':
+                embed = net(input)
+            elif cfg.loss.method == 'softmax':
+                embed, score = net(input)
+
+        embeds.append(embed.detach().cpu().numpy())
+        if cfg.loss.method == 'softmax':
+            loss = loss_func(score, label)
+            scores.append(torch.max(score, 1)[1].cpu().data.numpy())
+            labels.append(label.cpu().data.numpy())
+            losses.append(loss.item())
 
     # Calculate loss
-    embeds_np = np.array(embeds_list)
+    embeds_np = np.array(embeds)
     if isinstance(net, torch.nn.parallel.DataParallel):
         sim_matrix = net.module.similarity_matrix_cpu(embeds_np)
     else:
         sim_matrix = net.similarity_matrix_cpu(embeds_np)
-    eer = compute_eer(embeds_np, sim_matrix)
+
+    if cfg.loss.method == 'ge2e':
+        eer = compute_eer(embeds_np, sim_matrix)
+        loss = -1.0
+    elif cfg.loss.method == 'softmax':
+        eer = compute_eer(embeds_np, sim_matrix)
+        loss = np.array(losses).sum()/float(len(labels))
+    
+    # Caltulate accuracy
+    if cfg.loss.method == 'ge2e':
+        accuracy = -1.0
+    elif cfg.loss.method == 'softmax':
+        accuracy = float((np.array(scores) == np.array(labels)
+                        ).astype(int).sum()) / float(len(labels))
 
     # Show information
-    msg = 'epoch: {}, batch: {}, {}_eer: {:.4f}'.format(
-        epoch_idx, batch_idx, mode, eer, mode)
+    msg = 'epoch: {}, batch: {}, {}_accuracy: {:.4f}, {}_eer: {:.4f}, {}_loss: {:.4f}'.format(
+        epoch_idx, batch_idx, mode, accuracy, mode, eer, mode, loss)
     logger.info(msg)
 
     # Draw projections and save them to the backup folder
@@ -157,19 +186,26 @@ def train(args):
         batch_idx += 1
 
         # Blocking, waiting for batch (threaded)
-        inputs = data_iter.next()
+        inputs, labels = data_iter.next()
         profiler.tick("Blocking, waiting for batch (threaded)")
 
         # Data to device
-        inputs = torch.from_numpy(inputs).float().cuda()
+        inputs = inputs.cuda()
+        labels = labels.cuda()
         profiler.tick("Data to device")
         
         # Forward pass
         if cfg.dataset.h_alignment == True:
             hisi_input = inputs[:, :, :(inputs.shape[2] // 16) * 16, :]
-            embeds = net(hisi_input)
+            if cfg.loss.method == 'ge2e':
+                embeds = net(hisi_input)
+            elif cfg.loss.method == 'softmax':
+                embeds, scores = net(hisi_input)
         else:
-            embeds = net(inputs)
+            if cfg.loss.method == 'ge2e':
+                embeds = net(inputs)
+            elif cfg.loss.method == 'softmax':
+                embeds, scores = net(inputs)
         profiler.tick("Forward pass")
 
         if isinstance(net, torch.nn.parallel.DataParallel):
@@ -178,10 +214,13 @@ def train(args):
         else:
             embeds = net.embeds_view(embeds)
             sim_matrix = net.similarity_matrix(embeds)
-
+        
         # Calculate loss
-        loss, eer = ge2e_loss(embeds, sim_matrix, loss_func)
-
+        if cfg.loss.method == 'ge2e':
+            loss, eer = ge2e_loss(embeds, sim_matrix, loss_func)
+        elif cfg.loss.method == 'softmax':
+            _, eer = ge2e_loss(embeds, sim_matrix, loss_func)
+            loss = loss_func(scores, labels)
         if cfg.knowledge_distillation.on:
             teacher_model.eval()
             teacher_embeds, _ = teacher_model(inputs)
@@ -208,10 +247,19 @@ def train(args):
         if cfg.loss.ema_on:
             ema.update_params()     # apply ema
 
+        # Caltulate accuracy
+        if cfg.loss.method == 'ge2e':
+            accuracy = -1.0
+        elif cfg.loss.method == 'softmax':
+            pred_y = torch.max(scores, 1)[1].cpu().data.numpy()
+            accuracy = float((pred_y == labels.cpu().data.numpy()).astype(
+                int).sum()) / float(labels.size(0))
+        profiler.tick("Caltulate accuracy")
+
         # Show information
         if (batch_idx % cfg.train.show_log) == 0:
-            msg = 'epoch: {}, batch: {}, train_eer: {:.4f}, train_loss: {:.4f}' \
-                .format(epoch_idx, batch_idx, eer, loss.item())
+            msg = 'epoch: {}, batch: {}, train_accuracy: {:.4f}, train_eer: {:.4f}, train_loss: {:.4f}' \
+                .format(epoch_idx, batch_idx, accuracy, eer, loss.item())
             logger.info(msg)
         profiler.tick("Show information")
 
@@ -244,7 +292,7 @@ def train(args):
                 save_checkpoint(cfg, args.config_file, net, optimizer, epoch_idx, batch_idx)
 
                 if cfg.general.is_test:
-                    test(cfg, net, epoch_idx, batch_idx,
+                    test(cfg, net, loss_func, epoch_idx, batch_idx,
                          logger, testing_dataloader, mode='eval')
             
                 if cfg.loss.ema_on:

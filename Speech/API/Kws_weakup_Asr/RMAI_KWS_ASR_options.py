@@ -10,6 +10,8 @@ cfg = __C
 
 __C.general = {}
 
+__C.general.int16_max = (2 ** 15) - 1
+
 __C.general.window_size_ms = 1000                   # 每次送入 1s 数据
 __C.general.window_stride_ms = 1000                 # 每次间隔 1s 时间
 __C.general.total_time_ms = 4000                    # 算法处理时长 4s 时间
@@ -18,6 +20,11 @@ __C.general.sample_rate = 16000
 __C.general.nfilt = 64                              # 计算特征中，Mel 滤波器个数
 __C.general.feature_freq = 64                       # 计算特征维度
 __C.general.feature_time = 96                       # 每次送入 1s 数据，对应的特征时间维度 96
+
+# vad
+__C.general.vad_window_length = 30                  # In milliseconds，30 ms 音频用于 vad 计算
+__C.general.vad_moving_average_width = 8            # 平滑长度，连续 8 帧平滑
+__C.general.vad_max_silence_length = 6              # 利用膨胀腐蚀思想，减少空洞现象
 
 # kws
 # activate bwc
@@ -40,6 +47,7 @@ __C.general.audio_container_time = 10               # 语音数据容器中，�
 __C.general.feature_container_time = 296            # 语音特征容器中，装有时间维度 296
 __C.general.feature_remove_after_time = 6           # 为保证特征一致，拼接特征需要丢弃最后的时间维度 6
 __C.general.feature_remove_before_time = 100        # 为保证特征一致，拼接特征需要丢弃之前的时间维度 100
+__C.general.vad_container_time = 4                  # vad 容器，判断连续 4s 中是否全部为静音，用于停止后续操作
 
 # chinese key words
 __C.general.kws_list = ['小锐小锐_唤醒', 

@@ -62,7 +62,7 @@ def trim_silence(wav):
     return wav
 
 
-def trim_long_silences(wav, sampling_rate):
+def trim_long_silences(wav, sampling_rate, return_mask_bool=False):
     """
     Ensures that segments without voice in the waveform remain no longer than a 
     threshold determined by the VAD parameters in params.py.
@@ -102,7 +102,10 @@ def trim_long_silences(wav, sampling_rate):
     audio_mask = binary_dilation(audio_mask, np.ones(hparams.vad_max_silence_length + 1))
     audio_mask = np.repeat(audio_mask, samples_per_window)
     
-    return wav[audio_mask == True]
+    if return_mask_bool:
+        return wav[audio_mask == True], audio_mask
+    else:
+        return wav[audio_mask == True]
 
 
 def normalize_volume(wav, target_dBFS, increase_only=False, decrease_only=False):

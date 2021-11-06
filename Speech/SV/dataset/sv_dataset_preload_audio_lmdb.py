@@ -5,6 +5,7 @@ import os
 import pandas as pd
 import random
 import sys
+import torch
 from torch.utils.data import Dataset, DataLoader
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/')
@@ -78,6 +79,9 @@ class Speaker:
         self.utterances = None
         self.utterance_cycler = None
 
+    def speaker_name(self):
+        return self.speaker_name
+
     def _load_utterances(self):
         self.data_pd = self.data_pd[self.data_pd["speaker"] == self.speaker_name]
         self.utterances_list = list(set(self.data_pd['utterance'].to_list()))
@@ -114,6 +118,7 @@ class SpeakerVerificationDataset(Dataset):
         self.bool_trainning = bool_trainning
         self.data_pd = load_data_pd(cfg, mode)
         self.speaker_list = list(set(self.data_pd['speaker'].to_list()))
+        self.speaker_dict = {self.speaker_list[idx] : idx for idx in range(len(self.speaker_list))}
         if len(self.speaker_list) == 0:
             raise Exception("No speakers found. ")
 
@@ -137,9 +142,12 @@ class SpeakerVerificationDataset(Dataset):
 
         # Array of shape (n_utterances, n_frames, mel_n), e.g. for 1 speakers with
         # 10 utterances each of 160 frames of 40 mel coefficients: (10, 160, 40)
-        data = np.array(gen_data(self.cfg, self.lmdb_dict, self.background_data, utterances, self.bool_trainning))
-    
-        return data
+        mel = np.array(gen_data(self.cfg, self.lmdb_dict, self.background_data, utterances, self.bool_trainning))
+
+        # speaker
+        speaker_name = speakers.speaker_name
+        label = np.array([self.speaker_dict[speaker_name]] * len(mel))
+        return mel, label
 
 
 class SpeakerVerificationDataLoader(DataLoader):
@@ -169,18 +177,24 @@ class SpeakerVerificationDataLoader(DataLoader):
 def data_batch(cfg, bool_trainning, data):
     # Array of shape (n_speakers * n_utterances, n_frames, mel_n), e.g. for 2 speakers with
     # 10 utterances each of 160 frames of 40 mel coefficients: (20, 160, 40)
-    data = np.array([frames for speaker_data in data for frames in speaker_data])
+    mel = np.array([frames for speaker_data in data for frames in speaker_data[0]])
+    label = np.array([frames for speaker_data in data for frames in speaker_data[1]])
+    assert len(mel) == len(label)
 
     # data dynamic length
     if cfg.dataset.clip_duration_dynamic_length_on and bool_trainning:
         # 由于模型的特殊性，输入音频数据可以是变长的
-        data_frames = data.shape[1]
+        data_frames = mel.shape[1]
         min_frames = int(cfg.dataset.clip_duration_dynamic_ratio[0] * data_frames)
         max_frames = int(cfg.dataset.clip_duration_dynamic_ratio[1] * data_frames)
         
         real_frames = np.random.randint(min_frames, max_frames)  
-        data = data[:, :real_frames, :]
-    return data
+        mel = mel[:, :real_frames, :]
+
+    # Convert all to tensor
+    mel = torch.from_numpy(mel).float()
+    label = torch.from_numpy(label)
+    return mel, label
 
 
 def load_data_pd(cfg, mode):
@@ -227,34 +241,34 @@ def load_background_data(cfg):
     return background_data
 
 def gen_data(cfg, lmdb_dict, background_data, utterances, bool_trainning=True):
-    data_list = []
+    mel_list = []
 
     for utterance_id in range(len(utterances)):
         utterance_pd = utterances[utterance_id]
-        data = lmdb_tools.read_audio_lmdb(lmdb_dict[str(utterance_pd['dataset'].values[0])], str(utterance_pd['file'].values[0]))
-        assert len(data) > 0, "{} {}".format(str(utterance_pd['dataset'].values[0]), str(utterance_pd['file'].values[0]))
+        wav = lmdb_tools.read_audio_lmdb(lmdb_dict[str(utterance_pd['dataset'].values[0])], str(utterance_pd['file'].values[0]))
+        assert len(wav) > 0, "{} {}".format(str(utterance_pd['dataset'].values[0]), str(utterance_pd['file'].values[0]))
 
         # data trim_silence
         if hparams.trim_silence:
-            data = audio.trim_silence(data)
+            wav = audio.trim_silence(wav)
 
         # data alignment
-        data = dataset_augmentation.dataset_alignment(cfg, data, bool_replicate=True)
+        wav = dataset_augmentation.dataset_alignment(cfg, wav, bool_replicate=True)
 
         # data rescale
         if hparams.rescale:
-            data = data / np.abs(data).max() * hparams.rescaling_max
+            wav = wav / np.abs(wav).max() * hparams.rescaling_max
 
         # data augmentation
         if cfg.dataset.augmentation.on and bool_trainning:
-            data = dataset_augmentation.dataset_augmentation_waveform(cfg, data, background_data)
+            wav = dataset_augmentation.dataset_augmentation_waveform(cfg, wav, background_data)
 
         # Compute the mel spectrogram
-        data = audio.compute_mel_spectrogram(cfg, data)
+        mel = audio.compute_mel_spectrogram(cfg, wav)
 
         # data augmentation
         if cfg.dataset.augmentation.on and cfg.dataset.augmentation.spec_on and bool_trainning:
-            data = dataset_augmentation.dataset_augmentation_spectrum(cfg, data)
+            mel = dataset_augmentation.dataset_augmentation_spectrum(cfg, mel)
         
-        data_list.append(data)
-    return data_list
+        mel_list.append(mel)
+    return mel_list

@@ -1,5 +1,8 @@
 import numpy as np
 import os
+from scipy.ndimage.morphology import binary_dilation
+import struct
+import webrtcvad
 
 from impl.file_tools import load_module_from_disk
 from impl.asr_feature_pyimpl import Feature
@@ -33,6 +36,7 @@ class KwsAsrApi():
         self.params_dict['audio_data_container_np'] = np.array([])
         self.params_dict['feature_data_container_np'] = np.array([])
         self.params_dict['kws_container_np'] = np.array([])         # kws 结构容器中，用于滑窗输出结果
+        self.params_dict['vad_bool_container'] = []                 # vad 结构容器中，用于判断连续 3s 输出
         self.params_dict['output_wave_list'] = []
         self.params_dict['asr_duplicate_counter'] = {}
 
@@ -134,6 +138,59 @@ class KwsAsrApi():
                 print("\n** [Information:] Detecting ...\n")
         return output_str
     
+    def run_vad(self, wav):
+        # Compute the voice detection window size
+        samples_per_window = (self.cfg.general.vad_window_length * self.cfg.general.sample_rate) // 1000
+        
+        # Trim the end of the audio to have a multiple of the window size
+        wav = wav[:len(wav) - (len(wav) % samples_per_window)]
+        
+        # Convert the float waveform to 16-bit mono PCM
+        pcm_wave = struct.pack("%dh" % len(wav), *(np.round(wav * self.cfg.general.int16_max)).astype(np.int16))
+        
+        # Perform voice activation detection
+        voice_flags = []
+        vad = webrtcvad.Vad(mode=3)
+        for window_start in range(0, len(wav), samples_per_window):
+            window_end = window_start + samples_per_window
+            voice_flags.append(vad.is_speech(pcm_wave[window_start * 2:window_end * 2],
+                                            sample_rate=self.cfg.general.sample_rate))
+        voice_flags = np.array(voice_flags)
+        
+        audio_mask = self.moving_average(voice_flags, self.cfg.general.vad_moving_average_width)
+        audio_mask = np.round(audio_mask).astype(np.bool)
+        
+        # Dilate the voiced regions
+        audio_mask = binary_dilation(audio_mask, np.ones(self.cfg.general.vad_max_silence_length + 1))
+        audio_mask = np.repeat(audio_mask, samples_per_window)
+        
+        vad_bool = True if (audio_mask == True).sum()/len(audio_mask) > 0.0 else False
+        self.params_dict['vad_bool_container'].append(vad_bool)
+        
+        if len(self.params_dict['vad_bool_container']) > self.cfg.general.vad_container_time:
+            self.params_dict['vad_bool_container'] = self.params_dict['vad_bool_container'][ - self.cfg.general.vad_container_time : ] 
+        
+        assert len(self.params_dict['vad_bool_container']) <= self.cfg.general.vad_container_time
+        # print("vad: {} {}".format(vad_bool, (audio_mask == True).sum()/len(audio_mask)))
+        # print("vad_container: ", self.params_dict['vad_bool_container'])
+
+        run_vad_bool = False
+        if len(self.params_dict['vad_bool_container']) == self.cfg.general.vad_container_time:
+            if np.array(self.params_dict['vad_bool_container']).sum() == 0:
+
+                # 保证唤醒后，一定会将 3s 音频用于控制词识别
+                if self.params_dict['counter_weakup'] == 0:
+                    run_vad_bool = True
+        
+        return run_vad_bool
+    
+    # Smooth the voice detection with a moving average
+    def moving_average(self, array, width):
+        array_padded = np.concatenate((np.zeros((width - 1) // 2), array, np.zeros(width // 2)))
+        ret = np.cumsum(array_padded, dtype=float)
+        ret[width:] = ret[width:] - ret[:-width]
+        return ret[width - 1:] / width
+
     def sample_rate(self):
         return self.cfg.general.sample_rate
 

@@ -118,8 +118,14 @@ class OnlineAudio:
                         audio_data_list.extend(data_np.tolist())
         
             else:
+                run_vad_bool = kws_asr_api.run_vad(np.array(audio_data_list))
+                if run_vad_bool:
+                    print("\n** [Information:] VAD ...\n")
+                    audio_data_list = []
+                    continue
+
                 output_str = kws_asr_api.run_kws_asr(np.array(audio_data_list))
-                print("output_str: {}".format(output_str))
+                # print("output_str: {}".format(output_str))
                 audio_data_list = []
 
     def start(self):

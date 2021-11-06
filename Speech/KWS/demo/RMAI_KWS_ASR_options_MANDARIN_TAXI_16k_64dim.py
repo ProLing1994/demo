@@ -168,6 +168,7 @@ __C.model.asr_num_classes = 408
 # 用于 RMAI_KWS_ASR_offline_API.py
 __C.test = {}
 
-__C.test.input_wav = "/home/huanyuan/share/audio_data/weakup_asr/weakup_xiaorui_asr_mandarin_16k/test-kws-xiaorui-asr-mandarin-taxi_001.wav"
+# __C.test.input_wav = "/home/huanyuan/share/huanyuan/audio_data/weakup_asr/weakup_xiaorui_asr_mandarin_16k/test-kws-xiaorui-asr-mandarin-taxi_001.wav"
+__C.test.input_wav = "/home/huanyuan/temp/6maike.wav"
 
 __C.test.output_folder = "/mnt/huanyuan/data/speech/Recording/demo_kws_asr_online_api/{}".format(datetime.now().strftime('%Y-%m-%d-%H-%M-%S'))

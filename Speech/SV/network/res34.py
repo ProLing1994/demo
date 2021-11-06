@@ -1,3 +1,4 @@
+from PIL.Image import RASTERIZE
 import numpy as np
 import sys
 import torch
@@ -49,14 +50,17 @@ class SpeakerEncoder(nn.Module):
         
         # init
         model_embedding_size = 256
-        filters_list = [32, 64, 128, 256]
+        filters_list = [16, 32, 64, 128]
         strides_list = [1, 2, 2, 2]
         residual_units_num_list = [3, 4, 6, 3]
         
+        self.cfg = cfg
         self.speakers_per_batch = cfg.train.speakers_per_batch if 'speakers_per_batch' in cfg.train else None
         self.utterances_per_speaker = cfg.train.utterances_per_speaker if 'utterances_per_speaker' in cfg.train else None
         self.model_embedding_size = model_embedding_size
-
+        self.num_classes = self.cfg.loss.num_classes
+        self.method = self.cfg.loss.method
+        
         # Network defition
         self.conv1 = nn.Sequential(
             nn.Conv2d(in_channels=1, out_channels=16, kernel_size=3, stride=1, padding=1),
@@ -88,21 +92,24 @@ class SpeakerEncoder(nn.Module):
             layers.append(BasicBlock(filters_list[3], filters_list[3], 3, 1, 1, 1))
         self.conv5 = nn.Sequential(*layers)
 
-        self.linear1 = nn.Linear(in_features=filters_list[3], 
-                                out_features=256)
-        self.linear2 = nn.Linear(in_features=256, 
+        self.linear1 = nn.Linear(in_features=filters_list[3] * 2, 
                                 out_features=self.model_embedding_size)
         self.relu = torch.nn.ReLU()
         self.dropout = nn.Dropout(0.5)
 
+        if self.method == 'softmax':
+            self.linear2 = nn.Linear(in_features=self.model_embedding_size, 
+                                    out_features=self.num_classes)
+            
         # Cosine similarity scaling (with fixed initial parameter values)
         self.similarity_weight = nn.Parameter(torch.tensor([10.]))
         self.similarity_bias = nn.Parameter(torch.tensor([-5.]))
 
     def do_gradient_ops(self):
         # Gradient scale
-        self.similarity_weight.grad *= 0.01
-        self.similarity_bias.grad *= 0.01
+        if self.method == 'ge2e':
+            self.similarity_weight.grad *= 0.01
+            self.similarity_bias.grad *= 0.01
             
         # Gradient clipping
         clip_grad_norm_(self.parameters(), 3, norm_type=2)
@@ -117,23 +124,32 @@ class SpeakerEncoder(nn.Module):
         """
         utterances = utterances.reshape(utterances.shape[0], 1, utterances.shape[1], utterances.shape[2])     # shape: (batch, 401, 80) ->  shape: (batch, 1, 401, 80)
 
-        out = self.conv1(utterances)    # shape: (batch, 1, 401, 80)->  shape: (batch, 16, 401, 80)
-        out = self.conv2(out)           # shape: (batch, 16, 401, 80)->  shape: (batch, 32, 401, 80)
-        out = self.conv3(out)           # shape: (batch, 16, 401, 80)->  shape: (batch, 64, 201, 40)
-        out = self.conv4(out)           # shape: (batch, 64, 201, 40)->  shape: (batch, 128, 101, 20)
-        out = self.conv5(out)           # shape: (batch, 128, 101, 20)->  shape: (batch, 256, 51, 10)
+        out = self.conv1(utterances)    # shape: (batch, 1, 401, 80) ->  shape: (batch, 16, 401, 80)
+        out = self.conv2(out)           # shape: (batch, 16, 401, 80) ->  shape: (batch, 16, 401, 80)
+        out = self.conv3(out)           # shape: (batch, 16, 401, 80) ->  shape: (batch, 32, 201, 40)
+        out = self.conv4(out)           # shape: (batch, 32, 201, 40) ->  shape: (batch, 64, 101, 20)
+        out = self.conv5(out)           # shape: (batch, 64, 101, 20) ->  shape: (batch, 128, 51, 10)
         
-        out = out.view(out.size(0), out.size(1), -1)  # shape: (batch, 256, 51, 10)->  shape: (batch, 256, 510)
-        out = torch.mean(out, 2)        # shape: (batch, 256, 510)->  shape: (batch, 256)
-        # We take only the hidden state of the last layer
-        out = self.linear1(out)         # shape: (batch, 256, 510)->  shape: (batch, 256)
-        out = self.dropout(out)         # shape: (batch, 256)->  shape: (batch, 256)
-        
-        embeds_raw = self.relu(self.linear2(out))       # shape: (batch, 256)->  shape: (batch, 256)
+        out = out.view(out.size(0), out.size(1), -1)    # shape: (batch, 128, 51, 10) ->  shape: (batch, 128, 510)
+        mean = torch.mean(out, 2)       # shape: (batch, 128, 510) ->  shape: (batch, 128)
+        var = torch.var(out, 2)         # shape: (batch, 128, 510) ->  shape: (batch, 128)
+        out = torch.cat((mean, var), dim=1)             # shape: (batch, 128) ->  shape: (batch, 256)
 
+        # We take only the hidden state of the last layer
+        embeds_raw = self.relu(self.linear1(out))         # shape: (batch, 256) ->  shape: (batch, 256)
         # L2-normalize it
-        embeds = embeds_raw / (torch.norm(embeds_raw, dim=1, keepdim=True) + 1e-5)        
-        return embeds
+        embeds = embeds_raw / (torch.norm(embeds_raw, dim=1, keepdim=True) + 1e-5)
+
+        if self.method == 'ge2e':
+            return embeds
+
+        elif self.method == 'softmax':
+            out = self.dropout(embeds)         # shape: (batch, 256) ->  shape: (batch, 256)
+            out = self.linear2(out)
+            return embeds, out
+        
+        else:
+            raise Exception("[Unknow:] cfg.loss.method. ")
     
     def embeds_view(self, embeds):
         embeds = embeds.view(-1, self.utterances_per_speaker, self.model_embedding_size)
