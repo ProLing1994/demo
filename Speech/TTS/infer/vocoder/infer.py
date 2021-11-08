@@ -111,18 +111,24 @@ def main():
     # parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts_vocoder/chinese_tts_vocoder/wavernn_chinese_mutil_speaker_1_0_11012021/tts_config_chinese_mutil_speaker_vocoder_wavernn.py", nargs='?', help='config file')
     # parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts_vocoder/chinese_tts_vocoder/wavernn_chinese_mutil_speaker_1_0_11012021/tts_config_chinese_signal_speaker_vocoder_wavernn.py", nargs='?', help='config file')
     parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts_vocoder/chinese_tts_vocoder/wavernn_chinese_single_speaker_1_0_11032021/tts_config_chinese_signal_speaker_vocoder_wavernn.py", nargs='?', help='config file')
-    # parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00050001.wav", nargs='?', help='config file')
-    parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00730005.wav", nargs='?', help='config file')
+    parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00050001.wav", nargs='?', help='config file')
+    # parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00730005.wav", nargs='?', help='config file')
     # parser.add_argument('-b', '--vocoder_batched', type=str, default="False", nargs='?', help='config file')
     parser.add_argument('-b', '--vocoder_batched', type=str, default="True", nargs='?', help='config file')
     args = parser.parse_args()
     args.text_list = [
-                        " ".join(get_pinyin("道路千万条安全第一条")),
-                        " ".join(get_pinyin("今天星期五天气好真开心")),
+                        # " ".join(get_pinyin("道路千万条安全第一条")),
+                        # " ".join(get_pinyin("时刻牢记以人为本安全第一的原则。")),
+                        " ".join(get_pinyin("道路千万条，安全第一条。时刻牢记以人为本，安全第一的原则。")),
+                        # " ".join(get_pinyin("今天星期五天气好真开心")),
+                        # " ".join(get_pinyin("今天星期五，天气好，真开心。")),
                         ]
     args.text_name_list = [
-                            "道路千万条安全第一条",
-                            "今天星期五天气好真开心",
+                            # "道路千万条安全第一条",
+                            # "时刻牢记以人为本安全第一的原则。",
+                            "道路千万条，安全第一条。时刻牢记以人为本，安全第一的原则。",
+                            # "今天星期五天气好真开心",
+                            # "今天星期五，天气好，真开心。",
                             ]
 
     infer(args)

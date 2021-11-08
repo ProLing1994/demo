@@ -19,15 +19,15 @@ CN-Celeb1: https://www.openslr.org/82/, 992/0(992)
 CN-Celeb2: https://www.openslr.org/82/, 1996/0(1996)
 '''
 # __C.general.dataset_list = ['SLR38', 'SLR68', 'Aishell3', 'CN-Celeb1', 'CN-Celeb2']
-# __C.general.dataset_list = ['SLR62']
-__C.general.dataset_list = ['test']
+__C.general.dataset_list = ['SLR62']
+# __C.general.dataset_list = ['test']
 __C.general.dataset_path_dict = {
                                     "SLR38": "/mnt/huanyuan/data/speech/asr/Chinese/SLR38/ST-CMDS-20170001_1-OS/",
                                     "SLR38_training": "/mnt/huanyuan/data/speech/asr/Chinese/SLR38/ST-CMDS-20170001_1-OS/",
                                     "SLR38_testing": None,
                                     "SLR62": "/mnt/huanyuan/data/speech/asr/Chinese/aidatatang_200zh",
-                                    "SLR62_training": "/mnt/huanyuan/data/speech/asr/Chinese/aidatatang_200zh/aidatatang_200zh/corpus/train/",
-                                    "SLR62_testing": "/mnt/huanyuan/data/speech/asr/Chinese/aidatatang_200zh/aidatatang_200zh/corpus/test/",
+                                    "SLR62_training": "/mnt/huanyuan/data/speech/asr/Chinese/aidatatang_200zh/aidatatang_200zh/corpus/train",
+                                    "SLR62_testing": "/mnt/huanyuan/data/speech/asr/Chinese/aidatatang_200zh/aidatatang_200zh/corpus/test",
                                     "SLR68": "/mnt/huanyuan/data/speech/asr/Chinese/SLR68/",
                                     "SLR68_training": "/mnt/huanyuan/data/speech/asr/Chinese/SLR68/train",
                                     "SLR68_testing": "/mnt/huanyuan/data/speech/asr/Chinese/SLR68/test",
@@ -50,21 +50,22 @@ __C.general.data_dir = "/mnt/huanyuan2/data/speech/sv/Chinese_TI_SV_dataset/data
 __C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/test"
 # __C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_0_basic_10122021"
 # __C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_1_basic_10122021"
+# __C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_2_basic_softmax_11062021"
 
 # test after save pytorch model
 __C.general.is_test = True
 # __C.general.is_test = False
 
 # finetune model
-# __C.general.finetune_on = True
-__C.general.finetune_on = False
+__C.general.finetune_on = True
+# __C.general.finetune_on = False
 
 # 模型加载方式，[0: 方式一, 1: 方式二]
 __C.general.load_mode_type = 0
 
 # 方式一：加载模型训练过程中保存模型
-__C.general.finetune_model_dir = ""
-__C.general.finetune_epoch = -1
+__C.general.finetune_model_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_1_basic_10122021"
+__C.general.finetune_epoch = 999
 # 方式二：加载其他模型结构
 __C.general.finetune_model_path = ""
 __C.general.finetune_model_state = 'model_state'
@@ -224,8 +225,8 @@ __C.dataset.augmentation.num_masks = 2
 __C.net = {}
 
 # the network name
-# __C.net.model_name = "/home/huanyuan/code/demo/Speech/SV/network/basic.py"
-__C.net.model_name = "/home/huanyuan/code/demo/Speech/SV/network/res34.py"
+__C.net.model_name = "/home/huanyuan/code/demo/Speech/SV/network/basic.py"
+# __C.net.model_name = "/home/huanyuan/code/demo/Speech/SV/network/res34.py"
 __C.net.class_name = 'SpeakerEncoder'
 
 
@@ -237,6 +238,7 @@ __C.train = {}
 
 # the number of training epochs
 # __C.train.num_epochs = 1000
+# __C.train.num_epochs = 500
 __C.train.num_epochs = 100
 
 # the number of samples in a batch
@@ -248,7 +250,8 @@ __C.train.num_epochs = 100
 # __C.train.batch_size = __C.train.speakers_per_batch
 
 # the loss method: softmax
-__C.train.speakers_per_batch = 32
+# __C.train.speakers_per_batch = 128
+__C.train.speakers_per_batch = 16
 __C.train.utterances_per_speaker = 2
 __C.train.batch_size = __C.train.speakers_per_batch
 
@@ -274,8 +277,8 @@ __C.train.save_epochs = 5
 ######################################
 
 # learning rate = lr*gamma**(epoch//step_size)
-__C.train.lr = 1e-3
-# __C.train.lr = 1e-4
+# __C.train.lr = 1e-3
+__C.train.lr = 1e-4
 
 # step size for step learning rate
 __C.train.lr_step_size = 0
@@ -321,7 +324,8 @@ __C.loss.name = 'softmax'
 # # the loss method: ge2e
 # __C.loss.num_classes =  __C.train.batch_size
 # the loss method: softmax
-__C.loss.num_classes = 49
+__C.loss.num_classes = 49           # ['test']
+# __C.loss.num_classes = 5029         # ['SLR38', 'SLR68', 'Aishell3', 'CN-Celeb1', 'CN-Celeb2']
 
 # the weight matrix for each class in focal loss, including background class
 __C.loss.obj_weight = None

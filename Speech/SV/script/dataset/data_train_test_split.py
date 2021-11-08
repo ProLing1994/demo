@@ -69,10 +69,11 @@ def load_dataset_type_2(dataset_name, dataset_path, data_files, mode):
         for utterance_idx in range(len(utterance_list)):
             utterance_id = utterance_list[utterance_idx]
             
-            section_id = 0
-            file_path = os.path.join(os.path.join(dataset_path, speaker_id, utterance_id))
-            # data_files.append({'dataset': dataset_name, 'speaker': speaker_id, 'section': section_id, 'utterance': utterance_id, 'file': file_path, 'mode': mode})
-            data_files.append({'dataset': dataset_name, 'speaker': speaker_id, 'section': section_id, 'utterance': speaker_id + '_' + utterance_id, 'file': file_path, 'mode': mode})
+            if utterance_id.endswith('flac') or utterance_id.endswith('wav'):
+                section_id = 0
+                file_path = os.path.join(os.path.join(dataset_path, speaker_id, utterance_id))
+                # data_files.append({'dataset': dataset_name, 'speaker': speaker_id, 'section': section_id, 'utterance': utterance_id, 'file': file_path, 'mode': mode})
+                data_files.append({'dataset': dataset_name, 'speaker': speaker_id, 'section': section_id, 'utterance': speaker_id + '_' + utterance_id, 'file': file_path, 'mode': mode})
 
 
 def load_dataset_type_3(dataset_name, dataset_path, data_files, mode):
@@ -223,6 +224,8 @@ def data_split(args):
             data_split_normal(cfg, dataset_name, type = 2)
         elif dataset_name == 'SLR38':
             data_split_normal(cfg, dataset_name, type = 3)
+        elif dataset_name == 'SLR62':
+            data_split_normal(cfg, dataset_name, type = 2)
         elif dataset_name == 'SLR68':
             data_split_normal(cfg, dataset_name, type = 2)
         elif dataset_name == 'CN-Celeb1':

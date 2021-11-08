@@ -33,31 +33,22 @@ def test(cfg, net, loss_func, epoch_idx, batch_idx, logger, test_data_loader, mo
     net.eval()
 
     embeds = []
-    scores = []
-    labels = []
-    losses = []
-    for _, (input, label) in tqdm(enumerate(test_data_loader)):
+    for _, (input, _) in tqdm(enumerate(test_data_loader)):
         input = input.cuda()
-        label = label.cuda()
 
         if cfg.dataset.h_alignment == True:
             hisi_input = input[:, :, :(input.shape[2] // 16) * 16, :]
             if cfg.loss.method == 'ge2e':
                 embed = net(hisi_input)
             elif cfg.loss.method == 'softmax':
-                embed, score = net(hisi_input)
+                embed, _ = net(hisi_input)
         else:
             if cfg.loss.method == 'ge2e':
                 embed = net(input)
             elif cfg.loss.method == 'softmax':
-                embed, score = net(input)
+                embed, _ = net(input)
 
         embeds.append(embed.detach().cpu().numpy())
-        if cfg.loss.method == 'softmax':
-            loss = loss_func(score, label)
-            scores.append(torch.max(score, 1)[1].cpu().data.numpy())
-            labels.append(label.cpu().data.numpy())
-            losses.append(loss.item())
 
     # Calculate loss
     embeds_np = np.array(embeds)
@@ -65,24 +56,11 @@ def test(cfg, net, loss_func, epoch_idx, batch_idx, logger, test_data_loader, mo
         sim_matrix = net.module.similarity_matrix_cpu(embeds_np)
     else:
         sim_matrix = net.similarity_matrix_cpu(embeds_np)
-
-    if cfg.loss.method == 'ge2e':
-        eer = compute_eer(embeds_np, sim_matrix)
-        loss = -1.0
-    elif cfg.loss.method == 'softmax':
-        eer = compute_eer(embeds_np, sim_matrix)
-        loss = np.array(losses).sum()/float(len(labels))
-    
-    # Caltulate accuracy
-    if cfg.loss.method == 'ge2e':
-        accuracy = -1.0
-    elif cfg.loss.method == 'softmax':
-        accuracy = float((np.array(scores) == np.array(labels)
-                        ).astype(int).sum()) / float(len(labels))
+    eer = compute_eer(embeds_np, sim_matrix)
 
     # Show information
-    msg = 'epoch: {}, batch: {}, {}_accuracy: {:.4f}, {}_eer: {:.4f}, {}_loss: {:.4f}'.format(
-        epoch_idx, batch_idx, mode, accuracy, mode, eer, mode, loss)
+    msg = 'epoch: {}, batch: {}, {}_eer: {:.4f}'.format(
+        epoch_idx, batch_idx, mode, eer)
     logger.info(msg)
 
     # Draw projections and save them to the backup folder
@@ -220,6 +198,7 @@ def train(args):
             loss, eer = ge2e_loss(embeds, sim_matrix, loss_func)
         elif cfg.loss.method == 'softmax':
             _, eer = ge2e_loss(embeds, sim_matrix, loss_func)
+            assert scores.shape[1] > labels.max()
             loss = loss_func(scores, labels)
         if cfg.knowledge_distillation.on:
             teacher_model.eval()

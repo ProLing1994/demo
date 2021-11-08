@@ -10,7 +10,7 @@ from Basic.dataset import audio
 from Basic.dataset import dataset_augmentation
 
 
-def embed_frames_batch(frames_batch, net):
+def embed_frames_batch(frames_batch, cfg, net):
     """
     Computes embeddings for a batch of mel spectrogram.
     
@@ -23,9 +23,15 @@ def embed_frames_batch(frames_batch, net):
     
     frames = torch.from_numpy(frames_batch).cuda()
     if isinstance(net, torch.nn.parallel.DataParallel):
-        embed = net.module.forward(frames).detach().cpu().numpy()
+        if cfg.loss.method == 'ge2e':
+            embed = net.module.forward(frames).detach().cpu().numpy()
+        elif cfg.loss.method == 'softmax':
+            embed, _ = net.module.forward(frames).detach().cpu().numpy()
     else:
-        embed = net.forward(frames).detach().cpu().numpy()
+        if cfg.loss.method == 'ge2e':
+            embed = net.forward(frames).detach().cpu().numpy()
+        elif cfg.loss.method == 'softmax':
+            embed, _ = net.forward(frames).detach().cpu().numpy()
 
     return embed
 
@@ -147,7 +153,7 @@ def embed_utterance(wav, cfg, sv_net):
     # Split the utterance into partials
     frames = audio.compute_mel_spectrogram(cfg, wav)
     frames_batch = np.array([frames[s] for s in mel_slices])
-    partial_embeds = embed_frames_batch(frames_batch, sv_net)
+    partial_embeds = embed_frames_batch(frames_batch, cfg, sv_net)
     
     # Compute the utterance embedding from the partial embeddings
     raw_embed = np.mean(partial_embeds, axis=0)

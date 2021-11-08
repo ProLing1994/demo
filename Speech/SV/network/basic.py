@@ -1,7 +1,15 @@
 import numpy as np
+import sys
 import torch
 from torch import nn
 from torch.nn.utils import clip_grad_norm_
+
+sys.path.insert(0, '/home/huanyuan/code/demo')
+from common.common.utils.python.kaiming_init import kaiming_weight_init
+
+
+def parameters_init(net):
+      net.apply(kaiming_weight_init)
 
 
 class SpeakerEncoder(nn.Module):
@@ -13,6 +21,8 @@ class SpeakerEncoder(nn.Module):
         model_hidden_size = 256
         model_embedding_size = 256
         model_num_layers = 3
+        self.num_classes = cfg.loss.num_classes
+        self.method = cfg.loss.method
 
         self.speakers_per_batch = cfg.train.speakers_per_batch if 'speakers_per_batch' in cfg.train else None
         self.utterances_per_speaker = cfg.train.utterances_per_speaker if 'utterances_per_speaker' in cfg.train else None
@@ -26,15 +36,20 @@ class SpeakerEncoder(nn.Module):
         self.linear = nn.Linear(in_features=model_hidden_size, 
                                 out_features=model_embedding_size)
         self.relu = torch.nn.ReLU()
-        
+
+        if self.method == 'softmax':
+            self.linear2 = nn.Linear(in_features=self.model_embedding_size, 
+                                    out_features=self.num_classes)
+
         # Cosine similarity scaling (with fixed initial parameter values)
         self.similarity_weight = nn.Parameter(torch.tensor([10.]))
         self.similarity_bias = nn.Parameter(torch.tensor([-5.]))
         
     def do_gradient_ops(self):
         # Gradient scale
-        self.similarity_weight.grad *= 0.01
-        self.similarity_bias.grad *= 0.01
+        if self.method == 'ge2e':
+            self.similarity_weight.grad *= 0.01
+            self.similarity_bias.grad *= 0.01
             
         # Gradient clipping
         clip_grad_norm_(self.parameters(), 3, norm_type=2)
@@ -59,7 +74,16 @@ class SpeakerEncoder(nn.Module):
         
         # L2-normalize it
         embeds = embeds_raw / (torch.norm(embeds_raw, dim=1, keepdim=True) + 1e-5)        
-        return embeds
+            
+        if self.method == 'ge2e':
+            return embeds
+
+        elif self.method == 'softmax':
+            out = self.linear2(embeds)
+            return embeds, out
+        
+        else:
+            raise Exception("[Unknow:] cfg.loss.method. ")
     
     def embeds_view(self, embeds):
         embeds = embeds.view(-1, self.utterances_per_speaker, self.model_embedding_size)

@@ -83,19 +83,25 @@ def main():
 
     # chinese
     # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
-    parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_finetune_1_2_10232021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
-    # parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_tacotron_singlespeaker_finetune_4_3_10292021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_finetune_1_2_10232021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
+    parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_tacotron_singlespeaker_finetune_4_3_10292021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
     parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00050001.wav", nargs='?', help='config file')
     # parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00730005.wav", nargs='?', help='config file')
     args = parser.parse_args()
     # chinese
     args.text_list = [
-                        " ".join(get_pinyin("道路千万条安全第一条")),
-                        " ".join(get_pinyin("今天星期五天气好真开心")),
+                        # " ".join(get_pinyin("道路千万条安全第一条")),
+                        # " ".join(get_pinyin("时刻牢记以人为本安全第一的原则。")),
+                        " ".join(get_pinyin("道路千万条，安全第一条。时刻牢记以人为本，安全第一的原则。")),
+                        # " ".join(get_pinyin("今天星期五天气好真开心")),
+                        # " ".join(get_pinyin("今天星期五，天气好，真开心。")),
                         ]
     args.text_name_list = [
-                            "道路千万条安全第一条",
-                            "今天星期五天气好真开心",
+                            # "道路千万条安全第一条",
+                            # "时刻牢记以人为本安全第一的原则。",
+                            "道路千万条，安全第一条。时刻牢记以人为本，安全第一的原则。",
+                            # "今天星期五天气好真开心",
+                            # "今天星期五，天气好，真开心。",
                             ]
 
     infer(args)
