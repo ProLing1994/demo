@@ -2,7 +2,7 @@ import numpy as np
 import sys
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-from TTS.dataset.sv2tts.text import *
+from TTS.dataset.text.text import *
 from TTS.config.sv2tts.hparams import *
 from TTS.dataset.sv2tts.sv2tts_dataset_preload_audio_lmdb import *
 
@@ -34,7 +34,7 @@ def align_measure(attn_mat) :
 
 def synthesize_spectrograms(cfg, net, texts, embeddings=None):
     # Preprocess text inputs
-    inputs = [text_to_sequence(text.strip(), cfg.dataset.tts_cleaner_names) for text in texts]
+    inputs = [text_to_sequence(text.strip(), cfg.dataset.tts_cleaner_names, lang=cfg.dataset.symbols_lang) for text in texts]
 
     # Batch inputs, 16 个放到一个 batch 进行传播
     batched_inputs = [inputs[i: i + synthesis_batch_size]

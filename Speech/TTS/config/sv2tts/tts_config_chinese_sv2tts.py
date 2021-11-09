@@ -3,7 +3,7 @@ import sys
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/TTS')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/TTS')
-from dataset.sv2tts.symbols import *
+from dataset.text.symbols import *
 
 __C = edict()
 cfg = __C
@@ -14,21 +14,21 @@ cfg = __C
 
 __C.general = {}
 
-__C.general.dataset_list = ['Aishell3']
-__C.general.dataset_path_dict = {
-                                "Aishell3": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/", 
-                                "Aishell3_training": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/train/wav", 
-                                "Aishell3_testing": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/test/wav", 
-                                }
-__C.general.mutil_speaker = True
-
-# __C.general.dataset_list = ['BZNSYP']
+# __C.general.dataset_list = ['Aishell3']
 # __C.general.dataset_path_dict = {
-#                                 "BZNSYP": "/mnt/huanyuan/data/speech/asr/Chinese/BZNSYP/", 
-#                                 "BZNSYP_training": "/mnt/huanyuan/data/speech/asr/Chinese/BZNSYP/Wave", 
-#                                 "BZNSYP_testing": None, 
+#                                 "Aishell3": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/", 
+#                                 "Aishell3_training": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/train/wav", 
+#                                 "Aishell3_testing": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/test/wav", 
 #                                 }
-# __C.general.mutil_speaker = False
+# __C.general.mutil_speaker = True
+
+__C.general.dataset_list = ['BZNSYP']
+__C.general.dataset_path_dict = {
+                                "BZNSYP": "/mnt/huanyuan/data/speech/asr/Chinese/BZNSYP/", 
+                                "BZNSYP_training": "/mnt/huanyuan/data/speech/asr/Chinese/BZNSYP/Wave", 
+                                "BZNSYP_testing": None, 
+                                }
+__C.general.mutil_speaker = False
 
 # data path
 __C.general.data_dir = "/mnt/huanyuan2/data/speech/tts/Chinese_dataset/"
@@ -47,7 +47,7 @@ __C.general.is_test = True
 __C.general.finetune_on = False
 
 # 模型加载方式，[0: 方式一, 1: 方式二]
-__C.general.load_mode_type = 1
+__C.general.load_mode_type = 0
 
 # 方式一：加载模型训练过程中保存模型
 __C.general.finetune_model_dir = ""
@@ -125,7 +125,8 @@ __C.speaker_verification.ignore_key_list = []
 # feedback 模式：反馈约束的多说话人语音合成
 # [tf_multispeakerTTS_fc](https://github.com/caizexin/tf_multispeakerTTS_fc)
 # 仅用于多说话人合成任务，__C.general.mutil_speaker = True
-__C.speaker_verification.feedback_on = True
+# __C.speaker_verification.feedback_on = True
+__C.speaker_verification.feedback_on = False
 
 __C.speaker_verification.embed_loss_scale = 1.0
 
@@ -179,11 +180,19 @@ __C.dataset.h_alignment = False
 # input size of training data (w, h), unit: voxel
 __C.dataset.data_size = [80, -1]
 
-# num_chars
-__C.dataset.num_chars = len(symbols)
-
 # language
 __C.dataset.language = 'chinese'
+
+# symbols, support ["pinyin", "prosody"]
+# __C.dataset.symbols = 'pinyin'
+__C.dataset.symbols = 'prosody'
+
+# symbols, support ["en: English characters", "py: Chinese Pinyin symbols"]
+# __C.dataset.symbols_lang = 'en'
+__C.dataset.symbols_lang = 'py'
+
+# num_chars
+__C.dataset.num_chars = len(symbols(__C.dataset.symbols_lang))
 
 # tts_cleaner_names
 __C.dataset.tts_cleaner_names = ["basic_cleaners"]
@@ -271,10 +280,10 @@ __C.net.r = 2
 # __C.net.r = 2
 
 # speaker embedding 
-# SV2TTS, 多说话人
-__C.net.speaker_embedding_size = 256
-# # 单说话人
-# __C.net.speaker_embedding_size = 0
+# # SV2TTS, 多说话人
+# __C.net.speaker_embedding_size = 256
+# 单说话人
+__C.net.speaker_embedding_size = 0
 
 ######################################
 # training parameters

@@ -4,8 +4,9 @@ import torch
 from torch import nn
 from torch.nn.utils import clip_grad_norm_
 
-sys.path.insert(0, '/home/huanyuan/code/demo')
-from common.common.utils.python.kaiming_init import kaiming_weight_init
+sys.path.insert(0, '/home/huanyuan/code/demo/common')
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/common')
+from common.utils.python.kaiming_init import kaiming_weight_init
 
 
 def parameters_init(net):

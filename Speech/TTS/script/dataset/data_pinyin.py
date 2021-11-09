@@ -10,7 +10,8 @@ from Basic.config import hparams
 from Basic.utils.train_tools import load_cfg_file
 from Basic.utils.folder_tools import *
 
-from Basic.text.mandarin.pinyin import get_pinyin
+from Basic.text.mandarin.pinyin.pinyin import get_pinyin
+from Basic.text.mandarin.prosody.prosody import parse_cn_prosody_label_type1
 
 
 def load_pinyin_aishell3(dataset_path, dataset_csv, mode):
@@ -35,10 +36,10 @@ def load_pinyin_aishell3(dataset_path, dataset_csv, mode):
         
         # text
         text_key = str(utterance_id).split('_')[1]
-        test_id = text_dict[text_key]
+        text_id = text_dict[text_key]
         
-        mode_data_pd.loc[idx, 'text'] = test_id
-        mode_data_pd.loc[idx, 'pinyin'] = " ".join(get_pinyin(test_id))
+        mode_data_pd.loc[idx, 'text'] = text_id
+        mode_data_pd.loc[idx, 'pinyin'] = " ".join(get_pinyin(text_id))
     
     # output csv
     mode_data_pd.to_csv(dataset_csv, index=False, encoding="utf_8_sig")
@@ -54,13 +55,17 @@ def load_pinyin_bansyp(dataset_path, dataset_csv, mode):
     with open(text_path, "r") as text_f:
         lines = [_line.split() for _line in text_f]
 
+    text_key = None
     text_dict = {}
+    pinyin_dict = {}
     for line_idx in range(len(lines)):
         if line_idx % 2 == 0:
             text_key = lines[line_idx][0]
-            text_dict[text_key]="".join(lines[line_idx][1:])
+            text_dict[text_key] = lines[line_idx][1:][0]
+        else:
+            pinyin_dict[text_key] = " ".join(lines[line_idx])
 
-    # pd
+    # pd 
     data_pd = pd.read_csv(dataset_csv)
     mode_data_pd = data_pd[data_pd['mode'] == mode]
     file_list = mode_data_pd['file'].tolist()
@@ -70,14 +75,17 @@ def load_pinyin_bansyp(dataset_path, dataset_csv, mode):
         
         # text
         text_key = str(utterance_id).split('_')[-1].split('.')[0]
-        test_id = text_dict[text_key]
+        text_id = text_dict[text_key]
+        pinyin_id = pinyin_dict[text_key]
         
-        test_id = "".join(test_id.split('#1'))
-        test_id = "".join(test_id.split('#2'))
-        test_id = "".join(test_id.split('#3'))
-        test_id = "".join(test_id.split('#4'))
-        mode_data_pd.loc[idx, 'text'] = test_id
-        mode_data_pd.loc[idx, 'pinyin'] = " ".join(get_pinyin(test_id))
+        mode_data_pd.loc[idx, 'prosody'] = parse_cn_prosody_label_type1(text_id, pinyin_id)
+
+        text_id = "".join(text_id.split('#1'))
+        text_id = "".join(text_id.split('#2'))
+        text_id = "".join(text_id.split('#3'))
+        text_id = "".join(text_id.split('#4'))
+        mode_data_pd.loc[idx, 'text'] = text_id
+        mode_data_pd.loc[idx, 'pinyin'] = " ".join(get_pinyin(text_id))
     
     # output csv
     mode_data_pd.to_csv(dataset_csv, index=False, encoding="utf_8_sig")

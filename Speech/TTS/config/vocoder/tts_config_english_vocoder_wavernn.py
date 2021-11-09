@@ -3,7 +3,7 @@ import sys
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/TTS')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/TTS')
-from dataset.sv2tts.symbols import *
+from dataset.text.symbols import *
 
 __C = edict()
 cfg = __C
@@ -166,11 +166,15 @@ __C.dataset.h_alignment = False
 # input size of training data (w, h), unit: voxel
 __C.dataset.data_size = [80, -1]
 
-# num_chars
-__C.dataset.num_chars = len(symbols)
-
 # language
 __C.dataset.language = 'english'
+
+# symbols, support ["en: English characters", "py: Chinese Pinyin symbols"]
+__C.dataset.symbols_lang = 'en'
+
+# num_chars
+__C.dataset.num_chars = len(symbols(__C.dataset.symbols_lang))
+
 
 # tts_cleaner_names
 __C.dataset.tts_cleaner_names = ["english_cleaners"]

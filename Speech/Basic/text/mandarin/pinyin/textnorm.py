@@ -2,7 +2,7 @@ import sys
 import re
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-import Basic.text.mandarin.hanzi as hanzi
+import Basic.text.mandarin.pinyin.hanzi as hanzi
 
 
 '''

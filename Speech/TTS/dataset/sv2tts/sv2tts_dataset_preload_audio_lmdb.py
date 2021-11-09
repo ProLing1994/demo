@@ -14,7 +14,7 @@ from Basic.dataset import audio
 from Basic.utils.lmdb_tools import *
 
 from TTS.config.sv2tts.hparams import *
-from TTS.dataset.sv2tts.text import *
+from TTS.dataset.text.text import *
 from TTS.dataset.sv2tts.audio import *
 
 
@@ -93,7 +93,7 @@ class SynthesizerDataset(Dataset):
 
         # text
         # Get the text and clean it
-        text = text_to_sequence(text, self.cfg.dataset.tts_cleaner_names)
+        text = text_to_sequence(text, self.cfg.dataset.tts_cleaner_names, lang=self.cfg.dataset.symbols_lang)
         
         # Convert the list returned by text_to_sequence to a numpy array
         text = np.asarray(text).astype(np.int32)

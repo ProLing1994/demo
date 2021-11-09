@@ -11,15 +11,15 @@ cfg = __C
 __C.general = {}
 
 '''
-SLR38: http://www.openslr.org/38/, 854/0(854)
-SLR62 aidatatang_200zh: https://www.openslr.org/62/, 
-SLR68 MAGICDATA: http://www.openslr.org/68/, 1016/43(1059)
-Aishell3: http://www.openslr.org/93/, 171/156(218)
-CN-Celeb1: https://www.openslr.org/82/, 992/0(992)
-CN-Celeb2: https://www.openslr.org/82/, 1996/0(1996)
+SLR38: http://www.openslr.org/38/, 854/0(854), 97550/0(97550)
+SLR62: aidatatang_200zh: https://www.openslr.org/62/,  420/120(540), 123345/35454(158799)
+SLR68: MAGICDATA: http://www.openslr.org/68/, 1016/43(1059), 432580/17752(450332)
+SLR93：Aishell3: http://www.openslr.org/93/, 171/156(218), 55618/19689(75307)
+SLR82：CN-Celeb1: https://www.openslr.org/82/, 992/0(992), 93080/0(93080)
+SLR82：CN-Celeb2: https://www.openslr.org/82/, 1996/0(1996), 495312/0(495312)
 '''
-# __C.general.dataset_list = ['SLR38', 'SLR68', 'Aishell3', 'CN-Celeb1', 'CN-Celeb2']
-__C.general.dataset_list = ['SLR62']
+__C.general.dataset_list = ['SLR38', 'SLR62', 'SLR68', 'Aishell3', 'CN-Celeb1', 'CN-Celeb2']
+# __C.general.dataset_list = ['SLR62']
 # __C.general.dataset_list = ['test']
 __C.general.dataset_path_dict = {
                                     "SLR38": "/mnt/huanyuan/data/speech/asr/Chinese/SLR38/ST-CMDS-20170001_1-OS/",
@@ -47,10 +47,11 @@ __C.general.dataset_path_dict = {
 __C.general.data_dir = "/mnt/huanyuan2/data/speech/sv/Chinese_TI_SV_dataset/dataset/"
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/test"
+# __C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/test"
 # __C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_0_basic_10122021"
 # __C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_1_basic_10122021"
 # __C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_2_basic_softmax_11062021"
+__C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_4_basic_ge2e_11082021"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -237,23 +238,23 @@ __C.net.class_name = 'SpeakerEncoder'
 __C.train = {}
 
 # the number of training epochs
-# __C.train.num_epochs = 1000
+__C.train.num_epochs = 1000
 # __C.train.num_epochs = 500
-__C.train.num_epochs = 100
+# __C.train.num_epochs = 100
 
 # the number of samples in a batch
-# # the loss method: ge2e
-# # __C.train.speakers_per_batch = 64
-# # __C.train.utterances_per_speaker = 10
+# the loss method: ge2e
+__C.train.speakers_per_batch = 64
+__C.train.utterances_per_speaker = 10
 # __C.train.speakers_per_batch = 4
 # __C.train.utterances_per_speaker = 4
-# __C.train.batch_size = __C.train.speakers_per_batch
-
-# the loss method: softmax
-# __C.train.speakers_per_batch = 128
-__C.train.speakers_per_batch = 16
-__C.train.utterances_per_speaker = 2
 __C.train.batch_size = __C.train.speakers_per_batch
+
+# # the loss method: softmax
+# # __C.train.speakers_per_batch = 128
+# __C.train.speakers_per_batch = 16
+# __C.train.utterances_per_speaker = 2
+# __C.train.batch_size = __C.train.speakers_per_batch
 
 # the number of threads for IO
 __C.train.num_threads = 1
@@ -266,10 +267,10 @@ __C.train.show_log = 5
 __C.train.plot_snapshot = 5
 
 # the number of epochs to plot umap
-__C.train.plot_umap = 1
+__C.train.plot_umap = 50
 
 # the number of epochs to save model
-__C.train.save_epochs = 5
+__C.train.save_epochs = 50
 
 
 ######################################
@@ -313,19 +314,19 @@ __C.train.betas = (0.9, 0.999)
 __C.loss = {}
 
 # the loss method, support ['softmax', 'ge2e']
-# __C.loss.method = 'ge2e'
-__C.loss.method = 'softmax'
+__C.loss.method = 'ge2e'
+# __C.loss.method = 'softmax'
 
 # the loss name, support ['softmax','focal']
 __C.loss.name = 'softmax'
 # __C.loss.name = 'focal'
 
 # the number of class
-# # the loss method: ge2e
-# __C.loss.num_classes =  __C.train.batch_size
-# the loss method: softmax
-__C.loss.num_classes = 49           # ['test']
-# __C.loss.num_classes = 5029         # ['SLR38', 'SLR68', 'Aishell3', 'CN-Celeb1', 'CN-Celeb2']
+# the loss method: ge2e
+__C.loss.num_classes =  __C.train.batch_size
+# # the loss method: softmax
+# # __C.loss.num_classes = 49           # ['test']
+# __C.loss.num_classes = 5449         # ['SLR38', 'SLR62', 'SLR68', 'Aishell3', 'CN-Celeb1', 'CN-Celeb2']
 
 # the weight matrix for each class in focal loss, including background class
 __C.loss.obj_weight = None

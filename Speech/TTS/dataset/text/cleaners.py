@@ -15,7 +15,7 @@ from unidecode import unidecode
 import sys 
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-from TTS.dataset.sv2tts.numbers import normalize_numbers
+from TTS.dataset.text.numbers import normalize_numbers
 
 
 # Regular expression matching whitespace:

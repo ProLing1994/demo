@@ -4,8 +4,8 @@ import jieba
 import sys
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-from Basic.text.mandarin.textnorm import textnorm
-from Basic.text.mandarin.nonstd_pinyin import _nonstd_style
+from Basic.text.mandarin.pinyin.textnorm import textnorm
+from Basic.text.mandarin.pinyin.nonstd_pinyin import _nonstd_style
 
 jieba.initialize()
 register('nonstd', _nonstd_style)
