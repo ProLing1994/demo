@@ -18,8 +18,8 @@ SLR93：Aishell3: http://www.openslr.org/93/, 171/156(218), 55618/19689(75307)
 SLR82：CN-Celeb1: https://www.openslr.org/82/, 992/0(992), 93080/0(93080)
 SLR82：CN-Celeb2: https://www.openslr.org/82/, 1996/0(1996), 495312/0(495312)
 '''
-__C.general.dataset_list = ['SLR38', 'SLR62', 'SLR68', 'Aishell3', 'CN-Celeb1', 'CN-Celeb2']
-# __C.general.dataset_list = ['SLR62']
+# __C.general.dataset_list = ['SLR38', 'SLR62', 'SLR68', 'Aishell3', 'CN-Celeb1', 'CN-Celeb2']
+__C.general.dataset_list = ['Aishell3']
 # __C.general.dataset_list = ['test']
 __C.general.dataset_path_dict = {
                                     "SLR38": "/mnt/huanyuan/data/speech/asr/Chinese/SLR38/ST-CMDS-20170001_1-OS/",
@@ -58,22 +58,27 @@ __C.general.is_test = True
 # __C.general.is_test = False
 
 # finetune model
-__C.general.finetune_on = True
-# __C.general.finetune_on = False
+# __C.general.finetune_on = True
+__C.general.finetune_on = False
 
-# 模型加载方式，[0: 方式一, 1: 方式二]
+# 模型加载方式，[0: 根据文件目录查找, 1: 模型加载，指定文件路径]
 __C.general.load_mode_type = 0
 
-# 方式一：加载模型训练过程中保存模型
-__C.general.finetune_model_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_1_basic_10122021"
-__C.general.finetune_epoch = 999
-# 方式二：加载其他模型结构
+# 方式一：模型加载，根据文件目录查找
+__C.general.finetune_model_dir = ""
+__C.general.finetune_epoch_num = 0
+__C.general.finetune_sub_folder_name ='checkpoints'
+# 方式二：模型加载，指定文件路径
 __C.general.finetune_model_path = ""
-__C.general.finetune_model_state = 'model_state'
+
+__C.general.finetune_state_name = 'state_dict'
 __C.general.finetune_ignore_key_list = []
+# __C.general.finetune_ignore_key_list = ['module.encoder.embedding.weight']
+# module 字段添加，[0: 不添加字段, 1: 去除 module 字段, 2: 添加 module 字段]
+__C.general.finetune_add_module_type = 0
 
 # set certain epoch to continue training, set -1 to train from scratch
-__C.general.resume_epoch = -1
+__C.general.resume_epoch_num = -1
 
 # the number of GPUs used in training
 __C.general.num_gpus = 1
@@ -99,8 +104,22 @@ __C.knowledge_distillation.on = False
 # teacher model
 __C.knowledge_distillation.teacher_model_name = ''
 __C.knowledge_distillation.teacher_class_name = ''
-__C.knowledge_distillation.teacher_model_dir = ""
-__C.knowledge_distillation.epoch = 0
+
+# 模型加载方式，[0: 根据文件目录查找, 1: 模型加载，指定文件路径]
+__C.knowledge_distillation.load_mode_type = 0
+
+# 方式一：模型加载，根据文件目录查找
+__C.knowledge_distillation.finetune_model_dir = ""
+__C.knowledge_distillation.finetune_epoch_num = 0
+__C.knowledge_distillation.finetune_sub_folder_name ='checkpoints'
+# 方式二：模型加载，指定文件路径
+__C.knowledge_distillation.finetune_model_path = ""
+
+__C.knowledge_distillation.finetune_state_name = 'state_dict'
+__C.knowledge_distillation.finetune_ignore_key_list = []
+# __C.knowledge_distillation.finetune_ignore_key_list = ['module.encoder.embedding.weight']
+# module 字段添加，[0: 不添加字段, 1: 去除 module 字段, 2: 添加 module 字段]
+__C.knowledge_distillation.finetune_add_module_type = 0
 
 
 ##################################
@@ -246,6 +265,8 @@ __C.train.num_epochs = 1000
 # the loss method: ge2e
 __C.train.speakers_per_batch = 64
 __C.train.utterances_per_speaker = 10
+# __C.train.speakers_per_batch = 40
+# __C.train.utterances_per_speaker = 8
 # __C.train.speakers_per_batch = 4
 # __C.train.utterances_per_speaker = 4
 __C.train.batch_size = __C.train.speakers_per_batch
@@ -388,5 +409,6 @@ __C.debug.seed = 0
 __C.test = {}
 
 # the number of testing epochs
-__C.test.model_epoch = -1
+# __C.test.model_epoch = -1
+__C.test.model_epoch = 50
 # __C.test.model_epoch = 999

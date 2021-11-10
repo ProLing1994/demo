@@ -1,4 +1,5 @@
 import argparse
+import cv2
 from datetime import datetime
 import os 
 import sys
@@ -30,7 +31,7 @@ def show_ressult(cfg, attention, mel_prediction, target_spectrogram, input_seq, 
     create_folder(plot_dir)
 
     # save text
-    text = sequence_to_text(input_seq).split('~')[0]
+    text = sequence_to_text(input_seq, lang = cfg.dataset.symbols_lang).split('~')[0]
     text_fpath = os.path.join(wav_dir, "text_step_{}_sample_{}.txt".format(step, sample_num))
     with open(text_fpath, "w") as f:
         f.write(text)
@@ -90,25 +91,22 @@ def train(args):
     # load checkpoint if finetune_on == True or resume epoch > 0
     if cfg.general.finetune_on == True:
         # fintune, Load model, reset learning rate
-        if cfg.general.load_mode_type == 0: 
-            load_checkpoint(net, cfg.general.finetune_epoch, 
-                            cfg.general.finetune_model_dir, 
-                            sub_folder_name='pretrain_model')
-        # fintune,
-        elif cfg.general.load_mode_type == 1:
-            load_checkpoint_from_path(net, cfg.general.finetune_model_path, 
-                                        state_name=cfg.general.finetune_model_state,
-                                        finetune_ignore_key_list=cfg.general.finetune_ignore_key_list)
-        else:
-            raise Exception("[ERROR:] Unknow load mode type: {}".format(cfg.general.load_mode_type))
+        load_checkpoint(net, 
+                        cfg.general.load_mode_type,
+                        cfg.general.finetune_model_dir, cfg.general.finetune_epoch_num, cfg.general.finetune_sub_folder_name,
+                        cfg.general.finetune_model_path,
+                        cfg.general.finetune_state_name, cfg.general.finetune_ignore_key_list, cfg.general.finetune_add_module_type)
         start_epoch, start_batch = 0, 0
         last_save_epoch = 0
 
-    if cfg.general.resume_epoch >= 0:
+    if cfg.general.resume_epoch_num >= 0:
         # resume, Load the model, continue the previous learning rate
-        start_epoch, start_batch = load_checkpoint(net, cfg.general.resume_epoch,
-                                                    cfg.general.save_dir, 
-                                                    optimizer=optimizer)
+        start_epoch, start_batch = load_checkpoint(net, 
+                                    cfg.general.load_mode_type,
+                                    cfg.general.save_dir, cfg.general.resume_epoch_num, cfg.general.finetune_sub_folder_name,
+                                    cfg.general.finetune_model_path,
+                                    cfg.general.finetune_state_name, cfg.general.finetune_ignore_key_list, cfg.general.finetune_add_module_type, 
+                                    optimizer=optimizer)
         last_save_epoch = start_epoch
     else:
         start_epoch, start_batch = 0, 0
@@ -119,14 +117,19 @@ def train(args):
         msg = '引导者模式：学习 attention weight'
         logger.info(msg)
 
-        # guide net
-        cfg_guiding = load_cfg_file(cfg.guiding_model.config_file)
-        guiding_net = import_network(cfg_guiding, 
-                                    cfg.guiding_model.model_name, 
-                                    cfg.guiding_model.class_name)
-        load_checkpoint(guiding_net, cfg.guiding_model.epoch, 
-                        cfg.guiding_model.model_dir)
-        guiding_net.eval()
+        if cfg.guiding_model.type == 0:
+            # guide net
+            cfg_guiding = load_cfg_file(cfg.guiding_model.config_file)
+            guiding_net = import_network(cfg_guiding, 
+                                        cfg.guiding_model.model_name, 
+                                        cfg.guiding_model.class_name)
+            load_checkpoint(guiding_net, 
+                            cfg.guiding_model.load_mode_type,
+                            cfg.guiding_model.finetune_model_dir, cfg.guiding_model.finetune_epoch_num, cfg.guiding_model.finetune_sub_folder_name,
+                            cfg.guiding_model.finetune_model_path,
+                            cfg.guiding_model.finetune_state_name, cfg.guiding_model.finetune_ignore_key_list, cfg.guiding_model.finetune_add_module_type)
+
+            guiding_net.eval()
 
 
     # 选择是否开启多说话人模式（SV2TTS）
@@ -138,21 +141,18 @@ def train(args):
         logger.info(msg)
 
     # 引导者模式 和 多说话人模式 均需要加载 sv model
-    if cfg.general.mutil_speaker or cfg.guiding_model.on:
+    if cfg.general.mutil_speaker or (cfg.guiding_model.on and cfg.guiding_model.type == 0):
         # speaker verification net
         cfg_speaker_verification = load_cfg_file(cfg.speaker_verification.config_file)
         sv_net = import_network(cfg_speaker_verification, 
                                 cfg.speaker_verification.model_name, 
                                 cfg.speaker_verification.class_name)
-        if cfg.speaker_verification.load_mode_type == 0: 
-            load_checkpoint(sv_net, cfg.speaker_verification.epoch, 
-                            cfg.speaker_verification.model_dir)
-        elif cfg.speaker_verification.load_mode_type == 1:
-            load_checkpoint_from_path(sv_net, cfg.speaker_verification.model_path, 
-                                        state_name='model_state',
-                                        finetune_ignore_key_list=cfg.speaker_verification.ignore_key_list)
-        else:
-            raise Exception("[ERROR:] Unknow load mode type: {}".format(cfg.general.load_mode_type))
+
+        load_checkpoint(sv_net, 
+                        cfg.speaker_verification.load_mode_type,
+                        cfg.speaker_verification.finetune_model_dir, cfg.speaker_verification.finetune_epoch_num, cfg.speaker_verification.finetune_sub_folder_name,
+                        cfg.speaker_verification.finetune_model_path,
+                        cfg.speaker_verification.finetune_state_name, cfg.speaker_verification.finetune_ignore_key_list, cfg.speaker_verification.finetune_add_module_type)
         
         if cfg.speaker_verification.feedback_on:
             for param in sv_net.parameters():
@@ -184,7 +184,7 @@ def train(args):
         texts, text_lengths, mels, mel_lengths, stops, embed_wavs = data_iter.next()
 
         # 选择是否开启多说话人模式（SV2TTS）
-        if cfg.general.mutil_speaker or cfg.guiding_model.on:
+        if cfg.general.mutil_speaker or (cfg.guiding_model.on and cfg.guiding_model.type == 0):
             embeds = []
             for embed_wav_idx in range(len(embed_wavs)):
                 embed_wav = embed_wavs[embed_wav_idx]
@@ -198,7 +198,7 @@ def train(args):
         text_lengths = text_lengths.cuda()
         mels = mels.cuda()
         mel_lengths = mel_lengths.cuda()
-        if cfg.general.mutil_speaker or cfg.guiding_model.on:
+        if cfg.general.mutil_speaker or (cfg.guiding_model.on and cfg.guiding_model.type == 0):
             embeds = embeds.cuda()
         stops = stops.cuda()
         profiler.tick("Data to device")
@@ -217,8 +217,25 @@ def train(args):
             m1_hat, m2_hat, stop_pred, attention = net(texts, text_lengths, mels, mel_lengths, None)
 
         if cfg.guiding_model.on:
-            _, _, _, guiding_attention = guiding_net(texts, text_lengths, mels, mel_lengths, embeds)
-            guiding_attention = guiding_attention.detach()
+            if cfg.guiding_model.type == 0:
+                # guiding from model
+                _, _, _, guiding_attention = guiding_net(texts, text_lengths, mels, mel_lengths, embeds)
+                guiding_attention = guiding_attention.detach()
+            elif cfg.guiding_model.type == 1:
+                # guiding from mask
+                B = attention.shape[0]
+                guiding_attention = []
+                for idx in range(B):
+                    guiding_attention_width = mel_lengths[idx].cpu().numpy() // cfg.net.r
+                    guiding_attention_height = text_lengths[idx].cpu().numpy()
+                    guiding_attention_idx = np.zeros((guiding_attention_width, guiding_attention_height))
+                    cv2.line(guiding_attention_idx, (0, 0), (guiding_attention_height, guiding_attention_width), (1 / int(guiding_attention_width // guiding_attention_height + 1)) , 1)
+                    guiding_attention_idx = np.pad(guiding_attention_idx, 
+                                                    ((0, attention.shape[1] - guiding_attention_width), (0, attention.shape[2] - guiding_attention_height)), 
+                                                    mode="constant", constant_values=0)
+                    guiding_attention.append(guiding_attention_idx)
+                guiding_attention = np.stack(guiding_attention)
+                guiding_attention = torch.tensor(guiding_attention).float().cuda()
 
         if cfg.speaker_verification.feedback_on:
             m2_embeds, mel_embeds = embed_mel(m2_hat, mels, mel_lengths, cfg, sv_net)
@@ -236,7 +253,7 @@ def train(args):
                 guiding_attention = guiding_attention.permute(0, 2, 1).contiguous()
                 assert attention.shape == guiding_attention.shape
             guding_loss = F.mse_loss(attention, guiding_attention)
-            loss = m1_loss + m2_loss + stop_loss + 1000.0 * guding_loss
+            loss = m1_loss + m2_loss + stop_loss + 100.0 * guding_loss
         elif cfg.speaker_verification.feedback_on:
             if cfg.speaker_verification.embed_loss_func == 'cos':
                 embed_loss = 1 - torch.cosine_similarity(m2_embeds, mel_embeds, dim=1)

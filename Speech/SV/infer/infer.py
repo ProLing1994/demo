@@ -28,7 +28,11 @@ def infer(args):
     net = import_network(cfg, cfg.net.model_name, cfg.net.class_name)
 
     # load prediction model
-    load_checkpoint(net, cfg.test.model_epoch, cfg.general.save_dir)
+    load_checkpoint(net, 
+                    cfg.general.load_mode_type,
+                    cfg.general.save_dir, cfg.test.model_epoch, cfg.general.finetune_sub_folder_name,
+                    cfg.general.finetune_model_path,
+                    cfg.general.finetune_state_name, cfg.general.finetune_ignore_key_list, cfg.general.finetune_add_module_type)
     net.eval()
 
     # load data

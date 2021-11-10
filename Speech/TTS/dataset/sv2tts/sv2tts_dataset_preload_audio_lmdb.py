@@ -85,7 +85,7 @@ class SynthesizerDataset(Dataset):
         speaker = self.data_pd.loc[index, 'speaker']
 
         if self.cfg.dataset.language == 'chinese':
-            text = self.data_pd.loc[index, 'pinyin']
+            text = self.data_pd.loc[index, self.cfg.dataset.symbols]
         elif self.cfg.dataset.language == 'english':
             text = self.data_pd.loc[index, 'text']
         else:
@@ -134,7 +134,7 @@ class SynthesizerDataLoader(DataLoader):
         max_char_length = max(char_lengths)
 
         chars = [pad1d(x[0], max_char_length) for x in data]
-        chars = np.stack(chars)
+        chars = np.stack(chars)         # shape: [b, text_t]
 
         # Mel spectrogram
         mel_lengths = [x[1].shape[1] for x in data]
@@ -151,12 +151,12 @@ class SynthesizerDataLoader(DataLoader):
             mel_pad_value = 0
 
         mels = [pad2d(x[1], max_mel_length, pad_value=mel_pad_value) for x in data]
-        mels = np.stack(mels)
+        mels = np.stack(mels)           # shape: [b, mel_f, mel_t]
         
         # Mel Frames: stop
         stops = torch.zeros(mels.shape[0], mels.shape[-1])
         for j, k in enumerate(mel_lengths):
-            stops[j, int(k)-1:] = 1
+            stops[j, int(k)-1:] = 1     # shape: [b, mel_t]
 
         # Speaker embedding (SV2TTS)
         embed_wavs = [x[2] for x in data]

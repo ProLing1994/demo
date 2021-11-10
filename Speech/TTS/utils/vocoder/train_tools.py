@@ -21,7 +21,7 @@ def generate_dataset(cfg, mode):
                     'validation'], "[ERROR:] Unknow mode: {}".format(mode)
 
     dataset = VocoderDataset(cfg, mode)
-    sampler = EpochConcateSampler(dataset, cfg.train.num_epochs - (cfg.general.resume_epoch if cfg.general.resume_epoch != -1 else 0))
+    sampler = EpochConcateSampler(dataset, cfg.train.num_epochs - (cfg.general.resume_epoch_num if cfg.general.resume_epoch_num != -1 else 0))
     dataloader = VocoderDataLoader(dataset, sampler, cfg)
     return dataloader, len(dataset)
 

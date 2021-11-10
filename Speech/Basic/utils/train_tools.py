@@ -30,7 +30,7 @@ def setup_workshop(cfg):
     :param cfg:  training configure file
     :return:     None
     """
-    if cfg.general.resume_epoch < 0 and os.path.isdir(cfg.general.save_dir):
+    if cfg.general.resume_epoch_num < 0 and os.path.isdir(cfg.general.save_dir):
         sys.stdout.write(
             "Found non-empty save dir: {} \nType 'yes' to delete, 'no' to continue: ".format(cfg.general.save_dir))
         choice = builtins.input().lower()
@@ -189,64 +189,59 @@ def update_scheduler(cfg, scheduler, epoch_idx):
         pass
 
 
-def load_checkpoint(net, epoch_num, net_dir, optimizer=None, 
-                    sub_folder_name='checkpoints', 
-                    state_name='state_dict',
-                    optimizer_name='optimizer'):
+def load_checkpoint(net, 
+                    load_mode_type, 
+                    model_dir, epoch_num, sub_folder_name, 
+                    model_path, 
+                    state_name, ignore_key_list, add_module_type, 
+                    optimizer=None, optimizer_name='optimizer'):
     """
     load network parameters from directory
     :param net: the network object
-    :param epoch_num: the epoch idx of model to load
-    :param net_dir: the network directory
+    :param cfg: cfg
     :return: loaded epoch index, loaded batch index
     """
-    if epoch_num < 0:
-        epoch_num = last_checkpoint(os.path.join(net_dir, sub_folder_name))
+    if load_mode_type == 0:
+        if epoch_num < 0:
+            epoch_num = last_checkpoint(os.path.join(model_dir, sub_folder_name))
 
-    chk_file = os.path.join(net_dir, sub_folder_name,
-                            'chk_{}'.format(epoch_num), 'parameter.pkl')
+        chk_file = os.path.join(model_dir, sub_folder_name,
+                                'chk_{}'.format(epoch_num), 'parameter.pkl')
+    elif load_mode_type == 1:
+        chk_file = model_path
+
     if not os.path.isfile(chk_file):
         raise ValueError('checkpoint file not found: {}'.format(chk_file))
-    
-    # 方案一:
+
     state = torch.load(chk_file)
-    # net.load_state_dict(state[state_name])
-    net.load_state_dict(state[state_name], strict=False)
 
-    # # 方案二: 去除 module. 字段
-    # state = torch.load(chk_file)
-    # new_pre = {}
-    # for k, v in state[state_name].items():
-    #     name = k[7:]
-    #     new_pre[name] = v
-    # net.load_state_dict(new_pre)
-
-    if optimizer:
-        optimizer.load_state_dict(state[optimizer_name])
-
-    return state['epoch'], state['batch']
-
-
-def load_checkpoint_from_path(net, chk_file,
-                                state_name='state_dict',
-                                finetune_ignore_key_list=None):
-    # 方案二: 需要添加 module. 字段
-    state = torch.load(chk_file)
     new_pre = {}
     for k, v in state[state_name].items():
-        name = 'module.' + k
-        if finetune_ignore_key_list:
-            if name in finetune_ignore_key_list:
+        if add_module_type == 0:
+            # 方案一: 无需添加字段字段
+            name = k
+        elif add_module_type == 1:
+            # 方案二: 需要去除 module. 字段
+            name = k[7:]
+        elif add_module_type == 2:
+            # 方案三: 需要添加 module. 字段
+            name = 'module.' + k
+        if ignore_key_list:
+            if name in ignore_key_list:
                 continue
             else:
                 new_pre[name] = v
         else:
             new_pre[name] = v
-    
+
     # net.load_state_dict(new_pre)
     net.load_state_dict(new_pre, strict=False)
 
-    return
+    if optimizer:
+        optimizer.load_state_dict(state[optimizer_name])
+        return state['epoch'], state['batch']
+    else:
+        return 
 
 
 def save_checkpoint(cfg, config_file, net, optimizer, epoch_idx, batch_idx, output_folder_name='checkpoints'):

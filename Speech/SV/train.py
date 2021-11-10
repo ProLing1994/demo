@@ -105,24 +105,21 @@ def train(args):
     # load checkpoint if finetune_on == True or resume epoch > 0
     if cfg.general.finetune_on == True:
         # fintune, Load model, reset learning rate
-        if cfg.general.load_mode_type == 0: 
-            load_checkpoint(net, cfg.general.finetune_epoch, 
-                            cfg.general.finetune_model_dir, 
-                            sub_folder_name='pretrain_model')
-        # fintune, 
-        elif cfg.general.load_mode_type == 1:
-            load_checkpoint_from_path(net, cfg.general.finetune_model_path, 
-                                        state_name=cfg.general.finetune_model_state,
-                                        finetune_ignore_key_list=cfg.general.finetune_ignore_key_list)
-        else:
-            raise Exception("[ERROR:] Unknow load mode type: {}".format(cfg.general.load_mode_type))
+        load_checkpoint(net, 
+                        cfg.general.load_mode_type,
+                        cfg.general.finetune_model_dir, cfg.general.finetune_epoch_num, cfg.general.finetune_sub_folder_name,
+                        cfg.general.finetune_model_path,
+                        cfg.general.finetune_state_name, cfg.general.finetune_ignore_key_list, cfg.general.finetune_add_module_type)
         start_epoch, start_batch = 0, 0
         last_save_epoch, last_plot_epoch = 0, 0
-    if cfg.general.resume_epoch >= 0:
+    if cfg.general.resume_epoch_num >= 0:
         # resume, Load the model, continue the previous learning rate
-        start_epoch, start_batch = load_checkpoint(net, cfg.general.resume_epoch,
-                                                        cfg.general.save_dir, 
-                                                        optimizer=optimizer)
+        start_epoch, start_batch = load_checkpoint(net, 
+                                    cfg.general.load_mode_type,
+                                    cfg.general.save_dir, cfg.general.resume_epoch_num, cfg.general.finetune_sub_folder_name,
+                                    cfg.general.finetune_model_path,
+                                    cfg.general.finetune_state_name, cfg.general.finetune_ignore_key_list, cfg.general.finetune_add_module_type, 
+                                    optimizer=optimizer)
         last_save_epoch = start_epoch
         last_plot_epoch = start_epoch
     else:
@@ -136,8 +133,11 @@ def train(args):
 
         teacher_model = import_network(cfg, cfg.knowledge_distillation.teacher_model_name, 
                                         cfg.knowledge_distillation.teacher_class_name)
-        load_checkpoint(teacher_model, cfg.knowledge_distillation.epoch, 
-                        cfg.knowledge_distillation.teacher_model_dir)
+        load_checkpoint(teacher_model, 
+                        cfg.knowledge_distillation.load_mode_type,
+                        cfg.knowledge_distillation.finetune_model_dir, cfg.knowledge_distillation.finetune_epoch_num, cfg.knowledge_distillation.finetune_sub_folder_name,
+                        cfg.knowledge_distillation.finetune_model_path,
+                        cfg.knowledge_distillation.finetune_state_name, cfg.knowledge_distillation.finetune_ignore_key_list, cfg.knowledge_distillation.finetune_add_module_type)
         teacher_model.eval()
 
     # define training dataset and testing dataset

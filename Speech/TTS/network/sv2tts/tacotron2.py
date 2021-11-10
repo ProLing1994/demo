@@ -1,14 +1,20 @@
 """ adapted from https://github.com/NVIDIA/tacotron2 """
 
 from math import sqrt
-
+import json
+import sys
 import torch
 from torch import nn
+from torch.nn.utils import clip_grad_norm_
 
-from .attention import LocationSensitiveAttention, AttentionWrapper
-from .attention import get_mask_from_lengths
-from .modules import Prenet, BatchNormConv1dStack
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
+from TTS.network.sv2tts.attention import LocationSensitiveAttention, AttentionWrapper
+from TTS.network.sv2tts.attention import get_mask_from_lengths
+from TTS.network.sv2tts.modules import Prenet, BatchNormConv1dStack
 
+tacotron_config = '/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron2.json'
+# tacotron_config = '/home/engineers/yh_rmai/code/demo/Speech/TTS/network/sv2tts/tacotron2.json'
 
 class Postnet(nn.Module):
     """Postnet
@@ -219,13 +225,26 @@ class Decoder(nn.Module):
 
 
 class Tacotron2(nn.Module):
-    def __init__(self, model_cfg, n_vocab, embed_dim=512, mel_dim=80,
-                 max_decoder_steps=1000, stop_threshold=0.5, r=3):
+    # def __init__(self, model_cfg, n_vocab, embed_dim=512, mel_dim=80,
+    #              max_decoder_steps=1000, stop_threshold=0.5, r=3):
+    def __init__(self, cfg):
         super(Tacotron2, self).__init__()
 
-        self.mel_dim = mel_dim
+        with open(tacotron_config, 'r') as f:
+            model_cfg = json.load(f)
+
+        self.cfg = cfg
+        self.mel_dim = cfg.dataset.feature_bin_count 
+        n_vocab = cfg.dataset.num_chars
+        r = cfg.net.r
+
+        normal_cfg = model_cfg["normal"]
+        max_decoder_steps = normal_cfg["max_decoder_steps"]
+        stop_threshold = normal_cfg["stop_threshold"]
 
         # Embedding
+        embedding_cfg = model_cfg["embedding"]
+        embed_dim = embedding_cfg["embed_dim"]
         self.embedding = nn.Embedding(n_vocab, embed_dim)
         std = sqrt(2.0 / (n_vocab + embed_dim))
         val = sqrt(3.0) * std  # uniform bounds for std
@@ -238,12 +257,12 @@ class Tacotron2(nn.Module):
 
         # Decoder
         decoder_cfg = model_cfg["decoder"]
-        self.decoder = Decoder(mel_dim, r, encoder_out_dim, **decoder_cfg,
+        self.decoder = Decoder(self.mel_dim, r, encoder_out_dim, **decoder_cfg,
             max_decoder_steps=max_decoder_steps, stop_threshold=stop_threshold)
 
         # Postnet
         postnet_cfg = model_cfg["postnet"]
-        self.postnet = Postnet(mel_dim, **postnet_cfg)
+        self.postnet = Postnet(self.mel_dim, **postnet_cfg)
 
     def parse_data_batch(self, batch):
         """Parse data batch to form inputs and targets for model training/evaluating
@@ -259,8 +278,13 @@ class Tacotron2(nn.Module):
 
         return (text, text_length, mel), (mel, stop)
 
-    def forward(self, inputs):
-        inputs, input_lengths, mels = inputs
+    def do_gradient_ops(self):
+        # Gradient clipping
+        clip_grad_norm_(self.parameters(), 1.0)
+
+    def forward(self, inputs, input_lengths, mels, mels_lengths, speaker_embedding=None):
+        del mels_lengths
+        del speaker_embedding
 
         B = inputs.size(0)
 
@@ -271,6 +295,7 @@ class Tacotron2(nn.Module):
         encoder_outputs = self.encoder(inputs)
 
         # (B, T, mel_dim)
+        mels = mels.permute(0, 2, 1).contiguous()
         mel_outputs, stop_tokens, alignments = self.decoder(
             encoder_outputs, mels, memory_lengths=input_lengths)
 
@@ -278,6 +303,8 @@ class Tacotron2(nn.Module):
         mel_post = self.postnet(mel_outputs)
         mel_post = mel_outputs + mel_post
 
+        mel_outputs = mel_outputs.permute(0, 2, 1).contiguous()
+        mel_post = mel_post.permute(0, 2, 1).contiguous()
         return mel_outputs, mel_post, stop_tokens, alignments
 
     def inference(self, inputs):

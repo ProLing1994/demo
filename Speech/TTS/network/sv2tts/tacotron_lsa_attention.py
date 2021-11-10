@@ -9,7 +9,7 @@ from torch.nn.utils import clip_grad_norm_
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
-from TTS.network.sv2tts.attention import BahdanauAttention, AttentionWrapper
+from TTS.network.sv2tts.attention import LocationSensitiveAttention, AttentionWrapper
 from TTS.network.sv2tts.attention import get_mask_from_lengths
 from TTS.network.sv2tts.modules import Prenet, CBHG
 
@@ -57,7 +57,7 @@ class Decoder(nn.Module):
         # (prenet_out + attention context) = attention_rnn_in -> attention_rnn_out
         self.attention_rnn = AttentionWrapper(
             nn.GRUCell(prenet_dims[-1] + attention_context_dim, attention_rnn_units),
-            BahdanauAttention(attention_rnn_units, attention_dim)
+            LocationSensitiveAttention(attention_rnn_units, attention_dim)
         )
         # Process encoder_output as attention key
         self.memory_layer = nn.Linear(encoder_output_dim, attention_dim, bias=False)
@@ -113,6 +113,7 @@ class Decoder(nn.Module):
         initial_input = encoder_outputs.data.new(B, self.mel_dim).zero_()
 
         # Init decoder states
+        self.attention_rnn.attention_mechanism.init_attention(processed_memory)
         attention_rnn_hidden = encoder_outputs.data.new(B, self.attention_rnn_units).zero_()
         decoder_rnn_hiddens = [encoder_outputs.data.new(B, self.decoder_rnn_units).zero_()
                                for _ in range(len(self.decoder_rnns))]
@@ -194,6 +195,8 @@ def is_end_of_frames(output, eps=-3.4):
 
 
 class Tacotron(nn.Module):
+    # def __init__(self, model_cfg, n_vocab, embed_dim=256, mel_dim=80, linear_dim=1025,
+    #              max_decoder_steps=1000, stop_threshold=0.5, r=5):
     def __init__(self, cfg):
         super(Tacotron, self).__init__()
 

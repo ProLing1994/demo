@@ -105,25 +105,22 @@ def train(args):
     # load checkpoint if finetune_on == True or resume epoch > 0
     if cfg.general.finetune_on == True:
         # fintune, Load model, reset learning rate
-        if cfg.general.load_mode_type == 0: 
-            load_checkpoint(net, cfg.general.finetune_epoch, 
-                            cfg.general.finetune_model_dir, 
-                            sub_folder_name='pretrain_model')
-        # fintune,
-        elif cfg.general.load_mode_type == 1:
-            load_checkpoint_from_path(net, cfg.general.finetune_model_path, 
-                                        state_name=cfg.general.finetune_model_state,
-                                        finetune_ignore_key_list=cfg.general.finetune_ignore_key_list)
-        else:
-            raise Exception("[ERROR:] Unknow load mode type: {}".format(cfg.general.load_mode_type))
+        load_checkpoint(net, 
+                        cfg.general.load_mode_type,
+                        cfg.general.finetune_model_dir, cfg.general.finetune_epoch_num, cfg.general.finetune_sub_folder_name,
+                        cfg.general.finetune_model_path,
+                        cfg.general.finetune_state_name, cfg.general.finetune_ignore_key_list, cfg.general.finetune_add_module_type)
         start_epoch, start_batch = 0, 0
         last_save_epoch = 0
 
-    if cfg.general.resume_epoch >= 0:
+    if cfg.general.resume_epoch_num >= 0:
         # resume, Load the model, continue the previous learning rate
-        start_epoch, start_batch = load_checkpoint(net, cfg.general.resume_epoch,
-                                                    cfg.general.save_dir, 
-                                                    optimizer=optimizer)
+        start_epoch, start_batch = load_checkpoint(net, 
+                                    cfg.general.load_mode_type,
+                                    cfg.general.save_dir, cfg.general.resume_epoch_num, cfg.general.finetune_sub_folder_name,
+                                    cfg.general.finetune_model_path,
+                                    cfg.general.finetune_state_name, cfg.general.finetune_ignore_key_list, cfg.general.finetune_add_module_type, 
+                                    optimizer=optimizer)
         last_save_epoch = start_epoch
     else:
         start_epoch, start_batch = 0, 0
@@ -143,29 +140,21 @@ def train(args):
         sv_net = import_network(cfg_speaker_verification, 
                                 cfg.speaker_verification.model_name, 
                                 cfg.speaker_verification.class_name)
-        if cfg.speaker_verification.load_mode_type == 0: 
-            load_checkpoint(sv_net, cfg.speaker_verification.epoch, 
-                            cfg.speaker_verification.model_dir)
-        elif cfg.speaker_verification.load_mode_type == 1:
-            load_checkpoint_from_path(sv_net, cfg.speaker_verification.model_path, 
-                                        state_name='model_state',
-                                        finetune_ignore_key_list=cfg.speaker_verification.ignore_key_list)
-        else:
-            raise Exception("[ERROR:] Unknow load mode type: {}".format(cfg.speaker_verification.load_mode_type))
+        load_checkpoint(sv_net, 
+                        cfg.speaker_verification.load_mode_type,
+                        cfg.speaker_verification.finetune_model_dir, cfg.speaker_verification.finetune_epoch_num, cfg.speaker_verification.finetune_sub_folder_name,
+                        cfg.speaker_verification.finetune_model_path,
+                        cfg.speaker_verification.finetune_state_name, cfg.speaker_verification.finetune_ignore_key_list, cfg.speaker_verification.finetune_add_module_type)
         sv_net.eval()
 
     # synthesizer net
     cfg_synthesizer = load_cfg_file(cfg.synthesizer.config_file)
     synthesizer_net = import_network(cfg_synthesizer, cfg.synthesizer.model_name, cfg.synthesizer.class_name)
-    if cfg.synthesizer.load_mode_type == 0: 
-        load_checkpoint(synthesizer_net, cfg.synthesizer.epoch, 
-                        cfg.synthesizer.model_dir)
-    elif cfg.synthesizer.load_mode_type == 1:
-        load_checkpoint_from_path(synthesizer_net, cfg.synthesizer.model_path, 
-                                    state_name='model_state',
-                                    finetune_ignore_key_list=cfg.synthesizer.ignore_key_list)
-    else:
-        raise Exception("[ERROR:] Unknow load mode type: {}".format(cfg.synthesizer.load_mode_type))
+    load_checkpoint(synthesizer_net, 
+                    cfg.synthesizer.load_mode_type,
+                    cfg.synthesizer.finetune_model_dir, cfg.synthesizer.finetune_epoch_num, cfg.synthesizer.finetune_sub_folder_name,
+                    cfg.synthesizer.finetune_model_path,
+                    cfg.synthesizer.finetune_state_name, cfg.synthesizer.finetune_ignore_key_list, cfg.synthesizer.finetune_add_module_type)
     synthesizer_net.eval()
 
     # define training dataset and testing dataset

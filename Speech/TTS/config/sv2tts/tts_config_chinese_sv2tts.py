@@ -46,33 +46,31 @@ __C.general.is_test = True
 # __C.general.finetune_on = True
 __C.general.finetune_on = False
 
-# 模型加载方式，[0: 方式一, 1: 方式二]
+# 模型加载方式，[0: 根据文件目录查找, 1: 模型加载，指定文件路径]
 __C.general.load_mode_type = 0
 
-# 方式一：加载模型训练过程中保存模型
+# 方式一：模型加载，根据文件目录查找
 __C.general.finetune_model_dir = ""
-__C.general.finetune_epoch = -1
-# 方式二：加载其他模型结构
-__C.general.finetune_model_path = "/mnt/huanyuan2/model/tts/pretrained/tacotron/pretrain_model/parameter.pkl"
-__C.general.finetune_model_state = 'model_state'
+__C.general.finetune_epoch_num = -1
+__C.general.finetune_sub_folder_name ='checkpoints'
+# 方式二：模型加载，指定文件路径
+__C.general.finetune_model_path = ""
+
+__C.general.finetune_state_name = 'state_dict'
+__C.general.finetune_ignore_key_list = []
 # __C.general.finetune_ignore_key_list = ['module.encoder.embedding.weight']
-__C.general.finetune_ignore_key_list = [
-                                        'module.encoder.embedding.weight',
-                                        'module.encoder_proj.weight',
-                                        'module.decoder.attn_rnn.weight_ih',
-                                        'module.decoder.rnn_input.weight',
-                                        'module.decoder.stop_proj.weight'
-                                        ]
-# __C.general.finetune_model_path = "/mnt/huanyuan2/model/tts/pretrained/tacotron2/pretrain_model/parameter.pkl"
-# __C.general.finetune_model_state = 'state_dict'
-# __C.general.finetune_ignore_key_list = ['module.embedding.weight']
 # __C.general.finetune_ignore_key_list = [
-#                                         'module.embedding.weight', 
-#                                         'module.decoder.attention_rnn.weight_ih', 
+#                                         'module.encoder.embedding.weight',
+#                                         'module.encoder_proj.weight',
+#                                         'module.decoder.attn_rnn.weight_ih',
+#                                         'module.decoder.rnn_input.weight',
+#                                         'module.decoder.stop_proj.weight'
 #                                         ]
+# module 字段添加，[0: 不添加字段, 1: 去除 module 字段, 2: 添加 module 字段]
+__C.general.finetune_add_module_type = 0
 
 # set certain epoch to continue training, set -1 to train from scratch
-__C.general.resume_epoch = -1
+__C.general.resume_epoch_num = -1
 
 # the number of GPUs used in training
 __C.general.num_gpus = 1
@@ -97,12 +95,29 @@ __C.guiding_model = {}
 # __C.guiding_model.on = True
 __C.guiding_model.on = False
 
+# guide model type，[0: 通过模型引导, 1: 通过 mask 引导]
+__C.guiding_model.type = 1
+
 # guide model 用于引导模型，学会 attention 信息
-__C.guiding_model.config_file = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_1_1_10232021/tts_config_chinese_sv2tts.py"
-__C.guiding_model.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron.py"
+__C.guiding_model.config_file = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_finetune_1_2_10232021/tts_config_chinese_sv2tts.py"
+__C.guiding_model.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron_old.py"
 __C.guiding_model.class_name = 'Tacotron'
-__C.guiding_model.model_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_1_1_10232021/"
-__C.guiding_model.epoch = -1
+
+# 模型加载方式，[0: 根据文件目录查找, 1: 模型加载，指定文件路径]
+__C.guiding_model.load_mode_type = 0
+
+# 方式一：模型加载，根据文件目录查找
+__C.guiding_model.finetune_model_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_finetune_1_2_10232021/"
+__C.guiding_model.finetune_epoch_num = -1
+__C.guiding_model.finetune_sub_folder_name ='checkpoints'
+# 方式二：模型加载，指定文件路径
+__C.guiding_model.finetune_model_path = ""
+
+__C.guiding_model.finetune_state_name = 'state_dict'
+__C.guiding_model.finetune_ignore_key_list = []
+
+# module 字段添加，[0: 不添加字段, 1: 去除 module 字段, 2: 添加 module 字段]
+__C.guiding_model.finetune_add_module_type = 0
 
 ##################################
 # speaker verification parameters
@@ -113,14 +128,22 @@ __C.speaker_verification = {}
 __C.speaker_verification.config_file = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_1_basic_10122021/sv_config_chinese_TI_SV.py"
 __C.speaker_verification.model_name = "/home/huanyuan/code/demo/Speech/SV/network/basic.py"
 __C.speaker_verification.class_name = 'SpeakerEncoder'
-# 模型加载方式，[0: 方式一, 1: 方式二]
+
+# 模型加载方式，[0: 根据文件目录查找, 1: 模型加载，指定文件路径]
 __C.speaker_verification.load_mode_type = 0
-# 方式一：模型训练过程中，保存模型
-__C.speaker_verification.model_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_1_basic_10122021"
-__C.speaker_verification.epoch = -1
-# 方式二：加载其他模型结构
-__C.speaker_verification.model_path = ""
-__C.speaker_verification.ignore_key_list = []
+
+# 方式一：模型加载，根据文件目录查找
+__C.speaker_verification.finetune_model_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_1_basic_10122021"
+__C.speaker_verification.finetune_epoch_num = -1
+__C.speaker_verification.finetune_sub_folder_name ='checkpoints'
+# 方式二：模型加载，指定文件路径
+__C.speaker_verification.finetune_model_path = ""
+
+__C.speaker_verification.finetune_state_name = 'state_dict'
+__C.speaker_verification.finetune_ignore_key_list = []
+
+# module 字段添加，[0: 不添加字段, 1: 去除 module 字段, 2: 添加 module 字段]
+__C.speaker_verification.finetune_add_module_type = 0
 
 # feedback 模式：反馈约束的多说话人语音合成
 # [tf_multispeakerTTS_fc](https://github.com/caizexin/tf_multispeakerTTS_fc)
@@ -266,18 +289,23 @@ __C.dataset.augmentation.num_masks = 2
 
 __C.net = {}
 
-# the network name
-__C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron.py"
-__C.net.class_name = "Tacotron"
-# r frames
-__C.net.r = 2
+# # the network name
+# __C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron_old.py"
+# __C.net.class_name = "Tacotron"
+# # r frames
+# __C.net.r = 2
 
 # # the network name
-# __C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron2.py"
-# __C.net.class_name = "Tacotron2"
+# __C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron.py"
+# __C.net.class_name = "Tacotron"
 # # r frames
-# # __C.net.r = 1
 # __C.net.r = 2
+
+# the network name
+__C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron2.py"
+__C.net.class_name = "Tacotron2"
+# r frames
+__C.net.r = 2
 
 # speaker embedding 
 # # SV2TTS, 多说话人

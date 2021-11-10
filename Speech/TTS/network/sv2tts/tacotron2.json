@@ -1,4 +1,13 @@
 {
+    "normal":{
+        "max_decoder_steps": 1000,
+        "stop_threshold": 0.5
+    },
+
+    "embedding":{
+        "embed_dim": 512
+    },
+    
     "encoder":{
         "num_convs": 3,
         "conv_channels": 512,

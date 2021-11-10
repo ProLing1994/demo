@@ -118,6 +118,7 @@ class SpeakerVerificationDataset(Dataset):
         self.bool_trainning = bool_trainning
         self.data_pd = load_data_pd(cfg, mode)
         self.speaker_list = list(set(self.data_pd['speaker'].to_list()))
+        self.speaker_list.sort()
         self.speaker_dict = {self.speaker_list[idx] : idx for idx in range(len(self.speaker_list))}
         if len(self.speaker_list) == 0:
             raise Exception("No speakers found. ")
