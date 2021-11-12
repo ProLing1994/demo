@@ -42,3 +42,25 @@ def draw_projections(embeds, epoch, out_fpath=None, max_speakers=10):
     if out_fpath is not None:
         plt.savefig(out_fpath)
     plt.clf()
+
+
+def draw_projections_speaker(embeds, out_fpath=None, max_speakers=10):
+    # init 
+    speakers_per_batch = embeds.shape[0]
+
+    max_speakers = min(max_speakers, len(colormap))
+    embeds = embeds.reshape((speakers_per_batch, -1))
+    embeds = embeds[:max_speakers]
+    
+    n_speakers = len(embeds)
+    ground_truth = np.arange(n_speakers)
+    colors = [colormap[i] for i in ground_truth]
+    
+    reducer = umap.UMAP()
+    projected = reducer.fit_transform(embeds)
+    plt.scatter(projected[:, 0], projected[:, 1], c=colors)
+    plt.gca().set_aspect("equal", "datalim")
+    plt.title("UMAP projection")
+    if out_fpath is not None:
+        plt.savefig(out_fpath)
+    plt.clf()

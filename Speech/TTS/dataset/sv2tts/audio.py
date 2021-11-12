@@ -44,7 +44,7 @@ def preprocess_speaker_librispeech(cfg, data_files, row):
             wav = wav / np.abs(wav).max() * hparams.rescaling_max
 
         # Process each sub-utterance
-        wavs, texts = split_on_silences(cfg, wav_fpath, words, end_times)
+        wavs, texts = split_on_silences(cfg, wav, words, end_times)
         for i, (wav, text) in enumerate(zip(wavs, texts)):
             unique_utterance = "%s_%02d" % (wav_fname, i)
             metadata.append(process_utterance(cfg, wav, text, data_files, row, unique_utterance))
@@ -79,11 +79,9 @@ def preprocess_speaker_normal(cfg, data_files, row):
 
 def preprocess_speaker(cfg, data_files, row, dataset_name):
 
-    if dataset_name == 'librispeech_clean_360' or dataset_name == 'librispeech_clean_100' or dataset_name == 'librispeech_test_clean': 
+    if dataset_name in ['librispeech_clean_360', 'librispeech_clean_100', 'librispeech_test_clean']: 
         metadata = preprocess_speaker_librispeech(cfg, data_files, row)
-    elif dataset_name == 'Aishell3': 
-        metadata = preprocess_speaker_normal(cfg, data_files, row)
-    elif dataset_name == 'BZNSYP': 
+    elif dataset_name in ['Aishell3', 'BZNSYP', 'BwcKeyword']: 
         metadata = preprocess_speaker_normal(cfg, data_files, row)
     return [m for m in metadata if m is not None]
 

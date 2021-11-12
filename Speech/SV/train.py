@@ -19,7 +19,7 @@ sys.path.insert(0, '/home/huanyuan/code/demo/common')
 from common.utils.python.logging_helpers import setup_logger
 
 
-def test(cfg, net, loss_func, epoch_idx, batch_idx, logger, test_data_loader, mode='eval'):
+def test(cfg, net, loss_func, epoch_idx, batch_idx, logger, test_data_loader, mode='eval', messgae=''):
     """
     :param cfg:                config contain data set information
     :param net:                net
@@ -66,7 +66,7 @@ def test(cfg, net, loss_func, epoch_idx, batch_idx, logger, test_data_loader, mo
     # Draw projections and save them to the backup folder
     umap_dir = os.path.join(cfg.general.save_dir, 'umap')
     create_folder(umap_dir)
-    projection_fpath = os.path.join(umap_dir, "umap_testing_%05d.png" % (epoch_idx))
+    projection_fpath = os.path.join(umap_dir, "umap_testing_{:0>5d}{}.png".format(epoch_idx, messgae))
     draw_projections(embeds_np, epoch_idx, projection_fpath)
 
 
@@ -77,6 +77,8 @@ def train(args):
     """
     # load configuration file
     cfg = load_cfg_file(args.config_file)
+    if args.mutil_reader_bool:
+        cfg_mutil_reader = load_cfg_file(args.mutil_reader_config_file)
 
     # clean the existing folder if the user want to train from scratch
     setup_workshop(cfg)
@@ -145,11 +147,20 @@ def train(args):
     if cfg.general.is_test:
         testing_dataloader = generate_test_dataset(cfg, hparams.TESTING_NAME)
 
+    if args.mutil_reader_bool:
+        train_dataloader_mutil_reader, len_train_dataset_mutil_reader = generate_dataset(cfg_mutil_reader, hparams.TRAINING_NAME)
+        if cfg.general.is_test:
+            testing_dataloader_mutil_reader = generate_test_dataset(cfg_mutil_reader, hparams.VALIDATION_NAME)
+        
     msg = 'Training dataset number: {}'.format(len_train_dataset)
+    if args.mutil_reader_bool: 
+        msg += ", Mutil Reader Training dataset number: {}".format(len_train_dataset_mutil_reader)
     logger.info(msg)
 
     batch_number = len(train_dataloader)
     data_iter = iter(train_dataloader)
+    if args.mutil_reader_bool:
+        data_iter_mutil_reader = iter(train_dataloader_mutil_reader)
     batch_idx = start_batch
 
     # profiler
@@ -161,15 +172,22 @@ def train(args):
         net.train()
 
         epoch_idx = start_epoch + i * cfg.train.batch_size // len_train_dataset
+        if args.mutil_reader_bool:
+            epoch_idx_mutil_reader = start_epoch + i * cfg.train.batch_size // len_train_dataset_mutil_reader
         batch_idx += 1
 
         # Blocking, waiting for batch (threaded)
         inputs, labels = data_iter.next()
+        if args.mutil_reader_bool:
+            inputs_mutil_reader, labels_mutil_reader = data_iter_mutil_reader.next()
         profiler.tick("Blocking, waiting for batch (threaded)")
 
         # Data to device
         inputs = inputs.cuda()
         labels = labels.cuda()
+        if args.mutil_reader_bool:
+            inputs_mutil_reader = inputs_mutil_reader.cuda()
+            labels_mutil_reader = labels_mutil_reader.cuda()            
         profiler.tick("Data to device")
         
         # Forward pass
@@ -179,27 +197,52 @@ def train(args):
                 embeds = net(hisi_input)
             elif cfg.loss.method == 'softmax':
                 embeds, scores = net(hisi_input)
+            if args.mutil_reader_bool:
+                hisi_input_mutil_reader = inputs_mutil_reader[:, :, :(inputs.shape[2] // 16) * 16, :]
+                if cfg.loss.method == 'ge2e':
+                    embeds_mutil_reader = net(hisi_input_mutil_reader)
+                elif cfg.loss.method == 'softmax':
+                    embeds_mutil_reader, scores_mutil_reader = net(hisi_input_mutil_reader)
         else:
             if cfg.loss.method == 'ge2e':
                 embeds = net(inputs)
             elif cfg.loss.method == 'softmax':
                 embeds, scores = net(inputs)
+            if args.mutil_reader_bool:
+                if cfg.loss.method == 'ge2e':
+                    embeds_mutil_reader = net(inputs_mutil_reader)
+                elif cfg.loss.method == 'softmax':
+                    embeds_mutil_reader, scores_mutil_reader = net(inputs_mutil_reader)
         profiler.tick("Forward pass")
 
         if isinstance(net, torch.nn.parallel.DataParallel):
             embeds = net.module.embeds_view(embeds)
             sim_matrix = net.module.similarity_matrix(embeds)
+            if args.mutil_reader_bool:
+                embeds_mutil_reader = net.module.embeds_view(embeds_mutil_reader)
+                sim_matrix_mutil_reader = net.module.similarity_matrix(embeds_mutil_reader) 
         else:
             embeds = net.embeds_view(embeds)
             sim_matrix = net.similarity_matrix(embeds)
-        
+            if args.mutil_reader_bool:
+                embeds_mutil_reader = net.embeds_view(embeds_mutil_reader)
+                sim_matrix_mutil_reader = net.similarity_matrix(embeds_mutil_reader) 
+
         # Calculate loss
         if cfg.loss.method == 'ge2e':
             loss, eer = ge2e_loss(embeds, sim_matrix, loss_func)
+            if args.mutil_reader_bool:
+                loss_mutil_reader, eer_mutil_reader = ge2e_loss(embeds_mutil_reader, sim_matrix_mutil_reader, loss_func)
+                loss = loss + args.mutil_reader_loss_weight * loss_mutil_reader
+                eer = eer + eer_mutil_reader
         elif cfg.loss.method == 'softmax':
             _, eer = ge2e_loss(embeds, sim_matrix, loss_func)
             assert scores.shape[1] > labels.max()
             loss = loss_func(scores, labels)
+            if args.mutil_reader_bool:
+                _, eer_mutil_reader = ge2e_loss(embeds_mutil_reader, sim_matrix_mutil_reader, loss_func)
+                loss_mutil_reader = loss_func(scores_mutil_reader, labels_mutil_reader)
+                loss = loss + args.mutil_reader_loss_weight * loss_mutil_reader
         if cfg.knowledge_distillation.on:
             teacher_model.eval()
             teacher_embeds, _ = teacher_model(inputs)
@@ -229,16 +272,25 @@ def train(args):
         # Caltulate accuracy
         if cfg.loss.method == 'ge2e':
             accuracy = -1.0
+            if args.mutil_reader_bool:
+                accuracy_mutil_reader = -1.0
         elif cfg.loss.method == 'softmax':
             pred_y = torch.max(scores, 1)[1].cpu().data.numpy()
             accuracy = float((pred_y == labels.cpu().data.numpy()).astype(
                 int).sum()) / float(labels.size(0))
+            if args.mutil_reader_bool:
+                pred_y_mutil_reader = torch.max(scores_mutil_reader, 1)[1].cpu().data.numpy()
+                accuracy_mutil_reader = float((pred_y_mutil_reader == labels_mutil_reader.cpu().data.numpy()).astype(
+                    int).sum()) / float(labels_mutil_reader.size(0)) 
+                accuracy = (accuracy + accuracy_mutil_reader) / 2
         profiler.tick("Caltulate accuracy")
 
         # Show information
         if (batch_idx % cfg.train.show_log) == 0:
             msg = 'epoch: {}, batch: {}, train_accuracy: {:.4f}, train_eer: {:.4f}, train_loss: {:.4f}' \
                 .format(epoch_idx, batch_idx, accuracy, eer, loss.item())
+            if args.mutil_reader_bool:
+                msg += ", epoch_mutil_reader: {}, train_accuracy_mutil_reader: {:.4f}, train_eer_mutil_reader: {:.4f}, train_loss_mutil_reader: {:.4f}".format(epoch_idx_mutil_reader, accuracy_mutil_reader, eer_mutil_reader, loss_mutil_reader.item())
             logger.info(msg)
         profiler.tick("Show information")
 
@@ -254,9 +306,13 @@ def train(args):
 
                 umap_dir = os.path.join(cfg.general.save_dir, 'umap')
                 create_folder(umap_dir)
-                projection_fpath = os.path.join(umap_dir, "umap_training_%05d.png" % (epoch_idx))
+                projection_fpath = os.path.join(umap_dir, "umap_training_{:0>5d}.png".format(epoch_idx))
                 embeds_cpu = embeds.detach().cpu().numpy()
                 draw_projections(embeds_cpu, epoch_idx, projection_fpath)
+                if args.mutil_reader_bool:
+                    projection_fpath_mutil_reader = os.path.join(umap_dir, "umap_training_mutil_reader_{:0>5d}.png".format(epoch_idx_mutil_reader))
+                    embeds_cpu_mutil_reader = embeds_mutil_reader.detach().cpu().numpy()
+                    draw_projections(embeds_cpu_mutil_reader, epoch_idx_mutil_reader, projection_fpath_mutil_reader)
         profiler.tick("Draw projections")
 
         # Save model
@@ -273,6 +329,9 @@ def train(args):
                 if cfg.general.is_test:
                     test(cfg, net, loss_func, epoch_idx, batch_idx,
                          logger, testing_dataloader, mode='eval')
+                    if args.mutil_reader_bool:
+                        test(cfg, net, loss_func, epoch_idx_mutil_reader, batch_idx,
+                            logger, testing_dataloader_mutil_reader, mode='eval', messgae='_mutil_reader')
             
                 if cfg.loss.ema_on:
                     ema.restore() # resume the model parameters
@@ -282,7 +341,12 @@ def main():
     parser = argparse.ArgumentParser(description='Streamax SV Training Engine')
     # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_english_TI_SV.py", nargs='?', help='config file')
     parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_chinese_TI_SV.py", nargs='?', help='config file')
+
+    parser.add_argument('-m', '--mutil_reader_config_file', type=str, default= "/home/huanyuan/code/demo/Speech/SV/config/sv_config_chinese_TD_SV.py", nargs='?', help='config file')
     args = parser.parse_args()
+
+    args.mutil_reader_bool = True
+    args.mutil_reader_loss_weight = 0.5
     train(args)
 
 

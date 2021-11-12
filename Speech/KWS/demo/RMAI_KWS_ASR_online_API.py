@@ -114,7 +114,8 @@ class OnlineAudio:
         print("[Init:] wakeup & asr")
         
         # init
-        kws_asr_api = KwsAsrApi(cfg_path = cfg_path, bool_do_kws_weakup=True, bool_do_asr=True, bool_gpu=True)
+        # kws_asr_api = KwsAsrApi(cfg_path = cfg_path, bool_do_kws_weakup=True, bool_do_asr=True, bool_gpu=True)
+        kws_asr_api = KwsAsrApi(cfg_path = cfg_path, bool_do_kws_weakup=True, bool_do_asr=False, bool_do_sv=True, bool_gpu=True)
 
         audio_data_list = []
         while True:
@@ -152,8 +153,8 @@ class OnlineAudio:
         # play_process.start()
 
         # 监听
-        # listen_process_wakeup = Process(target=self.listen, args=(self.event, self.audio_queue_wakeup))
-        listen_process_wakeup = Process(target=self.listen_file, args=(self.event, self.audio_queue_wakeup))
+        listen_process_wakeup = Process(target=self.listen, args=(self.event, self.audio_queue_wakeup))
+        # listen_process_wakeup = Process(target=self.listen_file, args=(self.event, self.audio_queue_wakeup))
         listen_process_wakeup.start()
 
         # 唤醒

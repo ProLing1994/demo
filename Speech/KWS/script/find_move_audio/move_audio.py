@@ -6,8 +6,8 @@ import sys
 import shutil
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
-from utils.folder_tools import *
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.utils.folder_tools import *
 
 def copy_audio():
     # init 
@@ -30,8 +30,8 @@ def copy_audio():
 
 
 if __name__ == "__main__":
-    default_input_dir = "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/test_straming_wav/difficult_sample_mining/"
-    default_output_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/difficult_sample_mining/Truck_Platformalarm_10262021/truck_platform_alarm_8k/"
+    default_input_dir = "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/test_straming_wav/实车录制_0427_pytorch/阈值_05_05/其他录音/"
+    default_output_dir = "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/test_straming_wav/test/"
     
     parser = argparse.ArgumentParser(description='Streamax KWS Engine')
     parser.add_argument('--input_dir', type=str, default=default_input_dir)

@@ -15,9 +15,9 @@ _pad        = '_'
 _eos        = '~'
 
 # 英文字符模板
-# _characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!\'\"(),-.:;? "
-# 兼容中文字符模板(old)s
-_characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!/\'\"(),-.:;?# "
+_characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!\'\"(),-.:;? "
+# # 兼容中文字符模板(old)
+# _characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!/\'\"(),-.:;?# "
 # # 兼容中文字符模板(new)
 # _characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!\'\"(),-.:;? %/'
 # _digits     = '0123456789'

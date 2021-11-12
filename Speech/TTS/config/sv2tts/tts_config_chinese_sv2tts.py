@@ -26,7 +26,6 @@ __C.general.dataset_list = ['BZNSYP']
 __C.general.dataset_path_dict = {
                                 "BZNSYP": "/mnt/huanyuan/data/speech/asr/Chinese/BZNSYP/", 
                                 "BZNSYP_training": "/mnt/huanyuan/data/speech/asr/Chinese/BZNSYP/Wave", 
-                                "BZNSYP_testing": None, 
                                 }
 __C.general.mutil_speaker = False
 

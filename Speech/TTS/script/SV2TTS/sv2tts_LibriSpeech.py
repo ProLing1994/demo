@@ -108,7 +108,7 @@ def speech_generation(args):
                     create_folder(os.path.join(args.output_folder, sub_folder_name))
                     audio_path = os.path.join(args.output_folder, sub_folder_name, args.output_format.format(int(speaker_id), int(section_id), time_id))
                     print(generated_wav.dtype)
-                    audio.save_wav(audio_path, generated_wav.astype(np.float32), synthesizer.sample_rate)
+                    audio.save_wav(generated_wav.astype(np.float32), audio_path, synthesizer.sample_rate)
                     print("\nSaved output as %s\n\n" % audio_path)
 
                     tqdm.write("Done: {}/{} ".format(speaker_idx, len(speaker_id_list)))
@@ -136,10 +136,10 @@ if __name__ == '__main__':
                         help="Path to a saved vocoder")
     # LibriSpeech
     parser.add_argument("--data_path", type=Path, 
-                        default= "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-clean-100/")
-                        # default= "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-clean-360/")
-                        # default= "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-other-500/")
-                        # default= "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/test-clean/")
+                        default= "/mnt/huanyuan/data/speech/asr/English/LibriSpeech/LibriSpeech/train-clean-100/")
+                        # default= "/mnt/huanyuan/data/speech/asr/English/LibriSpeech/LibriSpeech/train-clean-360/")
+                        # default= "/mnt/huanyuan/data/speech/asr/English/LibriSpeech/LibriSpeech/train-other-500/")
+                        # default= "/mnt/huanyuan/data/speech/asr/English/LibriSpeech/LibriSpeech/test-clean/")
 
     # # activate bwc 
     # parser.add_argument("--output_folder", type=Path, 
@@ -158,22 +158,18 @@ if __name__ == '__main__':
     # parser.add_argument("--repeat_time", type=int, 
     #                     default= 1)
 
-    # tf_speech_commands
+    # danbing BwcKeyword
     parser.add_argument("--output_folder", type=Path, 
-                        # default= "/mnt/huanyuan/data/speech/kws/tf_speech_commands/tts/sv2tts/LibriSpeech/train-clean-100/")
-                        default= "/mnt/huanyuan/data/speech/kws/tf_speech_commands/tts/sv2tts/LibriSpeech/train-clean-360/")
+                        default= "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_BwcKeyword/tts/sv2tts/LibriSpeech/train-clean-100/")
+                        # default= "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_BwcKeyword/tts/sv2tts/LibriSpeech/train-clean-360/")
     parser.add_argument("--output_format", type=str, 
-                        default= "S{:0>6d}_TTSsv2tts_P{:0>8d}T{:0>6d}.wav")
+                        default= "RM_TTSsv2tts_S{:0>6d}P{:0>8d}T{:0>6d}.wav")
     parser.add_argument("--text_list", type=list, 
-                        default= ["backward", "bed", "bird", "cat", "dog", "down", "eight", "five", "follow", "forward", "four", "go", 
-                                    "happy", "house", "learn", "left", "marvin", "nine", "no", "off", "on", "one", "right", "seven", 
-                                    "sheila", "six", "stop", "three", "tree", "two", "up", "visual", "wow", "yes", "zero"])
+                        default= ["start recording,", "stop recording,", "mute audio,", "unmute audio,"])
     parser.add_argument("--sub_folder_list", type=list, 
-                    default= ["backward", "bed", "bird", "cat", "dog", "down", "eight", "five", "follow", "forward", "four", "go", 
-                                    "happy", "house", "learn", "left", "marvin", "nine", "no", "off", "on", "one", "right", "seven", 
-                                    "sheila", "six", "stop", "three", "tree", "two", "up", "visual", "wow", "yes", "zero"])
+                    default= ["StartRecording", "StopRecording", "MuteAudio", "UnmuteAudio"])
     parser.add_argument("--random_time", type=int, 
-                        default= 5)
+                        default= 1)
     parser.add_argument("--repeat_time", type=int, 
                         default= 5)
 
@@ -182,3 +178,28 @@ if __name__ == '__main__':
 
     ## speech generation
     speech_generation(args)
+
+    # # tf_speech_commands
+    # parser.add_argument("--output_folder", type=Path, 
+    #                     # default= "/mnt/huanyuan/data/speech/kws/tf_speech_commands/tts/sv2tts/LibriSpeech/train-clean-100/")
+    #                     default= "/mnt/huanyuan/data/speech/kws/tf_speech_commands/tts/sv2tts/LibriSpeech/train-clean-360/")
+    # parser.add_argument("--output_format", type=str, 
+    #                     default= "S{:0>6d}_TTSsv2tts_P{:0>8d}T{:0>6d}.wav")
+    # parser.add_argument("--text_list", type=list, 
+    #                     default= ["backward", "bed", "bird", "cat", "dog", "down", "eight", "five", "follow", "forward", "four", "go", 
+    #                                 "happy", "house", "learn", "left", "marvin", "nine", "no", "off", "on", "one", "right", "seven", 
+    #                                 "sheila", "six", "stop", "three", "tree", "two", "up", "visual", "wow", "yes", "zero"])
+    # parser.add_argument("--sub_folder_list", type=list, 
+    #                 default= ["backward", "bed", "bird", "cat", "dog", "down", "eight", "five", "follow", "forward", "four", "go", 
+    #                                 "happy", "house", "learn", "left", "marvin", "nine", "no", "off", "on", "one", "right", "seven", 
+    #                                 "sheila", "six", "stop", "three", "tree", "two", "up", "visual", "wow", "yes", "zero"])
+    # parser.add_argument("--random_time", type=int, 
+    #                     default= 5)
+    # parser.add_argument("--repeat_time", type=int, 
+    #                     default= 5)
+
+    # args = parser.parse_args()
+    # print_args(args, parser)
+
+    # ## speech generation
+    # speech_generation(args)

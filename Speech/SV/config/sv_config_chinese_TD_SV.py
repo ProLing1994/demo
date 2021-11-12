@@ -11,34 +11,12 @@ cfg = __C
 __C.general = {}
 
 '''
-SLR38: http://www.openslr.org/38/, 854/0(854), 97550/0(97550)
-SLR62: aidatatang_200zh: https://www.openslr.org/62/,  420/120(540), 123345/35454(158799)
-SLR68: MAGICDATA: http://www.openslr.org/68/, 1016/43(1059), 432580/17752(450332)
-SLR93：Aishell3: http://www.openslr.org/93/, 171/156(218), 55618/19689(75307)
-SLR82：CN-Celeb1: https://www.openslr.org/82/, 992/0(992), 93080/0(93080)
-SLR82：CN-Celeb2: https://www.openslr.org/82/, 1996/0(1996), 495312/0(495312)
+XiaoRui: http://www.openslr.org/38/, 854/0(854), 97550/0(97550)
 '''
-__C.general.dataset_list = ['SLR38', 'SLR62', 'SLR68', 'Aishell3', 'CN-Celeb1', 'CN-Celeb2']
-# __C.general.dataset_list = ['Aishell3']
-# __C.general.dataset_list = ['test']
+__C.general.dataset_list = ['XiaoRui']
 __C.general.dataset_path_dict = {
-                                    "SLR38": "/mnt/huanyuan/data/speech/asr/Chinese/SLR38/ST-CMDS-20170001_1-OS/",
-                                    "SLR38_training": "/mnt/huanyuan/data/speech/asr/Chinese/SLR38/ST-CMDS-20170001_1-OS/",
-                                    "SLR38_format": '\d{8}P(\d{5})A(\d{4}).wav$',        # 20170001P00001A0001.wav
-                                    "SLR62": "/mnt/huanyuan/data/speech/asr/Chinese/aidatatang_200zh",
-                                    "SLR62_training": "/mnt/huanyuan/data/speech/asr/Chinese/aidatatang_200zh/aidatatang_200zh/corpus/train",
-                                    "SLR62_testing": "/mnt/huanyuan/data/speech/asr/Chinese/aidatatang_200zh/aidatatang_200zh/corpus/test",
-                                    "SLR68": "/mnt/huanyuan/data/speech/asr/Chinese/SLR68/",
-                                    "SLR68_training": "/mnt/huanyuan/data/speech/asr/Chinese/SLR68/train",
-                                    "SLR68_testing": "/mnt/huanyuan/data/speech/asr/Chinese/SLR68/test",
-                                    "Aishell3": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/", 
-                                    "Aishell3_training": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/train/wav", 
-                                    "Aishell3_testing": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/test/wav", 
-                                    "CN-Celeb1": "/mnt/huanyuan/data/speech/sv/CN-Celeb1/CN-Celeb_flac/data/",
-                                    "CN-Celeb1_training": "/mnt/huanyuan/data/speech/sv/CN-Celeb1/CN-Celeb_flac/data/",
-                                    "CN-Celeb2": "/mnt/huanyuan/data/speech/sv/CN-Celeb2/CN-Celeb2_flac/data/",
-                                    "CN-Celeb2_training": "/mnt/huanyuan/data/speech/sv/CN-Celeb2/CN-Celeb2_flac/data/",
-                                    "background_noise":"/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/_background_noise_",
+                                    "XiaoRui": "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_16k_1.8_07052021/",
+                                    "XiaoRui_format": 'S(\d{3})M(\d{1})D(\d{2})T(\d{1,3}).wav$',
                                     }
 
 # data path
@@ -46,26 +24,21 @@ __C.general.data_dir = "/mnt/huanyuan2/data/speech/sv/Chinese_TI_SV_dataset/data
 
 # the output of training models and logging files
 # __C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/test"
-# __C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_0_basic_10122021"
-# __C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_1_basic_10122021"
-# __C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_2_basic_softmax_11062021"
-# __C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_4_basic_ge2e_11082021"
 __C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_td_sv_1_5_basic_ge2e_11122021"
 
 # test after save pytorch model
 __C.general.is_test = True
-# __C.general.is_test = False
 
 # finetune model
-__C.general.finetune_on = True
-# __C.general.finetune_on = False
+# __C.general.finetune_on = True
+__C.general.finetune_on = False
 
 # 模型加载方式，[0: 根据文件目录查找, 1: 模型加载，指定文件路径]
 __C.general.load_mode_type = 0
 
 # 方式一：模型加载，根据文件目录查找
-__C.general.finetune_model_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_4_basic_ge2e_11082021"
-__C.general.finetune_epoch_num = -1
+__C.general.finetune_model_dir = ""
+__C.general.finetune_epoch_num = 0
 __C.general.finetune_sub_folder_name ='checkpoints'
 # 方式二：模型加载，指定文件路径
 __C.general.finetune_model_path = ""
@@ -183,8 +156,8 @@ __C.dataset.data_size = [80, 401]
 __C.dataset.augmentation = {}
 
 # based on audio waveform: on
-# __C.dataset.augmentation.on = True
-__C.dataset.augmentation.on = False
+__C.dataset.augmentation.on = True
+# __C.dataset.augmentation.on = False
 
 # How many of the training samples have background noise mixed in.
 __C.dataset.augmentation.background_frequency = 0.8
@@ -281,7 +254,7 @@ __C.train.num_epochs = 500
 # the loss method: ge2e
 # __C.train.speakers_per_batch = 64
 # __C.train.utterances_per_speaker = 10
-__C.train.speakers_per_batch = 48
+__C.train.speakers_per_batch = 18
 __C.train.utterances_per_speaker = 10
 # __C.train.speakers_per_batch = 4
 # __C.train.utterances_per_speaker = 4

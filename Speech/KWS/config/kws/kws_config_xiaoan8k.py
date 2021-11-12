@@ -16,37 +16,54 @@ __C.general.sub_data_dir = ["/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experi
 
 # data version
 # __C.general.version = "1.8"
-__C.general.version = "1.9"     # 数据集清洗（小声音频）+ 添加部分实车录制数据 + 困难样本挖掘（电影、实车误报）
+# __C.general.version = "1.9"     # 数据集清洗（小声音频）+ 添加部分实车录制数据 + 困难样本挖掘（电影、实车误报）
+__C.general.version = "1.10"     # 困难样本挖掘（实车误报）
 
 # data date
 # __C.general.date = "05202021"
-__C.general.date = "10262021"
+# __C.general.date = "10262021"
+__C.general.date = "11112021"
 
 # data path
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.8_05202021/total_data_files.csv"
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_9_10262021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_9_10262021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_10_11112021/total_data_files.csv"
 
 # background noise path
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.8_05202021/background_noise_files.csv"
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_9_10262021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_9_10262021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_10_11112021/background_noise_files.csv"
 
 # test after save pytorch model
-# __C.general.is_test = True
-__C.general.is_test = False
+__C.general.is_test = True
+# __C.general.is_test = False
 
 # the output of training models and logging files
 __C.general.save_dir = "/mnt/huanyuan2/model/kws/kws_xiaoan/test"
 # __C.general.save_dir = "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_1_10_res15_fbankcpu_041262021/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_1_11_res15_fbankcpu_10262021/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/"
+# __C.general.save_dir = "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/"
 
 # finetune model
 __C.general.finetune_on = False
 __C.general.finetune_model_dir = ""
-__C.general.finetune_epoch = 0
-# __C.general.finetune_on = True
-# __C.general.finetune_model_dir = "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_1_10_res15_fbankcpu_041262021/"
-# __C.general.finetune_epoch = 1999
+
+# 模型加载方式，[0: 根据文件目录查找, 1: 模型加载，指定文件路径]
+__C.general.load_mode_type = 0
+
+# 方式一：模型加载，根据文件目录查找
+__C.general.finetune_model_dir = ""
+__C.general.finetune_epoch_num = 0
+__C.general.finetune_sub_folder_name ='checkpoints'
+# 方式二：模型加载，指定文件路径
+__C.general.finetune_model_path = ""
+
+__C.general.finetune_state_name = 'state_dict'
+__C.general.finetune_ignore_key_list = []
+# __C.general.finetune_ignore_key_list = ['module.encoder.embedding.weight']
+# module 字段添加，[0: 不添加字段, 1: 去除 module 字段, 2: 添加 module 字段]
+__C.general.finetune_add_module_type = 0
 
 # set certain epoch to continue training, set -1 to train from scratch
 __C.general.resume_epoch = -1
@@ -324,7 +341,7 @@ __C.loss.ema_alpha = 0.995
 __C.net = {}
 
 # the network name
-__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/res15.py"
+__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-hisi-novt-144-142.py"
 __C.net.class_name = "SpeechResModel"
 
 ######################################

@@ -2,6 +2,7 @@ int16_max = (2 ** 15) - 1
 
 TRAINING_NAME = "training"
 TESTING_NAME = "testing"
+VALIDATION_NAME = "validation"
 BACKGROUND_NOISE_DIR_NAME = '_background_noise_'
 
 ### 数据预处理阶段
@@ -24,7 +25,8 @@ vad_max_silence_length = 6                  # 利用膨胀腐蚀思想，减少�
 
 ## Check wave length
 # 在数据预处理阶段，需要检查数据的长度，若数据长度太短，则删除数据
-check_wave_length_ms = 1600
+# check_wave_length_ms = 1600           # 1.6s
+check_wave_length_ms = 1000             # 1s
 
 ## VoxCeleb1 nationalites
 # 在数据预处理阶段，对 VoxCeleb1 数据集进行预处理

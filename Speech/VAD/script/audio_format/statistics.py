@@ -44,7 +44,7 @@ def static_audio_length(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Streamax Engine')
     args = parser.parse_args()
-    args.input_folder = "/mnt/huanyuan/data/speech/Recording/MTA_Truck_Platformalarm/adpro_8k/1013-1018/原始音频/1017/"
+    args.input_folder = "/mnt/huanyuan/data/speech/Recording/MTA_Truck_Platformalarm/adpro_8k/1108_1110/原始音频/"
     args.input_suffix = ".wav"
     args.sample_rate = 8000
 

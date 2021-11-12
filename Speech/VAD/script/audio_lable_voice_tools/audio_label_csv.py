@@ -17,13 +17,14 @@ def audio_lable_csv(args):
             lines = f.readlines()
             
             for line in lines:
-                label_csv_dict = {}
-                label_csv_dict['file'] = file_list[idx]
-                # label_csv_dict['label'] = str(line.strip().split(':')[-1].replace(' ', ''))
-                label_csv_dict['label'] = "xiaoan8k"
-                label_csv_dict['start_time'] = int(line.strip().split(':')[0].split('~')[0]) * 1000.0 / args.sample_rate
-                label_csv_dict['end_time'] = int(line.strip().split(':')[0].split('~')[1]) * 1000.0 / args.sample_rate
-                label_csv_list.append(label_csv_dict)
+                if line.split(':')[-1].strip() == args.segment_label:
+                    label_csv_dict = {}
+                    label_csv_dict['file'] = file_list[idx]
+                    # label_csv_dict['label'] = str(line.strip().split(':')[-1].replace(' ', ''))
+                    label_csv_dict['label'] = "xiaoan8k"
+                    label_csv_dict['start_time'] = int(line.strip().split(':')[0].split('~')[0]) * 1000.0 / args.sample_rate
+                    label_csv_dict['end_time'] = int(line.strip().split(':')[0].split('~')[1]) * 1000.0 / args.sample_rate
+                    label_csv_list.append(label_csv_dict)
 
         label_csv_pd = pd.DataFrame(label_csv_list)
         label_csv_pd.to_csv(file_path.split('.')[0] + '.csv', index=False, encoding="utf_8_sig")
@@ -40,11 +41,12 @@ def audio_lable_csv(args):
         
 def main():
     parser = argparse.ArgumentParser(description="")
-    parser.add_argument('--input_folder', type=str, default="/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/更新数据处理/") 
+    parser.add_argument('--input_folder', type=str, default="/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/更新漏标注数据处理/") 
     args = parser.parse_args()
 
     # params
     args.sample_rate = 16000
+    args.segment_label = "xiaoan"
 
     audio_lable_csv(args)
 

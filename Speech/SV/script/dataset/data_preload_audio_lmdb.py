@@ -16,7 +16,8 @@ from Basic.utils.folder_tools import *
 
 parser = argparse.ArgumentParser(description='Streamax SV Data preload Engine')
 # parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_english_TI_SV.py", help='config file')
-parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_chinese_TI_SV.py", help='config file')
+# parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_chinese_TI_SV.py", help='config file')
+parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_chinese_TD_SV.py", help='config file')
 args = parser.parse_args()
 
 # params
@@ -138,8 +139,9 @@ def preload_background_audio_lmdb():
 
 def main():
     print("[Begin] Data Preload")
-    preload_audio_lmdb('training')
-    preload_audio_lmdb('testing')
+    preload_audio_lmdb(hparams.TRAINING_NAME)
+    preload_audio_lmdb(hparams.TESTING_NAME)
+    preload_audio_lmdb(hparams.VALIDATION_NAME)
     preload_background_audio_lmdb()
     print("[Done] Data Preload")
 

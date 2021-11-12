@@ -9,6 +9,7 @@ sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 import ASR.impl.asr_data_loader_pyimpl as WaveLoader_Python
 from ASR.impl.asr_feature_pyimpl import Feature
 import ASR.impl.asr_decode_pyimpl as Decode_Python
+import SV.demo.impl.model_tool as sv_model
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from common.common.utils.python.file_tools import load_module_from_disk
@@ -18,9 +19,10 @@ class KwsAsrApi():
     """
     KwsAsrApi
     """
-    def __init__(self, cfg_path, bool_do_kws_weakup=True, bool_do_asr=True, bool_gpu=True):
+    def __init__(self, cfg_path, bool_do_kws_weakup=True, bool_do_asr=True, bool_do_sv=False, bool_gpu=True):
         self.bool_do_kws_weakup = bool_do_kws_weakup
         self.bool_do_asr = bool_do_asr
+        self.bool_do_sv = bool_do_sv
         self.bool_gpu = bool_gpu
 
         # cfg init
@@ -40,6 +42,7 @@ class KwsAsrApi():
         self.params_dict['audio_data_container_np'] = np.array([])
         self.params_dict['feature_data_container_np'] = np.array([])
         self.params_dict['kws_container_np'] = np.array([])         # kws 结构容器中，用于滑窗输出结果
+        self.params_dict['sv_embedding_container'] = []                       # sv 结构容器中，用于存储 embedding
         self.params_dict['asr_duplicate_counter'] = {}
 
         self.params_dict['bool_weakup'] = False
@@ -58,6 +61,7 @@ class KwsAsrApi():
         # init model
         self.kws_init()
         self.asr_init_normal()
+        self.sv_init()
 
         if self.cfg.general.asr_second_on:
             self.asr_init_second()
@@ -92,7 +96,10 @@ class KwsAsrApi():
 
                 self.params_dict['bool_weakup'] = True
                 output_str += "Weakup "
-    
+
+                # sv
+                self.run_sv()
+
                 # save audio
                 self.output_wave("Weakup")
         else:
@@ -275,7 +282,28 @@ class KwsAsrApi():
         # init lm
         if self.cfg.general.second_decode_id == 1:
             self.asr_decoder_second.init_lm_model(self.cfg.model.asr_second_lm_path)
-        
+
+    def sv_init(self):
+        self.sv_net = None
+
+        if not self.bool_do_sv:
+            return 
+
+        # cfg init
+        self.cfg_sv = load_module_from_disk(self.cfg.model.sv_config_file).cfg
+
+        # init model
+        if self.cfg.model.bool_caffe:
+            pass
+        elif self.cfg.model.bool_pytorch:
+            self.sv_net = sv_model.pytorch_sv_model_init(self.cfg_sv,
+                                                        self.cfg.model.sv_chk_path, 
+                                                        self.cfg.model.sv_model_name, 
+                                                        self.cfg.model.sv_class_name, 
+                                                        self.bool_gpu)
+        else:
+            raise Exception("bool_caffe = {}, bool_pytorch = {}".format(self.cfg.model.bool_caffe, self.cfg.model.bool_pytorch))
+            
     def run_kws(self):
         # init
         kws_score_list = []
@@ -522,6 +550,22 @@ class KwsAsrApi():
 
         return result_string
 
+    def run_sv(self):
+
+        if not self.bool_do_sv:
+            return 
+
+        wav = np.array(self.output_dict['output_data_list'])
+        wav = wav[ - self.cfg.general.sample_rate * 2:]
+        len(wav)
+        embedding = sv_model.pytorch_sv_model_forward(self.cfg_sv, self.sv_net, wav, self.bool_gpu)
+        self.params_dict['sv_embedding_container'].append(embedding)
+        self.params_dict['sv_embedding_container'] = self.params_dict['sv_embedding_container'][-10:]
+        if len(self.params_dict['sv_embedding_container']) > 3:
+            sv_model.show_embedding(self.params_dict['sv_embedding_container'])
+        
+        return
+
     def asr_duplicate_update_counter(self):
         for key in self.params_dict['asr_duplicate_counter']:
             if self.params_dict['asr_duplicate_counter'][key] > 0:
@@ -551,5 +595,5 @@ class KwsAsrApi():
             output_path = os.path.join(self.cfg.test.output_folder, '{}_{}_{}.wav'.format(output_name, date_time, self.output_dict['output_kws_id']))
             # wave_loader = WaveLoader_Python.WaveLoader_Librosa(self.cfg.general.sample_rate)
             wave_loader = WaveLoader_Python.WaveLoader_Soundfile(self.cfg.general.sample_rate)
-            wave_loader.save_data(np.array(self.output_dict['output_data_list']).astype(np.int16), output_path)
             self.output_dict['output_kws_id'] += 1
+            wave_loader.save_data(np.array(self.output_dict['output_data_list']).astype(np.int16), output_path)

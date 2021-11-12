@@ -161,6 +161,21 @@ __C.model.asr_model_name = "ASR_mandarin"
 __C.model.asr_class_name = "ASR_Mandarin_Net"
 __C.model.asr_num_classes = 408
 
+# sv
+# ## caffe, To Do
+# __C.model.kws_model_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaorui16k_tc_resnet14/xiaorui16k_tc-resnet14-hisi_6_3_checkpoints_1999/kws_xiaorui16k_tc_resnet14_hisi_6_3_06302021.caffemodel"
+# __C.model.kws_prototxt_path = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaorui16k_tc_resnet14/xiaorui16k_tc-resnet14-hisi_6_3_checkpoints_1999/kws_xiaorui16k_tc_resnet14_hisi_6_3_06302021.prototxt"
+# __C.model.kws_net_input_name = "data"
+# __C.model.kws_net_output_name = "prob"
+# __C.model.kws_chw_params = "1,64,192"
+# __C.model.kws_transpose = True
+
+## pytorch 
+__C.model.sv_config_file = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_1_basic_10122021/sv_config_chinese_TI_SV.py"
+__C.model.sv_chk_path = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_1_basic_10122021/checkpoints/chk_999/parameter.pkl"
+__C.model.sv_model_name = "/home/huanyuan/code/demo/Speech/SV/network/basic.py"
+__C.model.sv_class_name = 'SpeakerEncoder'
+
 ##################################
 # test parameters
 ##################################

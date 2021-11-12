@@ -143,6 +143,15 @@ __C.dataset.feature_bin_count = 40
 # __C.dataset.nfilt = 64
 __C.dataset.nfilt = 40
 
+# fmin, only support preprocess ["fbank_log", "fbank_log_manual"]
+# Set this to 55 if your speaker is male! if female, 95 should help taking off noise. (To 
+# test depending on dataset. Pitch info: male~[65, 260], female~[100, 525])
+__C.dataset.fmin = 55
+
+# fmax, only support preprocess ["fbank_log", "fbank_log_manual"]
+# To be increased/reduced depending on data.
+__C.dataset.fmax = 7600
+
 # input size of training data (w, h), whether input size is a multiple of 16, unit: voxel
 # __C.dataset.h_alignment = True, [hisi], 模型需要图像输入长度为 16 的倍数
 # __C.dataset.h_alignment = False, [amba, novt]
@@ -296,12 +305,20 @@ __C.train.betas = (0.9, 0.999)
 
 __C.loss = {}
 
+# the loss method, support ['softmax', 'ge2e']
+__C.loss.method = 'ge2e'
+# __C.loss.method = 'softmax'
+
 # the loss name, support ['softmax','focal']
-# __C.loss.name = 'softmax'
-__C.loss.name = 'focal'
+__C.loss.name = 'softmax'
+# __C.loss.name = 'focal'
 
 # the number of class
+# the loss method: ge2e
 __C.loss.num_classes =  __C.train.batch_size
+# # the loss method: softmax
+# # __C.loss.num_classes = 49           # ['test']
+# __C.loss.num_classes = 5449         # ['SLR38', 'SLR62', 'SLR68', 'Aishell3', 'CN-Celeb1', 'CN-Celeb2']
 
 # the weight matrix for each class in focal loss, including background class
 __C.loss.obj_weight = None

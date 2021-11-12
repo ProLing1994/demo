@@ -1,6 +1,7 @@
 import argparse
 from pickle import NONE
 import pandas as pd
+import re
 import sys 
 from tqdm import tqdm
 
@@ -72,11 +73,10 @@ def load_dataset_type_2(dataset_name, dataset_path, data_files, mode):
             if utterance_id.endswith('flac') or utterance_id.endswith('wav'):
                 section_id = 0
                 file_path = os.path.join(os.path.join(dataset_path, speaker_id, utterance_id))
-                # data_files.append({'dataset': dataset_name, 'speaker': speaker_id, 'section': section_id, 'utterance': utterance_id, 'file': file_path, 'mode': mode})
                 data_files.append({'dataset': dataset_name, 'speaker': speaker_id, 'section': section_id, 'utterance': speaker_id + '_' + utterance_id, 'file': file_path, 'mode': mode})
 
 
-def load_dataset_type_3(dataset_name, dataset_path, data_files, mode):
+def load_dataset_type_3(dataset_name, dataset_path, data_files, mode, dataset_format=None):
     '''
     load_dataset
     数据格式：
@@ -89,22 +89,24 @@ def load_dataset_type_3(dataset_name, dataset_path, data_files, mode):
     for wav_idx in tqdm(range(len(wav_list))):
         file_path = wav_list[wav_idx]
 
-        # # 20170001P00001A0001.wav
-        # # 20170001P00001I0001.wav
-        # speaker_id = str(os.path.split(os.path.basename(file_path))).split('P')[1][:6]
-        # section_id = 0
-        # utterance_id = os.path.basename(file_path)
+        if dataset_format:
+            # 20170001P00001A0001.wav
+            # RM_Room_BWC_S1T1P1.wav
+            file_name = os.path.basename(file_path).split('_')[-1]
+            speaker_id = re.match(dataset_format, file_name).group(1)
+            speaker_id = '{}_{}'.format(dataset_name, speaker_id)
 
-        # 000001.wav
-        # 010000.wav
-        speaker_id = '{}_{}'.format('BZNSYP', '0')
+        else:
+            # 000001.wav
+            speaker_id = '{}_{}'.format(dataset_name, '0')
+
         section_id = 0
         utterance_id = os.path.basename(file_path)
 
         data_files.append({'dataset': dataset_name, 'speaker': speaker_id, 'section': section_id, 'utterance': speaker_id + '_' + utterance_id, 'file': file_path, 'mode': mode})
 
 
-def load_dataset(dataset_name, dataset_path, data_files, mode, keep_speaker_ids=None, type=1):
+def load_dataset_normal(dataset_name, dataset_path, data_files, mode, keep_speaker_ids=None, type=1, dataset_format=None):
     # dataset_path == None, return
     if dataset_path == None:
         return 
@@ -114,15 +116,41 @@ def load_dataset(dataset_name, dataset_path, data_files, mode, keep_speaker_ids=
     if type == 2:
         load_dataset_type_2(dataset_name, dataset_path, data_files, mode)
     if type == 3:
-        load_dataset_type_3(dataset_name, dataset_path, data_files, mode)
+        load_dataset_type_3(dataset_name, dataset_path, data_files, mode, dataset_format=dataset_format)
+
+
+def load_dataset_csv(dataset_name, dataset_csv_path, dataset_format, data_files, mode):
+    '''
+    load_dataset
+    数据格式：
+    -- 根据 csv 文件自动分割
+    '''
+    # dataset_path == None, return
+    if dataset_csv_path == None:
+        return 
+
+    dataset_pd = pd.read_csv(dataset_csv_path)
+    dataset_pd = dataset_pd[dataset_pd['mode'] == mode]
+
+    for _, row in tqdm(dataset_pd.iterrows()):
+        file_path = row['file']
+        file_name = os.path.basename(file_path).split('_')[-1]
+
+        speaker_id = re.match(dataset_format, file_name).group(1)
+        speaker_id = '{}_{}'.format(dataset_name, speaker_id)
+
+        section_id = 0
+        utterance_id = file_name
+        data_files.append({'dataset': dataset_name, 'speaker': speaker_id, 'section': section_id, 'utterance': utterance_id, 'file': file_path, 'mode': mode})
 
 
 def data_split_normal(cfg, dataset_name, type=1):
     '''
     data_split_normal
     '''
-    dataset_training_path = cfg.general.dataset_path_dict[dataset_name+ "_training"]
-    dataset_testing_path = cfg.general.dataset_path_dict[dataset_name+ "_testing"]
+    dataset_training_path = cfg.general.dataset_path_dict[dataset_name+ "_training"] if dataset_name+ "_training" in cfg.general.dataset_path_dict else None
+    dataset_testing_path = cfg.general.dataset_path_dict[dataset_name+ "_testing"] if dataset_name+ "_testing" in cfg.general.dataset_path_dict else None
+    dataset_format = cfg.general.dataset_path_dict[dataset_name+ "_format"] if dataset_name+ "_format" in cfg.general.dataset_path_dict else None
     output_csv = os.path.join(cfg.general.data_dir, dataset_name + '.csv')
 
     if os.path.exists(output_csv):
@@ -132,9 +160,34 @@ def data_split_normal(cfg, dataset_name, type=1):
     data_files = []                 # {'speaker': [], 'section': [], 'utterance': [], 'file': [], 'mode': []}
     
     print("[Begin] dataset: {}, set: {}".format(dataset_name, hparams.TRAINING_NAME))
-    load_dataset(dataset_name, dataset_training_path, data_files, hparams.TRAINING_NAME, type=type)
+    load_dataset_normal(dataset_name, dataset_training_path, data_files, hparams.TRAINING_NAME, type=type, dataset_format=dataset_format)
     print("[Begin] dataset: {}, set: {}".format(dataset_name, hparams.TESTING_NAME))
-    load_dataset(dataset_name, dataset_testing_path, data_files, hparams.TESTING_NAME, type=type)
+    load_dataset_normal(dataset_name, dataset_testing_path, data_files, hparams.TESTING_NAME, type=type, dataset_format=dataset_format)
+
+    data_pd = pd.DataFrame(data_files)
+    data_pd.to_csv(output_csv, index=False, encoding="utf_8_sig")
+
+
+def data_split_csv(cfg, dataset_name):
+    '''
+    data_split_csv
+    '''
+    dataset_csv_path = os.path.join(cfg.general.dataset_path_dict[dataset_name], 'positive_data_files.csv')
+    dataset_format = cfg.general.dataset_path_dict[dataset_name+ "_format"]
+    output_csv = os.path.join(cfg.general.data_dir, dataset_name + '.csv')
+
+    if os.path.exists(output_csv):
+        return 
+    
+    # init
+    data_files = []                 # {'speaker': [], 'section': [], 'utterance': [], 'file': [], 'mode': []}
+
+    print("[Begin] dataset: {}, set: {}".format(dataset_name, hparams.TRAINING_NAME))
+    load_dataset_csv(dataset_name, dataset_csv_path, dataset_format, data_files, hparams.TRAINING_NAME)
+    print("[Begin] dataset: {}, set: {}".format(dataset_name, hparams.TESTING_NAME))
+    load_dataset_csv(dataset_name, dataset_csv_path, dataset_format, data_files, hparams.TESTING_NAME)
+    print("[Begin] dataset: {}, set: {}".format(dataset_name, hparams.VALIDATION_NAME))
+    load_dataset_csv(dataset_name, dataset_csv_path, dataset_format, data_files, hparams.VALIDATION_NAME)
 
     data_pd = pd.DataFrame(data_files)
     data_pd.to_csv(output_csv, index=False, encoding="utf_8_sig")
@@ -169,9 +222,9 @@ def data_split_voxceleb1(cfg, dataset_name, type=1):
     data_files = []                 # {'dataset': [], 'speaker': [], 'section': [], 'utterance': [], 'file': [], 'mode': []}
     
     print("[Begin] dataset: {}, set: {}".format(dataset_name, hparams.TRAINING_NAME))
-    load_dataset(dataset_name, dataset_training_path, data_files, hparams.TRAINING_NAME, keep_speaker_ids=keep_speaker_ids, type=type)
+    load_dataset_normal(dataset_name, dataset_training_path, data_files, hparams.TRAINING_NAME, keep_speaker_ids=keep_speaker_ids, type=type)
     print("[Begin] dataset: {}, set: {}".format(dataset_name, hparams.TESTING_NAME))
-    load_dataset(dataset_name, dataset_testing_path, data_files, hparams.TESTING_NAME, keep_speaker_ids=keep_speaker_ids, type=type)
+    load_dataset_normal(dataset_name, dataset_testing_path, data_files, hparams.TESTING_NAME, keep_speaker_ids=keep_speaker_ids, type=type)
 
     data_pd = pd.DataFrame(data_files)
     data_pd.to_csv(output_csv, index=False, encoding="utf_8_sig")
@@ -214,26 +267,16 @@ def data_split(args):
     for dataset_idx in range(len(cfg.general.dataset_list)):
         dataset_name = cfg.general.dataset_list[dataset_idx]
 
-        if dataset_name == 'librispeech_other':
+        if dataset_name in ['librispeech_clean_100', 'librispeech_clean_360', 'librispeech_test_clean', 'librispeech_other']:
             data_split_normal(cfg, dataset_name, type = 1)
-        elif dataset_name == 'VoxCeleb1':
+        elif dataset_name in ['VoxCeleb1']:
             data_split_voxceleb1(cfg, dataset_name, type = 1)
-        elif dataset_name == 'VoxCeleb2':
-            data_split_normal(cfg, dataset_name, type = 1)
-        elif dataset_name == 'Aishell3':
+        elif dataset_name in ['Aishell3', 'SLR62', 'SLR68', 'CN-Celeb1', 'CN-Celeb2', 'VoxCeleb2']:
             data_split_normal(cfg, dataset_name, type = 2)
-        elif dataset_name == 'SLR38':
+        elif dataset_name in ['SLR38', 'BZNSYP', "BwcKeyword"]:
             data_split_normal(cfg, dataset_name, type = 3)
-        elif dataset_name == 'SLR62':
-            data_split_normal(cfg, dataset_name, type = 2)
-        elif dataset_name == 'SLR68':
-            data_split_normal(cfg, dataset_name, type = 2)
-        elif dataset_name == 'CN-Celeb1':
-            data_split_normal(cfg, dataset_name, type = 2)
-        elif dataset_name == 'CN-Celeb2':
-            data_split_normal(cfg, dataset_name, type = 2)
-        elif dataset_name == 'BZNSYP':
-            data_split_normal(cfg, dataset_name, type = 3)
+        elif dataset_name in ["XiaoRui"]:
+            data_split_csv(cfg, dataset_name)
 
     # background_noise dataset
     data_split_background_noise(cfg, "background_noise")
@@ -242,7 +285,8 @@ def data_split(args):
 def main():
     parser = argparse.ArgumentParser(description='Streamax SV Data Split Engine')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_english_TI_SV.py", help='config file')
-    parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_chinese_TI_SV.py", help='config file')
+    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_chinese_TI_SV.py", help='config file')
+    parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_chinese_TD_SV.py", help='config file')
     args = parser.parse_args()
 
     print("[Begin] Train test dataset split")

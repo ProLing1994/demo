@@ -3,12 +3,12 @@
 # 该脚本用于训练集、验证集、测试集的分配，以及数据的预先加载
 
 stage=2
-# languague="english"
-languague="chinese"
+languague="english"
+# languague="chinese"
 
 # init
-# config_file=/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_english_sv2tts.py
-config_file=/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_chinese_sv2tts.py
+config_file=/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_english_sv2tts.py
+# config_file=/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_chinese_sv2tts.py
 
 echo "script/dataset/prepare_dataset.sh"
 
@@ -35,6 +35,9 @@ fi
 if [ $stage -le 4 ];then
 	if [ $languague = "chinese" ];then
 		python data_pinyin.py --config_file $config_file || exit 1
+	fi
+	if [ $languague = "english" ];then
+		python data_text.py --config_file $config_file || exit 1
 	fi
 fi
 

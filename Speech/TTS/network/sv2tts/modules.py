@@ -200,6 +200,7 @@ class CBHG(nn.Module):
 
         # And then the Bi-GRU
         # (B, T_in, rnn_units*2)
+        self.gru.flatten_parameters()
         x, _ = self.gru(x)
         return x
 
