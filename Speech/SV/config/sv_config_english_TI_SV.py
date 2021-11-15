@@ -305,8 +305,8 @@ __C.train.betas = (0.9, 0.999)
 
 __C.loss = {}
 
-# the loss method, support ['softmax', 'ge2e']
-__C.loss.method = 'ge2e'
+# the loss method, support ['softmax', 'embedding']
+__C.loss.method = 'embedding'
 # __C.loss.method = 'softmax'
 
 # the loss name, support ['softmax','focal']
@@ -314,7 +314,7 @@ __C.loss.name = 'softmax'
 # __C.loss.name = 'focal'
 
 # the number of class
-# the loss method: ge2e
+# the loss method: embedding
 __C.loss.num_classes =  __C.train.batch_size
 # # the loss method: softmax
 # # __C.loss.num_classes = 49           # ['test']

@@ -28,8 +28,10 @@ def infer(args):
                                 cfg.speaker_verification.model_name, 
                                 cfg.speaker_verification.class_name)
         load_checkpoint(sv_net, 
-                        cfg.speaker_verification.epoch, 
-                        cfg.speaker_verification.model_dir)
+                        cfg.general.load_mode_type,
+                        cfg.speaker_verification.model_dir, cfg.speaker_verification.epoch, cfg.general.finetune_sub_folder_name,
+                        cfg.general.finetune_model_path,
+                        cfg.general.finetune_state_name, cfg.general.finetune_ignore_key_list, cfg.general.finetune_add_module_type)
         sv_net.eval()
 
     # load synthesizer net
@@ -38,8 +40,10 @@ def infer(args):
                                     cfg.net.model_name, 
                                     cfg.net.class_name)
     load_checkpoint(net_synthesizer, 
-                    cfg.test.model_epoch, 
-                    cfg.general.save_dir)
+                    cfg.general.load_mode_type,
+                    cfg.general.save_dir, cfg.test.model_epoch, cfg.general.finetune_sub_folder_name,
+                    cfg.general.finetune_model_path,
+                    cfg.general.finetune_state_name, cfg.general.finetune_ignore_key_list, cfg.general.finetune_add_module_type)
     net_synthesizer.eval()
 
     # load text
@@ -81,25 +85,43 @@ def main():
     # args.text_list = ["activate be double you see."]
     # args.text_name_list = ["activate_b_w_c"]
 
-    # chinese
-    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
-    # parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_finetune_1_2_10232021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
-    parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_tacotron_singlespeaker_finetune_4_3_10292021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
+    # # chinese, en
+    # # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
+    # # parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_finetune_1_2_10232021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_tacotron_singlespeaker_finetune_4_3_10292021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
+    # parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00050001.wav", nargs='?', help='config file')
+    # # parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00730005.wav", nargs='?', help='config file')
+    # args = parser.parse_args()
+    # args.text_list = [
+    #                     # " ".join(get_pinyin("道路千万条安全第一条")),
+    #                     # " ".join(get_pinyin("时刻牢记以人为本安全第一的原则。")),
+    #                     " ".join(get_pinyin("道路千万条，安全第一条。时刻牢记以人为本，安全第一的原则。")),
+    #                     # " ".join(get_pinyin("今天星期五天气好真开心")),
+    #                     # " ".join(get_pinyin("今天星期五，天气好，真开心。")),
+    #                     ]
+    # args.text_name_list = [
+    #                         # "道路千万条安全第一条",
+    #                         # "时刻牢记以人为本安全第一的原则。",
+    #                         "道路千万条，安全第一条。时刻牢记以人为本，安全第一的原则。",
+    #                         # "今天星期五天气好真开心",
+    #                         # "今天星期五，天气好，真开心。",
+    #                         ]
+
+    # chinese, prosody py
+    parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_0_11102021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
     parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00050001.wav", nargs='?', help='config file')
-    # parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00730005.wav", nargs='?', help='config file')
     args = parser.parse_args()
-    # chinese
     args.text_list = [
-                        # " ".join(get_pinyin("道路千万条安全第一条")),
+                        "dao4-lu4 / qian1-wan4-tiao2, an1-quan2 / di4-yi1-tiao2. ",
                         # " ".join(get_pinyin("时刻牢记以人为本安全第一的原则。")),
-                        " ".join(get_pinyin("道路千万条，安全第一条。时刻牢记以人为本，安全第一的原则。")),
+                        # " ".join(get_pinyin("道路千万条，安全第一条。时刻牢记以人为本，安全第一的原则。")),
                         # " ".join(get_pinyin("今天星期五天气好真开心")),
                         # " ".join(get_pinyin("今天星期五，天气好，真开心。")),
                         ]
     args.text_name_list = [
-                            # "道路千万条安全第一条",
+                            "道路千万条安全第一条",
                             # "时刻牢记以人为本安全第一的原则。",
-                            "道路千万条，安全第一条。时刻牢记以人为本，安全第一的原则。",
+                            # "道路千万条，安全第一条。时刻牢记以人为本，安全第一的原则。",
                             # "今天星期五天气好真开心",
                             # "今天星期五，天气好，真开心。",
                             ]

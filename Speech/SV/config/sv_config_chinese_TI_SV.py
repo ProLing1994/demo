@@ -50,7 +50,8 @@ __C.general.data_dir = "/mnt/huanyuan2/data/speech/sv/Chinese_TI_SV_dataset/data
 # __C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_1_basic_10122021"
 # __C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_2_basic_softmax_11062021"
 # __C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_4_basic_ge2e_11082021"
-__C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_td_sv_1_5_basic_ge2e_11122021"
+# __C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_td_sv_1_5_basic_ge2e_11122021"
+__C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_td_sv_1_6_basic_ge2e_w_001_11122021"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -274,11 +275,11 @@ __C.train = {}
 
 # the number of training epochs
 # __C.train.num_epochs = 1000
-__C.train.num_epochs = 500
-# __C.train.num_epochs = 100
+# __C.train.num_epochs = 500
+__C.train.num_epochs = 100
 
 # the number of samples in a batch
-# the loss method: ge2e
+# the loss method: embedding
 # __C.train.speakers_per_batch = 64
 # __C.train.utterances_per_speaker = 10
 __C.train.speakers_per_batch = 48
@@ -350,8 +351,8 @@ __C.train.betas = (0.9, 0.999)
 
 __C.loss = {}
 
-# the loss method, support ['softmax', 'ge2e']
-__C.loss.method = 'ge2e'
+# the loss method, support ['softmax', 'embedding']
+__C.loss.method = 'embedding'
 # __C.loss.method = 'softmax'
 
 # the loss name, support ['softmax','focal']
@@ -359,7 +360,7 @@ __C.loss.name = 'softmax'
 # __C.loss.name = 'focal'
 
 # the number of class
-# the loss method: ge2e
+# the loss method: embedding
 __C.loss.num_classes =  __C.train.batch_size
 # # the loss method: softmax
 # # __C.loss.num_classes = 49           # ['test']

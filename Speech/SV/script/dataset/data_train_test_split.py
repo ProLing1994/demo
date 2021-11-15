@@ -106,7 +106,49 @@ def load_dataset_type_3(dataset_name, dataset_path, data_files, mode, dataset_fo
         data_files.append({'dataset': dataset_name, 'speaker': speaker_id, 'section': section_id, 'utterance': speaker_id + '_' + utterance_id, 'file': file_path, 'mode': mode})
 
 
-def load_dataset_normal(dataset_name, dataset_path, data_files, mode, keep_speaker_ids=None, type=1, dataset_format=None):
+def load_dataset_type_4(dataset_name, dataset_path, data_files, mode, dataset_format=None, dataset_subfolder=None):
+    '''
+    load_dataset
+    数据格式：
+    -- classification label 
+    -- |-- wav 
+    '''
+    for subfolder_idx in range(len(dataset_subfolder)):
+        subfolder = dataset_subfolder[subfolder_idx]
+
+        # load dataset
+        wav_list = get_sub_filepaths_suffix(os.path.join(dataset_path, subfolder), suffix='.wav')
+        wav_list.sort()
+
+        for wav_idx in tqdm(range(len(wav_list))):
+            file_path = wav_list[wav_idx]
+
+            if dataset_format:
+                # 20170001P00001A0001.wav
+                # RM_Room_BWC_S1T1P1.wav
+                # file_name = os.path.basename(file_path).split('_')[-1]
+
+                # 7275424M1_唤醒词_小鱼小鱼_女_中青年_否_0070.wav
+                file_name = os.path.basename(file_path)
+                
+                match = re.match(dataset_format, file_name)
+                if not match:
+                    continue
+
+                speaker_id = match.group(1)
+                speaker_id = '{}_{}'.format(dataset_name, speaker_id)
+
+            else:
+                # 000001.wav
+                speaker_id = '{}_{}'.format(dataset_name, '0')
+
+            section_id = 0
+            utterance_id = os.path.basename(file_path)
+
+            data_files.append({'dataset': dataset_name, 'speaker': speaker_id, 'section': section_id, 'utterance': speaker_id + '_' + utterance_id, 'file': file_path, 'mode': mode})
+
+
+def load_dataset_normal(dataset_name, dataset_path, data_files, mode, keep_speaker_ids=None, type=1, dataset_format=None, dataset_subfolder=None):
     # dataset_path == None, return
     if dataset_path == None:
         return 
@@ -117,6 +159,8 @@ def load_dataset_normal(dataset_name, dataset_path, data_files, mode, keep_speak
         load_dataset_type_2(dataset_name, dataset_path, data_files, mode)
     if type == 3:
         load_dataset_type_3(dataset_name, dataset_path, data_files, mode, dataset_format=dataset_format)
+    if type == 4:
+        load_dataset_type_4(dataset_name, dataset_path, data_files, mode, dataset_format=dataset_format, dataset_subfolder=dataset_subfolder)
 
 
 def load_dataset_csv(dataset_name, dataset_csv_path, dataset_format, data_files, mode):
@@ -151,6 +195,7 @@ def data_split_normal(cfg, dataset_name, type=1):
     dataset_training_path = cfg.general.dataset_path_dict[dataset_name+ "_training"] if dataset_name+ "_training" in cfg.general.dataset_path_dict else None
     dataset_testing_path = cfg.general.dataset_path_dict[dataset_name+ "_testing"] if dataset_name+ "_testing" in cfg.general.dataset_path_dict else None
     dataset_format = cfg.general.dataset_path_dict[dataset_name+ "_format"] if dataset_name+ "_format" in cfg.general.dataset_path_dict else None
+    dataset_subfolder = cfg.general.dataset_path_dict[dataset_name+ "_subfolder"] if dataset_name+ "_subfolder" in cfg.general.dataset_path_dict else None
     output_csv = os.path.join(cfg.general.data_dir, dataset_name + '.csv')
 
     if os.path.exists(output_csv):
@@ -160,9 +205,9 @@ def data_split_normal(cfg, dataset_name, type=1):
     data_files = []                 # {'speaker': [], 'section': [], 'utterance': [], 'file': [], 'mode': []}
     
     print("[Begin] dataset: {}, set: {}".format(dataset_name, hparams.TRAINING_NAME))
-    load_dataset_normal(dataset_name, dataset_training_path, data_files, hparams.TRAINING_NAME, type=type, dataset_format=dataset_format)
+    load_dataset_normal(dataset_name, dataset_training_path, data_files, hparams.TRAINING_NAME, type=type, dataset_format=dataset_format, dataset_subfolder=dataset_subfolder)
     print("[Begin] dataset: {}, set: {}".format(dataset_name, hparams.TESTING_NAME))
-    load_dataset_normal(dataset_name, dataset_testing_path, data_files, hparams.TESTING_NAME, type=type, dataset_format=dataset_format)
+    load_dataset_normal(dataset_name, dataset_testing_path, data_files, hparams.TESTING_NAME, type=type, dataset_format=dataset_format, dataset_subfolder=dataset_subfolder)
 
     data_pd = pd.DataFrame(data_files)
     data_pd.to_csv(output_csv, index=False, encoding="utf_8_sig")
@@ -273,9 +318,11 @@ def data_split(args):
             data_split_voxceleb1(cfg, dataset_name, type = 1)
         elif dataset_name in ['Aishell3', 'SLR62', 'SLR68', 'CN-Celeb1', 'CN-Celeb2', 'VoxCeleb2']:
             data_split_normal(cfg, dataset_name, type = 2)
-        elif dataset_name in ['SLR38', 'BZNSYP', "BwcKeyword"]:
+        elif dataset_name in ['SLR38', 'BZNSYP', 'BwcKeyword']:
             data_split_normal(cfg, dataset_name, type = 3)
-        elif dataset_name in ["XiaoRui"]:
+        elif dataset_name in ['XiaoYu']:
+            data_split_normal(cfg, dataset_name, type = 4)
+        elif dataset_name in ["XiaoRui", "XiaoAn"]:
             data_split_csv(cfg, dataset_name)
 
     # background_noise dataset

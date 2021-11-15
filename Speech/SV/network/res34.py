@@ -97,7 +97,7 @@ class SpeakerEncoder(nn.Module):
         self.relu = torch.nn.ReLU()
         self.dropout = nn.Dropout(0.5)
 
-        if self.method == 'softmax':
+        if self.method == 'classification':
             self.linear2 = nn.Linear(in_features=self.model_embedding_size, 
                                     out_features=self.num_classes)
             
@@ -107,7 +107,7 @@ class SpeakerEncoder(nn.Module):
 
     def do_gradient_ops(self):
         # Gradient scale
-        if self.method == 'ge2e':
+        if self.method == 'embedding':
             self.similarity_weight.grad *= 0.01
             self.similarity_bias.grad *= 0.01
             
@@ -140,10 +140,10 @@ class SpeakerEncoder(nn.Module):
         # L2-normalize it
         embeds = embeds_raw / (torch.norm(embeds_raw, dim=1, keepdim=True) + 1e-5)
 
-        if self.method == 'ge2e':
+        if self.method == 'embedding':
             return embeds
 
-        elif self.method == 'softmax':
+        elif self.method == 'classification':
             out = self.dropout(embeds)         # shape: (batch, 256) ->  shape: (batch, 256)
             out = self.linear2(out)
             return embeds, out

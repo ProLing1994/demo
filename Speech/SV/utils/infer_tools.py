@@ -23,14 +23,14 @@ def embed_frames_batch(frames_batch, cfg, net):
     
     frames = torch.from_numpy(frames_batch).cuda()
     if isinstance(net, torch.nn.parallel.DataParallel):
-        if cfg.loss.method == 'ge2e':
+        if cfg.loss.method == 'embedding':
             embed = net.module.forward(frames).detach().cpu().numpy()
-        elif cfg.loss.method == 'softmax':
+        elif cfg.loss.method == 'classification':
             embed, _ = net.module.forward(frames).detach().cpu().numpy()
     else:
-        if cfg.loss.method == 'ge2e':
+        if cfg.loss.method == 'embedding':
             embed = net.forward(frames).detach().cpu().numpy()
-        elif cfg.loss.method == 'softmax':
+        elif cfg.loss.method == 'classification':
             embed, _ = net.forward(frames).detach().cpu().numpy()
 
     return embed
@@ -157,9 +157,10 @@ def embed_utterance(wav, cfg, sv_net):
     
     # Compute the utterance embedding from the partial embeddings
     raw_embed = np.mean(partial_embeds, axis=0)
-    embed = raw_embed / np.linalg.norm(raw_embed, 2)
+    if np.linalg.norm(raw_embed, 2) != 0.0:
+        raw_embed = raw_embed / np.linalg.norm(raw_embed, 2)
     
-    return embed
+    return raw_embed
 
 
 def embedding(cfg, net, fpath_or_wav):

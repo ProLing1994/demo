@@ -41,8 +41,8 @@ class KwsAsrApi():
         # container
         self.params_dict['audio_data_container_np'] = np.array([])
         self.params_dict['feature_data_container_np'] = np.array([])
-        self.params_dict['kws_container_np'] = np.array([])         # kws 结构容器中，用于滑窗输出结果
-        self.params_dict['sv_embedding_container'] = []                       # sv 结构容器中，用于存储 embedding
+        self.params_dict['kws_container_np'] = np.array([])             # kws 结构容器中，用于滑窗输出结果
+        self.params_dict['sv_embedding_container'] = []                 # sv 结构容器中，用于存储 embedding
         self.params_dict['asr_duplicate_counter'] = {}
 
         self.params_dict['bool_weakup'] = False
@@ -50,6 +50,7 @@ class KwsAsrApi():
         self.params_dict['counter_asr'] = self.cfg.general.asr_suppression_counter - 1
         
         self.output_dict['output_data_list'] = []
+        self.output_dict['output_wakeup_list'] = []
         self.output_dict['output_kws_id'] = 1
 
         # mkdir
@@ -344,18 +345,27 @@ class KwsAsrApi():
             kws_score_np = np.concatenate((self.params_dict['kws_container_np'], kws_score_np), axis=0)
 
         bool_find_kws = False
+        detected_idx_list = []
         for kws_idx in range(len(kws_score_np) + 1 - kws_weakup_times):
             # 滑窗，获得后处理结果
             detected_number = 0 
             for kws_times in range(kws_weakup_times):
                 if kws_score_np[kws_idx + kws_times][-1] > self.cfg.general.kws_detection_threshold:
                     detected_number += 1
+                    detected_idx_list.append(kws_idx + kws_times)
 
             if detected_number >= kws_weakup_times * self.cfg.general.kws_detection_number_threshold:
                 bool_find_kws = True
+                break
         
         if bool_find_kws:
             self.params_dict['kws_container_np'] = np.zeros(np.array(kws_score_list).shape)
+
+            # 存储检测到的音频
+            detected_idx_list = list(set(detected_idx_list))
+            detected_start_time = int( detected_idx_list[0] * ( self.cfg.general.kws_stride_feature_ms / 1000 ) * self.cfg.general.sample_rate )
+            detected_end_time = int((( detected_idx_list[-1] * self.cfg.general.kws_stride_feature_ms / 1000 ) + ( self.cfg.general.kws_feature_ms / 1000 )) * self.cfg.general.sample_rate )
+            self.output_dict['output_wakeup_list'] = self.output_dict['output_data_list'][detected_start_time: detected_end_time]
         else:
             # 存储一定时间的 kws 结果，用于后续滑窗获得结果
             self.params_dict['kws_container_np'] = np.array(kws_score_list)
@@ -555,9 +565,7 @@ class KwsAsrApi():
         if not self.bool_do_sv:
             return 
 
-        wav = np.array(self.output_dict['output_data_list'])
-        wav = wav[ - self.cfg.general.sample_rate * 2:]
-        len(wav)
+        wav = np.array(self.output_dict['output_wakeup_list'])
         embedding = sv_model.pytorch_sv_model_forward(self.cfg_sv, self.sv_net, wav, self.bool_gpu)
         self.params_dict['sv_embedding_container'].append(embedding)
         self.params_dict['sv_embedding_container'] = self.params_dict['sv_embedding_container'][-10:]

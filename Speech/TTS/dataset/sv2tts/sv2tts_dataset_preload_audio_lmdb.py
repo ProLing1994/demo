@@ -23,7 +23,11 @@ def load_data_pd(cfg, mode):
     for dataset_idx in range(len(cfg.general.dataset_list)):
         dataset_name = cfg.general.dataset_list[dataset_idx]
         csv_path = os.path.join(cfg.general.data_dir, dataset_name + '_' + mode + '.csv')
-    
+
+        if not os.path.exists(csv_path):
+            print("[Warning] csv path do not exist: {}".format(csv_path))
+            continue
+
         data_pd_temp = pd.read_csv(csv_path)
         if dataset_idx == 0:
             data_pd = data_pd_temp
@@ -42,9 +46,11 @@ def load_lmdb(cfg, mode):
         dataset_name = cfg.general.dataset_list[dataset_idx]
         # lmdb
         lmdb_path = os.path.join(cfg.general.data_dir, 'dataset_audio_lmdb', '{}.lmdb'.format(dataset_name+'_'+mode))
+
         if not os.path.exists(lmdb_path):
             print("[Warning] data do not exists: {}".format(lmdb_path))
             continue
+
         lmdb_env = load_lmdb_env(lmdb_path)
         lmdb_dict[dataset_name] = lmdb_env
 

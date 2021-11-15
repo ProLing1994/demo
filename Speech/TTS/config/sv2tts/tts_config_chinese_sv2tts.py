@@ -33,10 +33,11 @@ __C.general.mutil_speaker = False
 __C.general.data_dir = "/mnt/huanyuan2/data/speech/tts/Chinese_dataset/"
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/test/"
+# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/test/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_1_1_10232021/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_finetune_1_2_10232021/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_tacotron_singlespeaker_guaiding_4_2_10292021/"
+__C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_0_11102021/"
 
 # test after save pytorch model
 __C.general.is_test = True

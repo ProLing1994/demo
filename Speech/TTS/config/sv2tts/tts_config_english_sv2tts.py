@@ -15,6 +15,7 @@ cfg = __C
 
 __C.general = {}
 
+
 __C.general.dataset_list = ['librispeech_clean_100', 'librispeech_clean_360', 'librispeech_test_clean', 'BwcKeyword']
 # __C.general.dataset_list = ['BwcKeyword']
 __C.general.dataset_path_dict = {

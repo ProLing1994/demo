@@ -10,13 +10,21 @@ cfg = __C
 
 __C.general = {}
 
+'''s
+XiaoRui: 77/0(88), 6870/0(7927)
+XiaoAn: 109/0(134), 37921/0(44956)
+XiaoYu: 218/0(218), 16887/0(16887)
 '''
-XiaoRui: http://www.openslr.org/38/, 854/0(854), 97550/0(97550)
-'''
-__C.general.dataset_list = ['XiaoRui']
+__C.general.dataset_list = ['XiaoRui', 'XiaoAn', 'XiaoYu']
 __C.general.dataset_path_dict = {
                                     "XiaoRui": "/mnt/huanyuan/data/speech/kws/xiaorui_dataset/experimental_dataset/dataset_16k_1.8_07052021/",
                                     "XiaoRui_format": 'S(\d{3})M(\d{1})D(\d{2})T(\d{1,3}).wav$',
+                                    "XiaoAn": "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_10_11112021/",
+                                    "XiaoAn_format": 'S(\d{3})M(\d{1})D(\d{2})T(\d{1,3}).wav$',
+                                    "XiaoYu": "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/",
+                                    "XiaoYu_training": "/mnt/huanyuan/data/speech/kws/xiaoyu_dataset/experimental_dataset/XiaoYuDataset/",
+                                    "XiaoYu_subfolder": ['random', 'ruoqi', 'tianmaojingling', 'xiaoaitongxue', 'xiaodu', 'xiaoya', 'xiaoyu'],
+                                    "XiaoYu_format": '(\d{7})M(\d{1})_',
                                     }
 
 # data path
@@ -24,7 +32,9 @@ __C.general.data_dir = "/mnt/huanyuan2/data/speech/sv/Chinese_TI_SV_dataset/data
 
 # the output of training models and logging files
 # __C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/test"
-__C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_td_sv_1_5_basic_ge2e_11122021"
+# __C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_1_basic_10122021"
+# __C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_td_sv_1_5_basic_ge2e_11122021"
+__C.general.save_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_td_sv_1_6_basic_ge2e_w_001_11122021"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -246,12 +256,12 @@ __C.net.class_name = 'SpeakerEncoder'
 __C.train = {}
 
 # the number of training epochs
-# __C.train.num_epochs = 1000
-__C.train.num_epochs = 500
+__C.train.num_epochs = 100000
+# __C.train.num_epochs = 500
 # __C.train.num_epochs = 100
 
 # the number of samples in a batch
-# the loss method: ge2e
+# the loss method: embedding
 # __C.train.speakers_per_batch = 64
 # __C.train.utterances_per_speaker = 10
 __C.train.speakers_per_batch = 18
@@ -323,8 +333,8 @@ __C.train.betas = (0.9, 0.999)
 
 __C.loss = {}
 
-# the loss method, support ['softmax', 'ge2e']
-__C.loss.method = 'ge2e'
+# the loss method, support ['softmax', 'embedding']
+__C.loss.method = 'embedding'
 # __C.loss.method = 'softmax'
 
 # the loss name, support ['softmax','focal']
@@ -332,7 +342,7 @@ __C.loss.name = 'softmax'
 # __C.loss.name = 'focal'
 
 # the number of class
-# the loss method: ge2e
+# the loss method: embedding
 __C.loss.num_classes =  __C.train.batch_size
 # # the loss method: softmax
 # # __C.loss.num_classes = 49           # ['test']

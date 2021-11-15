@@ -38,14 +38,14 @@ def test(cfg, net, loss_func, epoch_idx, batch_idx, logger, test_data_loader, mo
 
         if cfg.dataset.h_alignment == True:
             hisi_input = input[:, :, :(input.shape[2] // 16) * 16, :]
-            if cfg.loss.method == 'ge2e':
+            if cfg.loss.method == 'embedding':
                 embed = net(hisi_input)
-            elif cfg.loss.method == 'softmax':
+            elif cfg.loss.method == 'classification':
                 embed, _ = net(hisi_input)
         else:
-            if cfg.loss.method == 'ge2e':
+            if cfg.loss.method == 'embedding':
                 embed = net(input)
-            elif cfg.loss.method == 'softmax':
+            elif cfg.loss.method == 'classification':
                 embed, _ = net(input)
 
         embeds.append(embed.detach().cpu().numpy())
@@ -193,25 +193,25 @@ def train(args):
         # Forward pass
         if cfg.dataset.h_alignment == True:
             hisi_input = inputs[:, :, :(inputs.shape[2] // 16) * 16, :]
-            if cfg.loss.method == 'ge2e':
+            if cfg.loss.method == 'embedding':
                 embeds = net(hisi_input)
-            elif cfg.loss.method == 'softmax':
+            elif cfg.loss.method == 'classification':
                 embeds, scores = net(hisi_input)
             if args.mutil_reader_bool:
                 hisi_input_mutil_reader = inputs_mutil_reader[:, :, :(inputs.shape[2] // 16) * 16, :]
-                if cfg.loss.method == 'ge2e':
+                if cfg.loss.method == 'embedding':
                     embeds_mutil_reader = net(hisi_input_mutil_reader)
-                elif cfg.loss.method == 'softmax':
+                elif cfg.loss.method == 'classification':
                     embeds_mutil_reader, scores_mutil_reader = net(hisi_input_mutil_reader)
         else:
-            if cfg.loss.method == 'ge2e':
+            if cfg.loss.method == 'embedding':
                 embeds = net(inputs)
-            elif cfg.loss.method == 'softmax':
+            elif cfg.loss.method == 'classification':
                 embeds, scores = net(inputs)
             if args.mutil_reader_bool:
-                if cfg.loss.method == 'ge2e':
+                if cfg.loss.method == 'embedding':
                     embeds_mutil_reader = net(inputs_mutil_reader)
-                elif cfg.loss.method == 'softmax':
+                elif cfg.loss.method == 'classification':
                     embeds_mutil_reader, scores_mutil_reader = net(inputs_mutil_reader)
         profiler.tick("Forward pass")
 
@@ -229,13 +229,13 @@ def train(args):
                 sim_matrix_mutil_reader = net.similarity_matrix(embeds_mutil_reader) 
 
         # Calculate loss
-        if cfg.loss.method == 'ge2e':
+        if cfg.loss.method == 'embedding':
             loss, eer = ge2e_loss(embeds, sim_matrix, loss_func)
             if args.mutil_reader_bool:
                 loss_mutil_reader, eer_mutil_reader = ge2e_loss(embeds_mutil_reader, sim_matrix_mutil_reader, loss_func)
                 loss = loss + args.mutil_reader_loss_weight * loss_mutil_reader
                 eer = eer + eer_mutil_reader
-        elif cfg.loss.method == 'softmax':
+        elif cfg.loss.method == 'classification':
             _, eer = ge2e_loss(embeds, sim_matrix, loss_func)
             assert scores.shape[1] > labels.max()
             loss = loss_func(scores, labels)
@@ -270,11 +270,11 @@ def train(args):
             ema.update_params()     # apply ema
 
         # Caltulate accuracy
-        if cfg.loss.method == 'ge2e':
+        if cfg.loss.method == 'embedding':
             accuracy = -1.0
             if args.mutil_reader_bool:
                 accuracy_mutil_reader = -1.0
-        elif cfg.loss.method == 'softmax':
+        elif cfg.loss.method == 'classification':
             pred_y = torch.max(scores, 1)[1].cpu().data.numpy()
             accuracy = float((pred_y == labels.cpu().data.numpy()).astype(
                 int).sum()) / float(labels.size(0))
@@ -346,7 +346,7 @@ def main():
     args = parser.parse_args()
 
     args.mutil_reader_bool = True
-    args.mutil_reader_loss_weight = 0.5
+    args.mutil_reader_loss_weight = 0.01
     train(args)
 
 

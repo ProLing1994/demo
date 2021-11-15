@@ -36,14 +36,19 @@ def infer(args):
     net.eval()
 
     # load data
-    data_pd = load_data_pd(cfg, hparams.TESTING_NAME)
-    lmdb_dict = load_lmdb(cfg, hparams.TESTING_NAME)
+    data_pd = load_data_pd(cfg, hparams.TRAINING_NAME)
+    lmdb_dict = load_lmdb(cfg, hparams.TRAINING_NAME)
+    # data_pd = load_data_pd(cfg, hparams.TESTING_NAME)
+    # lmdb_dict = load_lmdb(cfg, hparams.TESTING_NAME)
+    # data_pd = load_data_pd(cfg, hparams.VALIDATION_NAME)
+    # lmdb_dict = load_lmdb(cfg, hparams.VALIDATION_NAME)
     
     embeds_dict = {}
     for idx, row in tqdm(data_pd.iterrows(), total=len(data_pd)):
         # init
         data = read_audio_lmdb(lmdb_dict[str(row['dataset'])], str(row['file']))
         assert len(data) > 0, "{} {}".format(str(row['dataset']), str(row['file']))
+
         tqdm.write('{}: shape: {}, path :{}'.format(idx, data.shape, str(row['file'])))
         speaker = str(row['speaker'])
 
@@ -91,7 +96,8 @@ def infer(args):
 def main():
     parser = argparse.ArgumentParser(description='Streamax SV Training Engine')
     # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_english_TI_SV.py", nargs='?', help='config file')
-    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_chinese_TI_SV.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_chinese_TI_SV.py", nargs='?', help='config file')
+    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/SV/config/sv_config_chinese_TD_SV.py", nargs='?', help='config file')
     args = parser.parse_args()
     infer(args)
 

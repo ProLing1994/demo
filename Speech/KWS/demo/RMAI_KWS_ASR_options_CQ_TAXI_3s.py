@@ -22,7 +22,9 @@ __C.general.feature_time = 96                       # 每次送入 1s 数据，�
 
 # kws
 # activate bwc
+__C.general.kws_feature_ms = 2000                   # kws 网络特征时间, 2000ms
 __C.general.kws_feature_time = 120                  # kws 网络特征时间维度
+__C.general.kws_stride_feature_ms = 100             # kws 每间隔 10 个 feature_time 进行一次检索, 对应滑窗 100 ms，共检测 10 次
 __C.general.kws_stride_feature_time = 10            # kws 每间隔 10 个 feature_time 进行一次检索, 对应滑窗 100 ms，共检测 10 次
 __C.general.kws_detection_threshold = 0.5           # kws 检测阈值 0.5
 __C.general.kws_detection_number_threshold = 0.5    # kws 计数阈值 0.5
