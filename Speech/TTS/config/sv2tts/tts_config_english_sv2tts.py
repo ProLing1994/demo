@@ -37,7 +37,8 @@ __C.general.data_dir = "/mnt/huanyuan2/data/speech/tts/English_dataset/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/english_tts/test/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_english_finetune_2_0_09202021/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_bwc_2_1_09202021/"
-__C.general.save_dir = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_bwc_2_2_11152021/"
+# __C.general.save_dir = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_bwc_2_2_11152021/"
+__C.general.save_dir = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_bwc_2_3_11152021/"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -202,55 +203,17 @@ __C.dataset.augmentation = {}
 # __C.dataset.augmentation.on = True
 __C.dataset.augmentation.on = False
 
-# How many of the training samples have background noise mixed in.
-__C.dataset.augmentation.background_frequency = 0.8
+# based on longer senteces: on.
+__C.dataset.augmentation.longer_senteces_on = True
 
-# How loud the background noise should be, between 0 and 1.
-__C.dataset.augmentation.background_volume = 0.1
+# longer senteces frequency.
+__C.dataset.augmentation.longer_senteces_frequency = 0.5
 
-# How many of the training samples have synthetic noise mixed in.
-__C.dataset.augmentation.synthetic_frequency = 0.8
+# longer senteces length.
+__C.dataset.augmentation.longer_senteces_length = [2, 3, 4]
 
-# type of the synthetic noise, support ['white', 'salt_pepper'].
-# __C.dataset.augmentation.synthetic_type = 'white'
-__C.dataset.augmentation.synthetic_type = 'salt_pepper'
-
-# the scale parameter in white synthetic noise
-__C.dataset.augmentation.synthetic_scale = 0.001
-
-# the prob parameter in salt pepper synthetic noise
-__C.dataset.augmentation.synthetic_prob = 0.001
-
-# Range to randomly shift the training audio by in time(ms).
-__C.dataset.augmentation.time_shift_ms = 100.0
-
-# based on audio waveform: on.
-# __C.dataset.augmentation.speed_volume_on = True
-__C.dataset.augmentation.speed_volume_on = False
-
-# How fast the audio should be.
-__C.dataset.augmentation.speed = [0.9, 1.1]
-
-# How loud the audio should be.
-__C.dataset.augmentation.volume = [1.0, 1.0]
-
-# How pitch the audio should be.
-# __C.dataset.augmentation.pitch_on = True
-__C.dataset.augmentation.pitch_on = False
-__C.dataset.augmentation.pitch = [-5, 5]
-
-# based on audio vtlp: on
-# vtlp: http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=34DDD4B0CDCE76942A879204E8B7716C?doi=10.1.1.369.733&rep=rep1&type=pdf
-# __C.dataset.augmentation.vtlp_on = True
-__C.dataset.augmentation.vtlp_on = False
-
-# based on audio spectrum: on
-# spec_aug
-# __C.dataset.augmentation.spec_on = True
-__C.dataset.augmentation.spec_on = False
-__C.dataset.augmentation.F = 5
-__C.dataset.augmentation.T = 10
-__C.dataset.augmentation.num_masks = 2
+# longer senteces weight.
+__C.dataset.augmentation.longer_senteces_weight = [0.6, 0.2, 0.2]
 
 
 #####################################

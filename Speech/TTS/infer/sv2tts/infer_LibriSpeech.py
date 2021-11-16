@@ -38,28 +38,16 @@ def infer(args):
         sv_net.eval()
 
     # load synthesizer net
-    cfg_synthesizer = load_cfg_file(cfg.synthesizer.config_file)
+    cfg_synthesizer = cfg
     net_synthesizer = import_network(cfg_synthesizer, 
-                                    cfg.synthesizer.model_name, 
-                                    cfg.synthesizer.class_name)
-    load_checkpoint(net_synthesizer, 
-                    cfg.synthesizer.load_mode_type,
-                    cfg.synthesizer.model_dir, cfg.synthesizer.epoch_num, cfg.synthesizer.sub_folder_name,
-                    cfg.synthesizer.model_path,
-                    cfg.synthesizer.state_name, cfg.synthesizer.ignore_key_list, cfg.synthesizer.add_module_type)
-    net_synthesizer.eval()
-
-    # load vocoder net 
-    cfg_vocoder = cfg
-    net_vocoder = import_network(cfg_vocoder, 
                                     cfg.net.model_name, 
                                     cfg.net.class_name)
-    load_checkpoint(net_vocoder, 
+    load_checkpoint(net_synthesizer, 
                     0,
                     cfg.general.save_dir, cfg.test.model_epoch, 'checkpoints',
                     "",
                     'state_dict', [], 0)
-    net_vocoder.eval()
+    net_synthesizer.eval()
 
     # load text
     texts = args.text_list
@@ -104,41 +92,33 @@ def infer(args):
                     spec, align_score = synthesize_spectrogram(cfg_synthesizer, net_synthesizer, text, embed)
 
                     print("Synthesizing Align Score: " , align_score)
-                    if align_score > 2.0:
+                    if align_score > 0.5:
                         continue
 
                     ## Generating the waveform
                     print("Synthesizing the waveform: ", text)
 
-                    # Synthesizing the waveform is fairly straightforward. Remember that the longer the
-                    # spectrogram, the more time-efficient the vocoder.
-                    if args.vocoder_batched == 'True':
-                        generated_wav = infer_waveform(net_vocoder, spec)
-                    else:
-                        generated_wav = infer_waveform(net_vocoder, spec, batched=False)
-                    
-                    ## Post-generation
-                    # Trim excess silences to compensate for gaps in spectrograms
-                    generated_wav = audio.preprocess_wav(generated_wav, cfg.dataset.sample_rate)
+                    # save griffin lim inverted wav for debug (mel -> wav)
+                    wav = audio.compute_inv_mel_spectrogram(cfg, spec)
 
                     # Save it on the disk
-                    audio.save_wav(generated_wav, str(output_wav_path), sr=cfg.dataset.sample_rate)
+                    audio.save_wav(wav, str(output_wav_path), sr=cfg.dataset.sample_rate)
 
 
 def main():
     parser = argparse.ArgumentParser(description='Streamax SV2TTS Training Engine')
 
     # english
-    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/vocoder/tts_config_english_vocoder_wavernn.py", nargs='?', help='config file')
+    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_english_sv2tts.py", nargs='?', help='config file')
     parser.add_argument('-d', "--data_path", type=str, 
-                        default= "/mnt/huanyuan/data/speech/asr/English/LibriSpeech/LibriSpeech/train-clean-100/")
-                        # default= "/mnt/huanyuan/data/speech/asr/English/LibriSpeech/LibriSpeech/train-clean-360/")
+                        # default= "/mnt/huanyuan/data/speech/asr/English/LibriSpeech/LibriSpeech/train-clean-100/")
+                        default= "/mnt/huanyuan/data/speech/asr/English/LibriSpeech/LibriSpeech/train-clean-360/")
                         # default= "/mnt/huanyuan/data/speech/asr/English/LibriSpeech/LibriSpeech/train-other-500/")
     parser.add_argument("--output_folder", type=str, 
-                        default= "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_BwcKeyword/tts/sv2tts/LibriSpeech/train-clean-100/")
-                        # default= "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_BwcKeyword/tts/sv2tts/LibriSpeech/train-clean-360/")
+                        # default= "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_BwcKeyword/tts/sv2tts_wovocoder/LibriSpeech/train-clean-100/")
+                        default= "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_BwcKeyword/tts/sv2tts_wovocoder/LibriSpeech/train-clean-360/")
     parser.add_argument("--output_format", type=str, default= "RM_TTSsv2tts_S{:0>6d}P{:0>3d}T{:0>3d}.wav")
-    parser.add_argument("--random_time", type=int, default= 1)
+    parser.add_argument("--random_time", type=int, default= 5)
     parser.add_argument('-b', '--vocoder_batched', type=str, default="False", nargs='?', help='config file')
 
     parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/1320_00000.mp3", nargs='?', help='config file')

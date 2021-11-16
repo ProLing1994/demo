@@ -349,7 +349,7 @@ class Tacotron(nn.Module):
         self.postnet_dims = hparams_tacotron.tts_postnet_dims
         self.postnet_K = hparams_tacotron.tts_postnet_K
 
-        self.speaker_embedding_size = cfg.net.speaker_embedding_size
+        self.speaker_embedding_size = cfg.dataset.speaker_embedding_size
 
         self.encoder = Encoder(self.embed_dims, self.num_chars, self.encoder_dims,
                                self.encoder_K, self.num_highways, self.dropout)
@@ -378,8 +378,8 @@ class Tacotron(nn.Module):
         # Gradient clipping
         clip_grad_norm_(self.parameters(), hparams_tacotron.tts_clip_grad_norm)
 
-    def forward(self, x, x_len, m, m_len, speaker_embedding=None):
-        del x_len, m_len
+    def forward(self, x, x_len, m, m_len, speaker_ids, speaker_embedding=None):
+        del x_len, m_len, speaker_ids
         device = next(self.parameters()).device  # use same device as parameters
 
         self.step += 1
@@ -433,7 +433,7 @@ class Tacotron(nn.Module):
         # attn_scores = attn_scores.cpu().data.numpy()
         stop_outputs = torch.cat(stop_outputs, 1)
 
-        return mel_outputs, mel_outputs_postnet, stop_outputs, attn_scores
+        return mel_outputs, mel_outputs_postnet, stop_outputs, None, attn_scores
 
     def inference(self, x, speaker_embedding=None, steps=2000):
         self.eval()
@@ -493,7 +493,7 @@ class Tacotron(nn.Module):
 
         self.train()
 
-        return mel_outputs, mel_outputs_postnet, stop_outputs, attn_scores
+        return mel_outputs, mel_outputs_postnet, stop_outputs, None, attn_scores
 
     def init_model(self):
         for p in self.parameters():

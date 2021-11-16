@@ -16,7 +16,7 @@ from Basic.utils.lmdb_tools import *
 from TTS.config.sv2tts.hparams import *
 from TTS.dataset.text.text import *
 from TTS.dataset.sv2tts.audio import *
-
+from TTS.dataset.sv2tts import dataset_augmentation
 
 def load_data_pd(cfg, mode):
     # load data_pd
@@ -94,7 +94,9 @@ class SynthesizerDataset(Dataset):
         lmdb_dataset = self.data_pd.loc[index, 'dataset']
         data_name = self.data_pd.loc[index, 'unique_utterance']
         speaker = self.data_pd.loc[index, 'speaker']
+        data_by_spk = self.data_pd[self.data_pd['speaker'] == speaker]
 
+        # text
         if self.cfg.dataset.language == 'chinese':
             text = self.data_pd.loc[index, self.cfg.dataset.symbols]
         elif self.cfg.dataset.language == 'english':
@@ -102,15 +104,25 @@ class SynthesizerDataset(Dataset):
         else:
             raise Exception("[ERROR:] Unknow dataset language: {}".format(self.cfg.dataset.language))
 
-        # text
+        # mel
+        wav = read_audio_lmdb(self.lmdb_dict[lmdb_dataset], str(data_name))
+
+        # data augmentation
+        if self.cfg.dataset.augmentation.on and self.cfg.dataset.augmentation.longer_senteces_on:
+            text, wav = dataset_augmentation.dataset_augmentation_longer_senteces(self.cfg, text, wav, data_by_spk, self.lmdb_dict)
+
+        # 中文句末需要变换为句号 . 
+        if self.cfg.dataset.language == 'chinese':
+            text = re.sub(', $', '. ', text) 
+            text = re.sub(',$', '. ', text) 
+        print(text)
+
         # Get the text and clean it
         text = text_to_sequence(text, self.cfg.dataset.tts_cleaner_names, lang=self.cfg.dataset.symbols_lang)
         
         # Convert the list returned by text_to_sequence to a numpy array
         text = np.asarray(text).astype(np.int32)
 
-        # mel
-        wav = read_audio_lmdb(self.lmdb_dict[lmdb_dataset], str(data_name))
         mel = audio.compute_mel_spectrogram(self.cfg, wav).T.astype(np.float32)
 
         # speaker

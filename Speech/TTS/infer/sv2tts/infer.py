@@ -77,24 +77,24 @@ def infer(args):
 def main():
     parser = argparse.ArgumentParser(description='Streamax SV2TTS Training Engine')
 
-    # # english
-    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_english_sv2tts.py", nargs='?', help='config file')
-    # parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/1320_00000.mp3", nargs='?', help='config file')
-    # args = parser.parse_args()
-    # args.text_list = [
-    #                     "activate be double you see.", 
-    #                     "start recording start recording start recording start recording start recording. ",
-    #                     "stop recording stop recording stop recording stop recording stop recording. ",
-    #                     "mute audio mute audio mute audio mute audio mute audio. ",
-    #                     "unmute audio unmute audio unmute audio unmute audio unmute audio. ",
-    #                     ]
-    # args.text_name_list = [
-    #                         "activate_b_w_c", 
-    #                         "start_recording",
-    #                         "stop_recording",
-    #                         "mute_audio",
-    #                         "unmute_audio",
-    #                         ]
+    # english
+    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_english_sv2tts.py", nargs='?', help='config file')
+    parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/1320_00000.mp3", nargs='?', help='config file')
+    args = parser.parse_args()
+    args.text_list = [
+                        "activate be double you see.", 
+                        "start recording start recording start recording start recording start recording. ",
+                        "stop recording stop recording stop recording stop recording stop recording. ",
+                        "mute audio mute audio mute audio mute audio mute audio. ",
+                        "unmute audio unmute audio unmute audio unmute audio unmute audio. ",
+                        ]
+    args.text_name_list = [
+                            "activate_b_w_c", 
+                            "start_recording",
+                            "stop_recording",
+                            "mute_audio",
+                            "unmute_audio",
+                            ]
 
     # # chinese, en
     # # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
@@ -118,24 +118,24 @@ def main():
     #                         # "今天星期五，天气好，真开心。",
     #                         ]
 
-    # chinese, prosody py
-    # parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron_BahdanauAttention_singlespeaker_prosody_py_1_0_11092021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
-    # parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron_lsa_singlespeaker_prosody_py_2_1_11092021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
-    parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_0_11102021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
-    parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00050001.wav", nargs='?', help='config file')
-    args = parser.parse_args()
-    args.text_list = [
-                        "dao4-lu4 / qian1-wan4-tiao2, an1-quan2 / di4-yi1-tiao2. ",
-                        "shi2-ke4 lao2-ji4 / yi3-ren2-wei2-ben3, an1-quan2-di4-yi1-de5 yuan2-ze2. ",
-                        "dao4-lu4 / qian1-wan4-tiao2, an1-quan2 / di4-yi1-tiao2, shi2-ke4 lao2-ji4 / yi3-ren2-wei2-ben3, an1-quan2-di4-yi1-de5 yuan2-ze2. ",
-                        "jin1-tian1 / xing1-qi1-wu3, tian1-qi4-hao3, zhen1 kai1-xin1. ",
-                        ]
-    args.text_name_list = [
-                            "道路千万条，安全第一条",
-                            "时刻牢记以人为本，安全第一的原则。",
-                            "道路千万条，安全第一条。时刻牢记以人为本，安全第一的原则。",
-                            "今天星期五，天气好，真开心。",
-                            ]
+    # # chinese, prosody py
+    # # parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron_BahdanauAttention_singlespeaker_prosody_py_1_0_11092021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
+    # # parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron_lsa_singlespeaker_prosody_py_2_1_11092021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_0_11102021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
+    # parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00050001.wav", nargs='?', help='config file')
+    # args = parser.parse_args()
+    # args.text_list = [
+    #                     "dao4-lu4 / qian1-wan4-tiao2, an1-quan2 / di4-yi1-tiao2. ",
+    #                     "shi2-ke4 lao2-ji4 / yi3-ren2-wei2-ben3, an1-quan2-di4-yi1-de5 yuan2-ze2. ",
+    #                     "dao4-lu4 / qian1-wan4-tiao2, an1-quan2 / di4-yi1-tiao2, shi2-ke4 lao2-ji4 / yi3-ren2-wei2-ben3, an1-quan2-di4-yi1-de5 yuan2-ze2. ",
+    #                     "jin1-tian1 / xing1-qi1-wu3, tian1-qi4-hao3, zhen1 kai1-xin1. ",
+    #                     ]
+    # args.text_name_list = [
+    #                         "道路千万条，安全第一条",
+    #                         "时刻牢记以人为本，安全第一的原则。",
+    #                         "道路千万条，安全第一条。时刻牢记以人为本，安全第一的原则。",
+    #                         "今天星期五，天气好，真开心。",
+    #                         ]
 
     infer(args)
 

@@ -75,9 +75,10 @@ def infer(args):
     for idx in tqdm(range(len(texts))):
         # synthesize_spectrogram
         text = texts[idx]
-        spec = synthesize_spectrogram(cfg_synthesizer, net_synthesizer, text, embed)
+        spec, align_score = synthesize_spectrogram(cfg_synthesizer, net_synthesizer, text, embed)
 
         ## Generating the waveform
+        print("Synthesizing Align Score: " , align_score)
         print("Synthesizing the waveform: ", text)
 
         # Synthesizing the waveform is fairly straightforward. Remember that the longer the

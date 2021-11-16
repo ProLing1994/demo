@@ -101,7 +101,8 @@ __C.synthesizer = {}
 
 # __C.synthesizer.config_file = "/mnt/huanyuan2/model/tts/sv2tts_english_finetune_2_0_09202021/tts_config_english_sv2tts.py"
 # __C.synthesizer.config_file = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_bwc_2_1_09202021/tts_config_english_sv2tts.py"
-__C.synthesizer.config_file = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_bwc_2_2_11152021/tts_config_english_sv2tts.py"
+# __C.synthesizer.config_file = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_bwc_2_2_11152021/tts_config_english_sv2tts.py"
+__C.synthesizer.config_file = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_bwc_2_3_11152021/tts_config_english_sv2tts.py"
 __C.synthesizer.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron_old.py"
 __C.synthesizer.class_name = 'Tacotron'
 
@@ -109,7 +110,7 @@ __C.synthesizer.class_name = 'Tacotron'
 __C.synthesizer.load_mode_type = 0
 
 # 方式一：模型加载，根据文件目录查找
-__C.synthesizer.model_dir = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_bwc_2_2_11152021/"
+__C.synthesizer.model_dir = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_bwc_2_3_11152021/"
 __C.synthesizer.epoch_num = -1
 __C.synthesizer.sub_folder_name ='checkpoints'
 # 方式二：模型加载，指定文件路径
