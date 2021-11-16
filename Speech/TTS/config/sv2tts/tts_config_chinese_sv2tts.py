@@ -33,11 +33,13 @@ __C.general.mutil_speaker = False
 __C.general.data_dir = "/mnt/huanyuan2/data/speech/tts/Chinese_dataset/"
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/test/"
+__C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/test/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_1_1_10232021/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_finetune_1_2_10232021/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_tacotron_singlespeaker_guaiding_4_2_10292021/"
-__C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_0_11102021/"
+# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron_BahdanauAttention_singlespeaker_prosody_py_1_0_11092021/"
+# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron_lsa_singlespeaker_prosody_py_2_1_11092021/"
+# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_0_11102021/"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -92,32 +94,32 @@ __C.general.data_parallel_mode = 0
 
 __C.guiding_model = {}
 
-# __C.guiding_model.on = True
-__C.guiding_model.on = False
+__C.guiding_model.on = True
+# __C.guiding_model.on = False
 
 # guide model type，[0: 通过模型引导, 1: 通过 mask 引导]
-__C.guiding_model.type = 1
+__C.guiding_model.type = 0
 
 # guide model 用于引导模型，学会 attention 信息
-__C.guiding_model.config_file = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_finetune_1_2_10232021/tts_config_chinese_sv2tts.py"
-__C.guiding_model.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron_old.py"
-__C.guiding_model.class_name = 'Tacotron'
+__C.guiding_model.config_file = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_0_11102021/tts_config_chinese_sv2tts.py"
+__C.guiding_model.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron2.py"
+__C.guiding_model.class_name = 'Tacotron2'
 
 # 模型加载方式，[0: 根据文件目录查找, 1: 模型加载，指定文件路径]
 __C.guiding_model.load_mode_type = 0
 
 # 方式一：模型加载，根据文件目录查找
-__C.guiding_model.finetune_model_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_finetune_1_2_10232021/"
-__C.guiding_model.finetune_epoch_num = -1
-__C.guiding_model.finetune_sub_folder_name ='checkpoints'
+__C.guiding_model.model_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_0_11102021/"
+__C.guiding_model.epoch_num = -1
+__C.guiding_model.sub_folder_name ='checkpoints'
 # 方式二：模型加载，指定文件路径
-__C.guiding_model.finetune_model_path = ""
+__C.guiding_model.model_path = ""
 
-__C.guiding_model.finetune_state_name = 'state_dict'
-__C.guiding_model.finetune_ignore_key_list = []
+__C.guiding_model.state_name = 'state_dict'
+__C.guiding_model.ignore_key_list = []
 
 # module 字段添加，[0: 不添加字段, 1: 去除 module 字段, 2: 添加 module 字段]
-__C.guiding_model.finetune_add_module_type = 0
+__C.guiding_model.add_module_type = 0
 
 ##################################
 # speaker verification parameters
@@ -133,17 +135,17 @@ __C.speaker_verification.class_name = 'SpeakerEncoder'
 __C.speaker_verification.load_mode_type = 0
 
 # 方式一：模型加载，根据文件目录查找
-__C.speaker_verification.finetune_model_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_1_basic_10122021"
-__C.speaker_verification.finetune_epoch_num = -1
-__C.speaker_verification.finetune_sub_folder_name ='checkpoints'
+__C.speaker_verification.model_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_1_basic_10122021"
+__C.speaker_verification.epoch_num = -1
+__C.speaker_verification.sub_folder_name ='checkpoints'
 # 方式二：模型加载，指定文件路径
-__C.speaker_verification.finetune_model_path = ""
+__C.speaker_verification.model_path = ""
 
-__C.speaker_verification.finetune_state_name = 'state_dict'
-__C.speaker_verification.finetune_ignore_key_list = []
+__C.speaker_verification.state_name = 'state_dict'
+__C.speaker_verification.ignore_key_list = []
 
 # module 字段添加，[0: 不添加字段, 1: 去除 module 字段, 2: 添加 module 字段]
-__C.speaker_verification.finetune_add_module_type = 0
+__C.speaker_verification.add_module_type = 0
 
 # feedback 模式：反馈约束的多说话人语音合成
 # [tf_multispeakerTTS_fc](https://github.com/caizexin/tf_multispeakerTTS_fc)
@@ -302,10 +304,16 @@ __C.net = {}
 # __C.net.r = 2
 
 # the network name
-__C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron2.py"
-__C.net.class_name = "Tacotron2"
+__C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron_lsa_attention.py"
+__C.net.class_name = "Tacotron"
 # r frames
 __C.net.r = 2
+
+# # the network name
+# __C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron2.py"
+# __C.net.class_name = "Tacotron2"
+# # r frames
+# __C.net.r = 2
 
 # speaker embedding 
 # # SV2TTS, 多说话人

@@ -14,7 +14,7 @@ __C.general.data_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimenta
 __C.general.sub_data_dir = []
 
 # data version
-__C.general.version = "2.1"     # 小安小安音频 + 困难样本挖掘
+__C.general.version = "2.1"     # 小安小安音频 + 困难样本挖掘（运用 AmSoftmax 思想，增大正负样本之间的差异）
 
 # data date
 __C.general.date = "11132021"
@@ -54,7 +54,7 @@ __C.general.finetune_ignore_key_list = []
 __C.general.finetune_add_module_type = 0
 
 # set certain epoch to continue training, set -1 to train from scratch
-__C.general.resume_epoch = -1
+__C.general.resume_epoch_num = -1
 
 # the number of GPUs used in training
 # __C.general.num_gpus = 4
@@ -297,17 +297,23 @@ __C.regularization.label_smoothing.epsilon = 0.1
 
 __C.loss = {}
 
-# the loss method, support ['classification', 'embedding']
+# the loss method, support ['classification', 'embedding', 'classification & embedding']
 # __C.loss.method = 'classification'
-__C.loss.method = 'embedding'
+# __C.loss.method = 'embedding'
+__C.loss.method = 'classification & embedding'
 
-# the size of embedding in embedding method
-__C.loss.embedding_size = 64
+# the size of embedding in embedding method orclassification & embedding classification & embedding method
+__C.loss.embedding_size = 128
 
-# the loss name, support ['softmax', 'focal', 'AmSoftmax']
+# the size of embedding in embedding method orclassification & embedding classification & embedding method
+__C.loss.embedding_weight = 0.01
+
+# the loss name, support ['softmax', 'focal']
 # __C.loss.name = 'softmax'
-# __C.loss.name = 'focal'
-__C.loss.name = 'AmSoftmax'
+__C.loss.name = 'focal'
+
+# the embedding loss name, support ['AmSoftmax']
+__C.loss.embedding_loss_name = 'AmSoftmax'
 
 # the number of class
 __C.loss.num_classes =  __C.dataset.label.num_classes
@@ -363,8 +369,8 @@ __C.train.num_epochs = 1
 # __C.train.batch_size = 512
 # __C.train.batch_size = 128
 # __C.train.batch_size = 64
-# __C.train.batch_size = 16
-__C.train.batch_size = 1
+__C.train.batch_size = 16
+# __C.train.batch_size = 1
 
 # the number of threads for IO
 # __C.train.num_threads = 64

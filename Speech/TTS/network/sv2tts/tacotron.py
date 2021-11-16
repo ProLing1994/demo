@@ -265,7 +265,8 @@ class Tacotron(nn.Module):
         encoder_outputs = self.encoder(inputs)
 
         # (B, T, mel_dim)
-        targets = targets.permute(0, 2, 1).contiguous()
+        if not targets is None: 
+            targets = targets.permute(0, 2, 1).contiguous()
         mel_outputs, stop_tokens, alignments = self.decoder(
             encoder_outputs, targets, memory_lengths=input_lengths)
 
@@ -277,10 +278,9 @@ class Tacotron(nn.Module):
         linear_outputs = linear_outputs.permute(0, 2, 1).contiguous()
         return mel_outputs, linear_outputs, stop_tokens, alignments
 
-    def inference(self, inputs):
+    def inference(self, inputs, speaker_embedding=None):
         # Only text inputs
-        inputs = inputs, None, None
-        return self.forward(inputs)
+        return self.forward(inputs, None, None, None, speaker_embedding)
 
 
 class TacotronLoss(nn.Module):

@@ -31,8 +31,10 @@ def infer(args):
                                 cfg.speaker_verification.model_name, 
                                 cfg.speaker_verification.class_name)
         load_checkpoint(sv_net, 
-                        cfg.speaker_verification.epoch, 
-                        cfg.speaker_verification.model_dir)
+                        cfg.speaker_verification.load_mode_type,
+                        cfg.speaker_verification.model_dir, cfg.speaker_verification.epoch_num, cfg.speaker_verification.sub_folder_name,
+                        cfg.speaker_verification.model_path,
+                        cfg.speaker_verification.state_name, cfg.speaker_verification.ignore_key_list, cfg.speaker_verification.add_module_type)
         sv_net.eval()
 
     # load synthesizer net
@@ -41,8 +43,10 @@ def infer(args):
                                     cfg.synthesizer.model_name, 
                                     cfg.synthesizer.class_name)
     load_checkpoint(net_synthesizer, 
-                    cfg.synthesizer.epoch, 
-                    cfg.synthesizer.model_dir)
+                    cfg.synthesizer.load_mode_type,
+                    cfg.synthesizer.model_dir, cfg.synthesizer.epoch_num, cfg.synthesizer.sub_folder_name,
+                    cfg.synthesizer.model_path,
+                    cfg.synthesizer.state_name, cfg.synthesizer.ignore_key_list, cfg.synthesizer.add_module_type)
     net_synthesizer.eval()
 
     # load vocoder net 
@@ -51,8 +55,10 @@ def infer(args):
                                     cfg.net.model_name, 
                                     cfg.net.class_name)
     load_checkpoint(net_vocoder, 
-                    cfg.test.model_epoch, 
-                    cfg.general.save_dir)
+                    0,
+                    cfg.general.save_dir, cfg.test.model_epoch, 'checkpoints',
+                    "",
+                    'state_dict', [], 0)
     net_vocoder.eval()
 
     # load embedding
@@ -97,39 +103,47 @@ def infer(args):
 def main():
     parser = argparse.ArgumentParser(description='Streamax SV2TTS Training Engine')
 
-    # # english
-    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/vocoder/tts_config_vocoder_wavernn.py", nargs='?', help='config file')
-    # parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/1320_00000.mp3", nargs='?', help='config file')
+    # english
+    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/vocoder/tts_config_english_vocoder_wavernn.py", nargs='?', help='config file')
+    parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/1320_00000.mp3", nargs='?', help='config file')
+    parser.add_argument('-b', '--vocoder_batched', type=str, default="False", nargs='?', help='config file')
+    # parser.add_argument('-b', '--vocoder_batched', type=str, default="True", nargs='?', help='config file')
+    args = parser.parse_args()
+    # args.text_list = ["activate be double you see."]
+    # args.text_name_list = ["activate_b_w_c"]
+    # args.text_list = ["start recording"]
+    # args.text_name_list = ["start_recording"]
+    # args.text_list = ["stop recording"]
+    # args.text_name_list = ["stop_recording"]
+    # args.text_list = ["mute audio"]
+    # args.text_name_list = ["mute_audio"]
+    args.text_list = ["unmute audio"]
+    args.text_name_list = ["unmute_audio"]
+
+    # # chinese
+    # # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/vocoder/tts_config_chinese_vocoder_wavernn.py", nargs='?', help='config file')
+    # # parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts_vocoder/chinese_tts_vocoder/wavernn_chinese_mutil_speaker_1_0_11012021/tts_config_chinese_mutil_speaker_vocoder_wavernn.py", nargs='?', help='config file')
+    # # parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts_vocoder/chinese_tts_vocoder/wavernn_chinese_mutil_speaker_1_0_11012021/tts_config_chinese_signal_speaker_vocoder_wavernn.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts_vocoder/chinese_tts_vocoder/wavernn_chinese_single_speaker_1_0_11032021/tts_config_chinese_signal_speaker_vocoder_wavernn.py", nargs='?', help='config file')
+    # parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00050001.wav", nargs='?', help='config file')
+    # # parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00730005.wav", nargs='?', help='config file')
     # # parser.add_argument('-b', '--vocoder_batched', type=str, default="False", nargs='?', help='config file')
     # parser.add_argument('-b', '--vocoder_batched', type=str, default="True", nargs='?', help='config file')
     # args = parser.parse_args()
-    # args.text_list = ["activate be double you see."]
-    # args.text_name_list = ["activate_b_w_c"]
-
-    # chinese
-    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/vocoder/tts_config_chinese_vocoder_wavernn.py", nargs='?', help='config file')
-    # parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts_vocoder/chinese_tts_vocoder/wavernn_chinese_mutil_speaker_1_0_11012021/tts_config_chinese_mutil_speaker_vocoder_wavernn.py", nargs='?', help='config file')
-    # parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts_vocoder/chinese_tts_vocoder/wavernn_chinese_mutil_speaker_1_0_11012021/tts_config_chinese_signal_speaker_vocoder_wavernn.py", nargs='?', help='config file')
-    parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts_vocoder/chinese_tts_vocoder/wavernn_chinese_single_speaker_1_0_11032021/tts_config_chinese_signal_speaker_vocoder_wavernn.py", nargs='?', help='config file')
-    parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00050001.wav", nargs='?', help='config file')
-    # parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00730005.wav", nargs='?', help='config file')
-    # parser.add_argument('-b', '--vocoder_batched', type=str, default="False", nargs='?', help='config file')
-    parser.add_argument('-b', '--vocoder_batched', type=str, default="True", nargs='?', help='config file')
-    args = parser.parse_args()
-    args.text_list = [
-                        # " ".join(get_pinyin("道路千万条安全第一条")),
-                        # " ".join(get_pinyin("时刻牢记以人为本安全第一的原则。")),
-                        " ".join(get_pinyin("道路千万条，安全第一条。时刻牢记以人为本，安全第一的原则。")),
-                        # " ".join(get_pinyin("今天星期五天气好真开心")),
-                        # " ".join(get_pinyin("今天星期五，天气好，真开心。")),
-                        ]
-    args.text_name_list = [
-                            # "道路千万条安全第一条",
-                            # "时刻牢记以人为本安全第一的原则。",
-                            "道路千万条，安全第一条。时刻牢记以人为本，安全第一的原则。",
-                            # "今天星期五天气好真开心",
-                            # "今天星期五，天气好，真开心。",
-                            ]
+    # args.text_list = [
+    #                     # " ".join(get_pinyin("道路千万条安全第一条")),
+    #                     # " ".join(get_pinyin("时刻牢记以人为本安全第一的原则。")),
+    #                     " ".join(get_pinyin("道路千万条，安全第一条。时刻牢记以人为本，安全第一的原则。")),
+    #                     # " ".join(get_pinyin("今天星期五天气好真开心")),
+    #                     # " ".join(get_pinyin("今天星期五，天气好，真开心。")),
+    #                     ]
+    # args.text_name_list = [
+    #                         # "道路千万条安全第一条",
+    #                         # "时刻牢记以人为本安全第一的原则。",
+    #                         "道路千万条，安全第一条。时刻牢记以人为本，安全第一的原则。",
+    #                         # "今天星期五天气好真开心",
+    #                         # "今天星期五，天气好，真开心。",
+    #                         ]
 
     infer(args)
 

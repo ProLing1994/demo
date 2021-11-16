@@ -93,6 +93,8 @@ def train(config_file, training_mode):
 
     # define loss function
     loss_func = loss_function(cfg)
+    if cfg.loss.method == 'embedding' or cfg.loss.method == 'classification & embedding':
+        loss_func_embedding = loss_function_embedding(cfg)
 
     # ema
     if cfg.loss.ema_on:
@@ -106,9 +108,9 @@ def train(config_file, training_mode):
                         sub_folder_name='pretrain_model')
         start_epoch, start_batch = 0, 0
         last_save_epoch = 0
-    elif cfg.general.resume_epoch >= 0:
+    elif cfg.general.resume_epoch_num >= 0:
         # resume, Load the model, continue the previous learning rate
-        start_epoch, start_batch = load_checkpoint(net, cfg.general.resume_epoch,
+        start_epoch, start_batch = load_checkpoint(net, cfg.general.resume_epoch_num,
                                                         cfg.general.save_dir, 
                                                         optimizer=optimizer)
         last_save_epoch = start_epoch
@@ -168,14 +170,35 @@ def train(config_file, training_mode):
         # 此处进行该操作的原因，便于后面使用知识蒸馏，teacher 模型可以使用原数据作为输入
         if cfg.dataset.h_alignment == True:
             hisi_input = inputs[:, :, :(inputs.shape[2] // 16) * 16, :]
-            scores = net(hisi_input)
+            if cfg.loss.method == 'classification':
+                scores = net(hisi_input)
+            elif cfg.loss.method == 'embedding':
+                embeds = net(hisi_input)
+            elif cfg.loss.method == 'classification & embedding':
+                embeds, scores = net(hisi_input)
+            else:
+                raise Exception("[Unknow:] cfg.loss.method. ")
         else:
-            scores = net(inputs)
+            if cfg.loss.method == 'classification':
+                scores = net(inputs)
+            elif cfg.loss.method == 'embedding':
+                embeds = net(inputs)
+            elif cfg.loss.method == 'classification & embedding':
+                embeds, scores = net(inputs)
+            else:
+                raise Exception("[Unknow:] cfg.loss.method. ")
         scores = scores.view(scores.size()[0], scores.size()[1])
+        if cfg.loss.method == 'embedding' or cfg.loss.method == 'classification & embedding':
+            embeds = embeds.view(embeds.size()[0], embeds.size()[1])
         profiler.tick("Forward pass")
         
         # Calculate loss
-        loss = loss_func(scores, labels)
+        if cfg.loss.method == 'classification':
+            loss = loss_func(scores, labels)
+        elif cfg.loss.method == 'embedding':
+            loss = loss_func_embedding(embeds, labels)
+        elif cfg.loss.method == 'classification & embedding':
+            loss = loss_func(scores, labels) + cfg.loss.embedding_weight * loss_func_embedding(embeds, labels)
         if cfg.knowledge_distillation.on:
             teacher_model.eval()
             teacher_scores = teacher_model(inputs)
@@ -245,6 +268,7 @@ def main():
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui8k.py", nargs='?', help='config file')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui16k.py", nargs='?', help='config file')
     parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan8k.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_embedding_xiaoan8k.py", nargs='?', help='config file')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan16k.py", nargs='?', help='config file')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py", nargs='?', help='config file')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_all_pretrain.py", nargs='?', help='config file')

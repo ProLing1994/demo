@@ -66,7 +66,7 @@ __C.general.finetune_ignore_key_list = []
 __C.general.finetune_add_module_type = 0
 
 # set certain epoch to continue training, set -1 to train from scratch
-__C.general.resume_epoch = -1
+__C.general.resume_epoch_num = -1
 
 # the number of GPUs used in training
 # __C.general.num_gpus = 4
@@ -310,6 +310,9 @@ __C.regularization.label_smoothing.epsilon = 0.1
 ####################################
 
 __C.loss = {}
+
+# the loss method, support ['classification', 'embedding', 'classification & embedding']
+__C.loss.method = 'classification'
 
 # the loss name, support ['softmax','focal']
 # __C.loss.name = 'softmax'

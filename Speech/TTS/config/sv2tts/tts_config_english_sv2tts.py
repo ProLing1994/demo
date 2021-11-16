@@ -16,8 +16,8 @@ cfg = __C
 __C.general = {}
 
 
-__C.general.dataset_list = ['librispeech_clean_100', 'librispeech_clean_360', 'librispeech_test_clean', 'BwcKeyword']
-# __C.general.dataset_list = ['BwcKeyword']
+# __C.general.dataset_list = ['librispeech_clean_100', 'librispeech_clean_360', 'librispeech_test_clean', 'BwcKeyword']
+__C.general.dataset_list = ['BwcKeyword']
 __C.general.dataset_path_dict = {
                                 "librispeech_clean_100": "/mnt/huanyuan/data/speech/asr/English/LibriSpeech/LibriSpeech/train-clean-100", 
                                 "librispeech_clean_100_training": "/mnt/huanyuan/data/speech/asr/English/LibriSpeech/LibriSpeech/train-clean-100",
@@ -25,8 +25,8 @@ __C.general.dataset_path_dict = {
                                 "librispeech_clean_360_training": "/mnt/huanyuan/data/speech/asr/English/LibriSpeech/LibriSpeech/train-clean-360",
                                 "librispeech_test_clean": "/mnt/huanyuan/data/speech/asr/English/LibriSpeech/LibriSpeech/test-clean",
                                 "librispeech_test_clean_testing": "/mnt/huanyuan/data/speech/asr/English/LibriSpeech/LibriSpeech/test-clean",
-                                "BwcKeyword": "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_BwcKeyword/office/danbing_16k/深圳同事_处理处理_龙哥提供/单声道/",
-                                "BwcKeyword_training": "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_BwcKeyword/office/danbing_16k/深圳同事_处理处理_龙哥提供/单声道/",
+                                "BwcKeyword": "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_BwcKeyword/office/danbing_16k/深圳同事_处理处理_龙哥提供/to_tts/",
+                                "BwcKeyword_training": "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_BwcKeyword/office/danbing_16k/深圳同事_处理处理_龙哥提供/to_tts/",
                                 "BwcKeyword_format": 'S(\d{1,2})T(\d{1})P(\d{1,2}) *.wav$',   # RM_Room_BWC_S1T1P1.wav
                                 }
 __C.general.mutil_speaker = True
@@ -35,23 +35,25 @@ __C.general.mutil_speaker = True
 __C.general.data_dir = "/mnt/huanyuan2/data/speech/tts/English_dataset/"
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan2/model/english_tts/test/"
+# __C.general.save_dir = "/mnt/huanyuan2/model/english_tts/test/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_english_finetune_2_0_09202021/"
+# __C.general.save_dir = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_bwc_2_1_09202021/"
+__C.general.save_dir = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_bwc_2_2_11152021/"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # finetune model
-__C.general.finetune_on = True
-# __C.general.finetune_on = False
+# __C.general.finetune_on = True
+__C.general.finetune_on = False
 
 # 模型加载方式，[0: 根据文件目录查找, 1: 模型加载，指定文件路径]
 __C.general.load_mode_type = 0
 
 # 方式一：模型加载，根据文件目录查找
-__C.general.finetune_model_dir = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_english_finetune_2_0_09202021/"
+__C.general.finetune_model_dir = ""
 __C.general.finetune_epoch_num = -1
-__C.general.finetune_sub_folder_name ='checkpoints'
+__C.general.finetune_sub_folder_name = 'checkpoints'
 # 方式二：模型加载，指定文件路径
 __C.general.finetune_model_path = ""
 
@@ -100,17 +102,17 @@ __C.speaker_verification.class_name = 'SpeakerEncoder'
 __C.speaker_verification.load_mode_type = 0
 
 # 方式一：模型加载，根据文件目录查找
-__C.speaker_verification.finetune_model_dir = "/mnt/huanyuan2/model/sv/English_TI_SV/ti_sv_english_finetune_2_0_09142021/"
-__C.speaker_verification.finetune_epoch_num = -1
-__C.speaker_verification.finetune_sub_folder_name ='checkpoints'
+__C.speaker_verification.model_dir = "/mnt/huanyuan2/model/sv/English_TI_SV/ti_sv_english_finetune_2_0_09142021/"
+__C.speaker_verification.epoch_num = -1
+__C.speaker_verification.sub_folder_name ='checkpoints'
 # 方式二：模型加载，指定文件路径
-__C.speaker_verification.finetune_model_path = ""
+__C.speaker_verification.model_path = ""
 
-__C.speaker_verification.finetune_state_name = 'state_dict'
-__C.speaker_verification.finetune_ignore_key_list = []
+__C.speaker_verification.state_name = 'state_dict'
+__C.speaker_verification.ignore_key_list = []
 
 # module 字段添加，[0: 不添加字段, 1: 去除 module 字段, 2: 添加 module 字段]
-__C.speaker_verification.finetune_add_module_type = 0
+__C.speaker_verification.add_module_type = 0
 
 # feedback 模式：反馈约束的多说话人语音合成
 # [tf_multispeakerTTS_fc](https://github.com/caizexin/tf_multispeakerTTS_fc)

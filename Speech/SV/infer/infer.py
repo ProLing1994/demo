@@ -29,10 +29,10 @@ def infer(args):
 
     # load prediction model
     load_checkpoint(net, 
-                    cfg.general.load_mode_type,
-                    cfg.general.save_dir, cfg.test.model_epoch, cfg.general.finetune_sub_folder_name,
-                    cfg.general.finetune_model_path,
-                    cfg.general.finetune_state_name, cfg.general.finetune_ignore_key_list, cfg.general.finetune_add_module_type)
+                    0,
+                    cfg.general.save_dir, cfg.test.model_epoch, 'checkpoints',
+                    "",
+                    'state_dict', [], 0)
     net.eval()
 
     # load data

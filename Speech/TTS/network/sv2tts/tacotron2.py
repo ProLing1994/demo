@@ -295,7 +295,7 @@ class Tacotron2(nn.Module):
         encoder_outputs = self.encoder(inputs)
 
         # (B, T, mel_dim)
-        if mels:
+        if not mels is None:
             mels = mels.permute(0, 2, 1).contiguous()
         mel_outputs, stop_tokens, alignments = self.decoder(
             encoder_outputs, mels, memory_lengths=input_lengths)

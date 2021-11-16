@@ -1,5 +1,6 @@
 import argparse
 import sys
+from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
@@ -28,10 +29,10 @@ def infer(args):
                                 cfg.speaker_verification.model_name, 
                                 cfg.speaker_verification.class_name)
         load_checkpoint(sv_net, 
-                        cfg.general.load_mode_type,
-                        cfg.speaker_verification.model_dir, cfg.speaker_verification.epoch, cfg.general.finetune_sub_folder_name,
-                        cfg.general.finetune_model_path,
-                        cfg.general.finetune_state_name, cfg.general.finetune_ignore_key_list, cfg.general.finetune_add_module_type)
+                        cfg.speaker_verification.load_mode_type,
+                        cfg.speaker_verification.model_dir, cfg.speaker_verification.epoch_num, cfg.speaker_verification.sub_folder_name,
+                        cfg.speaker_verification.model_path,
+                        cfg.speaker_verification.state_name, cfg.speaker_verification.ignore_key_list, cfg.speaker_verification.add_module_type)
         sv_net.eval()
 
     # load synthesizer net
@@ -40,10 +41,10 @@ def infer(args):
                                     cfg.net.model_name, 
                                     cfg.net.class_name)
     load_checkpoint(net_synthesizer, 
-                    cfg.general.load_mode_type,
-                    cfg.general.save_dir, cfg.test.model_epoch, cfg.general.finetune_sub_folder_name,
-                    cfg.general.finetune_model_path,
-                    cfg.general.finetune_state_name, cfg.general.finetune_ignore_key_list, cfg.general.finetune_add_module_type)
+                    0,
+                    cfg.general.save_dir, cfg.test.model_epoch, 'checkpoints',
+                    "",
+                    'state_dict', [], 0)
     net_synthesizer.eval()
 
     # load text
@@ -53,37 +54,46 @@ def infer(args):
     # load embedding
     if cfg.general.mutil_speaker:
         embed = embedding(cfg_speaker_verification, sv_net, args.wav_file) 
-        embeds = [embed] * len(args.text_list)
     else:
-        embeds = None
+        embed = None
 
-    # synthesize_spectrograms
-    specs = synthesize_spectrograms(cfg_synthesizer, net_synthesizer, texts, embeds)
-    
-    for spec_idx in range(len(specs)):
-
-        spec = specs[spec_idx]
+    for idx in tqdm(range(len(texts))):
+        # synthesize_spectrogram
+        text = texts[idx]
+        spec = synthesize_spectrogram(cfg_synthesizer, net_synthesizer, text, embed)
 
         ## Generating the waveform
-        print("Synthesizing the waveform: ", texts[spec_idx])
+        print("Synthesizing the waveform: ", text)
 
         # save griffin lim inverted wav for debug (mel -> wav)
         wav = audio.compute_inv_mel_spectrogram(cfg, spec)
         output_dir = os.path.join(cfg.general.save_dir, "infer")
         create_folder(output_dir)
-        wav_fpath = os.path.join(output_dir, "wave_griffin_from_mel_sample_{}_text_{}.wav".format(os.path.splitext(os.path.basename(args.wav_file))[0], texts_name[spec_idx]))
+        wav_fpath = os.path.join(output_dir, "wave_griffin_from_mel_sample_{}_text_{}.wav".format(os.path.splitext(os.path.basename(args.wav_file))[0], texts_name[idx]))
         audio.save_wav(wav, str(wav_fpath), sr=cfg.dataset.sample_rate)
 
 
 def main():
     parser = argparse.ArgumentParser(description='Streamax SV2TTS Training Engine')
 
-    # # english
-    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_english_sv2tts.py", nargs='?', help='config file')
-    # parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/1320_00000.mp3", nargs='?', help='config file')
-    # args = parser.parse_args()
-    # args.text_list = ["activate be double you see."]
-    # args.text_name_list = ["activate_b_w_c"]
+    # english
+    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_english_sv2tts.py", nargs='?', help='config file')
+    parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/1320_00000.mp3", nargs='?', help='config file')
+    args = parser.parse_args()
+    args.text_list = [
+                        "activate be double you see.", 
+                        "start recording start recording start recording start recording start recording. ",
+                        "stop recording stop recording stop recording stop recording stop recording. ",
+                        "mute audio mute audio mute audio mute audio mute audio. ",
+                        "unmute audio unmute audio unmute audio unmute audio unmute audio. ",
+                        ]
+    args.text_name_list = [
+                            "activate_b_w_c", 
+                            "start_recording",
+                            "stop_recording",
+                            "mute_audio",
+                            "unmute_audio",
+                            ]
 
     # # chinese, en
     # # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
@@ -107,24 +117,24 @@ def main():
     #                         # "今天星期五，天气好，真开心。",
     #                         ]
 
-    # chinese, prosody py
-    parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_0_11102021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
-    parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00050001.wav", nargs='?', help='config file')
-    args = parser.parse_args()
-    args.text_list = [
-                        "dao4-lu4 / qian1-wan4-tiao2, an1-quan2 / di4-yi1-tiao2. ",
-                        # " ".join(get_pinyin("时刻牢记以人为本安全第一的原则。")),
-                        # " ".join(get_pinyin("道路千万条，安全第一条。时刻牢记以人为本，安全第一的原则。")),
-                        # " ".join(get_pinyin("今天星期五天气好真开心")),
-                        # " ".join(get_pinyin("今天星期五，天气好，真开心。")),
-                        ]
-    args.text_name_list = [
-                            "道路千万条安全第一条",
-                            # "时刻牢记以人为本安全第一的原则。",
-                            # "道路千万条，安全第一条。时刻牢记以人为本，安全第一的原则。",
-                            # "今天星期五天气好真开心",
-                            # "今天星期五，天气好，真开心。",
-                            ]
+    # # chinese, prosody py
+    # # parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron_BahdanauAttention_singlespeaker_prosody_py_1_0_11092021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
+    # # parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron_lsa_singlespeaker_prosody_py_2_1_11092021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_0_11102021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
+    # parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00050001.wav", nargs='?', help='config file')
+    # args = parser.parse_args()
+    # args.text_list = [
+    #                     "dao4-lu4 / qian1-wan4-tiao2, an1-quan2 / di4-yi1-tiao2. ",
+    #                     "shi2-ke4 lao2-ji4 / yi3-ren2-wei2-ben3, an1-quan2-di4-yi1-de5 yuan2-ze2. ",
+    #                     "dao4-lu4 / qian1-wan4-tiao2, an1-quan2 / di4-yi1-tiao2, shi2-ke4 lao2-ji4 / yi3-ren2-wei2-ben3, an1-quan2-di4-yi1-de5 yuan2-ze2. ",
+    #                     "jin1-tian1 / xing1-qi1-wu3, tian1-qi4-hao3, zhen1 kai1-xin1. ",
+    #                     ]
+    # args.text_name_list = [
+    #                         "道路千万条，安全第一条",
+    #                         "时刻牢记以人为本，安全第一的原则。",
+    #                         "道路千万条，安全第一条。时刻牢记以人为本，安全第一的原则。",
+    #                         "今天星期五，天气好，真开心。",
+    #                         ]
 
     infer(args)
 

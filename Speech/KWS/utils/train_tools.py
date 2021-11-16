@@ -55,7 +55,7 @@ def generate_dataset(cfg, mode, training_mode=0):
         raise Exception("[ERROR:] Unknow training mode, please check!")
 
     sampler = EpochConcateSampler(data_set, cfg.train.num_epochs - (
-        cfg.general.resume_epoch if cfg.general.resume_epoch != -1 else 0))
+        cfg.general.resume_epoch_num if cfg.general.resume_epoch_num != -1 else 0))
     data_loader = torch.utils.data.DataLoader(data_set,
                                               sampler=sampler,
                                               batch_size=cfg.train.batch_size,

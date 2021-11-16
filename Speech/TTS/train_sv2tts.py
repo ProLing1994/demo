@@ -125,9 +125,9 @@ def train(args):
                                         cfg.guiding_model.class_name)
             load_checkpoint(guiding_net, 
                             cfg.guiding_model.load_mode_type,
-                            cfg.guiding_model.finetune_model_dir, cfg.guiding_model.finetune_epoch_num, cfg.guiding_model.finetune_sub_folder_name,
-                            cfg.guiding_model.finetune_model_path,
-                            cfg.guiding_model.finetune_state_name, cfg.guiding_model.finetune_ignore_key_list, cfg.guiding_model.finetune_add_module_type)
+                            cfg.guiding_model.model_dir, cfg.guiding_model.epoch_num, cfg.guiding_model.sub_folder_name,
+                            cfg.guiding_model.model_path,
+                            cfg.guiding_model.state_name, cfg.guiding_model.ignore_key_list, cfg.guiding_model.add_module_type)
 
             guiding_net.eval()
 
@@ -150,9 +150,9 @@ def train(args):
 
         load_checkpoint(sv_net, 
                         cfg.speaker_verification.load_mode_type,
-                        cfg.speaker_verification.finetune_model_dir, cfg.speaker_verification.finetune_epoch_num, cfg.speaker_verification.finetune_sub_folder_name,
-                        cfg.speaker_verification.finetune_model_path,
-                        cfg.speaker_verification.finetune_state_name, cfg.speaker_verification.finetune_ignore_key_list, cfg.speaker_verification.finetune_add_module_type)
+                        cfg.speaker_verification.model_dir, cfg.speaker_verification.epoch_num, cfg.speaker_verification.sub_folder_name,
+                        cfg.speaker_verification.model_path,
+                        cfg.speaker_verification.state_name, cfg.speaker_verification.ignore_key_list, cfg.speaker_verification.add_module_type)
         
         if cfg.speaker_verification.feedback_on:
             for param in sv_net.parameters():
@@ -253,7 +253,7 @@ def train(args):
                 guiding_attention = guiding_attention.permute(0, 2, 1).contiguous()
                 assert attention.shape == guiding_attention.shape
             guding_loss = F.mse_loss(attention, guiding_attention)
-            loss = m1_loss + m2_loss + stop_loss + 100.0 * guding_loss
+            loss = m1_loss + m2_loss + stop_loss + 300.0 * guding_loss
         elif cfg.speaker_verification.feedback_on:
             if cfg.speaker_verification.embed_loss_func == 'cos':
                 embed_loss = 1 - torch.cosine_similarity(m2_embeds, mel_embeds, dim=1)
@@ -344,8 +344,8 @@ def train(args):
 
 def main(): 
     parser = argparse.ArgumentParser(description='Streamax SV2TTS Training Engine')
-    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_english_sv2tts.py", nargs='?', help='config file')
-    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_english_sv2tts.py", nargs='?', help='config file')
+    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
     args = parser.parse_args()
     train(args)
 

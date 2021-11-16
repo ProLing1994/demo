@@ -37,16 +37,16 @@ __C.general.is_test = True
 __C.general.finetune_on = False
 
 # 模型加载方式，[0: 根据文件目录查找, 1: 模型加载，指定文件路径]
-__C.general.load_mode_type = 1
+__C.general.load_mode_type = 0
 
 # 方式一：模型加载，根据文件目录查找
 __C.general.finetune_model_dir = ""
 __C.general.finetune_epoch_num = -1
-__C.general.finetune_sub_folder_name ='checkpoints'
+__C.general.finetune_sub_folder_name = 'checkpoints'
 # 方式二：模型加载，指定文件路径
-__C.general.finetune_model_path = "/mnt/huanyuan/model/model_10_30_25_21/model/tts_vocoder/pretrained/wavernn/pretrain_model/parameter.pkl"
+__C.general.finetune_model_path = ""
 
-__C.general.finetune_state_name = 'model_state'
+__C.general.finetune_state_name = 'state_dict'
 __C.general.finetune_ignore_key_list = []
 # __C.general.finetune_ignore_key_list = ['module.encoder.embedding.weight']
 # module 字段添加，[0: 不添加字段, 1: 去除 module 字段, 2: 添加 module 字段]
@@ -73,7 +73,7 @@ __C.general.data_parallel_mode = 0
 
 __C.speaker_verification = {}
 
-__C.speaker_verification.config_file = "/mnt/huanyuan2/model/sv/ti_sv_english_finetune_2_0_09142021/sv_config_english_TI_SV.py"
+__C.speaker_verification.config_file = "/mnt/huanyuan2/model/sv/English_TI_SV/ti_sv_english_finetune_2_0_09142021/sv_config_TI_SV.py"
 __C.speaker_verification.model_name = "/home/huanyuan/code/demo/Speech/SV/network/basic.py"
 __C.speaker_verification.class_name = 'SpeakerEncoder'
 
@@ -81,17 +81,17 @@ __C.speaker_verification.class_name = 'SpeakerEncoder'
 __C.speaker_verification.load_mode_type = 0
 
 # 方式一：模型加载，根据文件目录查找
-__C.speaker_verification.finetune_model_dir = "/mnt/huanyuan2/model/sv/ti_sv_english_finetune_2_0_09142021/"
-__C.speaker_verification.finetune_epoch_num = -1
-__C.speaker_verification.finetune_sub_folder_name ='checkpoints'
+__C.speaker_verification.model_dir = "/mnt/huanyuan2/model/sv/English_TI_SV/ti_sv_english_finetune_2_0_09142021/"
+__C.speaker_verification.epoch_num = -1
+__C.speaker_verification.sub_folder_name ='checkpoints'
 # 方式二：模型加载，指定文件路径
-__C.speaker_verification.finetune_model_path = ""
+__C.speaker_verification.model_path = ""
 
-__C.speaker_verification.finetune_state_name = 'state_dict'
-__C.speaker_verification.finetune_ignore_key_list = []
+__C.speaker_verification.state_name = 'state_dict'
+__C.speaker_verification.ignore_key_list = []
 
 # module 字段添加，[0: 不添加字段, 1: 去除 module 字段, 2: 添加 module 字段]
-__C.speaker_verification.finetune_add_module_type = 0
+__C.speaker_verification.add_module_type = 0
 
 
 ##################################
@@ -100,25 +100,26 @@ __C.speaker_verification.finetune_add_module_type = 0
 
 __C.synthesizer = {}
 
-__C.synthesizer.config_file = "/mnt/huanyuan2/model/tts/sv2tts_english_finetune_2_0_09202021/tts_config_english_sv2tts.py"
-__C.synthesizer.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron.py"
+# __C.synthesizer.config_file = "/mnt/huanyuan2/model/tts/sv2tts_english_finetune_2_0_09202021/tts_config_english_sv2tts.py"
+__C.synthesizer.config_file = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_bwc_2_1_09202021/tts_config_english_sv2tts.py"
+__C.synthesizer.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron_old.py"
 __C.synthesizer.class_name = 'Tacotron'
 
 # 模型加载方式，[0: 根据文件目录查找, 1: 模型加载，指定文件路径]
 __C.synthesizer.load_mode_type = 0
 
 # 方式一：模型加载，根据文件目录查找
-__C.synthesizer.finetune_model_dir = "/mnt/huanyuan2/model/tts/sv2tts_english_finetune_2_0_09202021/"
-__C.synthesizer.finetune_epoch_num = -1
-__C.synthesizer.finetune_sub_folder_name ='checkpoints'
+__C.synthesizer.model_dir = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_bwc_2_1_09202021/"
+__C.synthesizer.epoch_num = -1
+__C.synthesizer.sub_folder_name ='checkpoints'
 # 方式二：模型加载，指定文件路径
-__C.synthesizer.finetune_model_path = ""
+__C.synthesizer.model_path = ""
 
-__C.synthesizer.finetune_state_name = 'state_dict'
-__C.synthesizer.finetune_ignore_key_list = []
+__C.synthesizer.state_name = 'state_dict'
+__C.synthesizer.ignore_key_list = []
 
 # module 字段添加，[0: 不添加字段, 1: 去除 module 字段, 2: 添加 module 字段]
-__C.synthesizer.finetune_add_module_type = 0
+__C.synthesizer.add_module_type = 0
 
 
 ##################################

@@ -2,6 +2,7 @@ import sys
 import torch
 from torch import nn
 from torch.autograd import Variable
+from torch.nn import functional as F
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
@@ -25,7 +26,14 @@ def loss_function(cfg):
                               gamma=cfg.loss.focal_gamma,
                               label_smoothing_on = cfg.regularization.label_smoothing.on,
                               label_smoothing_epsilon = cfg.regularization.label_smoothing.epsilon)
-    elif cfg.loss.name == 'AmSoftmax':
+
+    else:
+        raise ValueError('Unsupported loss function.')
+    return loss_func.cuda()
+
+
+def loss_function_embedding(cfg):
+    if cfg.loss.embedding_loss_name == 'AmSoftmax':
         loss_func = AMSoftmax(in_feats = cfg.loss.embedding_size, 
                                 n_classes = cfg.loss.num_classes,
                                 m = cfg.loss.AmSoftmax_m,
