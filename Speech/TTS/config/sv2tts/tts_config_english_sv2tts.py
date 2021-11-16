@@ -29,7 +29,6 @@ __C.general.dataset_path_dict = {
                                 "BwcKeyword_training": "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_BwcKeyword/office/danbing_16k/深圳同事_处理处理_龙哥提供/to_tts/",
                                 "BwcKeyword_format": 'S(\d{1,2})T(\d{1})P(\d{1,2}) *.wav$',   # RM_Room_BWC_S1T1P1.wav
                                 }
-__C.general.mutil_speaker = True
 
 # data path
 __C.general.data_dir = "/mnt/huanyuan2/data/speech/tts/English_dataset/"
@@ -116,7 +115,7 @@ __C.speaker_verification.add_module_type = 0
 
 # feedback 模式：反馈约束的多说话人语音合成
 # [tf_multispeakerTTS_fc](https://github.com/caizexin/tf_multispeakerTTS_fc)
-# 仅用于多说话人合成任务，__C.general.mutil_speaker = True
+# 仅用于多说话人合成任务，__C.dataset.mutil_speaker = True
 # __C.speaker_verification.feedback_on = True
 __C.speaker_verification.feedback_on = False
 
@@ -180,6 +179,16 @@ __C.dataset.num_chars = len(symbols(__C.dataset.symbols_lang))
 
 # tts_cleaner_names
 __C.dataset.tts_cleaner_names = ["english_cleaners"]
+
+# mutil speaker
+__C.dataset.mutil_speaker = True
+
+# speaker embedding, used in tacotron_old & tacotron2_old
+__C.dataset.speaker_embedding_size = 256
+# __C.dataset.speaker_embedding_size = 0
+
+# num_speakers
+__C.dataset.num_speakers = 10000
 
 
 ##################################
@@ -257,11 +266,6 @@ __C.net.class_name = "Tacotron"
 # r frames
 __C.net.r = 2
 
-# speaker embedding 
-# SV2TTS, 多说话人
-__C.net.speaker_embedding_size = 256
-# # 单说话人
-# __C.net.speaker_embedding_size = 0
 
 ######################################
 # training parameters

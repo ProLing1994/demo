@@ -20,7 +20,6 @@ __C.general.dataset_path_dict = {"librispeech_clean_360_training": "/mnt/huanyua
                                 "librispeech_clean_100_training": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/train-clean-100",
                                 "test_clean_testing": "/mnt/huanyuan/data/speech/asr/LibriSpeech/LibriSpeech/test-clean",
                                 }
-__C.general.mutil_speaker = True
 
 # data path
 __C.general.data_dir = "/mnt/huanyuan/data/speech/tts/dataset/"
@@ -101,7 +100,8 @@ __C.speaker_verification.add_module_type = 0
 __C.synthesizer = {}
 
 # __C.synthesizer.config_file = "/mnt/huanyuan2/model/tts/sv2tts_english_finetune_2_0_09202021/tts_config_english_sv2tts.py"
-__C.synthesizer.config_file = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_bwc_2_1_09202021/tts_config_english_sv2tts.py"
+# __C.synthesizer.config_file = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_bwc_2_1_09202021/tts_config_english_sv2tts.py"
+__C.synthesizer.config_file = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_bwc_2_2_11152021/tts_config_english_sv2tts.py"
 __C.synthesizer.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron_old.py"
 __C.synthesizer.class_name = 'Tacotron'
 
@@ -109,7 +109,7 @@ __C.synthesizer.class_name = 'Tacotron'
 __C.synthesizer.load_mode_type = 0
 
 # 方式一：模型加载，根据文件目录查找
-__C.synthesizer.model_dir = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_bwc_2_1_09202021/"
+__C.synthesizer.model_dir = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_bwc_2_2_11152021/"
 __C.synthesizer.epoch_num = -1
 __C.synthesizer.sub_folder_name ='checkpoints'
 # 方式二：模型加载，指定文件路径
@@ -176,6 +176,16 @@ __C.dataset.num_chars = len(symbols(__C.dataset.symbols_lang))
 
 # tts_cleaner_names
 __C.dataset.tts_cleaner_names = ["english_cleaners"]
+
+# mutil speaker
+__C.dataset.mutil_speaker = True
+
+# speaker embedding, used in tacotron_old & tacotron2_old
+__C.dataset.speaker_embedding_size = 256
+# __C.dataset.speaker_embedding_size = 0
+
+# num_speakers
+__C.dataset.num_speakers = 10000
 
 
 ##################################

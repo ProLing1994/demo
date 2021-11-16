@@ -225,8 +225,6 @@ class Decoder(nn.Module):
 
 
 class Tacotron2(nn.Module):
-    # def __init__(self, model_cfg, n_vocab, embed_dim=512, mel_dim=80,
-    #              max_decoder_steps=1000, stop_threshold=0.5, r=3):
     def __init__(self, cfg):
         super(Tacotron2, self).__init__()
 
@@ -243,17 +241,17 @@ class Tacotron2(nn.Module):
         stop_threshold = normal_cfg["stop_threshold"]
 
         # Embedding
-        embedding_cfg = model_cfg["embedding"]
-        embed_dim = embedding_cfg["embed_dim"]
-        self.embedding = nn.Embedding(n_vocab, embed_dim)
-        std = sqrt(2.0 / (n_vocab + embed_dim))
+        text_embedding_cfg = model_cfg["text_embedding"]
+        text_embed_dim = text_embedding_cfg["text_embed_dim"]
+        self.embedding = nn.Embedding(n_vocab, text_embed_dim)
+        std = sqrt(2.0 / (n_vocab + text_embed_dim))
         val = sqrt(3.0) * std  # uniform bounds for std
         self.embedding.weight.data.uniform_(-val, val)
 
         # Encoder
         encoder_cfg = model_cfg["encoder"]
         encoder_out_dim = encoder_cfg["blstm_units"]
-        self.encoder = Encoder(embed_dim, **encoder_cfg)
+        self.encoder = Encoder(text_embed_dim, **encoder_cfg)
 
         # Decoder
         decoder_cfg = model_cfg["decoder"]
@@ -282,8 +280,9 @@ class Tacotron2(nn.Module):
         # Gradient clipping
         clip_grad_norm_(self.parameters(), 1.0)
 
-    def forward(self, inputs, input_lengths, mels, mels_lengths, speaker_embedding=None):
+    def forward(self, inputs, input_lengths, mels, mels_lengths, speaker_ids, speaker_embedding=None):
         del mels_lengths
+        del speaker_ids
         del speaker_embedding
 
         B = inputs.size(0)
@@ -306,19 +305,20 @@ class Tacotron2(nn.Module):
 
         mel_outputs = mel_outputs.permute(0, 2, 1).contiguous()
         mel_post = mel_post.permute(0, 2, 1).contiguous()
-        return mel_outputs, mel_post, stop_tokens, alignments
+        return mel_outputs, mel_post, stop_tokens, None, alignments
 
     def inference(self, inputs, speaker_embedding=None):
         # Only text inputs
-        return self.forward(inputs, None, None, None, speaker_embedding)
+        return self.forward(inputs, None, None, None, None, speaker_embedding)
 
 
 class Tacotron2Loss(nn.Module):
-    def __init__(self):
+    def __init__(self, cfg):
         super(Tacotron2Loss, self).__init__()
+        del cfg
 
     def forward(self, predicts, targets):
-        mel_target, stop_target = targets
+        mel_target, stop_target, _ = targets
         mel_target.requires_grad = False
         stop_target.requires_grad = False
 
@@ -328,4 +328,4 @@ class Tacotron2Loss(nn.Module):
         post_loss = nn.MSELoss()(mel_post_predict, mel_target)
         stop_loss = nn.BCELoss()(stop_predict, stop_target)
 
-        return mel_loss + post_loss + stop_loss
+        return (mel_loss + post_loss + stop_loss), mel_loss, post_loss, stop_loss, None

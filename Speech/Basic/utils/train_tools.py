@@ -99,6 +99,20 @@ def import_network(cfg, model_name, class_name):
     return net
 
 
+def import_loss(cfg, model_name, loss_name):
+    """ import network
+    :param cfg:
+    :return:
+    """
+    os.sys.path.insert(0, os.path.dirname(model_name))
+    net_module = importlib.import_module(os.path.splitext(os.path.basename(model_name))[0])
+    os.sys.path.pop(0)
+    
+    # load loss
+    loss = net_module.__getattribute__(loss_name)(cfg)
+    return loss
+
+
 _output_ref = None
 _replicas_ref = None
 

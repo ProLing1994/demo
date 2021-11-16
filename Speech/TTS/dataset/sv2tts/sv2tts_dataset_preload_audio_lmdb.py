@@ -74,10 +74,15 @@ class SynthesizerDataset(Dataset):
 
         self.data_pd = load_data_pd(cfg, mode)
         self.data_list = self.data_pd['unique_utterance'].to_list()
+
+        self.speaker_list = list(set(self.data_pd['speaker'].to_list()))
+        self.speaker_list.sort()
+        self.speaker_dict = {self.speaker_list[idx] : idx for idx in range(len(self.speaker_list))}
+
         if len(self.data_list) == 0:
             raise Exception("No speakers found. ")
 
-        # print("Found %d samples. " % len(self.data_list))
+        print("Found {} samples, {} speakers. ".format(len(self.data_list), len(self.speaker_list)))
 
     def __len__(self):
         return len(self.data_list)
@@ -108,11 +113,14 @@ class SynthesizerDataset(Dataset):
         wav = read_audio_lmdb(self.lmdb_dict[lmdb_dataset], str(data_name))
         mel = audio.compute_mel_spectrogram(self.cfg, wav).T.astype(np.float32)
 
+        # speaker
+        speaker_id = self.speaker_dict[speaker]
+
         # embed wav
         speaker_pd = self.data_pd[self.data_pd['speaker'] == speaker]
         speaker_data_name = random.choice(speaker_pd['unique_utterance'].to_list()) 
         embed_wav = read_audio_lmdb(self.lmdb_dict[lmdb_dataset], str(speaker_data_name))
-        return text, mel, embed_wav
+        return text, mel, speaker_id, embed_wav
 
 
 class SynthesizerDataLoader(DataLoader):
@@ -164,12 +172,17 @@ class SynthesizerDataLoader(DataLoader):
         for j, k in enumerate(mel_lengths):
             stops[j, int(k)-1:] = 1     # shape: [b, mel_t]
 
+        # Speaker id (mutil speaker)
+        speaker_ids = [x[2] for x in data]
+        speaker_ids = np.stack(speaker_ids)
+        
         # Speaker embedding (SV2TTS)
-        embed_wavs = [x[2] for x in data]
+        embed_wavs = [x[3] for x in data]
 
         # Convert all to tensor
         chars = torch.tensor(chars).long()
         char_lengths = torch.tensor(char_lengths)
         mels = torch.tensor(mels)
         mel_lengths = torch.tensor(mel_lengths)
-        return chars, char_lengths, mels, mel_lengths, stops, embed_wavs
+        speaker_ids = torch.tensor(speaker_ids)
+        return chars, char_lengths, mels, mel_lengths, stops, speaker_ids, embed_wavs

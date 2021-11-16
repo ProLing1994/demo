@@ -1,4 +1,5 @@
 import argparse
+import re
 import numpy as np
 import os
 import pandas as pd
@@ -14,7 +15,55 @@ from Basic.text.mandarin.pinyin.pinyin import get_pinyin
 from Basic.text.mandarin.prosody.prosody import parse_cn_prosody_label_type1
 
 
-def load_pinyin_aishell3(dataset_path, dataset_csv, mode):
+def load_pinyin_aishell3_training(dataset_path, dataset_csv, mode):
+    # text
+    text_path = os.path.join(os.path.dirname(dataset_path), 'label_train-set.txt')
+    assert os.path.exists(text_path), "[ERROR:] path: {}, do not exist.".format(text_path)
+
+    with open(text_path, "r") as text_f:
+        lines = [_line.split('|') for _line in text_f]
+
+    text_dict = {}
+    for _line in lines:
+        if not len(_line) == 3:
+            continue
+        text_dict[_line[0] + '.wav']="".join(_line[2])
+    
+    # pd
+    data_pd = pd.read_csv(dataset_csv)
+    mode_data_pd = data_pd[data_pd['mode'] == mode]
+    file_list = mode_data_pd['file'].tolist()
+
+    for idx, row in tqdm(mode_data_pd.iterrows(), total=len(file_list)):
+        utterance_id = row['utterance']
+
+        # text
+        text_key = str(utterance_id).split('_')[1]
+        text_id = text_dict[text_key]
+
+        # text_id
+        mode_data_pd.loc[idx, 'text'] = text_id
+
+        # pinyin
+        pinyin_id = " ".join(get_pinyin(text_id))
+        mode_data_pd.loc[idx, 'pinyin'] = pinyin_id
+
+        text_id = text_id.replace('%', '#1')
+        text_id = text_id.replace('$', '#3，')
+        text_id = text_id.replace('\n', '')
+
+        pinyin_id = pinyin_id.replace('/ ', '')
+        pinyin_id = pinyin_id.replace(',', '')
+
+        mode_data_pd.loc[idx, 'prosody'] = parse_cn_prosody_label_type1(text_id, pinyin_id)
+        
+    # output csv
+    mode_data_pd.to_csv(dataset_csv, index=False, encoding="utf_8_sig")
+
+    return 
+
+
+def load_pinyin_aishell3_testing(dataset_path, dataset_csv, mode):
     # text
     text_path = os.path.join(os.path.dirname(dataset_path), 'content.txt')
     assert os.path.exists(text_path), "[ERROR:] path: {}, do not exist.".format(text_path)
@@ -45,6 +94,16 @@ def load_pinyin_aishell3(dataset_path, dataset_csv, mode):
     mode_data_pd.to_csv(dataset_csv, index=False, encoding="utf_8_sig")
 
     return 
+
+
+def load_pinyin_aishell3(dataset_path, dataset_csv, mode):
+
+    if mode == hparams.TRAINING_NAME:
+        load_pinyin_aishell3_training(dataset_path, dataset_csv, mode)
+    elif mode == hparams.TESTING_NAME:
+        load_pinyin_aishell3_testing(dataset_path, dataset_csv, mode)
+    
+    return
     
 
 def load_pinyin_bansyp(dataset_path, dataset_csv, mode):
@@ -128,7 +187,6 @@ def data_pinyin(args):
 
 def main():
     parser = argparse.ArgumentParser(description='Streamax SV Data Pinyin Engine')
-    # parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/TTS/config/tts_config_english_sv2tts.py", help='config file')
     parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_chinese_sv2tts.py", help='config file')
     args = parser.parse_args()
 

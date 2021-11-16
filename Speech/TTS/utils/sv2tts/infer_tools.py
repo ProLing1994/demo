@@ -50,15 +50,15 @@ def synthesize_spectrogram(cfg, net, text, embedding=None):
 
     # Inference
     if isinstance(net, torch.nn.parallel.DataParallel):
-        _, mels, _, attention = net.module.inference(char, speaker_embedding)
+        _, mels, _, _, attention = net.module.inference(char, speaker_embedding)
     else:
-        _, mels, _, attention = net.inference(char, speaker_embedding)
+        _, mels, _, _, attention = net.inference(char, speaker_embedding)
 
-    print(f'align score : {align_measure(attention.cpu().detach().numpy()[0].T)}')
+    align_score = align_measure(attention.cpu().detach().numpy()[0].T)
     mels = mels.detach().cpu().numpy()
     for m in mels:
         # Trim silence from end of each spectrogram
         while np.max(m[:, -1]) < tts_stop_threshold:
             m = m[:, :-1]
             
-    return m
+    return m, align_score

@@ -4,10 +4,22 @@
         "stop_threshold": 0.5
     },
 
-    "embedding":{
-        "embed_dim": 512
+    "text_embedding":{
+        "text_embed_dim": 512
+    },
+
+    "spk_embedding":{
+        "spk_embed_dim": 256
     },
     
+    "spk_classifier":{
+        "hidden_dims": [256]
+    },
+
+    "spk_loss":{
+        "spk_loss_weight": 0.02
+    },
+
     "encoder":{
         "num_convs": 3,
         "conv_channels": 512,

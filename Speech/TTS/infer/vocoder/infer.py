@@ -25,7 +25,7 @@ def infer(args):
     cfg = load_cfg_file(args.config_file)
 
     # load speaker verification net
-    if cfg.general.mutil_speaker:
+    if cfg.dataset.mutil_speaker:
         cfg_speaker_verification = load_cfg_file(cfg.speaker_verification.config_file)
         sv_net = import_network(cfg_speaker_verification, 
                                 cfg.speaker_verification.model_name, 
@@ -61,26 +61,24 @@ def infer(args):
                     'state_dict', [], 0)
     net_vocoder.eval()
 
-    # load embedding
-    if cfg.general.mutil_speaker:
-        embed = embedding(cfg_speaker_verification, sv_net, args.wav_file) 
-        embeds = [embed] * len(args.text_list)
-    else:
-        embeds = None
-
     # load text
     texts = args.text_list
     texts_name = args.text_name_list
 
-    # synthesize_spectrograms
-    specs = synthesize_spectrograms(cfg_synthesizer, net_synthesizer, texts, embeds)
-    
-    for spec_idx in range(len(specs)):
+    # load embedding
+    if cfg.dataset.mutil_speaker:
+        embed = embedding(cfg_speaker_verification, sv_net, args.wav_file) 
+    else:
+        embed = None
 
-        spec = specs[spec_idx]
+
+    for idx in tqdm(range(len(texts))):
+        # synthesize_spectrogram
+        text = texts[idx]
+        spec = synthesize_spectrogram(cfg_synthesizer, net_synthesizer, text, embed)
 
         ## Generating the waveform
-        print("Synthesizing the waveform: ", texts[spec_idx])
+        print("Synthesizing the waveform: ", text)
 
         # Synthesizing the waveform is fairly straightforward. Remember that the longer the
         # spectrogram, the more time-efficient the vocoder.
@@ -96,7 +94,7 @@ def infer(args):
         # Save it on the disk
         output_dir = os.path.join(cfg.general.save_dir, "infer")
         create_folder(output_dir)
-        wav_fpath = os.path.join(output_dir, "wave_wavernn_from_mel_sample_{}_text_{}_batched_{}.wav".format(os.path.splitext(os.path.basename(args.wav_file))[0], texts_name[spec_idx], str(args.vocoder_batched)))
+        wav_fpath = os.path.join(output_dir, "wave_wavernn_from_mel_sample_{}_text_{}_batched_{}.wav".format(os.path.splitext(os.path.basename(args.wav_file))[0], texts_name[idx], str(args.vocoder_batched)))
         audio.save_wav(generated_wav, str(wav_fpath), sr=cfg.dataset.sample_rate)
 
 
@@ -109,16 +107,20 @@ def main():
     parser.add_argument('-b', '--vocoder_batched', type=str, default="False", nargs='?', help='config file')
     # parser.add_argument('-b', '--vocoder_batched', type=str, default="True", nargs='?', help='config file')
     args = parser.parse_args()
-    # args.text_list = ["activate be double you see."]
-    # args.text_name_list = ["activate_b_w_c"]
-    # args.text_list = ["start recording"]
-    # args.text_name_list = ["start_recording"]
-    # args.text_list = ["stop recording"]
-    # args.text_name_list = ["stop_recording"]
-    # args.text_list = ["mute audio"]
-    # args.text_name_list = ["mute_audio"]
-    args.text_list = ["unmute audio"]
-    args.text_name_list = ["unmute_audio"]
+    args.text_list = [
+                        "activate be double you see.", 
+                        "start recording start recording start recording start recording start recording. ",
+                        "stop recording stop recording stop recording stop recording stop recording. ",
+                        "mute audio mute audio mute audio mute audio mute audio. ",
+                        "unmute audio unmute audio unmute audio unmute audio unmute audio. ",
+                        ]
+    args.text_name_list = [
+                            "activate_b_w_c", 
+                            "start_recording",
+                            "stop_recording",
+                            "mute_audio",
+                            "unmute_audio",
+                            ]
 
     # # chinese
     # # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/vocoder/tts_config_chinese_vocoder_wavernn.py", nargs='?', help='config file')

@@ -20,7 +20,6 @@ __C.general = {}
 #                                 "Aishell3_training": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/train/wav", 
 #                                 "Aishell3_testing": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/test/wav", 
 #                                 }
-# __C.general.mutil_speaker = True
 
 __C.general.dataset_list = ['BZNSYP']
 __C.general.dataset_path_dict = {
@@ -28,7 +27,6 @@ __C.general.dataset_path_dict = {
                                 "BZNSYP_training": "/mnt/huanyuan/data/speech/asr/Chinese/BZNSYP/Wave", 
                                 "BZNSYP_testing": None, 
                                 }
-__C.general.mutil_speaker = False
 
 # data path
 __C.general.data_dir = "/mnt/huanyuan2/data/speech/tts/Chinese_dataset/"
@@ -188,6 +186,16 @@ __C.dataset.num_chars = len(symbols(__C.dataset.symbols_lang))
 
 # tts_cleaner_names
 __C.dataset.tts_cleaner_names = ["basic_cleaners"]
+
+# mutil speaker
+__C.dataset.mutil_speaker = True
+
+# speaker embedding, used in tacotron_old & tacotron2_old
+# __C.dataset.speaker_embedding_size = 256
+__C.dataset.speaker_embedding_size = 0
+
+# num_speakers
+__C.dataset.num_speakers = 10000
 
 
 ##################################

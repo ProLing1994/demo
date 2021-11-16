@@ -90,11 +90,13 @@ class KwsAsrApi():
                 # asr
                 asr_output_string = self.run_asr(True)
             
-                # 打印结果
-                # 检测是否为 小锐小锐_唤醒词
-                if '小锐小锐_唤醒' in asr_output_string:
-                    self.params_dict['bool_weakup'] = True
-                    asr_output_string = "Weakup "
+                # # 打印结果
+                # # 检测是否为 小锐小锐_唤醒词
+                # # bug: 可能出现重复检测（一个'小锐小锐'，触发两次）
+                # if '小锐小锐_唤醒' in asr_output_string:
+                #     self.params_dict['bool_weakup'] = True
+                #     asr_output_string = "Weakup "
+                asr_output_string = asr_output_string.replace('小锐小锐_唤醒', '').strip()
 
                 if len(asr_output_string):
                     print("\n===============!!!!!!!!!!!!!!===============")

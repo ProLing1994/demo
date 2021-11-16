@@ -36,7 +36,7 @@ def load_text_BwcKeyword(dataset_path, dataset_csv, mode):
         
         # text
         text_key = "_".join(str(utterance_id).split('_')[2:])
-        text_id = text_dict[text_key]
+        text_id = text_dict[text_key] + '. '
         
         mode_data_pd.loc[idx, 'text'] = text_id
     

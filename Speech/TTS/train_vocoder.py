@@ -127,7 +127,7 @@ def train(args):
         last_save_epoch = 0
 
     # 选择是否开启多说话人模式（SV2TTS）
-    if cfg.general.mutil_speaker:
+    if cfg.dataset.mutil_speaker:
         msg = '训练模式：多说话人模式'
         logger.info(msg)
     else:
@@ -135,7 +135,7 @@ def train(args):
         logger.info(msg)
 
     # speaker verification net
-    if cfg.general.mutil_speaker:
+    if cfg.dataset.mutil_speaker:
         cfg_speaker_verification = load_cfg_file(cfg.speaker_verification.config_file)
         sv_net = import_network(cfg_speaker_verification, 
                                 cfg.speaker_verification.model_name, 
@@ -182,7 +182,7 @@ def train(args):
         profiler.tick("Blocking, waiting for batch (threaded)")
 
         # prepare embedding
-        if cfg.general.mutil_speaker:
+        if cfg.dataset.mutil_speaker:
             embeds = []
             for embed_wav_idx in range(len(embed_wavs)):
                 embed_wav = embed_wavs[embed_wav_idx]
@@ -198,7 +198,7 @@ def train(args):
         text_lengths = text_lengths.cuda()
         mels = mels.cuda()
         mel_lengths = mel_lengths.cuda()
-        if cfg.general.mutil_speaker:
+        if cfg.dataset.mutil_speaker:
             embeds = embeds.cuda()
         else:
             embeds = None

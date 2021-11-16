@@ -47,7 +47,6 @@ __C.general.save_dir = "/mnt/huanyuan2/model/kws/kws_xiaoan/test"
 
 # finetune model
 __C.general.finetune_on = False
-__C.general.finetune_model_dir = ""
 
 # 模型加载方式，[0: 根据文件目录查找, 1: 模型加载，指定文件路径]
 __C.general.load_mode_type = 0
@@ -55,7 +54,7 @@ __C.general.load_mode_type = 0
 # 方式一：模型加载，根据文件目录查找
 __C.general.finetune_model_dir = ""
 __C.general.finetune_epoch_num = 0
-__C.general.finetune_sub_folder_name ='checkpoints'
+__C.general.finetune_sub_folder_name = 'checkpoints'
 # 方式二：模型加载，指定文件路径
 __C.general.finetune_model_path = ""
 

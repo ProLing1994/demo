@@ -252,8 +252,9 @@ class Tacotron(nn.Module):
         # Gradient clipping
         clip_grad_norm_(self.parameters(), 1.0)
         
-    def forward(self, inputs, input_lengths, targets, targets_lengths, speaker_embedding=None):
+    def forward(self, inputs, input_lengths, targets, targets_lengths, speaker_ids, speaker_embedding=None):
         del targets_lengths
+        del speaker_ids
         del speaker_embedding
 
         B = inputs.size(0)
@@ -276,27 +277,27 @@ class Tacotron(nn.Module):
 
         mel_outputs = mel_outputs.permute(0, 2, 1).contiguous()
         linear_outputs = linear_outputs.permute(0, 2, 1).contiguous()
-        return mel_outputs, linear_outputs, stop_tokens, alignments
+        return mel_outputs, linear_outputs, stop_tokens, None, alignments
 
     def inference(self, inputs, speaker_embedding=None):
         # Only text inputs
-        return self.forward(inputs, None, None, None, speaker_embedding)
+        return self.forward(inputs, None, None, None, None, speaker_embedding)
 
 
 class TacotronLoss(nn.Module):
-    def __init__(self):
+    def __init__(self, cfg):
         super(TacotronLoss, self).__init__()
+        del cfg
 
     def forward(self, predicts, targets):
-        mel_target, linear_target, stop_target = targets
+        mel_target, stop_target, _ = targets
         mel_target.requires_grad = False
-        linear_target.requires_grad = False
         stop_target.requires_grad = False
 
         mel_predict, linear_predict, stop_predict, _ = predicts
 
         mel_loss = nn.MSELoss()(mel_predict, mel_target)
-        linear_loss = nn.MSELoss()(linear_predict, linear_target)
+        linear_loss = nn.MSELoss()(linear_predict, mel_target)
         stop_loss = nn.BCELoss()(stop_predict, stop_target)
 
-        return mel_loss + linear_loss + stop_loss
+        return (mel_loss + linear_loss + stop_loss), mel_loss, linear_loss, stop_loss, None

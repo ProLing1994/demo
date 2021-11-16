@@ -103,16 +103,22 @@ def train(config_file, training_mode):
     # load checkpoint if finetune_on == True or resume epoch > 0
     if cfg.general.finetune_on == True:
         # fintune, Load model, reset learning rate
-        load_checkpoint(net, cfg.general.finetune_epoch, 
-                        cfg.general.finetune_model_dir, 
-                        sub_folder_name='pretrain_model')
+        load_checkpoint(net, 
+                        cfg.general.load_mode_type,
+                        cfg.general.finetune_model_dir, cfg.general.finetune_epoch_num, cfg.general.finetune_sub_folder_name,
+                        cfg.general.finetune_model_path,
+                        cfg.general.finetune_state_name, cfg.general.finetune_ignore_key_list, cfg.general.finetune_add_module_type)
+
         start_epoch, start_batch = 0, 0
         last_save_epoch = 0
     elif cfg.general.resume_epoch_num >= 0:
         # resume, Load the model, continue the previous learning rate
-        start_epoch, start_batch = load_checkpoint(net, cfg.general.resume_epoch_num,
-                                                        cfg.general.save_dir, 
-                                                        optimizer=optimizer)
+        start_epoch, start_batch = load_checkpoint(net, 
+                                    cfg.general.load_mode_type,
+                                    cfg.general.save_dir, cfg.general.resume_epoch_num, cfg.general.finetune_sub_folder_name,
+                                    cfg.general.finetune_model_path,
+                                    cfg.general.finetune_state_name, cfg.general.finetune_ignore_key_list, cfg.general.finetune_add_module_type, 
+                                    optimizer=optimizer)
         last_save_epoch = start_epoch
     else:
         start_epoch, start_batch = 0, 0
@@ -125,8 +131,11 @@ def train(config_file, training_mode):
 
         teacher_model = import_network(cfg, cfg.knowledge_distillation.teacher_model_name, 
                                         cfg.knowledge_distillation.teacher_class_name)
-        load_checkpoint(teacher_model, cfg.knowledge_distillation.epoch, 
-                        cfg.knowledge_distillation.teacher_model_dir)
+        load_checkpoint(teacher_model, 
+                        0,
+                        cfg.knowledge_distillation.teacher_model_dir, cfg.knowledge_distillation.epoch, 'checkpoints',
+                        "",
+                        'state_dict', [], 0)
         teacher_model.eval()
 
     # define training dataset and testing dataset
