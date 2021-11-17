@@ -18,6 +18,7 @@ from SV.utils.infer_tools import *
 from TTS.dataset.text.text import *
 from TTS.utils.sv2tts.train_tools import *
 from TTS.utils.sv2tts.visualizations_tools import *
+from TTS.network.sv2tts.guided_attention_loss import GuidedAttentionLoss
 
 sys.path.insert(0, '/home/huanyuan/code/demo/common')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/common')
@@ -91,6 +92,12 @@ def train(args):
     if cfg.loss.ema_on:
         ema = EMA(net, 0.9999)
 
+    # 选择是否开启引导者模式
+    if cfg.guided_attn.on:
+        msg = '引导者模式：学习 attention weight'
+        logger.info(msg)
+        attn_loss = GuidedAttentionLoss(sigma=cfg.guided_attn.attn_sigma, alpha=cfg.guided_attn.attn_lambda)
+
     # load checkpoint if finetune_on == True or resume epoch > 0
     if cfg.general.finetune_on == True:
         # fintune, Load model, reset learning rate
@@ -115,26 +122,6 @@ def train(args):
         start_epoch, start_batch = 0, 0
         last_save_epoch = 0
 
-    # 选择是否开启引导者模式
-    if cfg.guiding_model.on:
-        msg = '引导者模式：学习 attention weight'
-        logger.info(msg)
-
-        if cfg.guiding_model.type == 0:
-            # guide net
-            cfg_guiding = load_cfg_file(cfg.guiding_model.config_file)
-            guiding_net = import_network(cfg_guiding, 
-                                        cfg.guiding_model.model_name, 
-                                        cfg.guiding_model.class_name)
-            load_checkpoint(guiding_net, 
-                            cfg.guiding_model.load_mode_type,
-                            cfg.guiding_model.model_dir, cfg.guiding_model.epoch_num, cfg.guiding_model.sub_folder_name,
-                            cfg.guiding_model.model_path,
-                            cfg.guiding_model.state_name, cfg.guiding_model.ignore_key_list, cfg.guiding_model.add_module_type)
-
-            guiding_net.eval()
-
-
     # 选择是否开启多说话人模式（SV2TTS）
     if cfg.dataset.mutil_speaker:
         msg = '训练模式：多说话人模式'
@@ -144,7 +131,7 @@ def train(args):
         logger.info(msg)
 
     # 加载 sv model：引导者模式 和 多说话人模式
-    if cfg.speaker_verification.on or (cfg.guiding_model.on and cfg.guiding_model.sv_on):
+    if cfg.speaker_verification.on:
         # speaker verification net
         cfg_speaker_verification = load_cfg_file(cfg.speaker_verification.config_file)
         sv_net = import_network(cfg_speaker_verification, 
@@ -186,8 +173,8 @@ def train(args):
         # Blocking, waiting for batch (threaded)
         texts, text_lengths, mels, mel_lengths, stops, speaker_ids, embed_wavs = data_iter.next()
 
-        # 选择是否开启多说话人模式（SV2TTS）
-        if cfg.speaker_verification.on or (cfg.guiding_model.on and cfg.guiding_model.sv_on):
+        # 选择是否开启多说话人模式（SV2TTS），需要计算 embedding
+        if cfg.speaker_verification.on:
             embeds = []
             for embed_wav_idx in range(len(embed_wavs)):
                 embed_wav = embed_wavs[embed_wav_idx]
@@ -207,10 +194,6 @@ def train(args):
             embeds = embeds.cuda()
         else:
             embeds = None
-        if cfg.guiding_model.on and cfg.guiding_model.sv_on:
-            guiding_embeds = embeds.cuda()
-        else:
-            guiding_embeds = None
         profiler.tick("Data to device")
         
         # Forward pass
@@ -220,30 +203,8 @@ def train(args):
         else:
             m1_hat, m2_hat, stop_pred, speaker_pred, attention = net(texts, text_lengths, mels, mel_lengths, speaker_ids, embeds)
 
-        if cfg.guiding_model.on:
-            if cfg.guiding_model.type == 0:
-                # guiding from model
-                _, _, _, guiding_attention = guiding_net(texts, text_lengths, mels, mel_lengths, speaker_ids, guiding_embeds)
-                guiding_attention = guiding_attention.detach()
-            elif cfg.guiding_model.type == 1:
-                # guiding from mask
-                B = attention.shape[0]
-                guiding_attention = []
-                for idx in range(B):
-                    guiding_attention_width = mel_lengths[idx].cpu().numpy() // cfg.net.r
-                    guiding_attention_height = text_lengths[idx].cpu().numpy()
-                    guiding_attention_idx = np.zeros((guiding_attention_width, guiding_attention_height))
-                    cv2.line(guiding_attention_idx, (0, 0), (guiding_attention_height, guiding_attention_width), (1 / int(guiding_attention_width // guiding_attention_height + 1)) , 1)
-                    guiding_attention_idx = np.pad(guiding_attention_idx, 
-                                                    ((0, attention.shape[1] - guiding_attention_width), (0, attention.shape[2] - guiding_attention_height)), 
-                                                    mode="constant", constant_values=0)
-                    guiding_attention.append(guiding_attention_idx)
-                guiding_attention = np.stack(guiding_attention)
-                guiding_attention = torch.tensor(guiding_attention).float().cuda()
-
         if cfg.speaker_verification.feedback_on:
             m2_embeds, mel_embeds = embed_mel(m2_hat, mels, mel_lengths, cfg, sv_net)
-
         profiler.tick("Forward pass")
 
         # Calculate loss
@@ -251,23 +212,32 @@ def train(args):
         targets = (mels, stops, speaker_ids)
         loss, m1_loss, m2_loss, stop_loss, speaker_loss = net_loss(predicits, targets)
         
-        if cfg.guiding_model.on:
-            if attention.shape != guiding_attention.shape:
-                guiding_attention = guiding_attention.permute(0, 2, 1).contiguous()
-                guiding_attention = torch.nn.functional.interpolate(guiding_attention, size=attention.shape[1], mode='nearest')
-                guiding_attention = guiding_attention.permute(0, 2, 1).contiguous()
-                assert attention.shape == guiding_attention.shape
-            guding_loss = F.mse_loss(attention, guiding_attention)
-            loss += 1000.0 * guding_loss
-        elif cfg.speaker_verification.feedback_on:
+        # Calculate guided_attn_loss
+        if cfg.guided_attn.on:
+            if isinstance(net, torch.nn.parallel.DataParallel):
+                reduction_factor = net.module.reduction_factor()
+            else:
+                reduction_factor = net.reduction_factor()
+
+            # NOTE: length of output for auto-regressive
+            # input will be changed when r > 1
+            if reduction_factor > 1:
+                mel_lengths_in = mel_lengths.new([olen // reduction_factor for olen in mel_lengths])
+            else:
+                mel_lengths_in = mel_lengths
+            guided_attn_loss = attn_loss(attention, text_lengths, mel_lengths_in)
+            loss += 1.0 * guided_attn_loss
+
+        # Calculate feedback_loss
+        if cfg.speaker_verification.feedback_on:
             if cfg.speaker_verification.embed_loss_func == 'cos':
-                embed_loss = 1 - torch.cosine_similarity(m2_embeds, mel_embeds, dim=1)
-                embed_loss = embed_loss.sum()
-                embed_loss = cfg.speaker_verification.embed_loss_scale * embed_loss
+                feedback_loss = 1 - torch.cosine_similarity(m2_embeds, mel_embeds, dim=1)
+                feedback_loss = feedback_loss.sum()
+                feedback_loss = cfg.speaker_verification.embed_loss_scale * feedback_loss
             elif cfg.speaker_verification.embed_loss_func == 'mse':
-                embed_loss = F.mse_loss(m2_embeds, mel_embeds)
-                embed_loss = cfg.speaker_verification.embed_loss_scale * embed_loss
-            loss += embed_loss
+                feedback_loss = F.mse_loss(m2_embeds, mel_embeds)
+                feedback_loss = cfg.speaker_verification.embed_loss_scale * feedback_loss
+            loss += 1.0 * feedback_loss
         profiler.tick("Calculate Loss")
   
         # Backward pass
@@ -291,18 +261,14 @@ def train(args):
 
         # Show information
         if (batch_idx % cfg.train.show_log) == 0:
-            if cfg.guiding_model.on:
-                msg = 'epoch: {}, batch: {}, train_loss: {:.4f}, (m1_loss: {:.4f}, m2_loss: {:.4f}, stop_loss: {:.4f}, guding_loss: {:.4f})'.format(
-                        epoch_idx, batch_idx, loss.item(), m1_loss.item(), m2_loss.item(), stop_loss.item(), guding_loss.item())
-            elif cfg.speaker_verification.feedback_on:
-                msg = 'epoch: {}, batch: {}, train_loss: {:.4f}, (m1_loss: {:.4f}, m2_loss: {:.4f}, stop_loss: {:.4f}, embed_loss: {:.4f})'.format(
-                        epoch_idx, batch_idx, loss.item(), m1_loss.item(), m2_loss.item(), stop_loss.item(), embed_loss.item())
-            elif not speaker_loss is None:
-                msg = 'epoch: {}, batch: {}, train_loss: {:.4f}, (m1_loss: {:.4f}, m2_loss: {:.4f}, stop_loss: {:.4f}, speaker_loss: {:.4f})'.format(
-                        epoch_idx, batch_idx, loss.item(), m1_loss.item(), m2_loss.item(), stop_loss.item(), speaker_loss.item())
-            else:
-                msg = 'epoch: {}, batch: {}, train_loss: {:.4f}, (m1_loss: {:.4f}, m2_loss: {:.4f}, stop_loss: {:.4f})'.format(
-                        epoch_idx, batch_idx, loss.item(), m1_loss.item(), m2_loss.item(), stop_loss.item())
+            msg = 'epoch: {}, batch: {}, train_loss: {:.4f}, m1_loss: {:.4f}, m2_loss: {:.4f}, stop_loss: {:.4f}'.format(
+                    epoch_idx, batch_idx, loss.item(), m1_loss.item(), m2_loss.item(), stop_loss.item())
+            if cfg.guided_attn.on:
+                msg += ', guided_attn_loss: {:.4f}'.format(guided_attn_loss.item())
+            if not speaker_loss is None:
+                msg += ', speaker_loss: {:.4f}'.format(speaker_loss.item())
+            if cfg.speaker_verification.feedback_on:
+                msg += ', feedback_loss: {:.4f}'.format(feedback_loss.item())
             logger.info(msg)
         profiler.tick("Show information")
 

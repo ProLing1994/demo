@@ -88,41 +88,17 @@ __C.general.data_parallel_mode = 0
 
 
 ##################################
-# guiding model parameters
+# guiding attn mask parameters
 ##################################
 
-__C.guiding_model = {}
+__C.guided_attn = {}
 
-# __C.guiding_model.on = True
-__C.guiding_model.on = False
+__C.guided_attn.on = True
+# __C.guided_attn.on = False
 
-# guide model type，[0: 通过模型引导, 1: 通过 mask 引导]
-__C.guiding_model.type = 0
+__C.guided_attn.attn_sigma = 0.4
+__C.guided_attn.attn_lambda = 1.0
 
-# 是否需要使用说话人验证模型
-# __C.guiding_model.sv_on = True
-__C.guiding_model.sv_on = False
-
-# guide model 用于引导模型，学会 attention 信息
-__C.guiding_model.config_file = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_0_11102021/tts_config_chinese_sv2tts.py"
-__C.guiding_model.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron2.py"
-__C.guiding_model.class_name = 'Tacotron2'
-
-# 模型加载方式，[0: 根据文件目录查找, 1: 模型加载，指定文件路径]
-__C.guiding_model.load_mode_type = 0
-
-# 方式一：模型加载，根据文件目录查找
-__C.guiding_model.model_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_0_11102021/"
-__C.guiding_model.epoch_num = -1
-__C.guiding_model.sub_folder_name ='checkpoints'
-# 方式二：模型加载，指定文件路径
-__C.guiding_model.model_path = ""
-
-__C.guiding_model.state_name = 'state_dict'
-__C.guiding_model.ignore_key_list = []
-
-# module 字段添加，[0: 不添加字段, 1: 去除 module 字段, 2: 添加 module 字段]
-__C.guiding_model.add_module_type = 0
 
 ##################################
 # speaker verification parameters

@@ -251,6 +251,9 @@ class Tacotron(nn.Module):
     def do_gradient_ops(self):
         # Gradient clipping
         clip_grad_norm_(self.parameters(), 1.0)
+
+    def reduction_factor(self):
+        return self.r
         
     def forward(self, inputs, input_lengths, targets, targets_lengths, speaker_ids, speaker_embedding=None):
         del targets_lengths

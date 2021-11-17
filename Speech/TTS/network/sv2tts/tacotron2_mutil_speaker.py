@@ -24,7 +24,7 @@ class Tacotron2(nn.Module):
         self.mel_dim = cfg.dataset.feature_bin_count 
         n_vocab = cfg.dataset.num_chars
         n_speaker = cfg.dataset.num_speakers
-        r = cfg.net.r
+        self.r = cfg.net.r
 
         normal_cfg = model_cfg["normal"]
         max_decoder_steps = normal_cfg["max_decoder_steps"]
@@ -55,7 +55,7 @@ class Tacotron2(nn.Module):
         # Decoder
         encoder_out_dim = encoder_out_dim + speaker_embed_dim
         decoder_cfg = model_cfg["decoder"]
-        self.decoder = Decoder(self.mel_dim, r, encoder_out_dim, **decoder_cfg,
+        self.decoder = Decoder(self.mel_dim, self.r, encoder_out_dim, **decoder_cfg,
             max_decoder_steps=max_decoder_steps, stop_threshold=stop_threshold)
 
         # Postnet
@@ -79,6 +79,9 @@ class Tacotron2(nn.Module):
     def do_gradient_ops(self):
         # Gradient clipping
         clip_grad_norm_(self.parameters(), 1.0)
+
+    def reduction_factor(self):
+        return self.r
 
     # def forward(self, inputs):
     def forward(self, inputs, input_lengths, mels, mels_lengths, speaker_ids, speaker_embedding=None):

@@ -79,13 +79,16 @@ __C.general.data_parallel_mode = 0
 
 
 ##################################
-# guiding model parameters
+# guiding attn mask parameters
 ##################################
 
-__C.guiding_model = {}
+__C.guided_attn = {}
 
-# __C.guiding_model.on = True
-__C.guiding_model.on = False
+__C.guided_attn.on = True
+# __C.guided_attn.on = False
+
+__C.guided_attn.attn_sigma = 0.4
+__C.guided_attn.attn_lambda = 1.0
 
 
 ##################################
