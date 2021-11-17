@@ -40,7 +40,11 @@ def load_pinyin_aishell3_training(dataset_path, dataset_csv, mode):
         # text
         text_key = str(utterance_id).split('_')[1]
         text_id = text_dict[text_key]
-
+        if not str(text_id).endswith('$\n') and not str(text_id).endswith('$'):
+            if str(text_id).endswith('%\n'):
+                text_id = text_id.replace('%\n', '$\n')
+            else:
+                print()
         # text_id
         mode_data_pd.loc[idx, 'text'] = text_id
 

@@ -280,7 +280,7 @@ class Tacotron2(nn.Module):
         # Gradient clipping
         clip_grad_norm_(self.parameters(), 1.0)
 
-    def forward(self, inputs, input_lengths, mels, mels_lengths, speaker_ids, speaker_embedding=None):
+    def forward(self, inputs, input_lengths, mels, mels_lengths, speaker_ids=None, speaker_embedding=None):
         del mels_lengths
         del speaker_ids
         del speaker_embedding

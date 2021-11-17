@@ -115,8 +115,8 @@ def main():
                         default= "/mnt/huanyuan/data/speech/asr/English/LibriSpeech/LibriSpeech/train-clean-360/")
                         # default= "/mnt/huanyuan/data/speech/asr/English/LibriSpeech/LibriSpeech/train-other-500/")
     parser.add_argument("--output_folder", type=str, 
-                        # default= "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_BwcKeyword/tts/sv2tts_wovocoder/LibriSpeech/train-clean-100/")
-                        default= "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_BwcKeyword/tts/sv2tts_wovocoder/LibriSpeech/train-clean-360/")
+                        # default= "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_BwcKeyword/tts/sv2tts_english_finetune_2_0/LibriSpeech/train-clean-100/")
+                        default= "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_BwcKeyword/tts/sv2tts_english_finetune_2_0/LibriSpeech/train-clean-360/")
     parser.add_argument("--output_format", type=str, default= "RM_TTSsv2tts_S{:0>6d}P{:0>3d}T{:0>3d}.wav")
     parser.add_argument("--random_time", type=int, default= 5)
     parser.add_argument('-b', '--vocoder_batched', type=str, default="False", nargs='?', help='config file')
@@ -127,16 +127,30 @@ def main():
 
     # danbing BwcKeyword
     args.text_list = [
-                        "start recording start recording start recording start recording start recording. ",
-                        "stop recording stop recording stop recording stop recording stop recording. ",
-                        "mute audio mute audio mute audio mute audio mute audio. ",
-                        "unmute audio unmute audio unmute audio unmute audio unmute audio. ",
+                        "start recording. ",
+                        "stop recording. ",
+                        "mute audio. ",
+                        "unmute audio. ",
+                        "shots fired. ",
+                        "Freeze. ",
+                        "Drop your gun. ",
+                        "Drop the gun. ",
+                        "Keep your hands on. ",
+                        "Put your hands up. ", 
+                        "Get down on the ground. "
                         ]
     args.text_name_list = [
                             "start_recording",
                             "stop_recording",
                             "mute_audio",
                             "unmute_audio",
+                            "shots_fired",
+                            "freeze",
+                            "drop_your_gun", 
+                            "drop_the_gun",
+                            "keep_your_hands_on", 
+                            "put_your_hands_up",
+                            "get_down_on_the_ground", 
                             ]
 
     infer(args)

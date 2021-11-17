@@ -115,7 +115,7 @@ class SynthesizerDataset(Dataset):
         if self.cfg.dataset.language == 'chinese':
             text = re.sub(', $', '. ', text) 
             text = re.sub(',$', '. ', text) 
-        print(text)
+            assert text[-2] == '.', "[ERROR:] text: {} | {} ".format(text, text[-2])
 
         # Get the text and clean it
         text = text_to_sequence(text, self.cfg.dataset.tts_cleaner_names, lang=self.cfg.dataset.symbols_lang)

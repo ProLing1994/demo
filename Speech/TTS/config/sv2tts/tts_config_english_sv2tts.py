@@ -35,10 +35,10 @@ __C.general.data_dir = "/mnt/huanyuan2/data/speech/tts/English_dataset/"
 
 # the output of training models and logging files
 # __C.general.save_dir = "/mnt/huanyuan2/model/english_tts/test/"
-# __C.general.save_dir = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_english_finetune_2_0_09202021/"
+__C.general.save_dir = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_english_finetune_2_0_09202021/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_bwc_2_1_09202021/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_bwc_2_2_11152021/"
-__C.general.save_dir = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_bwc_2_3_11152021/"
+# __C.general.save_dir = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_bwc_2_3_11152021/"
 
 # test after save pytorch model
 __C.general.is_test = True
