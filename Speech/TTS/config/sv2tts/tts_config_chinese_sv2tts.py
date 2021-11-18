@@ -14,18 +14,14 @@ cfg = __C
 
 __C.general = {}
 
-__C.general.dataset_list = ['Aishell3']
+__C.general.dataset_list = ['Aishell3', 'BZNSYP']
 __C.general.dataset_path_dict = {
                                 "Aishell3": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/", 
                                 "Aishell3_training": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/train/wav", 
                                 "Aishell3_testing": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/test/wav", 
+                                "BZNSYP": "/mnt/huanyuan/data/speech/asr/Chinese/BZNSYP/", 
+                                "BZNSYP_training": "/mnt/huanyuan/data/speech/asr/Chinese/BZNSYP/Wave", 
                                 }
-
-# __C.general.dataset_list = ['BZNSYP']
-# __C.general.dataset_path_dict = {
-#                                 "BZNSYP": "/mnt/huanyuan/data/speech/asr/Chinese/BZNSYP/", 
-#                                 "BZNSYP_training": "/mnt/huanyuan/data/speech/asr/Chinese/BZNSYP/Wave", 
-#                                 }
 
 # data path
 __C.general.data_dir = "/mnt/huanyuan2/data/speech/tts/Chinese_dataset/"
@@ -97,8 +93,12 @@ __C.guided_attn.on = True
 # __C.guided_attn.on = False
 
 __C.guided_attn.attn_sigma = 0.4
-__C.guided_attn.attn_lambda = 1.0
+__C.guided_attn.attn_lambda = 10.0
 
+# 逗号，添加空白时长
+__C.guided_attn.speacing_commas = 0.15
+# 句号，添加空白时长
+__C.guided_attn.speacing_periods = 0.20
 
 ##################################
 # speaker verification parameters

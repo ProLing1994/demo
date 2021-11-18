@@ -82,13 +82,16 @@ __C.general.data_parallel_mode = 0
 # guiding attn mask parameters
 ##################################
 
-__C.guided_attn = {}
-
 __C.guided_attn.on = True
 # __C.guided_attn.on = False
 
 __C.guided_attn.attn_sigma = 0.4
-__C.guided_attn.attn_lambda = 1.0
+__C.guided_attn.attn_lambda = 10.0
+
+# 逗号，添加空白时长
+__C.guided_attn.speacing_commas = 0.15
+# 句号，添加空白时长
+__C.guided_attn.speacing_periods = 0.20
 
 
 ##################################

@@ -99,6 +99,8 @@ class SynthesizerDataset(Dataset):
         # text
         if self.cfg.dataset.language == 'chinese':
             text = self.data_pd.loc[index, self.cfg.dataset.symbols]
+            text = str(text).strip()
+            assert text[-1] in [',', '.', '/', '1', '2', '3', '4', '5'], "[ERROR:] text: {} | {} ".format(text, text[-1])
         elif self.cfg.dataset.language == 'english':
             text = self.data_pd.loc[index, 'text']
         else:
@@ -113,9 +115,15 @@ class SynthesizerDataset(Dataset):
 
         # 中文句末需要变换为句号 . 
         if self.cfg.dataset.language == 'chinese':
-            text = re.sub(', $', '. ', text) 
-            text = re.sub(',$', '. ', text) 
-            assert text[-2] == '.', "[ERROR:] text: {} | {} ".format(text, text[-2])
+            text = re.sub(',$', '.', text) 
+            text = re.sub('.$', '.', text) 
+            text = re.sub('/$', '.', text) 
+            text = re.sub('1$', '1.', text) 
+            text = re.sub('2$', '2.', text) 
+            text = re.sub('3$', '3.', text) 
+            text = re.sub('4$', '4.', text) 
+            text = re.sub('5$', '5.', text) 
+            assert text[-1] == '.', "[ERROR:] text: {} | {} ".format(text, text[-1])
 
         # Get the text and clean it
         text = text_to_sequence(text, self.cfg.dataset.tts_cleaner_names, lang=self.cfg.dataset.symbols_lang)

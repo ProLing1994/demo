@@ -31,7 +31,7 @@ def parse_cn_prosody_label_type1(text, pinyin):
     PWD = ' '
     PPH = ' / '
     IPH = ', '
-    SEN = '.'
+    SEN = '. '
 
     # parse details
     pinyin = ''

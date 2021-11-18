@@ -6,6 +6,7 @@ sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
 from Basic.utils.lmdb_tools import *
 
+
 def dataset_augmentation_longer_senteces(cfg, text, wav, data_by_spk, lmdb_dict):
     # init
     longer_senteces_frequency = cfg.dataset.augmentation.longer_senteces_frequency 
@@ -38,6 +39,7 @@ def dataset_augmentation_longer_senteces(cfg, text, wav, data_by_spk, lmdb_dict)
         # text
         if cfg.dataset.language == 'chinese':
             find_text = data_by_spk.loc[find_data_index, cfg.dataset.symbols]
+            find_text = str(find_text).strip()
         elif cfg.dataset.language == 'english':
             find_text = data_by_spk.loc[find_data_index, 'text']
         else:
@@ -46,6 +48,22 @@ def dataset_augmentation_longer_senteces(cfg, text, wav, data_by_spk, lmdb_dict)
         # mel
         find_wav = read_audio_lmdb(lmdb_dict[lmdb_dataset], str(data_name))
 
+        assert text[-1] in [',', '.', '/', '1', '2', '3', '4', '5'], "[ERROR:] text: {} | {} ".format(text, text[-1])
+        # gen spacing
+        if text[-1] == ',':
+            spacing = gen_spacing(cfg.dataset.sample_rate, cfg.guided_attn.speacing_commas)
+        elif text[-1] == '.':
+            spacing = gen_spacing(cfg.dataset.sample_rate, cfg.guided_attn.speacing_periods)
+        elif text[-1] == '/':
+            spacing = gen_spacing(cfg.dataset.sample_rate, 0.0)
+        else:
+            text += ' '
+            spacing = gen_spacing(cfg.dataset.sample_rate, 0.0)
+        
         text += find_text
-        wav = np.concatenate((wav, find_wav), axis=0)
+        wav = np.concatenate((wav, spacing, find_wav), axis=0)
     return text, wav
+
+
+def gen_spacing(sr, sec) : 
+    return np.zeros((int(sr * sec), ), dtype=np.float32)

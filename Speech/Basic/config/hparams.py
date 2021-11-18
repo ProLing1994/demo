@@ -32,6 +32,16 @@ check_wave_length_ms = 1000             # 1s
 # 在数据预处理阶段，对 VoxCeleb1 数据集进行预处理
 Anglophone_Nationalites = ["australia", "canada", "ireland", "uk", "usa"]
 
+## prosody threshold
+# 在数据预处理阶段，对韵律 prosody 划分
+# 通过数据集 BZNSYP 统计，单位 s
+prosody_threshold = {
+                    "1": [0.11, 0.21], 
+                    "2": [0.21, 0.28], 
+                    "3": [0.28, 0.32], 
+                    "4": [0.32, 0.43], 
+                    }
+
 ### 模型训练阶段
 ## Trim silence
 # 在模型训练阶段，利用函数 librosa.effects.trim 修剪静音片段
