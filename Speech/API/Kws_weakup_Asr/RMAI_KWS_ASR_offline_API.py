@@ -2,7 +2,8 @@ import argparse
 import os
 
 import impl.asr_data_loader_pyimpl as WaveLoader
-from RMAI_KWS_ASR_API import KwsAsrApi
+# from RMAI_KWS_ASR_API import KwsAsrApi
+from RMAI_KWS_ASR_API_Flow import KwsAsrApi
 
 def KWS_ASR_offine():
     # init 
@@ -31,8 +32,7 @@ def KWS_ASR_offine():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Streamax KWS ASR offine Engine')
-    # parser.add_argument('--input_wav', type=str, default="/home/huanyuan/code/demo/Speech/API/Kws_weakup_Asr/audio/test-kws-xiaorui-asr-mandarin-taxi_001.wav")
-    parser.add_argument('--input_wav', type=str, default="/home/huanyuan/temp/6maike.wav")
+    parser.add_argument('--input_wav', type=str, default="/home/huanyuan/code/demo/Speech/API/Kws_weakup_Asr/audio/test-kws-xiaorui-asr-mandarin-taxi_001.wav")
     args = parser.parse_args()
 
     KWS_ASR_offine()

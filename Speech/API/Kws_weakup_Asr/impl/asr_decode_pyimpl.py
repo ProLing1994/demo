@@ -2,6 +2,7 @@ import copy
 import heapq
 import numpy as np
 import kenlm
+import re
 
 
 class Ken_LM:
@@ -55,6 +56,60 @@ def get_edit_distance(sentence1, sentence2):
     return dp[len1][len2]
 
 
+def get_ouststr(pred):
+    object_list=['空调','天窗','收音机','地图','前排窗户','蓝牙','后排窗户','音量','温度']
+    operation_list=['打开','关闭','连接','断开','调节']
+    num_dict={'一':'1','二':'2','三':'3','四':'4','五':'5','六':'6','七':'7','八':'8','九':'9'}
+    num_list=['一','二','三','四','五','六','七','八','九','十','百']
+    out_str=''
+    if(pred==None):
+        return ''
+    pred=''.join(pred)
+    for object in object_list:
+        if(object in pred):
+            out_str='control-'+object
+            break
+    for operation in operation_list:
+        if(operation in pred):
+            out_str=out_str+'-'+operation
+            break
+    start_pos=re.search('到',pred)
+    if(start_pos==None):
+        out_unit=out_str.split('-')
+        if(len(out_unit)!=3):
+            return ''
+        else:
+            operation=out_unit[-1]
+            if(operation in['打开','连接']):
+                out_str=out_str+'-'+'100'
+            elif(operation in['关闭','断开']):
+                out_str=out_str+'-'+'0'
+            else:
+                return ''
+    else:
+        value=''
+        start_pos=start_pos.span()[0]
+        if(pred[start_pos+1:start_pos+4]=='百分之'):
+            start_pos+=4
+        else:
+            start_pos+=1
+        while start_pos<len(pred) and pred[start_pos] in num_list :
+            if(pred[start_pos]=='十'):
+               if(len(value)==0):
+                  value='1'
+               elif(start_pos==len(pred) - 1 or pred[start_pos+1] not in num_list):
+                  value+='0'
+            elif(pred[start_pos]=='百'):
+                if(len(value)==0):
+                    value='100'
+                else:
+                    value+='00'
+            else:
+                value+=num_dict[pred[start_pos]]
+            start_pos+=1
+        out_str+='-'+value
+    return out_str
+
 class Decode(object):
     """ decode python wrapper """
 
@@ -93,6 +148,13 @@ class Decode(object):
             symbol = self.id2word[self.result_id[idx]]
             output_symbol += symbol + " "
         return output_symbol
+
+    def output_symbol_list(self):
+        output_symbol_list = []
+        for idx in range(len(self.result_id)):
+            symbol = self.id2word[self.result_id[idx]]
+            output_symbol_list.append(symbol)
+        return output_symbol_list
 
     def output_result_string(self):
         result_string = ''

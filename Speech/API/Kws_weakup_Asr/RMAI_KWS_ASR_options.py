@@ -168,3 +168,6 @@ __C.model.asr_chk_path = os.path.join(os.path.dirname(os.path.abspath(__file__))
 __C.model.asr_model_name = "ASR_mandarin"
 __C.model.asr_class_name = "ASR_Mandarin_Net"
 __C.model.asr_num_classes = 408
+
+# vad
+__C.model.vad_mode = 3

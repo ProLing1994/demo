@@ -9,6 +9,9 @@ from impl.asr_feature_pyimpl import Feature
 import impl.model_tool as model
 import impl.asr_decode_pyimpl as Decode_Python
 
+from impl.rm_common_library.KeywordSearch.keyword_graph import PrimaryGraph, Graph
+from impl.rm_common_library.KeywordSearch.token_pass_match import primary_token_pass
+
 
 class KwsAsrApi():
     """
@@ -20,7 +23,7 @@ class KwsAsrApi():
         self.bool_gpu = bool_gpu
 
         # cfg init
-        cfg_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "RMAI_KWS_ASR_options.py")
+        cfg_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "RMAI_KWS_ASR_options_Flow.py")
         self.cfg = load_module_from_disk(cfg_path).cfg
         
         # param_init
@@ -36,12 +39,17 @@ class KwsAsrApi():
         self.params_dict['audio_data_container_np'] = np.array([])
         self.params_dict['feature_data_container_np'] = np.array([])
         self.params_dict['kws_container_np'] = np.array([])         # kws 结构容器中，用于滑窗输出结果
-        self.params_dict['vad_bool_container'] = []                 # vad 结构容器中，用于判断连续 3s 输出
+        self.params_dict['vad_bool_container'] = []                 # vad 结构容器中，用于判断连续 5s 输出
         self.params_dict['output_wave_list'] = []
         self.params_dict['asr_duplicate_counter'] = {}
 
+        self.params_dict['asr_vad_audio_data_container_np'] = np.zeros(int(self.cfg.general.sample_rate * self.cfg.general.asr_vad_audio_data_ms / 1000.0))
+        self.params_dict['asr_vad_flag'] = False
+        self.params_dict['asr_vad_command_vad_count'] = 0
+        self.params_dict['asr_vad_command_vad_flag'] = False
+        self.params_dict['asr_vad_start_pos'] = 0
+
         self.params_dict['bool_weakup'] = False
-        self.params_dict['counter_weakup'] = 0
         self.params_dict['counter_asr'] = self.cfg.general.asr_suppression_counter - 1
 
     def kws_asr_init(self):
@@ -49,6 +57,7 @@ class KwsAsrApi():
         self.kws_init()
         self.asr_init()
         self.vad_init()
+        self.graph_init()
 
     def run_kws_asr(self, audio_data):
         # init 
@@ -81,23 +90,12 @@ class KwsAsrApi():
                 self.params_dict['bool_weakup'] = True
                 output_str += "Weakup "
         else:
-            self.params_dict['counter_weakup'] += 1
-            if self.params_dict['counter_weakup'] >= self.cfg.general.kws_suppression_counter:
-                self.params_dict['counter_weakup'] = 0
+            bool_asr_end, asr_output_string = self.run_asr_vad(audio_data)
+            if bool_asr_end:
                 self.params_dict['bool_weakup'] = False
+
                 # 控制 asr 的间隔时间
                 self.params_dict['counter_asr'] -= 1
-
-                # asr
-                asr_output_string = self.run_asr(True)
-            
-                # # 打印结果
-                # # 检测是否为 小锐小锐_唤醒词
-                # # bug: 可能出现重复检测（一个'小锐小锐'，触发两次）
-                # if '小锐小锐_唤醒' in asr_output_string:
-                #     self.params_dict['bool_weakup'] = True
-                #     asr_output_string = "Weakup "
-                asr_output_string = asr_output_string.replace('小锐小锐_唤醒', '').strip()
 
                 if len(asr_output_string):
                     print("\n===============!!!!!!!!!!!!!!===============")
@@ -181,7 +179,7 @@ class KwsAsrApi():
             if np.array(self.params_dict['vad_bool_container']).sum() == 0:
 
                 # 保证唤醒后，一定会将 3s 音频用于控制词识别
-                if self.params_dict['counter_weakup'] == 0:
+                if not self.params_dict['bool_weakup']:
                     run_vad_bool = True
         
         return run_vad_bool
@@ -283,6 +281,10 @@ class KwsAsrApi():
     def vad_init(self):
         self.vad = None
         self.vad = webrtcvad.Vad(mode=self.cfg.model.vad_mode)
+
+    def graph_init(self):
+        self.graph = None
+        self.graph = Graph.build( self.cfg.model.graph_path )
 
     def run_kws(self):
         # init
@@ -395,6 +397,113 @@ class KwsAsrApi():
             raise Exception("[Unknow:] cfg.general.language_id = {}".format(self.cfg.general.language_id))
 
         return result_string
+
+    def run_asr_vad(self, audio_data):
+
+        print("[Information:] Go into run_asr_vad")
+        
+        # init 
+        result_string = ''
+        self.params_dict['asr_vad_audio_data_container_np'][self.cfg.general.sample_rate * 5 : ] = audio_data
+
+        # 进入 asr vad 模式
+        if not self.params_dict['asr_vad_flag']:
+            self.params_dict['asr_vad_flag'] = True
+
+        # 循环检测 vad
+        audio_data_len = len(audio_data)
+        for i in range(0, audio_data_len - 480, 480):
+            
+            # vad 计数，表示当前时刻是否已经结束
+            vad_wav = audio_data[i : i + 480].astype(np.int16).tobytes()
+            if self.vad.is_speech(vad_wav, sample_rate=self.cfg.general.sample_rate):
+                self.params_dict['asr_vad_command_vad_count'] += 1
+            else:
+                self.params_dict['asr_vad_command_vad_count'] -= 1
+            self.params_dict['asr_vad_command_vad_count'] = max(0, min(self.params_dict['asr_vad_command_vad_count'], 10))
+            
+            # 确立起始位置
+            if (self.params_dict['asr_vad_command_vad_count'] > 5 and self.params_dict['asr_vad_command_vad_flag'] == False):
+                self.params_dict['asr_vad_command_vad_flag'] = True
+                self.params_dict['asr_vad_start_pos'] = self.cfg.general.sample_rate * 5 + i - 10 * 480
+            
+            # 判断当前是否为静音
+            if self.params_dict['asr_vad_command_vad_count'] < 3:
+                
+                # 未确立起始位置
+                if not self.params_dict['asr_vad_command_vad_flag'] == True:
+                    continue
+
+                # 音频数据
+                wav_in = self.params_dict['asr_vad_audio_data_container_np'][self.params_dict['asr_vad_start_pos'] : min(self.cfg.general.sample_rate * 5 + i + 960, self.cfg.general.sample_rate * 6)]
+                
+                # 若小于检测最短长度，返回
+                if len(wav_in) < int(self.cfg.general.sample_rate  * self.cfg.general.asr_vad_counter_ms / 1000.0): 
+                    continue
+                
+                # 清空
+                self.params_dict['asr_vad_audio_data_container_np'] = np.zeros(int(self.cfg.general.sample_rate * self.cfg.general.asr_vad_audio_data_ms / 1000.0))
+                self.params_dict['asr_vad_start_pos'] = 0
+                self.params_dict['asr_vad_flag'] = False
+                self.params_dict['asr_vad_command_vad_flag'] = False
+
+                # feature
+                # 计算特征
+                feature = Feature(self.cfg.general.sample_rate, int(self.cfg.general.feature_freq), int(self.cfg.general.nfilt))
+                feature.get_mel_int_feature(wav_in)
+                feature_data = feature.copy_mfsc_feature_int_to().astype(np.float32)
+
+                # 模型前向传播
+                if self.cfg.model.bool_caffe:
+                    net_output = model.caffe_model_forward(self.asr_net, 
+                                                            feature_data, 
+                                                            self.cfg.model.asr_net_input_name, 
+                                                            self.cfg.model.asr_net_output_name)
+                    net_output = np.squeeze(net_output)
+                    net_output = net_output.T
+                elif self.cfg.model.bool_pytorch:
+                    net_output = model.pytorch_model_forward(self.asr_net, 
+                                                            feature_data, 
+                                                            self.bool_gpu)
+                    net_output = np.squeeze(net_output)
+
+                # decode
+                if self.cfg.general.decode_id == 0:
+                    self.asr_decoder.ctc_decoder(net_output)
+                elif self.cfg.general.decode_id == 1:
+                    self.asr_decoder.beamsearch_decoder(net_output, 15, 0, bswt=1.0, lmwt=0.3)
+                else:
+                    raise Exception("[Unknow:] cfg.general.decode_id = {}".format(self.cfg.general.decode_id))
+
+                if self.cfg.general.language_id == 0:
+                    self.asr_decoder.show_result_id()
+                    self.asr_decoder.show_symbol()
+                    symbol_list = self.asr_decoder.output_symbol_list()
+
+                    detect_token = primary_token_pass(symbol_list, self.graph)
+                    if not detect_token is None:
+                        print('===============', detect_token)
+                    result_string = Decode_Python.get_ouststr(detect_token)
+                    print('===============', result_string)
+
+                elif self.cfg.general.language_id == 1:
+                    pass
+                else:
+                    raise Exception("[Unknow:] cfg.general.language_id = {}".format(self.cfg.general.language_id))
+                
+                break
+
+        # 缓存，移位
+        self.params_dict['asr_vad_audio_data_container_np'][:self.cfg.general.sample_rate * 5] = self.params_dict['asr_vad_audio_data_container_np'][-self.cfg.general.sample_rate * 5:]
+
+        if self.params_dict['asr_vad_start_pos'] > 0:
+            self.params_dict['asr_vad_start_pos'] -= self.cfg.general.sample_rate
+
+        # 返回，输出
+        if self.params_dict['asr_vad_flag']:
+            return False, result_string
+        else:
+            return True, result_string
 
     def asr_duplicate_update_counter(self):
         for key in self.params_dict['asr_duplicate_counter']:

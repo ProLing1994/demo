@@ -214,7 +214,7 @@ __C.dataset.speaker_embedding_size = 256
 # __C.dataset.speaker_embedding_size = 0
 
 # num_speakers
-__C.dataset.num_speakers = 165
+__C.dataset.num_speakers = 166
 
 
 ##################################
