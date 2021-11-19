@@ -118,7 +118,7 @@ _replicas_ref = None
 
 def data_parallel_workaround(cfg, model, *input):
     """ data parallel workaround
-    单机多卡，在数据加载后进行手动并行（目前仅用于 sv2tts 数据并行方式）
+    单机多卡，在数据加载后进行手动并行（目前仅用于 SV 数据并行）
     cfg.general.data_parallel_mode == 2 and cfg.general.num_gpus > 1
     :param cfg:
     :param model:

@@ -13,7 +13,7 @@ from Basic.utils.profiler_tools import *
 from SV.utils.infer_tools import *
 
 from TTS.dataset.text.text import *
-from TTS.utils.sv2tts.visualizations_tools import *
+from TTS.utils.tts.visualizations_tools import *
 
 from TTS.utils.vocoder.train_tools import *
 import TTS.config.vocoder.hparams as hparams_vocoder
@@ -279,7 +279,7 @@ def train(args):
 
 
 def main(): 
-    parser = argparse.ArgumentParser(description='Streamax SV2TTS Vocoder Training Engine')
+    parser = argparse.ArgumentParser(description='Streamax TTS Vocoder Training Engine')
     # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/vocoder/tts_config_vocoder_wavernn.py", nargs='?', help='config file')
     parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/vocoder/tts_config_chinese_vocoder_wavernn.py", nargs='?', help='config file')
     args = parser.parse_args()

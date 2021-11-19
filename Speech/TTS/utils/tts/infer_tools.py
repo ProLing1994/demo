@@ -3,12 +3,14 @@ import sys
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 from TTS.dataset.text.text import *
-from TTS.config.sv2tts.hparams import *
-from TTS.dataset.sv2tts.sv2tts_dataset_preload_audio_lmdb import *
+from TTS.config.tts.hparams import *
+from TTS.dataset.tts.sv2tts_dataset_preload_audio_lmdb import *
+
 
 def self_cor(mat) : 
     mode = np.sqrt(np.sum(mat**2, axis=0))[:, None]
     return mat.T @ mat / (mode.T * mode)
+
 
 def align_measure(attn_mat) : 
 
@@ -32,7 +34,8 @@ def align_measure(attn_mat) :
     Q = self_cor(attn_mat.T)
     return (np.trace(Q @ Q.T) - L) / L
 
-def synthesize_spectrogram(cfg, net, text, embedding=None):
+
+def synthesize_spectrogram(cfg, net, text, speaker_id=None, speaker_embedding=None):
     # Preprocess text inputs
     char = text_to_sequence(text.strip(), cfg.dataset.tts_cleaner_names, lang=cfg.dataset.symbols_lang)
     char = np.stack(char)
@@ -41,18 +44,22 @@ def synthesize_spectrogram(cfg, net, text, embedding=None):
     char = torch.tensor(char).long().cuda()
     char = torch.unsqueeze(char, dim=0)
 
+    # Stack speaker ids into 2D array for batch processing
+    if not speaker_id is None:
+        speaker_id = np.stack([speaker_id])
+        speaker_id = torch.tensor(speaker_id).long().cuda()
+
     # Stack speaker embeddings into 2D array for batch processing
-    speaker_embedding = None
-    if not embedding is None:
-        speaker_embedding = np.stack(embedding)
+    if not speaker_embedding is None:
+        speaker_embedding = np.stack(speaker_embedding)
         speaker_embedding = torch.tensor(speaker_embedding).float().cuda()
         speaker_embedding = torch.unsqueeze(speaker_embedding, dim=0)
 
     # Inference
     if isinstance(net, torch.nn.parallel.DataParallel):
-        _, mels, _, _, attention = net.module.inference(char, speaker_embedding)
+        _, mels, _, _, attention = net.module.inference(char, speaker_id, speaker_embedding)
     else:
-        _, mels, _, _, attention = net.inference(char, speaker_embedding)
+        _, mels, _, _, attention = net.inference(char, speaker_id, speaker_embedding)
 
     align_score = align_measure(attention.cpu().detach().numpy()[0].T)
     mels = mels.detach().cpu().numpy()

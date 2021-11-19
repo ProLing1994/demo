@@ -79,7 +79,7 @@ def data_text(args):
 
 def main():
     parser = argparse.ArgumentParser(description='Streamax SV Data Text Engine')
-    parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_english_sv2tts.py", help='config file')
+    parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/TTS/config/tts/tts_config_english_sv2tts.py", help='config file')
     args = parser.parse_args()
 
     print("[Begin] Data Text")

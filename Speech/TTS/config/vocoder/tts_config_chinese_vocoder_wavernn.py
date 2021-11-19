@@ -108,7 +108,7 @@ __C.synthesizer = {}
 
 __C.synthesizer.config_file = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_tacotron_singlespeaker_guaiding_4_2_10292021/tts_config_chinese_sv2tts.py"
 # __C.synthesizer.config_file = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_finetune_1_2_10232021/tts_config_chinese_sv2tts.py"
-__C.synthesizer.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron.py"
+__C.synthesizer.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/tts/tacotron.py"
 __C.synthesizer.class_name = 'Tacotron'
 
 # 模型加载方式，[0: 根据文件目录查找, 1: 模型加载，指定文件路径]

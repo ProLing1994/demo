@@ -10,8 +10,8 @@ from Basic.dataset import audio
 from Basic.utils.lmdb_tools import *
 
 from TTS.dataset.text.text import *
-from TTS.dataset.sv2tts.audio import *
-from TTS.dataset.sv2tts.sv2tts_dataset_preload_audio_lmdb import *
+from TTS.dataset.tts.audio import *
+from TTS.dataset.tts.sv2tts_dataset_preload_audio_lmdb import *
 
 from TTS.dataset.vocoder.audio import *
 import TTS.config.vocoder.hparams as hparams_vocoder
@@ -111,7 +111,7 @@ class VocoderDataLoader(DataLoader):
             max_spec_len += cfg.net.r - max_spec_len % cfg.net.r
 
         # WaveRNN mel spectrograms are normalized to [0, 1] so zero padding adds silence
-        # By default, SV2TTS uses symmetric mels, where -1*max_abs_value is silence.
+        # By default, TTS uses symmetric mels, where -1*max_abs_value is silence.
         if hparams.symmetric_mels:
             mel_pad_value = -1 * hparams.max_abs_value
         else:

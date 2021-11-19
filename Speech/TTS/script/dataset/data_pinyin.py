@@ -46,11 +46,6 @@ def load_pinyin_aishell3_training(dataset_name, dataset_path, dataset_csv, mode)
         text_key = str(utterance_id).split('_')[1]
         text_id = str(text_dict[text_key]).strip()
 
-        # % -> $
-        if str(text_id).endswith('%'):
-            text_id = text_id.replace('%', '$')
-        assert(str(text_id).endswith('$'))
-
         # text
         mode_data_pd.loc[idx, 'text'] = text_id
 
@@ -59,12 +54,13 @@ def load_pinyin_aishell3_training(dataset_name, dataset_path, dataset_csv, mode)
         mode_data_pd.loc[idx, 'pinyin'] = pinyin_id
 
         # simple
-        # text_id = text_id.replace('%', '#1')
-        # text_id = text_id.replace('$', '#3，')
-        # text_id = text_id.replace('\n', '')
+        # %: The boundary after prosodic word and the minor prosodic phrase.
+        # $: The major prosodic phrase respectively, represented the boundary for topic turning and the intonation boundary.
+        text_id = text_id.replace('%', '#2')
+        text_id = text_id.replace('$', '#3，')
 
-        # 对 % 和 $ 结果进行韵律等级划分（依据统计结果）
-        text_id = get_prosody_label_text(words_set, utterance_id, text_id)
+        # # 对 % 和 $ 结果进行韵律等级划分（依据统计结果，结果不太稳定）
+        # text_id = get_prosody_label_text(words_set, utterance_id, text_id)
 
         pinyin_id = pinyin_id.replace('/ ', '')
         pinyin_id = pinyin_id.replace(',', '')
@@ -208,7 +204,7 @@ def data_pinyin(args):
 
 def main():
     parser = argparse.ArgumentParser(description='Streamax SV Data Pinyin Engine')
-    parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_chinese_sv2tts.py", help='config file')
+    parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/TTS/config/tts/tts_config_chinese_sv2tts.py", help='config file')
     args = parser.parse_args()
 
     print("[Begin] Data Pinyin")

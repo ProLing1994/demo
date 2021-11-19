@@ -7,8 +7,8 @@ languague="english"
 # languague="chinese"
 
 # init
-config_file=/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_english_sv2tts.py
-# config_file=/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_chinese_sv2tts.py
+config_file=/home/huanyuan/code/demo/Speech/TTS/config/tts/tts_config_english_sv2tts.py
+# config_file=/home/huanyuan/code/demo/Speech/TTS/config/tts/tts_config_chinese_sv2tts.py
 
 echo "script/dataset/prepare_dataset.sh"
 

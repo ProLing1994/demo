@@ -1,4 +1,5 @@
 from easydict import EasyDict as edict
+import numpy as np
 import sys
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/TTS')
@@ -14,55 +15,51 @@ cfg = __C
 
 __C.general = {}
 
-__C.general.dataset_list = ['Aishell3', 'BZNSYP']
+
+# __C.general.dataset_list = ['librispeech_clean_100', 'librispeech_clean_360', 'librispeech_test_clean', 'BwcKeyword']
+__C.general.dataset_list = ['BwcKeyword']
 __C.general.dataset_path_dict = {
-                                "Aishell3": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/", 
-                                "Aishell3_training": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/train/wav", 
-                                "Aishell3_testing": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/test/wav", 
-                                "BZNSYP": "/mnt/huanyuan/data/speech/asr/Chinese/BZNSYP/", 
-                                "BZNSYP_training": "/mnt/huanyuan/data/speech/asr/Chinese/BZNSYP/Wave", 
+                                "librispeech_clean_100": "/mnt/huanyuan/data/speech/asr/English/LibriSpeech/LibriSpeech/train-clean-100", 
+                                "librispeech_clean_100_training": "/mnt/huanyuan/data/speech/asr/English/LibriSpeech/LibriSpeech/train-clean-100",
+                                "librispeech_clean_360": "/mnt/huanyuan/data/speech/asr/English/LibriSpeech/LibriSpeech/train-clean-360",
+                                "librispeech_clean_360_training": "/mnt/huanyuan/data/speech/asr/English/LibriSpeech/LibriSpeech/train-clean-360",
+                                "librispeech_test_clean": "/mnt/huanyuan/data/speech/asr/English/LibriSpeech/LibriSpeech/test-clean",
+                                "librispeech_test_clean_testing": "/mnt/huanyuan/data/speech/asr/English/LibriSpeech/LibriSpeech/test-clean",
+                                "BwcKeyword": "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_BwcKeyword/office/danbing_16k/深圳同事_处理处理_龙哥提供/to_tts/",
+                                "BwcKeyword_training": "/mnt/huanyuan/data/speech/Recording/RM_Meiguo_BwcKeyword/office/danbing_16k/深圳同事_处理处理_龙哥提供/to_tts/",
+                                "BwcKeyword_format": 'S(\d{1,2})T(\d{1})P(\d{1,2}) *.wav$',   # RM_Room_BWC_S1T1P1.wav
                                 }
 
 # data path
-__C.general.data_dir = "/mnt/huanyuan2/data/speech/tts/Chinese_dataset/"
+__C.general.data_dir = "/mnt/huanyuan2/data/speech/tts/English_dataset/"
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/test/"
-# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_1_1_10232021/"
-# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_finetune_1_2_10232021/"
-# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_tacotron_singlespeaker_guaiding_4_2_10292021/"
-# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron_BahdanauAttention_singlespeaker_prosody_py_1_0_11092021/"
-# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron_lsa_singlespeaker_prosody_py_2_1_11092021/"
-# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_0_11102021/"
+# __C.general.save_dir = "/mnt/huanyuan2/model/english_tts/test/"
+__C.general.save_dir = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_english_finetune_2_0_09202021/"
+# __C.general.save_dir = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_bwc_2_1_09202021/"
+# __C.general.save_dir = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_bwc_2_2_11152021/"
+# __C.general.save_dir = "/mnt/huanyuan2/model/tts/english_tts/sv2tts_bwc_2_3_11152021/"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # finetune model
-__C.general.finetune_on = True
-# __C.general.finetune_on = False
+# __C.general.finetune_on = True
+__C.general.finetune_on = False
 
 # 模型加载方式，[0: 根据文件目录查找, 1: 模型加载，指定文件路径]
 __C.general.load_mode_type = 0
 
 # 方式一：模型加载，根据文件目录查找
-__C.general.finetune_model_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_0_11102021/"
+__C.general.finetune_model_dir = ""
 __C.general.finetune_epoch_num = -1
-__C.general.finetune_sub_folder_name ='checkpoints'
+__C.general.finetune_sub_folder_name = 'checkpoints'
 # 方式二：模型加载，指定文件路径
 __C.general.finetune_model_path = ""
 
 __C.general.finetune_state_name = 'state_dict'
-# __C.general.finetune_ignore_key_list = []
+__C.general.finetune_ignore_key_list = []
 # __C.general.finetune_ignore_key_list = ['module.encoder.embedding.weight']
-__C.general.finetune_ignore_key_list = [
-                                        'module.decoder.attention_rnn.rnn_cell.weight_ih', 
-                                        'module.decoder.memory_layer.weight',
-                                        'module.decoder.decoder_rnn.weight_ih',
-                                        'module.decoder.mel_proj.weight',
-                                        'module.decoder.stop_proj.weight',
-                                        ]
-
 # module 字段添加，[0: 不添加字段, 1: 去除 module 字段, 2: 添加 module 字段]
 __C.general.finetune_add_module_type = 0
 
@@ -78,16 +75,12 @@ __C.general.gpu_ids = '0'
 # data_parallel_mode: [0, 1]
 # 0: 单机多卡，DataParallel
 # 1: 单/多级多卡、分布式，DistributedDataParallel
-# 2: 单机多卡，数据手动并行
-## TODO：目前在训练 sv2tts 过程中，多卡运行出现异常，原因未知，bug: terminate called after throwing an instance of 'c10::Error'
 __C.general.data_parallel_mode = 0
 
 
 ##################################
 # guiding attn mask parameters
 ##################################
-
-__C.guided_attn = {}
 
 __C.guided_attn.on = True
 # __C.guided_attn.on = False
@@ -100,17 +93,14 @@ __C.guided_attn.speacing_commas = 0.15
 # 句号，添加空白时长
 __C.guided_attn.speacing_periods = 0.20
 
+
 ##################################
 # speaker verification parameters
 ##################################
 
 __C.speaker_verification = {}
 
-# 是否加载说话人验证模型
-# __C.speaker_verification.on = True
-__C.speaker_verification.on = False
-
-__C.speaker_verification.config_file = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_1_basic_10122021/sv_config_chinese_TI_SV.py"
+__C.speaker_verification.config_file = "/mnt/huanyuan2/model/sv/English_TI_SV/ti_sv_english_finetune_2_0_09142021/sv_config_TI_SV.py"
 __C.speaker_verification.model_name = "/home/huanyuan/code/demo/Speech/SV/network/basic.py"
 __C.speaker_verification.class_name = 'SpeakerEncoder'
 
@@ -118,7 +108,7 @@ __C.speaker_verification.class_name = 'SpeakerEncoder'
 __C.speaker_verification.load_mode_type = 0
 
 # 方式一：模型加载，根据文件目录查找
-__C.speaker_verification.model_dir = "/mnt/huanyuan2/model/sv/Chinese_TI_SV/ti_sv_1_1_basic_10122021"
+__C.speaker_verification.model_dir = "/mnt/huanyuan2/model/sv/English_TI_SV/ti_sv_english_finetune_2_0_09142021/"
 __C.speaker_verification.epoch_num = -1
 __C.speaker_verification.sub_folder_name ='checkpoints'
 # 方式二：模型加载，指定文件路径
@@ -171,12 +161,9 @@ __C.dataset.feature_bin_count = 80
 __C.dataset.nfilt = 80
 
 # fmin, only support preprocess ["fbank_log", "fbank_log_manual"]
-# Set this to 55 if your speaker is male! if female, 95 should help taking off noise. (To
-# test depending on dataset. Pitch info: male~[65, 260], female~[100, 525])
 __C.dataset.fmin = 55
 
 # fmax, only support preprocess ["fbank_log", "fbank_log_manual"]
-# To be increased/reduced depending on data.
 __C.dataset.fmax = 7600
 
 # input size of training data (w, h), whether input size is a multiple of 16, unit: voxel
@@ -189,32 +176,26 @@ __C.dataset.h_alignment = False
 __C.dataset.data_size = [80, -1]
 
 # language
-__C.dataset.language = 'chinese'
-
-# symbols, support ["pinyin", "prosody"]
-# __C.dataset.symbols = 'pinyin'
-__C.dataset.symbols = 'prosody'
+__C.dataset.language = 'english'
 
 # symbols, support ["en: English characters", "py: Chinese Pinyin symbols"]
-# __C.dataset.symbols_lang = 'en'
-__C.dataset.symbols_lang = 'py'
+__C.dataset.symbols_lang = 'en'
 
 # num_chars
 __C.dataset.num_chars = len(symbols(__C.dataset.symbols_lang))
 
 # tts_cleaner_names
-__C.dataset.tts_cleaner_names = ["basic_cleaners"]
+__C.dataset.tts_cleaner_names = ["english_cleaners"]
 
 # mutil speaker
 __C.dataset.mutil_speaker = True
-# __C.dataset.mutil_speaker = False
 
 # speaker embedding, used in tacotron_old & tacotron2_old
 __C.dataset.speaker_embedding_size = 256
 # __C.dataset.speaker_embedding_size = 0
 
 # num_speakers
-__C.dataset.num_speakers = 166
+__C.dataset.num_speakers = 10000
 
 
 ##################################
@@ -225,8 +206,8 @@ __C.dataset.num_speakers = 166
 __C.dataset.augmentation = {}
 
 # based on audio waveform: on
-__C.dataset.augmentation.on = True
-# __C.dataset.augmentation.on = False
+# __C.dataset.augmentation.on = True
+__C.dataset.augmentation.on = False
 
 # based on longer senteces: on.
 __C.dataset.augmentation.longer_senteces_on = True
@@ -247,30 +228,10 @@ __C.dataset.augmentation.longer_senteces_weight = [0.6, 0.2, 0.2]
 
 __C.net = {}
 
-# # the network name
-# __C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron_old.py"
-# __C.net.class_name = "Tacotron"
-# # r frames
-# __C.net.r = 2
-
-# # the network name
-# __C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron.py"
-# __C.net.class_name = "Tacotron"
-# __C.net.loss_name = "TacotronLoss"
-# # r frames
-# __C.net.r = 2
-
-# # the network name
-# __C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron2.py"
-# __C.net.class_name = "Tacotron2"
-# __C.net.loss_name = "Tacotron2Loss"
-# # r frames
-# __C.net.r = 2
-
 # the network name
-__C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron2_mutil_speaker.py"
-__C.net.class_name = "Tacotron2"
-__C.net.loss_name = "Tacotron2Loss"
+__C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/tts/tacotron_old.py"
+__C.net.class_name = "Tacotron"
+
 # r frames
 __C.net.r = 2
 
@@ -307,8 +268,7 @@ __C.train.save_epochs = 1
 ######################################
 
 # learning rate = lr*gamma**(epoch//step_size)
-__C.train.lr = 1e-3
-# __C.train.lr = 1e-4
+__C.train.lr = 1e-4
 
 # step size for step learning rate
 __C.train.lr_step_size = 0

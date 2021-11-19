@@ -6,7 +6,7 @@
 
 stage=2
 
-config_file=/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_chinese_sv2tts.py
+config_file=/home/huanyuan/code/demo/Speech/TTS/config/tts/tts_config_chinese_sv2tts.py
 # align_data_set=/mnt/huanyuan2/data/speech/tts/Chinese_dataset/dataset_align/BZNSYP_training
 # align_data_set=/mnt/huanyuan2/data/speech/tts/Chinese_dataset/dataset_align/Aishell3_training
 align_data_set=/mnt/huanyuan2/data/speech/tts/Chinese_dataset/dataset_align/Aishell3_testing

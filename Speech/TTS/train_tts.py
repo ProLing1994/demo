@@ -16,9 +16,11 @@ from Basic.utils.profiler_tools import *
 from SV.utils.infer_tools import *
 
 from TTS.dataset.text.text import *
-from TTS.utils.sv2tts.train_tools import *
-from TTS.utils.sv2tts.visualizations_tools import *
-from TTS.network.sv2tts.guided_attention_loss import GuidedAttentionLoss
+from TTS.utils.tts.train_tools import *
+from TTS.utils.tts.visualizations_tools import *
+from TTS.network.tts.guided_attention_loss import GuidedAttentionLoss
+from TTS.utils.tts.infer_tools import *
+
 
 sys.path.insert(0, '/home/huanyuan/code/demo/common')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/common')
@@ -315,9 +317,9 @@ def train(args):
 
 
 def main(): 
-    parser = argparse.ArgumentParser(description='Streamax SV2TTS Training Engine')
-    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_english_sv2tts.py", nargs='?', help='config file')
-    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
+    parser = argparse.ArgumentParser(description='Streamax TTS Training Engine')
+    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/tts/tts_config_english_sv2tts.py", nargs='?', help='config file')
+    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/tts/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
     args = parser.parse_args()
     train(args)
 

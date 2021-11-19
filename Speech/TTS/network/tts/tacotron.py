@@ -9,12 +9,12 @@ from torch.nn.utils import clip_grad_norm_
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
-from TTS.network.sv2tts.attention import BahdanauAttention, AttentionWrapper
-from TTS.network.sv2tts.attention import get_mask_from_lengths
-from TTS.network.sv2tts.modules import Prenet, CBHG
+from TTS.network.tts.attention import BahdanauAttention, AttentionWrapper
+from TTS.network.tts.attention import get_mask_from_lengths
+from TTS.network.tts.modules import Prenet, CBHG
 
-tacotron_config = '/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron1.json'
-# tacotron_config = '/home/engineers/yh_rmai/code/demo/Speech/TTS/network/sv2tts/tacotron1.json'
+tacotron_config = '/home/huanyuan/code/demo/Speech/TTS/network/tts/tacotron1.json'
+# tacotron_config = '/home/engineers/yh_rmai/code/demo/Speech/TTS/network/tts/tacotron1.json'
 
 class Encoder(nn.Module):
     def __init__(self, embed_dim,
@@ -255,10 +255,8 @@ class Tacotron(nn.Module):
     def reduction_factor(self):
         return self.r
         
-    def forward(self, inputs, input_lengths, targets, targets_lengths, speaker_ids, speaker_embedding=None):
+    def forward(self, inputs, input_lengths, targets, targets_lengths, *args):
         del targets_lengths
-        del speaker_ids
-        del speaker_embedding
 
         B = inputs.size(0)
 
@@ -282,9 +280,9 @@ class Tacotron(nn.Module):
         linear_outputs = linear_outputs.permute(0, 2, 1).contiguous()
         return mel_outputs, linear_outputs, stop_tokens, None, alignments
 
-    def inference(self, inputs, speaker_embedding=None):
+    def inference(self, inputs, *args):
         # Only text inputs
-        return self.forward(inputs, None, None, None, None, speaker_embedding)
+        return self.forward(inputs, None, None, None, None, None)
 
 
 class TacotronLoss(nn.Module):

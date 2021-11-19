@@ -13,10 +13,10 @@ from Basic.config import hparams
 from Basic.dataset import audio
 from Basic.utils.lmdb_tools import *
 
-from TTS.config.sv2tts.hparams import *
+from TTS.config.tts.hparams import *
 from TTS.dataset.text.text import *
-from TTS.dataset.sv2tts.audio import *
-from TTS.dataset.sv2tts import dataset_augmentation
+from TTS.dataset.tts.audio import *
+from TTS.dataset.tts import dataset_augmentation
 
 def load_data_pd(cfg, mode):
     # load data_pd

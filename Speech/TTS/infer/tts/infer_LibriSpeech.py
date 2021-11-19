@@ -11,8 +11,8 @@ from Basic.utils.train_tools import *
 
 from SV.utils.infer_tools import *
 
-from TTS.utils.sv2tts.infer_tools import *
-from TTS.utils.sv2tts.visualizations_tools import *
+from TTS.utils.tts.infer_tools import *
+from TTS.utils.tts.visualizations_tools import *
 
 from TTS.utils.vocoder.infer_tools import *
 
@@ -106,10 +106,10 @@ def infer(args):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Streamax SV2TTS Training Engine')
+    parser = argparse.ArgumentParser(description='Streamax TTS Training Engine')
 
     # english
-    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_english_sv2tts.py", nargs='?', help='config file')
+    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/tts/tts_config_english_sv2tts.py", nargs='?', help='config file')
     parser.add_argument('-d', "--data_path", type=str, 
                         # default= "/mnt/huanyuan/data/speech/asr/English/LibriSpeech/LibriSpeech/train-clean-100/")
                         default= "/mnt/huanyuan/data/speech/asr/English/LibriSpeech/LibriSpeech/train-clean-360/")

@@ -10,7 +10,7 @@ from Basic.config import hparams
 from Basic.dataset import logmmse
 from Basic.dataset import audio
 
-from TTS.config.sv2tts import hparams as hparams_tts
+from TTS.config.tts import hparams as hparams_tts
 
 
 def preprocess_speaker_librispeech(cfg, data_files, row):

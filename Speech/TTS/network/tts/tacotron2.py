@@ -9,12 +9,12 @@ from torch.nn.utils import clip_grad_norm_
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
-from TTS.network.sv2tts.attention import LocationSensitiveAttention, AttentionWrapper
-from TTS.network.sv2tts.attention import get_mask_from_lengths
-from TTS.network.sv2tts.modules import Prenet, BatchNormConv1dStack
+from TTS.network.tts.attention import LocationSensitiveAttention, AttentionWrapper
+from TTS.network.tts.attention import get_mask_from_lengths
+from TTS.network.tts.modules import Prenet, BatchNormConv1dStack
 
-tacotron_config = '/home/huanyuan/code/demo/Speech/TTS/network/sv2tts/tacotron2.json'
-# tacotron_config = '/home/engineers/yh_rmai/code/demo/Speech/TTS/network/sv2tts/tacotron2.json'
+tacotron_config = '/home/huanyuan/code/demo/Speech/TTS/network/tts/tacotron2.json'
+# tacotron_config = '/home/engineers/yh_rmai/code/demo/Speech/TTS/network/tts/tacotron2.json'
 
 class Postnet(nn.Module):
     """Postnet
@@ -234,7 +234,7 @@ class Tacotron2(nn.Module):
         self.cfg = cfg
         self.mel_dim = cfg.dataset.feature_bin_count 
         n_vocab = cfg.dataset.num_chars
-        r = cfg.net.r
+        self.r = cfg.net.r
 
         normal_cfg = model_cfg["normal"]
         max_decoder_steps = normal_cfg["max_decoder_steps"]
@@ -255,7 +255,7 @@ class Tacotron2(nn.Module):
 
         # Decoder
         decoder_cfg = model_cfg["decoder"]
-        self.decoder = Decoder(self.mel_dim, r, encoder_out_dim, **decoder_cfg,
+        self.decoder = Decoder(self.mel_dim, self.r, encoder_out_dim, **decoder_cfg,
             max_decoder_steps=max_decoder_steps, stop_threshold=stop_threshold)
 
         # Postnet
@@ -283,10 +283,8 @@ class Tacotron2(nn.Module):
     def reduction_factor(self):
         return self.r
 
-    def forward(self, inputs, input_lengths, mels, mels_lengths, speaker_ids=None, speaker_embedding=None):
+    def forward(self, inputs, input_lengths, mels, mels_lengths, *args):
         del mels_lengths
-        del speaker_ids
-        del speaker_embedding
 
         B = inputs.size(0)
 
@@ -310,9 +308,9 @@ class Tacotron2(nn.Module):
         mel_post = mel_post.permute(0, 2, 1).contiguous()
         return mel_outputs, mel_post, stop_tokens, None, alignments
 
-    def inference(self, inputs, speaker_embedding=None):
+    def inference(self, inputs, *args):
         # Only text inputs
-        return self.forward(inputs, None, None, None, None, speaker_embedding)
+        return self.forward(inputs, None, None, None, None)
 
 
 class Tacotron2Loss(nn.Module):

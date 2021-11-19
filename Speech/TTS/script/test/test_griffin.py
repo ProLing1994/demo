@@ -19,8 +19,8 @@ def test_griffin(args):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Streamax SV2TTS Test Engine')
-    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
+    parser = argparse.ArgumentParser(description='Streamax TTS Test Engine')
+    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/config/tts/tts_config_chinese_sv2tts.py", nargs='?', help='config file')
     # parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00050001.wav", nargs='?', help='config file')
     parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00730005.wav", nargs='?', help='config file')
     parser.add_argument('--output_path', type=str, default="/home/huanyuan/temp", nargs='?', help='config file')

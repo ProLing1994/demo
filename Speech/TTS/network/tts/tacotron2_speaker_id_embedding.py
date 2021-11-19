@@ -8,8 +8,8 @@ from torch.nn.utils import clip_grad_norm_
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
 
-from TTS.network.sv2tts.tacotron2 import tacotron_config, Encoder, Decoder, Postnet
-from TTS.network.sv2tts.modules import AdversarialClassifier
+from TTS.network.tts.tacotron2 import tacotron_config, Encoder, Decoder, Postnet
+from TTS.network.tts.modules import AdversarialClassifier
 
 
 class Tacotron2(nn.Module):
@@ -84,9 +84,8 @@ class Tacotron2(nn.Module):
         return self.r
 
     # def forward(self, inputs):
-    def forward(self, inputs, input_lengths, mels, mels_lengths, speaker_ids, speaker_embedding=None):
+    def forward(self, inputs, input_lengths, mels, mels_lengths, speaker_ids, *args):
         del mels_lengths
-        del speaker_embedding
 
         B = inputs.size(0)
 
@@ -120,9 +119,9 @@ class Tacotron2(nn.Module):
         mel_post = mel_post.permute(0, 2, 1).contiguous()
         return mel_outputs, mel_post, stop_tokens, speaker_outputs, alignments
 
-    def inference(self, inputs, speaker_ids, speaker_embedding=None):
+    def inference(self, inputs, speaker_ids, *args):
         # Only text inputs
-        return self.forward(inputs, None, None, None, speaker_ids, speaker_embedding)
+        return self.forward(inputs, None, None, None, speaker_ids)
 
 
 class Tacotron2Loss(nn.Module):

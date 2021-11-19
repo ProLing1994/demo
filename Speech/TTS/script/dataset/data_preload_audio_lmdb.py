@@ -13,12 +13,12 @@ from Basic.config import hparams
 from Basic.utils.train_tools import load_cfg_file
 from Basic.utils.folder_tools import *
 
-from TTS.dataset.sv2tts import audio
+from TTS.dataset.tts import audio
 
 
 parser = argparse.ArgumentParser(description='Streamax SV Data Split Engine')
-parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_english_sv2tts.py", help='config file')
-# parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/TTS/config/sv2tts/tts_config_chinese_sv2tts.py", help='config file')
+parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/TTS/config/tts/tts_config_english_sv2tts.py", help='config file')
+# parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/TTS/config/tts/tts_config_chinese_sv2tts.py", help='config file')
 args = parser.parse_args()
 
 # params

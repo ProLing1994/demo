@@ -8,7 +8,7 @@ from torch import nn
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
-from TTS.network.sv2tts.grl import GradientReversal
+from TTS.network.tts.grl import GradientReversal
 
 
 class Prenet(nn.Module):
