@@ -10,11 +10,11 @@ sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 from Basic.config import hparams
 from Basic.dataset import audio
 
-import TTS.config.vocoder.hparams as hparams_vocoder
-from TTS.dataset.vocoder.audio import *
-from TTS.dataset.vocoder.distribution import *
-from TTS.network.vocoder import hparams_wavernn
-from TTS.utils.vocoder.display_tools import *
+import VOCODER.config.vocoder.hparams as hparams_vocoder
+from VOCODER.dataset.vocoder.audio import *
+from VOCODER.dataset.vocoder.distribution import *
+from VOCODER.network.vocoder import hparams_wavernn
+from VOCODER.utils.vocoder.display_tools import *
 
 
 class ResBlock(nn.Module):

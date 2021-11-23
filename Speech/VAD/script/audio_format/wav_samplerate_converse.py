@@ -27,8 +27,8 @@ def format_converse(args):
 def main():
     parser = argparse.ArgumentParser(description="Sudio Format")
     args = parser.parse_args()
-    args.input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/数据处理/xiaoan/adpro/"
-    args.samplerate = "8k"
+    args.input_dir = "/home/huanyuan/code/third_code/vocoder/ParallelWaveGAN/egs/csmsc/voc1/downloads/CSMSC/Wave/"
+    args.samplerate = "16k"
 
     format_converse(args)
     

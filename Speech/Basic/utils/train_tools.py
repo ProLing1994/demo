@@ -208,7 +208,8 @@ def load_checkpoint(net,
                     model_dir, epoch_num, sub_folder_name, 
                     model_path, 
                     state_name, ignore_key_list, add_module_type, 
-                    optimizer=None, optimizer_name='optimizer'):
+                    optimizer=None, optimizer_name='optimizer',
+                    scheduler=None, scheduler_name='scheduler'):
     """
     load network parameters from directory
     :param net: the network object
@@ -253,9 +254,9 @@ def load_checkpoint(net,
 
     if optimizer:
         optimizer.load_state_dict(state[optimizer_name])
-        return state['epoch'], state['batch']
-    else:
-        return 
+    if scheduler:
+        scheduler.load_state_dict(state[scheduler_name])
+    return state['epoch'], state['batch']
 
 
 def save_checkpoint(cfg, config_file, net, optimizer, epoch_idx, batch_idx, output_folder_name='checkpoints'):

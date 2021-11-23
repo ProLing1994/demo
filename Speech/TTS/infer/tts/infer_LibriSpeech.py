@@ -14,7 +14,7 @@ from SV.utils.infer_tools import *
 from TTS.utils.tts.infer_tools import *
 from TTS.utils.tts.visualizations_tools import *
 
-from TTS.utils.vocoder.infer_tools import *
+from VOCODER.utils.vocoder.infer_tools import *
 
 
 def infer(args):

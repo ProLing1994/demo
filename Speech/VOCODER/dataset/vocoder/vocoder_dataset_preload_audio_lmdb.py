@@ -13,8 +13,9 @@ from TTS.dataset.text.text import *
 from TTS.dataset.tts.audio import *
 from TTS.dataset.tts.sv2tts_dataset_preload_audio_lmdb import *
 
-from TTS.dataset.vocoder.audio import *
-import TTS.config.vocoder.hparams as hparams_vocoder
+from VOCODER.dataset.vocoder.audio import *
+import VOCODER.config.vocoder.hparams as hparams_vocoder
+
 
 class VocoderDataset(Dataset):
     def __init__(self, cfg, mode, augmentation_on=True):

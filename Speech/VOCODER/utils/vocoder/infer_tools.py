@@ -6,7 +6,7 @@ sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
 from Basic.config import hparams
 
-import TTS.config.vocoder.hparams as hparams_vocoder
+import VOCODER.config.vocoder.hparams as hparams_vocoder
 
 
 def infer_waveform(net, mel, batched=True, target=hparams_vocoder.voc_target, overlap=hparams_vocoder.voc_overlap, 

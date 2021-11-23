@@ -33,14 +33,28 @@ def test(cfg, net, loss_func, epoch_idx, batch_idx, logger, test_data_loader, mo
     scores = []
     labels = []
     losses = []
-    for _, (x, label, index) in tqdm(enumerate(test_data_loader)):
-        x, label = x.cuda(), label.cuda()
+    for _, (input, label, index) in tqdm(enumerate(test_data_loader)):
+        input, label = input.cuda(), label.cuda()
 
         if cfg.dataset.h_alignment == True:
-            hisi_input = x[:, :, :(x.shape[2] // 16) * 16, :]
-            score = net(hisi_input)
+            hisi_input = input[:, :, :(input.shape[2] // 16) * 16, :]
+            if cfg.loss.method == 'classification':
+                score = net(hisi_input)
+            elif cfg.loss.method == 'embedding':
+                _ = net(hisi_input)
+            elif cfg.loss.method == 'classification & embedding':
+                _, score = net(hisi_input)
+            else:
+                raise Exception("[Unknow:] cfg.loss.method. ")
         else:
-            score = net(x)
+            if cfg.loss.method == 'classification':
+                score = net(input)
+            elif cfg.loss.method == 'embedding':
+                _ = net(input)
+            elif cfg.loss.method == 'classification & embedding':
+                _, score = net(input)
+            else:
+                raise Exception("[Unknow:] cfg.loss.method. ")
         score = score.view(score.size()[0], score.size()[1])
         loss = loss_func(score, label)
 

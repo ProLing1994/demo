@@ -58,6 +58,7 @@ def preprocess_wav(fpath_or_wav: Union[str, np.ndarray],
 
 
 def trim_silence(wav):
+    # Whether to trim the start and end of silence.
     wav = librosa.effects.trim(wav, top_db=hparams.trim_top_db, frame_length=hparams.trim_fft_size, hop_length=hparams.trim_hop_size)[0]
     return wav
 

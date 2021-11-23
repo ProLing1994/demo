@@ -30,8 +30,9 @@ __C.general.is_test = True
 # __C.general.is_test = False
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan2/model/kws/kws_xiaoan/test"
+# __C.general.save_dir = "/mnt/huanyuan2/model/kws/kws_xiaoan/test"
 # __C.general.save_dir = "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/"
+__C.general.save_dir = "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_4_0_3s_tc-resnet14-hisi_fbankcpu_kd_11232021/"
 
 # finetune model
 __C.general.finetune_on = False
@@ -359,16 +360,17 @@ __C.train = {}
 # __C.train.num_epochs = 16000
 # __C.train.num_epochs = 8000
 # __C.train.num_epochs = 4000
+__C.train.num_epochs = 2000
 # __C.train.num_epochs = 500
-__C.train.num_epochs = 1
+# __C.train.num_epochs = 1
 
 # the number of samples in a batch
-# __C.train.batch_size = 2048
+__C.train.batch_size = 2048
 # __C.train.batch_size = 1024
 # __C.train.batch_size = 512
 # __C.train.batch_size = 128
 # __C.train.batch_size = 64
-__C.train.batch_size = 16
+# __C.train.batch_size = 16
 # __C.train.batch_size = 1
 
 # the number of threads for IO
@@ -383,8 +385,8 @@ __C.train.show_log = 5
 __C.train.plot_snapshot = 5
 
 # the number of epochs to save model
-# __C.train.save_epochs = 25
-__C.train.save_epochs = 1
+__C.train.save_epochs = 25
+# __C.train.save_epochs = 1
 
 
 ######################################

@@ -15,11 +15,11 @@ from SV.utils.infer_tools import *
 from TTS.dataset.text.text import *
 from TTS.utils.tts.visualizations_tools import *
 
-from TTS.utils.vocoder.train_tools import *
-import TTS.config.vocoder.hparams as hparams_vocoder
-from TTS.dataset.vocoder.audio import *
-from TTS.dataset.vocoder.distribution import *
-from TTS.dataset.vocoder.vocoder_dataset_preload_audio_lmdb import prepare_data
+from VOCODER.utils.vocoder.train_tools import *
+import VOCODER.config.vocoder.hparams as hparams_vocoder
+from VOCODER.dataset.vocoder.audio import *
+from VOCODER.dataset.vocoder.distribution import *
+from VOCODER.dataset.vocoder.vocoder_dataset_preload_audio_lmdb import prepare_data
 
 
 sys.path.insert(0, '/home/huanyuan/code/demo/common')
