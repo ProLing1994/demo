@@ -49,15 +49,16 @@ def load_criterion_wavegan(cfg):
     return criterion
 
 
-def calculate_loss_wavegan_generator(cfg, criterion, y, y_, p_, total_train_loss):
+def calculate_loss_wavegan_generator(cfg, criterion, y, y_, p_, total_loss, mode='train'):
+    # initialize
     gen_loss = 0.0
 
     # multi-resolution sfft loss
     if cfg.loss.stft_loss.on:
         sc_loss, mag_loss = criterion["stft"](y_, y)
         gen_loss += sc_loss + mag_loss
-        total_train_loss["train/spectral_convergence_loss"] += sc_loss.item()
-        total_train_loss["train/log_stft_magnitude_loss"] += mag_loss.item()
+        total_loss["{}/spectral_convergence_loss".format(mode)] += sc_loss.item()
+        total_loss["{}/log_stft_magnitude_loss".format(mode)] += mag_loss.item()
 
     # subband multi-resolution stft loss
     if cfg.loss.subband_stft_loss.on:
@@ -73,28 +74,28 @@ def calculate_loss_wavegan_generator(cfg, criterion, y, y_, p_, total_train_loss
     # adversarial loss
     if p_ is not None:
         adv_loss = criterion["gen_adv"](p_)
-        total_train_loss["train/adversarial_loss"] += adv_loss.item()
+        total_loss["{}/adversarial_loss".format(mode)] += adv_loss.item()
 
         # feature matching loss
         if cfg.loss.feat_match_loss.on:
             raise NotImplementedError
 
         # add adversarial loss to generator loss
-        gen_loss += cfg.loss.lambda_adv * adv_loss
+        gen_loss = gen_loss + cfg.loss.lambda_adv * adv_loss
         
-    total_train_loss["train/generator_loss"] += gen_loss.item()
+    total_loss["{}/generator_loss".format(mode)] += gen_loss.item()
     return gen_loss
 
 
-def calculate_loss_wavegan_discriminator(cfg, criterion, y, y_, p, p_, total_train_loss):
+def calculate_loss_wavegan_discriminator(cfg, criterion, y, y_, p, p_, total_loss, mode='train'):
     dis_loss = 0.0
 
     # discriminator loss
     if y_ is not None and p is not None and p_ is not None:
         real_loss, fake_loss = criterion["dis_adv"](p_, p)
         dis_loss = real_loss + fake_loss
-        total_train_loss["train/real_loss"] += real_loss.item()
-        total_train_loss["train/fake_loss"] += fake_loss.item()
-        total_train_loss["train/discriminator_loss"] += dis_loss.item()
+        total_loss["{}/real_loss".format(mode)] += real_loss.item()
+        total_loss["{}/fake_loss".format(mode)] += fake_loss.item()
+        total_loss["{}/discriminator_loss".format(mode)] += dis_loss.item()
 
     return dis_loss

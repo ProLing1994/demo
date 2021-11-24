@@ -262,8 +262,9 @@ class WaveRNN(nn.Module):
 
         if mu_law:
             output = decode_mu_law(output, self.n_classes, False)
-        if hparams.preemphasize:
-            output = audio.compute_de_emphasis(output)
+        
+        # 预加重
+        output = audio.compute_de_emphasis(output)
 
         # Fade-out at the end to avoid signal cutting out suddenly
         fade_out = np.linspace(1, 0, 20 * self.hop_length)

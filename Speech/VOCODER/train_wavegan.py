@@ -2,6 +2,7 @@ import argparse
 from collections import defaultdict
 import os 
 import sys
+import soundfile as sf
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
@@ -29,48 +30,74 @@ sys.path.insert(0, '/home/huanyuan/code/demo/common')
 from common.utils.python.logging_helpers import setup_logger
 
 
-def show_ressult(cfg, net, mel_list, quant_list, texts, samples, 
-                    target, overlap, 
-                    step, save_dir):
+def test(cfg, model, criterion, x, y, logger, epoch_idx, batch_idx):
+    # total_eval_loss
+    total_eval_loss = defaultdict(float)
+
+    # change mode
+    for key in model.keys():
+        model[key].eval()
+
+    #######################
+    #      Generator      #
+    #######################
+    y_ = model["generator"](*x)
+    if cfg.net.yaml["generator_params"]["out_channels"] > 1:
+        # y_mb_ = y_
+        # y_ = criterion["pqmf"].synthesis(y_mb_)
+        raise NotImplementedError
+
+    #######################
+    #    Discriminator    #
+    #######################
+    p = model["discriminator"](y)
+    p_ = model["discriminator"](y_)
+
+    calculate_loss_wavegan_generator(cfg, criterion, y, y_, p_, total_eval_loss, mode='eval')
+    calculate_loss_wavegan_discriminator(cfg, criterion, y, y_, p, p_, total_eval_loss, mode='eval')
+
+    # Show information
+    msg = 'epoch: {}, batch: {}'.format(epoch_idx, batch_idx)
+    for key in total_eval_loss.keys():
+        msg += ', {}:{:.4f}'.format(str(key), total_eval_loss[key])
+    logger.info(msg)
+
     # create_folder
+    save_dir = os.path.join(cfg.general.save_dir, 'wavs')
     create_folder(save_dir)
 
-    for idx in range(samples):
-        # init 
-        bits = 16 if hparams_vocoder.voc_mode == 'MOL' else hparams_vocoder.voc_bits
+    for idx, (y_idx, y_idx_) in enumerate(zip(y, y_)):
+        y_idx, y_idx_ = y_idx.view(-1).cpu().detach().numpy(), y_idx_.view(-1).cpu().detach().numpy()
+        
+        # 预加重
+        y_idx = audio.compute_de_emphasis(y_idx)
+        y_idx_ = audio.compute_de_emphasis(y_idx_)
 
-        # text
-        texts = texts[idx].detach().cpu().numpy()
-        target_text = sequence_to_text(texts).split('~')[0]
-        text_fpath = os.path.join(save_dir, "text_step_{}_sample_{}.txt".format(step, idx))
-        with open(text_fpath, "w") as f:
-            f.write(target_text)
+        # plot_figure
+        figname = os.path.join(save_dir, "plot_step_{}_{}.png".format(epoch_idx, idx))
+        plt.subplot(2, 1, 1)
+        plt.plot(y_idx)
+        plt.title("groundtruth speech")
+        plt.subplot(2, 1, 2)
+        plt.plot(y_idx_)
+        plt.title(f"generated speech @ {epoch_idx} steps")
+        plt.tight_layout()
+        plt.savefig(figname)
+        plt.close()
 
         # wav_target
-        wav_target = quant_list[idx]
-        if hparams_vocoder.mu_law and hparams_vocoder.voc_mode != 'MOL' :
-            wav_target = decode_mu_law(wav_target, 2**bits, from_labels=True)
-        else :
-            wav_target = label_2_float(wav_target, bits) 
-        wav_fpath = os.path.join(save_dir, "wav_target_step_{}_sample_{}.wav".format(step, idx))
-        audio.save_wav(wav_target, wav_fpath, sr=cfg.dataset.sample_rate)
+        y_idx = np.clip(y_idx, -1, 1)
+        wav_fpath = os.path.join(save_dir, "wav_target_step_{}_{}.wav".format(epoch_idx, idx))
+        sf.write(wav_fpath, y_idx, cfg.dataset.sample_rate, "PCM_16")
 
         # wav_forward
-        mel_forward = torch.tensor(mel_list[idx]).unsqueeze(0)
+        y_idx_ = np.clip(y_idx_, -1, 1)
+        wav_forward_fpath = os.path.join(save_dir, "wav_forward_step_{}_{}.wav".format(epoch_idx, idx))
+        sf.write(wav_forward_fpath, y_idx_, cfg.dataset.sample_rate, "PCM_16",)
 
-        for bool_gen_batched in [True, False]:
-            print('\n| Generating: {}/{}, bool_gen_batched: {}'.format(idx, samples, bool_gen_batched))
-
-            if isinstance(net, torch.nn.parallel.DataParallel):
-                wav_forward = net.module.generate(mel_forward, bool_gen_batched, target, overlap, hparams_vocoder.mu_law)
-            else:
-                wav_forward = net.generate(mel_forward, bool_gen_batched, target, overlap, hparams_vocoder.mu_law)
-
-            batch_str = "gen_batched_target_%d_overlap_%d" % (target, overlap) if bool_gen_batched else \
-                "gen_not_batched"
-            wav_forward_fpath = os.path.join(save_dir, "wav_forward_step_{}_sample_{}_{}.wav".format(step, idx, batch_str))
-            audio.save_wav(wav_forward, wav_forward_fpath, sr=cfg.dataset.sample_rate)
-
+    # restore mode
+    for key in model.keys():
+        model[key].train()
 
 def train(args):
     """ training engine
@@ -128,12 +155,14 @@ def train(args):
     # profiler
     profiler = Profiler(summarize_every=cfg.train.show_log, disabled=False)
 
+    # total_train_loss
+    total_train_loss = defaultdict(float)
+
     # loop over batches
     for i in range(batch_number):
         for key in model.keys():
             model[key].train()
 
-        total_train_loss = defaultdict(float)
         epoch_idx = start_epoch + i * cfg.train.batch_size // len_train_dataset
         batch_idx += 1
 
@@ -226,8 +255,11 @@ def train(args):
             msg = 'epoch: {}, batch: {}'.format(epoch_idx, batch_idx)
             for key in total_train_loss.keys():
                 total_train_loss[key] /= cfg.train.show_log
-                msg += ', {} = {:.4f}'.format(str(key), total_train_loss[key])
+                msg += ', {}:{:.4f}'.format(str(key), total_train_loss[key])
             logger.info(msg)
+
+            # reset
+            total_train_loss = defaultdict(float)
         profiler.tick("Show information")
 
         # Plot snapshot
@@ -244,15 +276,12 @@ def train(args):
                 save_checkpoint_wavegan(cfg, args.config_file, model, optimizer, scheduler, epoch_idx, batch_idx)
         profiler.tick("Save model")
 
-        # # Test model
-        # if epoch_idx % cfg.train.save_epochs == 0 or epoch_idx == cfg.train.num_epochs - 1:
-        #     if last_test_epochh != epoch_idx and cfg.general.is_test:
-        #         last_test_epochh = epoch_idx
+        # Test model
+        if epoch_idx % cfg.train.save_epochs == 0 or epoch_idx == cfg.train.num_epochs - 1:
+            if last_test_epoch != epoch_idx and cfg.general.is_test:
+                last_test_epoch = epoch_idx
 
-        #         samples = 1
-        #         show_ressult(cfg, net, mel_list, quant_list, texts, samples, 
-        #                     hparams_vocoder.voc_target, hparams_vocoder.voc_overlap, 
-        #                     step=epoch_idx, save_dir=os.path.join(cfg.general.save_dir, 'wavs'))
+                test(cfg, model, criterion, x, y, logger, epoch_idx, batch_idx)
 
 
 

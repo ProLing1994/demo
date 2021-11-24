@@ -29,10 +29,12 @@ __C.general.dataset_path_dict = {
 __C.general.data_dir = "/mnt/huanyuan2/data/speech/tts/Chinese_dataset/"
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan2/model/tts_vocoder/chinese_tts_vocoder/test/"
+# __C.general.save_dir = "/mnt/huanyuan2/model/tts_vocoder/chinese_tts_vocoder/test/"
+__C.general.save_dir = "/mnt/huanyuan2/model/tts_vocoder/chinese_tts_vocoder/wavegan_chinese_singlespeaker_1_0_11232021/"
 
 # test after save pytorch model
 __C.general.is_test = True
+# __C.general.is_test = False
 
 # finetune model
 # __C.general.finetune_on = True
@@ -157,12 +159,12 @@ with open(__C.net.model_yaml) as f:
 __C.train = {}
 
 # the number of training epochs
-# __C.train.num_epochs = 1000
-__C.train.num_epochs = 10
+__C.train.num_epochs = 1000
+# __C.train.num_epochs = 10
 
 # the number of samples in a batch
-# __C.train.batch_size = 6
-__C.train.batch_size = 1
+__C.train.batch_size = 6
+# __C.train.batch_size = 1
 
 # the number of threads for IO
 __C.train.num_threads = 1
@@ -180,8 +182,8 @@ __C.train.show_log = 100
 __C.train.plot_snapshot = 100
 
 # the number of epochs to save model
-# __C.train.save_epochs = 25
-__C.train.save_epochs = 1
+__C.train.save_epochs = 25
+# __C.train.save_epochs = 1
 
 
 ####################################

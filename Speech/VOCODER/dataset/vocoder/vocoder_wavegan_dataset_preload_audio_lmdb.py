@@ -141,6 +141,8 @@ class VocoderWaveGanDataLoader(DataLoader):
             features, this process will be needed.
 
         """
+        # filter by threshold
+        # 确保 mel 频率的长度，保存可以正常切片
         assert len(c) > self.mel_threshold
 
         if len(x) < len(c) * self.hop_size:
@@ -149,4 +151,4 @@ class VocoderWaveGanDataLoader(DataLoader):
         # check the legnth is valid
         assert len(x) == len(c) * self.hop_size
 
-        return x, c
+        return x, c 
