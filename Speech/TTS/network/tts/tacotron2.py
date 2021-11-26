@@ -232,7 +232,7 @@ class Tacotron2(nn.Module):
             model_cfg = json.load(f)
 
         self.cfg = cfg
-        self.mel_dim = cfg.dataset.feature_bin_count 
+        self.mel_dim = cfg.dataset.num_mels 
         n_vocab = cfg.dataset.num_chars
         self.r = cfg.net.r
 

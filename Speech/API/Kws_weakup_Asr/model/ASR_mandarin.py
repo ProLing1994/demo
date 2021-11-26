@@ -41,8 +41,8 @@ class ResNet(nn.Module):
           x=torch.transpose(x, 1, 2)
           fc=x.reshape(x.size()[0],x.size()[1],-1)
 
-        fc=F.softmax(fc,dim=2)
-        # fc=F.log_softmax(fc,dim=2)
+        # fc=F.softmax(fc,dim=2)
+        fc=F.log_softmax(fc,dim=2)
         return fc
 
 def ASR_Mandarin_Net(num_class, pretrained=False):

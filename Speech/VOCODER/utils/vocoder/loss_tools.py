@@ -13,21 +13,21 @@ def load_criterion_wavegan(cfg):
     criterion = {}
 
     # GeneratorAdversarialLoss
-    criterion['gen_adv'] = GeneratorAdversarialLoss( cfg.loss.generator_loss.average_by_discriminators,
+    criterion["gen_adv"] = GeneratorAdversarialLoss( cfg.loss.generator_loss.average_by_discriminators,
                                                      cfg.loss.generator_loss.loss_type )
-    criterion['gen_adv'].cuda()
+    criterion["gen_adv"].cuda()
 
     # DiscriminatorAdversarialLoss
-    criterion['dis_adv'] = DiscriminatorAdversarialLoss( cfg.loss.discriminator_loss.average_by_discriminators,
+    criterion["dis_adv"] = DiscriminatorAdversarialLoss( cfg.loss.discriminator_loss.average_by_discriminators,
                                                          cfg.loss.discriminator_loss.loss_type)
-    criterion['dis_adv'].cuda()
+    criterion["dis_adv"].cuda()
 
     if cfg.loss.stft_loss.on:
-        criterion['stft'] = MultiResolutionSTFTLoss( cfg.loss.stft_loss.fft_sizes, 
+        criterion["stft"] = MultiResolutionSTFTLoss( cfg.loss.stft_loss.fft_sizes, 
                                                      cfg.loss.stft_loss.hop_sizes,  
                                                      cfg.loss.stft_loss.win_lengths,  
                                                      cfg.loss.stft_loss.window )
-        criterion['stft'].cuda()
+        criterion["stft"].cuda()
 
     if cfg.loss.subband_stft_loss.on:
         raise NotImplementedError
@@ -56,7 +56,7 @@ def calculate_loss_wavegan_generator(cfg, criterion, y, y_, p_, total_loss, mode
     # multi-resolution sfft loss
     if cfg.loss.stft_loss.on:
         sc_loss, mag_loss = criterion["stft"](y_, y)
-        gen_loss += sc_loss + mag_loss
+        aux_loss = sc_loss + mag_loss
         total_loss["{}/spectral_convergence_loss".format(mode)] += sc_loss.item()
         total_loss["{}/log_stft_magnitude_loss".format(mode)] += mag_loss.item()
 
@@ -69,7 +69,7 @@ def calculate_loss_wavegan_generator(cfg, criterion, y, y_, p_, total_loss, mode
         raise NotImplementedError
     
     # weighting aux loss
-    gen_loss *= cfg.loss.lambda_aux
+    gen_loss += cfg.loss.lambda_aux * aux_loss
 
     # adversarial loss
     if p_ is not None:
@@ -81,7 +81,7 @@ def calculate_loss_wavegan_generator(cfg, criterion, y, y_, p_, total_loss, mode
             raise NotImplementedError
 
         # add adversarial loss to generator loss
-        gen_loss = gen_loss + cfg.loss.lambda_adv * adv_loss
+        gen_loss += cfg.loss.lambda_adv * adv_loss
         
     total_loss["{}/generator_loss".format(mode)] += gen_loss.item()
     return gen_loss

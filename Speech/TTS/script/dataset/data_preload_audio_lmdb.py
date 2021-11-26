@@ -16,16 +16,7 @@ from Basic.utils.folder_tools import *
 from TTS.dataset.tts import audio
 
 
-parser = argparse.ArgumentParser(description='Streamax SV Data Split Engine')
-parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/TTS/config/tts/tts_config_english_sv2tts.py", help='config file')
-# parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/TTS/config/tts/tts_config_chinese_sv2tts.py", help='config file')
-args = parser.parse_args()
-
-# params
-args.commit_interval = 100
-
-
-def general_lmdb(cfg, lmdb_path, csv_path, dataset_name, mode_type='testing'):
+def generate_lmdb(args, cfg, lmdb_path, csv_path, dataset_name, mode_type='testing'):
     assert lmdb_path.endswith('.lmdb'), "[ERROR] lmdb_path must end with 'lmdb'."
     if os.path.exists(lmdb_path):
         print("[Information] Folder [{:s}] already exists. Exit...".format(lmdb_path))
@@ -85,7 +76,7 @@ def general_lmdb(cfg, lmdb_path, csv_path, dataset_name, mode_type='testing'):
     data_pd.to_csv(out_put_csv, index=False, encoding="utf_8_sig")
 
 
-def preload_audio_lmdb(mode_type):
+def preload_audio_lmdb(args, mode_type):
     """ data preprocess engine
     :return:              None
     """
@@ -105,15 +96,23 @@ def preload_audio_lmdb(mode_type):
         lmdb_path = os.path.join(output_dir, '{}.lmdb'.format(dataset_name+'_'+mode_type))
         csv_path = os.path.join(cfg.general.data_dir, dataset_name + '.csv')
 
-        # general lmdb
-        general_lmdb(cfg, lmdb_path, csv_path, dataset_name, mode_type=mode_type) 
+        # generate lmdb
+        generate_lmdb(args, cfg, lmdb_path, csv_path, dataset_name, mode_type=mode_type) 
         print("Preload dataset:{}  Done!".format(dataset_name))
 
 
 def main():
+    parser = argparse.ArgumentParser(description='Streamax SV Data Split Engine')
+    parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/TTS/config/tts/tts_config_english_sv2tts.py", help='config file')
+    # parser.add_argument('--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/TTS/config/tts/tts_config_chinese_sv2tts.py", help='config file')
+    args = parser.parse_args()
+
+    # params
+    args.commit_interval = 100
+
     print("[Begin] Data Preload")
-    preload_audio_lmdb(hparams.TESTING_NAME)
-    preload_audio_lmdb(hparams.TRAINING_NAME)
+    preload_audio_lmdb(args, hparams.TESTING_NAME)
+    preload_audio_lmdb(args, hparams.TRAINING_NAME)
     print("[Done] Data Preload")
 
 

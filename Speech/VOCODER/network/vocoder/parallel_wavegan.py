@@ -5,7 +5,6 @@
 
 """Parallel WaveGAN Modules."""
 
-import logging
 import math
 
 import numpy as np
@@ -179,7 +178,7 @@ class ParallelWaveGANGenerator(torch.nn.Module):
 
         def _remove_weight_norm(m):
             try:
-                logging.debug(f"Weight norm is removed from {m}.")
+                # print(f"Weight norm is removed from {m}.")
                 torch.nn.utils.remove_weight_norm(m)
             except ValueError:  # this module didn't have weight norm
                 return
@@ -192,7 +191,7 @@ class ParallelWaveGANGenerator(torch.nn.Module):
         def _apply_weight_norm(m):
             if isinstance(m, torch.nn.Conv1d) or isinstance(m, torch.nn.Conv2d):
                 torch.nn.utils.weight_norm(m)
-                logging.debug(f"Weight norm is applied to {m}.")
+                # print(f"Weight norm is applied to {m}.")
 
         self.apply(_apply_weight_norm)
 
@@ -228,7 +227,7 @@ class ParallelWaveGANGenerator(torch.nn.Module):
     #         scale = np.load(stats)[1].reshape(-1)
     #     self.register_buffer("mean", torch.from_numpy(mean).float())
     #     self.register_buffer("scale", torch.from_numpy(scale).float())
-    #     logging.info("Successfully registered stats as buffer.")
+    #     print("Successfully registered stats as buffer.")
 
     def inference(self, c=None, x=None, normalize_before=False):
         """Perform inference.
@@ -365,7 +364,7 @@ class ParallelWaveGANDiscriminator(torch.nn.Module):
         def _apply_weight_norm(m):
             if isinstance(m, torch.nn.Conv1d) or isinstance(m, torch.nn.Conv2d):
                 torch.nn.utils.weight_norm(m)
-                logging.debug(f"Weight norm is applied to {m}.")
+                # print(f"Weight norm is applied to {m}.")
 
         self.apply(_apply_weight_norm)
 
@@ -374,7 +373,7 @@ class ParallelWaveGANDiscriminator(torch.nn.Module):
 
         def _remove_weight_norm(m):
             try:
-                logging.debug(f"Weight norm is removed from {m}.")
+                # print(f"Weight norm is removed from {m}.")
                 torch.nn.utils.remove_weight_norm(m)
             except ValueError:  # this module didn't have weight norm
                 return
@@ -507,7 +506,7 @@ class ResidualParallelWaveGANDiscriminator(torch.nn.Module):
         def _apply_weight_norm(m):
             if isinstance(m, torch.nn.Conv1d) or isinstance(m, torch.nn.Conv2d):
                 torch.nn.utils.weight_norm(m)
-                logging.debug(f"Weight norm is applied to {m}.")
+                # print(f"Weight norm is applied to {m}.")
 
         self.apply(_apply_weight_norm)
 
@@ -516,7 +515,7 @@ class ResidualParallelWaveGANDiscriminator(torch.nn.Module):
 
         def _remove_weight_norm(m):
             try:
-                logging.debug(f"Weight norm is removed from {m}.")
+                # print(f"Weight norm is removed from {m}.")
                 torch.nn.utils.remove_weight_norm(m)
             except ValueError:  # this module didn't have weight norm
                 return

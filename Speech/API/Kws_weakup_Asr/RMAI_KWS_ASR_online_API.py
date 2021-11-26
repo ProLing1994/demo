@@ -7,7 +7,7 @@ import wave
 from multiprocessing import Process, Event, Queue, freeze_support
 
 # from RMAI_KWS_ASR_API import KwsAsrApi
-from RMAI_KWS_ASR_API_Flow import KwsAsrApi
+from RMAI_KWS_ASR_API_Canbin import KwsAsrApi
 
 def term(sig_num, addtion):
     """

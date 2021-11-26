@@ -216,7 +216,8 @@ class Decode(object):
             one["lmState"] = newState
         '''
         # 取对数，np.log，用于和语言模型得分相加
-        prob = np.log(prob)
+        # prob = np.log(prob)
+        prob = prob
 
         # init
         frame_num = prob.shape[0]

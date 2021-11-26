@@ -25,7 +25,8 @@ generator_params:
     upsample_net: "ConvInUpsampleNetwork" # Upsampling network architecture.
     upsample_params:                      # Upsampling network parameters.
         # upsample_scales: [4, 5, 3, 5]     # Upsampling scales. Prodcut of these must be the same as hop size.
-        upsample_scales: [4, 5, 2, 5]     # Upsampling scales. Prodcut of these must be the same as hop size.
+        # upsample_scales: [4, 5, 2, 5]     # Upsampling scales. Prodcut of these must be the same as hop size.
+        upsample_scales: [4, 4, 4, 4]     # Upsampling scales. Prodcut of these must be the same as hop size.
 
 ###########################################################
 #       DISCRIMINATOR NETWORK ARCHITECTURE SETTING        #

@@ -1,4 +1,6 @@
 import sys
+from multiprocessing import Manager
+import torch
 from torch.utils.data import Dataset, DataLoader
 from sklearn.preprocessing import StandardScaler
 
@@ -6,7 +8,7 @@ sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
 from Basic.utils.hdf5_tools import *
 
-from TTS.dataset.tts.sv2tts_dataset_preload_audio_lmdb import *
+from TTS.dataset.tts.sv2tts_dataset_preload_audio_lmdb import load_data_pd
 
 
 class VocoderWaveGanDataset(Dataset):
@@ -15,80 +17,116 @@ class VocoderWaveGanDataset(Dataset):
         self.cfg = cfg
         self.mode = mode
         self.augmentation_on = augmentation_on
+        self.hop_size = self.cfg.dataset.hop_size
+        self.allow_cache = self.cfg.dataset.allow_cache
 
         self.data_pd = load_data_pd(cfg, mode)
         self.data_list = self.data_pd['unique_utterance'].to_list()
-        if len(self.data_list) == 0:
-            raise Exception("No speakers found. ")
-        
-        self.hop_length = int(self.cfg.dataset.sample_rate * self.cfg.dataset.window_stride_ms / 1000)
+
+        self.filter_by_threshold()
+        # assert the number of files
+        assert len(self.data_list_filter) != 0, f"Not found any audio files."
 
         if self.cfg.dataset.normalize_bool:
             # restore scaler
             self.scaler = StandardScaler()
 
             dataset_name = '_'.join(cfg.general.dataset_list)
-            dataset_audio_normalize_dir = os.path.join(cfg.general.data_dir, 'dataset_audio_normalize_lmdb')
+            dataset_audio_normalize_dir = os.path.join(cfg.general.data_dir, 'dataset_audio_normalize_hdf5')
             self.scaler.mean_ = read_hdf5(os.path.join(dataset_audio_normalize_dir, dataset_name + "_stats.h5"), "mean")
             self.scaler.scale_ = read_hdf5(os.path.join(dataset_audio_normalize_dir, dataset_name + "_stats.h5"), "scale")
 
             # from version 0.23.0, this information is needed
             self.scaler.n_features_in_ = self.scaler.mean_.shape[0]
 
+        if self.allow_cache:
+            # NOTE: Manager is need to share memory in dataloader with num_workers > 0
+            self.manager = Manager()
+            self.caches = self.manager.list()
+            self.caches += [() for _ in range(len(self.data_list))]
+
     def __len__(self):
         return len(self.data_list)
 
     def __getitem__(self, index):
-        if not hasattr(self, 'lmdb_dict'):
-            self.lmdb_dict = load_lmdb(self.cfg, self.mode)
+
+        if self.allow_cache and len(self.caches[index]) != 0:
+            return self.caches[index][0], self.caches[index][1]
 
         data_name = self.data_list[index]
-        data_lmdb_name = self.data_pd.loc[index, 'dataset']
+        dataset_name = self.data_pd.loc[index, 'dataset']
         
         # wav
-        wav = read_audio_lmdb(self.lmdb_dict[data_lmdb_name], str(data_name))
+        wav_path = os.path.join(self.cfg.general.data_dir, 'dataset_audio_hdf5', dataset_name, data_name.split('.')[0] + '.h5')
+        wav = read_hdf5(wav_path, "wave")
 
         # mel
-        mel = audio.compute_mel_spectrogram(self.cfg, wav).T.astype(np.float32).T
+        mel = read_hdf5(wav_path, "feats")
 
         # normalize
         if self.cfg.dataset.normalize_bool:
             mel = self.scaler.transform(mel)
 
-        # Quantize the wav          # TODO：不进行预加重，注：解码时也要进行反预加重
-        wav = audio.compute_pre_emphasis(wav)
-        wav = np.clip(wav, -1, 1)
-
-        # # Quantize the mel          # 不进行缩放，注：解码时也不进行缩放
-        # mel = mel.astype(np.float32) / hparams.max_abs_value
+        # Quantize the wav         
+        # 注意：hdf5 格式，采用 fbank_nopreemphasis_log_manual 计算方式，不进行预加重处理
+        # wav = audio.compute_pre_emphasis(wav)
+        # wav = np.clip(wav, -1, 1)
 
         # Fix for missing padding   # TODO: settle on whether this is any useful
-        r_pad =  (len(wav) // self.hop_length + 1) * self.hop_length - len(wav)
+        r_pad =  (len(wav) // self.hop_size + 1) * self.hop_size - len(wav)
         wav = np.pad(wav, (0, r_pad), mode='constant')
-        wav = wav[: len(mel) * self.hop_length]
+        wav = wav[: len(mel) * self.hop_size]
         # make sure the audio length and feature length are matched
-        assert len(mel) * self.hop_length == len(wav)
+        assert len(mel) * self.hop_size == len(wav)
+
+        if self.allow_cache:
+            self.caches[index] = (wav, mel)
 
         return wav, mel
 
+    def filter_by_threshold(self):
+        self.data_list_filter = []
+        audio_length_threshold = int(self.cfg.dataset.sampling_rate * self.cfg.dataset.clip_duration_ms / 1000)
 
-class VocoderWaveGanDataLoader(DataLoader):
-    def __init__(self, dataset, sampler, cfg):
-        super().__init__(
-            dataset=dataset, 
-            batch_size=cfg.train.batch_size, 
-            shuffle=False, 
-            sampler=sampler, 
-            batch_sampler=None, 
-            num_workers=cfg.train.num_threads,
-            collate_fn=lambda data: self.collate_vocoder(data, cfg),
-            pin_memory=True, 
-            drop_last=False, 
-            timeout=0, 
-            worker_init_fn=None
-        )
+        for index in range(len(self.data_list)):
+            data_name = self.data_list[index]
+            dataset_name = self.data_pd.loc[index, 'dataset']
 
-    def collate_vocoder(self, batch, cfg):
+            # wav
+            wav_path = os.path.join(self.cfg.general.data_dir, 'dataset_audio_hdf5', dataset_name, data_name.split('.')[0] + '.h5')
+            wav = read_hdf5(wav_path, "wave")
+            wav_length = len(wav)
+
+            if wav_length > audio_length_threshold:
+                self.data_list_filter.append(index)
+
+        if len(self.data_list) != len(self.data_list_filter):
+            print(f"[Warning] Some files are filtered by audio length threshold ({len(self.data_list)} -> {len(self.data_list_filter)}).")
+
+
+class VocoderCollater(object):
+    """Customized collater for Pytorch DataLoader in training."""
+
+    def __init__(self, cfg):
+        """Initialize customized collater for PyTorch DataLoader."""
+
+        self.hop_size = cfg.dataset.hop_size
+        self.batch_max_steps = int(cfg.dataset.sampling_rate * cfg.dataset.clip_duration_ms / 1000)
+
+        if self.batch_max_steps % self.hop_size != 0:
+            self.batch_max_steps += -(self.batch_max_steps % self.hop_size)
+        assert self.batch_max_steps % self.hop_size == 0
+        self.batch_max_frames = self.batch_max_steps // self.hop_size
+
+        self.aux_context_window = cfg.net.yaml["generator_params"].get("aux_context_window", 0)
+        self.use_noise_input = cfg.net.yaml["use_noise_input"]
+
+        # set useful values in random cutting
+        self.start_offset = self.aux_context_window
+        self.end_offset = -(self.batch_max_frames + self.aux_context_window)
+        self.mel_threshold = self.batch_max_frames + 2 * self.aux_context_window
+
+    def __call__(self, batch):
         """Convert into batch tensors.
 
         Args:
@@ -101,24 +139,7 @@ class VocoderWaveGanDataLoader(DataLoader):
             Tensor: Target signal batch (B, 1, T).
 
         """
-        # init 
-        if not hasattr(self, 'hop_size'):
-            self.hop_size = int(cfg.dataset.sample_rate * cfg.dataset.window_stride_ms / 1000)
-            self.batch_max_steps = int(cfg.dataset.sample_rate * cfg.dataset.clip_duration_ms / 1000)
-
-            if self.batch_max_steps % self.hop_size != 0:
-                self.batch_max_steps += -(self.batch_max_steps % self.hop_size)
-            assert self.batch_max_steps % self.hop_size == 0
-            self.batch_max_frames = self.batch_max_steps // self.hop_size
-
-            self.aux_context_window = cfg.net.yaml["generator_params"].get("aux_context_window", 0)
-            self.use_noise_input = cfg.net.yaml["use_noise_input"]
-
-            # set useful values in random cutting
-            self.start_offset = self.aux_context_window
-            self.end_offset = -(self.batch_max_frames + self.aux_context_window)
-            self.mel_threshold = self.batch_max_frames + 2 * self.aux_context_window
-
+        
         # check length
         batch = [self._adjust_length(*b) for b in batch]
         xs, cs = [b[0] for b in batch], [b[1] for b in batch]

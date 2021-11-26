@@ -3,7 +3,7 @@ import os
 
 import impl.asr_data_loader_pyimpl as WaveLoader
 # from RMAI_KWS_ASR_API import KwsAsrApi
-from RMAI_KWS_ASR_API_Flow import KwsAsrApi
+from RMAI_KWS_ASR_API_Canbin import KwsAsrApi
 
 def KWS_ASR_offine():
     # init 

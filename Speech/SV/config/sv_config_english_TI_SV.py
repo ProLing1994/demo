@@ -143,12 +143,12 @@ __C.dataset.feature_bin_count = 40
 # __C.dataset.nfilt = 64
 __C.dataset.nfilt = 40
 
-# fmin, only support preprocess ["fbank_log", "fbank_log_manual"]
+# fmin, only support preprocess ["fbank_log", "fbank_preemphasis_log_manual"]
 # Set this to 55 if your speaker is male! if female, 95 should help taking off noise. (To 
 # test depending on dataset. Pitch info: male~[65, 260], female~[100, 525])
 __C.dataset.fmin = 55
 
-# fmax, only support preprocess ["fbank_log", "fbank_log_manual"]
+# fmax, only support preprocess ["fbank_log", "fbank_preemphasis_log_manual"]
 # To be increased/reduced depending on data.
 __C.dataset.fmax = 7600
 

@@ -41,9 +41,6 @@ __C.general.asr_feature_time = 296                  # asr 网络特征时间维�
 __C.general.asr_suppression_counter = 2             # asr 激活后抑制时间，间隔 2s 执行一次 asr 检测
 __C.general.asr_bpe_phoneme_on = False              # asr 使用 bpe 和 phoneme 两个 model
 
-# asr vad mandarin
-__C.general.asr_vad_counter_ms = 2000               # vad asr 最少检测音频 2s
-
 # container
 __C.general.audio_container_ms = 100                # 语音数据容器中，装有音频数据 100 ms
 __C.general.audio_container_time = 10               # 语音数据容器中，装有音频数据 100 ms，对应特征维度 10
@@ -52,6 +49,15 @@ __C.general.feature_remove_after_time = 6           # 为保证特征一致，�
 __C.general.feature_remove_before_time = 100        # 为保证特征一致，拼接特征需要丢弃之前的时间维度 100
 __C.general.vad_container_time = 4                  # vad 容器，判断连续 4s 中是否全部为静音，用于停止后续操作
 __C.general.asr_vad_audio_data_ms = 6000            # 语音数据容器，用于带 vad 的 asr 识别，装有音频数据 6000ms
+__C.general.asr_vad_container_silence_time = 4      # asr vad 容器，判断连续 3s 中是否全部为静音，用于停止后续操作
+__C.general.asr_vad_container_end_time = 6          # asr vad 容器，判断连续 6s 中是否没有结束，用于停止后续操作
+__C.general.asr_vad_container_end_loop_time = 2     # asr vad 容器，判断连续 2 个超长检测，用于停止后续操作
+__C.general.asr_vad_counter_min_time_list = [2.1, 3.0]   # asr vad 容器，最少检测音频 2.1s/3.0s，分别对应第一次第二次
+
+# string
+__C.general.string_silence = "抱歉，你似乎没有说话"
+__C.general.string_end = "抱歉，我没有听清你在说什么，请再说一遍"
+__C.general.string_end_loop = "抱歉，我还是没有听清你在说什么"
 
 # chinese key words
 __C.general.kws_list = [
@@ -110,14 +116,14 @@ __C.model.image_weidth = 64
 ## caffe
 __C.model.asr_model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "?")
 __C.model.asr_prototxt_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "?")
-__C.model.asr_dict_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "asr_mandarin_pinyin_408.txt")
-__C.model.asr_lm_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "4gram_asr_mandarin_408.bin")
+__C.model.asr_dict_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "asr_mandarin_dict_canbin.txt")
+__C.model.asr_lm_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "3gram_asr_mandarin_canbin_1125.bin")
 __C.model.asr_net_input_name = "data"
 __C.model.asr_net_output_name = "prob"
 __C.model.asr_chw_params = "1,296,64"
 
 ## pytorch 
-__C.model.asr_chk_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "asr_mandarin_canbin_16k_64.pth")
+__C.model.asr_chk_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "asr_mandarin_canbin_16k_64_1125.pth")
 __C.model.asr_model_name = "ASR_mandarin"
 __C.model.asr_class_name = "ASR_Mandarin_Net"
 __C.model.asr_num_classes = 408

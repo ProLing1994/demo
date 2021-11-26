@@ -146,8 +146,8 @@ __C.dataset.window_size_ms = 50.0
 # How far to move in time between frequency windows
 __C.dataset.window_stride_ms = 12.5
 
-# How the spectrogram is processed to produce features, support ["fbank", "fbank_log", "fbank_log_manual", "pcen", "fbank_cpu"]
-__C.dataset.preprocess = "fbank_log_manual"
+# How the spectrogram is processed to produce features, support ["fbank", "fbank_log", "fbank_preemphasis_log_manual", "pcen", "fbank_cpu"]
+__C.dataset.preprocess = "fbank_preemphasis_log_manual"
 
 # How many bins to use for the Mel feature
 __C.dataset.feature_bin_count = 80
@@ -155,10 +155,10 @@ __C.dataset.feature_bin_count = 80
 # How many nfilt to use for the Mel feature, only support preprocess ["fbank_cpu"]
 __C.dataset.nfilt = 80
 
-# fmin, only support preprocess ["fbank_log", "fbank_log_manual"]
+# fmin, only support preprocess ["fbank_log", "fbank_preemphasis_log_manual"]
 __C.dataset.fmin = 55
 
-# fmax, only support preprocess ["fbank_log", "fbank_log_manual"]
+# fmax, only support preprocess ["fbank_log", "fbank_preemphasis_log_manual"]
 __C.dataset.fmax = 7600
 
 # input size of training data (w, h), whether input size is a multiple of 16, unit: voxel

@@ -14,7 +14,8 @@ cfg = __C
 
 __C.general = {}
 
-__C.general.dataset_list = ['Aishell3', 'BZNSYP']
+# __C.general.dataset_list = ['Aishell3', 'BZNSYP']
+__C.general.dataset_list = ['BZNSYP']
 __C.general.dataset_path_dict = {
                                 "Aishell3": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/", 
                                 "Aishell3_training": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/train/wav", 
@@ -36,7 +37,8 @@ __C.general.data_dir = "/mnt/huanyuan2/data/speech/tts/Chinese_dataset/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_0_11102021/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_mutilspeaker_prosody_py_1_0_11102021/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_mutilspeaker_prosody_py_1_1_11102021/"
-__C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_mutilspeaker_prosody_py_1_2_11102021/"
+# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_mutilspeaker_prosody_py_1_2_11102021/"
+__C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_mutilspeaker_prosody_py_1_3_11102021/"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -156,32 +158,52 @@ __C.dataset = {}
 # the number of input channel, currently only support 1 channel input
 __C.dataset.input_channel = 1
 
-# Number of audio samples per second
-__C.dataset.sample_rate = 16000
+# Sampling rate.
+__C.dataset.sampling_rate = 16000
 
-# Duration of frequency analysis window
-__C.dataset.window_size_ms = 50.0
+# FFT size.
+__C.dataset.fft_size = 1024
 
-# How far to move in time between frequency windows
-__C.dataset.window_stride_ms = 12.5
+# Hop size.
+__C.dataset.hop_size = 256
 
-# How the spectrogram is processed to produce features, support ["fbank", "fbank_log", "fbank_log_manual", "pcen", "fbank_cpu"]
-__C.dataset.preprocess = "fbank_log_manual"
+# Window length.
+__C.dataset.win_length = 1024
 
-# How many bins to use for the Mel feature
-__C.dataset.feature_bin_count = 80
+# Window function.
+__C.dataset.window = "hann"
+
+# Number of mel basis.
+__C.dataset.num_mels = 80
 
 # How many nfilt to use for the Mel feature, only support preprocess ["fbank_cpu"]
-__C.dataset.nfilt = 80
+__C.dataset.num_filts = 80
 
-# fmin, only support preprocess ["fbank_log", "fbank_log_manual"]
+# Minimum freq in mel basis calculation, only support preprocess ["fbank_log", "fbank_nopreemphasis_log_manual", "fbank_preemphasis_log_manual"]
 # Set this to 55 if your speaker is male! if female, 95 should help taking off noise. (To
 # test depending on dataset. Pitch info: male~[65, 260], female~[100, 525])
-__C.dataset.fmin = 55
+# __C.dataset.fmin = 55
+__C.dataset.fmin = 80
 
-# fmax, only support preprocess ["fbank_log", "fbank_log_manual"]
+# Maximum frequency in mel basis calculation, only support preprocess ["fbank_log", "fbank_nopreemphasis_log_manual", "fbank_preemphasis_log_manual"]
 # To be increased/reduced depending on data.
 __C.dataset.fmax = 7600
+
+# trim silence：Whether to trim the start and end of silence
+# __C.dataset.trim_silence = True
+__C.dataset.trim_silence = False
+
+# Need to tune carefully if the recording is not good.
+__C.dataset.trim_threshold_in_db = 60
+
+# Frame size in trimming.
+__C.dataset.trim_frame_size = 2048
+
+# Hop size in trimming.
+__C.dataset.trim_hop_size = 512
+
+# compute mel type, support ["fbank", "fbank_log", "fbank_nopreemphasis_log_manual", "fbank_preemphasis_log_manual", "pcen", "fbank_cpu"]
+__C.dataset.compute_mel_type = "fbank_nopreemphasis_log_manual"
 
 # input size of training data (w, h), whether input size is a multiple of 16, unit: voxel
 # __C.dataset.h_alignment = True, [hisi], 模型需要图像输入长度为 16 的倍数
@@ -191,6 +213,10 @@ __C.dataset.h_alignment = False
 
 # input size of training data (w, h), unit: voxel
 __C.dataset.data_size = [80, -1]
+
+# normalize
+# __C.dataset.normalize_bool = True
+__C.dataset.normalize_bool = False
 
 # language
 __C.dataset.language = 'chinese'
@@ -219,6 +245,10 @@ __C.dataset.speaker_embedding_size = 256
 
 # num_speakers
 __C.dataset.num_speakers = 166
+
+# allow_cache
+__C.dataset.allow_cache = True
+# __C.dataset.allow_cache = False
 
 
 ##################################

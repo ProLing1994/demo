@@ -23,7 +23,7 @@ def infer(args):
     cfg = load_cfg_file(args.config_file)
 
     # load speaker verification net
-    if cfg.dataset.mutil_speaker:
+    if cfg.dataset.mutil_speaker and cfg.speaker_verification.on:
         cfg_speaker_verification = load_cfg_file(cfg.speaker_verification.config_file)
         sv_net = import_network(cfg_speaker_verification, 
                                 cfg.speaker_verification.model_name, 
@@ -58,7 +58,7 @@ def infer(args):
         speaker_id = None
 
     # load speaker_embedding
-    if cfg.dataset.mutil_speaker:
+    if cfg.dataset.mutil_speaker and cfg.speaker_verification.on:
         speaker_embedding = embedding(cfg_speaker_verification, sv_net, args.wav_file) 
     else:
         speaker_embedding = None
@@ -76,8 +76,9 @@ def infer(args):
         wav = audio.compute_inv_mel_spectrogram(cfg, spec)
         output_dir = os.path.join(cfg.general.save_dir, "infer")
         create_folder(output_dir)
-        wav_fpath = os.path.join(output_dir, "wave_griffin_from_mel_sample_{}_text_{}.wav".format(os.path.splitext(os.path.basename(args.wav_file))[0], texts_name[idx]))
-        audio.save_wav(wav, str(wav_fpath), sr=cfg.dataset.sample_rate)
+        # wav_fpath = os.path.join(output_dir, "wave_griffin_from_mel_sample_{}_text_{}.wav".format(os.path.splitext(os.path.basename(args.wav_file))[0], texts_name[idx]))
+        wav_fpath = os.path.join(output_dir, "wave_griffin_from_mel_spk_{}_text_{}.wav".format(args.speaker_id, texts_name[idx]))
+        audio.save_wav(wav, str(wav_fpath), sampling_rate=cfg.dataset.sampling_rate)
 
 
 def main():
@@ -125,8 +126,9 @@ def main():
 
     # chinese, prosody py
     # parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_0_11102021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')           # tacotron2 单说话人，韵律标签
-    parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_mutilspeaker_prosody_py_1_2_11102021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')              # tacotron2 多说话人 speaker_id_embedding，韵律标签，标签不做修改
-    parser.add_argument('-s', '--speaker_id', type=int, default=1, nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_mutilspeaker_prosody_py_1_2_11102021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')              # tacotron2 多说话人 speaker_id_embedding，韵律标签，标签不做修改
+    parser.add_argument('-i', '--config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_mutilspeaker_prosody_py_1_3_11102021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')              # tacotron2 多说话人 speaker_id_embedding，韵律标签，标签不做修改
+    parser.add_argument('-s', '--speaker_id', type=int, default=2, nargs='?', help='config file')
     parser.add_argument('-w', '--wav_file', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00050001.wav", nargs='?', help='config file')
     args = parser.parse_args()
     args.text_list = [

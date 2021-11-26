@@ -1,4 +1,5 @@
 import librosa
+from librosa.filters import window_bandwidth
 import numpy as np
 import pcen
 import sys
@@ -17,12 +18,12 @@ from ASR.impl.asr_feature_pyimpl import Feature
 from Basic.config import hparams
 
 
-def load_wav(path, sr):
-    return librosa.core.load(path, sr=sr)[0]
+def load_wav(path, sampling_rate):
+    return librosa.core.load(path, sampling_rate=sampling_rate)[0]
 
 
-def save_wav(wav, path, sr): 
-    sf.write(path, wav, sr)
+def save_wav(wav, path, sampling_rate): 
+    sf.write(path, wav, sampling_rate)
 
 
 def preprocess_wav(fpath_or_wav: Union[str, np.ndarray],
@@ -39,7 +40,7 @@ def preprocess_wav(fpath_or_wav: Union[str, np.ndarray],
     """
     # Load the wav from disk if needed
     if isinstance(fpath_or_wav, str):
-        wav, source_sr = librosa.load(str(fpath_or_wav), sr=None)
+        wav, source_sr = librosa.load(str(fpath_or_wav), sampling_rate=None)
     else:
         wav = fpath_or_wav
     
@@ -57,9 +58,15 @@ def preprocess_wav(fpath_or_wav: Union[str, np.ndarray],
     return wav
 
 
-def trim_silence(wav):
+def trim_silence_old(wav):
     # Whether to trim the start and end of silence.
     wav = librosa.effects.trim(wav, top_db=hparams.trim_top_db, frame_length=hparams.trim_fft_size, hop_length=hparams.trim_hop_size)[0]
+    return wav
+
+
+def trim_silence(wav, trim_threshold_in_db, trim_frame_size, trim_hop_size):
+    # Whether to trim the start and end of silence.
+    wav, _ = librosa.effects.trim(wav, top_db=trim_threshold_in_db, frame_length=trim_frame_size, hop_length=trim_hop_size)
     return wav
 
 
@@ -128,20 +135,32 @@ def normalize_volume(wav, target_dBFS, increase_only=False, decrease_only=False)
     return wav * (10 ** (dBFS_change / 20))
 
 
-class AudioPreprocessor(object):
-    def __init__(self, sr=16000, n_mels=40, nfilt=40, n_dct_filters=40, f_max=4000, f_min=20, winlen=0.032, winstep=0.010):
+class ComputeMel(object):
+    def __init__(self, 
+                sampling_rate=16000, 
+                fft_size=1024, hop_size=256, win_length=1024, window="hann",
+                num_mels=80, num_filts=80, num_dct_filters=80, 
+                fmax=4000, fmin=20,
+                eps=1e-10, log_base=10.0):
         super().__init__()
-        self.sr = sr
-        self.n_mels = n_mels
-        self.nfilt = nfilt
-        self.n_dct_filters = n_dct_filters
-        self.f_max = f_max if f_max is not None else sr // 2
-        self.f_min = f_min        
-        self.winlen = winlen
-        self.winstep = winstep
-        self.win_length = int(self.sr * self.winlen)
-        self.hop_length = int(self.sr * self.winstep)
-        self.pcen_transform = pcen.StreamingPCENTransform(n_mels=self.n_mels, n_fft=self.win_length, hop_length=self.hop_length, trainable=True)
+        self.sampling_rate = sampling_rate
+
+        self.fft_size = fft_size
+        self.hop_size = hop_size
+        self.win_length = win_length
+        self.window = window
+
+        self.num_mels = num_mels
+        self.num_filts = num_filts
+        self.num_dct_filters = num_dct_filters
+
+        self.fmax = sampling_rate // 2 if fmax is None else fmax
+        self.fmin = 0 if fmin is None else fmin
+
+        self.eps = eps
+        self.log_base = log_base
+  
+        self.pcen_transform = pcen.StreamingPCENTransform(n_mels=self.num_mels, n_fft=self.win_length, hop_size=self.hop_size, trainable=True)
 
         # init 
         self.mel_basis = None
@@ -150,29 +169,36 @@ class AudioPreprocessor(object):
     def compute_fbanks(self, data):
         data = librosa.feature.melspectrogram(
             data,
-            sr=self.sr,
+            sampling_rate=self.sampling_rate,
             n_fft=self.win_length,
-            hop_length=self.hop_length,
-            n_mels=self.n_mels)
+            hop_size=self.hop_size,
+            num_mels=self.num_mels)
         data = data.astype(np.float32).T
         return data
 
     def compute_fbanks_log(self, data):
         data = librosa.feature.melspectrogram(
             data,
-            sr=self.sr,
-            n_mels=self.n_mels,
-            hop_length=self.hop_length,
+            sampling_rate=self.sampling_rate,
+            num_mels=self.num_mels,
+            hop_size=self.hop_size,
             n_fft=self.win_length,
-            fmin=self.f_min,
-            fmax=self.f_max)
+            fmin=self.fmin,
+            fmax=self.fmax)
         data[data > 0] = np.log(data[data > 0])
         data = data.T
         return data
 
-    def fbank_log_manual(self, data):
+    def fbank_nopreemphasis_log_manual(self, data):
+        D = self.stft(data)
+        S = self.amp_to_db(self.linear_to_mel(np.abs(D), min_level=self.eps))
+        return S.T
+
+    def compute_fbanks_preemphasis_log_manual(self, data):
         D = self.stft(self.preemphasis(data, hparams.preemphasis, hparams.preemphasize))
-        S = self.amp_to_db(self.linear_to_mel(np.abs(D))) - hparams.ref_level_db
+
+        min_level = np.exp(hparams.min_level_db / 20 * np.log(10))
+        S = self.amp_to_db(self.linear_to_mel(np.abs(D), min_level=min_level), multi_coef=20) - hparams.ref_level_db
         
         if hparams.signal_normalization:
             return self.normalize(S).T
@@ -193,7 +219,7 @@ class AudioPreprocessor(object):
         # print(data[:10])
         
         # compute fbank cpu
-        featurefbanks_cpu = Feature(sample_rate=self.sr, feature_freq=self.n_mels, nfilt=self.nfilt, winlen=self.winlen , winstep=self.winstep)
+        featurefbanks_cpu = Feature(sample_rate=self.sampling_rate, feature_freq=self.num_mels, num_filts=self.num_filts, winlen=self.winlen , winstep=self.winstep)
         featurefbanks_cpu.get_mel_int_feature(data, bool_vtlp_augmentation)
         feature_data = featurefbanks_cpu.copy_mfsc_feature_int_to()
         return feature_data
@@ -211,32 +237,44 @@ class AudioPreprocessor(object):
         return wav
 
     def stft(self, y):
-        return librosa.stft(y=y, n_fft=self.win_length, hop_length=self.hop_length, win_length=self.win_length)
+        return librosa.stft(y=y, n_fft=self.fft_size, hop_length=self.hop_size, win_length=self.win_length, window=self.window, pad_mode='reflect')
 
     def istft(self, y):
-        return librosa.istft(y, hop_length=self.hop_length, win_length=self.win_length)
+        return librosa.istft(y, hop_length=self.hop_size, win_length=self.win_length)
 
-    def linear_to_mel(self, spectogram):
+    def linear_to_mel(self, spectogram, min_level):
         if self.mel_basis is None:
             self.mel_basis = self.build_mel_basis()
-        return np.dot(self.mel_basis, spectogram)
+        return np.maximum(min_level, np.dot(self.mel_basis, spectogram))
 
     def mel_to_linear(self, mel_spectrogram):
         if self.inv_mel_basis is None:
             self.inv_mel_basis = np.linalg.pinv(self.build_mel_basis())
-        return np.maximum(1e-10, np.dot(self.inv_mel_basis, mel_spectrogram))
+        return np.maximum(self.eps, np.dot(self.inv_mel_basis, mel_spectrogram))
 
     def build_mel_basis(self):
-        assert self.f_max <= self.sr // 2
-        return librosa.filters.mel(self.sr, self.win_length, n_mels=self.n_mels,
-                                fmin=self.f_min, fmax=self.f_max)
+        assert self.fmax <= self.sampling_rate // 2
+        return librosa.filters.mel(self.sampling_rate, n_fft=self.fft_size, n_mels=self.num_mels, fmin=self.fmin, fmax=self.fmax)
 
-    def amp_to_db(self, x):
-        min_level = np.exp(hparams.min_level_db / 20 * np.log(10))
-        return 20 * np.log10(np.maximum(min_level, x))
+    def amp_to_db(self, x, log_base=10.0, multi_coef=1.0):
+        if log_base is None:
+            return multi_coef * np.log(x)
+        elif log_base == 10.0:
+            return multi_coef * np.log10(x)
+        elif log_base == 2.0:
+            return multi_coef * np.log2(x)
+        else:
+            raise ValueError(f"{log_base} is not supported.")
 
-    def db_to_amp(self, x):
-        return np.power(10.0, (x) * 0.05)
+    def db_to_amp(self, x, log_base=10.0, multi_coef=1.0):
+        if log_base is None:
+            return np.power(np.e, (x) * (1.0/multi_coef))
+        elif log_base == 10.0:
+            return np.power(10.0, (x) * (1.0/multi_coef))
+        elif log_base == 2.0:
+            return np.power(2.0, (x) * (1.0/multi_coef))
+        else:
+            raise ValueError(f"{log_base} is not supported.")
 
     def normalize(self, S):
         if hparams.allow_clipping_in_normalization:
@@ -278,66 +316,73 @@ class AudioPreprocessor(object):
         return y
 
 
-def compute_mel_spectrogram(cfg, data):
+def compute_mel_spectrogram(cfg, wav):
     # init 
-    audio_preprocess_type = cfg.dataset.preprocess
-    audio_processor = AudioPreprocessor(sr=cfg.dataset.sample_rate,
-                                        n_mels=cfg.dataset.feature_bin_count,
-                                        nfilt=cfg.dataset.nfilt,
-                                        f_max=cfg.dataset.fmax, 
-                                        f_min=cfg.dataset.fmin,
-                                        winlen=cfg.dataset.window_size_ms / 1000, 
-                                        winstep=cfg.dataset.window_stride_ms / 1000)
+    compute_mel_type = cfg.dataset.compute_mel_type
+    compute_mel = ComputeMel(sampling_rate=cfg.dataset.sampling_rate,
+                                    fft_size=cfg.dataset.fft_size,
+                                    hop_size=cfg.dataset.hop_size,
+                                    win_length=cfg.dataset.win_length,
+                                    window=cfg.dataset.window,
+                                    num_mels=cfg.dataset.num_mels,
+                                    num_filts=cfg.dataset.num_filts,
+                                    fmax=cfg.dataset.fmax, 
+                                    fmin=cfg.dataset.fmin)
 
     # check
-    assert audio_preprocess_type in ["fbank", "fbank_log", "fbank_log_manual", "pcen", "fbank_cpu"], "[ERROR:] Audio preprocess type is wronge, please check"
+    assert compute_mel_type in ["fbank", "fbank_log", "fbank_nopreemphasis_log_manual", "compute_fbanks_preemphasis_log_manual", "pcen", "fbank_cpu"], \
+        "[ERROR:] Audio compute mel type is wronge, please check"
 
-    # preprocess
-    if audio_preprocess_type == "fbank":
-        audio_data = audio_processor.compute_fbanks(data)
-    elif audio_preprocess_type == "fbank_log":
-        audio_data = audio_processor.compute_fbanks_log(data)
-    elif audio_preprocess_type == "fbank_log_manual":
-        audio_data = audio_processor.fbank_log_manual(data)
-    elif audio_preprocess_type == "pcen":
-        audio_data = audio_processor.compute_pcen(data)
-    elif audio_preprocess_type == "fbank_cpu":
+    # compute mel
+    if compute_mel_type == "fbank":
+        mel = compute_mel.compute_fbanks(wav)
+    elif compute_mel_type == "fbank_log":
+        mel = compute_mel.compute_fbanks_log(wav)
+    elif compute_mel_type == "fbank_nopreemphasis_log_manual":
+        mel = compute_mel.fbank_nopreemphasis_log_manual(wav)
+    elif compute_mel_type == "fbank_preemphasis_log_manual":
+        mel = compute_mel.compute_fbanks_preemphasis_log_manual(wav)
+    elif compute_mel_type == "pcen":
+        mel = compute_mel.compute_pcen(wav)
+    elif compute_mel_type == "fbank_cpu":
         if cfg.dataset.augmentation.on and cfg.dataset.augmentation.vtlp_on:
-            audio_data = audio_processor.compute_fbanks_cpu(data, cfg.dataset.augmentation.vtlp_on)
+            mel = compute_mel.compute_fbanks_cpu(wav, cfg.dataset.augmentation.vtlp_on)
         else:
-            audio_data = audio_processor.compute_fbanks_cpu(data)
-    return audio_data.astype(np.float32)
+            mel = compute_mel.compute_fbanks_cpu(wav)
+    return mel.astype(np.float32)
 
 
 def compute_inv_mel_spectrogram(cfg, mel):
     """Converts mel spectrogram to waveform using librosa"""
     # init 
-    audio_preprocess_type = cfg.dataset.preprocess
-    assert audio_preprocess_type == "fbank_log_manual", "only support audio preprocess type: fbank_log_manual"
+    compute_mel_type = cfg.dataset.compute_mel_type
+    assert compute_mel_type == "fbank_preemphasis_log_manual", "only support audio compute mel type: fbank_preemphasis_log_manual"
 
-    audio_processor = AudioPreprocessor(sr=cfg.dataset.sample_rate,
-                                        n_mels=cfg.dataset.feature_bin_count,
-                                        nfilt=cfg.dataset.nfilt,
-                                        f_max=cfg.dataset.fmax, 
-                                        f_min=cfg.dataset.fmin,
-                                        winlen=cfg.dataset.window_size_ms / 1000, 
-                                        winstep=cfg.dataset.window_stride_ms / 1000)
+    compute_mel = ComputeMel(sampling_rate=cfg.dataset.sampling_rate,
+                                    fft_size=cfg.dataset.fft_size,
+                                    hop_size=cfg.dataset.hop_size,
+                                    win_length=cfg.dataset.win_length,
+                                    window=cfg.dataset.window,
+                                    num_mels=cfg.dataset.num_mels,
+                                    num_filts=cfg.dataset.num_filts,
+                                    fmax=cfg.dataset.fmax, 
+                                    fmin=cfg.dataset.fmin)
 
     # denormalize
     if hparams.signal_normalization:
-        D = audio_processor.denormalize(mel)
+        D = compute_mel.denormalize(mel)
     else:
         D = mel
     
     # mel to linear
-    S = audio_processor.mel_to_linear(audio_processor.db_to_amp(D + hparams.ref_level_db))  # Convert back to linear
+    S = compute_mel.mel_to_linear(compute_mel.db_to_amp(D + hparams.ref_level_db, multi_coef=20))  # Convert back to linear
     
     # griffin_lim
-    return audio_processor.inv_preemphasis(audio_processor.griffin_lim(S ** hparams.power), hparams.preemphasis, hparams.preemphasize)
+    return compute_mel.inv_preemphasis(compute_mel.griffin_lim(S ** hparams.power), hparams.preemphasis, hparams.preemphasize)
 
 
 def compute_pre_emphasis(data):
-    return AudioPreprocessor.preemphasis(data, hparams.preemphasis, hparams.preemphasize)
+    return ComputeMel.preemphasis(data, hparams.preemphasis, hparams.preemphasize)
 
 def compute_de_emphasis(data):
-    return AudioPreprocessor.inv_preemphasis(data, hparams.preemphasis, hparams.preemphasize)
+    return ComputeMel.inv_preemphasis(data, hparams.preemphasis, hparams.preemphasize)

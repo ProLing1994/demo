@@ -142,12 +142,12 @@ __C.dataset.feature_bin_count = 48
 # How many nfilt to use for the Mel feature, only support preprocess = fbank_cpu
 __C.dataset.nfilt = 48
 
-# fmin, only support preprocess ["fbank_log", "fbank_log_manual"]
+# fmin, only support preprocess ["fbank_log", "fbank_preemphasis_log_manual"]
 # Set this to 55 if your speaker is male! if female, 95 should help taking off noise. (To 
 # test depending on dataset. Pitch info: male~[65, 260], female~[100, 525])
 __C.dataset.fmin = None
 
-# fmax, only support preprocess ["fbank_log", "fbank_log_manual"]
+# fmax, only support preprocess ["fbank_log", "fbank_preemphasis_log_manual"]
 # To be increased/reduced depending on data.
 __C.dataset.fmax = None
 

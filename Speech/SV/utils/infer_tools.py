@@ -176,7 +176,7 @@ def embedding(cfg, net, fpath_or_wav):
 
     # data trim_silence
     if hparams.trim_silence:
-        data = audio.trim_silence(data)
+        data = audio.trim_silence_old(data)
 
     # data rescale
     if hparams.rescale:
