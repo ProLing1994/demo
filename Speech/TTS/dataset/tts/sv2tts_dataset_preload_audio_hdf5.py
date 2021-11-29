@@ -32,29 +32,30 @@ class SynthesizerDataset(Dataset):
         # filter by threshold
         self.filter_by_threshold()
         # assert the number of files
-        assert len(self.data_list_filter) != 0, f"Not found any audio files."
+        assert len(self.data_pd) != 0, f"Not found any audio files."
 
         # speaker_id
         self.speaker_list = list(set(self.data_pd['speaker'].to_list()))
         self.speaker_list.sort()
         self.speaker_dict = {self.speaker_list[idx] : idx for idx in range(len(self.speaker_list))}
 
-        print("Found {} samples, {} speakers. ".format(len(self.data_list), len(self.speaker_list)))
+        print("Found {} samples, {} speakers. ".format(len(self.data_pd), len(self.speaker_list)))
         
         if self.allow_cache:
             # NOTE: Manager is need to share memory in dataloader with num_workers > 0
             self.manager = Manager()
             self.caches = self.manager.list()
-            self.caches += [() for _ in range(len(self.data_list_filter))]
+            self.caches += [() for _ in range(len(self.data_pd))]
 
     def __len__(self):
-        return len(self.data_list)
+        return len(self.data_pd)
     
     def __getitem__(self, index):
-        if not hasattr(self, 'lmdb_dict'):
-            self.lmdb_dict = load_lmdb(self.cfg, self.mode)
 
-        lmdb_dataset = self.data_pd.loc[index, 'dataset']
+        if self.allow_cache and len(self.caches[index]) != 0:
+            return self.caches[index][0], self.caches[index][1], self.caches[index][2], self.caches[index][3]
+
+        dataset_name = self.data_pd.loc[index, 'dataset']
         data_name = self.data_pd.loc[index, 'unique_utterance']
         speaker = self.data_pd.loc[index, 'speaker']
         data_by_spk = self.data_pd[self.data_pd['speaker'] == speaker]
@@ -70,11 +71,16 @@ class SynthesizerDataset(Dataset):
             raise Exception("[ERROR:] Unknow dataset language: {}".format(self.cfg.dataset.language))
 
         # mel
-        wav = read_audio_lmdb(self.lmdb_dict[lmdb_dataset], str(data_name))
-
         # data augmentation
         if self.cfg.dataset.augmentation.on and self.cfg.dataset.augmentation.longer_senteces_on:
-            text, wav = dataset_augmentation.dataset_augmentation_longer_senteces(self.cfg, text, wav, data_by_spk, self.lmdb_dict)
+            wav_path = os.path.join(self.cfg.general.data_dir, 'dataset_audio_hdf5', dataset_name, data_name.split('.')[0] + '.h5')
+            wav = read_hdf5(wav_path, "wave")
+            text, wav = dataset_augmentation.dataset_augmentation_longer_senteces_hdf5(self.cfg, text, wav, data_by_spk)
+            mel = audio.compute_mel_spectrogram(self.cfg, wav)
+        else:
+            wav_path = os.path.join(self.cfg.general.data_dir, 'dataset_audio_hdf5', dataset_name, data_name.split('.')[0] + '.h5')
+            mel = read_hdf5(wav_path, "feats").T.astype(np.float32)
+            # mel = read_hdf5(wav_path, "feats")
 
         # 中文句末需要变换为句号 . 
         if self.cfg.dataset.language == 'chinese':
@@ -94,20 +100,22 @@ class SynthesizerDataset(Dataset):
         # Convert the list returned by text_to_sequence to a numpy array
         text = np.asarray(text).astype(np.int32)
 
-        mel = audio.compute_mel_spectrogram(self.cfg, wav).T.astype(np.float32)
-
         # speaker
         speaker_id = self.speaker_dict[speaker]
 
         # embed wav
         speaker_pd = self.data_pd[self.data_pd['speaker'] == speaker]
         speaker_data_name = random.choice(speaker_pd['unique_utterance'].to_list()) 
-        embed_wav = read_audio_lmdb(self.lmdb_dict[lmdb_dataset], str(speaker_data_name))
+        embed_wav_path = os.path.join(self.cfg.general.data_dir, 'dataset_audio_hdf5', dataset_name, speaker_data_name.split('.')[0] + '.h5')
+        embed_wav = read_hdf5(embed_wav_path, "wave")
+
+        if self.allow_cache:
+            self.caches[index] = (text, mel, speaker_id, embed_wav)
+
         return text, mel, speaker_id, embed_wav
 
     def filter_by_threshold(self):
-        self.data_list = []
-        self.data_list_filter = []
+        self.drop_index_list = []
         audio_length_threshold = int(self.cfg.dataset.sampling_rate * self.cfg.dataset.clip_duration_ms / 1000)
 
         for index, row in self.data_pd.iterrows():
@@ -119,57 +127,43 @@ class SynthesizerDataset(Dataset):
             wav = read_hdf5(wav_path, "wave")
             wav_length = len(wav)
 
-            if wav_length > audio_length_threshold:
-                self.data_list_filter.append(index)
+            if wav_length < audio_length_threshold:
+                self.drop_index_list.append(index)
 
-            self.data_list.append(index)
+        if len(self.drop_index_list) != 0:
+            print(f"[Warning] Some files are filtered by audio length threshold ({len(self.data_pd)} -> {len(self.data_pd) - len(self.drop_index_list)}).")
+        
+        # drop
+        self.data_pd.drop(self.drop_index_list, inplace=True)
+        self.data_pd.reset_index(drop=True, inplace=True)
 
-        if len(self.data_list) != len(self.data_list_filter):
-            print(f"[Warning] Some files are filtered by audio length threshold ({len(self.data_list)} -> {len(self.data_list_filter)}).")
 
+class SynthesizerCollater(object):
+    """Customized collater for Pytorch DataLoader in training."""
+    def __init__(self, cfg):
 
-class SynthesizerDataLoader(DataLoader):
-    def __init__(self, dataset, sampler, cfg):
-        super().__init__(
-            dataset=dataset, 
-            batch_size=cfg.train.batch_size, 
-            shuffle=False, 
-            sampler=sampler, 
-            batch_sampler=None, 
-            num_workers=cfg.train.num_threads,
-            collate_fn=lambda data: self.collate_synthesizer(data, cfg),
-            pin_memory=True, 
-            drop_last=False, 
-            timeout=0, 
-            worker_init_fn=None
-        )
+        self.cfg = cfg
 
-    def collate_synthesizer(self, data, cfg):
+    def __call__(self, batch):
         # Sort 
-        data = sorted(data, key=lambda x: len(x[0]), reverse=True)
+        batch = sorted(batch, key=lambda x: len(x[0]), reverse=True)
 
         # Text
-        char_lengths = [len(x[0]) for x in data]
+        char_lengths = [len(x[0]) for x in batch]
         max_char_length = max(char_lengths)
 
-        chars = [pad1d(x[0], max_char_length) for x in data]
+        chars = [pad1d(x[0], max_char_length) for x in batch]
         chars = np.stack(chars)         # shape: [b, text_t]
 
         # Mel spectrogram
-        mel_lengths = [x[1].shape[1] for x in data]
+        mel_lengths = [x[1].shape[1] for x in batch]
         for idx in range(len(mel_lengths)):
-            if mel_lengths[idx] % cfg.net.r != 0:
-                mel_lengths[idx] += cfg.net.r - mel_lengths[idx] % cfg.net.r
+            if mel_lengths[idx] % self.cfg.net.r != 0:
+                mel_lengths[idx] += self.cfg.net.r - mel_lengths[idx] % self.cfg.net.r
         max_mel_length = max(mel_lengths)
 
-        # WaveRNN mel spectrograms are normalized to [0, 1] so zero padding adds silence
-        # By default, SV2TTS uses symmetric mels, where -1*max_abs_value is silence.
-        if hparams.symmetric_mels:
-            mel_pad_value = -1 * hparams.max_abs_value
-        else:
-            mel_pad_value = 0
-
-        mels = [pad2d(x[1], max_mel_length, pad_value=mel_pad_value) for x in data]
+        mel_pad_value = 0
+        mels = [pad2d(x[1], max_mel_length, pad_value=mel_pad_value) for x in batch]
         mels = np.stack(mels)           # shape: [b, mel_f, mel_t]
         
         # Mel Frames: stop
@@ -178,11 +172,11 @@ class SynthesizerDataLoader(DataLoader):
             stops[j, int(k)-1:] = 1     # shape: [b, mel_t]
 
         # Speaker id (mutil speaker)
-        speaker_ids = [x[2] for x in data]
+        speaker_ids = [x[2] for x in batch]
         speaker_ids = np.stack(speaker_ids)
         
         # Speaker embedding (SV2TTS)
-        embed_wavs = [x[3] for x in data]
+        embed_wavs = [x[3] for x in batch]
 
         # Convert all to tensor
         chars = torch.tensor(chars).long()

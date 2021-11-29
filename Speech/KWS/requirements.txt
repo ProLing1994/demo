@@ -15,5 +15,5 @@ numba==0.54.0
 # librosa==0.6.0
 # umba==0.48.0
 
-git+https://github.com/daemon/pytorch-pcen
-git+https://github.com/amsehili/auditok
+# git+https://github.com/daemon/pytorch-pcen
+# git+https://github.com/amsehili/auditok

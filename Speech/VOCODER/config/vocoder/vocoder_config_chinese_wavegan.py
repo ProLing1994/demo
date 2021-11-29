@@ -26,7 +26,8 @@ __C.general.dataset_path_dict = {
                                 }
 
 # data path
-__C.general.data_dir = "/mnt/huanyuan2/data/speech/tts/Chinese_dataset/"
+# __C.general.data_dir = "/mnt/huanyuan2/data/speech/tts/Chinese_dataset/"
+__C.general.data_dir = "/yuanhuan/data/speech/tts/Chinese_dataset/"
 
 # the output of training models and logging files
 __C.general.save_dir = "/mnt/huanyuan2/model/tts_vocoder/chinese_tts_vocoder/test/"

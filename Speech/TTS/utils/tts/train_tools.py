@@ -1,6 +1,8 @@
 import os
 import sys
 
+from torch.utils.data import DataLoader
+
 sys.path.insert(0, '/home/huanyuan/code/demo/common')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/common')
 from common.utils.python.train_tools import EpochConcateSampler
@@ -9,7 +11,7 @@ from common.utils.python.plotly_tools import plot_loss2d, plot_loss
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/TTS')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech/TTS')
 # from dataset.tts.sv2tts_dataset_preload_audio_lmdb import SynthesizerDataset, SynthesizerDataLoader
-from dataset.tts.sv2tts_dataset_preload_audio_hdf5 import SynthesizerDataset, SynthesizerDataLoader
+from dataset.tts.sv2tts_dataset_preload_audio_hdf5 import SynthesizerDataset, SynthesizerCollater
 
 
 def generate_dataset_lmdb(cfg, mode):
@@ -38,7 +40,14 @@ def generate_dataset_hdf5(cfg, mode):
 
     dataset = SynthesizerDataset(cfg, mode)
     sampler = EpochConcateSampler(dataset, cfg.train.num_epochs - (cfg.general.resume_epoch_num if cfg.general.resume_epoch_num != -1 else 0))
-    dataloader = SynthesizerDataLoader(dataset, sampler, cfg)
+    collater = SynthesizerCollater(cfg)
+    dataloader = DataLoader(dataset=dataset,
+                            batch_size=cfg.train.batch_size,
+                            shuffle=False,
+                            sampler=sampler,
+                            num_workers=cfg.train.num_threads,
+                            collate_fn=collater,
+                            pin_memory=True)
     return dataloader, len(dataset)
 
 

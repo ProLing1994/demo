@@ -53,7 +53,7 @@ __C.general.load_mode_type = 0
 # 方式一：模型加载，根据文件目录查找
 __C.general.finetune_model_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_mutilspeaker_prosody_py_1_0_11102021/"
 __C.general.finetune_epoch_num = -1
-__C.general.finetune_sub_folder_name ='checkpoints'
+__C.general.finetune_sub_folder_name = 'checkpoints'
 # 方式二：模型加载，指定文件路径
 __C.general.finetune_model_path = ""
 
@@ -267,7 +267,8 @@ __C.dataset.augmentation = {}
 __C.dataset.augmentation.on = False
 
 # based on longer senteces: on.
-__C.dataset.augmentation.longer_senteces_on = True
+# __C.dataset.augmentation.longer_senteces_on = True
+__C.dataset.augmentation.longer_senteces_on = False
 
 # longer senteces frequency.
 __C.dataset.augmentation.longer_senteces_frequency = 0.5
@@ -345,8 +346,9 @@ __C.train.save_epochs = 1
 ######################################
 
 # learning rate = lr*gamma**(epoch//step_size)
-__C.train.lr = 1e-3
-# __C.train.lr = 1e-4
+# __C.train.lr = 1e-3
+__C.train.lr = 1e-4
+# __C.train.lr = 1e-5
 
 # step size for step learning rate
 __C.train.lr_step_size = 0

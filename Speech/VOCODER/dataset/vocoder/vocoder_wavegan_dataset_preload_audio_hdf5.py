@@ -5,6 +5,7 @@ from torch.utils.data import Dataset, DataLoader
 from sklearn.preprocessing import StandardScaler
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+#  sys.path.insert(0, '/yuanhuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
 from Basic.utils.hdf5_tools import *
 
@@ -25,7 +26,7 @@ class VocoderWaveGanDataset(Dataset):
         # filter by threshold
         self.filter_by_threshold()
         # assert the number of files
-        assert len(self.data_list_filter) != 0, f"Not found any audio files."
+        assert len(self.data_pd) != 0, f"Not found any audio files."
 
         if self.cfg.dataset.normalize_bool:
             # restore scaler
@@ -43,17 +44,16 @@ class VocoderWaveGanDataset(Dataset):
             # NOTE: Manager is need to share memory in dataloader with num_workers > 0
             self.manager = Manager()
             self.caches = self.manager.list()
-            self.caches += [() for _ in range(len(self.data_list_filter))]
+            self.caches += [() for _ in range(len(self.data_pd))]
 
     def __len__(self):
-        return len(self.data_list_filter)
+        return len(self.data_pd)
 
     def __getitem__(self, index):
 
         if self.allow_cache and len(self.caches[index]) != 0:
             return self.caches[index][0], self.caches[index][1]
         
-        index = self.data_list_filter[index]
         dataset_name = self.data_pd.loc[index, 'dataset']
         data_name = self.data_pd.loc[index, 'unique_utterance']
 
@@ -86,8 +86,7 @@ class VocoderWaveGanDataset(Dataset):
         return wav, mel
 
     def filter_by_threshold(self):
-        self.data_list = []
-        self.data_list_filter = []
+        self.drop_index_list = []
         audio_length_threshold = int(self.cfg.dataset.sampling_rate * self.cfg.dataset.clip_duration_ms / 1000)
 
         for index, row in self.data_pd.iterrows():
@@ -99,13 +98,15 @@ class VocoderWaveGanDataset(Dataset):
             wav = read_hdf5(wav_path, "wave")
             wav_length = len(wav)
 
-            if wav_length > audio_length_threshold:
-                self.data_list_filter.append(index)
+            if wav_length < audio_length_threshold:
+                self.drop_index_list.append(index)
 
-            self.data_list.append(index)
-
-        if len(self.data_list) != len(self.data_list_filter):
-            print(f"[Warning] Some files are filtered by audio length threshold ({len(self.data_list)} -> {len(self.data_list_filter)}).")
+        if len(self.drop_index_list) != 0:
+            print(f"[Warning] Some files are filtered by audio length threshold ({len(self.data_pd)} -> {len(self.data_pd) - len(self.drop_index_list)}).")
+        
+        # drop
+        self.data_pd.drop(self.drop_index_list, inplace=True)
+        self.data_pd.reset_index(drop=True, inplace=True)
 
 
 class VocoderCollater(object):

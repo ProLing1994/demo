@@ -1,6 +1,7 @@
 import sys
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+# sys.path.insert(0, '/yuanhuan/code/demo/Speech')
 
 from VOCODER.loss.vocoder import DiscriminatorAdversarialLoss
 from VOCODER.loss.vocoder import FeatureMatchLoss

@@ -2,7 +2,7 @@ import sys
 import torch
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-
+# sys.path.insert(0, '/yuanhuan/code/demo/Speech')
 import VOCODER.optimizers.vocoder
 
 def load_optimizers_wavegan(cfg, model):

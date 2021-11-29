@@ -5,6 +5,7 @@ import sys
 import soundfile as sf
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+# sys.path.insert(0, '/yuanhuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
 from Basic.config import hparams
 from Basic.utils.folder_tools import *
@@ -19,13 +20,13 @@ from TTS.utils.tts.visualizations_tools import *
 from VOCODER.utils.vocoder.train_tools import *
 from VOCODER.utils.vocoder.loss_tools import *
 from VOCODER.utils.vocoder.optimizers_tools import *
-import VOCODER.config.vocoder.hparams as hparams_vocoder
 from VOCODER.dataset.vocoder.audio import *
 from VOCODER.dataset.vocoder.distribution import *
 from VOCODER.dataset.vocoder.vocoder_dataset_preload_audio_lmdb import prepare_data
 
 
 sys.path.insert(0, '/home/huanyuan/code/demo/common')
+# sys.path.insert(0, '/yuanhuan/code/demo/common')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/common')
 from common.utils.python.logging_helpers import setup_logger
 
