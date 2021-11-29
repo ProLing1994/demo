@@ -7,6 +7,7 @@ from torch.utils.data import Dataset, DataLoader
 
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+# sys.path.insert(0, '/yuanhuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
 from Basic.config import hparams
 from Basic.dataset import audio
@@ -76,7 +77,7 @@ class SynthesizerDataset(Dataset):
             wav_path = os.path.join(self.cfg.general.data_dir, 'dataset_audio_hdf5', dataset_name, data_name.split('.')[0] + '.h5')
             wav = read_hdf5(wav_path, "wave")
             text, wav = dataset_augmentation.dataset_augmentation_longer_senteces_hdf5(self.cfg, text, wav, data_by_spk)
-            mel = audio.compute_mel_spectrogram(self.cfg, wav)
+            mel = audio.compute_mel_spectrogram(self.cfg, wav).T.astype(np.float32)
         else:
             wav_path = os.path.join(self.cfg.general.data_dir, 'dataset_audio_hdf5', dataset_name, data_name.split('.')[0] + '.h5')
             mel = read_hdf5(wav_path, "feats").T.astype(np.float32)

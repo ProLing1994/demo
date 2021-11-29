@@ -1,3 +1,4 @@
+from multiprocessing import Manager
 import numpy as np
 import os
 import sys
@@ -28,6 +29,7 @@ class SpeechDataset(Dataset):
 
         self.cfg = cfg
         self.bool_trainning = augmentation_on
+        self.allow_cache = self.cfg.dataset.allow_cache
 
         # data index
         self.positive_label_list = cfg.dataset.label.positive_label
@@ -60,6 +62,12 @@ class SpeechDataset(Dataset):
         self.input_channel = cfg.dataset.input_channel
         self.data_size_h = cfg.dataset.data_size[1]
         self.data_size_w = cfg.dataset.data_size[0]
+        
+        if self.allow_cache:
+            # NOTE: Manager is need to share memory in dataloader with num_workers > 0
+            self.manager = Manager()
+            self.caches = self.manager.list()
+            self.caches += [() for _ in range(len(self.data_file_list))]
 
     def __len__(self):
         """ get the number of images in this dataset """
@@ -78,10 +86,11 @@ class SpeechDataset(Dataset):
         filename = os.path.basename(audio_file)
         if not str(filename).endswith('.wav'):
             filename = str(filename).split('.')[0] + '.wav'
-        audio.save_wav(data.copy(), os.path.join(out_folder, filename), self.cfg.dataset.sample_rate)
+        audio.save_wav(data.copy(), os.path.join(out_folder, filename), self.cfg.dataset.sampling_rate)
 
     def __getitem__(self, index):
         """ get the item """
+
         if not hasattr(self, 'lmdb_env'):
             self.lmdb_path = os.path.join(os.path.dirname(self.cfg.general.data_csv_path), 'dataset_audio_lmdb', '{}.lmdb'.format(self.mode_type))
             self.lmdb_env = lmdb_tools.load_lmdb_env(self.lmdb_path)
@@ -90,8 +99,8 @@ class SpeechDataset(Dataset):
             self.background_data = lmdb_tools.load_background_noise_lmdb(self.cfg)
 
         audio_file = self.data_file_list[index]
-        audio_mode = self.data_mode_list[index]
         audio_label = self.data_label_list[index]
+        audio_mode = self.data_mode_list[index]
         assert audio_mode == self.mode_type, "[ERROR:] Something wronge about mode, please check"
 
         # load label idx
@@ -103,9 +112,15 @@ class SpeechDataset(Dataset):
             audio_label_idx = self.label_index[audio_label]
 
         # load data
-        data = lmdb_tools.read_audio_lmdb(self.lmdb_env, audio_file)
-        assert len(data) != 0, "[ERROR:] Something wronge about load data, please check"
+        if self.allow_cache and len(self.caches[index]) != 0:
+            data = self.caches[index][0]
+        else:
+            data = lmdb_tools.read_audio_lmdb(self.lmdb_env, audio_file)
+            assert len(data) != 0, "[ERROR:] Something wronge about load data, please check"
 
+            if self.allow_cache:
+                self.caches[index] = (data)
+                
         # data augmentation
         if audio_label == hparams.SILENCE_LABEL:
             data = dataset_augmentation.dataset_add_noise(self.cfg, data, self.background_data, bool_force_add_noise=True)

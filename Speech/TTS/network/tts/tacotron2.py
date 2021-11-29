@@ -8,13 +8,13 @@ from torch import nn
 from torch.nn.utils import clip_grad_norm_
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
+# sys.path.insert(0, '/yuanhuan/code/demo/Speech')
 from TTS.network.tts.attention import LocationSensitiveAttention, AttentionWrapper
 from TTS.network.tts.attention import get_mask_from_lengths
 from TTS.network.tts.modules import Prenet, BatchNormConv1dStack
 
 tacotron_config = '/home/huanyuan/code/demo/Speech/TTS/network/tts/tacotron2.json'
-# tacotron_config = '/home/engineers/yh_rmai/code/demo/Speech/TTS/network/tts/tacotron2.json'
+# tacotron_config = '/yuanhuan/code/demo/Speech/TTS/network/tts/tacotron2.json'
 
 class Postnet(nn.Module):
     """Postnet

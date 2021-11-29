@@ -14,7 +14,7 @@ from KWS.config.kws import hparams
 
 def dataset_alignment(cfg, data, bool_replicate=False):
     # init
-    desired_samples = int(cfg.dataset.sample_rate * cfg.dataset.clip_duration_ms / 1000)
+    desired_samples = int(cfg.dataset.sampling_rate * cfg.dataset.clip_duration_ms / 1000)
 
     # alignment data
     if len(data) < desired_samples:
@@ -59,13 +59,13 @@ def dataset_augmentation_pitch(cfg, data):
     pitch = np.random.randint(pitch_list[0], pitch_list[1])  
 
     # 音调调节
-    data = librosa.effects.pitch_shift(data, sr=cfg.dataset.sample_rate, n_steps=pitch)
+    data = librosa.effects.pitch_shift(data, sr=cfg.dataset.sampling_rate, n_steps=pitch)
     return data
 
 
 def dataset_augmentation_time_shift(cfg, data, bool_time_shift_multiple=False):
     time_shift_ms = cfg.dataset.augmentation.time_shift_ms
-    time_shift_samples = int(cfg.dataset.sample_rate * time_shift_ms / 1000)
+    time_shift_samples = int(cfg.dataset.sampling_rate * time_shift_ms / 1000)
     
     # Time shift enhancement multiple of negative samples,
     # which is effective for advanced prediction and lag prediction
@@ -141,11 +141,11 @@ def dataset_add_noise(cfg, data, background_data, bool_force_add_noise=False):
 
 def dataset_augmentation_vad(cfg, data):
     # init
-    sample_rate = cfg.dataset.sample_rate
+    sampling_rate = cfg.dataset.sampling_rate
     vad_frequency = cfg.dataset.augmentation.vad_frequency 
     vad_window_length = random.choice(cfg.dataset.augmentation.vad_window_length) 
     vad_mode = random.choice(cfg.dataset.augmentation.vad_mode) 
-    vad_chunk_size = (vad_window_length * sample_rate) // 1000
+    vad_chunk_size = (vad_window_length * sampling_rate) // 1000
     
     if np.random.uniform(0, 1) >= vad_frequency:
         return data
@@ -162,7 +162,7 @@ def dataset_augmentation_vad(cfg, data):
     for window_start in range(0, len(data), vad_chunk_size):
         window_end = window_start + vad_chunk_size
         vad_flags.append(vad.is_speech(pcm_wave[window_start * 2 : window_end * 2],
-                                         sample_rate=sample_rate))
+                                         sample_rate=sampling_rate))
     
     for vad_idx in range(len(vad_flags)):
         if vad_flags[vad_idx] == 0:

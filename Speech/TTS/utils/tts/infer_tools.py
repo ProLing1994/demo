@@ -2,6 +2,7 @@ import numpy as np
 import sys
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+# sys.path.insert(0, '/yuanhuan/code/demo/Speech')
 from TTS.dataset.text.text import *
 from TTS.config.tts.hparams import *
 from TTS.dataset.tts.sv2tts_dataset_preload_audio_lmdb import *

@@ -12,6 +12,7 @@ import torch
 import webrtcvad
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/')
+# sys.path.insert(0, '/yuanhuan/code/demo/Speech')
 # sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
 from ASR.impl.asr_feature_pyimpl import Feature
 
@@ -148,6 +149,8 @@ class ComputeMel(object):
         self.fft_size = fft_size
         self.hop_size = hop_size
         self.win_length = win_length
+        self.winlen = float(self.win_length) / float(self.sampling_rate)
+        self.winstep = float(self.hop_size) / float(self.sampling_rate)
         self.window = window
 
         self.num_mels = num_mels
@@ -189,7 +192,7 @@ class ComputeMel(object):
         data = data.T
         return data
 
-    def fbank_nopreemphasis_log_manual(self, data):
+    def compute_fbanks_nopreemphasis_log_manual(self, data):
         D = self.stft(data)
         S = self.amp_to_db(self.linear_to_mel(np.abs(D), min_level=self.eps))
         return S.T
@@ -219,10 +222,32 @@ class ComputeMel(object):
         # print(data[:10])
         
         # compute fbank cpu
-        featurefbanks_cpu = Feature(sample_rate=self.sampling_rate, feature_freq=self.num_mels, num_filts=self.num_filts, winlen=self.winlen , winstep=self.winstep)
+        featurefbanks_cpu = Feature(sample_rate=self.sampling_rate, feature_freq=self.num_mels, nfilt=self.num_filts, winlen=self.winlen , winstep=self.winstep)
         featurefbanks_cpu.get_mel_int_feature(data, bool_vtlp_augmentation)
         feature_data = featurefbanks_cpu.copy_mfsc_feature_int_to()
         return feature_data
+
+    def compute_inv_fbanks_nopreemphasis_log_manual(self, data):
+        D = data
+
+        # mel to linear
+        S = self.mel_to_linear(self.db_to_amp(D))  # Convert back to linear
+
+        # griffin_lim
+        return self.griffin_lim(S ** hparams.power)
+
+    def compute_inv_fbanks_preemphasis_log_manual(self, data):
+        # denormalize
+        if hparams.signal_normalization:
+            D = self.denormalize(data)
+        else:
+            D = data
+    
+        # mel to linear
+        S = self.mel_to_linear(self.db_to_amp(D + hparams.ref_level_db, multi_coef=20))  # Convert back to linear
+        
+        # griffin_lim
+        return self.inv_preemphasis(self.griffin_lim(S ** hparams.power), hparams.preemphasis, hparams.preemphasize)
 
     @classmethod
     def preemphasis(self, wav, k, preemphasize=True):
@@ -339,7 +364,7 @@ def compute_mel_spectrogram(cfg, wav):
     elif compute_mel_type == "fbank_log":
         mel = compute_mel.compute_fbanks_log(wav)
     elif compute_mel_type == "fbank_nopreemphasis_log_manual":
-        mel = compute_mel.fbank_nopreemphasis_log_manual(wav)
+        mel = compute_mel.compute_fbanks_nopreemphasis_log_manual(wav)
     elif compute_mel_type == "fbank_preemphasis_log_manual":
         mel = compute_mel.compute_fbanks_preemphasis_log_manual(wav)
     elif compute_mel_type == "pcen":
@@ -356,7 +381,8 @@ def compute_inv_mel_spectrogram(cfg, mel):
     """Converts mel spectrogram to waveform using librosa"""
     # init 
     compute_mel_type = cfg.dataset.compute_mel_type
-    assert compute_mel_type == "fbank_preemphasis_log_manual", "only support audio compute mel type: fbank_preemphasis_log_manual"
+    assert compute_mel_type in ["fbank_nopreemphasis_log_manual", "fbank_preemphasis_log_manual"], \
+        "only support audio compute mel type: fbank_preemphasis_log_manual"
 
     compute_mel = ComputeMel(sampling_rate=cfg.dataset.sampling_rate,
                                     fft_size=cfg.dataset.fft_size,
@@ -368,17 +394,10 @@ def compute_inv_mel_spectrogram(cfg, mel):
                                     fmax=cfg.dataset.fmax, 
                                     fmin=cfg.dataset.fmin)
 
-    # denormalize
-    if hparams.signal_normalization:
-        D = compute_mel.denormalize(mel)
-    else:
-        D = mel
-    
-    # mel to linear
-    S = compute_mel.mel_to_linear(compute_mel.db_to_amp(D + hparams.ref_level_db, multi_coef=20))  # Convert back to linear
-    
-    # griffin_lim
-    return compute_mel.inv_preemphasis(compute_mel.griffin_lim(S ** hparams.power), hparams.preemphasis, hparams.preemphasize)
+    if compute_mel_type == "fbank_preemphasis_log_manual":
+        return compute_mel.compute_inv_fbanks_preemphasis_log_manual(mel)
+    elif compute_mel_type == "fbank_nopreemphasis_log_manual":
+        return compute_mel.compute_inv_fbanks_nopreemphasis_log_manual(mel)
 
 
 def compute_pre_emphasis(data):

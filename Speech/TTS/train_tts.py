@@ -1,11 +1,10 @@
 import argparse
-import cv2
 from datetime import datetime
 import os 
 import sys
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
+# sys.path.insert(0, '/yuanhuan/code/demo/Speech')
 from Basic.dataset import audio
 from Basic.config import hparams
 from Basic.utils.folder_tools import *
@@ -23,7 +22,6 @@ from TTS.utils.tts.infer_tools import *
 
 
 sys.path.insert(0, '/home/huanyuan/code/demo/common')
-# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/common')
 from common.utils.python.logging_helpers import setup_logger
 
 
@@ -58,7 +56,7 @@ def show_ressult(cfg, attention, mel_prediction, target_spectrogram, input_seq, 
     wav = audio.compute_inv_mel_spectrogram(cfg, mel_prediction.T)
     wav_fpath = os.path.join(wav_dir, "wave_from_mel_step_{}_sample_{}.wav".format(step, sample_num))
     if len(wav):
-        audio.save_wav(wav, str(wav_fpath), sr=cfg.dataset.sampling_rate)
+        audio.save_wav(wav, str(wav_fpath), sampling_rate=cfg.dataset.sampling_rate)
     print("Input at step {}: {}".format(step, text))
 
 
