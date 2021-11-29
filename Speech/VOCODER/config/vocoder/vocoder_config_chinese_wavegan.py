@@ -32,6 +32,7 @@ __C.general.data_dir = "/mnt/huanyuan2/data/speech/tts/Chinese_dataset/"
 __C.general.save_dir = "/mnt/huanyuan2/model/tts_vocoder/chinese_tts_vocoder/test/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts_vocoder/chinese_tts_vocoder/wavegan_chinese_singlespeaker_1_0_11232021/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts_vocoder/chinese_tts_vocoder/wavegan_chinese_singlespeaker_1_1_normalize_11232021/"
+# __C.general.save_dir = "/mnt/huanyuan2/model/tts_vocoder/chinese_tts_vocoder/wavegan_chinese_singlespeaker_1_2_normalize_diff_feature_11292021/"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -77,12 +78,15 @@ __C.dataset.clip_duration_ms = 1000
 
 # FFT size.
 __C.dataset.fft_size = 1024
+# __C.dataset.fft_size = 800
 
 # Hop size.
 __C.dataset.hop_size = 256
+# __C.dataset.hop_size = 200
 
 # Window length.
 __C.dataset.win_length = 1024
+# __C.dataset.win_length = 800
 
 # Window function.
 __C.dataset.window = "hann"
@@ -96,8 +100,8 @@ __C.dataset.num_filts = 80
 # Minimum freq in mel basis calculation, only support preprocess ["fbank_log", "fbank_nopreemphasis_log_manual", "fbank_preemphasis_log_manual"]
 # Set this to 55 if your speaker is male! if female, 95 should help taking off noise. (To
 # test depending on dataset. Pitch info: male~[65, 260], female~[100, 525])
-# __C.dataset.fmin = 55
 __C.dataset.fmin = 80
+# __C.dataset.fmin = 55
 
 # Maximum frequency in mel basis calculation, only support preprocess ["fbank_log", "fbank_nopreemphasis_log_manual", "fbank_preemphasis_log_manual"]
 # To be increased/reduced depending on data.
@@ -118,6 +122,7 @@ __C.dataset.trim_hop_size = 512
 
 # compute mel type, support ["fbank", "fbank_log", "fbank_nopreemphasis_log_manual", "fbank_preemphasis_log_manual", "pcen", "fbank_cpu"]
 __C.dataset.compute_mel_type = "fbank_nopreemphasis_log_manual"
+# __C.dataset.compute_mel_type = "fbank_preemphasis_log_manual"
 
 # input size of training data (w, h), whether input size is a multiple of 16, unit: voxel
 # __C.dataset.h_alignment = True, [hisi], 模型需要图像输入长度为 16 的倍数
@@ -167,8 +172,8 @@ __C.train.num_epochs = 1000
 # __C.train.num_epochs = 10
 
 # the number of samples in a batch
-# __C.train.batch_size = 6
-__C.train.batch_size = 1
+__C.train.batch_size = 6
+# __C.train.batch_size = 1
 
 # the number of threads for IO
 __C.train.num_threads = 1

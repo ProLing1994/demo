@@ -58,7 +58,7 @@ def show_ressult(cfg, attention, mel_prediction, target_spectrogram, input_seq, 
     wav = audio.compute_inv_mel_spectrogram(cfg, mel_prediction.T)
     wav_fpath = os.path.join(wav_dir, "wave_from_mel_step_{}_sample_{}.wav".format(step, sample_num))
     if len(wav):
-        audio.save_wav(wav, str(wav_fpath), sr=cfg.dataset.sample_rate)
+        audio.save_wav(wav, str(wav_fpath), sr=cfg.dataset.sampling_rate)
     print("Input at step {}: {}".format(step, text))
 
 
@@ -78,7 +78,7 @@ def train(args):
 
     # enable logging
     log_file = os.path.join(cfg.general.save_dir, 'logging', 'train_log.txt')
-    logger = setup_logger(log_file, 'sv2tts_train')
+    logger = setup_logger(log_file, 'tts_train')
 
     # define network
     net = import_network(cfg, cfg.net.model_name, cfg.net.class_name)
@@ -153,7 +153,8 @@ def train(args):
             sv_net.eval()
 
     # define training dataset and testing dataset
-    train_dataloader, len_train_dataset = generate_dataset(cfg, hparams.TRAINING_NAME)
+    # train_dataloader, len_train_dataset = generate_dataset_lmdb(cfg, hparams.TRAINING_NAME)
+    train_dataloader, len_train_dataset = generate_dataset_hdf5(cfg, hparams.TRAINING_NAME)
 
     msg = 'Training dataset number: {}'.format(len_train_dataset)
     logger.info(msg)

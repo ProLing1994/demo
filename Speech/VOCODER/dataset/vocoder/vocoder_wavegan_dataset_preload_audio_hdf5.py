@@ -1,5 +1,5 @@
-import sys
 from multiprocessing import Manager
+import sys
 import torch
 from torch.utils.data import Dataset, DataLoader
 from sklearn.preprocessing import StandardScaler
@@ -21,8 +21,8 @@ class VocoderWaveGanDataset(Dataset):
         self.allow_cache = self.cfg.dataset.allow_cache
 
         self.data_pd = load_data_pd(cfg, mode)
-        self.data_list = self.data_pd['unique_utterance'].to_list()
 
+        # filter by threshold
         self.filter_by_threshold()
         # assert the number of files
         assert len(self.data_list_filter) != 0, f"Not found any audio files."
@@ -43,19 +43,20 @@ class VocoderWaveGanDataset(Dataset):
             # NOTE: Manager is need to share memory in dataloader with num_workers > 0
             self.manager = Manager()
             self.caches = self.manager.list()
-            self.caches += [() for _ in range(len(self.data_list))]
+            self.caches += [() for _ in range(len(self.data_list_filter))]
 
     def __len__(self):
-        return len(self.data_list)
+        return len(self.data_list_filter)
 
     def __getitem__(self, index):
 
         if self.allow_cache and len(self.caches[index]) != 0:
             return self.caches[index][0], self.caches[index][1]
-
-        data_name = self.data_list[index]
-        dataset_name = self.data_pd.loc[index, 'dataset']
         
+        index = self.data_list_filter[index]
+        dataset_name = self.data_pd.loc[index, 'dataset']
+        data_name = self.data_pd.loc[index, 'unique_utterance']
+
         # wav
         wav_path = os.path.join(self.cfg.general.data_dir, 'dataset_audio_hdf5', dataset_name, data_name.split('.')[0] + '.h5')
         wav = read_hdf5(wav_path, "wave")
@@ -85,12 +86,13 @@ class VocoderWaveGanDataset(Dataset):
         return wav, mel
 
     def filter_by_threshold(self):
+        self.data_list = []
         self.data_list_filter = []
         audio_length_threshold = int(self.cfg.dataset.sampling_rate * self.cfg.dataset.clip_duration_ms / 1000)
 
-        for index in range(len(self.data_list)):
-            data_name = self.data_list[index]
+        for index, row in self.data_pd.iterrows():
             dataset_name = self.data_pd.loc[index, 'dataset']
+            data_name = self.data_pd.loc[index, 'unique_utterance']
 
             # wav
             wav_path = os.path.join(self.cfg.general.data_dir, 'dataset_audio_hdf5', dataset_name, data_name.split('.')[0] + '.h5')
@@ -99,6 +101,8 @@ class VocoderWaveGanDataset(Dataset):
 
             if wav_length > audio_length_threshold:
                 self.data_list_filter.append(index)
+
+            self.data_list.append(index)
 
         if len(self.data_list) != len(self.data_list_filter):
             print(f"[Warning] Some files are filtered by audio length threshold ({len(self.data_list)} -> {len(self.data_list_filter)}).")

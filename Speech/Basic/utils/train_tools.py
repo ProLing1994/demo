@@ -203,6 +203,17 @@ def update_scheduler(cfg, scheduler, epoch_idx):
         pass
 
 
+def load_state_dict(model_dir, epoch_num, sub_folder_name):
+
+    if epoch_num < 0:
+        epoch_num = last_checkpoint(os.path.join(model_dir, sub_folder_name))
+
+    chk_file = os.path.join(model_dir, sub_folder_name,
+                            'chk_{}'.format(epoch_num), 'parameter.pkl')
+    
+    state = torch.load(chk_file)
+    return state
+
 def load_checkpoint(net, 
                     load_mode_type, 
                     model_dir, epoch_num, sub_folder_name, 

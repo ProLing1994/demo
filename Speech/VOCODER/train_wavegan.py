@@ -70,8 +70,9 @@ def test(cfg, model, criterion, x, y, logger, epoch_idx, batch_idx):
         y_idx, y_idx_ = y_idx.view(-1).cpu().detach().numpy(), y_idx_.view(-1).cpu().detach().numpy()
         
         # 预加重
-        y_idx = audio.compute_de_emphasis(y_idx)
-        y_idx_ = audio.compute_de_emphasis(y_idx_)
+        if cfg.dataset.compute_mel_type == "fbank_preemphasis_log_manual":
+            y_idx = audio.compute_de_emphasis(y_idx)
+            y_idx_ = audio.compute_de_emphasis(y_idx_)
 
         # plot_figure
         figname = os.path.join(save_dir, "plot_step_{}_{}.png".format(epoch_idx, idx))
@@ -88,16 +89,17 @@ def test(cfg, model, criterion, x, y, logger, epoch_idx, batch_idx):
         # wav_target
         y_idx = np.clip(y_idx, -1, 1)
         wav_fpath = os.path.join(save_dir, "wav_target_step_{}_{}.wav".format(epoch_idx, idx))
-        sf.write(wav_fpath, y_idx, cfg.dataset.sample_rate, "PCM_16")
+        sf.write(wav_fpath, y_idx, cfg.dataset.sampling_rate, "PCM_16")
 
         # wav_forward
         y_idx_ = np.clip(y_idx_, -1, 1)
         wav_forward_fpath = os.path.join(save_dir, "wav_forward_step_{}_{}.wav".format(epoch_idx, idx))
-        sf.write(wav_forward_fpath, y_idx_, cfg.dataset.sample_rate, "PCM_16",)
+        sf.write(wav_forward_fpath, y_idx_, cfg.dataset.sampling_rate, "PCM_16",)
 
     # restore mode
     for key in model.keys():
         model[key].train()
+
 
 def train(args):
     """ training engine

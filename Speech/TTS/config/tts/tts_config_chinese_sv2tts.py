@@ -28,7 +28,7 @@ __C.general.dataset_path_dict = {
 __C.general.data_dir = "/mnt/huanyuan2/data/speech/tts/Chinese_dataset/"
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/test/"
+__C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/test/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_1_1_10232021/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_finetune_1_2_10232021/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_tacotron_singlespeaker_guaiding_4_2_10292021/"
@@ -38,7 +38,7 @@ __C.general.data_dir = "/mnt/huanyuan2/data/speech/tts/Chinese_dataset/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_mutilspeaker_prosody_py_1_0_11102021/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_mutilspeaker_prosody_py_1_1_11102021/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_mutilspeaker_prosody_py_1_2_11102021/"
-__C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_mutilspeaker_prosody_py_1_3_11102021/"
+# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_mutilspeaker_prosody_py_1_3_11102021/"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -161,6 +161,9 @@ __C.dataset.input_channel = 1
 # Sampling rate.
 __C.dataset.sampling_rate = 16000
 
+# Length of each audio clip to be analyzed
+__C.dataset.clip_duration_ms = 1600         # 1.6s
+
 # FFT size.
 __C.dataset.fft_size = 1024
 
@@ -182,8 +185,8 @@ __C.dataset.num_filts = 80
 # Minimum freq in mel basis calculation, only support preprocess ["fbank_log", "fbank_nopreemphasis_log_manual", "fbank_preemphasis_log_manual"]
 # Set this to 55 if your speaker is male! if female, 95 should help taking off noise. (To
 # test depending on dataset. Pitch info: male~[65, 260], female~[100, 525])
-# __C.dataset.fmin = 55
 __C.dataset.fmin = 80
+# __C.dataset.fmin = 55
 
 # Maximum frequency in mel basis calculation, only support preprocess ["fbank_log", "fbank_nopreemphasis_log_manual", "fbank_preemphasis_log_manual"]
 # To be increased/reduced depending on data.
@@ -204,6 +207,7 @@ __C.dataset.trim_hop_size = 512
 
 # compute mel type, support ["fbank", "fbank_log", "fbank_nopreemphasis_log_manual", "fbank_preemphasis_log_manual", "pcen", "fbank_cpu"]
 __C.dataset.compute_mel_type = "fbank_nopreemphasis_log_manual"
+# __C.dataset.compute_mel_type = "fbank_preemphasis_log_manual"
 
 # input size of training data (w, h), whether input size is a multiple of 16, unit: voxel
 # __C.dataset.h_alignment = True, [hisi], 模型需要图像输入长度为 16 的倍数
@@ -217,6 +221,10 @@ __C.dataset.data_size = [80, -1]
 # normalize
 # __C.dataset.normalize_bool = True
 __C.dataset.normalize_bool = False
+
+# allow_cache
+__C.dataset.allow_cache = True
+# __C.dataset.allow_cache = False
 
 # language
 __C.dataset.language = 'chinese'
@@ -236,8 +244,8 @@ __C.dataset.num_chars = len(symbols(__C.dataset.symbols_lang))
 __C.dataset.tts_cleaner_names = ["basic_cleaners"]
 
 # mutil speaker
-__C.dataset.mutil_speaker = True
-# __C.dataset.mutil_speaker = False
+# __C.dataset.mutil_speaker = True
+__C.dataset.mutil_speaker = False
 
 # speaker embedding, used in tacotron_old & tacotron2_old
 __C.dataset.speaker_embedding_size = 256
@@ -245,10 +253,6 @@ __C.dataset.speaker_embedding_size = 256
 
 # num_speakers
 __C.dataset.num_speakers = 166
-
-# allow_cache
-__C.dataset.allow_cache = True
-# __C.dataset.allow_cache = False
 
 
 ##################################
@@ -294,19 +298,19 @@ __C.net = {}
 # # r frames
 # __C.net.r = 2
 
-# # the network name
-# __C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/tts/tacotron2.py"
-# __C.net.class_name = "Tacotron2"
-# __C.net.loss_name = "Tacotron2Loss"
-# # r frames
-# __C.net.r = 2
-
 # the network name
-__C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/tts/tacotron2_speaker_id_embedding.py"
+__C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/tts/tacotron2.py"
 __C.net.class_name = "Tacotron2"
 __C.net.loss_name = "Tacotron2Loss"
 # r frames
 __C.net.r = 2
+
+# # the network name
+# __C.net.model_name = "/home/huanyuan/code/demo/Speech/TTS/network/tts/tacotron2_speaker_id_embedding.py"
+# __C.net.class_name = "Tacotron2"
+# __C.net.loss_name = "Tacotron2Loss"
+# # r frames
+# __C.net.r = 2
 
 
 ######################################
