@@ -1,4 +1,5 @@
 import builtins
+from distutils.version import LooseVersion
 import glob
 import importlib
 import numpy as np
@@ -8,9 +9,10 @@ import shutil
 import torch
 
 sys.path.insert(0, '/home/huanyuan/code/demo/common')
-# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/common')
 # sys.path.insert(0, '/yuanhuan/code/demo/common')
 from common.utils.python.file_tools import load_module_from_disk
+
+is_pytorch_17plus = LooseVersion(torch.__version__) >= LooseVersion("1.7")
 
 
 def load_cfg_file(config_file):
@@ -293,7 +295,12 @@ def save_checkpoint(cfg, config_file, net, optimizer, epoch_idx, batch_idx, outp
              'state_dict': net.state_dict(),
              'optimizer': optimizer.state_dict(),
              }
-    torch.save(state, filename)
+
+    if is_pytorch_17plus:
+        torch.save(state, filename, _use_new_zipfile_serialization=False)
+    else:
+        torch.save(state, filename)
+
     # 用于在单卡和cpu上加载模型
     # torch.save(net.cpu().module.state_dict(), os.path.join(chk_folder, 'net_parameter.pkl'))
     shutil.copy(config_file, os.path.join(chk_folder, 'config.py'))

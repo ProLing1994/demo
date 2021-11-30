@@ -210,7 +210,7 @@ def train(args):
 
         # Calculate loss
         predicits = (m1_hat, m2_hat, stop_pred, speaker_pred)
-        targets = (mels, stops, speaker_ids)
+        targets = (mels, mel_lengths, stops, speaker_ids)
         loss, m1_loss, m2_loss, stop_loss, speaker_loss = net_loss(predicits, targets)
         
         # Calculate guided_attn_loss

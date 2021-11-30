@@ -147,6 +147,7 @@ class Decoder(nn.Module):
         if inputs is not None:
             inputs = inputs.transpose(0, 1)
             T_decoder = inputs.size(0)
+            T_decoder = (T_decoder // self.r) * self.r
 
         # <GO> frames
         initial_input = encoder_outputs.data.new(B, self.mel_dim).zero_()
@@ -217,9 +218,6 @@ class Decoder(nn.Module):
         mel_outputs = torch.cat(mel_outputs, dim=1) # (B, T_decoder, mel_dim)
         attn_scores = torch.cat(attn_scores, dim=1) # (B, T_decoder/r, T_encoder)
         stop_tokens = torch.cat(stop_tokens, dim=1) # (B, T_decoder)
-
-        # Validation check
-        assert greedy or mel_outputs.size(1) == T_decoder
 
         return mel_outputs, stop_tokens, attn_scores
 
@@ -316,15 +314,42 @@ class Tacotron2(nn.Module):
 class Tacotron2Loss(nn.Module):
     def __init__(self, cfg):
         super(Tacotron2Loss, self).__init__()
-        del cfg
+        self.cfg = cfg
+        self.score_mask_value=-float("0.0")
 
     def forward(self, predicts, targets):
-        mel_target, stop_target, _ = targets
+        mel_target, mel_target_lengths, stop_target, _ = targets
+        mel_predict, mel_post_predict, stop_predict, _ = predicts
+
         mel_target.requires_grad = False
         stop_target.requires_grad = False
 
-        mel_predict, mel_post_predict, stop_predict, _ = predicts
+        # modify mod part of groundtruth
+        if self.cfg.net.r > 1:
+            assert mel_target_lengths.ge(self.cfg.net.r).all(), \
+                "Output length must be greater than or equal to reduction factor."
 
+            mel_target_lengths = mel_target_lengths.new([(olen // self.cfg.net.r) * self.cfg.net.r for olen in mel_target_lengths])
+            max_out = max(mel_target_lengths)
+
+            mel_target = mel_target[:, :, :max_out]
+            mel_post_predict = mel_post_predict[:, :, :max_out]
+            
+            stop_target = stop_target[:, :max_out]
+            stop_target = torch.scatter( stop_target, 1, (mel_target_lengths - 1).unsqueeze(1), 1.0 )
+        
+        # make mask and apply it
+        mask = mel_target.permute(0, 2, 1)
+        mask = get_mask_from_lengths(mask, mel_target_lengths).unsqueeze(1)
+        mel_target = mel_target.data.masked_fill_(mask, self.score_mask_value)
+        mel_predict = mel_predict.data.masked_fill_(mask, self.score_mask_value)
+        mel_post_predict = mel_post_predict.data.masked_fill_(mask, self.score_mask_value)
+        
+        mask = mask.squeeze(1)
+        stop_predict = stop_predict.data.masked_fill_(mask, self.score_mask_value)
+        stop_target = stop_target.data.masked_fill_(mask, self.score_mask_value)
+
+        # loss
         mel_loss = nn.MSELoss()(mel_predict, mel_target)
         post_loss = nn.MSELoss()(mel_post_predict, mel_target)
         stop_loss = nn.BCELoss()(stop_predict, stop_target)

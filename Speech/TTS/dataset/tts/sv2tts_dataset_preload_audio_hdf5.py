@@ -158,9 +158,6 @@ class SynthesizerCollater(object):
 
         # Mel spectrogram
         mel_lengths = [x[1].shape[1] for x in batch]
-        for idx in range(len(mel_lengths)):
-            if mel_lengths[idx] % self.cfg.net.r != 0:
-                mel_lengths[idx] += self.cfg.net.r - mel_lengths[idx] % self.cfg.net.r
         max_mel_length = max(mel_lengths)
 
         mel_pad_value = 0

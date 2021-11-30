@@ -7,7 +7,6 @@ import torch
 
 from torch.utils.data import Dataset
 
-# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
 # sys.path.insert(0, '/yuanhuan/code/demo/Speech/')
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 from Basic.dataset import audio
@@ -113,13 +112,13 @@ class SpeechDataset(Dataset):
 
         # load data
         if self.allow_cache and len(self.caches[index]) != 0:
-            data = self.caches[index][0]
+            data = self.caches[index]
         else:
             data = lmdb_tools.read_audio_lmdb(self.lmdb_env, audio_file)
             assert len(data) != 0, "[ERROR:] Something wronge about load data, please check"
 
             if self.allow_cache:
-                self.caches[index] = (data)
+                self.caches[index] = data
                 
         # data augmentation
         if audio_label == hparams.SILENCE_LABEL:
