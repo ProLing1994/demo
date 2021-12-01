@@ -17,7 +17,7 @@ def analysis_data_distribution(config_file):
     cfg = load_cfg_file(config_file)
 
     # init 
-    sample_rate = cfg.dataset.sample_rate
+    sampling_rate = cfg.dataset.sampling_rate
 
     # load data 
     data_pd = pd.read_csv(cfg.general.data_csv_path)
@@ -45,8 +45,8 @@ def analysis_data_distribution(config_file):
                 audio_length_list = []
                 file_list =  label_pd['file'].tolist()
                 for file_path in tqdm(file_list):
-                    audio_data = librosa.core.load(file_path, sr=sample_rate)[0]
-                    audio_length = int(len(audio_data) * 1000 / sample_rate)
+                    audio_data = librosa.core.load(file_path, sr=sampling_rate)[0]
+                    audio_length = int(len(audio_data) * 1000 / sampling_rate)
                     audio_length_list.append(audio_length)
 
                 data_length_dict[mode][label] = "{:.2f}".format(np.array(audio_length_list).sum() / 1000.0 / 3600.0)

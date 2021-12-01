@@ -172,13 +172,13 @@ def main():
     # show_roc(csv_list, color_list, linestyle_list, name_list, label_num, ignore_num)
 
     # xiaoan: 2 label 
-    csv_list = ["/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/dataset_1_8_infer_longterm_validation_augmentation_False_mean.csv",
-                "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/dataset_1_9_infer_longterm_validation_augmentation_False_mean.csv",
-                "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/dataset_1_8_infer_longterm_validation_augmentation_False_mean.csv",
-                "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/dataset_1_9_infer_longterm_validation_augmentation_False_mean.csv"]
+    csv_list = ["/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/dataset_1_9_infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/dataset_1_10_infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_3_tc-resnet14-hisi_fbankcpu_kd_11222021/dataset_1_9_infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_3_tc-resnet14-hisi_fbankcpu_kd_11222021/dataset_1_10_infer_longterm_validation_augmentation_False_mean.csv"]
     color_list = ["r", "r", "b", "b"]
     linestyle_list = ["-", "--", "-", "--"]
-    name_list = ["xiaoan8k-res15(3.1)--dataset(1.8)", "xiaoan8k-tcresnet14(3.1)--dataset(1.9)", "xiaoan8k-res15-64(3.2)--dataset(1.8)", "xiaoan8k-tcresnet14-64(3.2)--dataset(1.9)",]
+    name_list = ["xiaoan8k-res15(3.2)--dataset(1.9)", "xiaoan8k-tcresnet14(3.2)--dataset(1.10)", "xiaoan8k-res15-64(3.3)--dataset(1.9)", "xiaoan8k-tcresnet14-64(3.3)--dataset(1.10)",]
     label_num = 2
     ignore_num= 1
     show_roc(csv_list, color_list, linestyle_list, name_list, label_num, ignore_num)

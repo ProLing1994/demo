@@ -8,7 +8,6 @@ from torch.utils.data import Dataset, DataLoader
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/yuanhuan/code/demo/Speech')
-# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
 from Basic.config import hparams
 from Basic.dataset import audio
 from Basic.utils.hdf5_tools import *
@@ -160,7 +159,7 @@ class SynthesizerCollater(object):
         mel_lengths = [x[1].shape[1] for x in batch]
         max_mel_length = max(mel_lengths)
 
-        mel_pad_value = 0
+        mel_pad_value = -5.0
         mels = [pad2d(x[1], max_mel_length, pad_value=mel_pad_value) for x in batch]
         mels = np.stack(mels)           # shape: [b, mel_f, mel_t]
         

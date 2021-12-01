@@ -29,14 +29,16 @@ __C.general.data_dir = "/mnt/huanyuan2/data/speech/tts/Chinese_dataset/"
 # __C.general.data_dir = "/yuanhuan/data/speech/tts/Chinese_dataset/"
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/test/"
+# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/test/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_1_1_10232021/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_finetune_1_2_10232021/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_tacotron_singlespeaker_guaiding_4_2_10292021/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron_BahdanauAttention_singlespeaker_prosody_py_1_0_11092021/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron_lsa_singlespeaker_prosody_py_2_1_11092021/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_0_11102021/"
-# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_1_diff_feature_11292021/"          # 采用了不同的特征进行实验，与 vocoder 特征保持一致
+# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_1_diff_feature_11292021/"                # 采用了不同的特征进行实验，与 vocoder 特征保持一致
+# __C.general.save_dir = "/mnt/huanyuan/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_2_diff_feature_11292021/"               # 采用了不同的特征进行实验，与 vocoder 特征保持一致，改进 stop 预测位置
+__C.general.save_dir = "/mnt/huanyuan/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_3_diff_feature_11292021/"               # 采用了不同的特征进行实验，与 vocoder 特征保持一致，改进 stop 预测位置，静音处优化
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_mutilspeaker_prosody_py_1_0_11102021/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_mutilspeaker_prosody_py_1_1_11102021/"
 # __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_mutilspeaker_prosody_py_1_2_11102021/"
@@ -323,23 +325,26 @@ __C.net.r = 2
 __C.train = {}
 
 # the number of training epochs
-# __C.train.num_epochs = 128 * 4
+# __C.train.num_epochs = 1000
 __C.train.num_epochs = 10
 
 # the number of samples in a batch
-# __C.train.batch_size = 16
+# __C.train.batch_size = 128 * 4
 __C.train.batch_size = 2
 
 # the number of threads for IO
+# __C.train.num_threads = 2
 __C.train.num_threads = 1
 
 # the number of batches to show log
 __C.train.show_log = 5
 
 # the number of batches to update loss curve
+# __C.train.plot_snapshot = 5
 __C.train.plot_snapshot = 1
 
 # the number of epochs to save model
+# __C.train.save_epochs = 25
 __C.train.save_epochs = 1
 
 

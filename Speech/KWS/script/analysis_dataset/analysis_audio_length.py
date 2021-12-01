@@ -33,7 +33,7 @@ def analysis_audio_length(config_file):
     cfg = load_cfg_file(config_file)
 
     # init 
-    sample_rate = cfg.dataset.sample_rate
+    sampling_rate = cfg.dataset.sampling_rate
     data_dir = cfg.general.data_dir
     output_dir = os.path.join(os.path.dirname(cfg.general.data_csv_path), 'data_distribution')
     if not os.path.isdir(output_dir):
@@ -50,8 +50,8 @@ def analysis_audio_length(config_file):
 
         audio_length_list = []
         for file_path in tqdm(file_list):
-            audio_data = librosa.core.load(file_path, sr=sample_rate)[0]
-            audio_length = int(len(audio_data) * 1000 / sample_rate)
+            audio_data = librosa.core.load(file_path, sr=sampling_rate)[0]
+            audio_length = int(len(audio_data) * 1000 / sampling_rate)
             audio_length_list.append(audio_length)
             # if audio_length > 4000:
             #     print(file_path)

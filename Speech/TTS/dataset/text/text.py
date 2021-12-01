@@ -3,7 +3,6 @@ import sys
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/yuanhuan/code/demo/Speech')
-# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
 from TTS.dataset.text.pinyin import pinyin_to_symbols
 from TTS.dataset.text.symbols import symbols
 from TTS.dataset.text import cleaners

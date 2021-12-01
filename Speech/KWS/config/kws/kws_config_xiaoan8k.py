@@ -25,26 +25,26 @@ __C.general.version = "1.10"     # 困难样本挖掘（实车误报）
 __C.general.date = "11112021"
 
 # data path
-# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.8_05202021/total_data_files.csv"
-# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_9_10262021/total_data_files.csv"
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_10_11112021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.8_05202021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_9_10262021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_10_11112021/total_data_files.csv"
 
 # background noise path
-# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.8_05202021/background_noise_files.csv"
-# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_9_10262021/background_noise_files.csv"
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_10_11112021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.8_05202021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_9_10262021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_10_11112021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 # __C.general.is_test = False
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan2/model/kws/kws_xiaoan/test"
-# __C.general.save_dir = "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_1_10_res15_fbankcpu_041262021/"
-# __C.general.save_dir = "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_1_11_res15_fbankcpu_10262021/"
-# __C.general.save_dir = "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/"
-# __C.general.save_dir = "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/"
-__C.general.save_dir = "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_3_3_tc-resnet14-hisi_fbankcpu_kd_11222021/"            # 实车误报迭代版本，降低误报率
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/test"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_1_10_res15_fbankcpu_041262021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_1_11_res15_fbankcpu_10262021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/"
+__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_3_tc-resnet14-hisi_fbankcpu_kd_11222021/"            # 实车误报迭代版本，降低误报率
 
 # finetune model
 __C.general.finetune_on = False
@@ -133,29 +133,29 @@ __C.dataset = {}
 # the number of input channel, currently only support 1 channel input
 __C.dataset.input_channel = 1
 
-# Number of audio samples per second
-__C.dataset.sample_rate = 8000
+# Sampling rate.
+__C.dataset.sampling_rate = 8000
 
 # Length of each audio clip to be analyzed
 __C.dataset.clip_duration_ms = 1500
 
-# Duration of frequency analysis window
-__C.dataset.window_size_ms = 32.0
+# FFT size.
+__C.dataset.fft_size = 256
 
-# How far to move in time between frequency windows
-__C.dataset.window_stride_ms = 10.0
+# Hop size.
+__C.dataset.hop_size = 80
 
-# How the spectrogram is processed to produce features, support ["mfcc", "pcen", "fbank", "fbank_cpu"]
-# __C.dataset.preprocess = "fbank"
-# __C.dataset.preprocess = "pcen"
-# __C.dataset.preprocess = "mfcc"
-__C.dataset.preprocess = "fbank_cpu"
+# Window length.
+__C.dataset.win_length = 256
 
-# How many bins to use for the Mel feature
-__C.dataset.feature_bin_count = 48
+# Window function.
+__C.dataset.window = "hann"
 
-# How many nfilt to use for the Mel feature, only support preprocess = fbank_cpu
-__C.dataset.nfilt = 48
+# Number of mel basis.
+__C.dataset.num_mels = 48
+
+# How many nfilt to use for the Mel feature, only support preprocess ["fbank_cpu"]
+__C.dataset.num_filts = 48
 
 # fmin, only support preprocess ["fbank_log", "fbank_preemphasis_log_manual"]
 # Set this to 55 if your speaker is male! if female, 95 should help taking off noise. (To 
@@ -166,6 +166,22 @@ __C.dataset.fmin = None
 # To be increased/reduced depending on data.
 __C.dataset.fmax = None
 
+# trim silence：Whether to trim the start and end of silence
+# __C.dataset.trim_silence = True
+__C.dataset.trim_silence = False
+
+# Need to tune carefully if the recording is not good.
+__C.dataset.trim_threshold_in_db = 60
+
+# Frame size in trimming.
+__C.dataset.trim_frame_size = 2048
+
+# Hop size in trimming.
+__C.dataset.trim_hop_size = 512
+
+# compute mel type, support ["fbank", "fbank_log", "fbank_nopreemphasis_log_manual", "fbank_preemphasis_log_manual", "pcen", "fbank_cpu"]
+__C.dataset.compute_mel_type = "fbank_cpu"
+
 # input size of training data (w, h), whether input size is a multiple of 16, unit: voxel
 # __C.dataset.h_alignment = True, [hisi], 模型需要图像输入长度为 16 的倍数
 # __C.dataset.h_alignment = False, [amba, novt]
@@ -174,6 +190,10 @@ __C.dataset.h_alignment = False
 
 # input size of training data (w, h), unit: voxel
 __C.dataset.data_size = [48, 146]
+
+# allow_cache
+__C.dataset.allow_cache = True
+# __C.dataset.allow_cache = False
 
 
 ##################################

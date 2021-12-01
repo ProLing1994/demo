@@ -27,10 +27,10 @@ def test(in_args):
     cfg = load_cfg_file(args.config_file)
 
     # init
-    sample_rate = cfg.dataset.sample_rate
+    sampling_rate = cfg.dataset.sampling_rate
     clip_duration_ms = cfg.dataset.clip_duration_ms
-    desired_samples = int(sample_rate * clip_duration_ms / 1000)
-    timeshift_samples = int(sample_rate * cfg.test.timeshift_ms / 1000)
+    desired_samples = int(sampling_rate * clip_duration_ms / 1000)
+    timeshift_samples = int(sampling_rate * cfg.test.timeshift_ms / 1000)
     label_list = cfg.dataset.label.label_list
     positive_label = cfg.dataset.label.positive_label
     positive_label_together = cfg.dataset.label.positive_label_together
@@ -123,7 +123,7 @@ def test(in_args):
     net.eval()
 
     # load data
-    audio_data = librosa.core.load(input_wav, sr=sample_rate)[0]
+    audio_data = librosa.core.load(input_wav, sr=sampling_rate)[0]
 
     # alignment data, 模拟长时语音
     if len(audio_data) < 6 * desired_samples:
@@ -159,7 +159,7 @@ def test(in_args):
         model_predict_time_list.append(model_predict_end_time - model_predict_start_time)
 
         # process result
-        current_time_ms = int(input_start * 1000 / sample_rate)
+        current_time_ms = int(input_start * 1000 / sampling_rate)
         recognize_commands.process_latest_result(output_score, current_time_ms, recognize_element)
 
         if recognize_element.is_new_command:
@@ -173,10 +173,10 @@ def test(in_args):
 
             if bool_write_audio:
                 output_path = os.path.join(output_dir, 'label_{}_starttime_{}.wav'.format(all_found_words_dict['label'], all_found_words_dict['start_time']))
-                start_time = int(sample_rate * all_found_words_dict['start_time'] / 1000)
-                end_time = int(sample_rate * all_found_words_dict['end_time'] / 1000)
+                start_time = int(sampling_rate * all_found_words_dict['start_time'] / 1000)
+                end_time = int(sampling_rate * all_found_words_dict['end_time'] / 1000)
                 output_wav = audio_data[start_time: end_time]
-                audio.save_wav(output_wav, output_path, sample_rate)
+                audio.save_wav(output_wav, output_path, sampling_rate)
 
         csv_original_scores.append({'start_time':current_time_ms, 'score':",".join([str(output_score[0][idx]) for idx in range(output_score.shape[1])])})
         csv_final_scores.append({'start_time':current_time_ms, 'score':recognize_element.score})
@@ -235,10 +235,10 @@ def main():
     #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
     
     # xiaoan8k
-    default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_training_60.wav",
-                                "/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_1_04082021_validation_60.wav"]
-    # default_input_wav_list = ["/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_3_04152021_validation.wav",
-    #                         "/mnt/huanyuan/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan2/model/test_straming_wav/xiaoan8k_1_1_04082021_training_60.wav",
+    #                             "/mnt/huanyuan2/model/test_straming_wav/xiaoan8k_1_1_04082021_validation_60.wav"]
+    default_input_wav_list = ["/mnt/huanyuan2/model/test_straming_wav/xiaoan8k_1_3_04152021_validation.wav",
+                            "/mnt/huanyuan2/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
     # xiaoa16k
     # default_input_wav_list = ['/mnt/huanyuan/model/test_straming_wav/xiaoan16k_2_1_04082021_training_60.wav',
@@ -319,9 +319,9 @@ def main():
     # default_output_subfolder_name = "海外同事录制_0425/阈值_05_05/路边场景"
 
     # xiaoan
-    # default_input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/更新漏标注数据处理/"
+    # default_input_folder = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/更新漏标注数据处理/"
     # default_output_subfolder_name = "实车录制_0427_pytorch/阈值_05_05/货车怠速场景/"
-    default_input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/噪音录音/"
+    default_input_folder = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/噪音录音/"
     default_output_subfolder_name = "实车录制_0427_pytorch/阈值_05_05/其他录音/"
 
     # config file
@@ -358,7 +358,9 @@ def main():
     # default_config_file = "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/kws_config_xiaoan8k_api.py"
     # default_config_file = "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/kws_config_xiaoan8k_api_0_5.py"
     # default_config_file = "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/kws_config_xiaoan8k.py"
-    default_config_file = "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/kws_config_xiaoan8k_api_0_5.py"
+    # default_config_file = "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/kws_config_xiaoan8k_api_0_5.py"
+    # default_config_file = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_3_tc-resnet14-hisi_fbankcpu_kd_11222021/kws_config_xiaoan8k.py"
+    default_config_file = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_3_tc-resnet14-hisi_fbankcpu_kd_11222021/kws_config_xiaoan8k_api_0_5.py"
     
     # xiaorui 
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_5_0_tc-resnet14-amba_fbankcpu_kd_04302021/kws_config_xiaorui_api.py"

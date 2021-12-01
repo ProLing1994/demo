@@ -315,7 +315,6 @@ class Tacotron2Loss(nn.Module):
     def __init__(self, cfg):
         super(Tacotron2Loss, self).__init__()
         self.cfg = cfg
-        self.score_mask_value=-float("0.0")
 
     def forward(self, predicts, targets):
         mel_target, mel_target_lengths, stop_target, _ = targets
@@ -333,21 +332,9 @@ class Tacotron2Loss(nn.Module):
             max_out = max(mel_target_lengths)
 
             mel_target = mel_target[:, :, :max_out]
-            mel_post_predict = mel_post_predict[:, :, :max_out]
             
             stop_target = stop_target[:, :max_out]
             stop_target = torch.scatter( stop_target, 1, (mel_target_lengths - 1).unsqueeze(1), 1.0 )
-        
-        # make mask and apply it
-        mask = mel_target.permute(0, 2, 1)
-        mask = get_mask_from_lengths(mask, mel_target_lengths).unsqueeze(1)
-        mel_target = mel_target.data.masked_fill_(mask, self.score_mask_value)
-        mel_predict = mel_predict.data.masked_fill_(mask, self.score_mask_value)
-        mel_post_predict = mel_post_predict.data.masked_fill_(mask, self.score_mask_value)
-        
-        mask = mask.squeeze(1)
-        stop_predict = stop_predict.data.masked_fill_(mask, self.score_mask_value)
-        stop_target = stop_target.data.masked_fill_(mask, self.score_mask_value)
 
         # loss
         mel_loss = nn.MSELoss()(mel_predict, mel_target)

@@ -13,7 +13,6 @@ import webrtcvad
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/')
 # sys.path.insert(0, '/yuanhuan/code/demo/Speech')
-# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
 from ASR.impl.asr_feature_pyimpl import Feature
 
 from Basic.config import hparams

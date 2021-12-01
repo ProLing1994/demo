@@ -116,9 +116,9 @@ def longterm_audio_predict(cfg, net, lmdb_env, audio_file, audio_mode, audio_lab
     # init 
     input_dir = os.path.join(os.path.dirname(cfg.general.data_csv_path), 'dataset_audio', audio_mode)
     input_dir = os.path.join(input_dir, audio_label)
-    sample_rate = cfg.dataset.sample_rate
+    sampling_rate = cfg.dataset.sampling_rate
     clip_duration_ms = cfg.dataset.clip_duration_ms
-    desired_samples = int(sample_rate * clip_duration_ms / 1000)
+    desired_samples = int(sampling_rate * clip_duration_ms / 1000)
 
     # load data
     data = read_audio_lmdb(lmdb_env, audio_file)
@@ -130,7 +130,7 @@ def longterm_audio_predict(cfg, net, lmdb_env, audio_file, audio_mode, audio_lab
 
     # align data：基于帧对齐模式，保证语音时间足够长，便于后续测试
     if align_bool:
-        timeshift_samples = int(sample_rate * timeshift_ms / 1000)
+        timeshift_samples = int(sampling_rate * timeshift_ms / 1000)
         desired_data_samples = desired_samples + 100 * timeshift_samples
         data = np.pad(data, (max(0, (desired_data_samples - data_length)//2), 0), "constant")
         data = np.pad(data, (0, max(0, (desired_data_samples - data_length + 1)//2)), "constant")
@@ -143,7 +143,7 @@ def longterm_audio_predict(cfg, net, lmdb_env, audio_file, audio_mode, audio_lab
     # 基于滑窗的方式，获得数据列表
     data_list = []
     if len(data) > desired_samples:
-        timeshift_samples = int(sample_rate * timeshift_ms / 1000)
+        timeshift_samples = int(sampling_rate * timeshift_ms / 1000)
         data_number = 1 + (len(data) - desired_samples) // timeshift_samples
         for data_idx in range(data_number):
             data_list.append(data[timeshift_samples * data_idx: timeshift_samples * data_idx + desired_samples])

@@ -10,29 +10,33 @@ cfg = __C
 
 __C.general = {}
 
-__C.general.data_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/"
+__C.general.data_dir = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/"
 __C.general.sub_data_dir = []
 
 # data version
-__C.general.version = "2.1"     # 小安小安音频 + 困难样本挖掘（运用 AmSoftmax 思想，增大正负样本之间的差异）
+# __C.general.version = "2.1"     # 小安小安音频 + 困难样本挖掘（运用 AmSoftmax 思想，增大正负样本之间的差异），3s 音频
+__C.general.version = "2.2"     # 小安小安音频 + 困难样本挖掘（运用 AmSoftmax 思想，增大正负样本之间的差异），2s 音频
 
 # data date
-__C.general.date = "11132021"
+# __C.general.date = "11132021"
+__C.general.date = "12012021"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_3s_2_1_11112021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_3s_2_1_11112021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_1_12012021/total_data_files.csv"
 
 # background noise path
-__C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_3s_2_1_11112021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_3s_2_1_11112021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_1_12012021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 # __C.general.is_test = False
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan2/model/kws/kws_xiaoan/test"
-# __C.general.save_dir = "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/"
-# __C.general.save_dir = "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_4_0_3s_tc-resnet14-hisi_fbankcpu_kd_11232021/"
+__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/test"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_4_0_3s_tc-resnet14-hisi_fbankcpu_kd_11232021/"
 
 # finetune model
 __C.general.finetune_on = False
@@ -124,7 +128,8 @@ __C.dataset.input_channel = 1
 __C.dataset.sampling_rate = 8000
 
 # Length of each audio clip to be analyzed
-__C.dataset.clip_duration_ms = 3000         # 3s
+# __C.dataset.clip_duration_ms = 3000         # 3s
+__C.dataset.clip_duration_ms = 2000         # 2s
 
 # FFT size.
 __C.dataset.fft_size = 256
@@ -199,9 +204,9 @@ __C.dataset.label.negative_label_together = True
 __C.dataset.label.negative_label_together_label = ["negative"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
 __C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[1]
-__C.dataset.label.ignore_label = ['movie', 'nihaoxiaoan_8k', 'nihaoxiaoan_16k', 'truck_platform_alarm_8k', 'truck_truckidling_noise_8k', 'truck_truckidling_noise_16k', 'weibo_8k',
+__C.dataset.label.ignore_label = ['movie', 'nihaoxiaoan_8k', 'nihaoxiaoan_16k', 'truck_truckidling_noise_16k',
                                     'xiaoanxiaoan_8k_once', 'xiaoanxiaoan_8k_over_long', 'xiaoanxiaoan_8k_small_voice', 'xiaoanxiaoan_16k', 'xiaoanxiaoan_16k_once', 'xiaoanxiaoan_16k_over_long',
-                                    'xiaoanxiaoan_16k_small_voice', 'zanghuayulu_8k', 'zanghuayulu_16k']
+                                    'xiaoanxiaoan_16k_small_voice', 'zanghuayulu_16k']
 __C.dataset.label.label_list = __C.dataset.label.negative_label + __C.dataset.label.positive_label
 __C.dataset.label.num_classes = 2
 
@@ -245,10 +250,12 @@ __C.dataset.augmentation.synthetic_scale = 0.001
 __C.dataset.augmentation.synthetic_prob = 0.001
 
 # Range to randomly shift the training audio by in time(ms).
-__C.dataset.augmentation.time_shift_ms = 500.0
+# __C.dataset.augmentation.time_shift_ms = 500.0
+__C.dataset.augmentation.time_shift_ms = 100.0
 
 # Time shift enhancement multiple of negative samples, which is effective for advanced prediction and lag prediction
-__C.dataset.augmentation.time_shift_multiple = 1
+# __C.dataset.augmentation.time_shift_multiple = 1
+__C.dataset.augmentation.time_shift_multiple = 10
 
 # based on audio waveform: on.
 __C.dataset.augmentation.speed_volume_on = True
@@ -369,7 +376,8 @@ __C.loss.ema_alpha = 0.995
 __C.net = {}
 
 # the network name
-__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-296.py"
+# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-296.py"
+__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-196.py"
 __C.net.class_name = "SpeechResModel"
 
 ######################################

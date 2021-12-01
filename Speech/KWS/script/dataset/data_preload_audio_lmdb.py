@@ -29,9 +29,9 @@ def general_lmdb(cfg, lmdb_path, data_pd):
         return 
 
     # init
-    sample_rate = cfg.dataset.sample_rate
+    sampling_rate = cfg.dataset.sampling_rate
     clip_duration_ms = cfg.dataset.clip_duration_ms
-    desired_samples = int(sample_rate * clip_duration_ms / 1000)
+    desired_samples = int(sampling_rate * clip_duration_ms / 1000)
 
     file_list = data_pd['file'].tolist()
     label_list = data_pd['label'].tolist()
@@ -43,7 +43,7 @@ def general_lmdb(cfg, lmdb_path, data_pd):
     if label_list[0] == hparams.SILENCE_LABEL:
         data_size_per_audio = np.zeros(desired_samples, dtype=np.float32).nbytes
     else:
-        data_size_per_audio = librosa.core.load(file_list[0], sr=sample_rate)[0].nbytes
+        data_size_per_audio = librosa.core.load(file_list[0], sr=sampling_rate)[0].nbytes
     print('[Information] data size per audio is: ', data_size_per_audio)
     data_size = data_size_per_audio * len(file_list)
     
@@ -64,7 +64,7 @@ def general_lmdb(cfg, lmdb_path, data_pd):
         if file_label == hparams.SILENCE_LABEL:
             data = np.zeros(desired_samples, dtype=np.float32)
         else:
-            data = librosa.core.load(file_path, sr=sample_rate)[0]
+            data = librosa.core.load(file_path, sr=sampling_rate)[0]
         txn.put(key_byte, data)
 
         if (idx + 1) % args.commit_interval == 0:
@@ -110,7 +110,7 @@ def preload_background_audio_lmdb():
     cfg = load_cfg_file(args.config_file)
 
     # init
-    sample_rate = cfg.dataset.sample_rate
+    sampling_rate = cfg.dataset.sampling_rate
 
     # mkdir
     output_dir = os.path.join(os.path.dirname(cfg.general.data_csv_path), 'dataset_audio_lmdb')

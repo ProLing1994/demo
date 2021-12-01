@@ -22,6 +22,7 @@ from TTS.utils.tts.infer_tools import *
 
 
 sys.path.insert(0, '/home/huanyuan/code/demo/common')
+# sys.path.insert(0, '/yuanhuan/code/demo/common')
 from common.utils.python.logging_helpers import setup_logger
 
 

@@ -5,7 +5,6 @@ import torch
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/yuanhuan/code/demo/Speech')
-# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
 from Basic.config import hparams
 from Basic.dataset import audio 
 from Basic.dataset import dataset_augmentation

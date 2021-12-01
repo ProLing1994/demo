@@ -117,8 +117,8 @@ def cal_fpr_tpr(src_csv, pst_csv, positive_label_list, bool_write_audio):
 
     if bool_write_audio:
         # load data
-        sample_rate = 16000
-        audio_data = librosa.core.load(src_csv.split('.')[0] + '.wav', sr=sample_rate)[0]
+        sampling_rate = 16000
+        audio_data = librosa.core.load(src_csv.split('.')[0] + '.wav', sr=sampling_rate)[0]
 
         # mkdirs
         output_dir = os.path.join(os.path.dirname(pst_csv), 'audio_result')
@@ -132,10 +132,10 @@ def cal_fpr_tpr(src_csv, pst_csv, positive_label_list, bool_write_audio):
                 os.makedirs(output_subdir)
 
             output_path = os.path.join(output_subdir, 'label_{}_starttime_{}.wav'.format(fn_case['label'], fn_case['start_time']))
-            start_time = int(sample_rate * fn_case['start_time'] / 1000)
-            end_time = int(sample_rate * fn_case['end_time'] / 1000)
+            start_time = int(sampling_rate * fn_case['start_time'] / 1000)
+            end_time = int(sampling_rate * fn_case['end_time'] / 1000)
             output_wav = audio_data[start_time: end_time]
-            audio.save_wav(output_wav, output_path, sr=sample_rate)
+            audio.save_wav(output_wav, output_path, sampling_rate=sampling_rate)
 
         for fp_case in fp_list:
             # mkdirs
@@ -144,10 +144,10 @@ def cal_fpr_tpr(src_csv, pst_csv, positive_label_list, bool_write_audio):
                 os.makedirs(output_subdir)
                 
             output_path = os.path.join(output_subdir, 'label_{}_starttime_{}.wav'.format(fp_case['label'], fp_case['start_time']))
-            start_time = int(sample_rate * fp_case['start_time'] / 1000)
-            end_time = int(sample_rate * fp_case['end_time'] / 1000)
+            start_time = int(sampling_rate * fp_case['start_time'] / 1000)
+            end_time = int(sampling_rate * fp_case['end_time'] / 1000)
             output_wav = audio_data[start_time: end_time]
-            audio.save_wav(output_wav, output_path, sr=sample_rate)
+            audio.save_wav(output_wav, output_path, sampling_rate=sampling_rate)
 
         for double_matched_case in double_matched_list:
             # mkdirs
@@ -156,10 +156,10 @@ def cal_fpr_tpr(src_csv, pst_csv, positive_label_list, bool_write_audio):
                 os.makedirs(output_subdir)
                 
             output_path = os.path.join(output_subdir, 'label_{}_starttime_{}.wav'.format(double_matched_case['label'], double_matched_case['start_time']))
-            start_time = int(sample_rate * double_matched_case['start_time'] / 1000)
-            end_time = int(sample_rate * double_matched_case['end_time'] / 1000)
+            start_time = int(sampling_rate * double_matched_case['start_time'] / 1000)
+            end_time = int(sampling_rate * double_matched_case['end_time'] / 1000)
             output_wav = audio_data[start_time: end_time]
-            audio.save_wav(output_wav, output_path, sr=sample_rate)
+            audio.save_wav(output_wav, output_path, sampling_rate=sampling_rate)
 
         for unmatched_case in unmatched_list:
             # mkdirs
@@ -168,10 +168,10 @@ def cal_fpr_tpr(src_csv, pst_csv, positive_label_list, bool_write_audio):
                 os.makedirs(output_subdir)
                 
             output_path = os.path.join(output_subdir, 'label_{}_starttime_{}.wav'.format(unmatched_case['label'], unmatched_case['start_time']))
-            start_time = int(sample_rate * unmatched_case['start_time'] / 1000)
-            end_time = int(sample_rate * unmatched_case['end_time'] / 1000)
+            start_time = int(sampling_rate * unmatched_case['start_time'] / 1000)
+            end_time = int(sampling_rate * unmatched_case['end_time'] / 1000)
             output_wav = audio_data[start_time: end_time]
-            audio.save_wav(output_wav, output_path, sr=sample_rate)
+            audio.save_wav(output_wav, output_path, sampling_rate=sampling_rate)
 
     return tn, fp, fn, tp
 
@@ -242,12 +242,12 @@ if __name__ == "__main__":
     #             bool_write_audio)
 
     # xiaoan8k
-    # cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/xiaoan8k_1_3_04152021_validation.csv",
-    #             "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/test_straming_wav/xiaoan8k_1_3_04152021_validation_threshold_0_5/found_words.csv",
+    # cal_fpr_tpr("/mnt/huanyuan2/model/test_straming_wav/xiaoan8k_1_3_04152021_validation.csv",
+    #             "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_3_tc-resnet14-hisi_fbankcpu_kd_11222021/test_straming_wav/xiaoan8k_1_3_04152021_validation_threshold_0_5/found_words.csv",
     #             ["xiaoanxiaoan_8k", "xiaoanxiaoan_16k"],
     #             bool_write_audio)
-    cal_fpr_tpr_per_folder("/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/更新漏标注数据处理/",
-                            "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/test_straming_wav/实车录制_0427_pytorch/阈值_05_05/货车怠速场景/",
+    cal_fpr_tpr_per_folder("/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/更新漏标注数据处理/",
+                            "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_3_tc-resnet14-hisi_fbankcpu_kd_11222021/test_straming_wav/实车录制_0427_pytorch/阈值_05_05/货车怠速场景/",
                             # ["_adpro"],
                             # ["_mic"],
                             # ["danbin_ori"],
