@@ -5,19 +5,19 @@ from torch.utils.data import Dataset, DataLoader
 from sklearn.preprocessing import StandardScaler
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-#  sys.path.insert(0, '/yuanhuan/code/demo/Speech')
-# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
+# sys.path.insert(0, '/yuanhuan/code/demo/Speech')
 from Basic.utils.hdf5_tools import *
 
 from TTS.dataset.tts.sv2tts_dataset_preload_audio_lmdb import load_data_pd
 
 
 class VocoderWaveGanDataset(Dataset):
-    def __init__(self, cfg, mode, augmentation_on=True):
+    def __init__(self, cfg, mode, augmentation_on=True, bool_return_name=False):
         # init
         self.cfg = cfg
         self.mode = mode
         self.augmentation_on = augmentation_on
+        self.bool_return_name = bool_return_name
         self.hop_size = self.cfg.dataset.hop_size
         self.allow_cache = self.cfg.dataset.allow_cache
 
@@ -61,7 +61,7 @@ class VocoderWaveGanDataset(Dataset):
         wav_path = os.path.join(self.cfg.general.data_dir, 'dataset_audio_hdf5', dataset_name, data_name.split('.')[0] + '.h5')
         wav = read_hdf5(wav_path, "wave")
 
-        # mel
+        # mel (T, C)
         mel = read_hdf5(wav_path, "feats")
 
         # normalize
@@ -83,7 +83,10 @@ class VocoderWaveGanDataset(Dataset):
         if self.allow_cache:
             self.caches[index] = (wav, mel)
 
-        return wav, mel
+        if not self.bool_return_name:
+            return wav, mel
+        else:
+            return wav, mel, data_name
 
     def filter_by_threshold(self):
         self.drop_index_list = []

@@ -8,10 +8,10 @@ sys.path.insert(0, '/home/huanyuan/code/demo/common')
 from common.utils.python.train_tools import EpochConcateSampler
 from common.utils.python.plotly_tools import plot_loss2d, plot_loss
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/TTS')
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/yuanhuan/code/demo/Speech')
-# from dataset.tts.sv2tts_dataset_preload_audio_lmdb import SynthesizerDataset, SynthesizerDataLoader
-from dataset.tts.sv2tts_dataset_preload_audio_hdf5 import SynthesizerDataset, SynthesizerCollater
+# from TTS.dataset.tts.sv2tts_dataset_preload_audio_lmdb import SynthesizerDataset, SynthesizerDataLoader
+from TTS.dataset.tts.sv2tts_dataset_preload_audio_hdf5 import SynthesizerDataset, SynthesizerCollater
 
 
 def generate_dataset_lmdb(cfg, mode):

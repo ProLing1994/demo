@@ -129,7 +129,7 @@ class SpeechResModel(nn.Module):
             return embedding
         elif self.method == 'classification & embedding':
             embedding = self.conv3(out)                                           # shape: (batch, 120, 5, 1) -> shape: (batch, 128, 1, 1)
-            out = self.conv4(embedding)                                           # shape: (batch, 120, 1, 1) -> shape: (batch, 2, 1, 1)
+            out = self.conv4(embedding)                                           # shape: (batch, 128, 1, 1) -> shape: (batch, 2, 1, 1)
             return embedding, out
         else:
             raise Exception("[Unknow:] cfg.loss.method. ")

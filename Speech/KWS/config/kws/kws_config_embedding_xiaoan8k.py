@@ -15,7 +15,7 @@ __C.general.sub_data_dir = []
 
 # data version
 # __C.general.version = "2.1"     # 小安小安音频 + 困难样本挖掘（运用 AmSoftmax 思想，增大正负样本之间的差异），3s 音频
-__C.general.version = "2.2"     # 小安小安音频 + 困难样本挖掘（运用 AmSoftmax 思想，增大正负样本之间的差异），2s 音频
+__C.general.version = "3.1"     # 小安小安音频 + 8k 负样本音频 + 困难样本挖掘（运用 AmSoftmax 思想，增大正负样本之间的差异），2s 音频
 
 # data date
 # __C.general.date = "11132021"
@@ -34,7 +34,8 @@ __C.general.is_test = True
 # __C.general.is_test = False
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/test"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/test"
+__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/test_embedding"
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_4_0_3s_tc-resnet14-hisi_fbankcpu_kd_11232021/"
 
@@ -181,7 +182,7 @@ __C.dataset.w_alignment = False
 __C.dataset.h_alignment = False
 
 # input size of training data (w, h), unit: voxel
-__C.dataset.data_size = [48, 296]
+__C.dataset.data_size = [48, 196]
 
 # allow_cache
 __C.dataset.allow_cache = True
@@ -231,13 +232,13 @@ __C.dataset.augmentation.on = True
 # __C.dataset.augmentation.on = False
 
 # How many of the training samples have background noise mixed in.
-__C.dataset.augmentation.background_frequency = 0.8
+__C.dataset.augmentation.background_frequency = 0.6
 
 # How loud the background noise should be, between 0 and 1.
-__C.dataset.augmentation.background_volume = 0.5
+__C.dataset.augmentation.background_volume = 0.1
 
 # How many of the training samples have synthetic noise mixed in.
-__C.dataset.augmentation.synthetic_frequency = 0.4
+__C.dataset.augmentation.synthetic_frequency = 0.5
 
 # type of the synthetic noise, support ['white', 'salt_pepper'].
 __C.dataset.augmentation.synthetic_type = 'white'
@@ -254,8 +255,8 @@ __C.dataset.augmentation.synthetic_prob = 0.001
 __C.dataset.augmentation.time_shift_ms = 100.0
 
 # Time shift enhancement multiple of negative samples, which is effective for advanced prediction and lag prediction
-# __C.dataset.augmentation.time_shift_multiple = 1
-__C.dataset.augmentation.time_shift_multiple = 10
+__C.dataset.augmentation.time_shift_multiple = 1
+# __C.dataset.augmentation.time_shift_multiple = 10
 
 # based on audio waveform: on.
 __C.dataset.augmentation.speed_volume_on = True
@@ -280,7 +281,7 @@ __C.dataset.augmentation.vad_on = True
 # __C.dataset.augmentation.vad_on = False
 
 # How many of the training samples have vad augmentation.
-cfg.dataset.augmentation.vad_frequency = 0.4
+__C.dataset.augmentation.vad_frequency = 0.1
 
 # window size of the vad. 
 # Must be either 10, 20 or 30 milliseconds. This sets the granularity of the VAD. Should not need to be changed.
@@ -314,7 +315,8 @@ __C.regularization = {}
 __C.regularization.label_smoothing = {}
 
 # regularization: label smoothing on
-__C.regularization.label_smoothing.on = False
+__C.regularization.label_smoothing.on = True
+# __C.regularization.label_smoothing.on = False
 
 # regularization: label smoothing epsilon 
 __C.regularization.label_smoothing.epsilon = 0.1
@@ -327,9 +329,9 @@ __C.regularization.label_smoothing.epsilon = 0.1
 __C.loss = {}
 
 # the loss method, support ['classification', 'embedding', 'classification & embedding']
-__C.loss.method = 'classification'
+# __C.loss.method = 'classification'
 # __C.loss.method = 'embedding'
-# __C.loss.method = 'classification & embedding'
+__C.loss.method = 'classification & embedding'
 
 # the size of embedding in embedding method orclassification & embedding classification & embedding method
 __C.loss.embedding_size = 128
@@ -348,8 +350,8 @@ __C.loss.embedding_loss_name = 'AmSoftmax'
 __C.loss.num_classes =  __C.dataset.label.num_classes
 
 # the weight matrix for each class in focal loss, including background class
-# __C.loss.obj_weight = np.array([[3/9, 0], [0, 6/9]])
-__C.loss.obj_weight = None
+__C.loss.obj_weight = np.array([[1/9, 0], [0, 8/9]])
+# __C.loss.obj_weight = None
 
 # the gamma parameter in focal loss
 __C.loss.focal_gamma = 2
@@ -376,8 +378,9 @@ __C.loss.ema_alpha = 0.995
 __C.net = {}
 
 # the network name
+__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/res15.py"
 # __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-296.py"
-__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-196.py"
+# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-196.py"
 __C.net.class_name = "SpeechResModel"
 
 ######################################

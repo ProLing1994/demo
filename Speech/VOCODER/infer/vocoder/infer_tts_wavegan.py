@@ -11,7 +11,7 @@ from Basic.utils.train_tools import *
 
 from SV.utils.infer_tools import *
 
-from TTS.infer.tts.infer import TtsSynthesizer
+from TTS.infer.tts.infer_tts import TtsSynthesizer
 from TTS.utils.tts.infer_tools import *
 from TTS.utils.tts.visualizations_tools import *
 
@@ -62,12 +62,13 @@ class TtsVocoder():
 
     def synthesize(self, mel):
         wav = infer_wavegan(self.cfg, self.net_vocoder, mel, normalize_before=self.cfg.dataset.normalize_bool)
+        # wav = infer_wavegan(self.cfg, self.net_vocoder, mel, normalize_before=False)
         return wav
 
 
 def infer(args):
     """
-    模型推理，通过滑窗的方式得到每一小段 embedding，随后计算 EER
+    模型推理
     """
     # load config
     cfg = load_cfg_file(args.vocoder_config_file)
@@ -111,10 +112,12 @@ def main():
     parser = argparse.ArgumentParser(description='Streamax TTS Training Engine')
 
     # chinese
-    parser.add_argument('-t', '--tts_config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_0_11102021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')           # tacotron2 单说话人，韵律标签
-    # parser.add_argument('-t', '--tts_config_file', type=str, default="/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_mutilspeaker_prosody_py_1_3_11102021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')              # tacotron2 多说话人 speaker_id_embedding，韵律标签，标签不做修改
-    # parser.add_argument('-v', '--vocoder_config_file', type=str, default="/mnt/huanyuan2/model/tts_vocoder/chinese_tts_vocoder/wavegan_chinese_singlespeaker_1_0_11232021/vocoder_config_chinese_wavegan.py", nargs='?', help='config file')            # ParallelWaveGANGenerator, fft_size=800, preemphasis
-    parser.add_argument('-v', '--vocoder_config_file', type=str, default="/mnt/huanyuan2/model/tts_vocoder/chinese_tts_vocoder/wavegan_chinese_singlespeaker_1_1_normalize_11232021/vocoder_config_chinese_wavegan.py", nargs='?', help='config file')  # ParallelWaveGANGenerator, fft_size=800, preemphasis, nomalize
+    # parser.add_argument('-t', '--tts_config_file', type=str, default="/mnt/huanyuan/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_0_11102021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')           # tacotron2 单说话人，韵律标签
+    parser.add_argument('-t', '--tts_config_file', type=str, default="/mnt/huanyuan/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_3_diff_feature_11292021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')  # tacotron2 单说话人，韵律标签，与 vocoder 采用相同的特征，stop 预测位置优化，静音处优化
+    # parser.add_argument('-t', '--tts_config_file', type=str, default="/mnt/huanyuan/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_mutilspeaker_prosody_py_1_3_11102021/tts_config_chinese_sv2tts.py", nargs='?', help='config file')              # tacotron2 多说话人 speaker_id_embedding，韵律标签，标签不做修改
+    # parser.add_argument('-v', '--vocoder_config_file', type=str, default="/mnt/huanyuan/model/tts_vocoder/chinese_tts_vocoder/wavegan_chinese_singlespeaker_1_0_11232021/vocoder_config_chinese_wavegan.py", nargs='?', help='config file')            # ParallelWaveGANGenerator, fft_size=800, preemphasis
+    # parser.add_argument('-v', '--vocoder_config_file', type=str, default="/mnt/huanyuan/model/tts_vocoder/chinese_tts_vocoder/wavegan_chinese_singlespeaker_1_1_normalize_11232021/vocoder_config_chinese_wavegan.py", nargs='?', help='config file')  # ParallelWaveGANGenerator, fft_size=800, preemphasis, nomalize
+    parser.add_argument('-v', '--vocoder_config_file', type=str, default="/mnt/huanyuan/model/tts_vocoder/chinese_tts_vocoder/wavegan_chinese_singlespeaker_1_2_normalize_diff_feature_11292021/vocoder_config_chinese_wavegan.py", nargs='?', help='config file')  # ParallelWaveGANGenerator, fft_size=1024, nomalize
     parser.add_argument('-s', '--speaker_id', type=int, default=0, nargs='?', help='config file')
     parser.add_argument('-w', '--speaker_wav', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00050001.wav", nargs='?', help='config file')
     args = parser.parse_args()
@@ -124,6 +127,7 @@ def main():
                         "shi2-ke4 lao2-ji4 / yi3-ren2-wei2-ben3, an1-quan2-di4-yi1-de5 yuan2-ze2.",
                         "dao4-lu4 / qian1-wan4-tiao2, an1-quan2 / di4-yi1-tiao2, shi2-ke4 lao2-ji4 / yi3-ren2-wei2-ben3, an1-quan2-di4-yi1-de5 yuan2-ze2.",
                         "jin1-tian1 / xing1-qi1-wu3, tian1-qi4-hao3, zhen1 kai1-xin1.",
+                        "ke1-ji4 gou4-zhu4 / mei2-hao3 jiao1-tong1 wei4-lai2.",
                         ]
     args.text_name_list = [
                             "卡尔普陪外孙玩滑梯。",
@@ -131,6 +135,7 @@ def main():
                             "时刻牢记以人为本，安全第一的原则。",
                             "道路千万条，安全第一条。时刻牢记以人为本，安全第一的原则。",
                             "今天星期五，天气好，真开心。",
+                            "科技构筑美好交通未来",
                             ]
 
     infer(args)

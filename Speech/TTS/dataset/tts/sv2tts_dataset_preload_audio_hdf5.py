@@ -20,11 +20,12 @@ from TTS.dataset.tts.sv2tts_dataset_preload_audio_lmdb import load_data_pd, pad1
 
 
 class SynthesizerDataset(Dataset):
-    def __init__(self, cfg, mode, augmentation_on=True):
+    def __init__(self, cfg, mode, augmentation_on=True, bool_return_text=False):
         # init
         self.cfg = cfg
         self.mode = mode
         self.augmentation_on = augmentation_on
+        self.bool_return_text = bool_return_text
         self.allow_cache = self.cfg.dataset.allow_cache
 
         self.data_pd = load_data_pd(cfg, mode)
@@ -79,6 +80,7 @@ class SynthesizerDataset(Dataset):
             mel = audio.compute_mel_spectrogram(self.cfg, wav).T.astype(np.float32)
         else:
             wav_path = os.path.join(self.cfg.general.data_dir, 'dataset_audio_hdf5', dataset_name, data_name.split('.')[0] + '.h5')
+            wav = read_hdf5(wav_path, "wave")
             mel = read_hdf5(wav_path, "feats").T.astype(np.float32)
             # mel = read_hdf5(wav_path, "feats")
 
@@ -93,6 +95,10 @@ class SynthesizerDataset(Dataset):
             text = re.sub('4$', '4.', text) 
             text = re.sub('5$', '5.', text) 
             assert text[-1] == '.', "[ERROR:] text: {} | {} ".format(text, text[-1])
+
+        # return text
+        if self.bool_return_text:
+            return text, wav, data_name
 
         # Get the text and clean it
         text = text_to_sequence(text, self.cfg.dataset.tts_cleaner_names, lang=self.cfg.dataset.symbols_lang)

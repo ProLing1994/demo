@@ -115,7 +115,7 @@ class SpeechDataset(Dataset):
             data = self.caches[index]
         else:
             data = lmdb_tools.read_audio_lmdb(self.lmdb_env, audio_file)
-            assert len(data) != 0, "[ERROR:] Something wronge about load data, please check"
+            assert len(data) != 0, "[ERROR:] Something wronge about load data, please check: {}".format(audio_file)
 
             if self.allow_cache:
                 self.caches[index] = data

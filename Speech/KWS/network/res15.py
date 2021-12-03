@@ -19,6 +19,8 @@ class SpeechResModel(nn.Module):
     super().__init__()
     # init
     num_classes = cfg.dataset.label.num_classes
+    self.method = cfg.loss.method
+    model_embedding_size = cfg.loss.embedding_size
     num_features = 45
     
     self.conv0 = nn.Conv2d(in_channels=1, out_channels=num_features,
@@ -34,7 +36,15 @@ class SpeechResModel(nn.Module):
         self.add_module("bn{}".format(i + 1), nn.BatchNorm2d(num_features, affine=False))
         self.add_module("conv{}".format(i + 1), conv)
 
-    self.output = nn.Linear(num_features, num_classes)
+    if self.method == 'classification':
+      self.output = nn.Linear(num_features, num_classes)
+    elif self.method == 'embedding':
+      self.embedding_linear = nn.Linear(num_features, model_embedding_size)
+    elif self.method == 'classification & embedding':
+      self.embedding_linear = nn.Linear(num_features, model_embedding_size)
+      self.output = nn.Linear(model_embedding_size, num_classes)
+    else:
+        raise Exception("[Unknow:] cfg.loss.method. ")
 
   def forward(self, x, bool_draw_features=False, output_dir=""):
     for i in range(self.n_layers + 1):
@@ -54,5 +64,17 @@ class SpeechResModel(nn.Module):
   
     x = x.view(x.size(0), x.size(1), -1)      # shape: (batch, 45, 196, 56) ->  # shape: (batch, 45, 10976)
     x = torch.mean(x, 2)                      # shape: (batch, 45, 10976) ->  # shape: (batch, 45)
-    x = self.output(x)                        # shape: (batch, 45) ->  # shape: (batch, 2)
-    return x
+
+    if self.method == 'classification':
+      x = self.output(x)                        # shape: (batch, 45) ->  # shape: (batch, 2)
+      return x
+    elif self.method == 'embedding':
+      embedding = self.embedding_linear(x)      # shape: (batch, 45) -> shape: (batch, 128)
+      return embedding
+    elif self.method == 'classification & embedding':
+      embedding = self.embedding_linear(x)    # shape: (batch, 45) -> shape: (batch, 128)
+      out = self.output(embedding)            # shape: (batch, 128) -> shape: (batch, 2)
+      return embedding, out
+    else:
+        raise Exception("[Unknow:] cfg.loss.method. ")
+    

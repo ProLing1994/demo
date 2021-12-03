@@ -15,34 +15,36 @@ cfg = __C
 __C.general = {}
 
 # __C.general.dataset_list = ['Aishell3', 'BZNSYP']
-__C.general.dataset_list = ['BZNSYP']
+__C.general.dataset_list = ['BZNSYP', 'BZNSYP_Tacotron2']
 __C.general.dataset_path_dict = {
                                 "Aishell3": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/", 
                                 "Aishell3_training": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/train/wav", 
                                 "Aishell3_testing": "/mnt/huanyuan/data/speech/asr/Chinese/Aishell3/test/wav", 
                                 "BZNSYP": "/mnt/huanyuan/data/speech/asr/Chinese/BZNSYP/", 
                                 "BZNSYP_training": "/mnt/huanyuan/data/speech/asr/Chinese/BZNSYP/Wave", 
+                                "BZNSYP_Tacotron2": None,
+                                "BZNSYP_Tacotron2_training": None,
                                 }
 
 # data path
-__C.general.data_dir = "/mnt/huanyuan2/data/speech/tts/Chinese_dataset/"
+__C.general.data_dir = "/mnt/huanyuan/data/speech/tts/Chinese_dataset/"
 # __C.general.data_dir = "/yuanhuan/data/speech/tts/Chinese_dataset/"
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/test/"
-# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_1_1_10232021/"
-# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_finetune_1_2_10232021/"
-# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_tacotron_singlespeaker_guaiding_4_2_10292021/"
-# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron_BahdanauAttention_singlespeaker_prosody_py_1_0_11092021/"
-# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron_lsa_singlespeaker_prosody_py_2_1_11092021/"
-# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_0_11102021/"
-# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_1_diff_feature_11292021/"                # 采用了不同的特征进行实验，与 vocoder 特征保持一致
+# __C.general.save_dir = "/mnt/huanyuan/model/tts/chinese_tts/test/"
+# __C.general.save_dir = "/mnt/huanyuan/model/tts/chinese_tts/sv2tts_chinese_1_1_10232021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/tts/chinese_tts/sv2tts_chinese_finetune_1_2_10232021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/tts/chinese_tts/sv2tts_chinese_tacotron_singlespeaker_guaiding_4_2_10292021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/tts/chinese_tts/sv2tts_chinese_new_tacotron_BahdanauAttention_singlespeaker_prosody_py_1_0_11092021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/tts/chinese_tts/sv2tts_chinese_new_tacotron_lsa_singlespeaker_prosody_py_2_1_11092021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_0_11102021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_1_diff_feature_11292021/"                # 采用了不同的特征进行实验，与 vocoder 特征保持一致
 # __C.general.save_dir = "/mnt/huanyuan/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_2_diff_feature_11292021/"               # 采用了不同的特征进行实验，与 vocoder 特征保持一致，改进 stop 预测位置
 __C.general.save_dir = "/mnt/huanyuan/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_3_diff_feature_11292021/"               # 采用了不同的特征进行实验，与 vocoder 特征保持一致，改进 stop 预测位置，静音处优化
-# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_mutilspeaker_prosody_py_1_0_11102021/"
-# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_mutilspeaker_prosody_py_1_1_11102021/"
-# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_mutilspeaker_prosody_py_1_2_11102021/"
-# __C.general.save_dir = "/mnt/huanyuan2/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_mutilspeaker_prosody_py_1_3_11102021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_mutilspeaker_prosody_py_1_0_11102021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_mutilspeaker_prosody_py_1_1_11102021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_mutilspeaker_prosody_py_1_2_11102021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_mutilspeaker_prosody_py_1_3_11102021/"
 
 # test after save pytorch model
 __C.general.is_test = True

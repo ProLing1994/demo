@@ -6,7 +6,6 @@ import soundfile as sf
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/yuanhuan/code/demo/Speech')
-# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/Speech')
 from Basic.config import hparams
 from Basic.utils.folder_tools import *
 from Basic.utils.train_tools import *
@@ -27,7 +26,6 @@ from VOCODER.dataset.vocoder.vocoder_dataset_preload_audio_lmdb import prepare_d
 
 sys.path.insert(0, '/home/huanyuan/code/demo/common')
 # sys.path.insert(0, '/yuanhuan/code/demo/common')
-# sys.path.insert(0, '/home/engineers/yh_rmai/code/demo/common')
 from common.utils.python.logging_helpers import setup_logger
 
 

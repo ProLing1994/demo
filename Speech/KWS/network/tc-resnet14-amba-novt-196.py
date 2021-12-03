@@ -63,6 +63,8 @@ class SpeechResModel(nn.Module):
         num_classes = cfg.dataset.label.num_classes
         image_weidth = cfg.dataset.data_size[0]
         image_height = cfg.dataset.data_size[1]
+        self.method = cfg.loss.method
+        model_embedding_size = cfg.loss.embedding_size
 
         self.planes = [16, 24, 32, 48, 64]
         self.width_multiplier = 1.5
@@ -85,7 +87,15 @@ class SpeechResModel(nn.Module):
         self.conv2 = nn.Conv2d(int(self.planes[4] * self.width_multiplier), int(self.planes[4] * self.width_multiplier), kernel_size=(7, 1), stride=2, padding=(3, 0), bias=False)
         self.bn2 = nn.BatchNorm2d(int(self.planes[4] * self.width_multiplier))
 
-        self.conv3 = nn.Conv2d(int(self.planes[4] * self.width_multiplier), num_classes, kernel_size=(7, 1), stride=1, padding=(0, 0), bias=False)
+        if self.method == 'classification':
+            self.conv3 = nn.Conv2d(int(self.planes[4] * self.width_multiplier), num_classes, kernel_size=(7, 1), stride=1, padding=(0, 0), bias=False)
+        elif self.method == 'embedding':
+            self.conv3 = nn.Conv2d(int(self.planes[4] * self.width_multiplier), model_embedding_size, kernel_size=(7, 1), stride=1, padding=(0, 0), bias=False)
+        elif self.method == 'classification & embedding':
+            self.conv3 = nn.Conv2d(int(self.planes[4] * self.width_multiplier), model_embedding_size, kernel_size=(7, 1), stride=1, padding=(0, 0), bias=False)
+            self.conv4 = nn.Conv2d(model_embedding_size, num_classes, kernel_size=(1, 1), stride=1, padding=(0, 0), bias=False)
+        else:
+            raise Exception("[Unknow:] cfg.loss.method. ")
 
     def _make_layer(self, block, planes, stride):
         layers = []
@@ -107,5 +117,15 @@ class SpeechResModel(nn.Module):
         out = self.layer4_2(out)                                        # shape: (batch, 96, 13, 1) -> shape: (batch, 96, 13, 1)
 
         out = self.relu(self.bn2(self.conv2(out)))                      # shape: (batch, 96, 13, 1) -> shape: (batch, 96, 7, 1)
-        out = self.conv3(out)                                           # shape: (batch, 96, 7, 1) -> shape: (batch, 2, 1, 1)
-        return out
+        if self.method == 'classification':
+            out = self.conv3(out)                                           # shape: (batch, 96, 7, 1) -> shape: (batch, 2, 1, 1)
+            return out
+        elif self.method == 'embedding':
+            embedding = self.conv3(out)                                     # shape: (batch, 96, 7, 1) -> shape: (batch, 128, 1, 1)
+            return embedding
+        elif self.method == 'classification & embedding':
+            embedding = self.conv3(out)                                           # shape: (batch, 96, 7, 1) -> shape: (batch, 128, 1, 1)
+            out = self.conv4(embedding)                                           # shape: (batch, 128, 1, 1) -> shape: (batch, 2, 1, 1)
+            return embedding, out
+        else:
+            raise Exception("[Unknow:] cfg.loss.method. ")

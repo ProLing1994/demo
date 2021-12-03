@@ -49,6 +49,7 @@ def preload_audio_hdf5(args, mode_type):
         dataset_name = cfg.general.dataset_list[dataset_idx]
 
         print("Start preload dataset: {}, mode_type: {}".format(dataset_name, mode_type))
+        
         # init 
         hdf5_dir = os.path.join(output_dir, dataset_name)
         csv_path = os.path.join(cfg.general.data_dir, dataset_name + '.csv')

@@ -76,7 +76,7 @@ class TtsSynthesizer():
 
 def infer(args):
     """
-    模型推理，通过滑窗的方式得到每一小段 embedding，随后计算 EER
+    模型推理
     """
     # load config
     cfg = load_cfg_file(args.config_file)

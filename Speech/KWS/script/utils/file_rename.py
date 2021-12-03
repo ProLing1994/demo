@@ -2,28 +2,19 @@ import glob
 import os
 
 if __name__ == '__main__':
-    # input_dir = "/mnt/huanyuan/model/kws_model/asr_english/image_296_64/"
-    # input_dir = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaoan8k_tc_resnet14/image_48_146/"
-    # input_dir = "/mnt/huanyuan/model/audio_model/hisi_model/asr_mandarin_taxi_16k/image_296_64/"
-    # input_dir = "/mnt/huanyuan/model/audio_model/hisi_model/kws_xiaorui16k_tc_resnet14/image_64_192/"
-    # input_dir = "/mnt/huanyuan/model/audio_model/novt_model/kws_xiaoan8k_tc_resnet14/image_48_144/"
-    input_dir = "/mnt/huanyuan/model/audio_model/novt_model/kws_xiaorui8k_tc_resnet14/image_8k_56_196/"
-    file_format = 'pic_'
-    file_type = ".jpg"
-    start_id = 1
+    input_dir = "/mnt/huanyuan/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_3_diff_feature_11292021/wavs_test/"
+    file_type = ".h5"
 
     file_list = glob.glob(os.path.join(input_dir, '*' + file_type))
     file_list.sort()
 
-    with open(os.path.join(input_dir, "output.txt"), "w") as f :
-        for idx in range(len(file_list)):
-            file_path = file_list[idx]
+    for idx in range(len(file_list)):
+        file_path = file_list[idx]
+        file_name = os.path.basename(file_path)
 
-            # 自定义重命名规则
-            # rename_path = os.path.join(os.path.dirname(file_path), "{}{:0>5d}{}".format(file_format, (start_id + idx), file_type))
-            rename_path = os.path.join(os.path.dirname(file_path), "{}{}{}".format(file_format, (start_id + idx), file_type))
+        # 自定义重命名规则
+        rename_path = os.path.join(os.path.dirname(file_path), "{}{}".format(file_name.split('.')[0], file_type))
 
-            print(file_path, '->', rename_path)
-            os.rename(file_path, rename_path)
-            f.write("{}\n".format(os.path.basename(rename_path)))
+        print(file_path, '->', rename_path)
+        # os.rename(file_path, rename_path)
         

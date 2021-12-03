@@ -8,12 +8,13 @@ sys.path.insert(0, '/home/huanyuan/code/demo/common/common')
 from utils.python.folder_tools import *
 
 def remove_audio_samename():
-    wave_list = os.listdir(args.input_dir)
+    wave_list = get_sub_filepaths_suffix(args.input_dir, '.wav')
 
     for idx in tqdm(range(len(wave_list))):
-        wave_path = os.path.join(args.input_dir, wave_list[idx])
-        output_path = os.path.join(args.output_dir, os.path.basename(wave_path).split('.')[0] + '.wav')
-
+        wave_path = wave_list[idx]
+        output_subfolder_path = (os.path.dirname(wave_path) + '/').replace(args.input_dir, '')
+        output_path = os.path.join(args.output_dir, output_subfolder_path, os.path.basename(wave_path).split('.')[0] + '.wav')
+        
         if os.path.exists(output_path):
             print(output_path)
             # os.remove(output_path)
@@ -33,8 +34,8 @@ if __name__ == "__main__":
     # 方法：删除同名文件
     parser = argparse.ArgumentParser(description='Streamax KWS Engine')
     args = parser.parse_args()
-    args.input_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/tts/sv2tts/LibriSpeech/over_short/"
-    args.output_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/tts/sv2tts/LibriSpeech/train-other-500_check_vad/activatebwc/"
+    args.input_dir = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/truck_platform_alarm_8k/over_short/"
+    args.output_dir = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/truck_platform_alarm_8k/"
 
     remove_audio_samename()
 

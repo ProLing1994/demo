@@ -171,19 +171,19 @@ class ComputeMel(object):
     def compute_fbanks(self, data):
         data = librosa.feature.melspectrogram(
             data,
-            sampling_rate=self.sampling_rate,
+            sr=self.sampling_rate,
             n_fft=self.win_length,
-            hop_size=self.hop_size,
-            num_mels=self.num_mels)
+            hop_length=self.hop_size,
+            n_mels=self.num_mels)
         data = data.astype(np.float32).T
         return data
 
     def compute_fbanks_log(self, data):
         data = librosa.feature.melspectrogram(
             data,
-            sampling_rate=self.sampling_rate,
-            num_mels=self.num_mels,
-            hop_size=self.hop_size,
+            sr=self.sampling_rate,
+            n_mels=self.num_mels,
+            hop_length=self.hop_size,
             n_fft=self.win_length,
             fmin=self.fmin,
             fmax=self.fmax)

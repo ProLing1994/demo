@@ -342,7 +342,7 @@ __C.loss.name = 'focal'
 __C.loss.num_classes =  __C.dataset.label.num_classes
 
 # the weight matrix for each class in focal loss, including background class
-__C.loss.obj_weight = np.array([[3/9, 0], [0, 6/9]])
+__C.loss.obj_weight = np.array([[1/9, 0], [0, 8/9]])
 # __C.loss.obj_weight = None
 
 # the gamma parameter in focal loss

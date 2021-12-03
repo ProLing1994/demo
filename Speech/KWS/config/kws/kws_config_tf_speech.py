@@ -11,51 +11,50 @@ cfg = __C
 __C.general = {}
 
 # data folder
-__C.general.data_dir = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/speech_commands/"
-__C.general.sub_data_dir = ["/mnt/huanyuan/data/speech/kws/tf_speech_commands/tts/sv2tts/LibriSpeech/train-clean-100/"]
+__C.general.data_dir = "/mnt/huanyuan2/data/speech/kws/tf_speech_commands/speech_commands/"
+__C.general.sub_data_dir = ["/mnt/huanyuan2/data/speech/kws/tf_speech_commands/tts/sv2tts/LibriSpeech/train-clean-100/"]
 
 # data version
 __C.general.version = "1.1"
-# __C.general.version = "1.2"
+# __C.general.version = "1.2"       # 添加 tts 合成数据
 
 # data date
 __C.general.date = "07072021"
 # __C.general.date = "09302021"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.1_07072021/total_data_files.csv"
-# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.2_09302021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/tf_speech_commands/dataset_1.1_07072021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/tf_speech_commands/dataset_1.2_09302021/total_data_files.csv"
 
 # background noise path
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.1_07072021/background_noise_files.csv"
-# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.2_09302021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/tf_speech_commands/dataset_1.1_07072021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/tf_speech_commands/dataset_1.2_09302021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # the output of training models and logging files
-# __C.general.save_dir = "/home/huanyuan/model/kws_test"
+__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_speech/test"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_0_res15_02042021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_1_edge-speech-nets_02042021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_2_tc-resnet8_02192021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_3_tc-resnet14_02192021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_4_tc-resnet8-dropout_02192021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_5_tc-resnet14-dropout_02192021/"
-__C.general.save_dir = "/mnt/huanyuan2/model/kws/kws_speech/kws_speech_2_7_res15_basic_label_smooth_ema_augmentation_tts_8000_epoch_09302021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_speech/kws_speech_2_7_res15_basic_label_smooth_ema_augmentation_tts_8000_epoch_09302021/"
 
 # finetune model
 __C.general.finetune_on = False
-__C.general.finetune_model_dir = ""
-__C.general.finetune_epoch = 0
 
 # set certain epoch to continue training, set -1 to train from scratch
-__C.general.resume_epoch = -1
+__C.general.resume_epoch_num = -1
 
 # the number of GPUs used in training
+# __C.general.num_gpus = 4
 __C.general.num_gpus = 1
 
 # the GPUs' id used in training
-# __C.general.gpu_ids = '7'
+# __C.general.gpu_ids = '0, 1, 2, 3'
 __C.general.gpu_ids = '0'
 
 # data_parallel_mode: [0, 1]
@@ -75,6 +74,7 @@ __C.knowledge_distillation.on = False
 
 # teacher model
 __C.knowledge_distillation.teacher_model_name = ''
+__C.knowledge_distillation.teacher_class_name = ''
 __C.knowledge_distillation.teacher_model_dir = ""
 __C.knowledge_distillation.epoch = 0
 
@@ -113,29 +113,54 @@ __C.dataset = {}
 # the number of input channel, currently only support 1 channel input
 __C.dataset.input_channel = 1
 
-# Number of audio samples per second
-__C.dataset.sample_rate = 16000
+# Sampling rate.
+__C.dataset.sampling_rate = 16000
 
 # Length of each audio clip to be analyzed
 __C.dataset.clip_duration_ms = 1000
 
-# Duration of frequency analysis window
-__C.dataset.window_size_ms = 30.0
+# FFT size.
+__C.dataset.fft_size = 480
 
-# How far to move in time between frequency windows
-__C.dataset.window_stride_ms = 10.0
+# Hop size.
+__C.dataset.hop_size = 160
 
-# How the spectrogram is processed to produce features, support ["mfcc", "pcen", "fbank", "fbank"]
-# __C.dataset.preprocess = "fbank"
-# __C.dataset.preprocess = "pcen"
-__C.dataset.preprocess = "mfcc"
-# __C.dataset.preprocess = "fbank_cpu"
+# Window length.
+__C.dataset.win_length = 480
 
-# How many bins to use for the MFCC fingerprint
-__C.dataset.feature_bin_count = 40
+# Window function.
+__C.dataset.window = "hann"
 
-# How many nfilt to use for the Mel feature, only support preprocess=fbank_cpu
-__C.dataset.nfilt = 40
+# Number of mel basis.
+__C.dataset.num_mels = 40
+
+# How many nfilt to use for the Mel feature, only support preprocess ["fbank_cpu"]
+__C.dataset.num_filts = 40
+
+# Minimum freq in mel basis calculation, only support preprocess ["fbank_log", "fbank_nopreemphasis_log_manual", "fbank_preemphasis_log_manual"]
+# Set this to 55 if your speaker is male! if female, 95 should help taking off noise. (To
+# test depending on dataset. Pitch info: male~[65, 260], female~[100, 525])
+__C.dataset.fmin = None
+
+# Maximum frequency in mel basis calculation, only support preprocess ["fbank_log", "fbank_nopreemphasis_log_manual", "fbank_preemphasis_log_manual"]
+# To be increased/reduced depending on data.
+__C.dataset.fmax = None
+
+# trim silence：Whether to trim the start and end of silence
+# __C.dataset.trim_silence = True
+__C.dataset.trim_silence = False
+
+# Need to tune carefully if the recording is not good.
+__C.dataset.trim_threshold_in_db = 60
+
+# Frame size in trimming.
+__C.dataset.trim_frame_size = 2048
+
+# Hop size in trimming.
+__C.dataset.trim_hop_size = 512
+
+# compute mel type, support ["fbank", "fbank_log", "fbank_nopreemphasis_log_manual", "fbank_preemphasis_log_manual", "pcen", "fbank_cpu"]
+__C.dataset.compute_mel_type = "fbank_log"
 
 # input size of training data (w, h), whether input size is a multiple of 16, unit: voxel
 # __C.dataset.h_alignment = True, [hisi], 模型需要图像输入长度为 16 的倍数
@@ -147,6 +172,9 @@ __C.dataset.h_alignment = False
 # input size of training data (w, h), unit: voxel
 __C.dataset.data_size = [40, 101]
 
+# allow_cache
+__C.dataset.allow_cache = True
+# __C.dataset.allow_cache = False
 
 ##################################
 # label parameters
@@ -198,8 +226,8 @@ __C.dataset.augmentation.background_volume = 0.1
 __C.dataset.augmentation.synthetic_frequency = -1
 
 # type of the synthetic noise, support ['white', 'salt_pepper'].
-# __C.dataset.augmentation.synthetic_type = 'white'
-__C.dataset.augmentation.synthetic_type = 'salt_pepper'
+__C.dataset.augmentation.synthetic_type = 'white'
+# __C.dataset.augmentation.synthetic_type = 'salt_pepper'
 
 # the scale parameter in white synthetic noise
 __C.dataset.augmentation.synthetic_scale = 0.001
@@ -228,6 +256,21 @@ __C.dataset.augmentation.volume = [0.4, 1.6]
 __C.dataset.augmentation.pitch_on = False
 __C.dataset.augmentation.pitch = [-5, 5]
 
+# based on audio waveform: on.
+# __C.dataset.augmentation.vad_on = True
+__C.dataset.augmentation.vad_on = False
+
+# How many of the training samples have vad augmentation.
+__C.dataset.augmentation.vad_frequency = 0.1
+
+# window size of the vad. 
+# Must be either 10, 20 or 30 milliseconds. This sets the granularity of the VAD. Should not need to be changed.
+__C.dataset.augmentation.vad_window_length = [10, 20, 30]
+
+# vad mode
+# 0: Normal，1：low Bitrate，2：Aggressive，3：Very Aggressive
+__C.dataset.augmentation.vad_mode = [0, 1, 2]
+
 # based on audio vtlp: on
 # vtlp: http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=34DDD4B0CDCE76942A879204E8B7716C?doi=10.1.1.369.733&rep=rep1&type=pdf
 # __C.dataset.augmentation.vtlp_on = True
@@ -253,8 +296,8 @@ __C.regularization = {}
 __C.regularization.label_smoothing = {}
 
 # regularization: label smoothing on
-__C.regularization.label_smoothing.on = True
-# __C.regularization.label_smoothing.on = False
+# __C.regularization.label_smoothing.on = True
+__C.regularization.label_smoothing.on = False
 
 # regularization: label smoothing epsilon 
 __C.regularization.label_smoothing.epsilon = 0.1
@@ -265,6 +308,9 @@ __C.regularization.label_smoothing.epsilon = 0.1
 ####################################
 
 __C.loss = {}
+
+# the loss method, support ['classification', 'embedding', 'classification & embedding']
+__C.loss.method = 'classification'
 
 # the loss name, support ['softmax','focal']
 __C.loss.name = 'softmax'
@@ -278,8 +324,8 @@ __C.loss.focal_gamma = 2
 
 # EMA: expontential moving average on
 # EMA: https://github.com/ProLing1994/pytorch-loss/blob/master/ema.py
-__C.loss.ema_on = True
-# __C.loss.ema_on = False
+# __C.loss.ema_on = True
+__C.loss.ema_on = False
 
 # the alpha parameter in EMA: each parameter p should be computed as p_hat = alpha * p + (1. - alpha) * p_hat
 __C.loss.ema_alpha = 0.995
@@ -291,24 +337,8 @@ __C.loss.ema_alpha = 0.995
 __C.net = {}
 
 # the network name
-__C.net.class_name = "SpeechResModel"
-# __C.net.model_name = 'cnn-trad-pool2'
-# __C.net.model_name = 'cnn-one-fstride1'
-# __C.net.model_name = 'cnn-tpool2'
-__C.net.model_name = 'res15'
-# __C.net.model_name = 'res15_basic'
-# __C.net.model_name = 'res15-narrow'
-# __C.net.model_name = 'res8'
-# __C.net.model_name = 'res8-narrow'
-# __C.net.model_name = 'lstm-avg'
-# __C.net.model_name = 'lstm-attention'
-# __C.net.model_name = 'crnn-avg'
-# __C.net.model_name = 'crnn-attention'
-# __C.net.model_name = 'edge-speech-nets'
-# __C.net.model_name = 'tc-resnet8'
-# __C.net.model_name = 'tc-resnet14'
-# __C.net.model_name = 'tc-resnet8-dropout'
-# __C.net.model_name = 'tc-resnet14-dropout'
+__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/bc-resnet.py"
+__C.net.class_name = "BCResNet"
 
 
 ######################################
@@ -319,27 +349,24 @@ __C.train = {}
 
 # the number of training epochs
 # __C.train.num_epochs = 4000
-# __C.train.num_epochs = 2000
-# __C.train.num_epochs = 500
 __C.train.num_epochs = 1
 
 # the number of samples in a batch
 # __C.train.batch_size = 2048
-# __C.train.batch_size = 256
-# __C.train.batch_size = 16
 __C.train.batch_size = 1
 
 # the number of threads for IO
 # __C.train.num_threads = 64
-# __C.train.num_threads = 16
 __C.train.num_threads = 1
+
+# the number of batches to show log
+__C.train.show_log = 5
 
 # the number of batches to update loss curve
 __C.train.plot_snapshot = 5
 
 # the number of epochs to save model
 __C.train.save_epochs = 25
-# __C.train.save_epochs = 1
 
 
 ######################################
