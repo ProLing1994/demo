@@ -49,12 +49,12 @@ def straming_dataset_generator(input_dir, output_path, nosed_csv, config_file, a
     cfg = load_cfg_file(config_file)
 
     # init
-    sample_rate = cfg.dataset.sample_rate
+    sampling_rate = cfg.dataset.sampling_rate
     clip_duration_ms = cfg.dataset.clip_duration_ms
-    desired_samples = int(sample_rate * clip_duration_ms / 1000)
-    output_audio_sample_count = sample_rate * test_duration_seconds
+    desired_samples = int(sampling_rate * clip_duration_ms / 1000)
+    output_audio_sample_count = sampling_rate * test_duration_seconds
     output_audio = np.zeros((output_audio_sample_count,), dtype=np.float32)
-    word_gap_samples = int((word_gap_ms * sample_rate) / 1000)
+    word_gap_samples = int((word_gap_ms * sampling_rate) / 1000)
 
     # mkdir
     if not os.path.exists(os.path.dirname(output_path)):
@@ -138,7 +138,7 @@ def straming_dataset_generator(input_dir, output_path, nosed_csv, config_file, a
         print('Mix audio, Done : [{}/{}]'.format(output_offset, output_audio_sample_count), end='\r')
 
         output_offset += word_gap_samples + np.random.randint(word_gap_samples)
-        output_offset_ms = (output_offset * 1000) / sample_rate
+        output_offset_ms = (output_offset * 1000) / sampling_rate
 
         if output_offset >= output_audio_sample_count :
             break
@@ -170,7 +170,7 @@ def straming_dataset_generator(input_dir, output_path, nosed_csv, config_file, a
         if found_label == hparams.SILENCE_LABEL:
             found_audio = np.zeros(desired_samples, dtype=np.float32)
         else:
-            found_audio = librosa.core.load(found_data, sr=sample_rate)[0]
+            found_audio = librosa.core.load(found_data, sr=sampling_rate)[0]
 
         found_audio_length = len(found_audio)
         mix_in_audio_sample(output_audio, output_offset, found_audio, 0, found_audio_length, 1.0, 500, 500)
@@ -180,10 +180,10 @@ def straming_dataset_generator(input_dir, output_path, nosed_csv, config_file, a
         output_file_dict['file'] = found_data
         output_file_dict['label'] = found_label
         output_file_dict['start_time'] = output_offset_ms
-        output_file_dict['end_time'] = (output_offset * 1000) / sample_rate
+        output_file_dict['end_time'] = (output_offset * 1000) / sampling_rate
         output_file_list.append(output_file_dict)
     
-    audio.save_wav(output_audio.copy(), output_path, sample_rate)
+    audio.save_wav(output_audio.copy(), output_path, sampling_rate)
     output_file_pd = pd.DataFrame(output_file_list)
     output_file_pd.to_csv(output_path.split('.')[0] + '.csv', index=False, encoding="utf_8_sig")
     return
@@ -200,7 +200,7 @@ def main():
 
     # only for mode==0/3, support for ['training','validation','testing']
     default_audio_mode = 'validation'
-    default_output_path_list = ['/mnt/huanyuan/model/test_straming_wav/xiaorui_1_4_04302021_validation_3600.wav']
+    default_output_path_list = ['/mnt/huanyuan2/model/test_straming_wav/xiaoan_3_1_12062021_validation_60.wav']
 
     # only for mode==1, from folder
     # default_input_dir = '/mnt/huanyuan/data/speech/kws/weiboyulu/dataset'
@@ -270,7 +270,7 @@ def main():
     default_nosed_csv = ""
     
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
-    default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py"
+    # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_pretrain.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaorui.py"
@@ -278,6 +278,7 @@ def main():
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_heybodycam.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan8k.py"
+    default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_embedding_xiaoan8k.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan16k.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_nihaoxiaoan8k.py"
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_nihaoxiaoan16k.py"
@@ -293,9 +294,9 @@ def main():
     # parser.add_argument('--test_duration_seconds', type=int, default=43200) # 12 hours
     # parser.add_argument('--test_duration_seconds', type=int, default=21600) # 6 hours
     # parser.add_argument('--test_duration_seconds', type=int, default=7200) # 2 hours
-    parser.add_argument('--test_duration_seconds', type=int, default=3600) # 1 hours
+    # parser.add_argument('--test_duration_seconds', type=int, default=3600) # 1 hours
     # parser.add_argument('--test_duration_seconds', type=int, default=180) # 3 minute
-    # parser.add_argument('--test_duration_seconds', type=int, default=60) # 1 minute
+    parser.add_argument('--test_duration_seconds', type=int, default=60) # 1 minute
     # parser.add_argument('--word_gap_ms', type=int, default=3000)
     parser.add_argument('--word_gap_ms', type=int, default=2000)
     # parser.add_argument('--word_gap_ms', type=int, default=1000)

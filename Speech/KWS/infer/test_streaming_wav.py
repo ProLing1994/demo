@@ -237,8 +237,10 @@ def main():
     # xiaoan8k
     # default_input_wav_list = ["/mnt/huanyuan2/model/test_straming_wav/xiaoan8k_1_1_04082021_training_60.wav",
     #                             "/mnt/huanyuan2/model/test_straming_wav/xiaoan8k_1_1_04082021_validation_60.wav"]
-    default_input_wav_list = ["/mnt/huanyuan2/model/test_straming_wav/xiaoan8k_1_3_04152021_validation.wav",
-                            "/mnt/huanyuan2/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
+    default_input_wav_list = ["/mnt/huanyuan2/model/test_straming_wav/xiaoan_3_1_12062021_training_60.wav",
+                                "/mnt/huanyuan2/model/test_straming_wav/xiaoan_3_1_12062021_validation_60.wav"]
+    # default_input_wav_list = ["/mnt/huanyuan2/model/test_straming_wav/xiaoan8k_1_3_04152021_validation.wav",
+    #                         "/mnt/huanyuan2/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
     # xiaoa16k
     # default_input_wav_list = ['/mnt/huanyuan/model/test_straming_wav/xiaoan16k_2_1_04082021_training_60.wav',
@@ -319,10 +321,10 @@ def main():
     # default_output_subfolder_name = "海外同事录制_0425/阈值_05_05/路边场景"
 
     # xiaoan
-    # default_input_folder = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/更新漏标注数据处理/"
-    # default_output_subfolder_name = "实车录制_0427_pytorch/阈值_05_05/货车怠速场景/"
-    default_input_folder = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/噪音录音/"
-    default_output_subfolder_name = "实车录制_0427_pytorch/阈值_05_05/其他录音/"
+    default_input_folder = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/更新漏标注数据处理/"
+    default_output_subfolder_name = "实车录制_0427_pytorch/阈值_05_05/货车怠速场景/"
+    # default_input_folder = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/噪音录音/"
+    # default_output_subfolder_name = "实车录制_0427_pytorch/阈值_05_05/其他录音/"
 
     # config file
     # default_config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py"
@@ -360,7 +362,9 @@ def main():
     # default_config_file = "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/kws_config_xiaoan8k.py"
     # default_config_file = "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/kws_config_xiaoan8k_api_0_5.py"
     # default_config_file = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_3_tc-resnet14-hisi_fbankcpu_kd_11222021/kws_config_xiaoan8k.py"
-    default_config_file = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_3_tc-resnet14-hisi_fbankcpu_kd_11222021/kws_config_xiaoan8k_api_0_5.py"
+    # default_config_file = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_3_tc-resnet14-hisi_fbankcpu_kd_11222021/kws_config_xiaoan8k_api_0_5.py"
+    # default_config_file = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_0_2s_tc_resnet14_fbankcpu_12022021/kws_config_embedding_xiaoan8k.py"
+    default_config_file = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_0_2s_tc_resnet14_fbankcpu_12022021/kws_config_embedding_xiaoan8k_api_0_5.py"
     
     # xiaorui 
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_5_0_tc-resnet14-amba_fbankcpu_kd_04302021/kws_config_xiaorui_api.py"

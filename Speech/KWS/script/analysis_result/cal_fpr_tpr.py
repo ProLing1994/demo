@@ -247,11 +247,11 @@ if __name__ == "__main__":
     #             ["xiaoanxiaoan_8k", "xiaoanxiaoan_16k"],
     #             bool_write_audio)
     cal_fpr_tpr_per_folder("/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/更新漏标注数据处理/",
-                            "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_3_tc-resnet14-hisi_fbankcpu_kd_11222021/test_straming_wav/实车录制_0427_pytorch/阈值_05_05/货车怠速场景/",
-                            # ["_adpro"],
+                            "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_0_2s_tc_resnet14_fbankcpu_12022021/test_straming_wav/实车录制_0427_pytorch/阈值_05_05/货车怠速场景/",
+                            ["_adpro"],
                             # ["_mic"],
                             # ["danbin_ori"],
-                            ["danbin_asr"],
+                            # ["danbin_asr"],
                             ["xiaoanxiaoan_8k", "xiaoan8k", "Weakup"],
                             bool_write_audio)
     # cal_fpr_tpr("/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/更新漏标注数据处理/李煜_danbin_ori.csv",

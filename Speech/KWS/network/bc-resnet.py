@@ -10,6 +10,12 @@ def parameters_init(net):
     net.apply(kaiming_weight_init)
 
 
+class SiLU(torch.nn.Module):  # export-friendly version of nn.SiLU()
+    @staticmethod
+    def forward(x):
+        return x * torch.sigmoid(x)
+
+        
 class SubSpectralNorm(nn.Module):
     def __init__(self, C, S, eps=1e-5):
         super(SubSpectralNorm, self).__init__()
@@ -47,7 +53,8 @@ class BroadcastedBlock(nn.Module):
         self.bn = nn.BatchNorm2d(planes)
         self.relu = nn.ReLU(inplace=True)
         self.channel_drop = nn.Dropout2d(p=0.5)
-        self.swish = nn.SiLU()
+        # self.swish = nn.SiLU()
+        self.swish = SiLU()
         self.conv1x1 = nn.Conv2d(planes, planes, kernel_size=(1, 1), bias=False)
 
     def forward(self, x: Tensor) -> Tensor:
@@ -99,7 +106,8 @@ class TransitionBlock(nn.Module):
         self.bn2 = nn.BatchNorm2d(planes)
         self.relu = nn.ReLU(inplace=True)
         self.channel_drop = nn.Dropout2d(p=0.5)
-        self.swish = nn.SiLU()
+        # self.swish = nn.SiLU()
+        self.swish = SiLU()
         self.conv1x1_1 = nn.Conv2d(inplanes, planes, kernel_size=(1, 1), bias=False)
         self.conv1x1_2 = nn.Conv2d(planes, planes, kernel_size=(1, 1), bias=False)
 

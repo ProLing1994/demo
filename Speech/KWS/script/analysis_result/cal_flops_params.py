@@ -4,6 +4,10 @@ import sys
 
 from thop import profile   
 from thop import clever_format
+
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from Basic.utils.train_tools import *
+
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
 
 def count_parameters(model):
@@ -12,9 +16,10 @@ def count_parameters(model):
 def main():
     batch_size = 1
     in_channels = 1
-    image_height = 196
-    image_weidth = 56
-    num_classes = 2
+    # image_height = 196
+    # image_weidth = 48
+    image_height = 101
+    image_weidth = 40
 
     # net_name = "crnn-attention"
     # net_name = "crnn-avg"
@@ -30,13 +35,17 @@ def main():
     # net_name = "tc-resnet18-dropout"
     # net_name = "tc-resnet14-amba"
     # net_name = "tc-resnet14-hisi"
-    net_name = "tc-resnet14-amba-novt-196"
+    # net_name = "tc-resnet14-amba-novt-196"
+    net_name = "bc-resnet"
+
+    # load configuration file
+    config_file = "/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_embedding_xiaoan8k.py"
+    cfg = load_cfg_file(config_file)
 
     # load network structure
     net_module = importlib.import_module('network.' + net_name)
-    net = net_module.SpeechResModel(num_classes=num_classes, 
-                                    image_height=image_height, 
-                                    image_weidth=image_weidth)
+    # net = net_module.SpeechResModel(cfg)
+    net = net_module.BCResNet(cfg)
 
     input = torch.randn(batch_size, in_channels, image_height, image_weidth)
     flops, params = profile(net, inputs=(input, ))

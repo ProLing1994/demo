@@ -14,30 +14,34 @@ __C.general.data_dir = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experiment
 __C.general.sub_data_dir = []
 
 # data version
-# __C.general.version = "2.1"     # 小安小安音频 + 困难样本挖掘（运用 AmSoftmax 思想，增大正负样本之间的差异），3s 音频
-__C.general.version = "3.1"     # 小安小安音频 + 8k 负样本音频 + 困难样本挖掘（运用 AmSoftmax 思想，增大正负样本之间的差异），2s 音频
+# __C.general.version = "2.1"     # 8k 小安小安音频 + 困难样本挖掘（运用 AmSoftmax 思想，增大正负样本之间的差异），3s 音频
+# __C.general.version = "3.1"     # 8k 小安小安音频 + 8k 负样本音频 + 困难样本挖掘（运用 AmSoftmax 思想，增大正负样本之间的差异），2s 音频
+__C.general.version = "3.2"     # 8k 小安小安音频(+ small voice) + 8k 负样本音频 + 困难样本挖掘，2s 音频
 
 # data date
 # __C.general.date = "11132021"
-__C.general.date = "12012021"
+# __C.general.date = "12012021"
+__C.general.date = "12072021"
 
 # data path
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_3s_2_1_11112021/total_data_files.csv"
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_1_12012021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_1_12012021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_2_12072021/total_data_files.csv"
 
 # background noise path
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_3s_2_1_11112021/background_noise_files.csv"
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_1_12012021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_1_12012021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_2_12072021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 # __C.general.is_test = False
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/test"
 __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/test_embedding"
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_4_0_3s_tc-resnet14-hisi_fbankcpu_kd_11232021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_0_2s_tc_resnet14_fbankcpu_12022021/"
 
 # finetune model
 __C.general.finetune_on = False
@@ -129,7 +133,6 @@ __C.dataset.input_channel = 1
 __C.dataset.sampling_rate = 8000
 
 # Length of each audio clip to be analyzed
-# __C.dataset.clip_duration_ms = 3000         # 3s
 __C.dataset.clip_duration_ms = 2000         # 2s
 
 # FFT size.
@@ -196,7 +199,8 @@ __C.dataset.allow_cache = True
 __C.dataset.label = {}
 
 # label
-__C.dataset.label.positive_label = ["xiaoanxiaoan_8k"]
+# __C.dataset.label.positive_label = ["xiaoanxiaoan_8k"]
+__C.dataset.label.positive_label = ["xiaoanxiaoan_8k", "xiaoanxiaoan_8k_small_voice"]
 __C.dataset.label.positive_label_chinese_name_list = [""]
 __C.dataset.label.positive_label_together = True
 __C.dataset.label.positive_label_together_label = ["positive"]
@@ -206,14 +210,14 @@ __C.dataset.label.negative_label_together_label = ["negative"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
 __C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[1]
 __C.dataset.label.ignore_label = ['movie', 'nihaoxiaoan_8k', 'nihaoxiaoan_16k', 'truck_truckidling_noise_16k',
-                                    'xiaoanxiaoan_8k_once', 'xiaoanxiaoan_8k_over_long', 'xiaoanxiaoan_8k_small_voice', 'xiaoanxiaoan_16k', 'xiaoanxiaoan_16k_once', 'xiaoanxiaoan_16k_over_long',
+                                    'xiaoanxiaoan_8k_once', 'xiaoanxiaoan_8k_over_long', 'xiaoanxiaoan_16k', 'xiaoanxiaoan_16k_once', 'xiaoanxiaoan_16k_over_long',
                                     'xiaoanxiaoan_16k_small_voice', 'zanghuayulu_16k']
 __C.dataset.label.label_list = __C.dataset.label.negative_label + __C.dataset.label.positive_label
 __C.dataset.label.num_classes = 2
 
 # label percentage
-__C.dataset.label.silence_percentage = 50.0        # 50%
-__C.dataset.label.unknown_percentage = 2000.0       # 2000%
+__C.dataset.label.silence_percentage = 10.0        # 10%
+__C.dataset.label.unknown_percentage = 2000.0      # 2000%
 
 # trian/validation/test percentage
 __C.dataset.label.validation_percentage = 15.0  # 15%
@@ -232,13 +236,13 @@ __C.dataset.augmentation.on = True
 # __C.dataset.augmentation.on = False
 
 # How many of the training samples have background noise mixed in.
-__C.dataset.augmentation.background_frequency = 0.6
+__C.dataset.augmentation.background_frequency = 0.8
 
 # How loud the background noise should be, between 0 and 1.
 __C.dataset.augmentation.background_volume = 0.1
 
 # How many of the training samples have synthetic noise mixed in.
-__C.dataset.augmentation.synthetic_frequency = 0.5
+__C.dataset.augmentation.synthetic_frequency = 0.1
 
 # type of the synthetic noise, support ['white', 'salt_pepper'].
 __C.dataset.augmentation.synthetic_type = 'white'
@@ -329,9 +333,9 @@ __C.regularization.label_smoothing.epsilon = 0.1
 __C.loss = {}
 
 # the loss method, support ['classification', 'embedding', 'classification & embedding']
-# __C.loss.method = 'classification'
+__C.loss.method = 'classification'
 # __C.loss.method = 'embedding'
-__C.loss.method = 'classification & embedding'
+# __C.loss.method = 'classification & embedding'
 
 # the size of embedding in embedding method orclassification & embedding classification & embedding method
 __C.loss.embedding_size = 128
@@ -378,9 +382,9 @@ __C.loss.ema_alpha = 0.995
 __C.net = {}
 
 # the network name
-__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/res15.py"
+# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/res15.py"
 # __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-296.py"
-# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-196.py"
+__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-196.py"
 __C.net.class_name = "SpeechResModel"
 
 ######################################
@@ -393,9 +397,9 @@ __C.train = {}
 # __C.train.num_epochs = 16000
 # __C.train.num_epochs = 8000
 # __C.train.num_epochs = 4000
-__C.train.num_epochs = 2000
+# __C.train.num_epochs = 2000
 # __C.train.num_epochs = 500
-# __C.train.num_epochs = 1
+__C.train.num_epochs = 1
 
 # the number of samples in a batch
 # __C.train.batch_size = 2048

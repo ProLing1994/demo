@@ -177,6 +177,7 @@ def set_scheduler(cfg, optimizer):
     :param optimizer:   pytorch optimizer
     :return:
     """
+    # (TODO，scheduler 在 adam 里面仍然可以使用)
     scheduler = None
     if cfg.train.optimizer == 'SGD':
         if cfg.train.scheduler == 'StepLR':
@@ -199,6 +200,7 @@ def update_scheduler(cfg, scheduler, epoch_idx):
     :param epoch_idx:   
     :return:
     """
+    # (TODO，scheduler 在 adam 里面仍然可以使用)
     if cfg.train.optimizer == 'SGD':
         scheduler.step(epoch_idx)
     else:

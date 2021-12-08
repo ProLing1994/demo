@@ -35,7 +35,8 @@ __C.general.data_dir = "/mnt/huanyuan/data/speech/tts/Chinese_dataset/"
 # __C.general.save_dir = "/mnt/huanyuan/model/tts_vocoder/chinese_tts_vocoder/test/"
 # __C.general.save_dir = "/mnt/huanyuan/model/tts_vocoder/chinese_tts_vocoder/wavegan_chinese_singlespeaker_1_0_11232021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/tts_vocoder/chinese_tts_vocoder/wavegan_chinese_singlespeaker_1_1_normalize_11232021/"
-__C.general.save_dir = "/mnt/huanyuan/model/tts_vocoder/chinese_tts_vocoder/wavegan_chinese_singlespeaker_1_2_normalize_diff_feature_11292021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/tts_vocoder/chinese_tts_vocoder/wavegan_chinese_singlespeaker_1_2_normalize_diff_feature_11292021/"
+__C.general.save_dir = "/mnt/huanyuan/model/tts_vocoder/chinese_tts_vocoder/wavegan_chinese_singlespeaker_1_3_normalize_diff_feature_fineune_11292021/"
 
 # test after save pytorch model
 __C.general.is_test = True

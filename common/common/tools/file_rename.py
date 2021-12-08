@@ -35,7 +35,8 @@ if __name__ == '__main__':
     # input_dir = "/mnt/huanyuan/model/kws_model/asr_english/image_296_64/"
     # input_dir = "/home/huanyuan/share/temp/vm_kws/"
     # input_dir = "/home/huanyuan/share/audio_data/weakup_xiaorui/image_196_64/"
-    input_dir = "/home/huanyuan/share/audio_data/weakup_xiaorui/image_64_196/"
+    # input_dir = "/home/huanyuan/share/audio_data/weakup_xiaorui/image_64_196/"
+    input_dir = "/mnt/huanyuan2/model/audio_model/novt_model/kws_xiaoan8k_tc_resnet14/image_48_196/"
     file_format = 'pic_'
     file_type = ".jpg"
     start_id = 1
@@ -48,8 +49,8 @@ if __name__ == '__main__':
             file_path = file_list[idx]
 
             # 自定义重命名规则
-            # rename_path = os.path.join(os.path.dirname(file_path), "{}{:0>5d}{}".format(file_format, (start_id + idx), file_type))
-            rename_path = os.path.join(os.path.dirname(file_path), "{}{}{}".format(file_format, (start_id + idx), file_type))
+            rename_path = os.path.join(os.path.dirname(file_path), "{}{:0>5d}{}".format(file_format, (start_id + idx), file_type))
+            # rename_path = os.path.join(os.path.dirname(file_path), "{}{}{}".format(file_format, (start_id + idx), file_type))
             
             # # 自定义重命名规则
             # basename = "_".join(os.path.basename(file_path).split('.')[0].split('_')[-3:])
