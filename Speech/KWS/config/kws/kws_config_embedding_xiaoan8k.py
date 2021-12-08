@@ -434,12 +434,6 @@ __C.train.lr = 1e-3
 # __C.train.lr = 1e-4
 # __C.train.lr = 1e-5
 
-# step size for step learning rate
-__C.train.lr_step_size = 0
-
-# gamma for learning rate
-__C.train.lr_gamma = 0.9
-
 
 ######################################
 # optimizer parameters
@@ -463,10 +457,10 @@ __C.train.betas = (0.9, 0.999)
 # scheduler parameters
 ######################################
 
-# only with optimizer: SGD
-# scheduler, support StepLR and CosineAnnealingWarmRestarts
+# scheduler, support [None, StepLR, CosineAnnealingWarmRestarts]
+__C.train.scheduler = None
 # __C.train.scheduler = 'StepLR'
-__C.train.scheduler = 'CosineAnnealingWarmRestarts'
+# __C.train.scheduler = 'CosineAnnealingWarmRestarts'
 
 # StepLR step_size
 __C.train.lr_step_size = 1000

@@ -49,6 +49,8 @@ def generate_dataset(cfg, mode, training_mode=0):
         data_set = SpeechDataset(cfg=cfg, mode=mode)
     elif training_mode == 1:
         data_set = SpeechDatasetAlign(cfg=cfg, mode=mode)
+    elif training_mode == 2:
+        data_set = SpeechDataset(cfg=cfg, mode=mode)
     else:
         raise Exception("[ERROR:] Unknow training mode, please check!")
 
@@ -79,6 +81,8 @@ def generate_test_dataset(cfg, mode='validation', augmentation_on=False, trainin
     elif training_mode == 1:
         data_set = SpeechDatasetAlign(
             cfg=cfg, mode=mode, augmentation_on=augmentation_on)
+    elif training_mode == 2:
+        data_set = SpeechDataset(cfg=cfg, mode=mode)
     else:
         raise Exception("[ERROR:] Unknow training mode, please check!")
 

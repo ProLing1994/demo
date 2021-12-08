@@ -12,23 +12,28 @@ __C.general = {}
 
 # data folder
 __C.general.data_dir = "/mnt/huanyuan2/data/speech/kws/tf_speech_commands/speech_commands/"
-__C.general.sub_data_dir = ["/mnt/huanyuan2/data/speech/kws/tf_speech_commands/tts/sv2tts/LibriSpeech/train-clean-100/"]
+__C.general.sub_data_dir = []
+# __C.general.sub_data_dir = ["/mnt/huanyuan2/data/speech/kws/tf_speech_commands/tts/sv2tts/LibriSpeech/train-clean-100/"]
 
 # data version
-__C.general.version = "1.1"
+# __C.general.version = "1.1"
 # __C.general.version = "1.2"       # 添加 tts 合成数据
+__C.general.version = "1.3"         # 数据量同 1.1，采样率为 8192，用于模型 audiomer 训练测试
 
 # data date
-__C.general.date = "07072021"
+# __C.general.date = "07072021"
 # __C.general.date = "09302021"
+__C.general.date = "12082021"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/tf_speech_commands/dataset_1.1_07072021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/tf_speech_commands/dataset_1.1_07072021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/tf_speech_commands/dataset_1.2_09302021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.3_12082021/total_data_files.csv"
 
 # background noise path
-__C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/tf_speech_commands/dataset_1.1_07072021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/tf_speech_commands/dataset_1.1_07072021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/tf_speech_commands/dataset_1.2_09302021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.3_12082021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -114,7 +119,8 @@ __C.dataset = {}
 __C.dataset.input_channel = 1
 
 # Sampling rate.
-__C.dataset.sampling_rate = 16000
+__C.dataset.sampling_rate = 8192            # 模型 audiomer 使用的采样率为 8192
+# __C.dataset.sampling_rate = 16000
 
 # Length of each audio clip to be analyzed
 __C.dataset.clip_duration_ms = 1000
@@ -159,8 +165,9 @@ __C.dataset.trim_frame_size = 2048
 # Hop size in trimming.
 __C.dataset.trim_hop_size = 512
 
-# compute mel type, support ["fbank", "fbank_log", "fbank_nopreemphasis_log_manual", "fbank_preemphasis_log_manual", "pcen", "fbank_cpu"]
-__C.dataset.compute_mel_type = "fbank_log"
+# compute mel type, support ["wave", "fbank", "fbank_log", "fbank_nopreemphasis_log_manual", "fbank_preemphasis_log_manual", "pcen", "fbank_cpu"]
+# __C.dataset.compute_mel_type = "fbank_log"
+__C.dataset.compute_mel_type = "wave"
 
 # input size of training data (w, h), whether input size is a multiple of 16, unit: voxel
 # __C.dataset.h_alignment = True, [hisi], 模型需要图像输入长度为 16 的倍数
@@ -337,8 +344,10 @@ __C.loss.ema_alpha = 0.995
 __C.net = {}
 
 # the network name
-__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/bc-resnet.py"
-__C.net.class_name = "BCResNet"
+# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/bc-resnet.py"
+# __C.net.class_name = "BCResNet"
+__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/audiomer.py"
+__C.net.class_name = "AudiomerClassification"
 
 
 ######################################
@@ -374,14 +383,8 @@ __C.train.save_epochs = 25
 ######################################
 
 # learning rate = lr*gamma**(epoch//step_size)
-# __C.train.lr = 1e-3
-__C.train.lr = 1e-4
-
-# step size for step learning rate
-__C.train.lr_step_size = 0
-
-# gamma for learning rate
-__C.train.lr_gamma = 0.9
+__C.train.lr = 1e-3
+# __C.train.lr = 1e-4
 
 
 ######################################
@@ -407,10 +410,11 @@ __C.train.betas = (0.9, 0.999)
 # scheduler parameters
 ######################################
 
-# only with optimizer: SGD
-# scheduler, support StepLR and CosineAnnealingWarmRestarts
+# scheduler, support [None, StepLR, CosineAnnealingLR, CosineAnnealingWarmRestarts]
+__C.train.scheduler = None
 # __C.train.scheduler = 'StepLR'
-__C.train.scheduler = 'CosineAnnealingWarmRestarts'
+# __C.train.scheduler = 'CosineAnnealingLR'
+# __C.train.scheduler = 'CosineAnnealingWarmRestarts'
 
 # StepLR step_size
 __C.train.lr_step_size = 1000
@@ -423,6 +427,9 @@ __C.train.T_0 = 2
 
 # CosineAnnealingWarmRestarts T_mult
 __C.train.T_mult = 2
+
+# CosineAnnealingLR T_max
+__C.train.T_max = 100
 
 
 ######################################

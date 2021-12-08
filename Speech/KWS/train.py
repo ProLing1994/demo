@@ -73,18 +73,17 @@ def test(cfg, net, loss_func, epoch_idx, batch_idx, logger, test_data_loader, mo
     logger.info(msg)
 
 
-def train(config_file, training_mode):
+def train(args):
     """ training engine
-    :param config_file:   the input configuration file
-    :param training_mode: the model training mode
+    :param args:
     :return:              None
     """
     # load configuration file
-    cfg = load_cfg_file(config_file)
+    cfg = load_cfg_file(args.config_file)
 
     # check
     assert cfg.general.data_parallel_mode == 0, "[ERROR] If you want DistributedDataParallel, please run train_dpp.py"
-    assert not cfg.deep_mutual_learning.on, "[ERROR] If you  want Deep Mutual Learning, please run train_dml.py"
+    assert not cfg.deep_mutual_learning.on, "[ERROR] If you want Deep Mutual Learning, please run train_dml.py"
 
     # clean the existing folder if the user want to train from scratch
     setup_workshop(cfg)
@@ -151,9 +150,9 @@ def train(config_file, training_mode):
         teacher_model.eval()
 
     # define training dataset and testing dataset
-    train_dataloader, len_train_dataset = generate_dataset(cfg, 'training', training_mode)
+    train_dataloader, len_train_dataset = generate_dataset(cfg, 'training', args.training_mode)
     if cfg.general.is_test:
-        eval_validation_dataloader = generate_test_dataset(cfg, 'validation', training_mode=training_mode)
+        eval_validation_dataloader = generate_test_dataset(cfg, 'validation', training_mode=args.training_mode)
         # eval_train_dataloader = generate_test_dataset(cfg, 'training')
 
     msg = 'Training dataset number: {}'.format(len_train_dataset)
@@ -235,7 +234,7 @@ def train(config_file, training_mode):
 
         # Parameter update
         optimizer.step()
-        update_scheduler(cfg, scheduler, epoch_idx)
+        update_scheduler(cfg, scheduler, bool_updata_epoch=(last_save_epoch != epoch_idx))
         profiler.tick("Parameter update")
 
         if cfg.loss.ema_on:
@@ -268,7 +267,7 @@ def train(config_file, training_mode):
                     ema.apply_shadow() # copy ema status to the model
 
                 # save training model
-                save_checkpoint(cfg, config_file, net, optimizer, epoch_idx, batch_idx)
+                save_checkpoint(cfg, args.config_file, net, optimizer, epoch_idx, batch_idx)
 
                 if cfg.general.is_test:
                     test(cfg, net, loss_func, epoch_idx, batch_idx,
@@ -282,35 +281,39 @@ def train(config_file, training_mode):
 def main():
     parser = argparse.ArgumentParser(description='Streamax KWS Training Engine')
 
+    # training mode: [0, 1, 2]
+    # 0: mel 建模，将整个唤醒词作为一个 label 进行建模
+    # 1: mel 建模，根据帧对齐结果，采用更简洁的建模方式，对转音位置进行建模，一个唤醒词拥有多个标签
+    # 2: wav 建模，不计算 mel 特征，将整个唤醒词作为一个 label 进行建模
+    # parser.add_argument('-m', '--training_mode', type=int, default=0, nargs='?', help='training_mode')
+    # parser.add_argument('-m', '--training_mode', type=int, default=1, nargs='?', help='training_mode')
+    parser.add_argument('-m', '--training_mode', type=int, default=2, nargs='?', help='training_mode')
+
     # training_mode = 0
-    parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_tf_speech.py", nargs='?', help='config file')
-    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", nargs='?', help='config file')
-    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py", nargs='?', help='config file')
-    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui8k.py", nargs='?', help='config file')
-    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui16k.py", nargs='?', help='config file')
-    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan8k.py", nargs='?', help='config file')
-    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_embedding_xiaoan8k.py", nargs='?', help='config file')
-    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan16k.py", nargs='?', help='config file')
-    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py", nargs='?', help='config file')
-    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_all_pretrain.py", nargs='?', help='config file')
-    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_2_label_xiaoyu.py", nargs='?', help='config file')
-    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py", nargs='?', help='config file')
-    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_heybodycam.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_tf_speech.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui8k.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui16k.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan8k.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_embedding_xiaoan8k.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan16k.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_all_pretrain.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_2_label_xiaoyu.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_heybodycam.py", nargs='?', help='config file')
 
     # training_mode = 1
-    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaoyu.py", nargs='?', help='config file')
-    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaorui.py", nargs='?', help='config file')
-    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_pretrain.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaoyu.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaorui.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_pretrain.py", nargs='?', help='config file')
+
+    # training_mode = 2
+    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_tf_speech.py", nargs='?', help='config file')
     args = parser.parse_args()
 
-    # training mode: [0,1]
-    # 0: 将整个唤醒词作为一个 label 进行建模
-    # 1: 根据帧对齐结果，采用更简洁的建模方式，对转音位置进行建模，一个唤醒词拥有多个标签
-    training_mode = 0
-    if 'align' in args.input:
-        training_mode = 1
-
-    train(args.input, training_mode)
+    train(args)
 
 
 if __name__ == "__main__":

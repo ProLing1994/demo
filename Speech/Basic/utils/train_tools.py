@@ -177,34 +177,44 @@ def set_scheduler(cfg, optimizer):
     :param optimizer:   pytorch optimizer
     :return:
     """
-    # (TODO，scheduler 在 adam 里面仍然可以使用)
     scheduler = None
-    if cfg.train.optimizer == 'SGD':
-        if cfg.train.scheduler == 'StepLR':
-            scheduler = torch.optim.lr_scheduler.StepLR(optimizer=optimizer, 
-                                                        step_size=cfg.train.lr_step_size, 
-                                                        gamma=cfg.train.lr_gamma)
-        elif cfg.train.scheduler == 'CosineAnnealingWarmRestarts':
-            scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer=optimizer, 
-                                                        T_0=cfg.train.T_0,
-                                                        T_mult=cfg.train.T_mult)
-        else:
-            raise ValueError('Unknown loss scheduler')
+    if cfg.train.scheduler == None:
+        pass
+    elif cfg.train.scheduler == 'StepLR':
+        scheduler = torch.optim.lr_scheduler.StepLR(optimizer=optimizer, 
+                                                    step_size=cfg.train.lr_step_size, 
+                                                    gamma=cfg.train.lr_gamma)
+    elif cfg.train.scheduler == 'CosineAnnealingLR':
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer=optimizer, 
+                                                    T_max=cfg.train.T_max)
+    elif cfg.train.scheduler == 'CosineAnnealingWarmRestarts':
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer=optimizer, 
+                                                    T_0=cfg.train.T_0,
+                                                    T_mult=cfg.train.T_mult)
+    else:
+        raise ValueError('Unknown loss scheduler')
     return scheduler
 
 
-def update_scheduler(cfg, scheduler, epoch_idx):
+def update_scheduler(cfg, scheduler, bool_updata_epoch=False):
     """
     :param cfg:   training configure file
     :param scheduler:   pytorch scheduler
     :param epoch_idx:   
     :return:
     """
-    # (TODO，scheduler 在 adam 里面仍然可以使用)
-    if cfg.train.optimizer == 'SGD':
-        scheduler.step(epoch_idx)
-    else:
+    if cfg.train.scheduler == None:
         pass
+    elif cfg.train.scheduler == 'StepLR':
+        scheduler.step()
+    elif cfg.train.scheduler == 'CosineAnnealingLR':
+        if bool_updata_epoch:
+            scheduler.step()
+    elif cfg.train.scheduler == 'CosineAnnealingWarmRestarts':
+        if bool_updata_epoch:
+            scheduler.step()
+    else:
+        raise ValueError('Unknown loss scheduler')
 
 
 def load_state_dict(model_dir, epoch_num, sub_folder_name):

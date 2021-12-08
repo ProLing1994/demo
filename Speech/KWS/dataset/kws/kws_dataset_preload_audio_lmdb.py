@@ -1,3 +1,4 @@
+import librosa
 from multiprocessing import Manager
 import numpy as np
 import os
@@ -135,12 +136,15 @@ class SpeechDataset(Dataset):
         if self.cfg.debug.save_inputs:
             self.save_audio(data, audio_label, audio_file)
 
-        # Compute the mel spectrogram
-        data = audio.compute_mel_spectrogram(self.cfg, data)
+        if self.cfg.dataset.compute_mel_type == "wave":
+            data = data
+        else:
+            # Compute the mel spectrogram
+            data = audio.compute_mel_spectrogram(self.cfg, data)
 
-        # data augmentation
-        if self.cfg.dataset.augmentation.on and self.bool_trainning:
-            data = dataset_augmentation.dataset_augmentation_spectrum(self.cfg, data)
+            # data augmentation
+            if self.cfg.dataset.augmentation.on and self.bool_trainning:
+                data = dataset_augmentation.dataset_augmentation_spectrum(self.cfg, data)
 
         # To tensor
         data_tensor = torch.from_numpy(np.expand_dims(data, axis=0))
@@ -149,10 +153,11 @@ class SpeechDataset(Dataset):
         label_tensor = label_tensor.type(torch.LongTensor)
 
         # check tensor
-        assert data_tensor.shape[0] == self.input_channel
-        assert data_tensor.shape[1] == self.data_size_h
-        assert data_tensor.shape[2] == self.data_size_w
+        if self.cfg.dataset.compute_mel_type == "wave":
+            pass
+        else:
+            assert data_tensor.shape[0] == self.input_channel
+            assert data_tensor.shape[1] == self.data_size_h
+            assert data_tensor.shape[2] == self.data_size_w
 
-        # print
-        # print(audio_label, label_tensor)
         return data_tensor, label_tensor, index

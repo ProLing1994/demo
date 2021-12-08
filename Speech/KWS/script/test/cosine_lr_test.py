@@ -6,12 +6,12 @@ import matplotlib.pyplot as plt
 
 model = resnet18(pretrained=False)
 optimizer = torch.optim.SGD(model.parameters(), lr=0.5, momentum=0.9, weight_decay=1e-4)
-mode='cosineAnnWarm'
-max_epoch = 4000
+mode='cosineAnn'
+max_epoch = 600
 batch_iters = 1
 
 if mode=='cosineAnn':
-    scheduler = CosineAnnealingLR(optimizer, T_max=5, eta_min=0)
+    scheduler = CosineAnnealingLR(optimizer, T_max=200, eta_min=0)
 elif mode=='cosineAnnWarm':
     scheduler = CosineAnnealingWarmRestarts(optimizer, T_0=2, T_mult=2)
     '''
@@ -31,10 +31,10 @@ cur_lr_list = []
 for epoch in range(max_epoch):
     print('epoch_{}: '.format(epoch))
     for batch in range(batch_iters):
-        # scheduler.step(epoch + batch / batch_iters)
-        scheduler.step(epoch)
         optimizer.step()
-        #scheduler.step()
+        # scheduler.step(epoch + batch / batch_iters)
+        # scheduler.step(epoch)
+        scheduler.step()
         cur_lr = optimizer.param_groups[-1]['lr']
         cur_lr_list.append(cur_lr)
         print('cur_lr: ',cur_lr)
