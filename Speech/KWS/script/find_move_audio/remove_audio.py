@@ -34,8 +34,8 @@ if __name__ == "__main__":
     # 方法：删除同名文件
     parser = argparse.ArgumentParser(description='Streamax KWS Engine')
     args = parser.parse_args()
-    args.input_dir = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/truck_platform_alarm_8k/over_short/"
-    args.output_dir = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/truck_platform_alarm_8k/"
+    args.input_dir = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_16k_over_long/"
+    args.output_dir = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_16k_small_voice/"
 
     remove_audio_samename()
 
