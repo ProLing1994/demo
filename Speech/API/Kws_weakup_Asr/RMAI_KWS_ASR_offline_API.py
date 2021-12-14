@@ -7,7 +7,7 @@ from RMAI_KWS_ASR_API_Canbin import KwsAsrApi
 
 def KWS_ASR_offine():
     # init 
-    kws_asr_api = KwsAsrApi(bool_do_kws_weakup=True, bool_do_asr=True, bool_gpu=True)
+    kws_asr_api = KwsAsrApi(bool_do_kws_wakeup=True, bool_do_asr=True, bool_gpu=True)
 
     # load wave
     wave_loader = WaveLoader.WaveLoader_Librosa(kws_asr_api.sample_rate())

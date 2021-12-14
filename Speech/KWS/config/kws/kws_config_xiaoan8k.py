@@ -78,7 +78,6 @@ __C.general.num_gpus = 1
 
 # the GPUs' id used in training
 # __C.general.gpu_ids = '0, 1, 2, 3'
-# __C.general.gpu_ids = '6, 7'
 __C.general.gpu_ids = '0'
 
 # data_parallel_mode: [0, 1]

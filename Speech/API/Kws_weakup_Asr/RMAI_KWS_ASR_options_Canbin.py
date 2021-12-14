@@ -49,15 +49,16 @@ __C.general.feature_remove_after_time = 6           # 为保证特征一致，�
 __C.general.feature_remove_before_time = 100        # 为保证特征一致，拼接特征需要丢弃之前的时间维度 100
 __C.general.vad_container_time = 4                  # vad 容器，判断连续 4s 中是否全部为静音，用于停止后续操作
 __C.general.asr_vad_audio_data_ms = 6000            # 语音数据容器，用于带 vad 的 asr 识别，装有音频数据 6000ms
-__C.general.asr_vad_container_silence_time = 4      # asr vad 容器，判断连续 3s 中是否全部为静音，用于停止后续操作
-__C.general.asr_vad_container_end_time = 6          # asr vad 容器，判断连续 6s 中是否没有结束，用于停止后续操作
-__C.general.asr_vad_container_end_loop_time = 2     # asr vad 容器，判断连续 2 个超长检测，用于停止后续操作
-__C.general.asr_vad_counter_min_time_list = [2.1, 3.0]   # asr vad 容器，最少检测音频 2.1s/3.0s，分别对应第一次第二次
+__C.general.asr_vad_silence_threshold_s = 4         # asr vad 容器，判断连续 4s 中是否全部为静音，用于停止后续操作
+__C.general.asr_vad_overtime_threshold_s = 6        # asr vad 容器，判断连续 6s 中是否没有结束，用于停止后续操作
+__C.general.asr_vad_loop_threshold = 2     # asr vad 容器，判断连续 2 个超长检测，用于停止后续操作
+__C.general.asr_vad_minitime_threshold_s = [2.1, 3.0]   # asr vad 容器，最少检测音频 2.1s/3.0s，分别对应第一次第二次
 
 # string
-__C.general.string_silence = "抱歉，你似乎没有说话"
-__C.general.string_end = "抱歉，我没有听清你在说什么，请再说一遍"
-__C.general.string_end_loop = "抱歉，我还是没有听清你在说什么"
+__C.general.string_silence_warring = "抱歉，你似乎没有说话"
+__C.general.string_warring = "抱歉，我没有听清你在说什么，请再说一遍"
+__C.general.string_end_loop = "ByeBye"
+__C.general.string_end_safety = "ByeBye~"
 
 # chinese key words
 __C.general.kws_list = [
@@ -130,6 +131,5 @@ __C.model.asr_num_classes = 408
 
 # vad
 __C.model.vad_mode = 3
-
 # graph
-__C.model.graph_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "impl", "rm_common_library/KeywordSearch/keyword_graph_formated.cmd")
+__C.model.graph_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "impl", "rm_common_library/KeywordSearch/commands_modified.cmd")

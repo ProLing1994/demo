@@ -362,6 +362,7 @@ __C.train.num_epochs = 1
 
 # the number of samples in a batch
 # __C.train.batch_size = 2048
+# __C.train.batch_size = 32
 __C.train.batch_size = 1
 
 # the number of threads for IO

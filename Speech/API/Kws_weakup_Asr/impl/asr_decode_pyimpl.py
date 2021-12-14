@@ -57,47 +57,103 @@ def get_edit_distance(sentence1, sentence2):
 
 
 def get_ouststr(pred):
-    object_list=['空调','天窗','收音机','地图','前排窗户','蓝牙','后排窗户','音量','温度']
-    operation_list=['打开','关闭','连接','断开','调节']
+    object_list=['空调','天窗','收音机','地图','前排窗户','蓝牙','后排窗户','音量','温度','音乐','频道','录像','首歌']
+    operation_list=['打开','关闭','连接','断开','调节','上一','下一','大一点','小一点','高一点','低一点']
+    clamdown_list=['傻逼','他妈的','草泥马']
+    police_list=['帮我报警','拨打紧急联系人','请求道路救援']
+    hidden_list=['科技构筑美好交通未来','我会认真开车']
     num_dict={'一':'1','二':'2','三':'3','四':'4','五':'5','六':'6','七':'7','八':'8','九':'9'}
     num_list=['一','二','三','四','五','六','七','八','九','十','百']
     out_str=''
+    user_command=''
+    match_right=False
     if(pred==None):
-        return ''
+        return ('','')
     pred=''.join(pred)
+    for hidden in hidden_list:
+        if(hidden in pred):
+            return('hidden_'+hidden+'_None_0','')
+    for clamdown in clamdown_list:
+        if(clamdown in pred):
+            return ('clamdown_'+clamdown+'_None_0','')
+    for police in police_list:
+        if(police in pred):
+            return ('police_'+police+'_None_0',police)
     for object in object_list:
         if(object in pred):
-            out_str='control-'+object
+            match_right=True
+            user_command=object
+            if(object=='首歌'):
+                object='音乐'
+            out_str='control_'+object
             break
+    if(match_right):
+        match_right=False
+    else:
+        return ('','')
     for operation in operation_list:
         if(operation in pred):
-            out_str=out_str+'-'+operation
+            match_right=True
+            if(operation=="上一"):
+                out_str=out_str+'_增量_-1'
+                user_command=operation+user_command
+                return (out_str,user_command)
+            elif(operation=="下一"):
+                out_str=out_str+'_增量_1'
+                user_command=operation+user_command
+                return (out_str,user_command)
+            elif(operation=="大一点"):
+                out_str=out_str+'_增量_10'
+                user_command=user_command+operation
+                return (out_str,user_command)
+            elif(operation=="小一点"):
+                out_str=out_str+'_增量_-10'
+                user_command=user_command+operation
+                return (out_str,user_command)
+            elif(operation=="高一点"):
+                out_str=out_str+'_增量_1'
+                user_command=user_command+operation
+                return (out_str,user_command)
+            elif(operation=="低一点"):
+                out_str=out_str+'_增量_-1'
+                user_command=user_command+operation
+                return (out_str,user_command)
+            else:
+                out_str=out_str+'_'+operation
+                user_command=operation+user_command
             break
+    if(match_right):
+        match_right=False
+    else:
+        return ('','')
     start_pos=re.search('到',pred)
     if(start_pos==None):
-        out_unit=out_str.split('-')
+        out_unit=out_str.split('_')
         if(len(out_unit)!=3):
-            return ''
+            return ('',user_command)
         else:
             operation=out_unit[-1]
             if(operation in['打开','连接']):
-                out_str=out_str+'-'+'100'
+                out_str=out_str+'_'+'100'
             elif(operation in['关闭','断开']):
-                out_str=out_str+'-'+'0'
+                out_str=out_str+'_'+'0'
             else:
-                return ''
+                return ('',user_command)
     else:
+        user_command=user_command+'到'
         value=''
         start_pos=start_pos.span()[0]
         if(pred[start_pos+1:start_pos+4]=='百分之'):
+            user_command=user_command+'百分之'
             start_pos+=4
         else:
             start_pos+=1
         while start_pos<len(pred) and pred[start_pos] in num_list :
+            user_command=user_command+pred[start_pos]
             if(pred[start_pos]=='十'):
                if(len(value)==0):
                   value='1'
-               elif(start_pos==len(pred) - 1 or pred[start_pos+1] not in num_list):
+               elif(start_pos==(len(pred)-1) or pred[start_pos+1] not in num_list):
                   value+='0'
             elif(pred[start_pos]=='百'):
                 if(len(value)==0):
@@ -107,8 +163,8 @@ def get_ouststr(pred):
             else:
                 value+=num_dict[pred[start_pos]]
             start_pos+=1
-        out_str+='-'+value
-    return out_str
+        out_str+='_'+value
+    return (out_str,user_command)
 
 class Decode(object):
     """ decode python wrapper """

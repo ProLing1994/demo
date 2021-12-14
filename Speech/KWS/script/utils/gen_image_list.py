@@ -69,48 +69,48 @@ def gen_image_list(args):
 
 if __name__ == "__main__":
     # asr mandarin:
-    # default_audio_folder = "/home/huanyuan/share/audio_data/mandarin_wav/安静场景/"
-    # default_output_folder = "/home/huanyuan/share/audio_data/mandarin_wav/安静场景/image_396_8k_56"
-    # default_audio_folder = "/home/huanyuan/share/audio_data/mandarin_wav/闹市场景/"
-    # default_output_folder = "/home/huanyuan/share/audio_data/mandarin_wav/闹市场景/image_396_8k_56"
-    # default_transpose = False
+    default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/mandarin_wav/安静场景/wav/"
+    default_output_folder = "/home/huanyuan/share/huanyuan/audio_data/mandarin_wav/安静场景/image_596_8k_56"
+    # default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/mandarin_wav/闹市场景/wav/"
+    # default_output_folder = "/home/huanyuan/share/huanyuan/audio_data/mandarin_wav/闹市场景/image_596_8k_56"
+    default_transpose = False
     
-    # default_audio_folder = "/home/huanyuan/share/audio_data/mandarin_wav/安静场景/"
-    # default_output_folder = "/home/huanyuan/share/audio_data/mandarin_wav/安静场景/image_296_56"
-    # default_audio_folder = "/home/huanyuan/share/audio_data/mandarin_wav/闹市场景/"
-    # default_output_folder = "/home/huanyuan/share/audio_data/mandarin_wav/闹市场景/image_296_56"
-    # default_audio_folder = "/home/huanyuan/share/audio_data/"
-    # default_output_folder = "/home/huanyuan/share/audio_data/image_296_56"
+    # default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/mandarin_wav/安静场景/"
+    # default_output_folder = "/home/huanyuan/share/huanyuan/audio_data/mandarin_wav/安静场景/image_296_56"
+    # default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/mandarin_wav/闹市场景/"
+    # default_output_folder = "/home/huanyuan/share/huanyuan/audio_data/mandarin_wav/闹市场景/image_296_56"
+    # default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/"
+    # default_output_folder = "/home/huanyuan/share/huanyuan/audio_data/image_296_56"
     # default_transpose = False
 
     # # kws: xiaorui
-    # # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/xiaorui/"
-    # # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/xiaorui_long/"
-    # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/other/"
-    # default_output_folder = "/home/huanyuan/share/audio_data/weakup_xiaorui/image_8k_56_196"
+    # # default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/weakup_xiaorui/xiaorui/"
+    # # default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/weakup_xiaorui/xiaorui_long/"
+    # default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/weakup_xiaorui/other/"
+    # default_output_folder = "/home/huanyuan/share/huanyuan/audio_data/weakup_xiaorui/image_8k_56_196"
     # default_transpose = True
 
     # # kws: activatebwc
-    # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_activatebwc/activatebwc/"
-    # # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_activatebwc/activatebwc_long/"
-    # # default_audio_folder = "/home/huanyuan/share/audio_data/weakup_activatebwc/other/"
-    # # default_output_folder = "/home/huanyuan/share/audio_data/weakup_activatebwc/image_64_196"
-    # default_output_folder = "/home/huanyuan/share/audio_data/weakup_activatebwc/temp/"
+    # default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/weakup_activatebwc/activatebwc/"
+    # # default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/weakup_activatebwc/activatebwc_long/"
+    # # default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/weakup_activatebwc/other/"
+    # # default_output_folder = "/home/huanyuan/share/huanyuan/audio_data/weakup_activatebwc/image_64_196"
+    # default_output_folder = "/home/huanyuan/share/huanyuan/audio_data/weakup_activatebwc/temp/"
     # default_transpose = True
 
     # # asr english:
-    # default_audio_folder = "/home/huanyuan/share/audio_data/english_wav/"
-    # default_output_folder = "/home/huanyuan/share/audio_data/english_wav/image_296_64"
+    # default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/english_wav/"
+    # default_output_folder = "/home/huanyuan/share/huanyuan/audio_data/english_wav/image_296_64"
     # default_transpose = False
 
-    # kws: xiaoan8k
-    default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/weakup/weakup_xiaoan8k/image/"
-    default_output_folder = "/home/huanyuan/share/huanyuan/audio_data/weakup/weakup_xiaoan8k/image_48_196/"
-    default_transpose = True
+    # # kws: xiaoan8k
+    # default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/weakup/weakup_xiaoan8k/image/"
+    # default_output_folder = "/home/huanyuan/share/huanyuan/audio_data/weakup/weakup_xiaoan8k/image_48_196/"
+    # default_transpose = True
 
     # # weakup & asr:
-    # default_audio_folder = "/home/huanyuan/share/audio_data/kws_weakup_asr/test/"
-    # default_output_folder = "/home/huanyuan/share/audio_data/kws_weakup_asr/test/"
+    # default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/kws_weakup_asr/test/"
+    # default_output_folder = "/home/huanyuan/share/huanyuan/audio_data/kws_weakup_asr/test/"
     # default_transpose = False
 
     parser = argparse.ArgumentParser(description='Streamax ASR Demo Engine')
@@ -144,6 +144,14 @@ if __name__ == "__main__":
     # # args.feature_time = 196
     # args.feature_time = 192
 
+    # 8k & 6s
+    args.sample_rate = 8000
+    args.window_size_ms = 6000
+    args.window_stride_ms = 3000
+    args.nfilt = 64
+    args.feature_freq = 56
+    args.feature_time = 596
+
     # # 8k & 4s
     # args.sample_rate = 8000
     # args.window_size_ms = 4000
@@ -152,13 +160,13 @@ if __name__ == "__main__":
     # args.feature_freq = 56
     # args.feature_time = 396
 
-    # 8k & 2s
-    args.sample_rate = 8000
-    args.window_size_ms = 2000
-    args.window_stride_ms = 2000
-    args.nfilt = 48
-    args.feature_freq = 48
-    args.feature_time = 196
+    # # 8k & 2s
+    # args.sample_rate = 8000
+    # args.window_size_ms = 2000
+    # args.window_stride_ms = 2000
+    # args.nfilt = 48
+    # args.feature_freq = 48
+    # args.feature_time = 196
 
     # # 8k & 1.5s
     # args.sample_rate = 8000

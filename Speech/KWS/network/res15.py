@@ -20,9 +20,10 @@ class SpeechResModel(nn.Module):
     # init
     num_classes = cfg.dataset.label.num_classes
     self.method = cfg.loss.method
-    model_embedding_size = cfg.loss.embedding_size
     num_features = 45
-    
+    if self.method == 'embedding' or self.method == 'classification & embedding': 
+      model_embedding_size = cfg.loss.embedding_size
+
     self.conv0 = nn.Conv2d(in_channels=1, out_channels=num_features,
                            kernel_size=(3, 3), padding=(1, 1), 
                            stride=(1, 1), bias=False)
