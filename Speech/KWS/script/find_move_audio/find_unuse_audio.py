@@ -19,13 +19,14 @@ def find_audio():
         if not os.path.exists(find_path):
             output_path = os.path.join(args.output_dir, os.path.basename(wave_path).split('.')[0] + '.wav')
             print(wave_path, '->', output_path)
-            shutil.copy(wave_path, output_path)
+            # shutil.copy(wave_path, output_path)
+            shutil.move(wave_path, output_path)
 
 
 if __name__ == "__main__":
-    default_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_10182021/out_0425/xiaoan/mic/"
-    default_find_input_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_10182021/out_0425/xiaoan/kaldi_cut_keyword/mic/"
-    default_output_dir = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_10182021/out_0425/xiaoan/kaldi_cut_keyword/unuse/"
+    default_input_dir = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_8k_small_voice/"
+    default_find_input_dir = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/民太安数据清洗/xiaoanxiaoan_8k_small_voice/"
+    default_output_dir = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/民太安数据清洗/unuse/"
     
     parser = argparse.ArgumentParser(description='Streamax KWS Engine')
     parser.add_argument('--input_dir', type=str, default=default_input_dir)

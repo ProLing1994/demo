@@ -106,7 +106,6 @@ class KwsAsrApi():
             asr_command=asr_output_tuple[1]
             if bool_exit_wakeup:
                 self.params_dict['bool_wakeup'] = False
-                self.params_dict['asr_vad_first_detect']=True
                 
                 # 控制 asr 的间隔时间
                 self.params_dict['counter_asr'] -= 1
@@ -566,7 +565,7 @@ class KwsAsrApi():
 
             if len(result_tuple[1]) != 0:
                 # 清空
-                self.params_dict['asr_vad_first_detect']==False
+                self.params_dict['asr_vad_first_detect']=False
                 self.asr_vad_state_reset(reset_vad_falg=False)
                 return False, result_tuple
             else:
@@ -626,6 +625,7 @@ class KwsAsrApi():
             raise NotImplementedError
         elif self.cfg.general.decode_id == 1:
             net_output = torch.from_numpy(net_output)
+            # symbol_list = self.asr_beamsearch.prefix_beam_search(net_output, lm=self.lm)
             symbol_list = self.asr_beamsearch.prefix_beam_search_contextbias(net_output, lm=self.lm, lm_weight=0.3)
         else:
             raise Exception("[Unknow:] cfg.general.decode_id = {}".format(self.cfg.general.decode_id))
@@ -655,6 +655,7 @@ class KwsAsrApi():
         if reset_vad_falg:
             self.params_dict['asr_vad_flag'] = False
             self.params_dict['asr_vad_loop_times'] = 0
+            self.params_dict['asr_vad_first_detect']=True
 
     def asr_duplicate_update_counter(self):
         for key in self.params_dict['asr_duplicate_counter']:

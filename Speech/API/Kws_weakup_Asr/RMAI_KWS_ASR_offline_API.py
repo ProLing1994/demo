@@ -32,7 +32,7 @@ def KWS_ASR_offine():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Streamax KWS ASR offine Engine')
-    parser.add_argument('--input_wav', type=str, default="/home/huanyuan/code/demo/Speech/API/Kws_weakup_Asr/audio/test-kws-xiaorui-asr-mandarin-taxi_001.wav")
+    parser.add_argument('--input_wav', type=str, default="/home/huanyuan/share/huanyuan/audio_data/weakup_asr/weakup_xiaorui_asr_mandarin_16k/test_kws_xiaorui_asr_canbin_16k_000.wav")
     args = parser.parse_args()
 
     KWS_ASR_offine()

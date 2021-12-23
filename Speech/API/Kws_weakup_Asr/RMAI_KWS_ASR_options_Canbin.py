@@ -119,6 +119,7 @@ __C.model.asr_model_path = os.path.join(os.path.dirname(os.path.abspath(__file__
 __C.model.asr_prototxt_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "?")
 __C.model.asr_dict_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "asr_mandarin_dict_canbin.txt")
 __C.model.asr_lm_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "3gram_asr_mandarin_canbin_1125.bin")
+# __C.model.asr_lm_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model", "commands_grammar_pinyin_3gram.bin")
 __C.model.asr_net_input_name = "data"
 __C.model.asr_net_output_name = "prob"
 __C.model.asr_chw_params = "1,296,64"

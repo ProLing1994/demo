@@ -16,8 +16,8 @@ def plot_roc(fpr, tpr, color, linestyle, label):
     plt.legend(loc=4)
     # plt.xlim([0.0, 0.5])
     # plt.ylim([0.5, 1.01])
-    plt.xlim([0.0, 0.05])
-    plt.ylim([0.96, 1.01])
+    plt.xlim([0.0, 0.1])
+    plt.ylim([0.9, 1.01])
     plt.xlabel('Flase Positive Rate')
     plt.ylabel('True Positive Rate')
     plt.title('Receiver Operating Characteristic')
@@ -144,18 +144,19 @@ def main():
     # show_roc(csv_list, color_list, linestyle_list, name_list, label_num, ignore_num)
 
     # tf_speech_commands
-    # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_with_augmentation_preload_audio_res15_10232020/infer_longterm_validation_augmentation_False_mean.csv",
-    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_1_edge-speech-nets_02042021/infer_longterm_validation_augmentation_False_mean.csv",
-    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_2_tc-resnet8_02192021/infer_longterm_validation_augmentation_False_mean.csv",
-    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_3_tc-resnet14_02192021/infer_longterm_validation_augmentation_False_mean.csv",
-    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_4_tc-resnet8-dropout_02192021/infer_longterm_validation_augmentation_False_mean.csv",
-    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_5_tc-resnet14-dropout_02192021/infer_longterm_validation_augmentation_False_mean.csv"]
-    # color_list = ["y", "r", "g", "b", "g", "b"]
-    # linestyle_list = ["-", "-", "-", "-", "--", "--"]
-    # name_list = ["res15-validation", "edge-speech-nets", "tc-resnet8", "tc-resnet14", "tc-resnet8-dropout", "tc-resnet14-dropout"]
-    # label_num = 12
-    # ignore_num= 2
-    # show_roc(csv_list, color_list, linestyle_list, name_list, label_num, ignore_num)
+    csv_list = ["/mnt/huanyuan/model/kws/kws_speech/kws_speech_1_1_edge-speech-nets_02042021/infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan/model/kws/kws_speech/kws_speech_1_2_tc-resnet8_02192021/infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan/model/kws/kws_speech/kws_speech_1_3_tc-resnet14_02192021/infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan/model/kws/kws_speech/kws_speech_1_4_tc-resnet8-dropout_02192021/infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan/model/kws/kws_speech/kws_speech_1_5_tc-resnet14-dropout_02192021/infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan/model/kws/kws_speech/kws_speech_1_6_bc_resnet_02192021/infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan/model/kws/kws_speech/kws_speech_1_7_bc_resnet_3_12152021/infer_longterm_validation_augmentation_False_mean.csv",]
+    color_list = ["r", "g", "g", "b", "b", "y", "y"]
+    linestyle_list = ["-", "-", "--", "-", "--", "-", "--"]
+    name_list = ["edge-speech-nets", "tc-resnet8", "tc-resnet14", "tc-resnet8-dropout", "tc-resnet14-dropout", "bc_resnet-1", "bc_resnet-3"]
+    label_num = 12
+    ignore_num= 2
+    show_roc(csv_list, color_list, linestyle_list, name_list, label_num, ignore_num)
 
     # # activatebwc: 2 label 
     # csv_list = ["/mnt/huanyuan2/model/kws/kws_english/kws_activatebwc_2_7_tc-resnet14-amba_fbankcpu_kd_09222021/dataset_1_6_infer_longterm_validation_augmentation_False_mean.csv",
@@ -171,17 +172,17 @@ def main():
     # ignore_num= 1
     # show_roc(csv_list, color_list, linestyle_list, name_list, label_num, ignore_num)
 
-    # xiaoan: 2 label 
-    csv_list = ["/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/dataset_1_9_infer_longterm_validation_augmentation_False_mean.csv",
-                "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/dataset_1_10_infer_longterm_validation_augmentation_False_mean.csv",
-                "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_3_tc-resnet14-hisi_fbankcpu_kd_11222021/dataset_1_9_infer_longterm_validation_augmentation_False_mean.csv",
-                "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_3_tc-resnet14-hisi_fbankcpu_kd_11222021/dataset_1_10_infer_longterm_validation_augmentation_False_mean.csv"]
-    color_list = ["r", "r", "b", "b"]
-    linestyle_list = ["-", "--", "-", "--"]
-    name_list = ["xiaoan8k-res15(3.2)--dataset(1.9)", "xiaoan8k-tcresnet14(3.2)--dataset(1.10)", "xiaoan8k-res15-64(3.3)--dataset(1.9)", "xiaoan8k-tcresnet14-64(3.3)--dataset(1.10)",]
-    label_num = 2
-    ignore_num= 1
-    show_roc(csv_list, color_list, linestyle_list, name_list, label_num, ignore_num)
+    # # xiaoan: 2 label 
+    # csv_list = ["/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/dataset_1_9_infer_longterm_validation_augmentation_False_mean.csv",
+    #             "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/dataset_1_10_infer_longterm_validation_augmentation_False_mean.csv",
+    #             "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_3_tc-resnet14-hisi_fbankcpu_kd_11222021/dataset_1_9_infer_longterm_validation_augmentation_False_mean.csv",
+    #             "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_3_tc-resnet14-hisi_fbankcpu_kd_11222021/dataset_1_10_infer_longterm_validation_augmentation_False_mean.csv"]
+    # color_list = ["r", "r", "b", "b"]
+    # linestyle_list = ["-", "--", "-", "--"]
+    # name_list = ["xiaoan8k-res15(3.2)--dataset(1.9)", "xiaoan8k-tcresnet14(3.2)--dataset(1.10)", "xiaoan8k-res15-64(3.3)--dataset(1.9)", "xiaoan8k-tcresnet14-64(3.3)--dataset(1.10)",]
+    # label_num = 2
+    # ignore_num= 1
+    # show_roc(csv_list, color_list, linestyle_list, name_list, label_num, ignore_num)
 
     # # xiaorui: 2 label
     # csv_list = ["/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_6_2_tc-resnet14-hisi_fbankcpu_kd_05302021/dataset_1_6_infer_longterm_validation_augmentation_False_mean.csv",

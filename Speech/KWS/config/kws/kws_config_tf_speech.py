@@ -16,40 +16,58 @@ __C.general.sub_data_dir = []
 # __C.general.sub_data_dir = ["/mnt/huanyuan2/data/speech/kws/tf_speech_commands/tts/sv2tts/LibriSpeech/train-clean-100/"]
 
 # data version
-# __C.general.version = "1.1"
+__C.general.version = "1.1"
 # __C.general.version = "1.2"       # 添加 tts 合成数据
-__C.general.version = "1.3"         # 数据量同 1.1，采样率为 8192，用于模型 audiomer 训练测试
+# __C.general.version = "1.3"         # 数据量同 1.1，采样率为 8192，用于模型 audiomer 训练测试
 
 # data date
-# __C.general.date = "07072021"
+__C.general.date = "07072021"
 # __C.general.date = "09302021"
-__C.general.date = "12082021"
+# __C.general.date = "12082021"
 
 # data path
-# __C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/tf_speech_commands/dataset_1.1_07072021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/tf_speech_commands/dataset_1.1_07072021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/tf_speech_commands/dataset_1.2_09302021/total_data_files.csv"
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.3_12082021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.3_12082021/total_data_files.csv"
 
 # background noise path
-# __C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/tf_speech_commands/dataset_1.1_07072021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/tf_speech_commands/dataset_1.1_07072021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/tf_speech_commands/dataset_1.2_09302021/background_noise_files.csv"
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.3_12082021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/tf_speech_commands/dataset_1.3_12082021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_speech/test"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_0_res15_02042021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_1_edge-speech-nets_02042021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_2_tc-resnet8_02192021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_3_tc-resnet14_02192021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_4_tc-resnet8-dropout_02192021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_speech_1_5_tc-resnet14-dropout_02192021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_speech/test"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_speech/kws_speech_1_0_res15_02042021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_speech/kws_speech_1_1_edge-speech-nets_02042021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_speech/kws_speech_1_2_tc-resnet8_02192021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_speech/kws_speech_1_3_tc-resnet14_02192021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_speech/kws_speech_1_4_tc-resnet8-dropout_02192021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_speech/kws_speech_1_5_tc-resnet14-dropout_02192021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_speech/kws_speech_1_6_bc_resnet_02192021/"
+__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_speech/kws_speech_1_7_bc_resnet_8_12152021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_speech/kws_speech_2_7_res15_basic_label_smooth_ema_augmentation_tts_8000_epoch_09302021/"
 
 # finetune model
 __C.general.finetune_on = False
+
+# 模型加载方式，[0: 根据文件目录查找, 1: 模型加载，指定文件路径]
+__C.general.load_mode_type = 0
+
+# 方式一：模型加载，根据文件目录查找
+__C.general.finetune_model_dir = ""
+__C.general.finetune_epoch_num = 0
+__C.general.finetune_sub_folder_name = 'checkpoints'
+# 方式二：模型加载，指定文件路径
+__C.general.finetune_model_path = ""
+
+__C.general.finetune_state_name = 'state_dict'
+__C.general.finetune_ignore_key_list = []
+# __C.general.finetune_ignore_key_list = ['module.encoder.embedding.weight']
+# module 字段添加，[0: 不添加字段, 1: 去除 module 字段, 2: 添加 module 字段]
+__C.general.finetune_add_module_type = 0
 
 # set certain epoch to continue training, set -1 to train from scratch
 __C.general.resume_epoch_num = -1
@@ -119,8 +137,8 @@ __C.dataset = {}
 __C.dataset.input_channel = 1
 
 # Sampling rate.
-__C.dataset.sampling_rate = 8192            # 模型 audiomer 使用的采样率为 8192
-# __C.dataset.sampling_rate = 16000
+# __C.dataset.sampling_rate = 8192            # 模型 audiomer 使用的采样率为 8192
+__C.dataset.sampling_rate = 16000
 
 # Length of each audio clip to be analyzed
 __C.dataset.clip_duration_ms = 1000
@@ -166,8 +184,8 @@ __C.dataset.trim_frame_size = 2048
 __C.dataset.trim_hop_size = 512
 
 # compute mel type, support ["wave", "fbank", "fbank_log", "fbank_nopreemphasis_log_manual", "fbank_preemphasis_log_manual", "pcen", "fbank_cpu"]
-# __C.dataset.compute_mel_type = "fbank_log"
-__C.dataset.compute_mel_type = "wave"
+__C.dataset.compute_mel_type = "fbank_log"
+# __C.dataset.compute_mel_type = "wave"
 
 # input size of training data (w, h), whether input size is a multiple of 16, unit: voxel
 # __C.dataset.h_alignment = True, [hisi], 模型需要图像输入长度为 16 的倍数
@@ -344,10 +362,10 @@ __C.loss.ema_alpha = 0.995
 __C.net = {}
 
 # the network name
-# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/bc-resnet.py"
-# __C.net.class_name = "BCResNet"
-__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/audiomer.py"
-__C.net.class_name = "AudiomerClassification"
+__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/bc-resnet.py"
+__C.net.class_name = "BCResNet"
+# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/audiomer.py"
+# __C.net.class_name = "AudiomerClassification"
 
 
 ######################################
@@ -457,7 +475,8 @@ __C.debug.seed = 0
 __C.test = {}
 
 # the number of testing epochs
-__C.test.model_epoch = -1
+# __C.test.model_epoch = -1
+__C.test.model_epoch = 3850
 
 # mode, support [0: RecognizeCommands, 1: RecognizeCommandsCountNumber, 2:RecognizeCommandsAlign]
 __C.test.method_mode = 0

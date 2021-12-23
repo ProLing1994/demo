@@ -145,7 +145,8 @@ class BCResNet(torch.nn.Module):
         # init
         self.cfg = cfg
         self.num_classes = self.cfg.dataset.label.num_classes
-        self.width_multiplier = 1.0
+        # self.width_multiplier = 1.0
+        self.width_multiplier = 3.0
 
         self.conv1 = nn.Conv2d(1, int(16 * self.width_multiplier), 5, stride=(2, 1), padding=(2, 2))
 

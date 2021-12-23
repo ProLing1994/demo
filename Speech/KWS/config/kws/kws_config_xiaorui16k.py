@@ -202,10 +202,8 @@ __C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[1]
 __C.dataset.label.ignore_label = ['kaldi_cut_keyword', 'xiaorui_8k', 'nihaoxiaoan_8k',
                                     'truck_platform_alarm_8k', 'truck_truckidling_noise_8k', 'weibo_8k', 
                                     'zanghuayulu_8k', 'zanghuayulu_16k',
-                                    'xiaoanxiaoan_16k_once', 
-                                    'xiaoanxiaoan_16k_over_long', 'xiaoanxiaoan_16k_small_voice',
-                                    'xiaoanxiaoan_8k', 'xiaoanxiaoan_8k_once', 
-                                    'xiaoanxiaoan_8k_over_long', 'xiaoanxiaoan_8k_small_voice',
+                                    'xiaoanxiaoan_16k_once', 'xiaoanxiaoan_16k_small_voice',
+                                    'xiaoanxiaoan_8k', 'xiaoanxiaoan_8k_once', 'xiaoanxiaoan_8k_small_voice',
                                     'xiaoanxiaoan_8k_difficult_sample_mining']
 __C.dataset.label.label_list = __C.dataset.label.negative_label + __C.dataset.label.positive_label
 __C.dataset.label.num_classes = 2

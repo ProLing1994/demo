@@ -16,27 +16,31 @@ __C.general.sub_data_dir = ["/mnt/huanyuan2/data/speech/kws/xiaoyu_dataset/exper
 
 # data version
 # __C.general.version = "1.8"
-# __C.general.version = "1.9"     # 数据集清洗（小声音频）+ 添加部分实车录制数据 + 困难样本挖掘（电影、实车误报）
+# __C.general.version = "1.9"      # 数据集清洗（小声音频）+ 添加部分实车录制数据 + 困难样本挖掘（电影、实车误报）
 # __C.general.version = "1.10"     # 困难样本挖掘（实车误报）
-__C.general.version = "1.11"     # 之前实验性能拉胯，增加小声音频，减少平台误报数据（adpro_0430）
+# __C.general.version = "1.11"     # 之前实验性能拉胯，增加小声音频，减少平台误报数据（adpro_0430）
+__C.general.version = "1.12"     # 清洗小安小安脏数据（包含小声音频）
 
 # data date
 # __C.general.date = "05202021"
 # __C.general.date = "10262021"
 # __C.general.date = "11112021"
-__C.general.date = "12072021"
+# __C.general.date = "12072021"
+__C.general.date = "12222021"
 
 # data path
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.8_05202021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_9_10262021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_10_11112021/total_data_files.csv"
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_11_12072021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_11_12072021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_12_12222021/total_data_files.csv"
 
 # background noise path
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.8_05202021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_9_10262021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_10_11112021/background_noise_files.csv"
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_11_12072021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_11_12072021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_12_12222021/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -216,7 +220,7 @@ __C.dataset.label.negative_label_together = True
 __C.dataset.label.negative_label_together_label = ["negative"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
 __C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[1]
-__C.dataset.label.ignore_label = ["kaldi_cut_keyword", "xiaoanxiaoan_16k_over_long", "xiaoanxiaoan_8k_over_long", "xiaorui_16k_difficult_sample_mining"]
+__C.dataset.label.ignore_label = ["kaldi_cut_keyword", "xiaoanxiaoan_8k_once", "xiaoanxiaoan_16k_once", "xiaorui_16k_difficult_sample_mining"]
 __C.dataset.label.label_list = __C.dataset.label.negative_label + __C.dataset.label.positive_label
 __C.dataset.label.num_classes = 2
 
