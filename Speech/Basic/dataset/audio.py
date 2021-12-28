@@ -16,6 +16,7 @@ sys.path.insert(0, '/home/huanyuan/code/demo/Speech/')
 from ASR.impl.asr_feature_pyimpl import Feature
 
 from Basic.config import hparams
+from Basic.dataset.feature_extract import world_feature
 
 
 def load_wav(path, sampling_rate):

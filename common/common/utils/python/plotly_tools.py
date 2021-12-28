@@ -37,34 +37,37 @@ def hist_comp(hists, out_file, title='histograms', xname='Value', yname='Count',
     py.plot(fig, filename=out_file, auto_open=auto_open)
 
 
-def plot_loss(log_file, out_file, name='dloss', display='Dice loss'):
+def plot_loss(log_file, out_file, name='dloss', display='Dice loss', batch_word ='batch'):
     """
     For the consideration of compatibility.
     """
     loss_names = [name]
     legends = [display]
     colors = ['rgb(255, 0, 0)']
-    plot_losses(log_file, out_file, display, loss_names, legends, colors)
+    batch_word = batch_word
+    plot_losses(log_file, out_file, display, loss_names, legends, colors, batch_word)
 
 
-def plot_loss2d(log_file, out_file, name=['train_loss', 'test_loss'], display='Dice loss'):
+def plot_loss2d(log_file, out_file, name=['train_loss', 'test_loss'], display='Dice loss', batch_word ='batch'):
     """
     For the consideration of compatibility.
     """
     loss_names = name
     legends = name
     colors = ['rgb(255, 0, 0)', 'rgb(0, 0, 255)']
-    plot_losses(log_file, out_file, display, loss_names, legends, colors)
+    batch_word = batch_word
+    plot_losses(log_file, out_file, display, loss_names, legends, colors, batch_word)
 
 
-def plot_loss4d(log_file, out_file, name=['model_0_train_loss', 'model_1_train_loss', 'model_0_eval_loss', 'model_1_eval_loss'], display='Dice loss'):
+def plot_loss4d(log_file, out_file, name=['model_0_train_loss', 'model_1_train_loss', 'model_0_eval_loss', 'model_1_eval_loss'], display='Dice loss', batch_word ='batch'):
     """
     For the consideration of compatibility.
     """
     loss_names = name
     legends = name
     colors = ['rgb(255, 0, 0)', 'rgb(255, 127, 0)', 'rgb(0, 0, 255)', 'rgb(0, 127, 255)']
-    plot_losses(log_file, out_file, display, loss_names, legends, colors)
+    batch_word = batch_word
+    plot_losses(log_file, out_file, display, loss_names, legends, colors, batch_word)
 
 
 def plot_losses(log_file, out_file, display, loss_names, legends, colors=None, batch_word ='batch'):

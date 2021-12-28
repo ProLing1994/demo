@@ -44,6 +44,13 @@ def setup_workshop(cfg):
             raise ValueError("Please type either 'yes' or 'no'!")
 
 
+def copy_config_file(cfg, config_file):
+    if not os.path.isdir(cfg.general.save_dir):
+        os.makedirs(cfg.general.save_dir)
+
+    shutil.copy(config_file, os.path.join(cfg.general.save_dir, 'config.py'))
+
+
 def init_torch_and_numpy(cfg, local_rank=0):
     """ enable cudnn and control randomness during training, 设置随机种子，以使得结果是确定的
     :param cfg:         configuration file

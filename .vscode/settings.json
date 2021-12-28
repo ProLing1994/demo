@@ -86,4 +86,7 @@
     },
     "python.pythonPath": "/home/huanyuan/anaconda3/bin/python",
     "python.linting.enabled": false,
+    "python.autoComplete.extraPaths": [
+        "/home/huanyuan/code/demo",
+    ],
 }

@@ -24,6 +24,9 @@ bin/
 *.caffemodel
 *.prototxt
 *.bin
+*.fst
+*.corpus
+*.arpa
 
 # python
 *__pycache__/

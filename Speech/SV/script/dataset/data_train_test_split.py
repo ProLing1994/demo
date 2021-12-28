@@ -44,7 +44,7 @@ def load_dataset_type_1(dataset_name, dataset_path, data_files, mode, keep_speak
                 utterance_id = utterance_list[utterance_idx]
                 if utterance_id.endswith('flac') or utterance_id.endswith('wav'):
                     file_path = os.path.join(os.path.join(dataset_path, speaker_id, section_id, utterance_id))
-                    data_files.append({'dataset': dataset_name, 'speaker': speaker_id, 'section': section_id, 'utterance': section_id + '_' + utterance_id, 'file': file_path, 'mode': mode})
+                    data_files.append({'dataset': dataset_name, 'speaker': speaker_id, 'section': section_id, 'utterance': utterance_id, 'key': section_id + '_' + utterance_id, 'file': file_path, 'mode': mode})
 
 
 def load_dataset_type_2(dataset_name, dataset_path, data_files, mode):
@@ -57,6 +57,9 @@ def load_dataset_type_2(dataset_name, dataset_path, data_files, mode):
     # load dataset
     speaker_list = os.listdir(dataset_path)
     speaker_list.sort()
+
+    # init 
+    section_id = 0
 
     for speaker_idx in tqdm(range(len(speaker_list))):
         speaker_id = speaker_list[speaker_idx]
@@ -71,9 +74,8 @@ def load_dataset_type_2(dataset_name, dataset_path, data_files, mode):
             utterance_id = utterance_list[utterance_idx]
             
             if utterance_id.endswith('flac') or utterance_id.endswith('wav'):
-                section_id = 0
                 file_path = os.path.join(os.path.join(dataset_path, speaker_id, utterance_id))
-                data_files.append({'dataset': dataset_name, 'speaker': speaker_id, 'section': section_id, 'utterance': speaker_id + '_' + utterance_id, 'file': file_path, 'mode': mode})
+                data_files.append({'dataset': dataset_name, 'speaker': speaker_id, 'section': section_id, 'utterance': utterance_id, 'key': speaker_id + '_' + utterance_id, 'file': file_path, 'mode': mode})
 
 
 def load_dataset_type_3(dataset_name, dataset_path, data_files, mode, dataset_format=None):
@@ -86,6 +88,9 @@ def load_dataset_type_3(dataset_name, dataset_path, data_files, mode, dataset_fo
     wav_list = get_sub_filepaths_suffix(dataset_path, suffix='.wav')
     wav_list.sort()
 
+    # init 
+    section_id = 0
+    
     for wav_idx in tqdm(range(len(wav_list))):
         file_path = wav_list[wav_idx]
 
@@ -100,10 +105,9 @@ def load_dataset_type_3(dataset_name, dataset_path, data_files, mode, dataset_fo
             # 000001.wav
             speaker_id = '{}_{}'.format(dataset_name, '0')
 
-        section_id = 0
         utterance_id = os.path.basename(file_path)
 
-        data_files.append({'dataset': dataset_name, 'speaker': speaker_id, 'section': section_id, 'utterance': speaker_id + '_' + utterance_id, 'file': file_path, 'mode': mode})
+        data_files.append({'dataset': dataset_name, 'speaker': speaker_id, 'section': section_id, 'utterance': utterance_id, 'key': speaker_id + '_' + utterance_id, 'file': file_path, 'mode': mode})
 
 
 def load_dataset_type_4(dataset_name, dataset_path, data_files, mode, dataset_format=None, dataset_subfolder=None):
@@ -145,7 +149,7 @@ def load_dataset_type_4(dataset_name, dataset_path, data_files, mode, dataset_fo
             section_id = 0
             utterance_id = os.path.basename(file_path)
 
-            data_files.append({'dataset': dataset_name, 'speaker': speaker_id, 'section': section_id, 'utterance': speaker_id + '_' + utterance_id, 'file': file_path, 'mode': mode})
+            data_files.append({'dataset': dataset_name, 'speaker': speaker_id, 'section': section_id, 'utterance': utterance_id, 'key': speaker_id + '_' + utterance_id, 'file': file_path, 'mode': mode})
 
 
 def load_dataset_normal(dataset_name, dataset_path, data_files, mode, keep_speaker_ids=None, type=1, dataset_format=None, dataset_subfolder=None):
@@ -202,7 +206,7 @@ def data_split_normal(cfg, dataset_name, type=1):
         return 
 
     # init
-    data_files = []                 # {'speaker': [], 'section': [], 'utterance': [], 'file': [], 'mode': []}
+    data_files = []                 # {'speaker': [], 'section': [], 'utterance': [], 'key': [], 'file': [], 'mode': []}
     
     print("[Begin] dataset: {}, set: {}".format(dataset_name, hparams.TRAINING_NAME))
     load_dataset_normal(dataset_name, dataset_training_path, data_files, hparams.TRAINING_NAME, type=type, dataset_format=dataset_format, dataset_subfolder=dataset_subfolder)
@@ -316,7 +320,7 @@ def data_split(args):
             data_split_normal(cfg, dataset_name, type = 1)
         elif dataset_name in ['VoxCeleb1']:
             data_split_voxceleb1(cfg, dataset_name, type = 1)
-        elif dataset_name in ['Aishell3', 'SLR62', 'SLR68', 'CN-Celeb1', 'CN-Celeb2', 'VoxCeleb2']:
+        elif dataset_name in ['Aishell3', 'SLR62', 'SLR68', 'CN-Celeb1', 'CN-Celeb2', 'VoxCeleb2', 'VCC2020']:
             data_split_normal(cfg, dataset_name, type = 2)
         elif dataset_name in ['SLR38', 'BZNSYP', 'BwcKeyword']:
             data_split_normal(cfg, dataset_name, type = 3)

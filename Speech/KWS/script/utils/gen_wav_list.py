@@ -52,8 +52,8 @@ def gen_wav_list(args):
 
 
 if __name__ == "__main__":
-    default_audio_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/非常珍贵的外籍人士专门录制的语料/"
-    default_output_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/test_dataset/非常珍贵的外籍人士专门录制的语料/wav_list/"
+    default_audio_folder = "/mnt/huanyuan2/data/speech/Recording/RM_Movie/danbing/english/"
+    default_output_folder = "/mnt/huanyuan2/data/speech/Recording/RM_Movie/danbing/english/wav_list/13Hours/"
 
     parser = argparse.ArgumentParser(description='Streamax ASR Demo Engine')
     args = parser.parse_args()
