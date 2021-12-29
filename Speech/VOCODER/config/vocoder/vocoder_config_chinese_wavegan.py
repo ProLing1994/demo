@@ -198,7 +198,6 @@ __C.train.plot_snapshot = 100
 __C.train.save_epochs = 25
 # __C.train.save_epochs = 1
 
-
 ####################################
 # training loss
 ####################################

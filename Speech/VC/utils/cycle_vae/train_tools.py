@@ -27,6 +27,25 @@ def generate_dataset_cycle_vae(cfg, mode):
     return dataloader, len(dataset)
 
 
+def generate_test_dataset_cycle_vae(cfg, mode):
+    """
+    :param cfg:            config contain data set information
+    :param mode:           Which partition to use, must be 'training', 'validation', or 'testing'.
+    :param training_mode:  the model training mode, must be 0 or 1.
+    :return:               data loader, length of data set
+    """
+    assert mode in ['training', 'testing', 'validation'], "[ERROR:] Unknow mode: {}".format(mode)
+
+    dataset = CycleVaeDataset(cfg, mode)
+
+    data_loader = torch.utils.data.DataLoader(dataset,
+                                              batch_size=1,
+                                              shuffle=False,
+                                              pin_memory=False,
+                                              num_workers=1)
+    return data_loader, len(dataset)
+
+
 def plot_tool_cycle_vae(cfg, log_file):
     """
     plot loss or accuracy
@@ -35,15 +54,30 @@ def plot_tool_cycle_vae(cfg, log_file):
     """
     train_loss_file = os.path.join(cfg.general.save_dir, 'train_loss.html')
     epoch_train_loss_file = os.path.join(cfg.general.save_dir, 'epoch_train_loss.html')
+    epoch_rec_mcd_file = os.path.join(cfg.general.save_dir, 'epoch_rec_mcd.html')
+    epoch_cv_mcd_file = os.path.join(cfg.general.save_dir, 'epoch_cv_mcd.html')
+    epoch_lat_cosine_file = os.path.join(cfg.general.save_dir, 'epoch_lat_cosine.html')
     if cfg.general.is_test:
-        plot_loss2d(log_file, train_loss_file, name=['train/batch_loss', 'eval/batch_loss'],
+        plot_loss2d(log_file, train_loss_file, name=['train_iter_loss', 'eval_iter_loss'],
                     display='Training/Validation Loss', batch_word='iter')
-        plot_loss2d(log_file, epoch_train_loss_file, name=['epoch_train/batch_loss', 'epoch_eval/batch_loss'],
+        plot_loss2d(log_file, epoch_train_loss_file, name=['epoch_train_iter_loss', 'epoch_eval_iter_loss'],
+                    display='Training/Validation Loss', batch_word='epoch')
+        plot_loss2d(log_file, epoch_rec_mcd_file, name=['epoch_train_batch_mcd_src_src[0]', 'epoch_eval_batch_mcd_src_src[0]'],
+                    display='Training/Validation Loss', batch_word='epoch')
+        plot_loss2d(log_file, epoch_cv_mcd_file, name=['epoch_train_batch_mcd_src_trg[0]', 'epoch_eval_batch_mcd_src_trg[0]'],
+                    display='Training/Validation Loss', batch_word='epoch')
+        plot_loss2d(log_file, epoch_lat_cosine_file, name=['epoch_train_batch_lat_dist_cos_sim_src_trg[0]', 'epoch_eval_batch_lat_dist_cos_sim_src_trg[0]'],
                     display='Training/Validation Loss', batch_word='epoch')
     else:
-        plot_loss(log_file, train_loss_file, name='train/batch_loss',
+        plot_loss(log_file, train_loss_file, name='train_iter_loss',
                 display='Training Loss', batch_word='iter')
-        plot_loss(log_file, epoch_train_loss_file, name='epoch_train/batch_loss',
+        plot_loss(log_file, epoch_train_loss_file, name='epoch_train_iter_loss',
+                display='Training Loss', batch_word='epoch')
+        plot_loss(log_file, epoch_rec_mcd_file, name='epoch_train_batch_mcd_src_src[0]',
+                display='Training Loss', batch_word='epoch')
+        plot_loss(log_file, epoch_cv_mcd_file, name='epoch_train_batch_mcd_src_trg[0]',
+                display='Training Loss', batch_word='epoch')
+        plot_loss(log_file, epoch_lat_cosine_file, name='epoch_train_batch_lat_dist_cos_sim_src_trg[0]',
                 display='Training Loss', batch_word='epoch')
 
 
