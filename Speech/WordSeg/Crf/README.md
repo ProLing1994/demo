@@ -9,6 +9,7 @@ cd CRF++-0.58
 ./configure --prefix=$PWD/build
 make
 make install
+# export PATH=CRF++-0.58/build/bin/:$PATH
 export PATH=tools/CRF++-0.58/build/bin/:$PATH
 ```
 ### 2.2 数据准备
@@ -54,7 +55,7 @@ crf_test -m model.people_daliy_26w data/people_daliy_26w/test.input > data/peopl
 #### 计算精确率，召回率以及F1值:
 ```python
 # 准备测试数据
-python scripts/calculate.py data/demo/test.lable data/demo/test.out
-python scripts/calculate.py data/people_daliy_10W/test.lable data/people_daliy_10W/test.out
-python scripts/calculate.py data/people_daliy_26w/test.lable data/people_daliy_26w/test.out
+python scripts/3_analysis_result.py data/demo/test.lable data/demo/test.out
+python scripts/3_analysis_result.py data/people_daliy_10W/test.lable data/people_daliy_10W/test.out
+python scripts/3_analysis_result.py data/people_daliy_26w/test.lable data/people_daliy_26w/test.out
 ```

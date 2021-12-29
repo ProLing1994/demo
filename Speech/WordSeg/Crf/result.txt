@@ -1,19 +1,5 @@
- Total data num: 2184720
+people_daliy_10W
+Precision:97.06 Recall:96.89 F1:96.98 OOV-R:0.00 IV-R:96.89
 
- Confusion Matrix: 
-[[570033   5294    658   5881]
- [  2646 721511   1411    845]
- [   836   1876 144800   2516]
- [  3207    924   1919 720363]]
-
- Classification Report: 
-              precision    recall  f1-score   support
-
-           S       0.99      0.98      0.98    581866
-           B       0.99      0.99      0.99    726413
-           M       0.97      0.97      0.97    150028
-           E       0.99      0.99      0.99    726413
-
-    accuracy                           0.99   2184720
-   macro avg       0.98      0.98      0.98   2184720
-weighted avg       0.99      0.99      0.99   2184720
+people_daliy_26w
+Precision:98.54 Recall:98.39 F1:98.46 OOV-R:0.00 IV-R:98.39
