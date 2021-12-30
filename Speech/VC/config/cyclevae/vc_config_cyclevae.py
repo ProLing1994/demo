@@ -21,7 +21,8 @@ __C.general.dataset_path_dict = {
 __C.general.data_dir = "/mnt/huanyuan/data/speech/vc/English_dataset/"
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/vc/english_vc/test_1230/"
+# __C.general.save_dir = "/mnt/huanyuan/model/vc/english_vc/test_1230/"
+__C.general.save_dir = "/mnt/huanyuan/model/vc/english_vc/vc_english_cyclevae_world_1_1_12302021/"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -62,13 +63,15 @@ __C.dataset.sampling_rate = 24000
 __C.dataset.fft_size = 2048
 
 # Shift length in msec (default=5)
-__C.dataset.shiftms = 5
+__C.dataset.shiftms = 5 # 24k, 3-dim code-aperiodicity 
+# __C.dataset.shiftms = 3 # 16k, 1-dim code-aperiodicity
 
 # Dimension of mel-cepstrum
 __C.dataset.mcep_dim = 49
 
 # Alpha value of mel-cepstrum
 __C.dataset.mcep_alpha=0.466 # 24k
+# __C.dataset.mcep_alpha=0.41000000000000003 # 16k
 
 # Highpass filter cutoff frequency (if 0, will not apply)
 __C.dataset.highpass_cutoff = 65
@@ -90,13 +93,13 @@ __C.dataset.allow_cache = True
 __C.net = {}
 
 # the network name
-__C.net.encoder_model_name = "/home/huanyuan/code/demo/Speech/VC/network/cycle_vae/gru_vae.py"
+__C.net.encoder_model_name = "/home/huanyuan/code/demo/Speech/VC/network/cyclevae/gru_vae.py"
 __C.net.encoder_class_name = "GRU_RNN_STOCHASTIC"
 
-__C.net.decoder_model_name = "/home/huanyuan/code/demo/Speech/VC/network/cycle_vae/gru_vae.py"
+__C.net.decoder_model_name = "/home/huanyuan/code/demo/Speech/VC/network/cyclevae/gru_vae.py"
 __C.net.decoder_class_name = "GRU_RNN"
 
-__C.net.model_yaml = "/home/huanyuan/code/demo/Speech/VC/network/cycle_vae/cycle_vae.yaml"
+__C.net.model_yaml = "/home/huanyuan/code/demo/Speech/VC/network/cyclevae/cyclevae.yaml"
 
 # load and save config
 with open(__C.net.model_yaml) as f:
@@ -109,10 +112,12 @@ with open(__C.net.model_yaml) as f:
 __C.train = {}
 
 # the number of training epochs
-__C.train.num_epochs = 80
+__C.train.num_epochs = 500
+# __C.train.num_epochs = 80
 
 # the number of samples in a batch
-__C.train.batch_size = 5
+__C.train.batch_size = 32
+# __C.train.batch_size = 5
 
 # the number of frame in a batch
 __C.train.batch_frame_size = 80

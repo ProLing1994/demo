@@ -4,16 +4,16 @@ from torch.utils.data import DataLoader
 sys.path.insert(0, '/home/huanyuan/code/demo')
 # sys.path.insert(0, '/yuanhuan/code/demo')
 from common.common.utils.python.train_tools import EpochConcateSampler
-from common.common.utils.python.plotly_tools import plot_loss4d, plot_loss2d, plot_loss
+from common.common.utils.python.plotly_tools import plot_loss2d, plot_loss
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/yuanhuan/code/demo/Speech')
 from Basic.utils.train_tools import *
 
-from VC.dataset.cycle_vae.dataset_preload_audio_hdf5 import CycleVaeDataset
+from VC.dataset.cyclevae.dataset_preload_audio_hdf5 import CycleVaeDataset
 
 
-def generate_dataset_cycle_vae(cfg, mode):
+def generate_dataset_cyclevae(cfg, mode):
     assert mode in ['training', 'testing', 'validation'], "[ERROR:] Unknow mode: {}".format(mode)
     
     dataset = CycleVaeDataset(cfg, mode)
@@ -27,7 +27,7 @@ def generate_dataset_cycle_vae(cfg, mode):
     return dataloader, len(dataset)
 
 
-def generate_test_dataset_cycle_vae(cfg, mode):
+def generate_test_dataset_cyclevae(cfg, mode):
     """
     :param cfg:            config contain data set information
     :param mode:           Which partition to use, must be 'training', 'validation', or 'testing'.
@@ -46,7 +46,7 @@ def generate_test_dataset_cycle_vae(cfg, mode):
     return data_loader, len(dataset)
 
 
-def plot_tool_cycle_vae(cfg, log_file):
+def plot_tool_cyclevae(cfg, log_file):
     """
     plot loss or accuracy
     :param cfg:                 config contain data set information
@@ -81,7 +81,7 @@ def plot_tool_cycle_vae(cfg, log_file):
                 display='Training Loss', batch_word='epoch')
 
 
-def save_checkpoint_cycle_vae(cfg, model, optimizer, epoch_idx, batch_idx, output_folder_name='checkpoints'):
+def save_checkpoint_cyclevae(cfg, model, optimizer, epoch_idx, batch_idx, output_folder_name='checkpoints'):
     """
     save model and parameters into a checkpoint file (.pth)
     :param cfg: the configuration object

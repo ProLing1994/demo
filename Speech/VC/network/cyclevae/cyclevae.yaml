@@ -11,7 +11,7 @@ pad_len: 2300
 # lat_dim: dimension of latent features
 # out_dim: dimension of output features
 # n_cyc: number of cycle for CycleVAE, 0 means VAE
-cycle_vae_params:
+cyclevae_params:
   stdim: 5      # 24k, 3-dim code-aperiodicity 
   in_dim: 55    # ${stdim} + ${out_dim}
   lat_dim: 32

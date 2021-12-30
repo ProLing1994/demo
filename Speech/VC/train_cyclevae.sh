@@ -10,7 +10,7 @@
 
 stage=3
 
-echo "train_cycle_vae.sh"
+echo "train_cyclevae.sh"
 
 ###########################################################
 #                 DATA PREPARATION STEP                   #
@@ -46,7 +46,7 @@ fi
 ###############################################
 
 if [ $stage -le 3 ];then
-    python train_cycle_vae.py -i $config_file || exit 1
+    python train_cyclevae.py -i $config_file || exit 1
 fi
 
-echo "train_cycle_vae.sh succeeded"
+echo "train_cyclevae.sh succeeded"

@@ -52,10 +52,10 @@ class CycleVaeDataset(Dataset):
 
         self.cfg = cfg
         self.mode = mode
-        self.n_cyc = self.cfg.net.yaml['cycle_vae_params']['n_cyc']
-        self.stdim = self.cfg.net.yaml['cycle_vae_params']['stdim']
+        self.n_cyc = self.cfg.net.yaml['cyclevae_params']['n_cyc']
+        self.stdim = self.cfg.net.yaml['cyclevae_params']['stdim']
         self.hdf5_dir = os.path.join(cfg.general.data_dir, 'dataset_audio_hdf5')
-        self.normalize_hdf5_dir = os.path.join(cfg.general.data_dir, 'dataset_audio_normalize_hdf5')
+        self.state_hdf5_dir = os.path.join(cfg.general.data_dir, 'dataset_audio_normalize_hdf5')
 
         self.data_pd = load_data_pd(cfg, mode)
         
@@ -63,7 +63,7 @@ class CycleVaeDataset(Dataset):
         self.spk_list = list(set(self.data_pd['speaker'].to_list()))
         self.spk_list.sort()
         self.n_spk = len(self.spk_list)
-        assert self.n_spk == self.cfg.net.yaml['cycle_vae_params']['spk_dim']
+        assert self.n_spk == self.cfg.net.yaml['cyclevae_params']['spk_dim']
         self.spk_idx_dict = {}
         for i in range(self.n_spk):
             self.spk_idx_dict[self.spk_list[i]] = i
@@ -100,7 +100,7 @@ class CycleVaeDataset(Dataset):
         class_code_src = np.ones(code_src.shape[0], dtype=np.int64) * spk_idx       # src spk 分类标签
 
         ## mean_src std_src
-        hdf5_normalize_path_src = os.path.join(self.normalize_hdf5_dir, dataset_name_src, 'world', f"stats_spk_{spk_name_src}.h5")
+        hdf5_normalize_path_src = os.path.join(self.state_hdf5_dir, dataset_name_src, 'world', f"stats_spk_{spk_name_src}.h5")
         mean_src = read_hdf5(hdf5_normalize_path_src, "mean_feat_org_lf0")[1:2]
         std_src = read_hdf5(hdf5_normalize_path_src, "scale_feat_org_lf0")[1:2]
         
@@ -131,11 +131,12 @@ class CycleVaeDataset(Dataset):
             spk_trg_list[i] = self.spk_list[pair_idx]
 
             ## mean_trg_list std_trg_list
-            hdf5_normalize_path_trg = os.path.join(self.normalize_hdf5_dir, dataset_name_src, 'world', f"stats_spk_{self.spk_list[pair_idx]}.h5")
+            hdf5_normalize_path_trg = os.path.join(self.state_hdf5_dir, dataset_name_src, 'world', f"stats_spk_{self.spk_list[pair_idx]}.h5")
             mean_trg_list[i] = read_hdf5(hdf5_normalize_path_trg, "mean_feat_org_lf0")[1:2]
             std_trg_list[i] = read_hdf5(hdf5_normalize_path_trg, "scale_feat_org_lf0")[1:2]
             
             ## h_src2trg_list
+            ## 基频转换，转换到 trg 的基频上
             h_src2trg_list[i] = np.c_[h_src[:, :1], (std_trg_list[i]/std_src)*(h_src[:,1:2]-mean_src)+mean_trg_list[i], h_src[:, 2:self.stdim]]
             
         # torch

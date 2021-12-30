@@ -57,7 +57,7 @@ def preprocess_audio_normal(cfg, row, hdf5_dir, data_lists):
 
     # 低通滤波器修正 F0 基频
     # F0: log-scaled of continuous F0
-    cont_f0_lpf_range = world_feature.low_pass_filter(cont_f0_range, int(1.0 / (cfg.dataset.shiftms * 0.001)), cutoff=20)
+    cont_f0_lpf_range = world_feature.low_pass_filter(cont_f0_range, int(1.0 / (cfg.dataset.shiftms * 0.001)), cutoff=world_feature.LOWPASS_CUTOFF)
     cont_f0_lpf_range = np.expand_dims(cont_f0_lpf_range, axis=-1)
 
     # 编码 AP 非周期序列
@@ -91,18 +91,18 @@ def preprocess_audio_normal(cfg, row, hdf5_dir, data_lists):
     write_hdf5(os.path.join(output_dir, f"{key_name}.h5"), "spcidx_range", spcidx_range)
 
     # save wav
-    wavfiltdir = os.path.join(hdf5_dir, 'wav_filtered')
-    create_folder(wavfiltdir)
-    if highpass_cutoff != 0 and wavfiltdir is not None:
-        audio.save_wav(wav, os.path.join(wavfiltdir, key), fs)
+    wav_filt_dir = os.path.join(hdf5_dir, 'wav_filtered')
+    create_folder(wav_filt_dir)
+    if highpass_cutoff != 0 and wav_filt_dir is not None:
+        audio.save_wav(wav, os.path.join(wav_filt_dir, key), fs)
 
     # save wav_anasyn
-    wavanasyndir = os.path.join(hdf5_dir, 'wav_anasyn')
-    create_folder(wavanasyndir)
+    wav_anasyn_dir = os.path.join(hdf5_dir, 'wav_anasyn')
+    create_folder(wav_anasyn_dir)
     sp_rec = ps.mc2sp(mcep_range, cfg.dataset.mcep_alpha, cfg.dataset.fft_size)
-    wav = np.clip(pw.synthesize(f0_range, sp_rec, ap_range, fs, frame_period=cfg.dataset.shiftms), \
+    wav_anasyn = np.clip(pw.synthesize(f0_range, sp_rec, ap_range, fs, frame_period=cfg.dataset.shiftms), \
                     -1, 1)
-    audio.save_wav(wav, os.path.join(wavanasyndir, key), fs)
+    audio.save_wav(wav_anasyn, os.path.join(wav_anasyn_dir, key), fs)
 
     # data_lists
     data_lists.append({'dataset': row['dataset'], 'speaker': row['speaker'], 'section': row['section'], \

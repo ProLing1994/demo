@@ -10,7 +10,7 @@ from Basic.utils.folder_tools import *
 def calc_stats(cfg, data_spk_pd, hdf5_dir, hdf5_normalize_dir, state_name='stats_jnt.h5'):
     # init
     print("number of utterances = "+str(len(data_spk_pd)))
-    stdim = cfg.net.yaml["cycle_vae_params"]["stdim"]
+    stdim = cfg.net.yaml["cyclevae_params"]["stdim"]
 
     # feat_org_lf0
     scaler_feat_org_lf0 = StandardScaler()

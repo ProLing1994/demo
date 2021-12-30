@@ -8,7 +8,7 @@ from Basic.utils.train_tools import load_cfg_file
 from Basic.utils.folder_tools import *
 from Basic.utils.hdf5_tools import *
 
-from VC.dataset.cycle_vae import audio_hdf5_normalize_state
+from VC.dataset.cyclevae import audio_hdf5_normalize_state
 
 
 def general_normalize_state(args, cfg, hdf5_dir, hdf5_normalize_dir, csv_path, dataset_name):
@@ -53,7 +53,7 @@ def data_normalize_state(args):
 
 def main():
     parser = argparse.ArgumentParser(description='Streamax SV Data Split Engine')
-    parser.add_argument('-i', '--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/VC/config/cycle_vae/vc_config_cycle_vae.py", help='config file')
+    parser.add_argument('-i', '--config_file', type=str,  default="/home/huanyuan/code/demo/Speech/VC/config/cyclevae/vc_config_cyclevae.py", help='config file')
     args = parser.parse_args()
 
     print("[Begin] Data Normalize State")

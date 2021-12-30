@@ -235,6 +235,7 @@ def load_state_dict(model_dir, epoch_num, sub_folder_name):
     state = torch.load(chk_file)
     return state
 
+
 def load_checkpoint(net, 
                     load_mode_type, 
                     model_dir, epoch_num, sub_folder_name, 

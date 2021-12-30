@@ -7,8 +7,8 @@ from Basic.config import hparams
 from Basic.utils.folder_tools import *
 from Basic.utils.train_tools import *
 
-from VC.network.cycle_vae.cycle_vae import CycleVae
-from VC.utils.cycle_vae.train_tools import generate_dataset_cycle_vae, generate_test_dataset_cycle_vae
+from VC.cyclevae import CycleVae
+from VC.utils.cyclevae.train_tools import generate_dataset_cyclevae, generate_test_dataset_cyclevae
 
 
 def train(args):
@@ -32,8 +32,8 @@ def train(args):
     network = CycleVae(cfg)
 
     # define dataset
-    train_dataloader, len_train_dataset = generate_dataset_cycle_vae(cfg, hparams.TRAINING_NAME)
-    eval_dataloader, len_eval_dataset = generate_test_dataset_cycle_vae(cfg, hparams.TESTING_NAME)
+    train_dataloader, len_train_dataset = generate_dataset_cyclevae(cfg, hparams.TRAINING_NAME)
+    eval_dataloader, len_eval_dataset = generate_test_dataset_cyclevae(cfg, hparams.TESTING_NAME)
 
     network.train(train_dataloader, len_train_dataset, eval_dataloader, len_eval_dataset)
 
@@ -41,7 +41,7 @@ def train(args):
 
 def main(): 
     parser = argparse.ArgumentParser(description='Streamax VC Training Engine')
-    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/VC/config/cycle_vae/vc_config_cycle_vae.py", nargs='?', help='config file')
+    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/VC/config/cyclevae/vc_config_cyclevae.py", nargs='?', help='config file')
     args = parser.parse_args()
     train(args)
 

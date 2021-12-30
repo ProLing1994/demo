@@ -5,13 +5,14 @@ import torch
 from torch.autograd import Variable
 from torch import nn
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+# sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+sys.path.insert(0, '/yuanhuan/code/demo/Speech')
 from Basic.utils.train_tools import *
 from Basic.utils.hdf5_tools import *
 from Basic.utils.profiler_tools import *
 
-from VC.utils.cycle_vae.loss_tools import *
-from VC.utils.cycle_vae.train_tools import plot_tool_cycle_vae, save_checkpoint_cycle_vae
+from VC.utils.cyclevae.loss_tools import *
+from VC.utils.cyclevae.train_tools import plot_tool_cyclevae, save_checkpoint_cyclevae
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
 # sys.path.insert(0, '/yuanhuan/code/demo')
@@ -20,7 +21,7 @@ from common.common.utils.python.logging_helpers import setup_logger
 
 def iter_batch(cfg, batch):
     # init
-    n_cyc = cfg.net.yaml['cycle_vae_params']['n_cyc']
+    n_cyc = cfg.net.yaml['cyclevae_params']['n_cyc']
     
     batch_frame = {}
     batch_frame['flen_src'] = batch['flen_src'].data.numpy()
@@ -145,7 +146,7 @@ def iter_batch(cfg, batch):
 
 def gen_eval_batch(cfg, batch):
     # init
-    n_cyc = cfg.net.yaml['cycle_vae_params']['n_cyc']
+    n_cyc = cfg.net.yaml['cyclevae_params']['n_cyc']
     
     batch_eval = {}
     batch_eval['flen_src'] = batch['flen_src'].data.numpy()
@@ -194,10 +195,10 @@ class CycleVae():
         self.cfg = cfg
         self.batch_size = self.cfg.train.batch_size
 
-        self.n_cyc = self.cfg.net.yaml['cycle_vae_params']['n_cyc']
-        self.stdim = self.cfg.net.yaml['cycle_vae_params']['stdim']
-        self.lat_dim = self.cfg.net.yaml['cycle_vae_params']['lat_dim']
-        self.n_spk = self.cfg.net.yaml['cycle_vae_params']['spk_dim']
+        self.n_cyc = self.cfg.net.yaml['cyclevae_params']['n_cyc']
+        self.stdim = self.cfg.net.yaml['cyclevae_params']['stdim']
+        self.lat_dim = self.cfg.net.yaml['cyclevae_params']['lat_dim']
+        self.n_spk = self.cfg.net.yaml['cyclevae_params']['spk_dim']
         self.arparam = self.cfg.net.yaml['encoder_params']['arparam']
         dataset_name = '_'.join([cfg.general.dataset_list[idx] for idx in range(len(cfg.general.dataset_list))])
         self.stats_jnt_path = os.path.join(cfg.general.data_dir, 'dataset_audio_normalize_hdf5', dataset_name, 'world', f"stats_jnt.h5")
@@ -1096,7 +1097,7 @@ class CycleVae():
                             last_save_epoch = self.epoch_idx
 
                             # save training model
-                            save_checkpoint_cycle_vae(self.cfg, self.model, self.optimizer, self.epoch_idx, self.batch_idx)
+                            save_checkpoint_cyclevae(self.cfg, self.model, self.optimizer, self.epoch_idx, self.batch_idx)
 
                             # test
                             self.test(eval_dataloader, len_eval_dataset)
@@ -1170,7 +1171,7 @@ class CycleVae():
 
                 # Plot snapshot
                 if (iter_idx % self.cfg.train.plot_snapshot) == 0:
-                    plot_tool_cycle_vae(self.cfg, self.log_file)
+                    plot_tool_cyclevae(self.cfg, self.log_file)
                 self.profiler.tick("Plot snapshot")
 
 

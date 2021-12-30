@@ -3,7 +3,7 @@
 stage=1
 
 # init
-config_file=/home/huanyuan/code/demo/Speech/VC/config/cycle_vae/vc_config_cycle_vae.py
+config_file=/home/huanyuan/code/demo/Speech/VC/config/cyclevae/vc_config_cyclevae.py
 
 echo "script/dataset/data_preload_audio_hdf5.sh"
 

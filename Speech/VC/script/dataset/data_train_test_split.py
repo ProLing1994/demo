@@ -7,7 +7,7 @@ from SV.script.dataset.data_train_test_split import *
 
 def main():
     parser = argparse.ArgumentParser(description='Streamax TTS Data Split Engine')
-    parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/VC/config/cycle_vae/vc_config_cycle_vae.py", help='config file')
+    parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/VC/config/cyclevae/vc_config_cyclevae.py", help='config file')
     args = parser.parse_args()
 
     print("[Begin] Train test dataset split")

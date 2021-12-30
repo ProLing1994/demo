@@ -114,7 +114,16 @@ def extfrm(data, npow, power_threshold=-20):
 
     return extdata, valid_index
 
-    
+
+def convert_f0(f0, f0_mean_src, f0_std_src, f0_mean_trg, f0_std_trg):
+    nonzero_indices = f0 > 0
+    cvf0 = np.zeros(len(f0))
+    cvf0[nonzero_indices] = \
+            np.exp((f0_std_trg/f0_std_src)*(np.log(f0[nonzero_indices])-f0_mean_src)+f0_mean_trg)
+
+    return cvf0
+
+
 def convert_continuos_f0(f0):
     """CONVERT F0 TO CONTINUOUS F0
 
