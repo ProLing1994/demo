@@ -68,12 +68,12 @@ def gen_image_list(args):
             cv2.imwrite(output_path, feature_data)
 
 if __name__ == "__main__":
-    # # asr mandarin:
-    # default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/mandarin_wav/安静场景/wav/"
-    # default_output_folder = "/home/huanyuan/share/huanyuan/audio_data/mandarin_wav/安静场景/image_396_8k_64"
-    # # default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/mandarin_wav/闹市场景/wav/"
-    # # default_output_folder = "/home/huanyuan/share/huanyuan/audio_data/mandarin_wav/闹市场景/image_396_8k_64"
-    # default_transpose = False
+    # asr mandarin:
+    default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/mandarin_wav/安静场景/wav/"
+    default_output_folder = "/home/huanyuan/share/huanyuan/audio_data/mandarin_wav/安静场景/image_596_16k_64"
+    # default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/mandarin_wav/闹市场景/wav/"
+    # default_output_folder = "/home/huanyuan/share/huanyuan/audio_data/mandarin_wav/闹市场景/image_596_16k_64"
+    default_transpose = False
     
     # default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/mandarin_wav/安静场景/"
     # default_output_folder = "/home/huanyuan/share/huanyuan/audio_data/mandarin_wav/安静场景/image_296_56"
@@ -83,12 +83,12 @@ if __name__ == "__main__":
     # default_output_folder = "/home/huanyuan/share/huanyuan/audio_data/image_296_56"
     # default_transpose = False
 
-    # kws: xiaorui
-    default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/wakeup/wakeup_xiaorui/wav/xiaorui/"
-    # default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/wakeup/wakeup_xiaorui/wav/xiaorui_long/"
-    # default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/wakeup/wakeup_xiaorui/wav/other/"
-    default_output_folder = "/home/huanyuan/share/huanyuan/audio_data/wakeup/wakeup_xiaorui/image_8k_64_196"
-    default_transpose = True
+    # # kws: xiaorui
+    # default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/wakeup/wakeup_xiaorui/wav/xiaorui/"
+    # # default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/wakeup/wakeup_xiaorui/wav/xiaorui_long/"
+    # # default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/wakeup/wakeup_xiaorui/wav/other/"
+    # default_output_folder = "/home/huanyuan/share/huanyuan/audio_data/wakeup/wakeup_xiaorui/image_8k_64_196"
+    # default_transpose = True
 
     # # kws: activatebwc
     # default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/weakup_activatebwc/activatebwc/"
@@ -118,7 +118,15 @@ if __name__ == "__main__":
     args.audio_folder = default_audio_folder
     args.output_folder = default_output_folder
     args.transpose = default_transpose
-    
+
+    # 8k & 6s
+    args.sample_rate = 16000
+    args.window_size_ms = 6000
+    args.window_stride_ms = 3000
+    args.nfilt = 64
+    args.feature_freq = 64
+    args.feature_time = 596
+
     # # 16k & 4s
     # args.sample_rate = 16000
     # args.window_size_ms = 4000
@@ -162,15 +170,15 @@ if __name__ == "__main__":
     # args.feature_freq = 64
     # args.feature_time = 396
 
-    # 8k & 2s
-    args.sample_rate = 8000
-    args.window_size_ms = 2000
-    args.window_stride_ms = 2000
-    # args.nfilt = 48
-    # args.feature_freq = 48
-    args.nfilt = 64
-    args.feature_freq = 64
-    args.feature_time = 196
+    # # 8k & 2s
+    # args.sample_rate = 8000
+    # args.window_size_ms = 2000
+    # args.window_stride_ms = 2000
+    # # args.nfilt = 48
+    # # args.feature_freq = 48
+    # args.nfilt = 64
+    # args.feature_freq = 64
+    # args.feature_time = 196
 
     # # 8k & 1.5s
     # args.sample_rate = 8000

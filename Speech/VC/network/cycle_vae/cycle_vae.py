@@ -312,11 +312,11 @@ class CycleVae():
         self.profiler = Profiler(summarize_every=self.cfg.train.show_profiler, disabled=False)
 
         # loss dict
-        self.loss_dict = defaultdict(list)
+        self.iter_info_dict = defaultdict(list)
 
         # epoch loss dict
-        self.epoch_loss_dict = defaultdict(list)
-        self.epoch_loss_eval_dict = defaultdict(list)
+        self.epoch_info_dict = defaultdict(list)
+        self.epoch_info_eval_dict = defaultdict(list)
 
         return
 
@@ -674,13 +674,13 @@ class CycleVae():
                                                     tmp_batch_loss_lat_src_cv.unsqueeze(0)))
 
                 # record the loss statistics
-                self.epoch_loss_dict["epoch_{}_iter_loss_mcd_src_src[{}]".format(self.mode, i)].append(tmp_batch_loss_mcd_src_src.item())
-                self.epoch_loss_dict["epoch_{}_iter_loss_mcd_src_trg_src[{}]".format(self.mode, i)].append(tmp_batch_loss_mcd_src_trg_src.item())
-                self.epoch_loss_dict["epoch_{}_iter_loss_mcd_src_trg[{}]".format(self.mode, i)].append(tmp_batch_loss_mcd_src_trg.item())
-                self.epoch_loss_dict["epoch_{}_iter_loss_scpost_src[{}]".format(self.mode, i)].append(tmp_batch_loss_scpost_src.item())
-                self.epoch_loss_dict["epoch_{}_iter_loss_scpost_src_cv[{}]".format(self.mode, i)].append(tmp_batch_loss_scpost_src_cv.item())
-                self.epoch_loss_dict["epoch_{}_iter_loss_lat_src_cv[{}]".format(self.mode, i)].append(tmp_batch_loss_lat_src_cv.item())
-                self.epoch_loss_dict["epoch_{}_iter_loss_lat_src[{}]".format(self.mode, i)].append(tmp_batch_loss_lat_src.item())
+                self.epoch_info_dict["epoch_{}_iter_loss_mcd_src_src[{}]".format(self.mode, i)].append(tmp_batch_loss_mcd_src_src.item())
+                self.epoch_info_dict["epoch_{}_iter_loss_mcd_src_trg_src[{}]".format(self.mode, i)].append(tmp_batch_loss_mcd_src_trg_src.item())
+                self.epoch_info_dict["epoch_{}_iter_loss_mcd_src_trg[{}]".format(self.mode, i)].append(tmp_batch_loss_mcd_src_trg.item())
+                self.epoch_info_dict["epoch_{}_iter_loss_scpost_src[{}]".format(self.mode, i)].append(tmp_batch_loss_scpost_src.item())
+                self.epoch_info_dict["epoch_{}_iter_loss_scpost_src_cv[{}]".format(self.mode, i)].append(tmp_batch_loss_scpost_src_cv.item())
+                self.epoch_info_dict["epoch_{}_iter_loss_lat_src_cv[{}]".format(self.mode, i)].append(tmp_batch_loss_lat_src_cv.item())
+                self.epoch_info_dict["epoch_{}_iter_loss_lat_src[{}]".format(self.mode, i)].append(tmp_batch_loss_lat_src.item())
                 
             # accumulate loss for optimization
             if i > 0: # [2nd, 3rd, ..., Nth] cycle
@@ -701,13 +701,13 @@ class CycleVae():
                         self.variable['batch_loss_scpost_src'][0].sum()
             
             # record mean-loss from all utterances in this batch
-            self.loss_dict["{}_iter_loss_mcd_src_src[{}]".format(self.mode, i)].append(torch.mean(self.variable['batch_loss_mcd_src_src'][i]).item())
-            self.loss_dict["{}_iter_loss_mcd_src_trg_src[{}]".format(self.mode, i)].append(torch.mean(self.variable['batch_loss_mcd_src_trg_src'][i]).item())
-            self.loss_dict["{}_iter_loss_mcd_src_trg[{}]".format(self.mode, i)].append(torch.mean(self.variable['batch_loss_mcd_src_trg'][i]).item())
-            self.loss_dict["{}_iter_loss_scpost_src[{}]".format(self.mode, i)].append(torch.mean(self.variable['batch_loss_scpost_src'][i]).item())
-            self.loss_dict["{}_iter_loss_scpost_src_cv[{}]".format(self.mode, i)].append(torch.mean(self.variable['batch_loss_scpost_src_cv'][i]).item())
-            self.loss_dict["{}_iter_loss_lat_src[{}]".format(self.mode, i)].append(torch.mean(self.variable['batch_loss_lat_src'][i]).item())
-            self.loss_dict["{}_iter_loss_lat_src_cv[{}]".format(self.mode, i)].append(torch.mean(self.variable['batch_loss_lat_src_cv'][i]).item())
+            self.iter_info_dict["{}_iter_loss_mcd_src_src[{}]".format(self.mode, i)].append(torch.mean(self.variable['batch_loss_mcd_src_src'][i]).item())
+            self.iter_info_dict["{}_iter_loss_mcd_src_trg_src[{}]".format(self.mode, i)].append(torch.mean(self.variable['batch_loss_mcd_src_trg_src'][i]).item())
+            self.iter_info_dict["{}_iter_loss_mcd_src_trg[{}]".format(self.mode, i)].append(torch.mean(self.variable['batch_loss_mcd_src_trg'][i]).item())
+            self.iter_info_dict["{}_iter_loss_scpost_src[{}]".format(self.mode, i)].append(torch.mean(self.variable['batch_loss_scpost_src'][i]).item())
+            self.iter_info_dict["{}_iter_loss_scpost_src_cv[{}]".format(self.mode, i)].append(torch.mean(self.variable['batch_loss_scpost_src_cv'][i]).item())
+            self.iter_info_dict["{}_iter_loss_lat_src[{}]".format(self.mode, i)].append(torch.mean(self.variable['batch_loss_lat_src'][i]).item())
+            self.iter_info_dict["{}_iter_loss_lat_src_cv[{}]".format(self.mode, i)].append(torch.mean(self.variable['batch_loss_lat_src_cv'][i]).item())
 
         return 
 
@@ -749,13 +749,13 @@ class CycleVae():
                 self.variable['batch_latpost_src_trg'][0][i, :self.batch_eval['flen_src'][i]], lat_dim=self.lat_dim)
  
             # record the loss statistics
-            self.epoch_loss_eval_dict["epoch_{}_batch_loss_mcd_src_src[{}]".format(self.mode, 0)].append(tmp_batch_loss_mcd_src_src.item())
-            self.epoch_loss_eval_dict["epoch_{}_batch_loss_mcd_src_trg[{}]".format(self.mode, 0)].append(tmp_batch_loss_mcd_src_trg.item())
-            self.epoch_loss_eval_dict["epoch_{}_batch_loss_mcd_src_trg_src[{}]".format(self.mode, 0)].append(tmp_batch_loss_mcd_src_trg_src.item())
-            self.epoch_loss_eval_dict["epoch_{}_batch_loss_scpost_src[{}]".format(self.mode, 0)].append(tmp_batch_loss_scpost_src.item())
-            self.epoch_loss_eval_dict["epoch_{}_batch_loss_scpost_src_cv[{}]".format(self.mode, 0)].append(tmp_batch_loss_scpost_src_cv.item())
-            self.epoch_loss_eval_dict["epoch_{}_batch_loss_lat_src_cv[{}]".format(self.mode, 0)].append(tmp_batch_loss_lat_src_cv.item())
-            self.epoch_loss_eval_dict["epoch_{}_batch_loss_lat_src[{}]".format(self.mode, 0)].append(tmp_batch_loss_lat_src.item())
+            self.epoch_info_eval_dict["epoch_{}_batch_loss_mcd_src_src[{}]".format(self.mode, 0)].append(tmp_batch_loss_mcd_src_src.item())
+            self.epoch_info_eval_dict["epoch_{}_batch_loss_mcd_src_trg[{}]".format(self.mode, 0)].append(tmp_batch_loss_mcd_src_trg.item())
+            self.epoch_info_eval_dict["epoch_{}_batch_loss_mcd_src_trg_src[{}]".format(self.mode, 0)].append(tmp_batch_loss_mcd_src_trg_src.item())
+            self.epoch_info_eval_dict["epoch_{}_batch_loss_scpost_src[{}]".format(self.mode, 0)].append(tmp_batch_loss_scpost_src.item())
+            self.epoch_info_eval_dict["epoch_{}_batch_loss_scpost_src_cv[{}]".format(self.mode, 0)].append(tmp_batch_loss_scpost_src_cv.item())
+            self.epoch_info_eval_dict["epoch_{}_batch_loss_lat_src_cv[{}]".format(self.mode, 0)].append(tmp_batch_loss_lat_src_cv.item())
+            self.epoch_info_eval_dict["epoch_{}_batch_loss_lat_src[{}]".format(self.mode, 0)].append(tmp_batch_loss_lat_src.item())
 
         return 
 
@@ -777,7 +777,7 @@ class CycleVae():
         return 
 
 
-    def update_loss_info(self):
+    def update_iter_info(self):
 
         # compute MCD-based L2-loss (true MCD values) of (cyclic) reconst. spectra
         for j in self.batch_frame['select_utt_idx']: # iterate over all valid utterances in optim.
@@ -827,63 +827,20 @@ class CycleVae():
                             self.batch_frame['src_s_idx'])[:,1:].cpu().data.numpy(), dtype=np.float64))
                     
                     # record loss statistics
-                    self.loss_dict["{}_iter_mcdpow_src_src[{}]".format(self.mode, i)].append(tmp_batch_mcdpow_src_src)
-                    self.loss_dict["{}_iter_mcd_src_src[{}]".format(self.mode, i)].append(tmp_batch_mcd_src_src)
-                    self.loss_dict["{}_iter_mcdpow_src_trg_src[{}]".format(self.mode, i)].append(tmp_batch_mcdpow_src_trg_src)
-                    self.loss_dict["{}_iter_mcd_src_trg_src[{}]".format(self.mode, i)].append(tmp_batch_mcd_src_trg_src)
+                    self.iter_info_dict["{}_iter_mcdpow_src_src[{}]".format(self.mode, i)].append(tmp_batch_mcdpow_src_src)
+                    self.iter_info_dict["{}_iter_mcd_src_src[{}]".format(self.mode, i)].append(tmp_batch_mcd_src_src)
+                    self.iter_info_dict["{}_iter_mcdpow_src_trg_src[{}]".format(self.mode, i)].append(tmp_batch_mcdpow_src_trg_src)
+                    self.iter_info_dict["{}_iter_mcd_src_trg_src[{}]".format(self.mode, i)].append(tmp_batch_mcd_src_trg_src)
 
-                    self.epoch_loss_dict["epoch_{}_iter_mcdpow_src_src[{}]".format(self.mode, i)].append(tmp_batch_mcdpow_src_src)
-                    self.epoch_loss_dict["epoch_{}_iter_mcd_src_src[{}]".format(self.mode, i)].append(tmp_batch_mcd_src_src)
-                    self.epoch_loss_dict["epoch_{}_iter_mcdpow_src_trg_src[{}]".format(self.mode, i)].append(tmp_batch_mcdpow_src_trg_src)
-                    self.epoch_loss_dict["epoch_{}_iter_mcd_src_trg_src[{}]".format(self.mode, i)].append(tmp_batch_mcd_src_trg_src)
-
-        return 
-
-
-    def update_loss_info_eval(self):
-        
-        for i in range(1):
-
-            # time-warping function with speech frames to calc true MCD values
-            # with 0th power
-            batch_src_spc_ = np.array(torch.index_select(self.batch_eval['h_src'][i, :, self.stdim :],0,\
-                self.batch_eval['spcidx_src'][i, :self.batch_eval['flen_spc_src'][i]]).cpu().data.numpy(), \
-                dtype=np.float64)
-            # w/o 0th power
-            batch_src_spc__ = np.array(torch.index_select(self.batch_eval['h_src'][i, : ,self.stdim + 1 :],0,\
-                self.batch_eval['spcidx_src'][i, :self.batch_eval['flen_spc_src'][i]]).cpu().data.numpy(), \
-                dtype=np.float64)
-
-            # MCD of reconst.
-            tmp_batch_mcdpow_src_src, _ = dtw.calc_mcd(batch_src_spc_, \
-                np.array(torch.index_select(self.variable['batch_trj_src_src'][0][i],0,\
-                self.batch_eval['spcidx_src'][i, :self.batch_eval['flen_spc_src'][i]]).cpu().data.numpy(), \
-                dtype=np.float64))
-            tmp_batch_mcd_src_src, _ = dtw.calc_mcd(batch_src_spc__, \
-                np.array(torch.index_select(self.variable['batch_trj_src_src'][0][i,:,1:],0,\
-                self.batch_eval['spcidx_src'][i, :self.batch_eval['flen_spc_src'][i]]).cpu().data.numpy(), \
-                dtype=np.float64))
-
-            # MCD of cyclic reconst.
-            tmp_batch_mcdpow_src_trg_src, _ = dtw.calc_mcd(batch_src_spc_, \
-                np.array(torch.index_select(self.variable['batch_trj_src_trg_src'][0][i],0,\
-                    self.batch_eval['spcidx_src'][i, :self.batch_eval['flen_spc_src'][i]]).cpu().data.numpy(), \
-                    dtype=np.float64))
-            tmp_batch_mcd_src_trg_src, _ = dtw.calc_mcd(batch_src_spc__, \
-                np.array(torch.index_select(self.variable['batch_trj_src_trg_src'][0][i,:,1:],0,\
-                    self.batch_eval['spcidx_src'][i, :self.batch_eval['flen_spc_src'][i]]).cpu().data.numpy(), \
-                    dtype=np.float64))
-
-            # record acc. stats
-            self.epoch_loss_eval_dict["epoch_{}_batch_mcdpow_src_src[{}]".format(self.mode, 0)].append(tmp_batch_mcdpow_src_src)
-            self.epoch_loss_eval_dict["epoch_{}_batch_mcd_src_src[{}]".format(self.mode, 0)].append(tmp_batch_mcd_src_src)
-            self.epoch_loss_eval_dict["epoch_{}_batch_mcdpow_src_trg_src[{}]".format(self.mode, 0)].append(tmp_batch_mcdpow_src_trg_src)
-            self.epoch_loss_eval_dict["epoch_{}_batch_mcd_src_trg_src[{}]".format(self.mode, 0)].append(tmp_batch_mcd_src_trg_src)
+                    self.epoch_info_dict["epoch_{}_iter_mcdpow_src_src[{}]".format(self.mode, i)].append(tmp_batch_mcdpow_src_src)
+                    self.epoch_info_dict["epoch_{}_iter_mcd_src_src[{}]".format(self.mode, i)].append(tmp_batch_mcd_src_src)
+                    self.epoch_info_dict["epoch_{}_iter_mcdpow_src_trg_src[{}]".format(self.mode, i)].append(tmp_batch_mcdpow_src_trg_src)
+                    self.epoch_info_dict["epoch_{}_iter_mcd_src_trg_src[{}]".format(self.mode, i)].append(tmp_batch_mcd_src_trg_src)
 
         return 
         
 
-    def update_epoch_loss_info(self):
+    def update_epoch_info(self):
         
         # at least parallel one pair target conversion exists, generate target latent
         if self.batch_frame['pair_flag']: 
@@ -923,70 +880,174 @@ class CycleVae():
                     dtype=np.float64))
 
             # record acc. stats
-            self.epoch_loss_dict["epoch_{}_batch_mcdpow_src_src[{}]".format(self.mode, 0)].append(tmp_batch_mcdpow_src_src)
-            self.epoch_loss_dict["epoch_{}_batch_mcd_src_src[{}]".format(self.mode, 0)].append(tmp_batch_mcd_src_src)
-            self.epoch_loss_dict["epoch_{}_batch_mcdpow_src_trg_src[{}]".format(self.mode, 0)].append(tmp_batch_mcdpow_src_trg_src)
-            self.epoch_loss_dict["epoch_{}_batch_mcd_src_trg_src[{}]".format(self.mode, 0)].append(tmp_batch_mcd_src_trg_src)
+            self.epoch_info_dict["epoch_{}_batch_mcdpow_src_src[{}]".format(self.mode, 0)].append(tmp_batch_mcdpow_src_src)
+            self.epoch_info_dict["epoch_{}_batch_mcd_src_src[{}]".format(self.mode, 0)].append(tmp_batch_mcd_src_src)
+            self.epoch_info_dict["epoch_{}_batch_mcdpow_src_trg_src[{}]".format(self.mode, 0)].append(tmp_batch_mcdpow_src_trg_src)
+            self.epoch_info_dict["epoch_{}_batch_mcd_src_trg_src[{}]".format(self.mode, 0)].append(tmp_batch_mcd_src_trg_src)
 
             if self.batch_frame['file_src_trg_flag'][i]: # calculate only if target pair parallel data exists
                 # MCD of spectral with 0th power
-                _, _, tmp_batch_mcdpow_src_trg, _ = dtw.dtw_org_to_trg(np.array(\
-                    torch.index_select(self.variable['trj_src_trg'][i], 0, self.batch_frame['spcidx_src'][i,\
+                _, _, tmp_batch_mcdpow_src_trg, _ = dtw.dtw_org_to_trg(\
+                    np.array(torch.index_select(self.variable['trj_src_trg'][i], 0, self.batch_frame['spcidx_src'][i,\
                         :self.batch_frame['flen_spc_src'][i]]).cpu().data.numpy(), dtype=np.float64), \
-                    np.array(torch.index_select(self.batch_frame['h_trg'] [i][:, self.stdim:],0,\
+                    np.array(torch.index_select(self.batch_frame['h_trg'][i][:, self.stdim:],0,\
                     self.batch_frame['spcidx_trg'][i, :self.batch_frame['flen_spc_trg'][i]]).cpu().data.numpy(), dtype=np.float64))
 
                 # MCD of spectral w/o 0th power, i.e., [:,1:]
-                _, _, tmp_batch_mcd_src_trg, _ = dtw.dtw_org_to_trg(np.array(\
-                    torch.index_select(self.variable['trj_src_trg'][i][:, 1:],0,\
+                _, _, tmp_batch_mcd_src_trg, _ = dtw.dtw_org_to_trg(\
+                    np.array(torch.index_select(self.variable['trj_src_trg'][i][:, 1:],0,\
                     self.batch_frame['spcidx_src'][i,:self.batch_frame['flen_spc_src'][i]]).cpu().data.numpy(), dtype=np.float64), \
-                    np.array(torch.index_select(self.batch_frame['h_trg'] [i][:, self.stdim + 1:],0,\
+                    np.array(torch.index_select(self.batch_frame['h_trg'][i][:, self.stdim + 1:],0,\
                     self.batch_frame['spcidx_trg'][i, :self.batch_frame['flen_spc_trg'][i]]).cpu().data.numpy(), dtype=np.float64))
 
                 # take latent feat. on speech frames only
+                # latent of converted
                 trj_lat_srctrg_ = np.array(torch.index_select(trj_lat_srctrg[i],0,\
                     self.batch_frame['spcidx_trg'][i,:self.batch_frame['flen_spc_trg'][i]]).cpu().data.numpy(), dtype=np.float64)
+
+                # latent of source
                 trj_lat_src_ = np.array(torch.index_select(self.variable['trj_lat_src'][i],0,\
                     self.batch_frame['spcidx_src'][i, :self.batch_frame['flen_spc_src'][i]]).cpu().data.numpy(), dtype=np.float64)
 
                 # time-warping of latent source-to-target for RMSE
                 aligned_lat_srctrg1, _, _, _ = dtw.dtw_org_to_trg(trj_lat_src_, trj_lat_srctrg_)
-                tmp_batch_lat_dist_mse_src_trg = np.mean(np.sqrt(np.mean((\
+                tmp_batch_lat_dist_mse_srctrg1 = np.mean(np.sqrt(np.mean((\
                     aligned_lat_srctrg1 - trj_lat_srctrg_)**2, axis=0)))
 
                 # Cos-sim of latent source-to-target
-                _, _, tmp_batch_lat_cdist_srctrg1, _ = dtw.dtw_org_to_trg(\
+                _, _, tmp_batch_lat_dist_cos_sim_srctrg1, _ = dtw.dtw_org_to_trg(\
                     trj_lat_srctrg_, trj_lat_src_, mcd=0)
 
                 # time-warping of latent target-to-source for RMSE
                 aligned_lat_srctrg2, _, _, _ = dtw.dtw_org_to_trg(trj_lat_srctrg_, trj_lat_src_)
-                tmp_batch_lat_dist_cos_sim_src_trg = np.mean(np.sqrt(np.mean((\
+                tmp_batch_lat_dist_mse_srctrg2 = np.mean(np.sqrt(np.mean((\
                     aligned_lat_srctrg2 - trj_lat_src_)**2, axis=0)))
 
                 # Cos-sim of latent target-to-source
-                _, _, tmp_batch_lat_cdist_srctrg2, _ = dtw.dtw_org_to_trg(\
+                _, _, tmp_batch_lat_dist_cos_sim_srctrg2, _ = dtw.dtw_org_to_trg(\
                     trj_lat_src_, trj_lat_srctrg_, mcd=0)
 
                 # RMSE
-                tmp_batch_lat_dist_mse_src_trg = (tmp_batch_lat_dist_mse_src_trg + tmp_batch_lat_dist_cos_sim_src_trg) / 2
+                tmp_batch_lat_dist_mse_src_trg = (tmp_batch_lat_dist_mse_srctrg1 + tmp_batch_lat_dist_mse_srctrg2) / 2
 
                 # Cos-sim
-                tmp_batch_lat_dist_cos_sim_src_trg = (tmp_batch_lat_cdist_srctrg1 + tmp_batch_lat_cdist_srctrg2) / 2
+                tmp_batch_lat_dist_cos_sim_src_trg = (tmp_batch_lat_dist_cos_sim_srctrg1 + tmp_batch_lat_dist_cos_sim_srctrg2) / 2
 
                 # record spectral and latent acc. stats
-                self.epoch_loss_dict["epoch_{}_batch_mcdpow_src_trg[{}]".format(self.mode, 0)].append(tmp_batch_mcdpow_src_trg)
-                self.epoch_loss_dict["epoch_{}_batch_mcd_src_trg[{}]".format(self.mode, 0)].append(tmp_batch_mcd_src_trg)
-                self.epoch_loss_dict["epoch_{}_batch_lat_dist_msee_src_trg[{}]".format(self.mode, 0)].append(tmp_batch_lat_dist_mse_src_trg)
-                self.epoch_loss_dict["epoch_{}_batch_lat_dist_cos_sim_src_trg[{}]".format(self.mode, 0)].append(tmp_batch_lat_dist_cos_sim_src_trg)
+                self.epoch_info_dict["epoch_{}_batch_mcdpow_src_trg[{}]".format(self.mode, 0)].append(tmp_batch_mcdpow_src_trg)
+                self.epoch_info_dict["epoch_{}_batch_mcd_src_trg[{}]".format(self.mode, 0)].append(tmp_batch_mcd_src_trg)
+                self.epoch_info_dict["epoch_{}_batch_lat_dist_msee_src_trg[{}]".format(self.mode, 0)].append(tmp_batch_lat_dist_mse_src_trg)
+                self.epoch_info_dict["epoch_{}_batch_lat_dist_cos_sim_src_trg[{}]".format(self.mode, 0)].append(tmp_batch_lat_dist_cos_sim_src_trg)
 
         return
+
+
+    def update_epoch_info_eval(self):
+
+        # at least parallel one pair target conversion exists, generate target latent
+        if self.batch_eval['pair_flag']: 
+            _, _, _, _, trj_lat_srctrg = self.model['encoder'](self.batch_eval['h_trg'] , self.y_in_pp_eval)
+
+        for i in range(1):
+
+            # time-warping function with speech frames to calc true MCD values
+            # with 0th power
+            batch_src_spc_ = np.array(torch.index_select(self.batch_eval['h_src'][i, :, self.stdim :],0,\
+                self.batch_eval['spcidx_src'][i, :self.batch_eval['flen_spc_src'][i]]).cpu().data.numpy(), \
+                dtype=np.float64)
+            # w/o 0th power
+            batch_src_spc__ = np.array(torch.index_select(self.batch_eval['h_src'][i, : ,self.stdim + 1 :],0,\
+                self.batch_eval['spcidx_src'][i, :self.batch_eval['flen_spc_src'][i]]).cpu().data.numpy(), \
+                dtype=np.float64)
+
+            # MCD of reconst.
+            tmp_batch_mcdpow_src_src, _ = dtw.calc_mcd(batch_src_spc_, \
+                np.array(torch.index_select(self.variable['batch_trj_src_src'][0][i], 0, \
+                self.batch_eval['spcidx_src'][i, :self.batch_eval['flen_spc_src'][i]]).cpu().data.numpy(), \
+                dtype=np.float64))
+            tmp_batch_mcd_src_src, _ = dtw.calc_mcd(batch_src_spc__, \
+                np.array(torch.index_select(self.variable['batch_trj_src_src'][0][i,:,1:], 0, \
+                self.batch_eval['spcidx_src'][i, :self.batch_eval['flen_spc_src'][i]]).cpu().data.numpy(), \
+                dtype=np.float64))
+
+            # MCD of cyclic reconst.
+            tmp_batch_mcdpow_src_trg_src, _ = dtw.calc_mcd(batch_src_spc_, \
+                np.array(torch.index_select(self.variable['batch_trj_src_trg_src'][0][i], 0, \
+                    self.batch_eval['spcidx_src'][i, :self.batch_eval['flen_spc_src'][i]]).cpu().data.numpy(), \
+                    dtype=np.float64))
+            tmp_batch_mcd_src_trg_src, _ = dtw.calc_mcd(batch_src_spc__, \
+                np.array(torch.index_select(self.variable['batch_trj_src_trg_src'][0][i,:,1:], 0, \
+                    self.batch_eval['spcidx_src'][i, :self.batch_eval['flen_spc_src'][i]]).cpu().data.numpy(), \
+                    dtype=np.float64))
+
+            # record acc. stats
+            self.epoch_info_eval_dict["epoch_{}_batch_mcdpow_src_src[{}]".format(self.mode, 0)].append(tmp_batch_mcdpow_src_src)
+            self.epoch_info_eval_dict["epoch_{}_batch_mcd_src_src[{}]".format(self.mode, 0)].append(tmp_batch_mcd_src_src)
+            self.epoch_info_eval_dict["epoch_{}_batch_mcdpow_src_trg_src[{}]".format(self.mode, 0)].append(tmp_batch_mcdpow_src_trg_src)
+            self.epoch_info_eval_dict["epoch_{}_batch_mcd_src_trg_src[{}]".format(self.mode, 0)].append(tmp_batch_mcd_src_trg_src)
+
+            if self.batch_eval['file_src_trg_flag'][i]: # calculate only if target pair parallel data exists
+                # MCD of spectral with 0th power
+                _, _, tmp_batch_mcdpow_src_trg, _ = dtw.dtw_org_to_trg(\
+                    np.array(torch.index_select(self.variable['batch_trj_src_trg'][0][i], 0, self.batch_eval['spcidx_src'][i, \
+                        :self.batch_eval['flen_spc_src'][i]]).cpu().data.numpy(), dtype=np.float64), \
+                    np.array(torch.index_select(self.batch_eval['h_trg'][i, :, self.stdim:], 0,\
+                        self.batch_eval['spcidx_trg'][i, :self.batch_eval['flen_spc_trg'][i]]).cpu().data.numpy(),dtype=np.float64))
+                
+                # MCD of spectral w/o 0th power, i.e., [:,1:]
+                _, _, tmp_batch_mcd_src_trg, _ = dtw.dtw_org_to_trg(\
+                    np.array(torch.index_select(self.variable['batch_trj_src_trg'][0][i, :, 1:], 0,\
+                        self.batch_eval['spcidx_src'][i,:self.batch_eval['flen_spc_src'][i]]).cpu().data.numpy(), dtype=np.float64), \
+                    np.array(torch.index_select(self.batch_eval['h_trg'][i, :, self.stdim + 1:], 0,\
+                        self.batch_eval['spcidx_trg'][i, :self.batch_eval['flen_spc_trg'][i]]).cpu().data.numpy(), dtype=np.float64))
+
+                # take latent feat. on speech frames only
+                # latent of converted
+                trj_lat_srctrg_ = np.array(torch.index_select(trj_lat_srctrg[i],0, \
+                    self.batch_eval['spcidx_trg'][i, :self.batch_eval['flen_spc_trg'][i]]).cpu().data.numpy(), dtype=np.float64)
+
+                # latent of source
+                trj_lat_src_ = np.array(torch.index_select(self.variable['batch_mle_lat_src'][0][i], 0, \
+                    self.batch_eval['spcidx_src'][i, :self.batch_eval['flen_spc_src'][i]]).cpu().data.numpy(), dtype=np.float64)
+
+                # time-warping of latent source-to-target for RMSE
+                aligned_lat_srctrg1, _, _, _ = dtw.dtw_org_to_trg(trj_lat_src_, trj_lat_srctrg_)
+                tmp_batch_lat_dist_mse_srctrg1 = np.mean(np.sqrt(np.mean((\
+                    aligned_lat_srctrg1 - trj_lat_srctrg_)**2, axis=0)))
+
+                # Cos-sim of latent source-to-target
+                _, _, tmp_batch_lat_dist_cos_sim_srctrg1, _ = dtw.dtw_org_to_trg(\
+                    trj_lat_srctrg_, trj_lat_src_, mcd=0)
+
+                # time-warping of latent target-to-source for RMSE
+                aligned_lat_srctrg2, _, _, _ = dtw.dtw_org_to_trg(trj_lat_srctrg_, trj_lat_src_)
+                tmp_batch_lat_dist_mse_srctrg2 = np.mean(np.sqrt(np.mean((\
+                    aligned_lat_srctrg2 - trj_lat_src_)**2, axis=0)))
+
+                # Cos-sim of latent target-to-source
+                _, _, tmp_batch_lat_dist_cos_sim_srctrg2, _ = dtw.dtw_org_to_trg(\
+                    trj_lat_src_, trj_lat_srctrg_, mcd=0)
+
+                # RMSE
+                tmp_batch_lat_dist_mse_src_trg = (tmp_batch_lat_dist_mse_srctrg1 + tmp_batch_lat_dist_mse_srctrg2) / 2
+
+                # Cos-sim
+                tmp_batch_lat_dist_cos_sim_src_trg = (tmp_batch_lat_dist_cos_sim_srctrg1 + tmp_batch_lat_dist_cos_sim_srctrg2) / 2
+
+                # record spectral and latent acc. stats
+                self.epoch_info_eval_dict["epoch_{}_batch_mcdpow_src_trg[{}]".format(self.mode, 0)].append(tmp_batch_mcdpow_src_trg)
+                self.epoch_info_eval_dict["epoch_{}_batch_mcd_src_trg[{}]".format(self.mode, 0)].append(tmp_batch_mcd_src_trg)
+                self.epoch_info_eval_dict["epoch_{}_batch_lat_dist_msee_src_trg[{}]".format(self.mode, 0)].append(tmp_batch_lat_dist_mse_src_trg)
+                self.epoch_info_eval_dict["epoch_{}_batch_lat_dist_cos_sim_src_trg[{}]".format(self.mode, 0)].append(tmp_batch_lat_dist_cos_sim_src_trg)
+
+        return 
 
 
     def train(self, train_dataloader, len_train_dataset, eval_dataloader, len_eval_dataset):
 
         # init
         start_epoch, start_batch = 0, 0
-        last_save_epoch, last_show_spoch, last_test_epoch = 0, 0, 0
+        last_save_epoch, last_show_spoch = 0, 0
 
         batch_number = len(train_dataloader)
         data_iter = iter(train_dataloader)
@@ -1027,7 +1088,7 @@ class CycleVae():
 
                     # Show information
                     # 每个 batch 中都参与计算
-                    self.update_epoch_loss_info()
+                    self.update_epoch_info()
 
                     # Save model
                     if self.epoch_idx % self.cfg.train.save_epochs == 0 or self.epoch_idx == self.cfg.train.num_epochs - 1:
@@ -1045,10 +1106,10 @@ class CycleVae():
                         last_show_spoch = self.epoch_idx
 
                         msg = 'epoch: {}, batch: {}, average optimization loss'.format(self.epoch_idx, self.batch_idx)
-                        for key in self.epoch_loss_dict.keys():
-                                msg += ', {}:{:.4f}'.format(str(key), np.mean(self.epoch_loss_dict[key]))
+                        for key in self.epoch_info_dict.keys():
+                                msg += ', {}:{:.4f}'.format(str(key), np.mean(self.epoch_info_dict[key]))
                         self.logger.info(msg)
-                        self.epoch_loss_dict = defaultdict(list) # reset
+                        self.epoch_info_dict = defaultdict(list) # reset
                         self.profiler.tick("Show information")
 
                     break
@@ -1088,8 +1149,8 @@ class CycleVae():
                 # Backward pass
                 self.optimizer.zero_grad()
                 self.batch_loss.backward()
-                self.loss_dict["{}_iter_loss".format(self.mode)].append(self.batch_loss.item())
-                self.epoch_loss_dict["epoch_{}_iter_loss".format(self.mode)].append(self.batch_loss.item())
+                self.iter_info_dict["{}_iter_loss".format(self.mode)].append(self.batch_loss.item())
+                self.epoch_info_dict["epoch_{}_iter_loss".format(self.mode)].append(self.batch_loss.item())
                 self.profiler.tick("Generator Backward pass")
 
                 # Parameter update
@@ -1098,13 +1159,13 @@ class CycleVae():
 
                 # Show information
                 self.show_data_info()
-                self.update_loss_info()
+                self.update_iter_info()
 
                 msg = 'epoch: {}, batch: {}, iter: {}'.format(self.epoch_idx, self.batch_idx, iter_idx)
-                for key in self.loss_dict.keys():
-                    msg += ', {}:{:.4f}'.format(str(key), np.mean(self.loss_dict[key]))
+                for key in self.iter_info_dict.keys():
+                    msg += ', {}:{:.4f}'.format(str(key), np.mean(self.iter_info_dict[key]))
                 self.logger.info(msg)
-                self.loss_dict = defaultdict(list) # reset
+                self.iter_info_dict = defaultdict(list) # reset
                 self.profiler.tick("Show information")
 
                 # Plot snapshot
@@ -1141,13 +1202,13 @@ class CycleVae():
                 self.calculate_loss_eval()
 
                 # Show information
-                self.update_loss_info_eval()
+                self.update_epoch_info_eval()
 
             msg = 'epoch: {}, batch: {}, average optimization loss'.format(self.epoch_idx, self.batch_idx)
-            for key in self.epoch_loss_eval_dict.keys():
-                    msg += ', {}:{:.4f}'.format(str(key), np.mean(self.epoch_loss_eval_dict[key]))
+            for key in self.epoch_info_eval_dict.keys():
+                    msg += ', {}:{:.4f}'.format(str(key), np.mean(self.epoch_info_eval_dict[key]))
             self.logger.info(msg)
-            self.epoch_loss_eval_dict = defaultdict(list) # reset
+            self.epoch_info_eval_dict = defaultdict(list) # reset
             self.profiler.tick("Show information")
 
         self.mode = "train"

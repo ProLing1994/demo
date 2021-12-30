@@ -21,7 +21,7 @@ __C.general.dataset_path_dict = {
 __C.general.data_dir = "/mnt/huanyuan/data/speech/vc/English_dataset/"
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/vc/english_vc/test_1229/"
+__C.general.save_dir = "/mnt/huanyuan/model/vc/english_vc/test_1230/"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -127,7 +127,7 @@ __C.train.show_profiler = 5
 __C.train.plot_snapshot = 5
 
 # the number of epochs to save model
-__C.train.save_epochs = 25
+__C.train.save_epochs = 5
 
 
 ######################################
