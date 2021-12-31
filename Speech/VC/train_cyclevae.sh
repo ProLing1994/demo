@@ -10,6 +10,9 @@
 
 stage=3
 
+# init
+config_file=/home/huanyuan/code/demo/Speech/VC/config/cyclevae/vc_config_cyclevae.py
+
 echo "train_cyclevae.sh"
 
 ###########################################################

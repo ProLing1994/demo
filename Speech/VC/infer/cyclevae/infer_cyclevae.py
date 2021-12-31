@@ -30,7 +30,7 @@ def infer(args):
             
             wav_path = os.path.join(args.wav_folder, wav_list[idx])
             wav_name = wav_list[idx].split('.')[0]
-            wav_cv, wav_anasyn = vc_cyclevae_infer.voice_conversion(wav_path)
+            wav_cv, _, wav_anasyn = vc_cyclevae_infer.voice_conversion(wav_path)
 
             # Save it on the disk
             output_dir = os.path.join(cfg.general.save_dir, "infer")

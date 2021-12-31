@@ -102,10 +102,10 @@ class VcCycleVaeInfer():
         return 
 
 
-    def load_spk_info(self, spk_name_src, spk_name_trg):
+    def load_spk_info(self, spk_name_src, spk_name_trg=None):
         
+        # spk src
         assert spk_name_src in self.spk_list
-        assert spk_name_trg in self.spk_list
 
         spk_pd_src = self.data_pd[self.data_pd['speaker'] == spk_name_src]
         dataset_name_src = spk_pd_src['dataset'].to_list()[0]
@@ -125,6 +125,12 @@ class VcCycleVaeInfer():
         with open(conf_path, "r") as f :
             line = f.readline().strip()
             self.pow = float(line.split(' ')[0])
+        
+        # spk try 
+        if spk_name_trg is None:
+            return
+        
+        assert spk_name_trg in self.spk_list
 
         spk_pd_trg = self.data_pd[self.data_pd['speaker'] == spk_name_trg]
         dataset_name_trg = spk_pd_trg['dataset'].to_list()[0]
@@ -180,7 +186,7 @@ class VcCycleVaeInfer():
         return f0_range, spc_range, ap_range, uv_range, log_cont_f0_lpf_range, codeap_range, mcep_range, feat_org_lf0
 
 
-    def world_feature_fuse(self, f0, codeap, mcep_cv):
+    def world_feature_conversion(self, f0, codeap, mcep_cv=None):
         
         # 基频转换，转换到 trg 的基频上
         f0_cv = world_feature.convert_f0(f0, self.f0_range_mean_src, self.f0_range_std_src, self.f0_range_mean_trg, self.f0_range_std_trg)
@@ -193,46 +199,76 @@ class VcCycleVaeInfer():
         cont_f0_lpf_cv = world_feature.low_pass_filter(contf0_cv, int(1.0 / (self.cfg.dataset.shiftms * 0.001)), cutoff=world_feature.LOWPASS_CUTOFF)
         log_cont_f0_lpf_cv = np.expand_dims(np.log(cont_f0_lpf_cv), axis=-1)
 
-        # 特征拼接 uv 特征 / 对数 F0 基频 / 编码 AP 非周期序列 / mcep 倒谱系数
-        feat_cv = np.c_[uv_cv, log_cont_f0_lpf_cv, codeap, mcep_cv]
+        if mcep_cv is None:
+            # 特征拼接 uv 特征 / 对数 F0 基频 / 编码 AP 非周期序列 / mcep 倒谱系数
+            feat_cv = np.c_[uv_cv, log_cont_f0_lpf_cv, codeap]
+        else:
+            # 特征拼接 uv 特征 / 对数 F0 基频 / 编码 AP 非周期序列 / mcep 倒谱系数
+            feat_cv = np.c_[uv_cv, log_cont_f0_lpf_cv, codeap, mcep_cv]
 
         return feat_cv, f0_cv, uv_cv, log_cont_f0_lpf_cv
 
 
-    def world_feature_2wav(self, f0, f0_cv, ap, mcep, mcep_cv):
+    def world_feature_reconst(self, feat_src, mcep_rec):
+        
+        feat_rec = np.c_[feat_src[:, :self.stdim], mcep_rec]
+
+        return feat_rec
+
+
+    def world_feature_2wav(self, f0, ap, mcep):
 
         fs = self.cfg.dataset.sampling_rate
-
-        sp_cv = ps.mc2sp(mcep_cv, self.cfg.dataset.mcep_alpha, self.cfg.dataset.fft_size)
-        wav_cv = np.clip(pw.synthesize(f0_cv, sp_cv, ap, fs, frame_period=self.cfg.dataset.shiftms), -1, 1)
 
         sp = ps.mc2sp(mcep, self.cfg.dataset.mcep_alpha, self.cfg.dataset.fft_size)
         wav_anasyn = np.clip(pw.synthesize(f0, sp, ap, fs, frame_period=self.cfg.dataset.shiftms), -1, 1)
 
-        return wav_cv, wav_anasyn
+        return wav_anasyn
 
 
-    def model_forward(self, feat):
+    def model_forward(self, feat, feat_cv=None):
 
+        # encoding input features
         lat_feat_src, _, _, _, _ = \
             self.model['encoder'](torch.FloatTensor(feat).cuda(), self.y_in_pp, sampling=False)
 
+        # spectral reconstruction
         src_code = np.zeros((lat_feat_src.shape[0], self.n_spk))
         src_code[:, self.code_idx_src] = 1
         src_code = torch.FloatTensor(src_code).cuda()
 
+        mcep_rec, _, _ = self.model['decoder'](torch.cat((src_code, lat_feat_src),1), self.y_in_src)
+        mcep_rec = np.array(mcep_rec.cpu().data.numpy(), dtype=np.float64)
+        mcep_rec= np.ascontiguousarray(mcep_rec)
+
+        if not hasattr(self, 'code_idx_trg'):
+            return mcep_rec, None, None
+
+        # spectral conversion
         trg_code = np.zeros((lat_feat_src.shape[0], self.n_spk))
         trg_code[:, self.code_idx_trg] = 1
         trg_code = torch.FloatTensor(trg_code).cuda()
 
-        cvmcep_src, _, _ = self.model['decoder'](torch.cat((src_code, lat_feat_src),1), self.y_in_src)
-        cvmcep_src = np.array(cvmcep_src.cpu().data.numpy(), dtype=np.float64)
-
         mcep_cv, _, _ = self.model['decoder'](torch.cat((trg_code, lat_feat_src),1), self.y_in_trg)
-        mcep_cv = np.array(mcep_cv.cpu().data.numpy(), dtype=np.float64)
-        mcep_cv= np.ascontiguousarray(mcep_cv)
+        mcep_cv_cpu = np.array(mcep_cv.cpu().data.numpy(), dtype=np.float64)
+        mcep_cv_cpu= np.ascontiguousarray(mcep_cv_cpu)
 
-        return mcep_cv
+        if feat_cv is None:
+            return mcep_rec, mcep_cv_cpu, None
+
+        # encoding converted features
+        lat_feat_src_trg, _, _, _, _ = self.model['encoder'](torch.cat((torch.FloatTensor(feat_cv).cuda(), mcep_cv),1), \
+                                            self.y_in_pp, sampling=False)
+
+        # cyclic spectral reconstruction                     
+        src_code = np.zeros((lat_feat_src.shape[0], self.n_spk))
+        src_code[:, self.code_idx_src] = 1
+        src_code = torch.FloatTensor(src_code).cuda()
+        mcep_cycle_rec, _, _ = self.model['decoder'](torch.cat((src_code, lat_feat_src_trg),1), self.y_in_src)
+        mcep_cycle_rec = np.array(mcep_cycle_rec.cpu().data.numpy(), dtype=np.float64)
+        mcep_cycle_rec= np.ascontiguousarray(mcep_cycle_rec)
+
+        return mcep_rec, mcep_cv_cpu, mcep_cycle_rec
 
 
     def voice_conversion(self, wav_path):
@@ -241,10 +277,50 @@ class VcCycleVaeInfer():
         f0, sp, ap, uv, log_cont_f0_lpf, codeap, mcep, feat_src = self.world_feature_extract(wav_path)
 
         # model forward
-        mcep_cv = self.model_forward(feat_src)
+        _, mcep_cv, _ = self.model_forward(feat_src)
 
-        feat_cv, f0_cv, uv_cv, log_cont_f0_lpf_cv = self.world_feature_fuse(f0, codeap, mcep_cv)
+        # feature conversion
+        feat_cv, f0_cv, uv_cv, log_cont_f0_lpf_cv = self.world_feature_conversion(f0, codeap, mcep_cv)
 
-        wav_cv, wav_anasyn = self.world_feature_2wav(f0, f0_cv, ap, mcep, mcep_cv)
+        # feature2wav
+        wav_cv = self.world_feature_2wav(f0_cv, ap, mcep_cv)
+        wav_anasyn = self.world_feature_2wav(f0, ap, mcep)
 
-        return wav_cv, wav_anasyn
+        return wav_cv, feat_cv, wav_anasyn
+
+
+    def voice_reconst(self, wav_path):
+        
+        # feature extract
+        f0, sp, ap, uv, log_cont_f0_lpf, codeap, mcep, feat_src = self.world_feature_extract(wav_path)
+
+        # model forward
+        mcep_rec, _ ,_ = self.model_forward(feat_src)
+
+        # feature reconst
+        feat_rec = self.world_feature_reconst(feat_src, mcep_rec)
+
+        # feature2wav
+        wav_rec = self.world_feature_2wav(f0, ap, mcep_rec)
+
+        return wav_rec, feat_rec
+
+
+    def voice_cycle_reconst(self, wav_path):
+
+        # feature extract
+        f0, sp, ap, uv, log_cont_f0_lpf, codeap, mcep, feat_src = self.world_feature_extract(wav_path)
+
+        # feature conversion
+        feat_cv, f0_cv, uv_cv, log_cont_f0_lpf_cv = self.world_feature_conversion(f0, codeap)
+
+        # model forward
+        _, _, mcep_cycle_rec = self.model_forward(feat_src, feat_cv)
+
+        # feature reconst
+        feat_cycle_rec = self.world_feature_reconst(feat_src, mcep_cycle_rec)
+
+        # feature2wav
+        wav_cycle_rec = self.world_feature_2wav(f0, ap, mcep_cycle_rec)
+
+        return wav_cycle_rec, feat_cycle_rec
