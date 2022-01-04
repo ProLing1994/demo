@@ -15,7 +15,7 @@ cfg = __C
 
 __C.general = {}
 
-__C.general.dataset_list = ['VCC2020']
+__C.general.dataset_list = ['VCC2020', 'VCC2020_reconst', 'VCC2020_cycle_reconst']
 __C.general.dataset_path_dict = {
                                 "VCC2020": "/mnt/huanyuan2/data/speech/asr/English/VCC2020-database/", 
                                 "VCC2020_training": "/mnt/huanyuan2/data/speech/asr/English/VCC2020-database/dataset/train/", 
@@ -120,8 +120,8 @@ __C.train.num_epochs = 1000
 # __C.train.num_epochs = 10
 
 # the number of samples in a batch
-# __C.train.batch_size = 6
-__C.train.batch_size = 1
+__C.train.batch_size = 6
+# __C.train.batch_size = 1
 
 # the number of threads for IO
 __C.train.num_threads = 1

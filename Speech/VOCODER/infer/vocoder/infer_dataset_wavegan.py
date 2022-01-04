@@ -11,6 +11,7 @@ from Basic.utils.train_tools import *
 
 from VOCODER.infer.vocoder.infer_tts_wavegan import TtsVocoder
 from VOCODER.dataset.vocoder.vocoder_wavegan_dataset_preload_audio_hdf5 import VocoderWaveGanDataset
+from VOCODER.dataset.vocoder.vocoder_wavegan_vc_dataset_preload_audio_hdf5 import VocoderWaveGanVcDataset
 
 def infer(args):
     """
@@ -23,7 +24,14 @@ def infer(args):
     tts_vocoder = TtsVocoder(args.vocoder_config_file)
 
     # load dataset
-    dataset = VocoderWaveGanDataset(cfg, hparams.TRAINING_NAME, bool_return_name=True)
+    # define training dataset and testing dataset
+    if cfg.dataset.compute_mel_type == "world":
+        dataset = VocoderWaveGanVcDataset(cfg, hparams.TRAINING_NAME, bool_return_name=True)
+    elif cfg.dataset.compute_mel_type == "fbank_nopreemphasis_log_manual":
+        dataset = VocoderWaveGanDataset(cfg, hparams.TRAINING_NAME, bool_return_name=True)
+    else:
+        raise NotImplementedError
+
     print("The number of files: {}".format(len(dataset)))
 
     for _, mel, data_name in tqdm(dataset):

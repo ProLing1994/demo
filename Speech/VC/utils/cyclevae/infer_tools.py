@@ -183,7 +183,7 @@ class VcCycleVaeInfer():
         # 特征拼接 uv 特征 / 对数 F0 基频 / 编码 AP 非周期序列 / mcep 倒谱系数
         feat_org_lf0 = np.c_[uv_range, log_cont_f0_lpf_range, codeap_range, mcep_range]
 
-        return f0_range, spc_range, ap_range, uv_range, log_cont_f0_lpf_range, codeap_range, mcep_range, feat_org_lf0
+        return wav, f0_range, spc_range, ap_range, uv_range, log_cont_f0_lpf_range, codeap_range, mcep_range, feat_org_lf0
 
 
     def world_feature_conversion(self, f0, codeap, mcep_cv=None):
@@ -274,7 +274,7 @@ class VcCycleVaeInfer():
     def voice_conversion(self, wav_path):
         
         # feature extract
-        f0, sp, ap, uv, log_cont_f0_lpf, codeap, mcep, feat_src = self.world_feature_extract(wav_path)
+        wav, f0, sp, ap, uv, log_cont_f0_lpf, codeap, mcep, feat_src = self.world_feature_extract(wav_path)
 
         # model forward
         _, mcep_cv, _ = self.model_forward(feat_src)
@@ -292,7 +292,7 @@ class VcCycleVaeInfer():
     def voice_reconst(self, wav_path):
         
         # feature extract
-        f0, sp, ap, uv, log_cont_f0_lpf, codeap, mcep, feat_src = self.world_feature_extract(wav_path)
+        wav, f0, sp, ap, uv, log_cont_f0_lpf, codeap, mcep, feat_src = self.world_feature_extract(wav_path)
 
         # model forward
         mcep_rec, _ ,_ = self.model_forward(feat_src)
@@ -303,13 +303,13 @@ class VcCycleVaeInfer():
         # feature2wav
         wav_rec = self.world_feature_2wav(f0, ap, mcep_rec)
 
-        return wav_rec, feat_rec
+        return wav, wav_rec, feat_rec
 
 
     def voice_cycle_reconst(self, wav_path):
 
         # feature extract
-        f0, sp, ap, uv, log_cont_f0_lpf, codeap, mcep, feat_src = self.world_feature_extract(wav_path)
+        wav, f0, sp, ap, uv, log_cont_f0_lpf, codeap, mcep, feat_src = self.world_feature_extract(wav_path)
 
         # feature conversion
         feat_cv, f0_cv, uv_cv, log_cont_f0_lpf_cv = self.world_feature_conversion(f0, codeap)
@@ -323,4 +323,4 @@ class VcCycleVaeInfer():
         # feature2wav
         wav_cycle_rec = self.world_feature_2wav(f0, ap, mcep_cycle_rec)
 
-        return wav_cycle_rec, feat_cycle_rec
+        return wav, wav_cycle_rec, feat_cycle_rec

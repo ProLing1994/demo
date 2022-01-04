@@ -146,8 +146,10 @@ def train(args):
     # define training dataset and testing dataset
     if cfg.dataset.compute_mel_type == "world":
         train_dataloader, len_train_dataset = generate_dataset_wavegan_vc(cfg, hparams.TRAINING_NAME)
-    else:
+    elif cfg.dataset.compute_mel_type == "fbank_nopreemphasis_log_manual":
         train_dataloader, len_train_dataset = generate_dataset_wavegan(cfg, hparams.TRAINING_NAME)
+    else:
+        raise NotImplementedError
 
     msg = 'Training dataset number: {}'.format(len_train_dataset)
     logger.info(msg)
