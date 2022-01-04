@@ -63,8 +63,7 @@ __C.dataset.sampling_rate = 24000
 __C.dataset.fft_size = 2048
 
 # Shift length in msec (default=5)
-__C.dataset.shiftms = 5 # 24k, 3-dim code-aperiodicity 
-# __C.dataset.shiftms = 3 # 16k, 1-dim code-aperiodicity
+__C.dataset.shiftms = 5 
 
 # Dimension of mel-cepstrum
 __C.dataset.mcep_dim = 49
@@ -78,6 +77,8 @@ __C.dataset.highpass_cutoff = 65
 
 # compute mel type, support ["world"]
 __C.dataset.compute_mel_type = "world"
+# 24k, 3-dim code-aperiodicity 
+# 16k, 1-dim code-aperiodicity
 
 # normalize
 __C.dataset.normalize_bool = True

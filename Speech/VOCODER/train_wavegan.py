@@ -144,7 +144,10 @@ def train(args):
         last_save_epoch, last_test_epoch = 0, 0
 
     # define training dataset and testing dataset
-    train_dataloader, len_train_dataset = generate_dataset_wavegan(cfg, hparams.TRAINING_NAME)
+    if cfg.dataset.compute_mel_type == "world":
+        train_dataloader, len_train_dataset = generate_dataset_wavegan_vc(cfg, hparams.TRAINING_NAME)
+    else:
+        train_dataloader, len_train_dataset = generate_dataset_wavegan(cfg, hparams.TRAINING_NAME)
 
     msg = 'Training dataset number: {}'.format(len_train_dataset)
     logger.info(msg)
@@ -288,7 +291,8 @@ def train(args):
 
 def main(): 
     parser = argparse.ArgumentParser(description='Streamax TTS Vocoder Training Engine')
-    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/VOCODER/config/vocoder/vocoder_config_chinese_wavegan.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/VOCODER/config/vocoder/vocoder_config_chinese_wavegan.py", nargs='?', help='config file')
+    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/VOCODER/config/vocoder/vc_vocoder_config_english_wavegan.py", nargs='?', help='config file')
     args = parser.parse_args()
     train(args)
 

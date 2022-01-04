@@ -22,7 +22,7 @@ def generate_hdf5(args, cfg, hdf5_dir, csv_path, dataset_name, mode_type='testin
         return
 
     # init
-    data_lists = []                 # {'dataset': [], 'speaker': [], 'section': [], 'utterance': [], 'file': [], text': [], 'unique_utterance', [], 'mode': []}
+    data_lists = []                 # {'dataset': [], 'speaker': [], 'section': [], 'utterance': [], 'key', [], 'file': [], 'state': [], 'mode': []}
 
     for _, row in tqdm(mode_data_pd.iterrows(), total=len(file_list)):
 

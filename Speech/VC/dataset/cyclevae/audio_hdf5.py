@@ -107,7 +107,7 @@ def preprocess_audio_normal(cfg, row, hdf5_dir, data_lists):
     # data_lists
     data_lists.append({'dataset': row['dataset'], 'speaker': row['speaker'], 'section': row['section'], \
                         'utterance': row['utterance'], 'key': key, 'file': row['file'], \
-                        'mode': row['mode']})
+                        'state': os.path.join(output_dir, f"{key_name}.h5"), 'mode': row['mode']})
 
     return
 

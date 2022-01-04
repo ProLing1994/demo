@@ -15,6 +15,7 @@ from Basic.utils.train_tools import *
 from VOCODER.dataset.vocoder.vocoder_dataset_preload_audio_lmdb import VocoderDataset, VocoderDataLoader
 # from VOCODER.dataset.vocoder.vocoder_wavegan_dataset_preload_audio_lmdb import VocoderWaveGanDataset, VocoderWaveGanDataLoader
 from VOCODER.dataset.vocoder.vocoder_wavegan_dataset_preload_audio_hdf5 import VocoderWaveGanDataset, VocoderCollater
+from VOCODER.dataset.vocoder.vocoder_wavegan_vc_dataset_preload_audio_hdf5 import VocoderWaveGanVcDataset, VocoderVcCollater
 
 
 def generate_dataset(cfg, mode):
@@ -52,6 +53,22 @@ def generate_dataset_wavegan(cfg, mode):
     dataset = VocoderWaveGanDataset(cfg, mode)
     sampler = EpochConcateSampler(dataset, cfg.train.num_epochs - (cfg.general.resume_epoch_num if cfg.general.resume_epoch_num != -1 else 0))
     collater = VocoderCollater(cfg)
+    dataloader = DataLoader(dataset=dataset,
+                            batch_size=cfg.train.batch_size,
+                            shuffle=False,
+                            sampler=sampler,
+                            num_workers=cfg.train.num_threads,
+                            collate_fn=collater,
+                            pin_memory=True)
+    return dataloader, len(dataset)
+
+
+def generate_dataset_wavegan_vc(cfg, mode):
+    assert mode in ['training', 'testing', 'validation'], "[ERROR:] Unknow mode: {}".format(mode)
+    
+    dataset = VocoderWaveGanVcDataset(cfg, mode)
+    sampler = EpochConcateSampler(dataset, cfg.train.num_epochs - (cfg.general.resume_epoch_num if cfg.general.resume_epoch_num != -1 else 0))
+    collater = VocoderVcCollater(cfg)
     dataloader = DataLoader(dataset=dataset,
                             batch_size=cfg.train.batch_size,
                             shuffle=False,

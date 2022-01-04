@@ -8,10 +8,10 @@ sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 # sys.path.insert(0, '/yuanhuan/code/demo/Speech')
 from Basic.utils.hdf5_tools import *
 
-from TTS.dataset.tts.sv2tts_dataset_preload_audio_lmdb import load_data_pd
+from VC.dataset.cyclevae.dataset_preload_audio_hdf5 import load_data_pd
 
 
-class VocoderWaveGanDataset(Dataset):
+class VocoderWaveGanVcDataset(Dataset):
     def __init__(self, cfg, mode, augmentation_on=True, bool_return_name=False):
         # init
         self.cfg = cfg
@@ -33,9 +33,9 @@ class VocoderWaveGanDataset(Dataset):
             self.scaler = StandardScaler()
 
             dataset_name = '_'.join(cfg.general.dataset_list)
-            dataset_audio_normalize_dir = os.path.join(cfg.general.data_dir, 'dataset_audio_normalize_hdf5')
-            self.scaler.mean_ = read_hdf5(os.path.join(dataset_audio_normalize_dir, dataset_name + "_stats.h5"), "mean")
-            self.scaler.scale_ = read_hdf5(os.path.join(dataset_audio_normalize_dir, dataset_name + "_stats.h5"), "scale")
+            self.stats_jnt_path = os.path.join(cfg.general.data_dir, 'dataset_audio_normalize_hdf5', dataset_name, 'world', f"stats_jnt.h5")
+            self.scaler.mean_ = read_hdf5(self.stats_jnt_path, "mean_feat_org_lf0")
+            self.scaler.scale_ = read_hdf5(self.stats_jnt_path, "scale_feat_org_lf0")
 
             # from version 0.23.0, this information is needed
             self.scaler.n_features_in_ = self.scaler.mean_.shape[0]
@@ -55,16 +55,16 @@ class VocoderWaveGanDataset(Dataset):
             return self.caches[index][0], self.caches[index][1]
         
         dataset_name = self.data_pd.loc[index, 'dataset']
-        data_name = self.data_pd.loc[index, 'unique_utterance']
+        key_name = self.data_pd.loc[index, 'key']
 
         # state
-        state_path = os.path.join(self.cfg.general.data_dir, 'dataset_audio_hdf5', dataset_name, data_name.split('.')[0] + '.h5')
-        
+        state_path = self.data_pd.loc[index, 'state']
+
         # wav
         wav = read_hdf5(state_path, "wave")
 
         # mel (T, C)
-        mel = read_hdf5(state_path, "feats")
+        mel = read_hdf5(state_path, "feat_org_lf0")
 
         # normalize
         if self.cfg.dataset.normalize_bool:
@@ -88,18 +88,16 @@ class VocoderWaveGanDataset(Dataset):
         if not self.bool_return_name:
             return wav, mel
         else:
-            return wav, mel, data_name
+            return wav, mel, key_name
 
     def filter_by_threshold(self):
         self.drop_index_list = []
         audio_length_threshold = int(self.cfg.dataset.sampling_rate * self.cfg.dataset.clip_duration_ms / 1000)
 
         for index, row in self.data_pd.iterrows():
-            dataset_name = self.data_pd.loc[index, 'dataset']
-            data_name = self.data_pd.loc[index, 'unique_utterance']
 
             # state
-            state_path = os.path.join(self.cfg.general.data_dir, 'dataset_audio_hdf5', dataset_name, data_name.split('.')[0] + '.h5')
+            state_path = self.data_pd.loc[index, 'state']
 
             # wav
             wav = read_hdf5(state_path, "wave")
@@ -116,7 +114,7 @@ class VocoderWaveGanDataset(Dataset):
         self.data_pd.reset_index(drop=True, inplace=True)
 
 
-class VocoderCollater(object):
+class VocoderVcCollater(object):
     """Customized collater for Pytorch DataLoader in training."""
 
     def __init__(self, cfg):
@@ -168,8 +166,8 @@ class VocoderCollater(object):
         x_ends = x_starts + self.batch_max_steps
         c_starts = start_frames - self.aux_context_window
         c_ends = start_frames + self.batch_max_frames + self.aux_context_window
-        y_batch = [x[start:end] for x, start, end in zip(xs, x_starts, x_ends)]
-        c_batch = [c[start:end] for c, start, end in zip(cs, c_starts, c_ends)]
+        y_batch = np.array([x[start:end] for x, start, end in zip(xs, x_starts, x_ends)])
+        c_batch = np.array([c[start:end] for c, start, end in zip(cs, c_starts, c_ends)])
 
         # convert each batch to tensor, asuume that each item in batch has the same length
         y_batch = torch.tensor(y_batch, dtype=torch.float).unsqueeze(1)  # (B, 1, T)
