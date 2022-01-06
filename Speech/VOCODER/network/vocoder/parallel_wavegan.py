@@ -213,7 +213,7 @@ class ParallelWaveGANGenerator(torch.nn.Module):
             self.layers, self.stacks, self.kernel_size
         )
 
-    def register_stats(self, stats):
+    def register_stats(self, stats, hdf5_mean_name="mean", hdf5_scale_name="scale"):
         """Register stats for de-normalization as buffer.
 
         Args:
@@ -222,8 +222,8 @@ class ParallelWaveGANGenerator(torch.nn.Module):
         """
         assert stats.endswith(".h5") or stats.endswith(".npy")
         if stats.endswith(".h5"):
-            mean = read_hdf5(stats, "mean").reshape(-1)
-            scale = read_hdf5(stats, "scale").reshape(-1)
+            mean = read_hdf5(stats, hdf5_mean_name).reshape(-1)
+            scale = read_hdf5(stats, hdf5_scale_name).reshape(-1)
         else:
             mean = np.load(stats)[0].reshape(-1)
             scale = np.load(stats)[1].reshape(-1)

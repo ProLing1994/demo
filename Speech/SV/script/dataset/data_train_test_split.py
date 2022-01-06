@@ -320,7 +320,7 @@ def data_split(args):
             data_split_normal(cfg, dataset_name, type = 1)
         elif dataset_name in ['VoxCeleb1']:
             data_split_voxceleb1(cfg, dataset_name, type = 1)
-        elif dataset_name in ['Aishell3', 'SLR62', 'SLR68', 'CN-Celeb1', 'CN-Celeb2', 'VoxCeleb2', 'VCC2020']:
+        elif dataset_name in ['Aishell3', 'SLR62', 'SLR68', 'CN-Celeb1', 'CN-Celeb2', 'VoxCeleb2', 'VCC2020', 'BZNSYP_Aishell3']:
             data_split_normal(cfg, dataset_name, type = 2)
         elif dataset_name in ['SLR38', 'BZNSYP', 'BwcKeyword']:
             data_split_normal(cfg, dataset_name, type = 3)

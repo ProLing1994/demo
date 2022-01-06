@@ -1,0 +1,52 @@
+###########################################################
+#         NORMAL SETTING                                  #
+###########################################################
+pad_len: 2300
+
+
+###########################################################
+#         CYCLE VAE NETWORK ARCHITECTURE SETTING          #
+###########################################################
+# in_dim: dimension of input features
+# lat_dim: dimension of latent features
+# out_dim: dimension of output features
+# n_cyc: number of cycle for CycleVAE, 0 means VAE
+cyclevae_params:
+  stdim: 3      # 16k, 1-dim code-aperiodicity 
+  in_dim: 53    # ${stdim} + ${out_dim}
+  lat_dim: 32
+  out_dim: 50   # ${mcep_dim} + 1
+  spk_dim: 21   # spk_dim
+  n_cyc: 2
+
+# hidden_layers: number of hidden layers for GRU
+# hidden_units: number of hidden units for GRU
+# kernel_size: number of kernel size for aux. convolution
+# dilation_size: number of dilation size for aux. convolution
+# do_prob: dropout probability
+encoder_params:
+  in_dim: 53    # ${stdim} + ${out_dim}
+  out_dim: 32   # ${lat_dim}
+  spk_dim: 21   # ${spk_dim}
+  hidden_layers: 1
+  hidden_units: 1024
+  kernel_size: 3
+  dilation_size: 2
+  do_prob: 0.5
+  scale_in_flag: True
+  scale_out_flag: False
+  causal_conv: False
+  arparam: True
+
+decoder_params:
+  in_dim: 53    # ${lat_dim} + ${spk_dim}
+  out_dim: 50   # ${out_dim}
+  spk_dim: None
+  hidden_layers: 1
+  hidden_units: 1024
+  kernel_size: 3
+  dilation_size: 2
+  do_prob: 0.5
+  scale_in_flag: False
+  scale_out_flag: True
+  causal_conv: False

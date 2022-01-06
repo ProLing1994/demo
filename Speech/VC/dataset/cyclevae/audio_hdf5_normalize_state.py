@@ -104,7 +104,7 @@ def preprocess_audio_hdf5_normalize_state_normal(cfg, data_pd, hdf5_dir, hdf5_no
 
 def preprocess_audio_hdf5_normalize_state(cfg, dataset_name, data_pd, hdf5_dir, hdf5_normalize_dir):
     
-    if dataset_name in ['VCC2020']: 
+    if dataset_name in ['VCC2020', 'BZNSYP_Aishell3']: 
         preprocess_audio_hdf5_normalize_state_normal(cfg, data_pd, hdf5_dir, hdf5_normalize_dir)
 
     return 

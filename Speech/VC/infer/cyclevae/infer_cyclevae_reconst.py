@@ -63,7 +63,7 @@ def infer_reconst(args, cfg, hdf5_dir, csv_path, dataset_name):
                                 'state': state_path, 'mode': row['mode']})
 
     data_pd = pd.DataFrame(data_lists) 
-    out_put_csv = str(csv_path).split('_')[0] + '_reconst' + '_' + '_'.join(str(csv_path).split('_')[1:])
+    out_put_csv = os.path.join(os.path.dirname(csv_path), os.path.basename(str(csv_path)).split('_')[0] + '_reconst_' + '_'.join(os.path.basename(str(csv_path)).split('_')[1:]))
     data_pd.to_csv(out_put_csv, index=False, encoding="utf_8_sig")
     
     return  

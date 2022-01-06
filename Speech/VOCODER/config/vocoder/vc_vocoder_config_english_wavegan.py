@@ -15,18 +15,25 @@ cfg = __C
 
 __C.general = {}
 
-__C.general.dataset_list = ['VCC2020', 'VCC2020_reconst', 'VCC2020_cycle_reconst']
+__C.general.dataset_list = ['VCC2020']
+# __C.general.dataset_list = ['VCC2020', 'VCC2020_reconst', 'VCC2020_cycle_reconst']
 __C.general.dataset_path_dict = {
                                 "VCC2020": "/mnt/huanyuan2/data/speech/asr/English/VCC2020-database/", 
                                 "VCC2020_training": "/mnt/huanyuan2/data/speech/asr/English/VCC2020-database/dataset/train/", 
                                 "VCC2020_testing": "/mnt/huanyuan2/data/speech/asr/English/VCC2020-database/dataset/test/", 
                                 }
 
+# state_jnt_path 
+__C.general.state_jnt_path = "/mnt/huanyuan/data/speech/vc/English_dataset/dataset_audio_normalize_hdf5/VCC2020/world/stats_jnt.h5"
+__C.general.mean_name = "mean_feat_org_lf0"
+__C.general.scale_name = "scale_feat_org_lf0"
+
 # data path
 __C.general.data_dir = "/mnt/huanyuan/data/speech/vc/English_dataset/"
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/vc_vocoder/english_vc_vocoder/test/"
+# __C.general.save_dir = "/mnt/huanyuan/model/vc_vocoder/english_vc_vocoder/test/"
+__C.general.save_dir = "/mnt/huanyuan/model/vc_vocoder/english_vc_vocoder/wavegan_english_1_0_normalize_world_01042022/"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -68,7 +75,7 @@ __C.dataset.input_channel = 1
 __C.dataset.sampling_rate = 24000
 
 # Length of each audio clip to be analyzed
-__C.dataset.clip_duration_ms = 1500
+__C.dataset.clip_duration_ms = 1200
 
 # FFT size.
 __C.dataset.fft_size = 2048

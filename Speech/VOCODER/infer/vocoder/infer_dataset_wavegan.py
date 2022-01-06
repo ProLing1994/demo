@@ -52,8 +52,13 @@ def infer(args):
 def main():
     parser = argparse.ArgumentParser(description='Streamax TTS Training Engine')
 
+    # fbank 
     # chinese
-    parser.add_argument('-v', '--vocoder_config_file', type=str, default="/mnt/huanyuan/model/tts_vocoder/chinese_tts_vocoder/wavegan_chinese_singlespeaker_1_2_normalize_diff_feature_11292021/vocoder_config_chinese_wavegan.py", nargs='?', help='config file')  # ParallelWaveGANGenerator, fft_size=1024, nomalize
+    # parser.add_argument('-v', '--vocoder_config_file', type=str, default="/mnt/huanyuan/model/tts_vocoder/chinese_tts_vocoder/wavegan_chinese_singlespeaker_1_2_normalize_diff_feature_11292021/vocoder_config_chinese_wavegan.py", nargs='?', help='config file')  # ParallelWaveGANGenerator, fft_size=1024, nomalize
+    
+    # world
+    # english
+    parser.add_argument('-v', '--vocoder_config_file', type=str, default="/mnt/huanyuan/model/vc_vocoder/english_vc_vocoder/wavegan_english_1_0_normalize_world_01042022/vc_vocoder_config_english_wavegan.py", nargs='?', help='config file')  # ParallelWaveGANGenerator, vc world feature
     args = parser.parse_args()
 
     infer(args)

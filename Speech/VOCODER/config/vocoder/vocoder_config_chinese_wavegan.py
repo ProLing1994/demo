@@ -27,6 +27,11 @@ __C.general.dataset_path_dict = {
                                 "BZNSYP_Tacotron2_training": None,
                                 }
 
+# state_jnt_path 
+__C.general.state_jnt_path = "/mnt/huanyuan/data/speech/tts/Chinese_dataset/dataset_audio_normalize_hdf5/BZNSYP_stats.h5"
+__C.general.mean_name = "mean"
+__C.general.scale_name = "scale"
+
 # data path
 __C.general.data_dir = "/mnt/huanyuan/data/speech/tts/Chinese_dataset/"
 # __C.general.data_dir = "/yuanhuan/data/speech/tts/Chinese_dataset/"

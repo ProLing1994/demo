@@ -73,6 +73,20 @@ def analyze(wav, fs=FS, minf0=MINF0, maxf0=MAXF0, fperiod=SHIFTMS, fftl=FFTL, f0
 
 
 def analyze_range(wav, fs=FS, minf0=MINF0, maxf0=MAXF0, fperiod=SHIFTMS, fftl=FFTL, f0=None, time_axis=None):
+    """Analyze acoustic features based on WORLD analyze F0, spectral envelope, aperiodicity
+    Paramters
+    ---------
+    x : array, shape (`T`)
+        monoral speech signal in time domain
+    Returns
+    ---------
+    f0 : array, shape (`T`,)
+        F0 sequence
+    spc : array, shape (`T`, `fftl / 2 + 1`)
+        Spectral envelope sequence
+    ap: array, shape (`T`, `fftl / 2 + 1`)
+        aperiodicity sequence
+    """
     if f0 is None or time_axis is None:
         _f0, time_axis = pw.harvest(wav, fs, f0_floor=minf0, f0_ceil=maxf0, frame_period=fperiod)
         f0 = pw.stonemask(wav, _f0, time_axis, fs) 
@@ -83,6 +97,18 @@ def analyze_range(wav, fs=FS, minf0=MINF0, maxf0=MAXF0, fperiod=SHIFTMS, fftl=FF
 
 
 def spc2npow(spectrogram):
+    """Calculate normalized power sequence from spectrogram
+    Parameters
+    ----------
+    spectrogram : array, shape (T, `fftlen / 2 + 1`)
+        Array of spectrum envelope
+    Return
+    ------
+    npow : array, shape (`T`, `1`)
+        Normalized power sequence
+    """
+
+    # frame based processing
     npow = np.apply_along_axis(spvec2pow, 1, spectrogram)
 
     meanpow = np.mean(npow)
@@ -92,9 +118,22 @@ def spc2npow(spectrogram):
 
 
 def spvec2pow(specvec):
+    """Convert a spectrum envelope into a power
+    Parameters
+    ----------
+    specvec : vector, shape (`fftlen / 2 + 1`)
+        Vector of specturm envelope |H(w)|^2
+    Return
+    ------
+    power : scala,
+        Power of a frame
+    """
+
+    # set FFT length
     fftl2 = len(specvec) - 1
     fftl = fftl2 * 2
-
+    
+    # specvec is not amplitude spectral |H(w)| but power spectral |H(w)|^2
     power = specvec[0] + specvec[fftl2]
     for k in range(1, fftl2):
         power += 2.0 * specvec[k]

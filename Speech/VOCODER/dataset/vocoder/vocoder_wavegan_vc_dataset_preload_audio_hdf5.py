@@ -32,10 +32,8 @@ class VocoderWaveGanVcDataset(Dataset):
             # restore scaler
             self.scaler = StandardScaler()
 
-            dataset_name = '_'.join(cfg.general.dataset_list)
-            self.stats_jnt_path = os.path.join(cfg.general.data_dir, 'dataset_audio_normalize_hdf5', dataset_name, 'world', f"stats_jnt.h5")
-            self.scaler.mean_ = read_hdf5(self.stats_jnt_path, "mean_feat_org_lf0")
-            self.scaler.scale_ = read_hdf5(self.stats_jnt_path, "scale_feat_org_lf0")
+            self.scaler.mean_ = read_hdf5(cfg.general.state_jnt_path, cfg.general.mean_name)
+            self.scaler.scale_ = read_hdf5(cfg.general.state_jnt_path, cfg.general.scale_name)
 
             # from version 0.23.0, this information is needed
             self.scaler.n_features_in_ = self.scaler.mean_.shape[0]
@@ -54,7 +52,6 @@ class VocoderWaveGanVcDataset(Dataset):
         if self.allow_cache and len(self.caches[index]) != 0:
             return self.caches[index][0], self.caches[index][1]
         
-        dataset_name = self.data_pd.loc[index, 'dataset']
         key_name = self.data_pd.loc[index, 'key']
 
         # state

@@ -30,13 +30,10 @@ def load_vocoder_net(cfg):
     net_vocoder.load_state_dict(state_dict["model"]["generator"])
 
     # load stats
-    dataset_name = '_'.join(cfg.general.dataset_list)
-    dataset_audio_normalize_dir = os.path.join(cfg.general.data_dir, 'dataset_audio_normalize_hdf5')
-    stats = os.path.join(dataset_audio_normalize_dir, dataset_name +  "_stats.h5")
     if isinstance(net_vocoder, torch.nn.parallel.DataParallel):
-        net_vocoder.module.register_stats(stats)
+        net_vocoder.module.register_stats(cfg.general.state_jnt_path, cfg.general.mean_name, cfg.general.scale_name)
     else:
-        net_vocoder.register_stats(stats)
+        net_vocoder.register_stats(cfg.general.state_jnt_path, cfg.general.mean_name, cfg.general.scale_name)
 
     # add pqmf if needed
     if cfg.net.yaml["generator_params"]["out_channels"] > 1:

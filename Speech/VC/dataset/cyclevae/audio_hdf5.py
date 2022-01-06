@@ -1,4 +1,3 @@
-import librosa
 import numpy as np
 import sys
 import soundfile as sf
@@ -25,13 +24,13 @@ def preprocess_audio_normal(cfg, row, hdf5_dir, data_lists):
     conf_path = os.path.join(hdf5_dir, 'conf', spk_name + '.f0')
     with open(conf_path, "r") as f :
         line = f.readline().strip()
-        minf0 = float(line.split(' ')[0])
-        maxf0 = float(line.split(' ')[1])
+        min_f0 = float(line.split(' ')[0])
+        max_f0 = float(line.split(' ')[1])
 
     conf_path = os.path.join(hdf5_dir, 'conf', spk_name + '.pow')
     with open(conf_path, "r") as f :
         line = f.readline().strip()
-        pow = float(line.split(' ')[0])
+        npow = float(line.split(' ')[0])
     
     # check sampling frequency
     if not fs == cfg.dataset.sampling_rate:
@@ -47,8 +46,8 @@ def preprocess_audio_normal(cfg, row, hdf5_dir, data_lists):
         wav = world_feature.low_cut_filter(wav, fs, highpass_cutoff)
 
     # WORLD 计算 F0 基频 / SP 频谱包络 / AP 非周期序列
-    _, f0_range, spc_range, ap_range = world_feature.analyze_range(wav, fs=fs, minf0=minf0, \
-                                                        maxf0=maxf0, fperiod=cfg.dataset.shiftms, fftl=cfg.dataset.fft_size)
+    _, f0_range, spc_range, ap_range = world_feature.analyze_range(wav, fs=fs, minf0=min_f0, \
+                                                        maxf0=max_f0, fperiod=cfg.dataset.shiftms, fftl=cfg.dataset.fft_size)
 
     # 生成 uv 特征 / 连续 F0 基频
     # uv: an unvoiced/voiced binary decision feature
@@ -77,7 +76,7 @@ def preprocess_audio_normal(cfg, row, hdf5_dir, data_lists):
     npow_range = world_feature.spc2npow(spc_range)
 
     # 计算有效帧位置
-    mcepspc_range, spcidx_range = world_feature.extfrm(mcep_range, npow_range, power_threshold=pow)
+    mcepspc_range, spcidx_range = world_feature.extfrm(mcep_range, npow_range, power_threshold=npow)
 
     # save hdf5
     key_name = key.split('.')[0]
@@ -114,7 +113,7 @@ def preprocess_audio_normal(cfg, row, hdf5_dir, data_lists):
 
 def preprocess_audio_hdf5(cfg, row, dataset_name, hdf5_dir, data_lists):
     
-    if dataset_name in ['VCC2020']: 
+    if dataset_name in ['VCC2020', 'BZNSYP_Aishell3']: 
         preprocess_audio_normal(cfg, row, hdf5_dir, data_lists)
 
     return 
