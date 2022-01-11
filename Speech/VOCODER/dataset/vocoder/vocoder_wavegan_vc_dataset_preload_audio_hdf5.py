@@ -60,12 +60,12 @@ class VocoderWaveGanVcDataset(Dataset):
         # wav
         wav = read_hdf5(state_path, "wave")
 
-        # mel (T, C)
-        mel = read_hdf5(state_path, "feat_org_lf0")
+        # world_feat (T, C)
+        world_feat = read_hdf5(state_path, "feat_org_lf0")
 
         # normalize
         if self.cfg.dataset.normalize_bool:
-            mel = self.scaler.transform(mel)
+            world_feat = self.scaler.transform(world_feat)
 
         # Quantize the wav         
         # 注意：hdf5 格式，采用 fbank_nopreemphasis_log_manual 计算方式，不进行预加重处理
@@ -75,17 +75,17 @@ class VocoderWaveGanVcDataset(Dataset):
         # Fix for missing padding   # TODO: settle on whether this is any useful
         r_pad =  (len(wav) // self.hop_size + 1) * self.hop_size - len(wav)
         wav = np.pad(wav, (0, r_pad), mode='constant')
-        wav = wav[: len(mel) * self.hop_size]
+        wav = wav[: len(world_feat) * self.hop_size]
         # make sure the audio length and feature length are matched
-        assert len(mel) * self.hop_size == len(wav)
+        assert len(world_feat) * self.hop_size == len(wav)
 
         if self.allow_cache:
-            self.caches[index] = (wav, mel)
+            self.caches[index] = (wav, world_feat)
 
         if not self.bool_return_name:
-            return wav, mel
+            return wav, world_feat
         else:
-            return wav, mel, key_name
+            return wav, world_feat, key_name
 
     def filter_by_threshold(self):
         self.drop_index_list = []
@@ -187,7 +187,7 @@ class VocoderVcCollater(object):
 
         """
         # filter by threshold
-        # 确保 mel 频率的长度，保存可以正常切片
+        # 确保 world_feat 频率的长度，保存可以正常切片
         assert len(c) > self.mel_threshold
 
         if len(x) < len(c) * self.hop_size:

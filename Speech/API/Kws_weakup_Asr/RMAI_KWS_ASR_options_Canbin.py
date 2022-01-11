@@ -44,7 +44,7 @@ __C.general.asr_bpe_phoneme_on = False              # asr 使用 bpe 和 phoneme
 # container
 __C.general.audio_container_ms = 100                # 语音数据容器中，装有音频数据 100 ms
 __C.general.audio_container_time = 10               # 语音数据容器中，装有音频数据 100 ms，对应特征维度 10
-__C.general.feature_container_time = 296            # 语音特征容器中，装有时间维度 296
+__C.general.feature_container_time = 596            # 语音特征容器中，装有时间维度 596
 __C.general.feature_remove_after_time = 6           # 为保证特征一致，拼接特征需要丢弃最后的时间维度 6
 __C.general.feature_remove_before_time = 100        # 为保证特征一致，拼接特征需要丢弃之前的时间维度 100
 __C.general.vad_container_time = 4                  # vad 容器，判断连续 4s 中是否全部为静音，用于停止后续操作

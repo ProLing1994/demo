@@ -337,6 +337,12 @@ __C.loss = {}
 # the loss method, support ['classification', 'embedding', 'classification & embedding']
 __C.loss.method = 'classification'
 
+# the size of embedding in embedding method orclassification & embedding classification & embedding method
+__C.loss.embedding_size = 128
+
+# the size of embedding in embedding method orclassification & embedding classification & embedding method
+__C.loss.embedding_weight = 0.01
+
 # the loss name, support ['softmax','focal']
 __C.loss.name = 'softmax'
 # __C.loss.name = 'focal'

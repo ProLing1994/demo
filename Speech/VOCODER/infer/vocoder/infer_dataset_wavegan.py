@@ -37,11 +37,12 @@ def infer(args):
     for _, mel, data_name in tqdm(dataset):
         # Synthesizing the waveform is fairly straightforward. Remember that the longer the
         # spectrogram, the more time-efficient the vocoder.
-        wav_synthesize = tts_vocoder.synthesize(mel.T)
+        wav_synthesize = tts_vocoder.synthesize_no_normalize(mel.T)
         
         ## Post-generation
         # Trim excess silences to compensate for gaps in spectrograms
-        wav_synthesize = audio.preprocess_wav(wav_synthesize, cfg.dataset.sampling_rate)
+        # wav_synthesize = audio.preprocess_wav(wav_synthesize, cfg.dataset.sampling_rate)
+        wav_synthesize = audio.preprocess_wav(wav_synthesize, cfg.dataset.sampling_rate, bool_trim_silence=False)
 
         # Save it on the disk
         output_dir = os.path.join(cfg.general.save_dir, "wavs_test")
@@ -52,8 +53,8 @@ def infer(args):
 def main():
     parser = argparse.ArgumentParser(description='Streamax TTS Training Engine')
 
-    # fbank 
-    # chinese
+    # # fbank 
+    # # chinese
     # parser.add_argument('-v', '--vocoder_config_file', type=str, default="/mnt/huanyuan/model/tts_vocoder/chinese_tts_vocoder/wavegan_chinese_singlespeaker_1_2_normalize_diff_feature_11292021/vocoder_config_chinese_wavegan.py", nargs='?', help='config file')  # ParallelWaveGANGenerator, fft_size=1024, nomalize
     
     # world

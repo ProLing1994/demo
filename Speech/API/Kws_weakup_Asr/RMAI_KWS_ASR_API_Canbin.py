@@ -395,8 +395,8 @@ class KwsAsrApi():
             return result_tuple
 
         # 获取特征
-        feature_data_asr = self.params_dict['feature_data_container_np'].astype(np.float32)
-
+        feature_data_asr = self.params_dict['feature_data_container_np'][-self.cfg.general.asr_feature_time:, :].astype(np.float32)
+        
         # 模型前向传播
         if self.cfg.model.bool_caffe:
             net_output = model.caffe_model_forward(self.asr_net,
@@ -493,19 +493,35 @@ class KwsAsrApi():
                 # 判断是否确立起始位置
                 if not self.params_dict['asr_vad_activate_flag'] == True:
                     continue
+                
+                # 方式一：收集音频，重新计算特征
+                # # 获取音频数据
+                # wave = self.params_dict['asr_vad_audio_data_container_np'][
+                #          self.params_dict['asr_vad_activate_pos_id']: min(self.cfg.general.sample_rate * 5 + i + 960,
+                #                                                     self.cfg.general.sample_rate * 6)]
 
+                # # 计算有效音频长度，判断是否小于检测最短长度
+                # if len(wave) < int(self.cfg.general.sample_rate * self.cfg.general.asr_vad_minitime_threshold_s[self.params_dict['asr_vad_loop_times']]):
+                #     continue
+
+                # # 识别结果
+                # print("[Information:] 正常检测到 vad 起止位置，识别返回结果")
+                # result_tuple = self.asr_vad_detecte(wave)
+
+                # 方式二：直接从容器里抽取特征
                 # 获取音频数据
-                wave = self.params_dict['asr_vad_audio_data_container_np'][
-                         self.params_dict['asr_vad_activate_pos_id']: min(self.cfg.general.sample_rate * 5 + i + 960,
-                                                                    self.cfg.general.sample_rate * 6)]
+                start_pos_id = self.params_dict['asr_vad_activate_pos_id']
+                end_pos_id =  min(self.cfg.general.sample_rate * 5 + i + 960, self.cfg.general.sample_rate * 6)
+                wave_len = end_pos_id - start_pos_id
 
                 # 计算有效音频长度，判断是否小于检测最短长度
-                if len(wave) < int(self.cfg.general.sample_rate * self.cfg.general.asr_vad_minitime_threshold_s[self.params_dict['asr_vad_loop_times']]):
+                if wave_len < int(self.cfg.general.sample_rate * self.cfg.general.asr_vad_minitime_threshold_s[self.params_dict['asr_vad_loop_times']]):
                     continue
 
                 # 识别结果
                 print("[Information:] 正常检测到 vad 起止位置，识别返回结果")
-                result_tuple = self.asr_vad_detecte(wave)
+                result_tuple = self.asr_vad_detecte_pos(start_pos_id, end_pos_id)
+
                 if len(result_tuple[1]) != 0:
                     self.params_dict['asr_vad_first_detect']=False
                     # 清空
@@ -556,12 +572,22 @@ class KwsAsrApi():
         if self.params_dict['asr_vad_flag_count'] >= self.cfg.general.asr_vad_overtime_threshold_s:
             print("[Information:] overtime >= {}，超长时间检测".format(self.cfg.general.asr_vad_overtime_threshold_s))
 
-            # 音频数据
-            wave = self.params_dict['asr_vad_audio_data_container_np'][
-                        self.params_dict['asr_vad_activate_pos_id']: ]
+            # 方式一：收集音频，重新计算特征
+            # # 音频数据
+            # wave = self.params_dict['asr_vad_audio_data_container_np'][
+            #             self.params_dict['asr_vad_activate_pos_id']: ]
+
+            # # 识别结果
+            # result_tuple = self.asr_vad_detecte(wave)
+
+            # 方式二：直接从容器里抽取特征
+            # 获取音频数据
+            start_pos_id = self.params_dict['asr_vad_activate_pos_id']
+            end_pos_id = self.cfg.general.sample_rate
 
             # 识别结果
-            result_tuple = self.asr_vad_detecte(wave)
+            print("[Information:] 正常检测到 vad 起止位置，识别返回结果")
+            result_tuple = self.asr_vad_detecte_pos(start_pos_id, end_pos_id)
 
             if len(result_tuple[1]) != 0:
                 # 清空
@@ -617,6 +643,56 @@ class KwsAsrApi():
         elif self.cfg.model.bool_pytorch:
             net_output = model.pytorch_model_forward(self.asr_net,
                                                         feature_data,
+                                                        self.bool_gpu)
+            net_output = np.squeeze(net_output)
+
+        # decode
+        if self.cfg.general.decode_id == 0:
+            raise NotImplementedError
+        elif self.cfg.general.decode_id == 1:
+            net_output = torch.from_numpy(net_output)
+            # symbol_list = self.asr_beamsearch.prefix_beam_search(net_output, lm=self.lm)
+            symbol_list = self.asr_beamsearch.prefix_beam_search_contextbias(net_output, lm=self.lm, lm_weight=0.3)
+        else:
+            raise Exception("[Unknow:] cfg.general.decode_id = {}".format(self.cfg.general.decode_id))
+
+        if self.cfg.general.language_id == 0:
+            #print('beamsearch result: ',symbol_list)
+            if(0):
+                detect_token = primary_token_pass(symbol_list, self.graph)
+                result = Decode_Python.get_ouststr(detect_token)
+            else:
+                result = self.graph.parse_command(symbol_list)
+                result = (result.symbols,result.commands)
+
+        elif self.cfg.general.language_id == 1:
+            raise NotImplementedError
+        else:
+            raise Exception("[Unknow:] cfg.general.language_id = {}".format(self.cfg.general.language_id))
+
+        return result
+
+    def asr_vad_detecte_pos(self, start_pos_id, end_pos_id):
+        # init
+        result = ('',[])
+
+        # feature
+        # 获取特征
+        start_pos_time = max(int(start_pos_id / self.cfg.general.sample_rate * 100), 0)
+        end_pos_time = min(int(end_pos_id / self.cfg.general.sample_rate * 100), self.params_dict['feature_data_container_np'].row())
+        feature_data_asr = self.params_dict['feature_data_container_np'][start_pos_time : end_pos_time, :].astype(np.float32)
+
+        # 模型前向传播
+        if self.cfg.model.bool_caffe:
+            net_output = model.caffe_model_forward(self.asr_net,
+                                                    feature_data_asr,
+                                                    self.cfg.model.asr_net_input_name,
+                                                    self.cfg.model.asr_net_output_name)
+            net_output = np.squeeze(net_output)
+            net_output = net_output.T
+        elif self.cfg.model.bool_pytorch:
+            net_output = model.pytorch_model_forward(self.asr_net,
+                                                        feature_data_asr,
                                                         self.bool_gpu)
             net_output = np.squeeze(net_output)
 

@@ -46,12 +46,17 @@ class TCBlock(nn.Module):
 
 class SpeechResModel(nn.Module):
     # tc-resnet8: https://arxiv.org/abs/1904.03814
-    def __init__(self, num_classes, image_height, image_weidth, width_multiplier=1):
+    def __init__(self, cfg):
         super().__init__()
 
-        del image_height
+        # init
+        num_classes = cfg.dataset.label.num_classes
+        image_weidth = cfg.dataset.data_size[0]
+        image_height = cfg.dataset.data_size[1]
+        self.method = cfg.loss.method
 
         self.planes = [16, 24, 32, 48]
+        width_multiplier=1
         self.width_multiplier = width_multiplier
         self.in_planes = int(self.planes[0] * self.width_multiplier)
 

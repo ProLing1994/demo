@@ -59,7 +59,11 @@ class TtsVocoder():
 
     def synthesize(self, mel):
         wav = infer_wavegan(self.cfg, self.net_vocoder, mel, normalize_before=self.cfg.dataset.normalize_bool)
-        # wav = infer_wavegan(self.cfg, self.net_vocoder, mel, normalize_before=False)
+        return wav
+
+    def synthesize_no_normalize(self, mel):
+        # bug: infer_dataset_wavegan 中，通过加载 dataloader 加载数据，数据会被 normalize 两次
+        wav = infer_wavegan(self.cfg, self.net_vocoder, mel, normalize_before=False)
         return wav
 
 
@@ -115,7 +119,7 @@ def main():
     # parser.add_argument('-v', '--vocoder_config_file', type=str, default="/mnt/huanyuan/model/tts_vocoder/chinese_tts_vocoder/wavegan_chinese_singlespeaker_1_0_11232021/vocoder_config_chinese_wavegan.py", nargs='?', help='config file')            # ParallelWaveGANGenerator, fft_size=800, preemphasis（和 tacotron2 单说话人组合效果不好）
     # parser.add_argument('-v', '--vocoder_config_file', type=str, default="/mnt/huanyuan/model/tts_vocoder/chinese_tts_vocoder/wavegan_chinese_singlespeaker_1_1_normalize_11232021/vocoder_config_chinese_wavegan.py", nargs='?', help='config file')  # ParallelWaveGANGenerator, fft_size=800, preemphasis, nomalize（和 tacotron2 单说话人组合效果不好）
     parser.add_argument('-v', '--vocoder_config_file', type=str, default="/mnt/huanyuan/model/tts_vocoder/chinese_tts_vocoder/wavegan_chinese_singlespeaker_1_2_normalize_diff_feature_11292021/vocoder_config_chinese_wavegan.py", nargs='?', help='config file')  # ParallelWaveGANGenerator, fft_size=1024, nomalize（效果好）
-    # parser.add_argument('-v', '--vocoder_config_file', type=str, default="/mnt/huanyuan/model/tts_vocoder/chinese_tts_vocoder/wavegan_chinese_singlespeaker_1_3_normalize_diff_feature_fineune_11292021/vocoder_config_chinese_wavegan.py", nargs='?', help='config file')  # ParallelWaveGANGenerator, fft_size=1024, nomalize，使用 tacotron2 单说话人结果 finetune（vocoder 效果差）
+    # parser.add_argument('-v', '--vocoder_config_file', type=str, default="/mnt/huanyuan/model/tts_vocoder/chinese_tts_vocoder/wavegan_chinese_singlespeaker_1_3_normalize_diff_feature_fineune_11292021/vocoder_config_chinese_wavegan.py", nargs='?', help='config file')  # ParallelWaveGANGenerator, fft_size=1024, nomalize，使用 tacotron2 单说话人结果 finetune（策略存在问题，vocoder 效果差）
     parser.add_argument('-s', '--speaker_id', type=int, default=0, nargs='?', help='config file')
     parser.add_argument('-w', '--speaker_wav', type=str, default="/home/huanyuan/code/demo/Speech/TTS/infer/sample/Aishell3/SSB00050001.wav", nargs='?', help='config file')
     args = parser.parse_args()

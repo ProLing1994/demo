@@ -7,7 +7,7 @@
 # 1: decoding reconstruction step [for training neural vocoder/Paralel WaveGAN (PWG)]
 # 2: decoding cycle reconstruction step [for training neural vocoder/Paralel WaveGAN (PWG)]
 
-stage=2
+stage=0
 
 # init
 config_file=/home/huanyuan/code/demo/Speech/VC/config/cyclevae/vc_config_cyclevae.py

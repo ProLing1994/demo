@@ -165,8 +165,8 @@ __C.dataset.window_stride_ms = 10.0
 __C.dataset.preprocess = "fbank_cpu"
 
 # How many bins to use for the Mel feature
-__C.dataset.feature_bin_count = 56
-# __C.dataset.feature_bin_count = 64
+# __C.dataset.feature_bin_count = 56
+__C.dataset.feature_bin_count = 64
 
 # How many nfilt to use for the Mel feature, only support preprocess=fbank_cpu
 __C.dataset.nfilt = 64
@@ -179,8 +179,8 @@ __C.dataset.w_alignment = False
 __C.dataset.h_alignment = False
 
 # input size of training data (w, h), unit: voxel
-__C.dataset.data_size = [56, 196]
-# __C.dataset.data_size = [64, 196]
+# __C.dataset.data_size = [56, 196]
+__C.dataset.data_size = [64, 196]
 
 
 ##################################
@@ -305,6 +305,17 @@ __C.regularization.label_smoothing.epsilon = 0.1
 ####################################
 
 __C.loss = {}
+
+# the loss method, support ['classification', 'embedding', 'classification & embedding']
+__C.loss.method = 'classification'
+# __C.loss.method = 'embedding'
+# __C.loss.method = 'classification & embedding'
+
+# the size of embedding in embedding method orclassification & embedding classification & embedding method
+__C.loss.embedding_size = 128
+
+# the size of embedding in embedding method orclassification & embedding classification & embedding method
+__C.loss.embedding_weight = 0.01
 
 # the loss name, support ['softmax','focal']
 # __C.loss.name = 'softmax'
