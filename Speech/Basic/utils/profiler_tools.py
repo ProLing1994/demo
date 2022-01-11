@@ -4,11 +4,12 @@ import numpy as np
 
 
 class Profiler:
-    def __init__(self, summarize_every=5, disabled=False):
+    def __init__(self, summarize_every=5, disabled=False, logger=None):
         self.last_tick = timer()
         self.logs = OrderedDict()
         self.summarize_every = summarize_every
         self.disabled = disabled
+        self.logger = logger
     
     def tick(self, name):
         if self.disabled:
@@ -19,6 +20,8 @@ class Profiler:
             self.logs[name] = []
         if len(self.logs[name]) >= self.summarize_every:
             self.summarize()
+            if self.logger is not None:
+                self.summarize_logger()
             self.purge_logs()
         self.logs[name].append(timer() - self.last_tick)
         
@@ -42,4 +45,11 @@ class Profiler:
             print("  %s  mean: %4.0fms   std: %4.0fms" % 
                   (name_msg.ljust(pad), np.mean(deltas) * 1000, np.std(deltas) * 1000))
         print("", flush=True)    
-        
+    
+    def summarize_logger(self):
+        n = max(map(len, self.logs.values()))
+
+        msg = 'steps: {}'.format(n)
+        for name, deltas in self.logs.items():
+            msg += ', {}: {:0.2f}/{:0.2f}'.format(name, np.mean(deltas) * 1000, np.std(deltas) * 1000)
+        self.logger.info(msg)

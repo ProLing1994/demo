@@ -388,9 +388,9 @@ __C.loss.ema_alpha = 0.995
 __C.net = {}
 
 # the network name
-# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/res15.py"
+__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/res15.py"
 # __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-296.py"
-__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-196.py"
+# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-196.py"
 __C.net.class_name = "SpeechResModel"
 
 ######################################
@@ -422,7 +422,8 @@ __C.train.batch_size = 1
 __C.train.num_threads = 1
 
 # the number of batches to show log
-__C.train.show_log = 5
+# __C.train.show_log = 5
+__C.train.show_log = 1
 
 # the number of batches to update loss curve
 __C.train.plot_snapshot = 5

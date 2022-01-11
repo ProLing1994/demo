@@ -39,7 +39,7 @@ __C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/tf_speech_com
 __C.general.is_test = True
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_speech/test"
+__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_speech/test"
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_speech/kws_speech_1_0_res15_02042021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_speech/kws_speech_1_1_edge-speech-nets_02042021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_speech/kws_speech_1_2_tc-resnet8_02192021/"
@@ -47,7 +47,7 @@ __C.general.is_test = True
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_speech/kws_speech_1_4_tc-resnet8-dropout_02192021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_speech/kws_speech_1_5_tc-resnet14-dropout_02192021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_speech/kws_speech_1_6_bc_resnet_02192021/"
-__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_speech/kws_speech_1_7_bc_resnet_8_12152021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_speech/kws_speech_1_7_bc_resnet_8_12152021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_speech/kws_speech_2_7_res15_basic_label_smooth_ema_augmentation_tts_8000_epoch_09302021/"
 
 # finetune model
@@ -368,8 +368,10 @@ __C.loss.ema_alpha = 0.995
 __C.net = {}
 
 # the network name
-__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/bc-resnet.py"
-__C.net.class_name = "BCResNet"
+__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/res15.py"
+__C.net.class_name = "SpeechResModel"
+# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/bc-resnet.py"
+# __C.net.class_name = "BCResNet"
 # __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/audiomer.py"
 # __C.net.class_name = "AudiomerClassification"
 
