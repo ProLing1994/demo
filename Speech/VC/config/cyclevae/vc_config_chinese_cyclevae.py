@@ -22,7 +22,8 @@ __C.general.dataset_path_dict = {
 __C.general.data_dir = "/mnt/huanyuan/data/speech/vc/Chinese_dataset/"
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/vc/chinese_vc/test/"
+# __C.general.save_dir = "/mnt/huanyuan/model/vc/chinese_vc/test/"
+__C.general.save_dir = "/mnt/huanyuan/model/vc/chinese_vc/vc_chinese_cyclevae_world_1_1_01062022/"
 
 # test after save pytorch model
 __C.general.is_test = True

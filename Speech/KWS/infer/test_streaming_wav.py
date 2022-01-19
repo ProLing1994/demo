@@ -237,8 +237,6 @@ def main():
     # xiaoan8k
     # default_input_wav_list = ["/mnt/huanyuan2/model/test_straming_wav/xiaoan8k_1_1_04082021_training_60.wav",
     #                             "/mnt/huanyuan2/model/test_straming_wav/xiaoan8k_1_1_04082021_validation_60.wav"]
-    # default_input_wav_list = ["/mnt/huanyuan2/model/test_straming_wav/xiaoan_3_1_12062021_training_60.wav",
-    #                             "/mnt/huanyuan2/model/test_straming_wav/xiaoan_3_1_12062021_validation_60.wav"]
     default_input_wav_list = ["/mnt/huanyuan2/model/test_straming_wav/xiaoan8k_1_3_04152021_validation.wav",
                             "/mnt/huanyuan2/model/test_straming_wav/weiboyulu_test_3600_001.wav"]
 
@@ -363,10 +361,14 @@ def main():
     # default_config_file = "/mnt/huanyuan2/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/kws_config_xiaoan8k_api_0_5.py"
     # default_config_file = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_3_tc-resnet14-hisi_fbankcpu_kd_11222021/kws_config_xiaoan8k.py"
     # default_config_file = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_3_tc-resnet14-hisi_fbankcpu_kd_11222021/kws_config_xiaoan8k_api_0_5.py"
+    # default_config_file = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_5_tc-resnet14-hisi_fbankcpu_kd_01042022/kws_config_xiaoan8k.py"
+    # default_config_file = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_5_tc-resnet14-hisi_fbankcpu_kd_01042022/kws_config_xiaoan8k_api_0_5.py"
     # default_config_file = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_0_2s_tc_resnet14_fbankcpu_12022021/kws_config_embedding_xiaoan8k.py"
     # default_config_file = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_0_2s_tc_resnet14_fbankcpu_12022021/kws_config_embedding_xiaoan8k_api_0_5.py"
     # default_config_file = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_2_2s_tc_resnet14_fbankcpu_kd_12082021/kws_config_embedding_xiaoan8k.py"
-    default_config_file = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_2_2s_tc_resnet14_fbankcpu_kd_12082021/kws_config_embedding_xiaoan8k_api_0_5.py"
+    # default_config_file = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_2_2s_tc_resnet14_fbankcpu_kd_12082021/kws_config_embedding_xiaoan8k_api_0_5.py"
+    # default_config_file = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_3_2s_tc_resnet14_fbankcpu_kd_01042022/kws_config_embedding_xiaoan8k.py"
+    default_config_file = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_3_2s_tc_resnet14_fbankcpu_kd_01042022/kws_config_embedding_xiaoan8k_api_0_5.py"
     
     # xiaorui 
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_5_0_tc-resnet14-amba_fbankcpu_kd_04302021/kws_config_xiaorui_api.py"

@@ -15,27 +15,27 @@ cfg = __C
 
 __C.general = {}
 
-# __C.general.dataset_list = ['VCC2020']
-__C.general.dataset_list = ['VCC2020', 'VCC2020_reconst', 'VCC2020_cycle_reconst']
+# Chinese
+__C.general.dataset_list = ['BZNSYP_Aishell3']
 __C.general.dataset_path_dict = {
-                                "VCC2020": "/mnt/huanyuan2/data/speech/asr/English/VCC2020-database/", 
-                                "VCC2020_training": "/mnt/huanyuan2/data/speech/asr/English/VCC2020-database/dataset/train/", 
-                                "VCC2020_testing": "/mnt/huanyuan2/data/speech/asr/English/VCC2020-database/dataset/test/", 
+                                "BZNSYP_Aishell3": "/mnt/huanyuan2/data/speech/vc/Chinese/vc_test/", 
+                                "BZNSYP_Aishell3_training": "/mnt/huanyuan2/data/speech/vc/Chinese/vc_test/train/", 
+                                "BZNSYP_Aishell3_testing": "/mnt/huanyuan2/data/speech/vc/Chinese/vc_test/test/", 
                                 }
 
 # state_jnt_path 
-__C.general.state_jnt_path = "/mnt/huanyuan/data/speech/vc/English_dataset/dataset_audio_normalize_hdf5/VCC2020/world/stats_jnt.h5"
+__C.general.state_jnt_path = "/mnt/huanyuan/data/speech/vc/Chinese_dataset/dataset_audio_normalize_hdf5/BZNSYP_Aishell3/world/stats_jnt.h5"
 __C.general.mean_name = "mean_feat_org_lf0"
 __C.general.scale_name = "scale_feat_org_lf0"
 
 # data path
-__C.general.data_dir = "/mnt/huanyuan/data/speech/vc/English_dataset/"
+__C.general.data_dir = "/mnt/huanyuan/data/speech/vc/Chinese_dataset/"
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan/model/vc_vocoder/english_vc_vocoder/test/"
+__C.general.save_dir = "/mnt/huanyuan/model/vc_vocoder/english_vc_vocoder/test/"
 # __C.general.save_dir = "/mnt/huanyuan/model/vc_vocoder/english_vc_vocoder/wavegan_english_1_0_normalize_world_01042022/"
 # __C.general.save_dir = "/mnt/huanyuan/model/vc_vocoder/english_vc_vocoder/wavegan_english_1_1_normalize_world_cyclevae_reconst_01112022/"
-__C.general.save_dir = "/mnt/huanyuan/model/vc_vocoder/english_vc_vocoder/wavegan_english_1_2_normalize_world_cyclevae_reconst_01112022/"
+# __C.general.save_dir = "/mnt/huanyuan/model/vc_vocoder/english_vc_vocoder/wavegan_english_1_2_normalize_world_cyclevae_reconst_01112022/"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -74,16 +74,16 @@ __C.dataset = {}
 __C.dataset.input_channel = 1
 
 # Sampling rate.
-__C.dataset.sampling_rate = 24000
+__C.dataset.sampling_rate = 16000
 
 # Length of each audio clip to be analyzed
 __C.dataset.clip_duration_ms = 1200
 
 # FFT size.
-__C.dataset.fft_size = 2048
+__C.dataset.fft_size = 1024
 
 # Hop size.
-__C.dataset.hop_size = 120  # 5ms
+__C.dataset.hop_size = 80  # 5ms
 
 # Shift length in msec (default=5)
 __C.dataset.shiftms = 5 
@@ -111,7 +111,7 @@ __C.net.generator_class_name = "ParallelWaveGANGenerator"
 __C.net.discriminator_model_name = "/home/huanyuan/code/demo/Speech/VOCODER/network/vocoder/parallel_wavegan.py"
 __C.net.discriminator_class_name = "ParallelWaveGANDiscriminator"
 
-__C.net.model_yaml = '/home/huanyuan/code/demo/Speech/VOCODER/network/vocoder/parallel_wavegan.vc.yaml'
+__C.net.model_yaml = '/home/huanyuan/code/demo/Speech/VOCODER/network/vocoder/parallel_wavegan.vc.chinese.yaml'
 
 # load and save config
 with open(__C.net.model_yaml) as f:
@@ -133,6 +133,7 @@ __C.train.batch_size = 6
 # __C.train.batch_size = 1
 
 # the number of threads for IO
+# __C.train.num_threads = 2
 __C.train.num_threads = 1
 
 # the number of batches to start train generator

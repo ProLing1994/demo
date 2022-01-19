@@ -47,13 +47,27 @@ def infer(args):
 
 def main(): 
     parser = argparse.ArgumentParser(description='Streamax VC Infer Engine')
-    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/VC/config/cyclevae/vc_config_cyclevae.py", nargs='?', help='config file')
+
+    # # english
+    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/VC/config/cyclevae/vc_config_cyclevae.py", nargs='?', help='config file')
+    # args = parser.parse_args()
+
+    # args.speaker_src = "SEF1"
+    # # args.speaker_trg_list = ["SEM1"]
+    # args.speaker_trg_list = ["SEF1", "SEM1", "SEF2", "SEM2"]
+    # args.wav_folder = "/mnt/huanyuan2/data/speech/asr/English/VCC2020-database/dataset/test/SEF1/"
+
+    # chinese
+    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/VC/config/cyclevae/vc_config_chinese_cyclevae.py", nargs='?', help='config file')
     args = parser.parse_args()
 
-    args.speaker_src = "SEF1"
-    # args.speaker_trg_list = ["SEM1"]
-    args.speaker_trg_list = ["SEF1", "SEM1", "SEF2", "SEM2"]
-    args.wav_folder = "/mnt/huanyuan2/data/speech/asr/English/VCC2020-database/dataset/test/SEF1/"
+    # args.speaker_src = "BZNSYP"
+    # args.speaker_trg_list = ["SSB0005", "SSB0009", "SSB0407", "SSB0434"]
+    # args.wav_folder = "/mnt/huanyuan2/data/speech/vc/Chinese/vc_test/test/BZNSYP/"
+
+    args.speaker_src = "SSB0005"
+    args.speaker_trg_list = ["BZNSYP", "SSB0009", "SSB0407", "SSB0434"]
+    args.wav_folder = "/mnt/huanyuan2/data/speech/vc/Chinese/vc_test/test/SSB0005/"
 
     infer(args)
 

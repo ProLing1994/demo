@@ -39,6 +39,7 @@ def train(args):
 
     return
 
+
 def main(): 
     parser = argparse.ArgumentParser(description='Streamax VC Training Engine')
     parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/VC/config/cyclevae/vc_config_cyclevae.py", nargs='?', help='config file')

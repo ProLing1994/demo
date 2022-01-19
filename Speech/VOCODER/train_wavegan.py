@@ -294,7 +294,8 @@ def train(args):
 def main(): 
     parser = argparse.ArgumentParser(description='Streamax TTS Vocoder Training Engine')
     # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/VOCODER/config/vocoder/vocoder_config_chinese_wavegan.py", nargs='?', help='config file')
-    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/VOCODER/config/vocoder/vc_vocoder_config_english_wavegan.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/VOCODER/config/vocoder/vc_vocoder_config_english_wavegan.py", nargs='?', help='config file')
+    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/VOCODER/config/vocoder/vc_vocoder_config_chinese_wavegan.py", nargs='?', help='config file')
     args = parser.parse_args()
     train(args)
 
