@@ -54,25 +54,25 @@ def infer(args):
 def main():
     parser = argparse.ArgumentParser(description='Streamax VC VOCODER Infer Engine')
 
-    # english
-    parser.add_argument('-c', '--vc_config_file', type=str, default="/mnt/huanyuan/model/vc/english_vc/vc_english_cyclevae_world_1_1_12302021/config.py", nargs='?', help='config file')              # vc 声音转换，world 特征
-    # parser.add_argument('-v', '--vocoder_config_file', type=str, default="/mnt/huanyuan/model/vc_vocoder/english_vc_vocoder/wavegan_english_1_0_normalize_world_01042022/vc_vocoder_config_english_wavegan.py", nargs='?', help='config file')  # ParallelWaveGANGenerator, vc world feature（限定多说话人转移，效果还行）
-    # parser.add_argument('-v', '--vocoder_config_file', type=str, default="/mnt/huanyuan/model/vc_vocoder/english_vc_vocoder/wavegan_english_1_1_normalize_world_cyclevae_reconst_01112022/vc_vocoder_config_english_wavegan.py", nargs='?', help='config file')  # ParallelWaveGANGenerator, vc world feature, vc finetune（限定多说话人转移，效果还行）
-    parser.add_argument('-v', '--vocoder_config_file', type=str, default="/mnt/huanyuan/model/vc_vocoder/english_vc_vocoder/wavegan_english_1_2_normalize_world_cyclevae_reconst_01112022/vc_vocoder_config_english_wavegan.py", nargs='?', help='config file')  # ParallelWaveGANGenerator, vc world feature, vc finetune（限定多说话人转移，效果还行）
-    args = parser.parse_args()
-
-    args.speaker_src = "SEF1"
-    args.speaker_trg_list = ["SEF1", "SEM1", "SEF2", "SEM2"]
-    args.wav_folder = "/mnt/huanyuan2/data/speech/asr/English/VCC2020-database/dataset/test/SEF1/"
-
-    # # chinese
+    # # english
     # parser.add_argument('-c', '--vc_config_file', type=str, default="/mnt/huanyuan/model/vc/english_vc/vc_english_cyclevae_world_1_1_12302021/config.py", nargs='?', help='config file')              # vc 声音转换，world 特征
-    # parser.add_argument('-v', '--vocoder_config_file', type=str, default="/mnt/huanyuan/model/vc_vocoder/english_vc_vocoder/wavegan_english_1_0_normalize_world_01042022/vc_vocoder_config_english_wavegan.py", nargs='?', help='config file')  # ParallelWaveGANGenerator, vc world feature（限定多说话人转移，效果还行）
+    # # parser.add_argument('-v', '--vocoder_config_file', type=str, default="/mnt/huanyuan/model/vc_vocoder/english_vc_vocoder/wavegan_english_1_0_normalize_world_01042022/vc_vocoder_config_english_wavegan.py", nargs='?', help='config file')  # ParallelWaveGANGenerator, vc world feature（限定多说话人转移，效果还行）
+    # # parser.add_argument('-v', '--vocoder_config_file', type=str, default="/mnt/huanyuan/model/vc_vocoder/english_vc_vocoder/wavegan_english_1_1_normalize_world_cyclevae_reconst_01112022/vc_vocoder_config_english_wavegan.py", nargs='?', help='config file')  # ParallelWaveGANGenerator, vc world feature, vc finetune（限定多说话人转移 待测试）
+    # parser.add_argument('-v', '--vocoder_config_file', type=str, default="/mnt/huanyuan/model/vc_vocoder/english_vc_vocoder/wavegan_english_1_2_normalize_world_cyclevae_reconst_01112022/vc_vocoder_config_english_wavegan.py", nargs='?', help='config file')  # ParalleWaveGANGenerator, vc world feature, vc finetune（限定多说话人转移 待测试）
     # args = parser.parse_args()
 
     # args.speaker_src = "SEF1"
     # args.speaker_trg_list = ["SEF1", "SEM1", "SEF2", "SEM2"]
     # args.wav_folder = "/mnt/huanyuan2/data/speech/asr/English/VCC2020-database/dataset/test/SEF1/"
+
+    # chinese
+    parser.add_argument('-c', '--vc_config_file', type=str, default="/mnt/huanyuan/model/vc/chinese_vc/vc_chinese_cyclevae_world_1_1_01062022/config.py", nargs='?', help='config file')              # vc 声音转换，world 特征
+    parser.add_argument('-v', '--vocoder_config_file', type=str, default="/mnt/huanyuan/model/vc_vocoder/chinese_vc_vocoder/wavegan_chinese_1_0_normalize_world_01172022/vc_vocoder_config_chinese_wavegan.py", nargs='?', help='config file')  # ParallelWaveGANGenerator, vc world feature（限定多说话人转移 待测试）
+    args = parser.parse_args()
+
+    args.speaker_src = "BZNSYP"
+    args.speaker_trg_list = ["SSB0005", "SSB0009", "SSB0407", "SSB0434"]
+    args.wav_folder = "/mnt/huanyuan2/data/speech/vc/Chinese/vc_test/test/BZNSYP/"
 
     infer(args)
 

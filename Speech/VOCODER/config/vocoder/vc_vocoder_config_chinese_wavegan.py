@@ -32,10 +32,8 @@ __C.general.scale_name = "scale_feat_org_lf0"
 __C.general.data_dir = "/mnt/huanyuan/data/speech/vc/Chinese_dataset/"
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/vc_vocoder/english_vc_vocoder/test/"
-# __C.general.save_dir = "/mnt/huanyuan/model/vc_vocoder/english_vc_vocoder/wavegan_english_1_0_normalize_world_01042022/"
-# __C.general.save_dir = "/mnt/huanyuan/model/vc_vocoder/english_vc_vocoder/wavegan_english_1_1_normalize_world_cyclevae_reconst_01112022/"
-# __C.general.save_dir = "/mnt/huanyuan/model/vc_vocoder/english_vc_vocoder/wavegan_english_1_2_normalize_world_cyclevae_reconst_01112022/"
+# __C.general.save_dir = "/mnt/huanyuan/model/vc_vocoder/chinese_vc_vocoder/test/"
+__C.general.save_dir = "/mnt/huanyuan/model/vc_vocoder/chinese_vc_vocoder/wavegan_chinese_1_0_normalize_world_01172022/"
 
 # test after save pytorch model
 __C.general.is_test = True

@@ -1,0 +1,1 @@
+python ./get_onnx.py /home/huanyuan/code/demo/Image/2ddetection/mmdetection/configs/zhiguan/detect/yoloxv2_rmvgg_rmfpn_nova_3level_zhiguan_non_car_person_detection_320x320.py /home/huanyuan/code/demo/Image/2ddetection/mmdetection/checkpoints/epoch_24.pth

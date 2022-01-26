@@ -44,7 +44,8 @@ def main():
     parser = argparse.ArgumentParser()
     # parser.add_argument('-l', '--log', type=str, default="/mnt/huanyuan/model/kws/kws_xiaoan/test_time_cq/logging/train_time_log.txt")
     # parser.add_argument('-l', '--log', type=str, default="/mnt/huanyuan/model/kws/kws_xiaoan/test_time_cq_2/logging/train_time_log.txt")
-    parser.add_argument('-l', '--log', type=str, default="/mnt/huanyuan/model/kws/kws_xiaoan/test_time_cq_3/logging/train_time_log.txt")
+    # parser.add_argument('-l', '--log', type=str, default="/mnt/huanyuan/model/kws/kws_xiaoan/test_time_cq_3/logging/train_time_log.txt")
+    parser.add_argument('-l', '--log', type=str, default="/mnt/huanyuan/model/kws/kws_xiaoan/test_time_cq_4/logging/train_time_log.txt")
     # parser.add_argument('-l', '--log', type=str, default="/mnt/huanyuan/model/kws/kws_xiaoan/test_time_sz/logging/train_time_log.txt")
     args = parser.parse_args()
 
