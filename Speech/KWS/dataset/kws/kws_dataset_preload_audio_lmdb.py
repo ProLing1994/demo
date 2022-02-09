@@ -8,8 +8,8 @@ import torch
 
 from torch.utils.data import Dataset
 
-# sys.path.insert(0, '/yuanhuan/code/demo/Speech/')
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+sys.path.insert(0, '/yuanhuan/code/demo/Speech/')
+# sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
 from Basic.dataset import audio
 
 from KWS.config.kws import hparams

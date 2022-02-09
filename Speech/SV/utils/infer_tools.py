@@ -3,8 +3,8 @@ import numpy as np
 import sys
 import torch 
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-# sys.path.insert(0, '/yuanhuan/code/demo/Speech')
+# sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+sys.path.insert(0, '/yuanhuan/code/demo/Speech')
 from Basic.config import hparams
 from Basic.dataset import audio 
 from Basic.dataset import dataset_augmentation

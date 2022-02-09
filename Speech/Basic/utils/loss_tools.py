@@ -4,8 +4,8 @@ from torch import nn
 from torch.autograd import Variable
 from torch.nn import functional as F
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-# sys.path.insert(0, '/yuanhuan/code/demo/Speech')
+# sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+sys.path.insert(0, '/yuanhuan/code/demo/Speech')
 from Basic.loss.ema import EMA
 from Basic.loss.kd import loss_fn_kd, loss_kl
 from Basic.loss.focal_loss import FocalLoss

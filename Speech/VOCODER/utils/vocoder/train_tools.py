@@ -3,13 +3,13 @@ import sys
 
 from torch.utils.data import DataLoader
 
-sys.path.insert(0, '/home/huanyuan/code/demo/common')
-# sys.path.insert(0, '/yuanhuan/code/demo/common')
+# sys.path.insert(0, '/home/huanyuan/code/demo/common')
+sys.path.insert(0, '/yuanhuan/code/demo/common')
 from common.utils.python.train_tools import EpochConcateSampler
 from common.utils.python.plotly_tools import plot_loss4d, plot_loss2d, plot_loss
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-# sys.path.insert(0, '/yuanhuan/code/demo/Speech')
+# sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+sys.path.insert(0, '/yuanhuan/code/demo/Speech')
 from Basic.utils.train_tools import *
 
 from VOCODER.dataset.vocoder.vocoder_dataset_preload_audio_lmdb import VocoderDataset, VocoderDataLoader

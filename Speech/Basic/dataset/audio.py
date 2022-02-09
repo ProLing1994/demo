@@ -1,18 +1,18 @@
 import librosa
 from librosa.filters import window_bandwidth
 import numpy as np
-import pcen
+# import pcen
 import sys
 import struct
 from scipy import signal
 from scipy.ndimage.morphology import binary_dilation
-import soundfile as sf
+# import soundfile as sf
 from typing import Optional, Union
 import torch
 import webrtcvad
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/')
-# sys.path.insert(0, '/yuanhuan/code/demo/Speech')
+# sys.path.insert(0, '/home/huanyuan/code/demo/Speech/')
+sys.path.insert(0, '/yuanhuan/code/demo/Speech')
 from ASR.impl.asr_feature_pyimpl import Feature
 
 from Basic.config import hparams
@@ -24,7 +24,8 @@ def load_wav(path, sampling_rate):
 
 
 def save_wav(wav, path, sampling_rate): 
-    sf.write(path, wav, sampling_rate)
+    # sf.write(path, wav, sampling_rate)
+    pass
 
 
 def preprocess_wav(fpath_or_wav: Union[str, np.ndarray],
@@ -163,7 +164,7 @@ class ComputeMel(object):
         self.eps = eps
         self.log_base = log_base
   
-        self.pcen_transform = pcen.StreamingPCENTransform(n_mels=self.num_mels, n_fft=self.win_length, hop_size=self.hop_size, trainable=True)
+        # self.pcen_transform = pcen.StreamingPCENTransform(n_mels=self.num_mels, n_fft=self.win_length, hop_size=self.hop_size, trainable=True)
 
         # init 
         self.mel_basis = None

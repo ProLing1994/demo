@@ -3,8 +3,8 @@ import pandas as pd
 import sys
 from torch.utils.data import Dataset, DataLoader
 
-# sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-sys.path.insert(0, '/yuanhuan/code/demo/Speech')
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+# sys.path.insert(0, '/yuanhuan/code/demo/Speech')
 from Basic.config import hparams
 from Basic.dataset import audio
 from Basic.utils.lmdb_tools import *

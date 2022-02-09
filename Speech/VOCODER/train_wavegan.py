@@ -2,10 +2,10 @@ import argparse
 from collections import defaultdict
 import os 
 import sys
-import soundfile as sf
+# import soundfile as sf
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-# sys.path.insert(0, '/yuanhuan/code/demo/Speech')
+# sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+sys.path.insert(0, '/yuanhuan/code/demo/Speech')
 from Basic.config import hparams
 from Basic.utils.folder_tools import *
 from Basic.utils.train_tools import *
@@ -24,8 +24,8 @@ from VOCODER.dataset.vocoder.distribution import *
 from VOCODER.dataset.vocoder.vocoder_dataset_preload_audio_lmdb import prepare_data
 
 
-sys.path.insert(0, '/home/huanyuan/code/demo/common')
-# sys.path.insert(0, '/yuanhuan/code/demo/common')
+# sys.path.insert(0, '/home/huanyuan/code/demo/common')
+sys.path.insert(0, '/yuanhuan/code/demo/common')
 from common.utils.python.logging_helpers import setup_logger
 
 
@@ -88,12 +88,12 @@ def test(cfg, model, criterion, x, y, logger, epoch_idx, batch_idx):
         # wav_target
         y_idx = np.clip(y_idx, -1, 1)
         wav_fpath = os.path.join(save_dir, "wav_target_step_{}_{}.wav".format(epoch_idx, idx))
-        sf.write(wav_fpath, y_idx, cfg.dataset.sampling_rate, "PCM_16")
+        # sf.write(wav_fpath, y_idx, cfg.dataset.sampling_rate, "PCM_16")
 
         # wav_forward
         y_idx_ = np.clip(y_idx_, -1, 1)
         wav_forward_fpath = os.path.join(save_dir, "wav_forward_step_{}_{}.wav".format(epoch_idx, idx))
-        sf.write(wav_forward_fpath, y_idx_, cfg.dataset.sampling_rate, "PCM_16",)
+        # sf.write(wav_forward_fpath, y_idx_, cfg.dataset.sampling_rate, "PCM_16",)
 
     # restore mode
     for key in model.keys():
@@ -294,7 +294,8 @@ def train(args):
 def main(): 
     parser = argparse.ArgumentParser(description='Streamax TTS Vocoder Training Engine')
     # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/VOCODER/config/vocoder/vocoder_config_chinese_wavegan.py", nargs='?', help='config file')
-    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/VOCODER/config/vocoder/vc_vocoder_config_english_wavegan.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/VOCODER/config/vocoder/vc_vocoder_config_english_wavegan.py", nargs='?', help='config file')
+    parser.add_argument('-i', '--config_file', type=str, default="/yuanhuan/code/demo/Speech/VOCODER/config/vocoder/vc_vocoder_config_chinese_wavegan.py", nargs='?', help='config file')
     args = parser.parse_args()
     train(args)
 

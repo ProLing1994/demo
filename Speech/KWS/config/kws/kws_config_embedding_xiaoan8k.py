@@ -14,49 +14,62 @@ __C.general.data_dir = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experiment
 __C.general.sub_data_dir = []
 
 # data version
-# __C.general.version = "2.1"     # 8k 小安小安音频 + 困难样本挖掘（运用 AmSoftmax 思想，增大正负样本之间的差异），3s 音频
-# __C.general.version = "3.1"     # 8k 小安小安音频 + 8k 负样本音频 + 困难样本挖掘（运用 AmSoftmax 思想，增大正负样本之间的差异），2s 音频
+# __C.general.version = "2.1"     # 小安小安音频 + 困难样本挖掘（运用 AmSoftmax 思想，增大正负样本之间的差异），3s 音频
+# __C.general.version = "3.1"     # 小安小安音频 + 困难样本挖掘（运用 AmSoftmax 思想，增大正负样本之间的差异），2s 音频
 # __C.general.version = "3.2"     # 8k 小安小安音频(+ small voice) + 8k 负样本音频 + 困难样本挖掘，2s 音频
-__C.general.version = "3.3"     # 清洗小安小安脏数据（包含小声音频） 8k 小安小安音频(+ small voice) + 8k 负样本音频 + 困难样本挖掘，2s 音频
+# __C.general.version = "3.3"     # 清洗小安小安脏数据（包含小声音频） 8k 小安小安音频(+ small voice) + 8k 负样本音频 + 困难样本挖掘，2s 音频
+# __C.general.version = "3.4"     # 清洗小安小安脏数据（包含小声音频） 8k 小安小安音频(+ small voice) + 8k 负样本音频 + 困难样本挖掘，2s 音频
+__C.general.version = "3.5"     # 清洗小安小安脏数据（包含小声音频） 8k 小安小安音频(+ small voice) + 8k 负样本音频 + 困难样本挖掘，2s 音频 + 增加静音比例
 
 # data date
 # __C.general.date = "11132021"
 # __C.general.date = "12012021"
 # __C.general.date = "12072021"
-__C.general.date = "12222021"
+# __C.general.date = "12222021"
+# __C.general.date = "01192022"
+__C.general.date = "02082022"
 
 # data path
-# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_3s_2_1_11112021/total_data_files.csv"
-# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_1_12012021/total_data_files.csv"
-# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_2_12072021/total_data_files.csv"
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_3_12222021/total_data_files.csv"
+# __C.general.data_csv_path = "/yuanhuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_3s_2_1_11112021/total_data_files.csv"
+# __C.general.data_csv_path = "/yuanhuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_1_12012021/total_data_files.csv"
+# __C.general.data_csv_path = "/yuanhuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_2_12072021/total_data_files.csv"
+# __C.general.data_csv_path = "/yuanhuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_3_12222021/total_data_files.csv"
+# __C.general.data_csv_path = "/yuanhuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_4_01192022/total_data_files.csv"
+__C.general.data_csv_path = "/yuanhuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_5_02082022/total_data_files.csv"
 
 # background noise path
-# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_3s_2_1_11112021/background_noise_files.csv"
-# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_1_12012021/background_noise_files.csv"
-# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_2_12072021/background_noise_files.csv"
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_3_12222021/background_noise_files.csv"
+# __C.general.background_data_path = "/yuanhuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_3s_2_1_11112021/background_noise_files.csv"
+# __C.general.background_data_path = "/yuanhuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_1_12012021/background_noise_files.csv"
+# __C.general.background_data_path = "/yuanhuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_2_12072021/background_noise_files.csv"
+# __C.general.background_data_path = "/yuanhuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_3_12222021/background_noise_files.csv"
+# __C.general.background_data_path = "/yuanhuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_4_01192022/background_noise_files.csv"
+__C.general.background_data_path = "/yuanhuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_5_02082022/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 # __C.general.is_test = False
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/test_embedding"
-# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_4_0_3s_tc-resnet14-hisi_fbankcpu_kd_11232021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_0_2s_tc_resnet14_fbankcpu_12022021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_2_2s_tc_resnet14_fbankcpu_kd_12082021/"
+# __C.general.save_dir = "/yuanhuan/model/kws/kws_xiaoan/test"
+# __C.general.save_dir = "/yuanhuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/"
+# __C.general.save_dir = "/yuanhuan/model/kws/kws_xiaoan/kws_xiaoan8k_4_0_3s_tc-resnet14-hisi_fbankcpu_kd_11232021/"
+# __C.general.save_dir = "/yuanhuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_0_2s_tc_resnet14_fbankcpu_12022021/"
+# __C.general.save_dir = "/yuanhuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_1_2s_tc_resnet14_fbankcpu_embedding_12022021/"
+# __C.general.save_dir = "/yuanhuan/model/kws/kws_xiaoan/kws_xiaoan8k_5_1_2s_res15_fbankcpu_diff_params_12022021/"
+# __C.general.save_dir = "/yuanhuan/model/kws/kws_xiaoan/kws_xiaoan8k_5_2_2s_res15_fbankcpu_12072021/"
+# __C.general.save_dir = "/yuanhuan/model/kws/kws_xiaoan/kws_xiaoan8k_5_3_2s_res15_fbankcpu_12232021/"
+# __C.general.save_dir = "/yuanhuan/model/kws/kws_xiaoan/kws_xiaoan8k_5_4_2s_res15_fbankcpu_01192022/"
+__C.general.save_dir = "/yuanhuan/model/kws/kws_xiaoan/kws_xiaoan8k_5_5_2s_res15_fbankcpu_02092022/"
 
 # finetune model
-__C.general.finetune_on = False
+__C.general.finetune_on = True
 
 # 模型加载方式，[0: 根据文件目录查找, 1: 模型加载，指定文件路径]
 __C.general.load_mode_type = 0
 
 # 方式一：模型加载，根据文件目录查找
-__C.general.finetune_model_dir = ""
-__C.general.finetune_epoch_num = 0
+__C.general.finetune_model_dir = "/yuanhuan/model/kws/kws_xiaoan/kws_xiaoan8k_5_3_2s_res15_fbankcpu_12232021/"
+__C.general.finetune_epoch_num = -1
 __C.general.finetune_sub_folder_name ='checkpoints'
 # 方式二：模型加载，指定文件路径
 __C.general.finetune_model_path = ""
@@ -71,12 +84,12 @@ __C.general.finetune_add_module_type = 0
 __C.general.resume_epoch_num = -1
 
 # the number of GPUs used in training
-# __C.general.num_gpus = 4
-__C.general.num_gpus = 1
+__C.general.num_gpus = 2
+# __C.general.num_gpus = 1
 
 # the GPUs' id used in training
-# __C.general.gpu_ids = '0, 1, 2, 3'
-__C.general.gpu_ids = '0'
+__C.general.gpu_ids = '0, 1'
+# __C.general.gpu_ids = '0'
 
 # data_parallel_mode: [0, 1]
 # 0: 单机多卡，DataParallel
@@ -138,6 +151,7 @@ __C.dataset.input_channel = 1
 __C.dataset.sampling_rate = 8000
 
 # Length of each audio clip to be analyzed
+# __C.dataset.clip_duration_ms = 3000         # 3s
 __C.dataset.clip_duration_ms = 2000         # 2s
 
 # FFT size.
@@ -222,7 +236,7 @@ __C.dataset.label.label_list = __C.dataset.label.negative_label + __C.dataset.la
 __C.dataset.label.num_classes = 2
 
 # label percentage
-__C.dataset.label.silence_percentage = 10.0        # 10%
+__C.dataset.label.silence_percentage = 50.0        # 50%
 __C.dataset.label.unknown_percentage = 2000.0      # 2000%
 
 # trian/validation/test percentage
@@ -265,8 +279,8 @@ __C.dataset.augmentation.synthetic_prob = 0.001
 __C.dataset.augmentation.time_shift_ms = 100.0
 
 # Time shift enhancement multiple of negative samples, which is effective for advanced prediction and lag prediction
-__C.dataset.augmentation.time_shift_multiple = 1
-# __C.dataset.augmentation.time_shift_multiple = 10
+# __C.dataset.augmentation.time_shift_multiple = 1
+__C.dataset.augmentation.time_shift_multiple = 10
 
 # based on audio waveform: on.
 __C.dataset.augmentation.speed_volume_on = True
@@ -347,7 +361,7 @@ __C.loss.method = 'classification'
 __C.loss.embedding_size = 128
 
 # the size of embedding in embedding method orclassification & embedding classification & embedding method
-__C.loss.embedding_weight = 0.01
+__C.loss.embedding_weight = 0.001
 
 # the loss name, support ['softmax', 'focal']
 # __C.loss.name = 'softmax'
@@ -388,9 +402,9 @@ __C.loss.ema_alpha = 0.995
 __C.net = {}
 
 # the network name
-__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/res15.py"
 # __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-296.py"
-# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-196.py"
+# __C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-196.py"
+__C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/res15.py"
 __C.net.class_name = "SpeechResModel"
 
 ######################################
@@ -405,25 +419,26 @@ __C.train = {}
 # __C.train.num_epochs = 4000
 # __C.train.num_epochs = 2000
 # __C.train.num_epochs = 500
-__C.train.num_epochs = 1
+__C.train.num_epochs = 300
+# __C.train.num_epochs = 1
 
 # the number of samples in a batch
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 1024
-# __C.train.batch_size = 512
+__C.train.batch_size = 512
 # __C.train.batch_size = 128
 # __C.train.batch_size = 64
 # __C.train.batch_size = 16
-__C.train.batch_size = 1
+# __C.train.batch_size = 1
 
 # the number of threads for IO
 # __C.train.num_threads = 64
-# __C.train.num_threads = 16
-__C.train.num_threads = 1
+__C.train.num_threads = 16
+# __C.train.num_threads = 4
+# __C.train.num_threads = 1
 
 # the number of batches to show log
-# __C.train.show_log = 5
-__C.train.show_log = 1
+__C.train.show_log = 5
 
 # the number of batches to update loss curve
 __C.train.plot_snapshot = 5
@@ -437,8 +452,8 @@ __C.train.save_epochs = 25
 ######################################
 
 # learning rate = lr*gamma**(epoch//step_size)
-__C.train.lr = 1e-3
-# __C.train.lr = 1e-4
+# __C.train.lr = 1e-3
+__C.train.lr = 1e-4
 # __C.train.lr = 1e-5
 
 

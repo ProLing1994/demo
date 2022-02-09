@@ -14,8 +14,8 @@ from torch.autograd import Variable
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from common.common.utils.python.kaiming_init import kaiming_weight_init
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
-from network.network_helper import draw_features
+# sys.path.insert(0, '/home/huanyuan/code/demo/Speech/KWS')
+# from network.network_helper import draw_features
 
 
 def parameters_init(net):
