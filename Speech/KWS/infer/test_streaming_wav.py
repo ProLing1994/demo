@@ -368,7 +368,9 @@ def main():
     # default_config_file = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_2_2s_tc_resnet14_fbankcpu_kd_12082021/kws_config_embedding_xiaoan8k.py"
     # default_config_file = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_2_2s_tc_resnet14_fbankcpu_kd_12082021/kws_config_embedding_xiaoan8k_api_0_5.py"
     # default_config_file = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_3_2s_tc_resnet14_fbankcpu_kd_01042022/kws_config_embedding_xiaoan8k.py"
-    default_config_file = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_3_2s_tc_resnet14_fbankcpu_kd_01042022/kws_config_embedding_xiaoan8k_api_0_5.py"
+    # default_config_file = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_3_2s_tc_resnet14_fbankcpu_kd_01042022/kws_config_embedding_xiaoan8k_api_0_5.py"
+    # default_config_file = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_4_2s_tc_resnet14_fbankcpu_kd_01242022/kws_config_embedding_xiaoan8k.py"
+    default_config_file = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_4_2s_tc_resnet14_fbankcpu_kd_01242022/kws_config_embedding_xiaoan8k_api_0_5.py"
     
     # xiaorui 
     # default_config_file = "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaorui_5_0_tc-resnet14-amba_fbankcpu_kd_04302021/kws_config_xiaorui_api.py"

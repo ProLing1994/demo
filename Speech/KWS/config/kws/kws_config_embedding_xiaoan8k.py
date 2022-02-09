@@ -18,28 +18,32 @@ __C.general.sub_data_dir = []
 # __C.general.version = "3.1"     # 8k 小安小安音频 + 8k 负样本音频 + 困难样本挖掘（运用 AmSoftmax 思想，增大正负样本之间的差异），2s 音频
 # __C.general.version = "3.2"     # 8k 小安小安音频(+ small voice) + 8k 负样本音频 + 困难样本挖掘，2s 音频
 # __C.general.version = "3.3"     # 清洗小安小安脏数据（包含小声音频） 8k 小安小安音频(+ small voice) + 8k 负样本音频 + 困难样本挖掘，2s 音频
-__C.general.version = "3.4"     # 清洗小安小安脏数据（包含小声音频） 8k 小安小安音频(+ small voice) + 8k 负样本音频 + 困难样本挖掘，2s 音频
+#__C.general.version = "3.4"     # 清洗小安小安脏数据（包含小声音频） 8k 小安小安音频(+ small voice) + 8k 负样本音频 + 困难样本挖掘，2s 音频 + 8k 小安 once 数据 + 增加静音比例
+__C.general.version = "3.5"     # 清洗小安小安脏数据（包含小声音频） 8k 小安小安音频(+ small voice) + 8k 负样本音频 + 困难样本挖掘，2s 音频 + 增加静音比例
 
 # data date
 # __C.general.date = "11132021"
 # __C.general.date = "12012021"
 # __C.general.date = "12072021"
 # __C.general.date = "12222021"
-__C.general.date = "01192022"
+# __C.general.date = "01192022"
+__C.general.date = "02082022"
 
 # data path
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_3s_2_1_11112021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_1_12012021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_2_12072021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_3_12222021/total_data_files.csv"
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_4_01192022/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_4_01192022/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_5_02082022/total_data_files.csv"
 
 # background noise path
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_3s_2_1_11112021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_1_12012021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_2_12072021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_3_12222021/background_noise_files.csv"
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_4_01192022/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_4_01192022/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_5_02082022/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -52,6 +56,7 @@ __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/test_embedding"
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_0_2s_tc_resnet14_fbankcpu_12022021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_2_2s_tc_resnet14_fbankcpu_kd_12082021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_3_2s_tc_resnet14_fbankcpu_kd_01042022/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_4_2s_tc_resnet14_fbankcpu_kd_01242022/"
 
 # finetune model
 __C.general.finetune_on = False
@@ -219,7 +224,7 @@ __C.dataset.label.negative_label_together = True
 __C.dataset.label.negative_label_together_label = ["negative"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
 __C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[1]
-__C.dataset.label.ignore_label = ['movie', 
+__C.dataset.label.ignore_label = ['movie', 'xiaoanxiaoan_8k_once', 
                                     'nihaoxiaoan_8k', 'nihaoxiaoan_16k', 'truck_truckidling_noise_16k',
                                     'xiaoanxiaoan_16k', 'xiaoanxiaoan_16k_small_voice', 'xiaoanxiaoan_16k_once',
                                     'zanghuayulu_16k']
