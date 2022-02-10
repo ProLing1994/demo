@@ -16,8 +16,12 @@ cfg = __C
 __C.general = {}
 
 # Chinese
+<<<<<<< HEAD
 # __C.general.dataset_list = ['BZNSYP_Aishell3']
 __C.general.dataset_list = ['BZNSYP_Aishell3', 'BZNSYP_Aishell3_reconst', 'BZNSYP_Aishell3_cycle_reconst']
+=======
+__C.general.dataset_list = ['BZNSYP_Aishell3']
+>>>>>>> master
 __C.general.dataset_path_dict = {
                                 "BZNSYP_Aishell3": "/mnt/huanyuan2/data/speech/vc/Chinese/vc_test/", 
                                 "BZNSYP_Aishell3_training": "/mnt/huanyuan2/data/speech/vc/Chinese/vc_test/train/", 
@@ -25,26 +29,44 @@ __C.general.dataset_path_dict = {
                                 }
 
 # state_jnt_path 
+<<<<<<< HEAD
 __C.general.state_jnt_path = "/yuanhuan/data/speech/vc/Chinese_dataset/dataset_audio_normalize_hdf5/BZNSYP_Aishell3/world/stats_jnt.h5"
+=======
+__C.general.state_jnt_path = "/mnt/huanyuan/data/speech/vc/Chinese_dataset/dataset_audio_normalize_hdf5/BZNSYP_Aishell3/world/stats_jnt.h5"
+>>>>>>> master
 __C.general.mean_name = "mean_feat_org_lf0"
 __C.general.scale_name = "scale_feat_org_lf0"
 
 # data path
+<<<<<<< HEAD
 __C.general.data_dir = "/yuanhuan/data/speech/vc/Chinese_dataset/"
 
 # the output of training models and logging files
 # __C.general.save_dir = "/yuanhuan/model/vc_vocoder/chinese_vc_vocoder/test/"
 # __C.general.save_dir = "/yuanhuan/model/vc_vocoder/chinese_vc_vocoder/wavegan_chinese_1_0_normalize_world_01172022/"
 __C.general.save_dir = "/yuanhuan/model/vc_vocoder/chinese_vc_vocoder/wavegan_chinese_1_1_normalize_world_cyclevae_reconst_01127022/"
+=======
+__C.general.data_dir = "/mnt/huanyuan/data/speech/vc/Chinese_dataset/"
+
+# the output of training models and logging files
+# __C.general.save_dir = "/mnt/huanyuan/model/vc_vocoder/chinese_vc_vocoder/test/"
+__C.general.save_dir = "/mnt/huanyuan/model/vc_vocoder/chinese_vc_vocoder/wavegan_chinese_1_0_normalize_world_01172022/"
+>>>>>>> master
 
 # test after save pytorch model
 __C.general.is_test = True
 # __C.general.is_test = False
 
 # finetune model
+<<<<<<< HEAD
 __C.general.finetune_on = True
 # __C.general.finetune_on = False
 __C.general.finetune_model_path = "/yuanhuan/model/vc_vocoder/chinese_vc_vocoder/wavegan_chinese_1_0_normalize_world_01172022/checkpoints/chk_525/parameter.pkl"
+=======
+# __C.general.finetune_on = True
+__C.general.finetune_on = False
+__C.general.finetune_model_path = ""
+>>>>>>> master
 
 # resume model
 # __C.general.resume_on = True
@@ -105,6 +127,7 @@ __C.dataset.allow_cache = True
 __C.net = {}
 
 # the network name
+<<<<<<< HEAD
 __C.net.generator_model_name = "/yuanhuan/code/demo/Speech/VOCODER/network/vocoder/parallel_wavegan.py"
 __C.net.generator_class_name = "ParallelWaveGANGenerator"
 
@@ -112,6 +135,15 @@ __C.net.discriminator_model_name = "/yuanhuan/code/demo/Speech/VOCODER/network/v
 __C.net.discriminator_class_name = "ParallelWaveGANDiscriminator"
 
 __C.net.model_yaml = '/yuanhuan/code/demo/Speech/VOCODER/network/vocoder/parallel_wavegan.vc.chinese.yaml'
+=======
+__C.net.generator_model_name = "/home/huanyuan/code/demo/Speech/VOCODER/network/vocoder/parallel_wavegan.py"
+__C.net.generator_class_name = "ParallelWaveGANGenerator"
+
+__C.net.discriminator_model_name = "/home/huanyuan/code/demo/Speech/VOCODER/network/vocoder/parallel_wavegan.py"
+__C.net.discriminator_class_name = "ParallelWaveGANDiscriminator"
+
+__C.net.model_yaml = '/home/huanyuan/code/demo/Speech/VOCODER/network/vocoder/parallel_wavegan.vc.chinese.yaml'
+>>>>>>> master
 
 # load and save config
 with open(__C.net.model_yaml) as f:
@@ -125,7 +157,11 @@ with open(__C.net.model_yaml) as f:
 __C.train = {}
 
 # the number of training epochs
+<<<<<<< HEAD
 __C.train.num_epochs = 5000
+=======
+__C.train.num_epochs = 1000
+>>>>>>> master
 # __C.train.num_epochs = 10
 
 # the number of samples in a batch
@@ -133,8 +169,13 @@ __C.train.batch_size = 6
 # __C.train.batch_size = 1
 
 # the number of threads for IO
+<<<<<<< HEAD
 __C.train.num_threads = 2
 # __C.train.num_threads = 1
+=======
+# __C.train.num_threads = 2
+__C.train.num_threads = 1
+>>>>>>> master
 
 # the number of batches to start train generator
 __C.train.generator_train_start_steps = 0

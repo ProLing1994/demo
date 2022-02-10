@@ -18,14 +18,19 @@ __C.general.sub_data_dir = []
 # __C.general.version = "3.1"     # 小安小安音频 + 困难样本挖掘（运用 AmSoftmax 思想，增大正负样本之间的差异），2s 音频
 # __C.general.version = "3.2"     # 8k 小安小安音频(+ small voice) + 8k 负样本音频 + 困难样本挖掘，2s 音频
 # __C.general.version = "3.3"     # 清洗小安小安脏数据（包含小声音频） 8k 小安小安音频(+ small voice) + 8k 负样本音频 + 困难样本挖掘，2s 音频
+<<<<<<< HEAD
 # __C.general.version = "3.4"     # 清洗小安小安脏数据（包含小声音频） 8k 小安小安音频(+ small voice) + 8k 负样本音频 + 困难样本挖掘，2s 音频
 __C.general.version = "3.5"     # 清洗小安小安脏数据（包含小声音频） 8k 小安小安音频(+ small voice) + 8k 负样本音频 + 困难样本挖掘，2s 音频 + 增加静音比例
+=======
+__C.general.version = "3.4"     # 清洗小安小安脏数据（包含小声音频） 8k 小安小安音频(+ small voice) + 8k 负样本音频 + 困难样本挖掘，2s 音频
+>>>>>>> master
 
 # data date
 # __C.general.date = "11132021"
 # __C.general.date = "12012021"
 # __C.general.date = "12072021"
 # __C.general.date = "12222021"
+<<<<<<< HEAD
 # __C.general.date = "01192022"
 __C.general.date = "02082022"
 
@@ -44,12 +49,30 @@ __C.general.data_csv_path = "/yuanhuan/data/speech/kws/xiaoan_dataset/experiment
 # __C.general.background_data_path = "/yuanhuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_3_12222021/background_noise_files.csv"
 # __C.general.background_data_path = "/yuanhuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_4_01192022/background_noise_files.csv"
 __C.general.background_data_path = "/yuanhuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_5_02082022/background_noise_files.csv"
+=======
+__C.general.date = "01192022"
+
+# data path
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_3s_2_1_11112021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_1_12012021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_2_12072021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_3_12222021/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_4_01192022/total_data_files.csv"
+
+# background noise path
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_3s_2_1_11112021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_1_12012021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_2_12072021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_3_12222021/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_2s_3_4_01192022/background_noise_files.csv"
+>>>>>>> master
 
 # test after save pytorch model
 __C.general.is_test = True
 # __C.general.is_test = False
 
 # the output of training models and logging files
+<<<<<<< HEAD
 # __C.general.save_dir = "/yuanhuan/model/kws/kws_xiaoan/test"
 # __C.general.save_dir = "/yuanhuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/"
 # __C.general.save_dir = "/yuanhuan/model/kws/kws_xiaoan/kws_xiaoan8k_4_0_3s_tc-resnet14-hisi_fbankcpu_kd_11232021/"
@@ -60,6 +83,14 @@ __C.general.is_test = True
 # __C.general.save_dir = "/yuanhuan/model/kws/kws_xiaoan/kws_xiaoan8k_5_3_2s_res15_fbankcpu_12232021/"
 # __C.general.save_dir = "/yuanhuan/model/kws/kws_xiaoan/kws_xiaoan8k_5_4_2s_res15_fbankcpu_01192022/"
 __C.general.save_dir = "/yuanhuan/model/kws/kws_xiaoan/kws_xiaoan8k_5_5_2s_res15_fbankcpu_02092022/"
+=======
+__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/test_embedding"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_4_0_3s_tc-resnet14-hisi_fbankcpu_kd_11232021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_0_2s_tc_resnet14_fbankcpu_12022021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_2_2s_tc_resnet14_fbankcpu_kd_12082021/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_3_2s_tc_resnet14_fbankcpu_kd_01042022/"
+>>>>>>> master
 
 # finetune model
 __C.general.finetune_on = True
@@ -228,7 +259,7 @@ __C.dataset.label.negative_label_together = True
 __C.dataset.label.negative_label_together_label = ["negative"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
 __C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[1]
-__C.dataset.label.ignore_label = ['movie', 'xiaoanxiaoan_8k_once', 
+__C.dataset.label.ignore_label = ['movie', 
                                     'nihaoxiaoan_8k', 'nihaoxiaoan_16k', 'truck_truckidling_noise_16k',
                                     'xiaoanxiaoan_16k', 'xiaoanxiaoan_16k_small_voice', 'xiaoanxiaoan_16k_once',
                                     'zanghuayulu_16k']
@@ -402,9 +433,15 @@ __C.loss.ema_alpha = 0.995
 __C.net = {}
 
 # the network name
+<<<<<<< HEAD
 # __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-296.py"
 # __C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-196.py"
 __C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/res15.py"
+=======
+# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/res15.py"
+# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-296.py"
+__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-196.py"
+>>>>>>> master
 __C.net.class_name = "SpeechResModel"
 
 ######################################
@@ -439,6 +476,10 @@ __C.train.num_threads = 16
 
 # the number of batches to show log
 __C.train.show_log = 5
+<<<<<<< HEAD
+=======
+# __C.train.show_log = 1
+>>>>>>> master
 
 # the number of batches to update loss curve
 __C.train.plot_snapshot = 5

@@ -29,14 +29,14 @@ __C.general.version = "1.12"     # 清洗小安小安脏数据（包含小声音
 __C.general.date = "12222021"
 
 # data path
-# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.8_05202021/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.8_05202021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_9_10262021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_10_11112021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_11_12072021/total_data_files.csv"
 __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_12_12222021/total_data_files.csv"
 
 # background noise path
-# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.8_05202021/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.8_05202021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_9_10262021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_10_11112021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_11_12072021/background_noise_files.csv"
@@ -47,12 +47,13 @@ __C.general.is_test = True
 # __C.general.is_test = False
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/test"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/test"
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_1_10_res15_fbankcpu_041262021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_1_11_res15_fbankcpu_10262021/"
-# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/"
+__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_3_tc-resnet14-hisi_fbankcpu_kd_11222021/"            # 实车误报迭代版本，降低误报率
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_5_tc-resnet14-hisi_fbankcpu_kd_01042022/"            # 清洗小安小安脏数据（包含小声音频）
 
 # finetune model
 __C.general.finetune_on = False

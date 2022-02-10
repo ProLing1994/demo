@@ -95,7 +95,13 @@ def infer(args, mode_type):
 
 def main(): 
     parser = argparse.ArgumentParser(description='Streamax VC Infer Engine')
-    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/VC/config/cyclevae/vc_config_cyclevae.py", nargs='?', help='config file')
+
+    # # english
+    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/VC/config/cyclevae/vc_config_cyclevae.py", nargs='?', help='config file')
+
+    # chinese
+    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/VC/config/cyclevae/vc_config_chinese_cyclevae.py", nargs='?', help='config file')
+    
     args = parser.parse_args()
 
     infer(args, hparams.TRAINING_NAME)
