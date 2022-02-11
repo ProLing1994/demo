@@ -1,0 +1,4 @@
+check_jpeg.py 检测 jpeg 格式数据完整性（需手动删除不完整数据）
+data_train_test_split.py 训练验证测试集划分
+statistic_xml_classname.py 统计每个数据集的类别
+select_xml_classname.py 每个数据集挑选合适的类别用于训练
