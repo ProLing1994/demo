@@ -19,25 +19,25 @@ def split(args):
     train_list, val_list = train_test_split(trainval_list, test_size=args.val_size, random_state=0)
 
     print("length: trainval: {}, train: {}, val: {}, test: {}".format(len(trainval_list), len(train_list), len(val_list), len(test_list)))
-    # with open(args.trainval_file, "w") as f:
-    #     for jpg in trainval_list:
-    #         f.write(jpg.replace(".jpg", ""))
-    #         f.write("\n")
+    with open(args.trainval_file, "w") as f:
+        for jpg in trainval_list:
+            f.write(jpg.replace(".jpg", ""))
+            f.write("\n")
 
-    # with open(args.test_file, "w") as f:
-    #     for jpg in test_list:
-    #         f.write(jpg.replace(".jpg", ""))
-    #         f.write("\n")
+    with open(args.test_file, "w") as f:
+        for jpg in test_list:
+            f.write(jpg.replace(".jpg", ""))
+            f.write("\n")
 
-    # with open(args.train_file, "w") as f:
-    #     for jpg in train_list:
-    #         f.write(jpg.replace(".jpg", ""))
-    #         f.write("\n")
+    with open(args.train_file, "w") as f:
+        for jpg in train_list:
+            f.write(jpg.replace(".jpg", ""))
+            f.write("\n")
 
-    # with open(args.val_file, "w") as f:
-    #     for jpg in val_list:
-    #         f.write(jpg.replace(".jpg", ""))
-    #         f.write("\n")
+    with open(args.val_file, "w") as f:
+        for jpg in val_list:
+            f.write(jpg.replace(".jpg", ""))
+            f.write("\n")
 
 
 if __name__ == "__main__":
