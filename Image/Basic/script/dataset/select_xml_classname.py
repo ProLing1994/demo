@@ -72,6 +72,24 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
+    # Annotations_CarBusTruckLicenseplate
+    # # # args.input_dir = "/yuanhuan/data/image/LicensePlate/China/"
+    # # # args.input_dir = "/yuanhuan/data/image/LicensePlate/China_6mm/"
+    # # # args.input_dir = "/yuanhuan/data/image/LicensePlate/Europe/"
+    # # args.input_dir = "/yuanhuan/data/image/LicensePlate/Mexico/"
+    # # args.select_name_list = ["license_plate"]
+    # # args.set_name_list = ["license_plate"]
+    # # args.finnal_name_list = ["license_plate", "neg"]
+
+    # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone/"
+    # args.select_name_list = ["car", "bus", "truck"]
+    # args.set_name_list = ["car", "bus", "truck"]
+    # args.finnal_name_list = ["car", "bus", "truck", "neg"]
+        
+    # args.jpg_dir =  args.input_dir + "JPEGImages/"
+    # args.xml_dir =  args.input_dir + "XML/"
+    # args.output_xml_dir =  args.input_dir + "Annotations_CarBusTruckLicenseplate/"
+
     # # args.input_dir = "/yuanhuan/data/image/LicensePlate/China/"
     # # args.input_dir = "/yuanhuan/data/image/LicensePlate/China_6mm/"
     # # args.input_dir = "/yuanhuan/data/image/LicensePlate/Europe/"
@@ -80,6 +98,8 @@ if __name__ == "__main__":
     # args.set_name_list = ["license_plate"]
     # args.finnal_name_list = ["license_plate", "neg"]
 
+    # 消融实验
+    # Annotations_CarLicenseplate
     args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone/"
     args.select_name_list = ["car", "bus", "truck"]
     args.set_name_list = ["car", "bus", "truck"]
@@ -87,6 +107,6 @@ if __name__ == "__main__":
         
     args.jpg_dir =  args.input_dir + "JPEGImages/"
     args.xml_dir =  args.input_dir + "XML/"
-    args.output_xml_dir =  args.input_dir + "Annotations_CarBusTruckLicenseplate/"
+    args.output_xml_dir =  args.input_dir + "Annotations_CarLicenseplate/"
 
     select_classname(args)
