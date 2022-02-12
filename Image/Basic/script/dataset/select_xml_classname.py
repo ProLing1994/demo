@@ -100,10 +100,17 @@ if __name__ == "__main__":
 
     # 消融实验
     # Annotations_CarLicenseplate
-    args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone/"
-    args.select_name_list = ["car", "bus", "truck"]
-    args.set_name_list = ["car", "bus", "truck"]
-    args.finnal_name_list = ["car", "bus", "truck", "neg"]
+    # China 提取 car\license_plate 进行实验
+    # args.input_dir = "/yuanhuan/data/image/LicensePlate/China/"
+    # args.select_name_list = ["car", "license_plate"]
+    # args.set_name_list = ["car", "license_plate"]
+    # args.finnal_name_list = ["car", "license_plate", "neg"]
+
+    # # Mexico 提取 license_plate 参与 China 进行实验（验证 car 的性能不降低，同时 license_plate 性能提升）
+    args.input_dir = "/yuanhuan/data/image/LicensePlate/Mexico/"
+    args.select_name_list = ["license_plate"]
+    args.set_name_list = ["license_plate"]
+    args.finnal_name_list = ["license_plate", "neg"]
         
     args.jpg_dir =  args.input_dir + "JPEGImages/"
     args.xml_dir =  args.input_dir + "XML/"
