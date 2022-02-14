@@ -1,6 +1,7 @@
 import sys 
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Image')
+# sys.path.insert(0, '/home/huanyuan/code/demo/Image')
+sys.path.insert(0, '/yuanhuan/code/demo/Image')
 from regreesion2d.plate_regreesion.network.model import MobileNetV1
 
 class Config(object):
