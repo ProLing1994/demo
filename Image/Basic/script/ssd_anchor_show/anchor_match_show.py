@@ -25,7 +25,7 @@ def anchor_show(args):
         os.makedirs(args.output_dir)
 
     # dataset
-    dataset = VOCDetection(VOCroot, args.data_sets, preproc_show(300), AnnotationTransform())
+    dataset = VOCDetection(VOCroot, args.data_sets, preproc_show(), AnnotationTransform())
 
     # priorbox
     priorbox = PriorBox(cfg)
@@ -37,12 +37,8 @@ def anchor_show(args):
     for index in tqdm(range(len(dataset))):
         # image & targets
         image, targets, _ = dataset[index]
-        image = image.cpu().numpy().transpose(1, 2, 0)
-
-        image_ori = dataset.pull_image(index)
-        h, w , _ = image_ori.shape
-        
-        image = cv2.resize(image, (w, h))
+        image = image.cpu().numpy()
+        h, w , _ = image.shape
         num = 1
 
         # match priors (default boxes) and ground truth boxes
