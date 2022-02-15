@@ -108,12 +108,18 @@ if __name__ == "__main__":
 
     # # Mexico 提取 license_plate 参与 China 进行实验（验证 car 的性能不降低，同时 license_plate 性能提升）
     args.input_dir = "/yuanhuan/data/image/LicensePlate/Mexico/"
-    args.select_name_list = ["license_plate"]
-    args.set_name_list = ["license_plate"]
-    args.finnal_name_list = ["license_plate", "neg"]
+    # # 训练过程中，不生成 car 的标签
+    # args.select_name_list = ["license_plate"]
+    # args.set_name_list = ["license_plate"]
+    # args.finnal_name_list = ["license_plate", "neg"]
+    # 测试过程中，生成 car 的标签，计算 AP 值
+    args.select_name_list = ["car", "license_plate"]
+    args.set_name_list = ["car", "license_plate"]
+    args.finnal_name_list = ["car", "license_plate", "neg"]
         
     args.jpg_dir =  args.input_dir + "JPEGImages/"
     args.xml_dir =  args.input_dir + "XML/"
-    args.output_xml_dir =  args.input_dir + "Annotations_CarLicenseplate/"
+    # args.output_xml_dir =  args.input_dir + "Annotations_CarLicenseplate/"
+    args.output_xml_dir =  args.input_dir + "Annotations_CarLicenseplate_label/"
 
     select_classname(args)
