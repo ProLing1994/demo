@@ -1,0 +1,2 @@
+inference_with_car_lable.py，利用车头和车尾标签，车牌回归模型，制作车牌标签
+script/dataset/plate_bboxes_filter.py，根据标注规则，对车牌标签进行清洗
