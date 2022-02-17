@@ -1,0 +1,4 @@
+copy_txt_dataset.py 将 JPEGImages 中测试数据拷贝出来，用于模型测试
+img_list_to_txt.py 将文件夹下的 jpg 文件放于 txt 中，用于模型测试
+
+convert.py unknow
