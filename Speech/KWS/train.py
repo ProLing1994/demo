@@ -243,15 +243,14 @@ def train(args):
             ema.update_params()     # apply ema
 
         # Caltulate accuracy
-        pred_y = torch.max(scores, 1)[1].cpu().data.numpy()
-        accuracy = float((pred_y == labels.cpu().data.numpy()).astype(
-            int).sum()) / float(labels.size(0))
+        pred_y = torch.max(scores, 1)[1]
+        accuracy = torch.sum((pred_y == labels).type(torch.FloatTensor)) / labels.size(0)
         profiler.tick("Caltulate accuracy")
 
         # Show information
         if (batch_idx % cfg.train.show_log) == 0:
             msg = 'epoch: {}, batch: {}, train_accuracy: {:.4f}, train_loss: {:.4f}' \
-                .format(epoch_idx, batch_idx, accuracy, loss.item())
+                .format(epoch_idx, batch_idx, accuracy.item(), loss.item())
             logger.info(msg)
         profiler.tick("Show information")
 
@@ -295,8 +294,8 @@ def main():
     # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py", nargs='?', help='config file')
     # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui8k.py", nargs='?', help='config file')
     # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui16k.py", nargs='?', help='config file')
-    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan8k.py", nargs='?', help='config file')
-    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_embedding_xiaoan8k.py", nargs='?', help='config file')
+    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan8k.py", nargs='?', help='config file')
+    # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_embedding_xiaoan8k.py", nargs='?', help='config file')
     # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan16k.py", nargs='?', help='config file')
     # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py", nargs='?', help='config file')
     # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_all_pretrain.py", nargs='?', help='config file')
