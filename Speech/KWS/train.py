@@ -244,8 +244,8 @@ def train(args):
 
         # Caltulate accuracy
         pred_y = torch.max(scores, 1)[1]
-        accuracy = torch.eq(pred_y, labels).sum().float() / labels.size(0)
-        # accuracy = torch.sum((pred_y == labels).type(torch.FloatTensor)) / labels.size(0)
+        accuracy = torch.eq(pred_y, labels).sum().float() / labels.size(0)                     # 方式一：更高效
+        # accuracy = torch.sum((pred_y == labels).type(torch.FloatTensor)) / labels.size(0)    # 方式二
         profiler.tick("Caltulate accuracy")
 
         # Show information
