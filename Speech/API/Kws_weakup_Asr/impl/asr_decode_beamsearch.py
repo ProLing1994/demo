@@ -187,7 +187,7 @@ class BeamSearch:
         return results[0]['words']
 
 
-    def prefix_beam_search(self,probs, lm=None):
+    def prefix_beam_search(self, probs, lm=None):
           blankID=0
           maxlen = probs.shape[0]
           cur_hyps = [(tuple(), (0.0, -float('inf')))]

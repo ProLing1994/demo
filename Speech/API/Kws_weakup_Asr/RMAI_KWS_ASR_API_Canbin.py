@@ -679,7 +679,7 @@ class KwsAsrApi():
         # feature
         # 获取特征
         start_pos_time = max(int(start_pos_id / self.cfg.general.sample_rate * 100), 0)
-        end_pos_time = min(int(end_pos_id / self.cfg.general.sample_rate * 100), self.params_dict['feature_data_container_np'].row())
+        end_pos_time = min(int(end_pos_id / self.cfg.general.sample_rate * 100), self.params_dict['feature_data_container_np'].shape[0])
         feature_data_asr = self.params_dict['feature_data_container_np'][start_pos_time : end_pos_time, :].astype(np.float32)
 
         # 模型前向传播
@@ -701,8 +701,8 @@ class KwsAsrApi():
             raise NotImplementedError
         elif self.cfg.general.decode_id == 1:
             net_output = torch.from_numpy(net_output)
-            # symbol_list = self.asr_beamsearch.prefix_beam_search(net_output, lm=self.lm)
-            symbol_list = self.asr_beamsearch.prefix_beam_search_contextbias(net_output, lm=self.lm, lm_weight=0.3)
+            symbol_list = self.asr_beamsearch.prefix_beam_search(net_output, lm=self.lm)
+            # symbol_list = self.asr_beamsearch.prefix_beam_search_contextbias(net_output, lm=self.lm, lm_weight=0.3)
         else:
             raise Exception("[Unknow:] cfg.general.decode_id = {}".format(self.cfg.general.decode_id))
 

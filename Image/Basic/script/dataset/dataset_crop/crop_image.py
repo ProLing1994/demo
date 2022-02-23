@@ -7,10 +7,6 @@ import xml.etree.ElementTree as ET
 
 
 def crop_image(args):
-    # mkdir 
-    if not os.path.exists( args.output_dir ):
-        os.makedirs( args.output_dir )
-
     jpg_list = np.array(os.listdir(args.jpg_dir))
     jpg_list = jpg_list[[jpg.endswith('.jpg') for jpg in jpg_list]]
     jpg_list = jpg_list[[os.path.exists(os.path.join(args.xml_dir, jpg.replace(".jpg", ".xml"))) for jpg in jpg_list]]
@@ -43,7 +39,12 @@ def crop_image(args):
 
                 crop_img = img[bndbox[1]:bndbox[3], bndbox[0]:bndbox[2]]
 
-                output_img_path = os.path.join(args.output_dir, jpg_list[idx].replace(".jpg", "_{}_{}.jpg".format(name, idy)))
+                output_img_path = os.path.join(args.output_dir, name, jpg_list[idx].replace(".jpg", "_{}.jpg".format(idy)))
+
+                # mkdir 
+                if not os.path.exists( os.path.dirname(output_img_path) ):
+                    os.makedirs( os.path.dirname(output_img_path) )
+
                 cv2.imwrite(output_img_path, crop_img)
                 idy += 1
 
@@ -57,13 +58,19 @@ def main():
     # args.select_name_list = ["license_plate"]
     # args.jpg_dir =  args.input_dir + "JPEGImages/"
     # args.xml_dir =  args.input_dir + "XML/"
-    # args.output_dir = args.input_dir + "LicensePlate_crop"
+    # args.output_dir = args.input_dir + "Crop/"
 
-    args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/"
+    args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
     args.select_name_list = ["plate", "fuzzy_plate"]
     args.jpg_dir =  args.input_dir + "JPEGImages/"
-    args.xml_dir =  args.input_dir + "Annotations/"
-    args.output_dir = args.input_dir + "LicensePlate_crop"
+    args.xml_dir =  args.input_dir + "XML/"
+    args.output_dir = args.input_dir + "Crop/"
+
+    # args.input_dir = "/mnt/huanyuan2/data/image/RM_ADAS_AllInOne/allinone_lincense_plate/"
+    # args.select_name_list = ["plate", "fuzzy_plate", "painted_plate"]
+    # args.jpg_dir =  args.input_dir + "JPEGImages/"
+    # args.xml_dir =  args.input_dir + "XML/"
+    # args.output_dir = args.input_dir + "Crop/"
 
     crop_image(args)
 

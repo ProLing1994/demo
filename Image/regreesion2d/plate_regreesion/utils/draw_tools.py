@@ -42,7 +42,7 @@ def draw_detection_result(img, bboxes, mode='xywh', color=None):
             else:
                 if isinstance(box[0], float):
                     box = [int(b + 0.5) for b in box]
-                img = cv2.putText(img, f"{key}", (box[0], box[1] + 10), 
+                img = cv2.putText(img, f"{key}", (box[0], box[1] - 10), 
                                   cv2.FONT_HERSHEY_COMPLEX, 1, color, 2)
                 img = cv_plot_rectangle(img, box, mode=mode, color=color)
     return img
