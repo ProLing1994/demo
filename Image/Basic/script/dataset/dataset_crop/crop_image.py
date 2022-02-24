@@ -60,9 +60,8 @@ def main():
     # args.xml_dir =  args.input_dir + "XML/"
     # args.output_dir = args.input_dir + "Crop/"
 
-    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
-    # args.select_name_list = ["plate", "fuzzy_plate"]
-    args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
+    args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
+    args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate", "roi_ignore_plate"]
     args.jpg_dir =  args.input_dir + "JPEGImages/"
     args.xml_dir =  args.input_dir + "XML/"
     args.output_dir = args.input_dir + "Crop/"

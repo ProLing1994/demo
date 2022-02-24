@@ -20,6 +20,17 @@ def check_ignore_roi(in_box, roi_ignore_list):
     return roi_ignore_bool
 
 
+def check_img_exist(in_img_name, path_list):
+    img_exist_bool = False
+
+    for idx in range(len(path_list)):
+        img_path = os.path.join(path_list[idx], in_img_name)
+        if os.path.exists(img_path):
+            img_exist_bool = True
+
+    return img_exist_bool
+
+
 def select_classname(args):
     # mkdir 
     if not os.path.exists( args.output_xml_dir ):
@@ -35,11 +46,9 @@ def select_classname(args):
 
         tree = ET.parse(xml_path)  # ET是一个 xml 文件解析库，ET.parse（）打开 xml 文件，parse--"解析"
         root = tree.getroot()   # 获取根节点
-
-        bool_have_pos = False       # 检测是否包含正样本标注
-        bool_have_one_neg = False   # 检测是否包含一个负样本（没有正样本时生效，保证存在一个标签）
         
         # 标签检测和标签转换
+        idy = 0
         for object in root.findall('object'):
             # name
             classname = object.find('name').text.lower().strip()
@@ -52,6 +61,10 @@ def select_classname(args):
                 cur_pt = int(float(bbox.find(pt).text)) - 1
                 bndbox.append(cur_pt)
 
+            if classname in args.select_name_list:
+                img_name = os.path.join(jpg_list[idx].replace(".jpg", "_{}.jpg".format(idy)))
+                idy += 1
+
             # 检测是否在挑选名单中
             for select_idx in range(0, len(args.select_name_list)):
                 if args.select_name_list[select_idx] == classname:
@@ -59,44 +72,21 @@ def select_classname(args):
                     object.find('name').text = args.set_name_list[select_idx]
 
                     # 检测是否为车牌
-                    if classname in args.plate_list:
-                        # 检测是否为小车牌
-                        plate_height = bndbox[3] - bndbox[1]
-                        if plate_height < args.plate_height_threshold:
-                            object.find('name').text = args.plate_ignore_name
-                        
+                    if classname in ['plate', "fuzzy_plate"]:
+                      
                         # 检测是否落在 roi ignore 区域
                         roi_ignore_bool = check_ignore_roi(bndbox, args.roi_ignore_plate_bbox)
                         if roi_ignore_bool:
                             object.find('name').text = args.roi_ignore_plate_name
+                    
+                    # 检测是否为模糊车牌
+                    if classname in ["fuzzy_plate"]:
                         
-                    break
-
-            if object.find('name').text in args.set_name_list:
-                bool_have_pos = True
-        
-        # 删除无用标签
-        for object in root.findall('object'):
-            classname = str(object.find('name').text)
-
-            if (classname not in args.set_name_list):
-                # 如果存在正样本，删除无用标签
-                if bool_have_pos:
-                    root.remove(object)
-                # 如果没有正样本时，生成唯一一个负样本标签（用于训练过程中的负样本）
-                else:
-                    print("have special_class neg file:", jpg_list[idx], "class_name is: ", classname)
-                    if not bool_have_one_neg:
-                        object.find('name').text = "neg"
-                        bndbox = object.find('bndbox')
-                        bndbox.find('xmin').text = "1900"
-                        bndbox.find('ymin').text = "0"
-                        bndbox.find('xmax').text = "1919"
-                        bndbox.find('ymax').text = "19"
-                        bool_have_one_neg = True
-                    # 如果存在负样本，则不再生成标签
-                    else:
-                        root.remove(object)
+                        # 检测是否位于 fuzzy_plate_clear 文件夹中
+                        img_exist_bool = check_img_exist(img_name, args.fuzzy_plate_clear_path_list)
+                        if img_exist_bool:
+                            object.find('name').text = args.change_plate_name
+                    
             
         # 检测标签
         for object in root.findall('object'):
@@ -111,25 +101,25 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    # Annotations_CarBusTruckLicenseplate
-    # 方案一：利用 cross data training，生成 Annotations_CarBusTruckLicenseplate
-    # 正样本：清晰车牌，负样本：模糊车牌
-    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
-    args.select_name_list = ["car", "bus", "truck", "plate"]
-    args.set_name_list = ["car", "bus", "truck", "license_plate", "license_plate_ignore", "roi_ignore_plate"]
-    args.finnal_name_list = ["car", "bus", "truck", "license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
-
-    # 判断大小车牌
-    args.plate_list = ['plate']
-    args.plate_height_threshold = 0
-    args.plate_ignore_name = "license_plate_ignore"
+    # 清洗数据标注
+    args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
+    args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
+    args.set_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate", "roi_ignore_plate"]
+    args.finnal_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate", "roi_ignore_plate"]
 
     # 标注数据添加了叠加信息，判断是否落入 roi ignore 区域
     args.roi_ignore_plate_bbox = [[570, 51, 1165, 97], [1761, 47, 1920, 101], [57, 983, 387, 1049]]
     args.roi_ignore_plate_name = "roi_ignore_plate"
 
+    # 模糊车牌，ocr 阈值判断为清晰车牌的车牌，更改标注为清晰车牌
+    args.fuzzy_plate_clear_path_list = [
+                                        "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan/Crop_itering/height_0_24/ocr_result_0.8/fuzzy_plate_clear/",
+                                        "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan/Crop_itering/height_24_200/ocr_result_0.8/fuzzy_plate_clear/",
+                                        ]
+    args.change_plate_name = "plate"
+
     args.jpg_dir =  args.input_dir + "JPEGImages/"
     args.xml_dir =  args.input_dir + "XML/"
-    args.output_xml_dir =  args.input_dir + "Annotations_CarBusTruckLicenseplate/"
+    args.output_xml_dir =  args.input_dir + "XML_Clean/"
 
     select_classname(args)

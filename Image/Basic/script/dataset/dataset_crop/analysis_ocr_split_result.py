@@ -55,8 +55,8 @@ if __name__ == '__main__':
     args.image_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan/Crop_itering/height_24_200/"
     args.select_label = ["plate", "fuzzy_plate"]
 
-    args.ocr_threshold = 0.75
-    
+    args.ocr_threshold = 0.8
+
     gen_ocr_result(args)
 
 
