@@ -1,8 +1,24 @@
 import argparse
 import numpy as np
 import os
+from pytools import F
 from tqdm import tqdm
 import xml.etree.ElementTree as ET
+
+
+def check_ignore_roi(in_box, roi_ignore_list):
+    roi_ignore_bool = False
+
+    for idx in range(len(roi_ignore_list)):
+        roi_ignore_bbox = roi_ignore_list[idx]
+
+        if in_box[0] > roi_ignore_bbox[0] and in_box[0] < roi_ignore_bbox[2] and in_box[1] > roi_ignore_bbox[1] and in_box[1] < roi_ignore_bbox[3]:
+            roi_ignore_bool = True
+        
+        if roi_ignore_bool:
+            break
+
+    return roi_ignore_bool
 
 
 def select_classname(args):
@@ -26,11 +42,35 @@ def select_classname(args):
         
         # 标签检测和标签转换
         for object in root.findall('object'):
-            classname = str(object.find('name').text)
-            
+            # name
+            classname = object.find('name').text.lower().strip()
+
+            # bbox
+            bbox = object.find('bndbox')
+            pts = ['xmin', 'ymin', 'xmax', 'ymax']
+            bndbox = []
+            for i, pt in enumerate(pts):
+                cur_pt = int(float(bbox.find(pt).text)) - 1
+                bndbox.append(cur_pt)
+
+            # 检测是否在挑选名单中
             for select_idx in range(0, len(args.select_name_list)):
                 if args.select_name_list[select_idx] == classname:
+                    
                     object.find('name').text = args.set_name_list[select_idx]
+
+                    # 检测是否为车牌
+                    if classname in args.plate_list:
+                        # 检测是否为小车牌
+                        plate_height = bndbox[3] - bndbox[1]
+                        if plate_height < args.plate_height_threshold:
+                            object.find('name').text = args.plate_ignore_name
+                        
+                        # 检测是否落在 roi ignore 区域
+                        roi_ignore_bool = check_ignore_roi(bndbox, args.roi_ignore)
+                        if roi_ignore_bool:
+                            object.find('name').text = args.roi_ignore_name
+                        
                     break
 
             if object.find('name').text in args.set_name_list:
@@ -73,51 +113,24 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Annotations_CarBusTruckLicenseplate
-    # # args.input_dir = "/yuanhuan/data/image/LicensePlate/China/"
-    # # args.input_dir = "/yuanhuan/data/image/LicensePlate/China_6mm/"
-    # # args.input_dir = "/yuanhuan/data/image/LicensePlate/Europe/"
-    # args.input_dir = "/yuanhuan/data/image/LicensePlate/Mexico/"
-    # args.select_name_list = ["license_plate"]
-    # args.set_name_list = ["license_plate"]
-    # args.finnal_name_list = ["license_plate", "neg"]
+    # 方案一：利用 cross data training，生成 Annotations_CarBusTruckLicenseplate
+    # 正样本：清晰车牌，负样本：模糊车牌
+    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
+    args.select_name_list = ["car", "bus", "truck", "plate"]
+    args.set_name_list = ["car", "bus", "truck", "license_plate", "license_plate_ignore", "roi_ignore"]
+    args.finnal_name_list = ["car", "bus", "truck", "license_plate", "license_plate_ignore", "roi_ignore", "neg"]
 
-    args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone/"
-    args.select_name_list = ["car", "bus", "truck"]
-    args.set_name_list = ["car", "bus", "truck"]
-    args.finnal_name_list = ["car", "bus", "truck", "neg"]
-        
+    # 判断大小车牌
+    args.plate_list = ['plate']
+    args.plate_height_threshold = 0
+    args.plate_ignore_name = "license_plate_ignore"
+
+    # 标注数据添加了叠加信息，判断是否落入 roi ignore 区域
+    args.roi_ignore = [[570, 51, 1165, 97], [1761, 47, 1920, 101], [57, 983, 387, 1049]]
+    args.roi_ignore_name = "roi_ignore"
+
     args.jpg_dir =  args.input_dir + "JPEGImages/"
     args.xml_dir =  args.input_dir + "XML/"
     args.output_xml_dir =  args.input_dir + "Annotations_CarBusTruckLicenseplate/"
-
-    # 消融实验
-    # Annotations_CarLicenseplate
-    # China 提取 car\license_plate 进行实验
-    # args.input_dir = "/yuanhuan/data/image/LicensePlate/China/"
-    # args.select_name_list = ["car", "license_plate"]
-    # args.set_name_list = ["car", "license_plate"]
-    # args.finnal_name_list = ["car", "license_plate", "neg"]
-
-    # # # Mexico 提取 license_plate 参与 China 进行实验（验证 car 的性能不降低，同时 license_plate 性能提升）
-    # args.input_dir = "/yuanhuan/data/image/LicensePlate/Mexico/"
-    # # # 训练过程中，不生成 car 的标签
-    # # args.select_name_list = ["license_plate"]
-    # # args.set_name_list = ["license_plate"]
-    # # args.finnal_name_list = ["license_plate", "neg"]
-    # # 测试过程中，生成 car 的标签，计算 AP 值
-    # args.select_name_list = ["car", "license_plate"]
-    # args.set_name_list = ["car", "license_plate"]
-    # args.finnal_name_list = ["car", "license_plate", "neg"]
-
-    # # China_6mm 提取 car\license_plate
-    # args.input_dir = "/yuanhuan/data/image/LicensePlate/China_6mm/"
-    # args.select_name_list = ["car", "license_plate"]
-    # args.set_name_list = ["car", "license_plate"]
-    # args.finnal_name_list = ["car", "license_plate", "neg"]
-        
-    # args.jpg_dir =  args.input_dir + "JPEGImages/"
-    # args.xml_dir =  args.input_dir + "XML/"
-    # args.output_xml_dir =  args.input_dir + "Annotations_CarLicenseplate/"
-    # # args.output_xml_dir =  args.input_dir + "Annotations_CarLicenseplate_label/"
 
     select_classname(args)

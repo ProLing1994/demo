@@ -75,10 +75,12 @@ if __name__ == "__main__":
     # 数据集：China_6mm，包含 car\license_plate，car 包含 bus\truck
     # args.input_dir = "/yuanhuan/data/image/LicensePlate/China_6mm/"     
     # # {'car': 6206, 'license_plate': 2665}
+    # [('car', {'trainval': 5603, 'test': 603}), ('license_plate', {'trainval': 2407, 'test': 258})]
 
     # 数据集：Europe，包含 license_plate
     # args.input_dir = "/yuanhuan/data/image/LicensePlate/Europe/"        
     # # {'license_plate': 24836}
+    # [('license_plate', {'trainval': 22339, 'test': 2497})]
 
     # 数据集：Mexico，包含 car\license_plate，car 包含 bus\truck
     # args.input_dir = "/yuanhuan/data/image/LicensePlate/Mexico/"        
@@ -94,8 +96,12 @@ if __name__ == "__main__":
     # [('arrow', 1), ('arrow_g', 11), ('arrow_l', 18), ('arrow_lg', 8), ('arrow_lr', 2), ('arrow_lu', 9), ('arrow_lur', 14), ('arrow_r', 19), ('arrow_u', 248), ('arrow_ug', 4), ('arrow_ul', 3), ('arrow_ur', 50), ('bicycle', 179), ('bicyclist', 329), ('bus', 1486), ('car', 2798), ('car_big_front', 58), ('car_big_reg', 1519), ('car_front', 323), ('car_reg', 1926), ('fuzzy_plate', 542), ('height_2', 16), ('height_3.5', 4), ('height_5', 20), ('motorcycle', 23), ('motorcyclist', 494), ('painted_plate', 496), ('person', 1639), ('person_o', 300), ('plate', 1270), ('preson', 8), ('sewer', 321), ('sign_accident', 6), ('sign_nostops', 48), ('sign_stop', 3), ('trafficlight_green_l', 5), ('trafficlight_green_n', 128), ('trafficlight_green_p', 75), ('trafficlight_green_p_28', 2), ('trafficlight_green_p_29', 3), ('trafficlight_green_p_30', 1), ('trafficlight_green_p_31', 3), ('trafficlight_green_p_32', 2), ('trafficlight_green_r', 22), ('trafficlight_green_u', 22), ('trafficlight_off', 21), ('trafficlight_red_l', 5), ('trafficlight_red_n', 356), ('trafficlight_red_p', 87), ('trafficlight_red_r', 28), ('trafficlight_red_x', 7), ('trafficlight_yellow_l', 3), ('trafficlight_yellow_n', 8), ('trafficright_green_p_9', 1), ('truck', 215), ('unspeed_30', 1), ('unspeed_40', 9), ('upspeed_10', 6), ('upspeed_15', 16), ('upspeed_20', 17), ('upspeed_30', 37), ('upspeed_40', 8), ('weight_40', 3), ('zebra_crossing', 789)]
 
     # 数据集：ZG_ZHJYZ_detection，包含 car\bus\truck\plate\fuzzy_plate
-    args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan/"  
+    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
     # [('bus', 689), ('car', 12295), ('fuzzy_plate', 2399), ('plate', 9416), ('truck', 180)]
+    # [('bus', {'trainval': 611, 'test': 78}), ('car', {'trainval': 11026, 'test': 1269}), ('fuzzy_plate', {'trainval': 2141, 'test': 258}), ('plate', {'trainval': 8454, 'test': 962}), ('truck', {'trainval': 160, 'test': 20})]
+
+    # [('bus', 689), ('car', 12295), ('license_plate', 9363), ('roi_ignore', 53), ('truck', 180)]
+    # [('bus', {'trainval': 611, 'test': 78}), ('car', {'trainval': 11026, 'test': 1269}), ('license_plate', {'trainval': 8408, 'test': 955}), ('roi_ignore', {'trainval': 46, 'test': 7}), ('truck', {'trainval': 160, 'test': 20})]
 
     args.trainval_file = args.input_dir + "ImageSets/Main/trainval.txt"
     args.train_file = args.input_dir + "ImageSets/Main/train.txt"
@@ -104,7 +110,8 @@ if __name__ == "__main__":
     args.statistic_dict = {'trainval': args.trainval_file, 'test': args.test_file }
 
     args.jpg_dir =  args.input_dir + "JPEGImages/"
-    args.xml_dir =  args.input_dir + "XML/"
+    # args.xml_dir =  args.input_dir + "XML/"
+    args.xml_dir =  args.input_dir + "Annotations_CarBusTruckLicenseplate/"
 
     statistic_classname(args)
     # statistic_classname_train_val_test(args)

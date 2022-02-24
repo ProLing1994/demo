@@ -18,7 +18,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.jpg_dir = "/yuanhuan/data/image/Distance_detection/"
+    # args.jpg_dir = "/yuanhuan/data/image/Distance_detection/"
+    args.jpg_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/加油站测试样本/2MH/"
     args.output_path = os.path.join(args.jpg_dir, "images.txt")
 
     gen_txt(args)
