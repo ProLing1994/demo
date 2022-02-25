@@ -7,7 +7,8 @@ import torch
 from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Image')
-from detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
+from regreesion2d.plate_regreesion.infer.ssd_vgg_fpn import SSDDetector
+from regreesion2d.plate_regreesion.infer.plate_regression import PlateRegression
 from regreesion2d.plate_regreesion.utils.draw_tools import draw_detection_result
 
 from recognition2d.license_plate_recognition.infer.license_plate import license_palte_model_init_caffe, license_palte_crnn_recognition_caffe, license_palte_beamsearch_init, license_palte_crnn_recognition_beamsearch_caffe
@@ -20,7 +21,9 @@ def inference_images(args):
             os.makedirs(args.output_img_dir)
 
     # model init
-    car_plate_detector = SSDDetector(model_path=args.ssd_car_plate_model_path, merge_class_bool=args.merge_class_bool)
+    device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+    car_detector = SSDDetector(device=device, weight_path=args.car_model_path)
+    plate_detector = PlateRegression(args.plate_model_path, args.plate_config_path, device)
     license_palte_detector = license_palte_model_init_caffe(args.plate_regression_prototxt, args.plate_regression_model_path)
 
     # image init 
@@ -40,14 +43,15 @@ def inference_images(args):
         plate_img = cv2.imread(img_path, 0)
 
         # init
+        bboxes = {}
         show_bboxes = {}
 
-        # car_plate_detector
-        bboxes = car_plate_detector.detect(img)
+        # car_detector
+        bboxes['car'] = car_detector.detect(img)['car']
 
-        for key in bboxes.keys():
-            if key != "license_plate":
-                show_bboxes[key] = bboxes[key]
+        # plate_detector
+        bboxes["license_plate"] = plate_detector.detect(img, bboxes['car'])
+        
 
         for plate_idx in range(len(bboxes["license_plate"])):
             plate_bbox = bboxes["license_plate"][plate_idx]
@@ -76,6 +80,7 @@ def inference_images(args):
 
         # draw img
         if args.write_bool:
+            # img = draw_detection_result(img, bboxes, mode='ltrb')
             img = draw_detection_result(img, show_bboxes, mode='ltrb')
             cv2.imwrite(output_img_path, img)
 
@@ -87,7 +92,9 @@ def inference_vidio(args):
             os.makedirs(args.output_vidio_dir)
 
     # model init
-    car_plate_detector = SSDDetector(model_path=args.ssd_car_plate_model_path, merge_class_bool=args.merge_class_bool)
+    device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+    car_detector = SSDDetector(device=device, weight_path=args.car_model_path)
+    plate_detector = PlateRegression(args.plate_model_path, args.plate_config_path, device)
     license_palte_detector = license_palte_model_init_caffe(args.plate_regression_prototxt, args.plate_regression_model_path)
     license_palte_beamsearch = license_palte_beamsearch_init()
 
@@ -124,31 +131,20 @@ def inference_vidio(args):
             frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
             # init
+            bboxes = {}
             show_bboxes = {}
 
-            # car_plate_detector
-            bboxes = car_plate_detector.detect(frame)
+            # car_detector
+            bboxes['car'] = car_detector.detect(frame)['car']
 
-            for key in bboxes.keys():
-                if key != "license_plate":
-                    show_bboxes[key] = bboxes[key]
+            # plate_detector
+            bboxes["license_plate"] = plate_detector.detect(frame, bboxes['car'])
+            
 
             for plate_idx in range(len(bboxes["license_plate"])):
                 plate_bbox = bboxes["license_plate"][plate_idx]
 
-                # plate_bbox_expand
-                if args.plate_bbox_expand_bool:
-                    plate_height = plate_bbox[3] - plate_bbox[1]
-                    if plate_height >= args.height_threshold:
-                        pass
-                    elif plate_height >= args.plate_bbox_minist_height:
-                        expand_height = int(( args.height_threshold - plate_height) / 2.0 + 0.5 )
-                        plate_bbox[1] = max(0, plate_bbox[1] - expand_height)
-                        plate_bbox[3] = min(int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)), plate_bbox[3] + expand_height)
-
-                # crop
                 crop_img = frame_gray[plate_bbox[1]:plate_bbox[3], plate_bbox[0]:plate_bbox[2]]
-
                 # check
                 if crop_img.shape[0] == 0 or crop_img.shape[1] == 0:
                     continue
@@ -197,40 +193,37 @@ def main():
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
+    args.car_model_path = "/home/huanyuan/code/demo/Image/regreesion2d/plate_regreesion/network/ssd_detector/SSD_VGG_FPN_VOC_epoches_165.pth"
+
+    # args.plate_model_path = "/mnt/huanyuan2/model/image_model/license_plate_regressioin_model_wjh/国内、新加坡/MobileNetSmallV1_PO_singapore_Wdm_2020_03_19_17_36_30_PT_best/MobileNetSmallV1_PO_singapore_Wdm_2020_03_19_17_36_30_PT_best.pt"
+    # args.plate_config_path = "/home/huanyuan/code/demo/Image/regreesion2d/plate_regreesion/config/config.py"
+    args.plate_model_path = "/mnt/huanyuan2/model/image_model/license_plate_regressioin_model_lpj/best.pt"
+    args.plate_config_path = "/mnt/huanyuan2/model/image_model/license_plate_regressioin_model_lpj/config.py"
+
     args.plate_regression_prototxt = "/mnt/huanyuan2/model/image_model/license_plate_recognition_moel_lxn/china_softmax.prototxt"
     args.plate_regression_model_path = "/mnt/huanyuan2/model/image_model/license_plate_recognition_moel_lxn/china.caffemodel"
     args.prefix_beam_search_bool = True
 
-    # 是否保存结果
     args.write_bool = True
-
-    # 是否将 car\bus\truck 合并为一类输出
-    args.merge_class_bool = True
-
-    # 是否扩展高度不足 24 车牌
-    args.plate_bbox_expand_bool = True
-    args.plate_bbox_minist_height = 18
-
-    # 是否设置高度阈值
     args.height_threshold_bool = True
     args.height_threshold = 24
-
-    # 是否设置 ocr 阈值
     args.ocr_threshold_bool = True
     args.ocr_threshold = 0.8
     
     args.img_bool = False
     args.img_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试样本/2MH/"
-    args.output_img_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试样本_ssd_height_thres_plate_thres/2MH/"
+    # args.output_img_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试样本_wo_plate_thres/2MH/"
+    args.output_img_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试样本_plate_thres/2MH/"
 
     if args.img_bool:
         inference_images(args)
 
     args.vidio_bool = True
     args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/测试视频/"
-    args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_ocr_beamsearch_mergeclass_bboxexpand/"
-    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearch_mergeclass_bboxexpand/"
+    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_wo_height_thres_wo_plate_thres/"
+    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_thres_wo_plate_thres/"
+    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_thres_plate_thres/"
+    args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_thres_plate_thres_prefix_beam_search/"
 
     if args.vidio_bool:
         inference_vidio(args)
