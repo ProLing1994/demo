@@ -129,6 +129,27 @@ def inference_vidio(args):
             # car_plate_detector
             bboxes = car_plate_detector.detect(frame)
 
+            # roi ignore 
+            if args.roi_ignore_bool:
+                # init
+                temp_bboxes = bboxes
+                bboxes = dict()
+
+                for key in temp_bboxes.keys():
+                    bbox_list = []
+                    for bbox_idx in range(len(temp_bboxes[key])):
+                        bbox = temp_bboxes[key][bbox_idx]
+
+                        if bbox[2] < args.roi_ignore_area[0] or \
+                            bbox[3] < args.roi_ignore_area[1] or \
+                            bbox[0] > args.roi_ignore_area[2] or \
+                            bbox[1] > args.roi_ignore_area[3]:
+                            pass
+                        else:
+                            bbox_list.append(bbox)
+
+                    bboxes[key] = bbox_list
+
             for key in bboxes.keys():
                 if key != "license_plate":
                     show_bboxes[key] = bboxes[key]
@@ -198,12 +219,17 @@ def main():
     args = parser.parse_args()
 
     args.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
+    # args.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg/SSD_VGG_FPN_RFB_VOC_epoches_221.pth"
     args.plate_regression_prototxt = "/mnt/huanyuan2/model/image_model/license_plate_recognition_moel_lxn/china_softmax.prototxt"
     args.plate_regression_model_path = "/mnt/huanyuan2/model/image_model/license_plate_recognition_moel_lxn/china.caffemodel"
     args.prefix_beam_search_bool = True
 
     # 是否保存结果
     args.write_bool = True
+
+    # 是否通过 roi 区域屏蔽部分检测结果
+    args.roi_ignore_bool = True
+    args.roi_ignore_area = [0, 100, 1920, 980]
 
     # 是否将 car\bus\truck 合并为一类输出
     args.merge_class_bool = True
@@ -212,12 +238,12 @@ def main():
     args.plate_bbox_expand_bool = True
     args.plate_bbox_minist_height = 18
 
-    # 是否设置高度阈值
+    # 是否设置高度阈值挑选车牌
     args.height_threshold_bool = True
     args.height_threshold = 24
 
-    # 是否设置 ocr 阈值
-    args.ocr_threshold_bool = True
+    # 是否设置 ocr 阈值挑选车牌
+    args.ocr_threshold_bool = False
     args.ocr_threshold = 0.8
     
     args.img_bool = False
@@ -229,8 +255,11 @@ def main():
 
     args.vidio_bool = True
     args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/测试视频/"
-    args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_ocr_beamsearch_mergeclass_bboxexpand/"
+    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_ocr_beamsearch_mergeclass_bboxexpand/"
     # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearch_mergeclass_bboxexpand/"
+    args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearch_mergeclass_bboxexpand_roiignore/"
+
+    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearch_mergeclass_bboxexpand_roiignore_crossdata/"
 
     if args.vidio_bool:
         inference_vidio(args)
