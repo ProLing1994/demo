@@ -2,15 +2,15 @@ import cv2
 
 
 color_dict = {
-                "car": (255, 0, 0), 
-                "truck": (0, 255, 0), 
                 "car": (0, 0, 255), 
-                "plate": (255, 255, 0), 
+                "bus": (255, 0, 0), 
+                "truck": (0, 255, 255), 
+                "plate": (0, 255, 0), 
             }
 
 def cv_plot_rectangle(img, bbox, color=None, mode='xywh', thickness=3):
     if color is None:
-        color = (255, 0, 0)
+        color = color_dict["plate"]
     if mode == 'xywh':
         x, y, w, h = bbox
         xmin, ymin, xmax, ymax = x, y, w + x, h + y
@@ -31,7 +31,7 @@ def draw_detection_result(img, bboxes, mode='xywh', color=None):
         if key in color_dict:
             color = color_dict[key]
         else:
-            color = (0, 255, 0)
+            color = color_dict["plate"]
 
         for box in values:
 
