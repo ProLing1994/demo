@@ -124,6 +124,7 @@ def voc_eval(detpath,
 
     # read dets
     detfile = detpath.format(classname)
+    ntp = 0
     with open(detfile, 'r') as f:
         lines = f.readlines()
     if any(lines) == 1:
@@ -169,6 +170,7 @@ def voc_eval(detpath,
                 if not R['difficult'][jmax]:
                     if not R['det'][jmax]:
                         tp[d] = 1.
+                        ntp += 1
                         R['det'][jmax] = 1
                     else:
                         fp[d] = 1.
@@ -179,6 +181,7 @@ def voc_eval(detpath,
         fp = np.cumsum(fp)
         tp = np.cumsum(tp)
         rec = tp / float(npos)
+        print("tpr: {:.3f}".format(ntp/ float(npos)))
         # avoid divide by zero in case the first detection matches a difficult
         # ground truth
         prec = tp / np.maximum(tp + fp, np.finfo(np.float64).eps)
@@ -207,7 +210,7 @@ def calculate_ap(args):
             use_07_metric=args.use_07_metric)
 
         aps += [ap]
-        print('AP for {} = {:.4f}'.format(class_name, ap))
+        print('AP for {} = {:.4f} \n'.format(class_name, ap))
     
     print('Mean AP = {:.4f}'.format(np.mean(aps)))
 
@@ -219,25 +222,41 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.data_dir = "/yuanhuan/data/image/LicensePlate/China/"
-    args.imageset_file = args.data_dir + "ImageSets/Main/test.txt"
-    args.anno_dir =  args.data_dir + "Annotations_CarLicenseplate/"
+    # Car_Licenseplate
+    # args.data_dir = "/yuanhuan/data/image/LicensePlate/China/"
+    # args.imageset_file = args.data_dir + "ImageSets/Main/test.txt"
+    # args.anno_dir =  args.data_dir + "Annotations_CarLicenseplate/"
 
-    # # ssd rfb
-    # args.det_path_dict = { 'car': '/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-11-16_focalloss_car_licenseplate/eval_epoches_299/LicensePlate_China_test/results/det_test_car.txt',
-    #                        'license_plate': '/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-11-16_focalloss_car_licenseplate/eval_epoches_299/LicensePlate_China_test/results/det_test_license_plate.txt',
+    # # # ssd rfb
+    # # args.det_path_dict = { 'car': '/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-11-16_focalloss_car_licenseplate/eval_epoches_299/LicensePlate_China_test/results/det_test_car.txt',
+    # #                        'license_plate': '/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-11-16_focalloss_car_licenseplate/eval_epoches_299/LicensePlate_China_test/results/det_test_license_plate.txt',
+    # #                      } 
+    # # args.over_thresh = 0.4
+    # # args.use_07_metric = False
+    # # args.output_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-11-16_focalloss_car_licenseplate/eval_epoches_299/LicensePlate_China_test/results/"
+
+    # # yolox
+    # args.det_path_dict = { 'car': '/yuanhuan/model/image/yolox_vgg/yoloxv2_vggrm_640_384_car_license_plate/eval_epoches_24/LicensePlate_China_xml/det_test_car.txt',
+    #                        'license_plate': '/yuanhuan/model/image/yolox_vgg/yoloxv2_vggrm_640_384_car_license_plate/eval_epoches_24/LicensePlate_China_xml/det_test_license_plate.txt',
     #                      } 
+    # # args.over_thresh = 0.35
     # args.over_thresh = 0.4
     # args.use_07_metric = False
-    # args.output_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-11-16_focalloss_car_licenseplate/eval_epoches_299/LicensePlate_China_test/results/"
+    # args.output_dir = "/yuanhuan/model/image/yolox_vgg/yoloxv2_vggrm_640_384_car_license_plate/eval_epoches_24/LicensePlate_China_xml/"
 
-    # yolox
-    args.det_path_dict = { 'car': '/yuanhuan/model/image/yolox_vgg/yoloxv2_vggrm_640_384_car_license_plate/eval_epoches_24/LicensePlate_China_xml/det_test_car.txt',
-                           'license_plate': '/yuanhuan/model/image/yolox_vgg/yoloxv2_vggrm_640_384_car_license_plate/eval_epoches_24/LicensePlate_China_xml/det_test_license_plate.txt',
+    # Car_Bus_Truck_Licenseplate
+    args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
+    args.imageset_file = os.path.join(args.data_dir, "ImageSets/Main/test.txt")
+    args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_fuzzy/")
+
+    # ssd rfb
+    args.det_path_dict = { 'car': '/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/det_test_car.txt',
+                           'bus': '/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/det_test_bus.txt',
+                           'truck': '/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/det_test_truck.txt',
+                           'license_plate': '/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/det_test_license_plate.txt',
                          } 
-    # args.over_thresh = 0.35
     args.over_thresh = 0.4
     args.use_07_metric = False
-    args.output_dir = "/yuanhuan/model/image/yolox_vgg/yoloxv2_vggrm_640_384_car_license_plate/eval_epoches_24/LicensePlate_China_xml/"
+    args.output_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/"
 
     calculate_ap(args)
