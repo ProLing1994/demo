@@ -91,8 +91,8 @@ def voc_eval(detpath,
              classname,
              cachedir,
              ovthresh=0.5,
-             weight_ovthresh_bool=False,
-             weight_ovthresh=0.5,
+             width_ovthresh_bool=False,
+             width_ovthresh=0.5,
              use_07_metric=True):
     """rec, prec, ap = voc_eval(detpath,
                            annopath,
@@ -198,7 +198,7 @@ def voc_eval(detpath,
                 jmax = np.argmax(overlaps)
 
                 # compute overlaps in height
-                if weight_ovthresh_bool:
+                if width_ovthresh_bool:
                     iymin = np.maximum(bb[1], bb[1])
                     iymax = np.minimum(bb[3], bb[3])
                     ih = np.maximum(iymax - iymin, 0.)
@@ -208,8 +208,8 @@ def voc_eval(detpath,
                         (bb[3] - bb[1]) - inters)
                     height_overlaps = inters / uni
             
-            if weight_ovthresh_bool:
-                if ovmax > ovthresh and height_overlaps[jmax] > weight_ovthresh: 
+            if width_ovthresh_bool:
+                if ovmax > ovthresh and height_overlaps[jmax] > width_ovthresh: 
                     if not R['difficult'][jmax]:
                         if not R['det'][jmax]:
                             tp[d] = 1.
@@ -249,8 +249,8 @@ def voc_eval(detpath,
 
     # draw img
     if args.write_bool:
-        if weight_ovthresh_bool:
-            output_dir = os.path.join(cachedir, 'img_res_{}_{}'.format(str(ovthresh), str(weight_ovthresh)), classname)
+        if width_ovthresh_bool:
+            output_dir = os.path.join(cachedir, 'img_res_{}_{}'.format(str(ovthresh), str(width_ovthresh)), classname)
         else:
             output_dir = os.path.join(cachedir, 'img_res_{}'.format(str(ovthresh)), classname)
         if not os.path.exists(output_dir):
@@ -303,8 +303,8 @@ def calculate_ap(args):
             classname=class_name, 
             cachedir=cache_dir,
             ovthresh=args.over_thresh, 
-            weight_ovthresh_bool=args.weight_over_thresh_bool,
-            weight_ovthresh=args.weight_over_thresh,
+            width_ovthresh_bool=args.width_over_thresh_bool,
+            width_ovthresh=args.width_over_thresh,
             use_07_metric=args.use_07_metric)
 
         aps += [ap]
@@ -368,8 +368,8 @@ if __name__ == "__main__":
     args.over_thresh = 0.7
     args.use_07_metric = False
     # 是否关注车牌横向iou结果
-    args.weight_over_thresh_bool = True
-    args.weight_over_thresh = 0.9
+    args.width_over_thresh_bool = True
+    args.width_over_thresh = 0.9
     # 是否保存识别结果和检出结果
     args.write_bool = True
     # 是否只不保存漏检结果
