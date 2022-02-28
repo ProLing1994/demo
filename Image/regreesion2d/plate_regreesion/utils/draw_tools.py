@@ -3,7 +3,9 @@ import cv2
 
 color_dict = {
                 "car": (255, 0, 0), 
-                "plate": (0, 255, 0)
+                "truck": (0, 255, 0), 
+                "car": (0, 0, 255), 
+                "plate": (255, 255, 0), 
             }
 
 def cv_plot_rectangle(img, bbox, color=None, mode='xywh', thickness=3):
@@ -29,7 +31,7 @@ def draw_detection_result(img, bboxes, mode='xywh', color=None):
         if key in color_dict:
             color = color_dict[key]
         else:
-            color = (255, 0, 0)
+            color = (0, 255, 0)
 
         for box in values:
 

@@ -13,6 +13,102 @@ from regreesion2d.plate_regreesion.utils.draw_tools import draw_detection_result
 from recognition2d.license_plate_recognition.infer.license_plate import license_palte_model_init_caffe, license_palte_crnn_recognition_caffe, license_palte_beamsearch_init, license_palte_crnn_recognition_beamsearch_caffe
 
 
+def model_init(args):
+    # model init
+    car_plate_detector = SSDDetector(model_path=args.ssd_car_plate_model_path, merge_class_bool=args.merge_class_bool)
+    license_palte_detector = license_palte_model_init_caffe(args.plate_regression_prototxt, args.plate_regression_model_path)
+    license_palte_beamsearch = license_palte_beamsearch_init()
+    return (car_plate_detector, license_palte_detector, license_palte_beamsearch)
+
+
+def img_detect(args, model, img):
+    car_plate_detector = model[0]
+    license_palte_detector = model[1]
+    license_palte_beamsearch = model[2]
+
+    frame_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # init
+    show_bboxes = {}
+
+    # car_plate_detector
+    bboxes = car_plate_detector.detect(img)
+
+    # roi ignore 
+    if args.roi_ignore_bool:
+        # init
+        temp_bboxes = bboxes
+        bboxes = dict()
+
+        for key in temp_bboxes.keys():
+            bbox_list = []
+            for bbox_idx in range(len(temp_bboxes[key])):
+                bbox = temp_bboxes[key][bbox_idx]
+
+                if bbox[2] < args.roi_ignore_area[0] or \
+                    bbox[3] < args.roi_ignore_area[1] or \
+                    bbox[0] > args.roi_ignore_area[2] or \
+                    bbox[1] > args.roi_ignore_area[3]:
+                    pass
+                else:
+                    bbox_list.append(bbox)
+
+            bboxes[key] = bbox_list
+
+    for key in bboxes.keys():
+        if key != "license_plate":
+            show_bboxes[key] = bboxes[key]
+
+    for plate_idx in range(len(bboxes["license_plate"])):
+        plate_bbox = bboxes["license_plate"][plate_idx]
+
+        # plate_bbox_expand
+        if args.plate_bbox_expand_bool:
+            plate_height = plate_bbox[3] - plate_bbox[1]
+            if plate_height >= args.height_threshold:
+                pass
+            elif plate_height >= args.plate_bbox_minist_height:
+                expand_height = int(( args.height_threshold - plate_height) / 2.0 + 0.5 )
+                plate_bbox[1] = max(0, plate_bbox[1] - expand_height)
+                plate_bbox[3] = min(img.shape[0], plate_bbox[3] + expand_height)
+
+        # crop
+        crop_img = frame_img[plate_bbox[1]:plate_bbox[3], plate_bbox[0]:plate_bbox[2]]
+
+        # check
+        if crop_img.shape[0] == 0 or crop_img.shape[1] == 0:
+            continue
+
+        if args.prefix_beam_search_bool:
+            # prefix beamsearch
+            _, result_scors_list = license_palte_crnn_recognition_caffe(license_palte_detector, crop_img)
+            result_ocr = license_palte_crnn_recognition_beamsearch_caffe(license_palte_detector, crop_img, license_palte_beamsearch[0], license_palte_beamsearch[1])
+        else:
+            # greedy
+            result_ocr, result_scors_list = license_palte_crnn_recognition_caffe(license_palte_detector, crop_img)
+
+        if args.height_threshold_bool and args.ocr_threshold_bool:
+            # 方式一：高度阈值判断，ocr 阈值判断
+            plate_height = plate_bbox[3] - plate_bbox[1]
+            if plate_height >= args.height_threshold:
+                if np.array(result_scors_list).mean() >= args.ocr_threshold:
+                    show_bboxes[result_ocr] = [plate_bbox]
+        elif args.height_threshold_bool and not args.ocr_threshold_bool:
+            # 方式二：高度阈值判断
+            plate_height = plate_bbox[3] - plate_bbox[1]
+            if plate_height >= args.height_threshold:
+                show_bboxes[result_ocr] = [plate_bbox]
+        elif not args.height_threshold_bool and args.ocr_threshold_bool:
+            # 方式三：ocr 阈值判断
+            if np.array(result_scors_list).mean() >= args.ocr_threshold:
+                show_bboxes[result_ocr] = [plate_bbox]
+        else:
+            # 方式四：直接叠加
+            show_bboxes[result_ocr] = [plate_bbox]                   
+
+    return show_bboxes
+
+
 def inference_images(args):
     # mkdir 
     if args.write_bool:
@@ -20,8 +116,7 @@ def inference_images(args):
             os.makedirs(args.output_img_dir)
 
     # model init
-    car_plate_detector = SSDDetector(model_path=args.ssd_car_plate_model_path, merge_class_bool=args.merge_class_bool)
-    license_palte_detector = license_palte_model_init_caffe(args.plate_regression_prototxt, args.plate_regression_model_path)
+    model = model_init(args)
 
     # image init 
     img_list = np.array(os.listdir(args.img_dir))
@@ -36,43 +131,10 @@ def inference_images(args):
         
         tqdm.write(img_path)
 
-        img = cv2.imread(img_path)
-        plate_img = cv2.imread(img_path, 0)
+        img = cv2.imread(img_path)        
 
-        # init
-        show_bboxes = {}
-
-        # car_plate_detector
-        bboxes = car_plate_detector.detect(img)
-
-        for key in bboxes.keys():
-            if key != "license_plate":
-                show_bboxes[key] = bboxes[key]
-
-        for plate_idx in range(len(bboxes["license_plate"])):
-            plate_bbox = bboxes["license_plate"][plate_idx]
-
-            crop_img = plate_img[plate_bbox[1]:plate_bbox[3], plate_bbox[0]:plate_bbox[2]]
-            result_ocr, result_scors_list = license_palte_crnn_recognition_caffe(license_palte_detector, crop_img)
-
-            if args.height_threshold_bool and args.ocr_threshold_bool:
-                # 方式一：高度阈值判断，ocr 阈值判断
-                plate_height = plate_bbox[3] - plate_bbox[1]
-                if plate_height >= args.height_threshold:
-                    if np.array(result_scors_list).mean() >= args.ocr_threshold:
-                        show_bboxes[result_ocr] = [plate_bbox]
-            elif args.height_threshold_bool and not args.ocr_threshold_bool:
-                # 方式二：高度阈值判断
-                plate_height = plate_bbox[3] - plate_bbox[1]
-                if plate_height >= args.height_threshold:
-                    show_bboxes[result_ocr] = [plate_bbox]
-            elif not args.height_threshold_bool and args.ocr_threshold_bool:
-                # 方式三：ocr 阈值判断
-                if np.array(result_scors_list).mean() >= args.ocr_threshold:
-                    show_bboxes[result_ocr] = [plate_bbox]
-            else:
-                # 方式四：直接叠加
-                show_bboxes[result_ocr] = [plate_bbox]                   
+        # detect 
+        show_bboxes = img_detect(args, model, img)
 
         # draw img
         if args.write_bool:
@@ -87,9 +149,7 @@ def inference_vidio(args):
             os.makedirs(args.output_vidio_dir)
 
     # model init
-    car_plate_detector = SSDDetector(model_path=args.ssd_car_plate_model_path, merge_class_bool=args.merge_class_bool)
-    license_palte_detector = license_palte_model_init_caffe(args.plate_regression_prototxt, args.plate_regression_model_path)
-    license_palte_beamsearch = license_palte_beamsearch_init()
+    model = model_init(args)
 
     # image init 
     vidio_list = np.array(os.listdir(args.vidio_dir))
@@ -115,99 +175,22 @@ def inference_vidio(args):
         frame_idx = 0
 
         while True:
-            ret, frame = cap.read()
+            ret, img = cap.read()
 
             if not ret: # if the camera over return false
                 video_writer.release()
                 break
-            
-            frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-            # init
-            show_bboxes = {}
-
-            # car_plate_detector
-            bboxes = car_plate_detector.detect(frame)
-
-            # roi ignore 
-            if args.roi_ignore_bool:
-                # init
-                temp_bboxes = bboxes
-                bboxes = dict()
-
-                for key in temp_bboxes.keys():
-                    bbox_list = []
-                    for bbox_idx in range(len(temp_bboxes[key])):
-                        bbox = temp_bboxes[key][bbox_idx]
-
-                        if bbox[2] < args.roi_ignore_area[0] or \
-                            bbox[3] < args.roi_ignore_area[1] or \
-                            bbox[0] > args.roi_ignore_area[2] or \
-                            bbox[1] > args.roi_ignore_area[3]:
-                            pass
-                        else:
-                            bbox_list.append(bbox)
-
-                    bboxes[key] = bbox_list
-
-            for key in bboxes.keys():
-                if key != "license_plate":
-                    show_bboxes[key] = bboxes[key]
-
-            for plate_idx in range(len(bboxes["license_plate"])):
-                plate_bbox = bboxes["license_plate"][plate_idx]
-
-                # plate_bbox_expand
-                if args.plate_bbox_expand_bool:
-                    plate_height = plate_bbox[3] - plate_bbox[1]
-                    if plate_height >= args.height_threshold:
-                        pass
-                    elif plate_height >= args.plate_bbox_minist_height:
-                        expand_height = int(( args.height_threshold - plate_height) / 2.0 + 0.5 )
-                        plate_bbox[1] = max(0, plate_bbox[1] - expand_height)
-                        plate_bbox[3] = min(int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)), plate_bbox[3] + expand_height)
-
-                # crop
-                crop_img = frame_gray[plate_bbox[1]:plate_bbox[3], plate_bbox[0]:plate_bbox[2]]
-
-                # check
-                if crop_img.shape[0] == 0 or crop_img.shape[1] == 0:
-                    continue
-
-                if args.prefix_beam_search_bool:
-                    # prefix beamsearch
-                    _, result_scors_list = license_palte_crnn_recognition_caffe(license_palte_detector, crop_img)
-                    result_ocr = license_palte_crnn_recognition_beamsearch_caffe(license_palte_detector, crop_img, license_palte_beamsearch[0], license_palte_beamsearch[1])
-                else:
-                    # greedy
-                    result_ocr, result_scors_list = license_palte_crnn_recognition_caffe(license_palte_detector, crop_img)
-
-                if args.height_threshold_bool and args.ocr_threshold_bool:
-                    # 方式一：高度阈值判断，ocr 阈值判断
-                    plate_height = plate_bbox[3] - plate_bbox[1]
-                    if plate_height >= args.height_threshold:
-                        if np.array(result_scors_list).mean() >= args.ocr_threshold:
-                            show_bboxes[result_ocr] = [plate_bbox]
-                elif args.height_threshold_bool and not args.ocr_threshold_bool:
-                    # 方式二：高度阈值判断
-                    plate_height = plate_bbox[3] - plate_bbox[1]
-                    if plate_height >= args.height_threshold:
-                        show_bboxes[result_ocr] = [plate_bbox]
-                elif not args.height_threshold_bool and args.ocr_threshold_bool:
-                    # 方式三：ocr 阈值判断
-                    if np.array(result_scors_list).mean() >= args.ocr_threshold:
-                        show_bboxes[result_ocr] = [plate_bbox]
-                else:
-                    # 方式四：直接叠加
-                    show_bboxes[result_ocr] = [plate_bbox]                       
+            # detect 
+            show_bboxes = img_detect(args, model, img)
 
             # draw img
             if args.write_bool:
-                frame = draw_detection_result(frame, show_bboxes, mode='ltrb')
-                video_writer.write(frame)
+                img = draw_detection_result(img, show_bboxes, mode='ltrb')
+                video_writer.write(img)
 
                 output_img_path = os.path.join(args.output_vidio_dir, vidio_list[idx].replace('.avi', '_{}.jpg'.format(frame_idx)))
-                cv2.imwrite(output_img_path, frame)
+                cv2.imwrite(output_img_path, img)
                 frame_idx += 1
 
                 tqdm.write("{}: {}".format(vidio_path, str(frame_idx)))
@@ -232,14 +215,14 @@ def main():
     args.roi_ignore_area = [0, 100, 1920, 980]
 
     # 是否将 car\bus\truck 合并为一类输出
-    args.merge_class_bool = True
+    args.merge_class_bool = False
 
     # 是否扩展高度不足 24 车牌
-    args.plate_bbox_expand_bool = True
+    args.plate_bbox_expand_bool = False
     args.plate_bbox_minist_height = 18
 
     # 是否设置高度阈值挑选车牌
-    args.height_threshold_bool = True
+    args.height_threshold_bool = False
     args.height_threshold = 24
 
     # 是否设置 ocr 阈值挑选车牌
@@ -257,7 +240,9 @@ def main():
     args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/测试视频/"
     # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_ocr_beamsearch_mergeclass_bboxexpand/"
     # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearch_mergeclass_bboxexpand/"
-    args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearch_mergeclass_bboxexpand_roiignore/"
+    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearch_mergeclass_bboxexpand_roiignore/"
+    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearchs_bboxexpand_roiignore/"
+    args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_beamsearchs_roiignore/"
 
     # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearch_mergeclass_bboxexpand_roiignore_crossdata/"
 
