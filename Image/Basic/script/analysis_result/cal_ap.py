@@ -1,8 +1,34 @@
 import argparse
+import cv2
 import numpy as np
 import os
 import pickle
+from tqdm import tqdm
 import xml.etree.ElementTree as ET
+
+
+color_dict = {
+                "lable_matched": (0, 0, 255), 
+                "lable_unmatched": (0, 255, 0), 
+                "det": (0, 255, 255), 
+            }
+
+
+def cv_plot_rectangle(img, bbox, color=None, mode='xywh', thickness=3):
+    if color is None:
+        color = color_dict["det"]
+    if mode == 'xywh':
+        x, y, w, h = bbox
+        xmin, ymin, xmax, ymax = x, y, w + x, h + y
+    elif mode == 'ltrb':
+        xmin, ymin, xmax, ymax = bbox
+    else:
+        print("Unknown plot mode")
+        return None
+    xmin, ymin, xmax, ymax = int(xmin), int(ymin), int(xmax), int(ymax)
+    img_p = img.copy()
+    return cv2.rectangle(img_p, (xmin, ymin),
+                         (xmax, ymax), color=color, thickness=thickness)
 
 
 def parse_rec(filename):
@@ -65,6 +91,8 @@ def voc_eval(detpath,
              classname,
              cachedir,
              ovthresh=0.5,
+             weight_ovthresh_bool=False,
+             weight_ovthresh=0.5,
              use_07_metric=True):
     """rec, prec, ap = voc_eval(detpath,
                            annopath,
@@ -118,9 +146,12 @@ def voc_eval(detpath,
         difficult = np.array([x['difficult'] for x in R]).astype(np.bool)
         det = [False] * len(R)
         npos = npos + sum(~difficult)
+        det_res = []
         class_recs[imagename] = {'bbox': bbox,
                                  'difficult': difficult,
-                                 'det': det}
+                                 'det': det,
+                                 'det_res': det_res
+                                 }
 
     # read dets
     detfile = detpath.format(classname)
@@ -166,22 +197,47 @@ def voc_eval(detpath,
                 ovmax = np.max(overlaps)
                 jmax = np.argmax(overlaps)
 
-            if ovmax > ovthresh:
-                if not R['difficult'][jmax]:
-                    if not R['det'][jmax]:
-                        tp[d] = 1.
-                        ntp += 1
-                        R['det'][jmax] = 1
-                    else:
-                        fp[d] = 1.
+                # compute overlaps in height
+                if weight_ovthresh_bool:
+                    iymin = np.maximum(bb[1], bb[1])
+                    iymax = np.minimum(bb[3], bb[3])
+                    ih = np.maximum(iymax - iymin, 0.)
+                    inters = iw * ih
+                    uni = ((bb[2] - bb[0]) * (bb[3] - bb[1]) +
+                        (BBGT[:, 2] - BBGT[:, 0]) *
+                        (bb[3] - bb[1]) - inters)
+                    height_overlaps = inters / uni
+            
+            if weight_ovthresh_bool:
+                if ovmax > ovthresh and height_overlaps[jmax] > weight_ovthresh: 
+                    if not R['difficult'][jmax]:
+                        if not R['det'][jmax]:
+                            tp[d] = 1.
+                            ntp += 1
+                            R['det'][jmax] = 1
+                        else:
+                            fp[d] = 1.
+                else:
+                    fp[d] = 1.
             else:
-                fp[d] = 1.
+                if ovmax > ovthresh:
+                    if not R['difficult'][jmax]:
+                        if not R['det'][jmax]:
+                            tp[d] = 1.
+                            ntp += 1
+                            R['det'][jmax] = 1
+                        else:
+                            fp[d] = 1.
+                else:
+                    fp[d] = 1.
+            
+            R['det_res'].append(bb)
 
         # compute precision recall
         fp = np.cumsum(fp)
         tp = np.cumsum(tp)
         rec = tp / float(npos)
-        print("tpr: {:.3f}".format(ntp/ float(npos)))
+        print("tpr: {:.3f}({}/{})".format(ntp/ float(npos), ntp, npos))
         # avoid divide by zero in case the first detection matches a difficult
         # ground truth
         prec = tp / np.maximum(tp + fp, np.finfo(np.float64).eps)
@@ -191,12 +247,52 @@ def voc_eval(detpath,
         prec = -1.
         ap = -1.
 
+    # draw img
+    if args.write_bool:
+        if weight_ovthresh_bool:
+            output_dir = os.path.join(cachedir, 'img_res_{}_{}'.format(str(ovthresh), str(weight_ovthresh)), classname)
+        else:
+            output_dir = os.path.join(cachedir, 'img_res_{}'.format(str(ovthresh)), classname)
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+
+        for imagename in tqdm(imagenames):
+            R = class_recs[imagename]
+
+            img_path = os.path.join(args.jpg_dir, imagename + '.jpg')
+            output_img_path = os.path.join(output_dir, imagename + '.jpg')
+
+            if args.write_unmatched_only_bool:
+                if len(R['det']) == np.array( R['det'] ).sum():
+                    continue
+
+            img = cv2.imread(img_path)
+
+            for det_bbox_idx in range(len(R['det_res'])):
+                det_bbox = R['det_res'][det_bbox_idx]
+                img = cv_plot_rectangle(img, det_bbox, mode='ltrb', color=color_dict["det"])
+            
+            for label_bbox_idx in range(len(R['bbox'])):
+                label_bbox = R['bbox'][label_bbox_idx]
+                det_mark = R['det'][label_bbox_idx]
+                
+                if det_mark:
+                    img = cv_plot_rectangle(img, label_bbox, mode='ltrb', color=color_dict["lable_matched"])
+                else:
+                    img = cv_plot_rectangle(img, label_bbox, mode='ltrb', color=color_dict["lable_unmatched"])
+            
+            cv2.imwrite(output_img_path, img)
+
     return rec, prec, ap
 
 
 def calculate_ap(args):
     anno_path = os.path.join(args.anno_dir, '%s.xml')
     cache_dir = args.output_dir
+    
+    # clear
+    cache_file = os.path.join(cache_dir, 'annots.pkl')
+    os.remove(cache_file)
 
     aps = []
     for class_name in args.det_path_dict.keys():
@@ -207,6 +303,8 @@ def calculate_ap(args):
             classname=class_name, 
             cachedir=cache_dir,
             ovthresh=args.over_thresh, 
+            weight_ovthresh_bool=args.weight_over_thresh_bool,
+            weight_ovthresh=args.weight_over_thresh,
             use_07_metric=args.use_07_metric)
 
         aps += [ap]
@@ -226,6 +324,7 @@ if __name__ == "__main__":
     # args.data_dir = "/yuanhuan/data/image/LicensePlate/China/"
     # args.imageset_file = args.data_dir + "ImageSets/Main/test.txt"
     # args.anno_dir =  args.data_dir + "Annotations_CarLicenseplate/"
+    # args.jpg_dir =  os.path.join(args.data_dir,  "JPEGImages/")
 
     # # # ssd rfb
     # # args.det_path_dict = { 'car': '/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-11-16_focalloss_car_licenseplate/eval_epoches_299/LicensePlate_China_test/results/det_test_car.txt',
@@ -233,6 +332,10 @@ if __name__ == "__main__":
     # #                      } 
     # # args.over_thresh = 0.4
     # # args.use_07_metric = False
+    # # 是否保存识别结果和检出结果
+    # args.write_bool = True
+    # # 是否只不保存漏检结果
+    # args.write_unmatched_only_bool = True
     # # args.output_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-11-16_focalloss_car_licenseplate/eval_epoches_299/LicensePlate_China_test/results/"
 
     # # yolox
@@ -242,12 +345,18 @@ if __name__ == "__main__":
     # # args.over_thresh = 0.35
     # args.over_thresh = 0.4
     # args.use_07_metric = False
+    # # 是否保存识别结果和检出结果
+    # args.write_bool = True
+    # # 是否只不保存漏检结果
+    # args.write_unmatched_only_bool = True
     # args.output_dir = "/yuanhuan/model/image/yolox_vgg/yoloxv2_vggrm_640_384_car_license_plate/eval_epoches_24/LicensePlate_China_xml/"
 
     # Car_Bus_Truck_Licenseplate
     args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
     args.imageset_file = os.path.join(args.data_dir, "ImageSets/Main/test.txt")
-    args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_fuzzy/")
+    # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_fuzzy/")
+    args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_fuzzy_w_heght/")
+    args.jpg_dir =  os.path.join(args.data_dir,  "JPEGImages/")
 
     # ssd rfb
     args.det_path_dict = { 'car': '/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/det_test_car.txt',
@@ -255,8 +364,16 @@ if __name__ == "__main__":
                            'truck': '/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/det_test_truck.txt',
                            'license_plate': '/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/det_test_license_plate.txt',
                          } 
-    args.over_thresh = 0.4
+    # args.over_thresh = 0.4
+    args.over_thresh = 0.7
     args.use_07_metric = False
+    # 是否关注车牌横向iou结果
+    args.weight_over_thresh_bool = True
+    args.weight_over_thresh = 0.9
+    # 是否保存识别结果和检出结果
+    args.write_bool = True
+    # 是否只不保存漏检结果
+    args.write_unmatched_only_bool = True
     args.output_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/"
 
     calculate_ap(args)
