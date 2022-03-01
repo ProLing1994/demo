@@ -67,7 +67,8 @@ def main():
 
     # chinese
     parser.add_argument('-c', '--vc_config_file', type=str, default="/mnt/huanyuan/model/vc/chinese_vc/vc_chinese_cyclevae_world_1_1_01062022/config.py", nargs='?', help='config file')              # vc 声音转换，world 特征
-    parser.add_argument('-v', '--vocoder_config_file', type=str, default="/mnt/huanyuan/model/vc_vocoder/chinese_vc_vocoder/wavegan_chinese_1_0_normalize_world_01172022/vc_vocoder_config_chinese_wavegan.py", nargs='?', help='config file')  # ParallelWaveGANGenerator, vc world feature（限定多说话人转移 待测试）
+    # parser.add_argument('-v', '--vocoder_config_file', type=str, default="/mnt/huanyuan/model/vc_vocoder/chinese_vc_vocoder/wavegan_chinese_1_0_normalize_world_01172022/vc_vocoder_config_chinese_wavegan.py", nargs='?', help='config file')  # ParallelWaveGANGenerator, vc world feature（限定多说话人转移，效果一般）
+    parser.add_argument('-v', '--vocoder_config_file', type=str, default="/mnt/huanyuan/model/vc_vocoder/chinese_vc_vocoder/wavegan_chinese_1_1_normalize_world_cyclevae_reconst_01127022/vc_vocoder_config_chinese_wavegan.py", nargs='?', help='config file')  # ParallelWaveGANGenerator, vc world feature, vc finetune（限定多说话人转移，效果不错）
     args = parser.parse_args()
 
     args.speaker_src = "BZNSYP"

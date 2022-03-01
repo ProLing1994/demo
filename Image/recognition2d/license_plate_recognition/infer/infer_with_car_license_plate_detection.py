@@ -16,7 +16,7 @@ from recognition2d.license_plate_recognition.infer.license_plate import license_
 def model_init(args):
     # model init
     car_plate_detector = SSDDetector(model_path=args.ssd_car_plate_model_path, merge_class_bool=args.merge_class_bool)
-    license_palte_detector = license_palte_model_init_caffe(args.plate_regression_prototxt, args.plate_regression_model_path)
+    license_palte_detector = license_palte_model_init_caffe(args.plate_recognition_prototxt, args.plate_recognition_model_path)
     license_palte_beamsearch = license_palte_beamsearch_init()
     return (car_plate_detector, license_palte_detector, license_palte_beamsearch)
 
@@ -26,7 +26,7 @@ def img_detect(args, model, img):
     license_palte_detector = model[1]
     license_palte_beamsearch = model[2]
 
-    frame_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     # init
     show_bboxes = {}
@@ -73,7 +73,7 @@ def img_detect(args, model, img):
                 plate_bbox[3] = min(img.shape[0], plate_bbox[3] + expand_height)
 
         # crop
-        crop_img = frame_img[plate_bbox[1]:plate_bbox[3], plate_bbox[0]:plate_bbox[2]]
+        crop_img = gray_img[plate_bbox[1]:plate_bbox[3], plate_bbox[0]:plate_bbox[2]]
 
         # check
         if crop_img.shape[0] == 0 or crop_img.shape[1] == 0:
@@ -203,8 +203,8 @@ def main():
 
     args.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
     # args.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg/SSD_VGG_FPN_RFB_VOC_epoches_221.pth"
-    args.plate_regression_prototxt = "/mnt/huanyuan2/model/image_model/license_plate_recognition_moel_lxn/china_softmax.prototxt"
-    args.plate_regression_model_path = "/mnt/huanyuan2/model/image_model/license_plate_recognition_moel_lxn/china.caffemodel"
+    args.plate_recognition_prototxt = "/mnt/huanyuan2/model/image_model/license_plate_recognition_moel_lxn/china_softmax.prototxt"
+    args.plate_recognition_model_path = "/mnt/huanyuan2/model/image_model/license_plate_recognition_moel_lxn/china.caffemodel"
     args.prefix_beam_search_bool = True
 
     # 是否保存结果
