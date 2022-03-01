@@ -91,6 +91,7 @@ def voc_eval(detpath,
              classname,
              cachedir,
              ovthresh=0.5,
+             iou_uni_use_label_bool=False,
              width_ovthresh_bool=False,
              width_ovthresh=0.5,
              use_07_metric=True):
@@ -193,19 +194,23 @@ def voc_eval(detpath,
                 uni = ((bb[2] - bb[0]) * (bb[3] - bb[1]) +
                        (BBGT[:, 2] - BBGT[:, 0]) *
                        (BBGT[:, 3] - BBGT[:, 1]) - inters)
+                if iou_uni_use_label_bool:
+                    uni = (BBGT[:, 2] - BBGT[:, 0]) * (BBGT[:, 3] - BBGT[:, 1])
                 overlaps = inters / uni
                 ovmax = np.max(overlaps)
                 jmax = np.argmax(overlaps)
 
                 # compute overlaps in height
                 if width_ovthresh_bool:
-                    iymin = np.maximum(bb[1], bb[1])
-                    iymax = np.minimum(bb[3], bb[3])
+                    iymin = np.maximum(0, 0)
+                    iymax = np.minimum(1, 1)
                     ih = np.maximum(iymax - iymin, 0.)
                     inters = iw * ih
-                    uni = ((bb[2] - bb[0]) * (bb[3] - bb[1]) +
+                    uni = ((bb[2] - bb[0]) * (1 - 0) +
                         (BBGT[:, 2] - BBGT[:, 0]) *
-                        (bb[3] - bb[1]) - inters)
+                        (1 - 0) - inters)
+                    if iou_uni_use_label_bool:
+                        uni = (BBGT[:, 2] - BBGT[:, 0]) * (1 - 0)
                     height_overlaps = inters / uni
             
             if width_ovthresh_bool:
@@ -249,10 +254,12 @@ def voc_eval(detpath,
 
     # draw img
     if args.write_bool:
+        output_dir = os.path.join(cachedir, 'img_res_{}'.format(str(ovthresh)), classname)
         if width_ovthresh_bool:
-            output_dir = os.path.join(cachedir, 'img_res_{}_{}'.format(str(ovthresh), str(width_ovthresh)), classname)
-        else:
-            output_dir = os.path.join(cachedir, 'img_res_{}'.format(str(ovthresh)), classname)
+            output_dir = os.path.join(os.path.dirname(output_dir) + '_{}'.format(str(width_ovthresh)), classname)
+        if iou_uni_use_label_bool:
+            output_dir = os.path.join(os.path.dirname(output_dir) + '_{}'.format("uniuselabel"), classname)
+
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
@@ -292,7 +299,8 @@ def calculate_ap(args):
     
     # clear
     cache_file = os.path.join(cache_dir, 'annots.pkl')
-    os.remove(cache_file)
+    if os.path.exists(cache_file):
+        os.remove(cache_file)
 
     aps = []
     for class_name in args.det_path_dict.keys():
@@ -303,6 +311,7 @@ def calculate_ap(args):
             classname=class_name, 
             cachedir=cache_dir,
             ovthresh=args.over_thresh, 
+            iou_uni_use_label_bool=args.iou_uni_use_label_bool,
             width_ovthresh_bool=args.width_over_thresh_bool,
             width_ovthresh=args.width_over_thresh,
             use_07_metric=args.use_07_metric)
@@ -359,14 +368,17 @@ if __name__ == "__main__":
     args.jpg_dir =  os.path.join(args.data_dir,  "JPEGImages/")
 
     # ssd rfb
-    args.det_path_dict = { 'car': '/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/det_test_car.txt',
-                           'bus': '/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/det_test_bus.txt',
-                           'truck': '/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/det_test_truck.txt',
-                           'license_plate': '/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/det_test_license_plate.txt',
+    args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/"
+    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-28-17_focalloss_4class_car_bus_truck_licenseplate_zg_width_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/"
+    args.det_path_dict = { 'car': args.input_dir + 'det_test_car.txt',
+                           'bus': args.input_dir + 'det_test_bus.txt',
+                           'truck': args.input_dir + 'det_test_truck.txt',
+                           'license_plate': args.input_dir + 'det_test_license_plate.txt',
                          } 
-    # args.over_thresh = 0.4
-    args.over_thresh = 0.7
+    args.over_thresh = 0.4
     args.use_07_metric = False
+    # 是否在计算 iou 的过程中，计算 uni 并集的面积只关注 label 的面积
+    args.iou_uni_use_label_bool = False
     # 是否关注车牌横向iou结果
     args.width_over_thresh_bool = True
     args.width_over_thresh = 0.9
@@ -374,6 +386,6 @@ if __name__ == "__main__":
     args.write_bool = True
     # 是否只不保存漏检结果
     args.write_unmatched_only_bool = True
-    args.output_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/"
+    args.output_dir = args.input_dir
 
     calculate_ap(args)
