@@ -6,7 +6,8 @@ import sys
 import torch
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Image')
+# sys.path.insert(0, '/home/huanyuan/code/demo/Image')
+sys.path.insert(0, '/yuanhuan/code/demo/Image')
 from detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
 from regreesion2d.plate_regreesion.utils.draw_tools import draw_detection_result
 
@@ -222,7 +223,7 @@ def main():
     args.plate_bbox_minist_height = 18
 
     # 是否设置高度阈值挑选车牌
-    args.height_threshold_bool = True
+    args.height_threshold_bool = False
     args.height_threshold = 24
 
     # 是否设置 ocr 阈值挑选车牌

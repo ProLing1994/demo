@@ -242,7 +242,11 @@ def voc_eval(detpath,
         fp = np.cumsum(fp)
         tp = np.cumsum(tp)
         rec = tp / float(npos)
-        print("tpr: {:.3f}({}/{})".format(ntp/ float(npos), ntp, npos))
+        print("npos: {}".format(npos))
+        if npos != 0:
+            print("tpr: {:.3f}({}/{})".format(ntp/ float(npos), ntp, npos))
+        else:
+            print("tpr: None")
         # avoid divide by zero in case the first detection matches a difficult
         # ground truth
         prec = tp / np.maximum(tp + fp, np.finfo(np.float64).eps)
@@ -317,9 +321,9 @@ def calculate_ap(args):
             use_07_metric=args.use_07_metric)
 
         aps += [ap]
-        print('AP for {} = {:.4f} \n'.format(class_name, ap))
+        print('AP for {} = {:.3f} \n'.format(class_name, ap))
     
-    print('Mean AP = {:.4f}'.format(np.mean(aps)))
+    print('Mean AP = {:.3f}'.format(np.mean(aps)))
 
     return 
 
@@ -361,15 +365,21 @@ if __name__ == "__main__":
     # args.output_dir = "/yuanhuan/model/image/yolox_vgg/yoloxv2_vggrm_640_384_car_license_plate/eval_epoches_24/LicensePlate_China_xml/"
 
     # Car_Bus_Truck_Licenseplate
-    args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
-    args.imageset_file = os.path.join(args.data_dir, "ImageSets/Main/test.txt")
-    # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_fuzzy/")
-    args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_fuzzy_w_heght/")
-    args.jpg_dir =  os.path.join(args.data_dir,  "JPEGImages/")
+    # # 测试集图像
+    # args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
+    # args.imageset_file = os.path.join(args.data_dir, "ImageSets/Main/test.txt")
+    # # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_fuzzy/")
+    # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_fuzzy_w_heght/")
+    # args.jpg_dir =  os.path.join(args.data_dir,  "JPEGImages/")
+
+    # 收集测试集
+    args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/加油站测试样本/"
+    args.imageset_file = os.path.join(args.data_dir, "5MB/images.txt")
+    args.anno_dir =  os.path.join(args.data_dir, "5MB_Annotations_CarBusTruckLicenseplate_w_fuzzy/")
+    args.jpg_dir =  os.path.join(args.data_dir,  "5MB/")
 
     # ssd rfb
-    args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/"
-    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-28-17_focalloss_4class_car_bus_truck_licenseplate_zg_width_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/"
+    args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/加油站测试样本_5MB/results/"
     args.det_path_dict = { 'car': args.input_dir + 'det_test_car.txt',
                            'bus': args.input_dir + 'det_test_bus.txt',
                            'truck': args.input_dir + 'det_test_truck.txt',
