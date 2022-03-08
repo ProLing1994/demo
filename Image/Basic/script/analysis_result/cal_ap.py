@@ -113,8 +113,9 @@ def voc_eval(detpath,
              cachedir,
              ovthresh=0.5,
              iou_uni_use_label_bool=False,
-             width_ovthresh_bool=False,
+             width_height_ovthresh_bool=False,
              width_ovthresh=0.5,
+             height_ovthresh=0.5,
              use_07_metric=True):
     """rec, prec, ap = voc_eval(detpath,
                            annopath,
@@ -222,45 +223,50 @@ def voc_eval(detpath,
                 ovmax = np.max(overlaps)
                 jmax = np.argmax(overlaps)
 
-                # compute overlaps in height
-                if width_ovthresh_bool:
+                # compute overlaps in width $ height
+                if width_height_ovthresh_bool:
+                    # width_overlaps
                     iymin = np.maximum(0, 0)
                     iymax = np.minimum(1, 1)
-                    ih = np.maximum(iymax - iymin, 0.)
-                    inters = iw * ih
+                    ih_temp = np.maximum(iymax - iymin, 0.)
+                    inters = iw * ih_temp
                     uni = ((bb[2] - bb[0]) * (1 - 0) +
                         (BBGT[:, 2] - BBGT[:, 0]) *
                         (1 - 0) - inters)
                     if iou_uni_use_label_bool:
                         uni = (BBGT[:, 2] - BBGT[:, 0]) * (1 - 0)
                     width_overlaps = inters / uni
-            
-            if width_ovthresh_bool:
-                if ovmax > ovthresh and width_overlaps[jmax] > width_ovthresh: 
-                    if not R['difficult'][jmax]:
-                        if not R['det'][jmax]:
-                            tp[d] = 1.
-                            ntp += 1
-                            R['det'][jmax] = 1
-                        else:
-                            fp[d] = 1.
-                            R['fp_bool'] = True
-                else:
-                    fp[d] = 1.
-                    R['fp_bool'] = True
+                
+                    # height_overlaps
+                    ixmin = np.maximum(0, 0)
+                    ixmax = np.minimum(1, 1)
+                    iw_temp = np.maximum(ixmax - ixmin, 0.)
+                    inters = iw_temp * ih
+                    uni = ((1 - 0) * (bb[3] - bb[1]) +
+                        (1 - 0) *
+                        (BBGT[:, 3] - BBGT[:, 1]) - inters)
+                    if iou_uni_use_label_bool:
+                        uni =  (1 - 0) * (BBGT[:, 3] - BBGT[:, 1])
+                    height_overlaps = inters / uni
+
+            if width_height_ovthresh_bool:
+                # tp_bool = ovmax > ovthresh and width_overlaps[jmax] > width_ovthresh
+                tp_bool = ovmax > ovthresh and width_overlaps[jmax] > width_ovthresh and height_overlaps[jmax] > height_ovthresh
             else:
-                if ovmax > ovthresh:
-                    if not R['difficult'][jmax]:
-                        if not R['det'][jmax]:
-                            tp[d] = 1.
-                            ntp += 1
-                            R['det'][jmax] = 1
-                        else:
-                            fp[d] = 1.
-                            R['fp_bool'] = True
-                else:
-                    fp[d] = 1.
-                    R['fp_bool'] = True
+                tp_bool = ovmax > ovthresh
+
+            if tp_bool: 
+                if not R['difficult'][jmax]:
+                    if not R['det'][jmax]:
+                        tp[d] = 1.
+                        ntp += 1
+                        R['det'][jmax] = 1
+                    else:
+                        fp[d] = 1.
+                        R['fp_bool'] = True
+            else:
+                fp[d] = 1.
+                R['fp_bool'] = True
             
             R['det_res'].append(bb)
 
@@ -285,8 +291,8 @@ def voc_eval(detpath,
     # draw img
     if args.write_bool:
         output_dir = os.path.join(cachedir, 'img_res_{}'.format(str(ovthresh)), classname)
-        if width_ovthresh_bool:
-            output_dir = os.path.join(os.path.dirname(output_dir) + '_{}'.format(str(width_ovthresh)), classname)
+        if width_height_ovthresh_bool:
+            output_dir = os.path.join(os.path.dirname(output_dir) + '_{}_{}'.format(str(width_ovthresh), str(height_ovthresh)), classname)
         if iou_uni_use_label_bool:
             output_dir = os.path.join(os.path.dirname(output_dir) + '_{}'.format("uniuselabel"), classname)
 
@@ -331,8 +337,9 @@ def calculate_ap(args):
             cachedir=cache_dir,
             ovthresh=args.over_thresh, 
             iou_uni_use_label_bool=args.iou_uni_use_label_bool,
-            width_ovthresh_bool=args.width_over_thresh_bool,
+            width_height_ovthresh_bool=args.width_height_over_thresh_bool,
             width_ovthresh=args.width_over_thresh,
+            height_ovthresh=args.height_over_thresh,
             use_07_metric=args.use_07_metric)
 
         aps += [ap]
@@ -381,30 +388,30 @@ if __name__ == "__main__":
     # args.write_unmatched_bool = True
     # args.output_dir = "/yuanhuan/model/image/yolox_vgg/yoloxv2_vggrm_640_384_car_license_plate/eval_epoches_24/LicensePlate_China_xml/"
 
-    # #####################################
-    # # Car_Bus_Truck_Licenseplate
-    # # 测试集图像
-    # #####################################
-    # args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
-    # args.imageset_file = os.path.join(args.data_dir, "ImageSets/Main/test.txt")
+    #####################################
+    # Car_Bus_Truck_Licenseplate
+    # 测试集图像
+    #####################################
+    args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
+    args.imageset_file = os.path.join(args.data_dir, "ImageSets/Main/test.txt")
     # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_height/")                # 高度大于 24 的 清晰车牌
-    # # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height/")        # 高度大于 24 的 清晰车牌 & 模糊车牌
-    # # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate/")                         # 清晰车牌
-    # # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_fuzzy/")                 # 清晰车牌 & 模糊车牌
-    # args.jpg_dir =  os.path.join(args.data_dir,  "JPEGImages/")
-    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/"
+    # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height/")        # 高度大于 24 的 清晰车牌 & 模糊车牌
+    # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate/")                         # 清晰车牌
+    args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_fuzzy/")                 # 清晰车牌 & 模糊车牌
+    args.jpg_dir =  os.path.join(args.data_dir,  "JPEGImages/")
+    args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/"
 
-    ######################################
-    # 测试集：
-    ######################################
-    args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/加油站测试样本/"
-    args.imageset_file = os.path.join(args.data_dir, "2MB/images.txt")
-    # args.anno_dir =  os.path.join(args.data_dir, "2MB_Annotations_CarBusTruckLicenseplate_w_height/")               # 高度大于 24 的 清晰车牌
-    # args.anno_dir =  os.path.join(args.data_dir, "2MB_Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height/")       # 高度大于 24 的 清晰车牌 & 模糊车牌
-    # args.anno_dir =  os.path.join(args.data_dir, "2MB_Annotations_CarBusTruckLicenseplate/")                        # 清晰车牌
-    args.anno_dir =  os.path.join(args.data_dir, "2MB_Annotations_CarBusTruckLicenseplate_w_fuzzy/")                # 清晰车牌 & 模糊车牌
-    args.jpg_dir =  os.path.join(args.data_dir,  "2MB/")
-    args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/加油站测试样本_2MB/results/"
+    # ######################################
+    # # 测试集：
+    # ######################################
+    # args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/加油站测试样本/"
+    # args.imageset_file = os.path.join(args.data_dir, "2MB/images.txt")
+    # # args.anno_dir =  os.path.join(args.data_dir, "2MB_Annotations_CarBusTruckLicenseplate_w_height/")               # 高度大于 24 的 清晰车牌
+    # # args.anno_dir =  os.path.join(args.data_dir, "2MB_Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height/")       # 高度大于 24 的 清晰车牌 & 模糊车牌
+    # # args.anno_dir =  os.path.join(args.data_dir, "2MB_Annotations_CarBusTruckLicenseplate/")                        # 清晰车牌
+    # args.anno_dir =  os.path.join(args.data_dir, "2MB_Annotations_CarBusTruckLicenseplate_w_fuzzy/")                # 清晰车牌 & 模糊车牌
+    # args.jpg_dir =  os.path.join(args.data_dir,  "2MB/")
+    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/加油站测试样本_2MB/results/"
     
     args.det_path_dict = { 'car': args.input_dir + 'det_test_car.txt',
                            'bus': args.input_dir + 'det_test_bus.txt',
@@ -418,8 +425,9 @@ if __name__ == "__main__":
     args.iou_uni_use_label_bool = False
 
     # 是否关注车牌横向iou结果
-    args.width_over_thresh_bool = False
-    args.width_over_thresh = 0.9
+    args.width_height_over_thresh_bool = False
+    args.width_over_thresh = 0.95
+    args.height_over_thresh = 0.75
 
     # 是否保存识别结果和检出结果
     args.write_bool = True
