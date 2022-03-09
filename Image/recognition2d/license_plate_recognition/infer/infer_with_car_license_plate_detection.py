@@ -222,21 +222,21 @@ def main():
     args.plate_bbox_minist_height = 18
 
     # 是否设置高度阈值挑选车牌
-    args.height_threshold_bool = True
+    args.height_threshold_bool = False
     args.height_threshold = 24
 
     # 是否设置 ocr 阈值挑选车牌
     args.ocr_threshold_bool = False
     args.ocr_threshold = 0.8
     
-    args.img_bool = True
+    args.img_bool = False
     args.img_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试样本/5MH/"
     args.output_img_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试样本_height_beamsearchs/5MH/"
 
     if args.img_bool:
         inference_images(args)
 
-    args.vidio_bool = False
+    args.vidio_bool = True
     args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/测试视频/"
     # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_ocr_beamsearch_mergeclass_bboxexpand/"
     # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearch_mergeclass_bboxexpand/"
