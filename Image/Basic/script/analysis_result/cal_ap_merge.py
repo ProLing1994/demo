@@ -15,10 +15,11 @@ color_dict = {
                 "lable_matched": (0, 0, 255), 
                 "lable_unmatched": (0, 255, 0), 
                 "det": (0, 255, 255), 
+                "roi": (255, 255, 255), 
             }
 
-def draw_img(R, img_path, output_img_path):
-
+def draw_img(R, img_path, output_img_path, roi_bool, roi_bbox):
+    
     img = cv2.imread(img_path)
 
     # 绘制 det bbox
@@ -36,6 +37,10 @@ def draw_img(R, img_path, output_img_path):
         else:
             img = cv_plot_rectangle(img, label_bbox, mode='ltrb', color=color_dict["lable_unmatched"])
     
+    # 绘制 roi 区域
+    if roi_bool:
+        img = cv_plot_rectangle(img, roi_bbox, mode='ltrb', color=color_dict["roi"])
+
     cv2.imwrite(output_img_path, img)
 
 
@@ -54,6 +59,15 @@ def cv_plot_rectangle(img, bbox, color=None, mode='xywh', thickness=3):
     img_p = img.copy()
     return cv2.rectangle(img_p, (xmin, ymin),
                          (xmax, ymax), color=color, thickness=thickness)
+
+
+def check_set_roi(in_box, roi_bbox):
+    roi_bool = False
+
+    if in_box[2] > roi_bbox[0] and in_box[0] < roi_bbox[2] and in_box[3] > roi_bbox[1] and in_box[1] < roi_bbox[3]:
+        roi_bool = True
+    
+    return roi_bool
 
 
 def parse_rec(filename):
@@ -121,6 +135,8 @@ def voc_eval(merge_class_name,
              width_height_ovthresh_bool=False,
              width_ovthresh=0.5,
              height_ovthresh=0.5,
+             roi_set_bool=False,
+             roi_set_bbox=[0, 0, 1920, 1024],
              use_07_metric=True):
     # assumes detections are in detpath.format(classname)
     # assumes annotations are in annopath.format(imagename)
@@ -152,9 +168,15 @@ def voc_eval(merge_class_name,
     npos = 0
     for imagename in imagenames:
         R = [obj for obj in recs[imagename] if obj['name'] in classname]
-        bbox = np.array([x['bbox'] for x in R])
-        difficult = np.array([x['difficult'] for x in R]).astype(np.bool)
-        det = [False] * len(R)
+
+        # 是否设置 roi 区域，忽略边缘区域
+        if roi_set_bool:
+            bbox = np.array([x['bbox'] for x in R if check_set_roi(x['bbox'], roi_set_bbox) ])
+            difficult = np.array([x['difficult'] for x in R if check_set_roi(x['bbox'], roi_set_bbox) ]).astype(np.bool)
+        else:
+            bbox = np.array([x['bbox'] for x in R])
+            difficult = np.array([x['difficult'] for x in R]).astype(np.bool)
+        det = [False] * len(bbox)
         npos = npos + sum(~difficult)
         det_res = []
         class_recs[imagename] = {'bbox': bbox,
@@ -233,6 +255,12 @@ def voc_eval(merge_class_name,
         for d in range(nd):
             R = class_recs[image_ids[d]]
             bb = BB[d, :].astype(float)
+
+            # 是否设置 roi 区域，忽略边缘区域
+            if roi_set_bool:
+                if not check_set_roi(bb, roi_set_bbox):
+                    continue
+
             ovmax = -np.inf
             BBGT = R['bbox'].astype(float)
             if BBGT.size > 0:
@@ -326,6 +354,8 @@ def voc_eval(merge_class_name,
             output_dir = os.path.join(os.path.dirname(output_dir) + '_{}'.format(str(width_ovthresh)), merge_class_name)
         if iou_uni_use_label_bool:
             output_dir = os.path.join(os.path.dirname(output_dir) + '_{}'.format("uniuselabel"), merge_class_name)
+        if roi_set_bool:
+            output_dir = os.path.join(os.path.dirname(output_dir) + '_{}'.format("roi"), merge_class_name)
 
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
@@ -339,12 +369,12 @@ def voc_eval(merge_class_name,
             if args.write_unmatched_bool:
                 # 判断是否有漏检
                 if not len(R['det']) == np.array( R['det'] ).sum():
-                    draw_img(R, img_path, output_img_path)
+                     draw_img(R, img_path, output_img_path, roi_set_bool, roi_set_bbox)
             
             if args.write_false_positive_bool:
                 # 判断是否有假阳
                 if R['fp_bool']:
-                    draw_img(R, img_path, output_img_path)
+                    draw_img(R, img_path, output_img_path, roi_set_bool, roi_set_bbox)
 
     return rec, prec, ap
 
@@ -372,6 +402,8 @@ def calculate_ap(args):
             width_height_ovthresh_bool=args.width_height_over_thresh_bool,
             width_ovthresh=args.width_over_thresh,
             height_ovthresh=args.height_over_thresh,
+            roi_set_bool=args.roi_set_bool,
+            roi_set_bbox=args.roi_set_bbox,
             use_07_metric=args.use_07_metric)
 
         aps += [ap]
@@ -387,30 +419,30 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    #####################################
-    # Car_Bus_Truck_Licenseplate
-    # 测试集图像
-    #####################################
-    args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
-    args.imageset_file = os.path.join(args.data_dir, "ImageSets/Main/test.txt")
-    # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_height/")                # 高度大于 24 的 清晰车牌
-    # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height/")        # 高度大于 24 的 清晰车牌 & 模糊车牌
-    # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate/")                         # 清晰车牌
-    args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_fuzzy/")                 # 清晰车牌 & 模糊车牌
-    args.jpg_dir =  os.path.join(args.data_dir,  "JPEGImages/")
-    args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/"
+    # #####################################
+    # # Car_Bus_Truck_Licenseplate
+    # # 测试集图像
+    # #####################################
+    # args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
+    # args.imageset_file = os.path.join(args.data_dir, "ImageSets/Main/test.txt")
+    # # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_height/")                # 高度大于 24 的 清晰车牌
+    # # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height/")        # 高度大于 24 的 清晰车牌 & 模糊车牌
+    # # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate/")                         # 清晰车牌
+    # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_fuzzy/")                 # 清晰车牌 & 模糊车牌
+    # args.jpg_dir =  os.path.join(args.data_dir,  "JPEGImages/")
+    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/"
 
-    # ######################################
-    # # 测试集：
-    # ######################################
-    # args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/加油站测试样本/"
-    # args.imageset_file = os.path.join(args.data_dir, "2MH/images.txt")
-    # # args.anno_dir =  os.path.join(args.data_dir, "2MH_Annotations_CarBusTruckLicenseplate_w_height/")               # 高度大于 24 的 清晰车牌
-    # # args.anno_dir =  os.path.join(args.data_dir, "2MH_Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height/")       # 高度大于 24 的 清晰车牌 & 模糊车牌
-    # # args.anno_dir =  os.path.join(args.data_dir, "2MH_Annotations_CarBusTruckLicenseplate/")                        # 清晰车牌
-    # args.anno_dir =  os.path.join(args.data_dir, "2MH_Annotations_CarBusTruckLicenseplate_w_fuzzy/")                # 清晰车牌 & 模糊车牌
-    # args.jpg_dir =  os.path.join(args.data_dir,  "2MH/")
-    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/加油站测试样本_2MH/results/"
+    ######################################
+    # 测试集：
+    ######################################
+    args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/加油站测试样本/"
+    args.imageset_file = os.path.join(args.data_dir, "5MH/images.txt")
+    # args.anno_dir =  os.path.join(args.data_dir, "5MH_Annotations_CarBusTruckLicenseplate_w_height/")               # 高度大于 24 的 清晰车牌
+    # args.anno_dir =  os.path.join(args.data_dir, "5MH_Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height/")       # 高度大于 24 的 清晰车牌 & 模糊车牌
+    # args.anno_dir =  os.path.join(args.data_dir, "5MH_Annotations_CarBusTruckLicenseplate/")                        # 清晰车牌
+    args.anno_dir =  os.path.join(args.data_dir, "5MH_Annotations_CarBusTruckLicenseplate_w_fuzzy/")                # 清晰车牌 & 模糊车牌
+    args.jpg_dir =  os.path.join(args.data_dir,  "5MH/")
+    args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/加油站测试样本_5MH/results/"
     
     args.merge_ap_dict = { 'car_bus_truck': ['car', 'bus', 'truck'] }
 
@@ -423,6 +455,11 @@ if __name__ == "__main__":
     args.over_thresh = 0.4
     args.use_07_metric = False
 
+    # 是否设置 roi 区域，忽略边缘区域
+    args.roi_set_bool = True
+    # args.roi_set_bbox = [200, 110, 1720, 970]       # 2M
+    args.roi_set_bbox = [300, 150, 2292, 1770]       # 5M
+    
     # 是否在计算 iou 的过程中，计算 uni 并集的面积只关注 label 的面积
     args.iou_uni_use_label_bool = False
 
@@ -432,7 +469,7 @@ if __name__ == "__main__":
     args.height_over_thresh = 0.0
 
     # 是否保存识别结果和检出结果
-    args.write_bool = True
+    args.write_bool = False
 
     # 是否保存漏检结果
     args.write_unmatched_bool = True
