@@ -99,6 +99,13 @@ if __name__ == "__main__":
     args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
     # [('bus', 685), ('car', 12295), ('fuzzy_plate', 1792), ('plate', 9800), ('roi_ignore_plate', 227), ('truck', 180)]
     # [('bus', {'trainval': 607, 'test': 78}), ('car', {'trainval': 11027, 'test': 1268}), ('fuzzy_plate', {'trainval': 1589, 'test': 203}), ('plate', {'trainval': 8806, 'test': 994}), ('roi_ignore_plate', {'trainval': 203, 'test': 24}), ('truck', {'trainval': 160, 'test': 20})]
+    
+    # 数据集：ZG_ZHJYZ_detection 加油站测试样本
+    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/加油站测试样本/"
+    # 2MB: [('car', 155), ('fuzzy_plate', 37), ('plate', 87), ('truck', 1)]
+    # 2MH: [('bus', 7), ('car', 570), ('fuzzy_plate', 27), ('plate', 411), ('truck', 9)]
+    # 5MB: [('bus', 13), ('car', 453), ('fuzzy_plate', 103), ('plate', 235), ('truck', 8)]
+    # 5MH: [('bus', 18), ('car', 717), ('fuzzy_plate', 26), ('plate', 384), ('truck', 3)]
 
     args.trainval_file = args.input_dir + "ImageSets/Main/trainval.txt"
     args.train_file = args.input_dir + "ImageSets/Main/train.txt"
@@ -108,6 +115,8 @@ if __name__ == "__main__":
 
     args.jpg_dir =  args.input_dir + "JPEGImages/"
     args.xml_dir =  args.input_dir + "XML/"
+    # args.jpg_dir =  args.input_dir + "5MH/"
+    # args.xml_dir =  args.input_dir + "5MH_XML/"
 
     # statistic_classname(args)
     statistic_classname_train_val_test(args)

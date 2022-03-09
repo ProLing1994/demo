@@ -6,7 +6,8 @@ import sys
 import torch
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Image')
+# sys.path.insert(0, '/home/huanyuan/code/demo/Image')
+sys.path.insert(0, '/yuanhuan/code/demo/Image')
 from detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
 from regreesion2d.plate_regreesion.utils.draw_tools import draw_detection_result
 

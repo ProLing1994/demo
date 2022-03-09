@@ -2,9 +2,13 @@ import argparse
 import cv2
 import numpy as np
 import os
+import sys
 import pickle
 from tqdm import tqdm
 import xml.etree.ElementTree as ET
+
+sys.path.insert(0, '/yuanhuan/code/demo')
+from Image.detection2d.ssd_rfb_crossdatatraining.utils import nms
 
 
 color_dict = {
@@ -106,7 +110,8 @@ def voc_ap(rec, prec, use_07_metric=True):
     return ap
 
 
-def voc_eval(detpath,
+def voc_eval(merge_class_name,
+             detpath_dict,
              annopath,
              imagesetfile,
              classname,
@@ -117,24 +122,6 @@ def voc_eval(detpath,
              width_ovthresh=0.5,
              height_ovthresh=0.5,
              use_07_metric=True):
-    """rec, prec, ap = voc_eval(detpath,
-                           annopath,
-                           imagesetfile,
-                           classname,
-                           [ovthresh],
-                           [use_07_metric])
-    Top level function that does the PASCAL VOC evaluation.
-    detpath: Path to detections
-    detpath.format(classname) should produce the detection results file.
-    annopath: Path to annotations
-    annopath.format(imagename) should be the xml annotations file.
-    imagesetfile: Text file containing the list of images, one image per line.
-    classname: Category name (duh)
-    cachedir: Directory for caching the annotations
-    [ovthresh]: Overlap threshold (default = 0.5)
-    [use_07_metric]: Whether to use VOC07's 11 point AP computation
-    (default True)
-    """
     # assumes detections are in detpath.format(classname)
     # assumes annotations are in annopath.format(imagename)
     # assumes imagesetfile is a text file with each line an image name
@@ -164,7 +151,7 @@ def voc_eval(detpath,
     class_recs = {}
     npos = 0
     for imagename in imagenames:
-        R = [obj for obj in recs[imagename] if obj['name'] == classname]
+        R = [obj for obj in recs[imagename] if obj['name'] in classname]
         bbox = np.array([x['bbox'] for x in R])
         difficult = np.array([x['difficult'] for x in R]).astype(np.bool)
         det = [False] * len(R)
@@ -177,11 +164,55 @@ def voc_eval(detpath,
                                  'fp_bool': False,
                                  }
 
-    # read dets
-    detfile = detpath.format(classname)
-    ntp = 0
+    # load det file
+    detfile = detpath_dict[merge_class_name]
+    if not os.path.isfile(detfile):
+
+        det_dict = {}
+        # nms for merge class name
+        for class_idx in range(len(classname)):
+            class_name_idx = classname[class_idx]
+            detfile_idx = detpath_dict[class_name_idx]
+
+            # load
+            with open(detfile_idx, 'r') as f:
+                lines_idx = f.readlines()
+
+            splitlines = [x.strip().split('*') for x in lines_idx]  
+            image_ids = [x[0] for x in splitlines]
+            c_scores = np.array([float(x[1]) for x in splitlines])
+            c_bboxes = np.array([[float(z) for z in x[2:]] for x in splitlines])
+            c_dets = np.hstack((c_bboxes, c_scores[:, np.newaxis])).astype(
+                np.float32, copy=False)
+
+            for image_idx in range(len(image_ids)):
+                image_name_idx = image_ids[image_idx]
+                if image_name_idx in det_dict:
+                    det_dict[image_name_idx] = np.concatenate((det_dict[image_name_idx], c_dets[image_idx][np.newaxis, :]), axis=0)
+                else:
+                    det_dict[image_name_idx] = c_dets[image_idx][np.newaxis, :]
+
+        with open(detfile, 'w') as f:
+            
+            for image_name_idx in det_dict.keys():
+                
+                # nms
+                keep = nms(det_dict[image_name_idx], 0.45)
+                c_dets = det_dict[image_name_idx][keep, :]
+
+                # the VOCdevkit expects 1-based indices
+                for k in range(c_dets.shape[0]):
+                    f.write('{:s}*{:.3f}*{:.1f}*{:.1f}*{:.1f}*{:.1f}\n'.
+                            format(image_name_idx, c_dets[k, -1],
+                                   c_dets[k, 0], c_dets[k, 1],
+                                   c_dets[k, 2], c_dets[k, 3]))
+
+    # load
     with open(detfile, 'r') as f:
-        lines = f.readlines()
+            lines = f.readlines()
+    
+    # analysis 
+    ntp = 0
     if any(lines) == 1:
         # lines: CH10-20210615-142026-1429200000010872*0.563*386.8*1382.6*752.2*1548.1
         splitlines = [x.strip().split('*') for x in lines]  
@@ -248,7 +279,7 @@ def voc_eval(detpath,
                     if iou_uni_use_label_bool:
                         uni =  (1 - 0) * (BBGT[:, 3] - BBGT[:, 1])
                     height_overlaps = inters / uni
-
+            
             if width_height_ovthresh_bool:
                 # tp_bool = ovmax > ovthresh and width_overlaps[jmax] > width_ovthresh
                 tp_bool = ovmax > ovthresh and width_overlaps[jmax] > width_ovthresh and height_overlaps[jmax] > height_ovthresh
@@ -290,11 +321,11 @@ def voc_eval(detpath,
 
     # draw img
     if args.write_bool:
-        output_dir = os.path.join(cachedir, 'img_res_{}'.format(str(ovthresh)), classname)
+        output_dir = os.path.join(cachedir, 'img_res_{}'.format(str(ovthresh)), merge_class_name)
         if width_height_ovthresh_bool:
-            output_dir = os.path.join(os.path.dirname(output_dir) + '_{}_{}'.format(str(width_ovthresh), str(height_ovthresh)), classname)
+            output_dir = os.path.join(os.path.dirname(output_dir) + '_{}'.format(str(width_ovthresh)), merge_class_name)
         if iou_uni_use_label_bool:
-            output_dir = os.path.join(os.path.dirname(output_dir) + '_{}'.format("uniuselabel"), classname)
+            output_dir = os.path.join(os.path.dirname(output_dir) + '_{}'.format("uniuselabel"), merge_class_name)
 
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
@@ -328,12 +359,13 @@ def calculate_ap(args):
         os.remove(cache_file)
 
     aps = []
-    for class_name in args.det_path_dict.keys():
+    for merge_class_name in args.merge_ap_dict.keys():
         rec, prec, ap = voc_eval(
-            detpath=args.det_path_dict[class_name], 
+            merge_class_name=merge_class_name,
+            detpath_dict=args.det_path_dict, 
             annopath=anno_path, 
             imagesetfile=args.imageset_file, 
-            classname=class_name, 
+            classname=args.merge_ap_dict[merge_class_name], 
             cachedir=cache_dir,
             ovthresh=args.over_thresh, 
             iou_uni_use_label_bool=args.iou_uni_use_label_bool,
@@ -343,7 +375,7 @@ def calculate_ap(args):
             use_07_metric=args.use_07_metric)
 
         aps += [ap]
-        print('AP for {} = {:.3f} \n'.format(class_name, ap))
+        print('AP for {} = {:.3f} \n'.format(merge_class_name, ap))
     
     print('Mean AP = {:.3f}'.format(np.mean(aps)))
 
@@ -354,39 +386,6 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
-
-    ######################################
-    # Car_Licenseplate
-    ######################################
-    # args.data_dir = "/yuanhuan/data/image/LicensePlate/China/"
-    # args.imageset_file = args.data_dir + "ImageSets/Main/test.txt"
-    # args.anno_dir =  args.data_dir + "Annotations_CarLicenseplate/"
-    # args.jpg_dir =  os.path.join(args.data_dir,  "JPEGImages/")
-
-    # # # ssd rfb
-    # # args.det_path_dict = { 'car': '/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-11-16_focalloss_car_licenseplate/eval_epoches_299/LicensePlate_China_test/results/det_test_car.txt',
-    # #                        'license_plate': '/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-11-16_focalloss_car_licenseplate/eval_epoches_299/LicensePlate_China_test/results/det_test_license_plate.txt',
-    # #                      } 
-    # # args.over_thresh = 0.4
-    # # args.use_07_metric = False
-    # # 是否保存识别结果和检出结果
-    # args.write_bool = True
-    # # 是否保存漏检结果
-    # args.write_unmatched_bool = True
-    # # args.output_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-11-16_focalloss_car_licenseplate/eval_epoches_299/LicensePlate_China_test/results/"
-
-    # # yolox
-    # args.det_path_dict = { 'car': '/yuanhuan/model/image/yolox_vgg/yoloxv2_vggrm_640_384_car_license_plate/eval_epoches_24/LicensePlate_China_xml/det_test_car.txt',
-    #                        'license_plate': '/yuanhuan/model/image/yolox_vgg/yoloxv2_vggrm_640_384_car_license_plate/eval_epoches_24/LicensePlate_China_xml/det_test_license_plate.txt',
-    #                      } 
-    # # args.over_thresh = 0.35
-    # args.over_thresh = 0.4
-    # args.use_07_metric = False
-    # # 是否保存识别结果和检出结果
-    # args.write_bool = True
-    # # 是否保存漏检结果
-    # args.write_unmatched_bool = True
-    # args.output_dir = "/yuanhuan/model/image/yolox_vgg/yoloxv2_vggrm_640_384_car_license_plate/eval_epoches_24/LicensePlate_China_xml/"
 
     #####################################
     # Car_Bus_Truck_Licenseplate
@@ -405,19 +404,22 @@ if __name__ == "__main__":
     # # 测试集：
     # ######################################
     # args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/加油站测试样本/"
-    # args.imageset_file = os.path.join(args.data_dir, "2MB/images.txt")
-    # # args.anno_dir =  os.path.join(args.data_dir, "2MB_Annotations_CarBusTruckLicenseplate_w_height/")               # 高度大于 24 的 清晰车牌
-    # # args.anno_dir =  os.path.join(args.data_dir, "2MB_Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height/")       # 高度大于 24 的 清晰车牌 & 模糊车牌
-    # # args.anno_dir =  os.path.join(args.data_dir, "2MB_Annotations_CarBusTruckLicenseplate/")                        # 清晰车牌
-    # args.anno_dir =  os.path.join(args.data_dir, "2MB_Annotations_CarBusTruckLicenseplate_w_fuzzy/")                # 清晰车牌 & 模糊车牌
-    # args.jpg_dir =  os.path.join(args.data_dir,  "2MB/")
-    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/加油站测试样本_2MB/results/"
+    # args.imageset_file = os.path.join(args.data_dir, "2MH/images.txt")
+    # # args.anno_dir =  os.path.join(args.data_dir, "2MH_Annotations_CarBusTruckLicenseplate_w_height/")               # 高度大于 24 的 清晰车牌
+    # # args.anno_dir =  os.path.join(args.data_dir, "2MH_Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height/")       # 高度大于 24 的 清晰车牌 & 模糊车牌
+    # # args.anno_dir =  os.path.join(args.data_dir, "2MH_Annotations_CarBusTruckLicenseplate/")                        # 清晰车牌
+    # args.anno_dir =  os.path.join(args.data_dir, "2MH_Annotations_CarBusTruckLicenseplate_w_fuzzy/")                # 清晰车牌 & 模糊车牌
+    # args.jpg_dir =  os.path.join(args.data_dir,  "2MH/")
+    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/加油站测试样本_2MH/results/"
     
+    args.merge_ap_dict = { 'car_bus_truck': ['car', 'bus', 'truck'] }
+
     args.det_path_dict = { 'car': args.input_dir + 'det_test_car.txt',
                            'bus': args.input_dir + 'det_test_bus.txt',
                            'truck': args.input_dir + 'det_test_truck.txt',
-                           'license_plate': args.input_dir + 'det_test_license_plate.txt',
+                           'car_bus_truck': args.input_dir + 'det_test_car_bus_truck.txt', 
                          } 
+
     args.over_thresh = 0.4
     args.use_07_metric = False
 
@@ -426,8 +428,8 @@ if __name__ == "__main__":
 
     # 是否关注车牌横向iou结果
     args.width_height_over_thresh_bool = False
-    args.width_over_thresh = 0.95
-    args.height_over_thresh = 0.75
+    args.width_over_thresh = 0.9
+    args.height_over_thresh = 0.0
 
     # 是否保存识别结果和检出结果
     args.write_bool = True
