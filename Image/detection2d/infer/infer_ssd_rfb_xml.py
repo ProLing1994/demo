@@ -123,8 +123,8 @@ def main():
     args.fuzzy_plate_name = "fuzzy_plate"
     
     args.img_bool = True
-    args.img_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试样本/5MB/"
-    args.output_xml_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试样本_XML/5MB/"
+    args.img_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试样本/sandaofangxian_test/"
+    args.output_xml_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试样本_XML/sandaofangxian_test/"
 
     if args.img_bool:
         inference_images(args)

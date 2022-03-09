@@ -28,7 +28,7 @@ def avi_to_jpg(args):
         if not ret: # if the camera over return false
             break
 
-        if frame_idx % 10 == 0:
+        if frame_idx % args.frame_strp == 0:
             output_img_path = os.path.join(args.output_img_dir, os.path.basename(args.avi_path).replace('.avi', '_{}.jpg'.format(frame_idx)))
             cv2.imwrite(output_img_path, img)
 
@@ -40,8 +40,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.avi_path = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/测试视频/0000000000000000-220119-160825-160935-000006579580.avi"
-    args.output_img_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试样本/2MH_More/"
-    args.frame_strp = 10
+    args.avi_path = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/三道防线/0000000000000000-211125-115028-120014-00000G360540.avi"
+    args.output_img_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试样本/SDFX_H2/"
+    args.frame_strp = 50
 
     avi_to_jpg(args)
