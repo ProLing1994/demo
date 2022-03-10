@@ -32,9 +32,9 @@ def copy_audio():
 if __name__ == "__main__":
   
     parser = argparse.ArgumentParser(description='Streamax KWS Engine')
-    parser.add_argument('--input_dir', type=str, default="/mnt/huanyuan/model/tts/chinese_tts/sv2tts_chinese_new_tacotron2_singlespeaker_prosody_py_1_3_diff_feature_11292021/wavs_test/")
-    parser.add_argument('--output_dir', type=str, default="/mnt/huanyuan/data/speech/tts/Chinese_dataset/dataset_audio_hdf5/BZNSYP_Tacotron2/")
-    parser.add_argument('--suffix', type=str, default='.h5')
+    parser.add_argument('--input_dir', type=str, default="/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/original_dataset/Truck_Platformalarm_12012021/truck_platform_alarm_8k/")
+    parser.add_argument('--output_dir', type=str, default="/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/truck_platform_alarm_8k/")
+    parser.add_argument('--suffix', type=str, default='.wav')
     args = parser.parse_args()
 
     copy_audio()

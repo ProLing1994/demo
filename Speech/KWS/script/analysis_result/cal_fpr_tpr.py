@@ -247,7 +247,8 @@ if __name__ == "__main__":
     #             ["xiaoanxiaoan_8k", "xiaoanxiaoan_16k"],
     #             bool_write_audio)
     cal_fpr_tpr_per_folder("/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/更新漏标注数据处理/",
-                            "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_6_tc-resnet14-hisi_fbankcpu_kd_02252022/test_straming_wav/实车录制_0427_pytorch/阈值_05_05/货车怠速场景/",
+                            # "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_6_tc-resnet14-hisi_fbankcpu_kd_02252022/test_straming_wav/实车录制_0427_pytorch/阈值_05_05/货车怠速场景/",
+                            "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_6_tc-resnet14-hisi_fbankcpu_kd_02252022/test_straming_wav/实车录制_0427_pytorch/阈值_09_05/货车怠速场景/",
                             # ["_adpro"],
                             ["_mic"],
                             # ["danbin_ori"],

@@ -6,8 +6,8 @@ import sys
 import torch
 from tqdm import tqdm
 
-# sys.path.insert(0, '/home/huanyuan/code/demo/Image')
-sys.path.insert(0, '/yuanhuan/code/demo/Image')
+sys.path.insert(0, '/home/huanyuan/code/demo/Image')
+# sys.path.insert(0, '/yuanhuan/code/demo/Image')
 from detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
 from regreesion2d.plate_regreesion.utils.draw_tools import draw_detection_result
 
@@ -94,15 +94,24 @@ def img_detect(args, model, img):
             if plate_height >= args.height_threshold:
                 if np.array(result_scors_list).mean() >= args.ocr_threshold:
                     show_bboxes[result_ocr] = [plate_bbox]
+                else:
+                    show_bboxes["ocr_ignore_plate"] = [plate_bbox]
+            else:
+                show_bboxes["height_ignore_plate"] = [plate_bbox]
+
         elif args.height_threshold_bool and not args.ocr_threshold_bool:
             # 方式二：高度阈值判断
             plate_height = plate_bbox[3] - plate_bbox[1]
             if plate_height >= args.height_threshold:
                 show_bboxes[result_ocr] = [plate_bbox]
+            else:
+                show_bboxes["height_ignore_plate"] = [plate_bbox]
         elif not args.height_threshold_bool and args.ocr_threshold_bool:
             # 方式三：ocr 阈值判断
             if np.array(result_scors_list).mean() >= args.ocr_threshold:
                 show_bboxes[result_ocr] = [plate_bbox]
+            else:
+                show_bboxes["ocr_ignore_plate"] = [plate_bbox]
         else:
             # 方式四：直接叠加
             show_bboxes[result_ocr] = [plate_bbox]                   
@@ -203,7 +212,6 @@ def main():
     args = parser.parse_args()
 
     args.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
-    # args.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg/SSD_VGG_FPN_RFB_VOC_epoches_221.pth"
     args.plate_recognition_prototxt = "/mnt/huanyuan2/model/image_model/license_plate_recognition_moel_lxn/china_softmax.prototxt"
     args.plate_recognition_model_path = "/mnt/huanyuan2/model/image_model/license_plate_recognition_moel_lxn/china.caffemodel"
     args.prefix_beam_search_bool = True
@@ -238,12 +246,17 @@ def main():
         inference_images(args)
 
     args.vidio_bool = True
-    args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/测试视频/"
-    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_ocr_beamsearch_mergeclass_bboxexpand/"
-    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearch_mergeclass_bboxexpand/"
-    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearch_mergeclass_bboxexpand_roiignore/"
-    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearchs_bboxexpand_roiignore/"
-    args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_beamsearchs_roiignore/"
+    # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/测试视频/"
+    # # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_ocr_beamsearch_mergeclass_bboxexpand/"
+    # # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearch_mergeclass_bboxexpand/"
+    # # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearch_mergeclass_bboxexpand_roiignore/"
+    # # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearchs_bboxexpand_roiignore/"
+    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_beamsearchs_roiignore/"
+
+    args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/漏报视频_20220310/264视频/"
+    args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/漏报视频_20220310/264视频_beamsearchs/"
+    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/漏报视频_20220310/264视频_height_ocr_beamsearch/"
+    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/漏报视频_20220310/264视频_height_ocr_beamsearch_bboxexpand/"
 
     # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearch_mergeclass_bboxexpand_roiignore_crossdata/"
 
