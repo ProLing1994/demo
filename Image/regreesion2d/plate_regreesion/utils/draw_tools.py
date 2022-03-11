@@ -5,10 +5,12 @@ color_dict = {
                 "car": (0, 0, 255), 
                 "bus": (255, 0, 0), 
                 "truck": (0, 255, 255), 
-                "plate": (0, 255, 0), 
+                "plate": (0, 255, 0),
+                "ocr_ignore_plate": (12, 149, 255),
+                "height_ignore_plate": (57, 104, 205),
             }
 
-def cv_plot_rectangle(img, bbox, color=None, mode='xywh', thickness=3):
+def cv_plot_rectangle(img, bbox, mode='xywh', color=None,thickness=2):
     if color is None:
         color = color_dict["plate"]
     if mode == 'xywh':

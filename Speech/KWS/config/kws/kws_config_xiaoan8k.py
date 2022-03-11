@@ -20,7 +20,8 @@ __C.general.sub_data_dir = ["/mnt/huanyuan2/data/speech/kws/xiaoyu_dataset/exper
 # __C.general.version = "1.10"     # 困难样本挖掘（实车误报）
 # __C.general.version = "1.11"     # 区分小声音频存在问题，增加小声音频，减少平台误报数据（adpro_0430）
 # __C.general.version = "1.12"     # 清洗小安小安脏数据（包含小声音频）
-__C.general.version = "1.13"     # 剔除小声音频
+# __C.general.version = "1.13"     # 剔除小声音频
+__C.general.version = "1.14"     # 增加静音样本，增加近期收集到的负样本
 
 # data date
 # __C.general.date = "05202021"
@@ -28,7 +29,8 @@ __C.general.version = "1.13"     # 剔除小声音频
 # __C.general.date = "11112021"
 # __C.general.date = "12072021"
 # __C.general.date = "12222021"
-__C.general.date = "02172022"
+# __C.general.date = "02172022"
+__C.general.date = "03092022"
 
 # data path
 # __C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.8_05202021/total_data_files.csv"
@@ -36,7 +38,8 @@ __C.general.date = "02172022"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_10_11112021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_11_12072021/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_12_12222021/total_data_files.csv"
-__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_13_02172022/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_13_02172022/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_14_03092022/total_data_files.csv"
 
 # background noise path
 # __C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_1.8_05202021/background_noise_files.csv"
@@ -44,7 +47,8 @@ __C.general.data_csv_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experi
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_10_11112021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_11_12072021/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_12_12222021/background_noise_files.csv"
-__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_13_02172022/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_13_02172022/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/dataset_xiaoan_1_5s_1_14_03092022/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -58,6 +62,7 @@ __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/test"
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_2_tc-resnet14-hisi_fbankcpu_kd_11012021/"
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_3_tc-resnet14-hisi_fbankcpu_kd_11222021/"            # 实车误报迭代版本，降低误报率
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_5_tc-resnet14-hisi_fbankcpu_kd_01042022/"            # 清洗小安小安脏数据（包含小声音频）
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_6_tc-resnet14-hisi_fbankcpu_kd_02252022/"            # 剔除小声音频
 
 # finetune model
 __C.general.finetune_on = False
@@ -231,7 +236,7 @@ __C.dataset.label.label_list = __C.dataset.label.negative_label + __C.dataset.la
 __C.dataset.label.num_classes = 2
 
 # label percentage
-__C.dataset.label.silence_percentage = 10.0        # 10%
+__C.dataset.label.silence_percentage = 25.0        # 25%
 __C.dataset.label.unknown_percentage = 200.0       # 200%
 
 # trian/validation/test percentage

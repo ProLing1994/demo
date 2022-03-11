@@ -174,12 +174,12 @@ def main():
 
     # xiaoan: 2 label 
     csv_list = ["/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/dataset_1_8_infer_longterm_validation_augmentation_False_mean.csv",
-                "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/dataset_1_12_infer_longterm_validation_augmentation_False_mean.csv",
-                "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_5_tc-resnet14-hisi_fbankcpu_kd_01042022/dataset_1_8_infer_longterm_validation_augmentation_False_mean.csv",
-                "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_5_tc-resnet14-hisi_fbankcpu_kd_01042022/dataset_1_12_infer_longterm_validation_augmentation_False_mean.csv"]
+                "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_1_tc-resnet14-hisi_fbankcpu_kd_05152021/dataset_1_13_infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_6_tc-resnet14-hisi_fbankcpu_kd_02252022/dataset_1_8_infer_longterm_validation_augmentation_False_mean.csv",
+                "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_6_tc-resnet14-hisi_fbankcpu_kd_02252022/dataset_1_13_infer_longterm_validation_augmentation_False_mean.csv"]
     color_list = ["r", "r", "b", "b"]
     linestyle_list = ["-", "--", "-", "--"]
-    name_list = ["xiaoan8k-tcresnet14(3.1)--dataset(1.8)", "xiaoan8k-tcresnet14(3.1)--dataset(1.12)", "xiaoan8k-tcresnet14(3.5)--dataset(1.8)", "xiaoan8k-tcresnet14(3.5)--dataset(1.12)",]
+    name_list = ["xiaoan8k-tcresnet14(3.1)--dataset(1.8)", "xiaoan8k-tcresnet14(3.1)--dataset(1.13)", "xiaoan8k-tcresnet14(3.6)--dataset(1.8)", "xiaoan8k-tcresnet14(3.6)--dataset(1.13)",]
     label_num = 2
     ignore_num= 1
     show_roc(csv_list, color_list, linestyle_list, name_list, label_num, ignore_num)
