@@ -40,7 +40,7 @@ def draw_img(R, img_path, output_img_path, roi_bool, roi_bbox):
     cv2.imwrite(output_img_path, img)
 
 
-def cv_plot_rectangle(img, bbox, color=None, mode='xywh', thickness=3):
+def cv_plot_rectangle(img, bbox, mode='xywh', color=None, thickness=2):
     if color is None:
         color = color_dict["det"]
     if mode == 'xywh':
@@ -420,31 +420,32 @@ if __name__ == "__main__":
     # args.write_unmatched_bool = True
     # args.output_dir = "/yuanhuan/model/image/yolox_vgg/yoloxv2_vggrm_640_384_car_license_plate/eval_epoches_24/LicensePlate_China_xml/"
 
-    #####################################
-    # Car_Bus_Truck_Licenseplate
-    # 测试集图像
-    #####################################
-    args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
-    args.imageset_file = os.path.join(args.data_dir, "ImageSets/Main/test.txt")
-    # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_height/")                # 高度大于 24 的 清晰车牌
-    # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height/")        # 高度大于 24 的 清晰车牌 & 模糊车牌
-    # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate/")                         # 清晰车牌
-    args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_fuzzy/")                 # 清晰车牌 & 模糊车牌
-    args.jpg_dir =  os.path.join(args.data_dir,  "JPEGImages/")
-    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/"
-    args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-25-10_focalloss_4class_car_bus_truck_licenseplate_softmax/eval_epoches_200/ZG_ZHJYZ_detection_jiayouzhan_test/results/"
+    # #####################################
+    # # Car_Bus_Truck_Licenseplate
+    # # 测试集图像
+    # #####################################
+    # args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
+    # args.imageset_file = os.path.join(args.data_dir, "ImageSets/Main/test.txt")
+    # # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_height/")                # 高度大于 24 的 清晰车牌
+    # # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height/")        # 高度大于 24 的 清晰车牌 & 模糊车牌
+    # # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate/")                         # 清晰车牌
+    # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_fuzzy/")                 # 清晰车牌 & 模糊车牌
+    # args.jpg_dir =  os.path.join(args.data_dir,  "JPEGImages/")
+    # # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/"
+    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/"
 
-    # ######################################
-    # # 测试集：
-    # ######################################
-    # args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/加油站测试样本/"
-    # args.imageset_file = os.path.join(args.data_dir, "2MH/images.txt")
-    # args.anno_dir =  os.path.join(args.data_dir, "2MH_Annotations_CarBusTruckLicenseplate_w_height/")               # 高度大于 24 的 清晰车牌
-    # # args.anno_dir =  os.path.join(args.data_dir, "2MH_Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height/")       # 高度大于 24 的 清晰车牌 & 模糊车牌
-    # # args.anno_dir =  os.path.join(args.data_dir, "2MH_Annotations_CarBusTruckLicenseplate/")                        # 清晰车牌
-    # # args.anno_dir =  os.path.join(args.data_dir, "2MH_Annotations_CarBusTruckLicenseplate_w_fuzzy/")                # 清晰车牌 & 模糊车牌
-    # args.jpg_dir =  os.path.join(args.data_dir,  "2MH/")
-    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/加油站测试样本_2MH/results/"
+    ######################################
+    # 测试集：
+    ######################################
+    args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/加油站测试样本/"
+    args.imageset_file = os.path.join(args.data_dir, "2MB/images.txt")
+    args.anno_dir =  os.path.join(args.data_dir, "2MB_Annotations_CarBusTruckLicenseplate_w_height/")               # 高度大于 24 的 清晰车牌
+    # args.anno_dir =  os.path.join(args.data_dir, "2MB_Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height/")       # 高度大于 24 的 清晰车牌 & 模糊车牌
+    # args.anno_dir =  os.path.join(args.data_dir, "2MB_Annotations_CarBusTruckLicenseplate/")                        # 清晰车牌
+    # args.anno_dir =  os.path.join(args.data_dir, "2MB_Annotations_CarBusTruckLicenseplate_w_fuzzy/")                # 清晰车牌 & 模糊车牌
+    args.jpg_dir =  os.path.join(args.data_dir,  "2MB/")
+    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/加油站测试样本_2MB/results/"
+    args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/加油站测试样本_2MB/results/"
     
     args.det_path_dict = { 'car': args.input_dir + 'det_test_car.txt',
                            'bus': args.input_dir + 'det_test_bus.txt',
@@ -460,14 +461,14 @@ if __name__ == "__main__":
     # args.roi_set_bbox = [300, 150, 2292, 1770]       # 5M
 
     # 是否在计算 iou 的过程中，计算 uni 并集的面积只关注 label 的面积
-    args.iou_uni_use_label_bool = False
+    args.iou_uni_use_label_bool = True
 
     # 是否关注车牌横向iou结果
-    args.width_height_over_thresh_bool = False
-    args.width_over_thresh = 0.9
-    args.height_over_thresh = 0.0
-    # args.width_over_thresh = 0.95
-    # args.height_over_thresh = 0.75
+    args.width_height_over_thresh_bool = True
+    # args.width_over_thresh = 0.9
+    # args.height_over_thresh = 0.0
+    args.width_over_thresh = 0.95
+    args.height_over_thresh = 0.75
 
     # 是否保存识别结果和检出结果
     args.write_bool = True
