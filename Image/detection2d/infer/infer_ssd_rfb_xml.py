@@ -106,7 +106,11 @@ def main():
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
+    # normal
+    # args.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
+    # softmax
+    args.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
+
     args.plate_recognition_prototxt = "/mnt/huanyuan2/model/image_model/license_plate_recognition_moel_lxn/china_softmax.prototxt"
     args.plate_recognition_model_path = "/mnt/huanyuan2/model/image_model/license_plate_recognition_moel_lxn/china.caffemodel"
 
@@ -123,8 +127,8 @@ def main():
     args.fuzzy_plate_name = "fuzzy_plate"
     
     args.img_bool = True
-    args.img_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试样本/sandaofangxian_test/"
-    args.output_xml_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试样本_XML/sandaofangxian_test/"
+    args.img_dir = "/mnt/huanyuan2/data/image/3D_huoche/3D_huoche/压缩1/1/"
+    args.output_xml_dir = "/mnt/huanyuan2/data/image/3D_huoche/3D_huoche/压缩1/1/"
 
     if args.img_bool:
         inference_images(args)

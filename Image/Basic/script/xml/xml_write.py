@@ -92,5 +92,5 @@ def write_xml(output_xml_path, image_path, boxes, image_shape=None):
     xml_writer = XmlWriter(image_path, image_shape)
     for key, values in boxes.items():
         for box in values:
-            xml_writer.insert_object([key] + box)
+            xml_writer.insert_object([key] + list(box))
     xml_writer.write_xml(output_xml_path)

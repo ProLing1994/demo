@@ -37,11 +37,16 @@ def json_xml(args):
         xml_bboxes = {}
         for track in annotation['shapes']:
             label = track['label']
+            
+            # 目前提取货车的全车框
+            if not label == 'car':
+                continue
+
             xy = np.array(track['points'])
-            x1 = int(xy[2][0])
-            y1 = int(xy[0][1])
-            x2 = int(xy[6][0])
-            y2 = int(xy[6][1])
+            x1 = min(int(xy[0][0]), int(xy[1][0]), int(xy[2][0]), int(xy[3][0]), int(xy[4][0]), int(xy[5][0]), int(xy[6][0]), int(xy[7][0]))
+            y1 = min(int(xy[0][1]), int(xy[1][1]), int(xy[2][1]), int(xy[3][1]), int(xy[4][1]), int(xy[5][1]), int(xy[6][1]), int(xy[7][1]))
+            x2 = max(int(xy[0][0]), int(xy[1][0]), int(xy[2][0]), int(xy[3][0]), int(xy[4][0]), int(xy[5][0]), int(xy[6][0]), int(xy[7][0]))
+            y2 = max(int(xy[0][1]), int(xy[1][1]), int(xy[2][1]), int(xy[3][1]), int(xy[4][1]), int(xy[5][1]), int(xy[6][1]), int(xy[7][1]))
 
             if not label in xml_bboxes:
                 xml_bboxes[label] = [[x1, y1, x2, y2]]
@@ -58,9 +63,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.jpg_dir = "/mnt/huanyuan2/data/image/3D_huoche/3D_huoche_done(1.0)/"
-    args.json_dir = "/mnt/huanyuan2/data/image/3D_huoche/3D_huoche_done(1.0)/"
-    args.xml_dir = "/mnt/huanyuan2/data/image/3D_huoche/3D_huoche_done(1.0)/"
+    args.jpg_dir = "/mnt/huanyuan2/data/image/3D_huoche/3D_huoche/压缩1/1/"
+    args.json_dir = "/mnt/huanyuan2/data/image/3D_huoche/3D_huoche/压缩1/1/"
+    args.xml_dir = "/mnt/huanyuan2/data/image/3D_huoche/3D_huoche/压缩1/1/"
 
     json_xml(args)
 
