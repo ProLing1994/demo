@@ -17,8 +17,8 @@ def check_jepg(args):
 
         if check_chars != b'\xff\xd9':
             print('Not complete image: ', jpg_path)
-        # else:
-        #     image = cv2.imread(jpg_path, 1)
+            os.remove(jpg_path)
+
 
 if __name__ == "__main__":
     
@@ -26,11 +26,14 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # args.input_dir = "/yuanhuan/data/image/LicensePlate/China/"
-    args.input_dir = "/yuanhuan/data/image/LicensePlate/China_6mm/"
+    # args.input_dir = "/yuanhuan/data/image/LicensePlate/China_6mm/"
     # args.input_dir = "/yuanhuan/data/image/LicensePlate/Europe/"
     # args.input_dir = "/yuanhuan/data/image/LicensePlate/Mexico/"
     # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone/"
+    # args.jpg_dir =  args.input_dir + "JPEGImages/"
 
-    args.jpg_dir =  args.input_dir + "JPEGImages/"
+
+    args.input_dir = "/mnt/huanyuan2/data/image/3D_huoche/3D_huoche/压缩2/4/"
+    args.jpg_dir =  args.input_dir 
 
     check_jepg(args)

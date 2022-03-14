@@ -40,31 +40,31 @@ def img_detect(args, model, img):
             show_bboxes[key] = bboxes[key]
 
     # 区分清晰和模糊车牌
-    for plate_idx in range(len(bboxes["license_plate"])):
-        plate_bbox = bboxes["license_plate"][plate_idx]
+    if "license_plate" in bboxes:
+        for plate_idx in range(len(bboxes["license_plate"])):
+            plate_bbox = bboxes["license_plate"][plate_idx]
 
-        # crop
-        crop_img = gray_img[plate_bbox[1]:plate_bbox[3], plate_bbox[0]:plate_bbox[2]]
+            # crop
+            crop_img = gray_img[plate_bbox[1]:plate_bbox[3], plate_bbox[0]:plate_bbox[2]]
 
-        # check
-        if crop_img.shape[0] == 0 or crop_img.shape[1] == 0:
-            continue
+            # check
+            if crop_img.shape[0] == 0 or crop_img.shape[1] == 0:
+                continue
 
-        # greedy ocr
-        result_ocr, result_scors_list = license_palte_crnn_recognition_caffe(license_palte_detector, crop_img)
+            # greedy ocr
+            result_ocr, result_scors_list = license_palte_crnn_recognition_caffe(license_palte_detector, crop_img)
 
-        # ocr 阈值判断
-        if np.array(result_scors_list).mean() >= args.ocr_threshold:
-            if args.plate_name in show_bboxes:
-                show_bboxes[args.plate_name].append(plate_bbox)
+            # ocr 阈值判断
+            if np.array(result_scors_list).mean() >= args.ocr_threshold:
+                if args.plate_name in show_bboxes:
+                    show_bboxes[args.plate_name].append(plate_bbox)
+                else:
+                    show_bboxes[args.plate_name] = [plate_bbox]
             else:
-                show_bboxes[args.plate_name] = [plate_bbox]
-        else:
-            if args.fuzzy_plate_name in show_bboxes:
-                show_bboxes[args.fuzzy_plate_name].append(plate_bbox)
-            else:
-                show_bboxes[args.fuzzy_plate_name] = [plate_bbox]
-            
+                if args.fuzzy_plate_name in show_bboxes:
+                    show_bboxes[args.fuzzy_plate_name].append(plate_bbox)
+                else:
+                    show_bboxes[args.fuzzy_plate_name] = [plate_bbox]
 
     return show_bboxes
 
@@ -127,8 +127,8 @@ def main():
     args.fuzzy_plate_name = "fuzzy_plate"
     
     args.img_bool = True
-    args.img_dir = "/mnt/huanyuan2/data/image/3D_huoche/3D_huoche/压缩1/1/"
-    args.output_xml_dir = "/mnt/huanyuan2/data/image/3D_huoche/3D_huoche/压缩1/1/"
+    args.img_dir = "/mnt/huanyuan2/data/image/3D_huoche/3D_huoche/压缩2/4/"
+    args.output_xml_dir = "/mnt/huanyuan2/data/image/3D_huoche/3D_huoche/压缩2_xml/4_xml/"
 
     if args.img_bool:
         inference_images(args)
