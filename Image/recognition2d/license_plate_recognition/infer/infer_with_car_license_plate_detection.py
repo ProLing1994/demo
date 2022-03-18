@@ -11,6 +11,9 @@ from detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
 from regreesion2d.plate_regreesion.utils.draw_tools import draw_detection_result
 from recognition2d.license_plate_recognition.infer.license_plate import license_palte_model_init_caffe, license_palte_crnn_recognition_caffe, license_palte_beamsearch_init, license_palte_crnn_recognition_beamsearch_caffe
 
+sys.path.insert(0, '/home/huanyuan/code/demo')
+from Image.Basic.utils.folder_tools import *
+
 
 def model_init(args):
     # model init
@@ -120,9 +123,7 @@ def img_detect(args, model, img):
 
 def inference_images(args):
     # mkdir 
-    if args.write_bool:
-        if not os.path.isdir(args.output_img_dir):
-            os.makedirs(args.output_img_dir)
+    create_folder(args.output_img_dir)
 
     # model init
     model = model_init(args)
@@ -153,9 +154,7 @@ def inference_images(args):
 
 def inference_vidio(args):
     # mkdir 
-    if args.write_bool:
-        if not os.path.isdir(args.output_vidio_dir):
-            os.makedirs(args.output_vidio_dir)
+    create_folder(args.output_vidio_dir)
 
     # model init
     model = model_init(args)
@@ -167,10 +166,7 @@ def inference_vidio(args):
     
     for idx in tqdm(range(len(vidio_list))):
         vidio_path = os.path.join(args.vidio_dir, vidio_list[idx])
-
-        if args.write_bool:
-            output_vidio_path = os.path.join(args.output_vidio_dir, vidio_list[idx])
-        
+       
         cap = cv2.VideoCapture(vidio_path) 
         print(int(cap.get(cv2.CAP_PROP_FPS)))              # 得到视频的帧率
         print(cap.get(cv2.CAP_PROP_FRAME_WIDTH))           # 得到视频的宽
@@ -178,6 +174,8 @@ def inference_vidio(args):
         print(cap.get(cv2.CAP_PROP_FRAME_COUNT))           # 得到视频的总帧
 
         if args.write_bool:
+            output_vidio_path = os.path.join(args.output_vidio_dir, vidio_list[idx].replace('.avi', ''), vidio_list[idx])
+            create_folder(os.path.dirname(output_vidio_path))
             fourcc = cv2.VideoWriter_fourcc(*'MP4V')
             video_writer = cv2.VideoWriter(output_vidio_path, fourcc, cap.get(cv2.CAP_PROP_FPS), (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))))
 
@@ -187,7 +185,7 @@ def inference_vidio(args):
             ret, img = cap.read()
 
             if not ret: # if the camera over return false
-                video_writer.release()
+                # video_writer.release()
                 break
 
             # detect 
@@ -198,7 +196,8 @@ def inference_vidio(args):
                 img = draw_detection_result(img, show_bboxes, mode='ltrb')
                 video_writer.write(img)
 
-                output_img_path = os.path.join(args.output_vidio_dir, vidio_list[idx].replace(args.suffix, '_{}.jpg'.format(frame_idx)))
+                output_img_path = os.path.join(args.output_vidio_dir, vidio_list[idx].replace('.avi', ''), vidio_list[idx].replace(args.suffix, '_{}.jpg'.format(frame_idx)))
+                create_folder(os.path.dirname(output_img_path))
                 cv2.imwrite(output_img_path, img)
                 frame_idx += 1
 
@@ -242,14 +241,14 @@ def main():
     args.ocr_threshold_bool = False
     args.ocr_threshold = 0.8
     
-    args.img_bool = True
+    args.img_bool = False
     args.img_dir = "/home/huanyuan/share/huanyuan/ssd_rfb_data/"
     args.output_img_dir = "/home/huanyuan/share/huanyuan/"
 
     if args.img_bool:
         inference_images(args)
 
-    args.vidio_bool = False
+    args.vidio_bool = True
     # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/测试视频/"
     # # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_ocr_beamsearch_mergeclass_bboxexpand/"
     # # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearch_mergeclass_bboxexpand/"
