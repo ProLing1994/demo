@@ -3,14 +3,12 @@ import cv2
 import numpy as np
 import os
 import sys 
-import torch
 from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo/Image')
 # sys.path.insert(0, '/yuanhuan/code/demo/Image')
 from detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
 from regreesion2d.plate_regreesion.utils.draw_tools import draw_detection_result
-
 from recognition2d.license_plate_recognition.infer.license_plate import license_palte_model_init_caffe, license_palte_crnn_recognition_caffe, license_palte_beamsearch_init, license_palte_crnn_recognition_beamsearch_caffe
 
 
@@ -40,6 +38,7 @@ def img_detect(args, model, img):
         # init
         temp_bboxes = bboxes
         bboxes = dict()
+        bboxes["roi_ignore_area"] = [args.roi_ignore_area]
 
         for key in temp_bboxes.keys():
             bbox_list = []
@@ -163,7 +162,7 @@ def inference_vidio(args):
 
     # image init 
     vidio_list = np.array(os.listdir(args.vidio_dir))
-    vidio_list = vidio_list[[vidio.endswith('.avi') for vidio in vidio_list]]
+    vidio_list = vidio_list[[vidio.endswith(args.suffix) for vidio in vidio_list]]
     vidio_list.sort()
     
     for idx in tqdm(range(len(vidio_list))):
@@ -199,7 +198,7 @@ def inference_vidio(args):
                 img = draw_detection_result(img, show_bboxes, mode='ltrb')
                 video_writer.write(img)
 
-                output_img_path = os.path.join(args.output_vidio_dir, vidio_list[idx].replace('.avi', '_{}.jpg'.format(frame_idx)))
+                output_img_path = os.path.join(args.output_vidio_dir, vidio_list[idx].replace(args.suffix, '_{}.jpg'.format(frame_idx)))
                 cv2.imwrite(output_img_path, img)
                 frame_idx += 1
 
@@ -213,8 +212,8 @@ def main():
 
     # args.ssd_car_plate_prototxt = None
     # args.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
-    args.ssd_car_plate_prototxt = "/mnt/huanyuan2/model/image_model/ssd_rfb_zg/FPN_RFB_5class_noDilation_prior.prototxt"
-    args.ssd_car_plate_model_path = "/mnt/huanyuan2/model/image_model/ssd_rfb_zg/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_zg_2022-02-24-15.caffemodel"
+    args.ssd_car_plate_prototxt = "/mnt/huanyuan2/model/image_model/ssd_rfb_zg/car_bus_truck_licenseplate_zg_2022-02-24-15/FPN_RFB_5class_noDilation_prior.prototxt"
+    args.ssd_car_plate_model_path = "/mnt/huanyuan2/model/image_model/ssd_rfb_zg/car_bus_truck_licenseplate_zg_2022-02-24-15/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_zg_2022-02-24-15.caffemodel"
     args.ssd_caffe_bool = True
 
     args.plate_recognition_prototxt = "/mnt/huanyuan2/model/image_model/license_plate_recognition_moel_lxn/china_softmax.prototxt"
@@ -226,7 +225,7 @@ def main():
 
     # 是否通过 roi 区域屏蔽部分检测结果
     args.roi_ignore_bool = False
-    args.roi_ignore_area = [0, 100, 1920, 980]
+    args.roi_ignore_area = [0, 108, 1920, 972]
 
     # 是否将 car\bus\truck 合并为一类输出
     args.merge_class_bool = True
@@ -243,14 +242,14 @@ def main():
     args.ocr_threshold_bool = False
     args.ocr_threshold = 0.8
     
-    args.img_bool = False
-    args.img_dir = "/mnt/huanyuan2/model/image_model/ssd_rfb_zg/"
-    args.output_img_dir = "/mnt/huanyuan2/model/image_model/ssd_rfb_zg/test/"
+    args.img_bool = True
+    args.img_dir = "/home/huanyuan/share/huanyuan/ssd_rfb_data/"
+    args.output_img_dir = "/home/huanyuan/share/huanyuan/"
 
     if args.img_bool:
         inference_images(args)
 
-    args.vidio_bool = True
+    args.vidio_bool = False
     # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/测试视频/"
     # # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_ocr_beamsearch_mergeclass_bboxexpand/"
     # # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearch_mergeclass_bboxexpand/"
@@ -264,8 +263,14 @@ def main():
     # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/视频_20220310/264误报视频/"
     # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/视频_20220310/264误报视频_beamsearchs/"
 
-    args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/test/"
-    args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/test_beamsearchs_caffe/"
+    # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/test/"
+    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/test_beamsearchs/"
+
+    args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/转模型测试数据/"
+    args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/转模型测试数据_beamsearchs/"
+
+    args.suffix = '.avi'
+    # args.suffix = '.mp4'
 
     if args.vidio_bool:
         inference_vidio(args)

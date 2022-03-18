@@ -23,6 +23,6 @@ if __name__ == '__main__':
             # rename_path = os.path.join(os.path.dirname(file_path), "{:0>5d}_{}{}{}".format((start_id + idx), file_format, basename, file_type))
 
             print(file_path, '->', rename_path)
-            # os.rename(file_path, rename_path)
+            os.rename(file_path, rename_path)
             f.write("{}\n".format(os.path.basename(rename_path)))
         
