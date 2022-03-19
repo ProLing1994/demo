@@ -17,7 +17,7 @@ from Image.Basic.utils.folder_tools import *
 
 def model_init(args):
     # model init
-    car_plate_detector = SSDDetector(prototxt=args.ssd_car_plate_prototxt, model_path=args.ssd_car_plate_model_path, ssd_caffe_bool=args.ssd_caffe_bool, merge_class_bool=args.merge_class_bool)
+    car_plate_detector = SSDDetector(threshold=0.4, prototxt=args.ssd_car_plate_prototxt, model_path=args.ssd_car_plate_model_path, ssd_caffe_bool=args.ssd_caffe_bool, merge_class_bool=args.merge_class_bool)
     license_palte_detector = license_palte_model_init_caffe(args.plate_recognition_prototxt, args.plate_recognition_model_path)
     license_palte_beamsearch = license_palte_beamsearch_init()
     return (car_plate_detector, license_palte_detector, license_palte_beamsearch)
@@ -209,10 +209,18 @@ def main():
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
+    # # normal
+    # # args.ssd_car_plate_prototxt = None
+    # # args.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
+    # args.ssd_car_plate_prototxt = "/mnt/huanyuan2/model/image_model/ssd_rfb_zg/car_bus_truck_licenseplate_zg_2022-02-24-15/FPN_RFB_5class_noDilation_prior.prototxt"
+    # args.ssd_car_plate_model_path = "/mnt/huanyuan2/model/image_model/ssd_rfb_zg/car_bus_truck_licenseplate_zg_2022-02-24-15/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_zg_2022-02-24-15.caffemodel"
+    # args.ssd_caffe_bool = True
+
+    # softmax
     # args.ssd_car_plate_prototxt = None
-    # args.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
-    args.ssd_car_plate_prototxt = "/mnt/huanyuan2/model/image_model/ssd_rfb_zg/car_bus_truck_licenseplate_zg_2022-02-24-15/FPN_RFB_5class_noDilation_prior.prototxt"
-    args.ssd_car_plate_model_path = "/mnt/huanyuan2/model/image_model/ssd_rfb_zg/car_bus_truck_licenseplate_zg_2022-02-24-15/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_zg_2022-02-24-15.caffemodel"
+    # args.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
+    args.ssd_car_plate_prototxt = "/mnt/huanyuan2/model/image_model/ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-03-09-17/FPN_RFB_3class_3attri_noDilation_prior.prototxt"
+    args.ssd_car_plate_model_path = "/mnt/huanyuan2/model/image_model/ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-03-09-17/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-03-09-17.caffemodel"
     args.ssd_caffe_bool = True
 
     args.plate_recognition_prototxt = "/mnt/huanyuan2/model/image_model/license_plate_recognition_moel_lxn/china_softmax.prototxt"
@@ -227,7 +235,7 @@ def main():
     args.roi_ignore_area = [0, 108, 1920, 972]
 
     # 是否将 car\bus\truck 合并为一类输出
-    args.merge_class_bool = True
+    args.merge_class_bool = False
 
     # 是否扩展高度不足 24 车牌
     args.plate_bbox_expand_bool = False
@@ -262,11 +270,11 @@ def main():
     # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/视频_20220310/264误报视频/"
     # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/视频_20220310/264误报视频_beamsearchs/"
 
-    # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/test/"
-    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/test_beamsearchs/"
+    args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/test/"
+    args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/test_beamsearchs/"
 
-    args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/转模型测试数据/"
-    args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/转模型测试数据_beamsearchs/"
+    # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/转模型测试数据/"
+    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/转模型测试数据_beamsearchs/"
 
     args.suffix = '.avi'
     # args.suffix = '.mp4'

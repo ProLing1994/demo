@@ -1,5 +1,6 @@
 import argparse
 from collections import Counter
+from tkinter.tix import Tree
 import cv2
 import numpy as np
 import os
@@ -83,7 +84,10 @@ def img_detect(args, model, img):
 
     # car_plate_detector
     bboxes = car_plate_detector.detect(img)
-    
+
+    if "license_plate" not in bboxes: 
+        return show_bboxes, license_palte_ocr_list, capture_bool
+
     # license_plate
     for plate_idx in range(len(bboxes["license_plate"])):
         plate_bbox = bboxes["license_plate"][plate_idx]
@@ -93,13 +97,14 @@ def img_detect(args, model, img):
             continue
         
         # find car bbox
-        for car_idx in range(len(bboxes["car"])):
-            car_bbox = bboxes["car"][car_idx]
-            if intersect(plate_bbox, car_bbox) > 0.0:
-                if "car" not in show_bboxes:
-                    show_bboxes["car"] = [car_bbox]    
-                else:
-                    show_bboxes["car"].append(car_bbox)
+        if "car" in bboxes:
+            for car_idx in range(len(bboxes["car"])):
+                car_bbox = bboxes["car"][car_idx]
+                if intersect(plate_bbox, car_bbox) > 0.0:
+                    if "car" not in show_bboxes:
+                        show_bboxes["car"] = [car_bbox]    
+                    else:
+                        show_bboxes["car"].append(car_bbox)
 
         # crop
         crop_img = gray_img[plate_bbox[1]:plate_bbox[3], plate_bbox[0]:plate_bbox[2]]
@@ -119,8 +124,14 @@ def img_detect(args, model, img):
         # capture bool
         plate_center_y = (plate_bbox[1] + plate_bbox[3]) / 2
         distance_y = max( args.roi_capture_area[3] - plate_center_y, 0.0 )
-        if distance_y <= args.capture_min_thres * ( args.roi_capture_area[3] - args.roi_capture_area[1]):
-            capture_bool = True
+        if args.lower_boundary_capture_bool:
+            if distance_y <= args.capture_lower_boundary_thres * ( args.roi_capture_area[3] - args.roi_capture_area[1]):
+                capture_bool = True
+        elif args.upper_boundary_capture_bool:
+            if distance_y >= args.capture_upper_boundary_thres * ( args.roi_capture_area[3] - args.roi_capture_area[1]):
+                capture_bool = True
+        else:
+            pass
 
         show_bboxes[result_ocr] = [plate_bbox]
         license_palte_ocr_list.append(result_ocr)
@@ -171,7 +182,7 @@ def inference_vidio(args):
                 # video_writer.release()
                 break
             
-            # if frame_idx == 152:
+            # if frame_idx == 74:
             #     print()
 
             # detect 
@@ -251,11 +262,19 @@ def main():
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.ssd_car_plate_prototxt = None
-    args.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
-    # args.ssd_car_plate_prototxt = "/mnt/huanyuan2/model/image_model/ssd_rfb_zg/FPN_RFB_5class_noDilation_prior.prototxt"
-    # args.ssd_car_plate_model_path = "/mnt/huanyuan2/model/image_model/ssd_rfb_zg/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_zg_2022-02-24-15.caffemodel"
-    args.ssd_caffe_bool = False
+    # # normal
+    # args.ssd_car_plate_prototxt = None
+    # args.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
+    # # args.ssd_car_plate_prototxt = "/mnt/huanyuan2/model/image_model/ssd_rfb_zg/FPN_RFB_5class_noDilation_prior.prototxt"
+    # # args.ssd_car_plate_model_path = "/mnt/huanyuan2/model/image_model/ssd_rfb_zg/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_zg_2022-02-24-15.caffemodel"
+    # args.ssd_caffe_bool = False
+
+    # softmax
+    # args.ssd_car_plate_prototxt = None
+    # args.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
+    args.ssd_car_plate_prototxt = "/mnt/huanyuan2/model/image_model/ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-03-09-17/FPN_RFB_3class_3attri_noDilation_prior.prototxt"
+    args.ssd_car_plate_model_path = "/mnt/huanyuan2/model/image_model/ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-03-09-17/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-03-09-17.caffemodel"
+    args.ssd_caffe_bool = True
 
     args.plate_recognition_prototxt = "/mnt/huanyuan2/model/image_model/license_plate_recognition_moel_lxn/china_softmax.prototxt"
     args.plate_recognition_model_path = "/mnt/huanyuan2/model/image_model/license_plate_recognition_moel_lxn/china.caffemodel"
@@ -265,10 +284,18 @@ def main():
     args.write_bool = True
 
     # 对 roi 区域进行抓拍
-    args.roi_capture_area = [900, 0, 1900, 1920]
+    # # 2lane captute
+    # args.roi_capture_area = [900, 0, 1900, 1920]
+    # 3lane captute
+    args.roi_capture_area = [1600, 0, 2592, 1920]
 
     # 抓拍阈值，距离下边界的距离
-    args.capture_min_thres = 0.10
+    # 2lane captute
+    args.lower_boundary_capture_bool = False
+    args.capture_lower_boundary_thres = 0.10
+    # 3lane captute
+    args.upper_boundary_capture_bool = True
+    args.capture_upper_boundary_thres = 0.40
 
     # 抓拍间隔
     args.capture_interval = 2
@@ -284,13 +311,18 @@ def main():
     args.info_container = 30
 
     # 是否将 car\bus\truck 合并为一类输出
-    args.merge_class_bool = True
+    args.merge_class_bool = False
 
     args.vidio_bool = True
-    args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/test/"
-    args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/test_capture/"
-    # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/5M/"
-    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/5M_capture/"
+    # # 2lane captute
+    # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/5MH_2lane/"
+    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/5MH_2lane_capture/"
+    # 3lane captute
+    args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/5MH_3lane/"
+    args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/5MH_3lane_capture/"
+    # # test
+    # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/test/"
+    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/test_capture/"
 
     if args.vidio_bool:
         inference_vidio(args)

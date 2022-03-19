@@ -10,8 +10,7 @@ sys.path.insert(0, caffe_root + 'python')
 sys.path.append('./')
 import caffe
 
-
-sys.path.insert(0, caffe_root + '/home/huanyuan/code/demo/')
+sys.path.insert(0, '/home/huanyuan/code/demo/')
 import Speech.API.Kws_weakup_Asr.impl.asr_decode_beamsearch as Decode_BeamSearch
 
 
