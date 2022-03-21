@@ -62,6 +62,9 @@ def img_detect(args, model, img):
         if key != "license_plate":
             show_bboxes[key] = bboxes[key]
 
+    if "license_plate" not in bboxes: 
+        return show_bboxes
+
     for plate_idx in range(len(bboxes["license_plate"])):
         plate_bbox = bboxes["license_plate"][plate_idx]
 
@@ -176,8 +179,8 @@ def inference_vidio(args):
         if args.write_bool:
             output_vidio_path = os.path.join(args.output_vidio_dir, vidio_list[idx].replace('.avi', ''), vidio_list[idx])
             create_folder(os.path.dirname(output_vidio_path))
-            fourcc = cv2.VideoWriter_fourcc(*'MP4V')
-            video_writer = cv2.VideoWriter(output_vidio_path, fourcc, cap.get(cv2.CAP_PROP_FPS), (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))))
+            # fourcc = cv2.VideoWriter_fourcc(*'MP4V')
+            # video_writer = cv2.VideoWriter(output_vidio_path, fourcc, cap.get(cv2.CAP_PROP_FPS), (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))))
 
         frame_idx = 0
 
@@ -194,7 +197,7 @@ def inference_vidio(args):
             # draw img
             if args.write_bool:
                 img = draw_detection_result(img, show_bboxes, mode='ltrb')
-                video_writer.write(img)
+                # video_writer.write(img)
 
                 output_img_path = os.path.join(args.output_vidio_dir, vidio_list[idx].replace('.avi', ''), vidio_list[idx].replace(args.suffix, '_{}.jpg'.format(frame_idx)))
                 create_folder(os.path.dirname(output_img_path))
@@ -217,11 +220,11 @@ def main():
     # args.ssd_caffe_bool = True
 
     # softmax
-    # args.ssd_car_plate_prototxt = None
-    # args.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
-    args.ssd_car_plate_prototxt = "/mnt/huanyuan2/model/image_model/ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-03-09-17/FPN_RFB_3class_3attri_noDilation_prior.prototxt"
-    args.ssd_car_plate_model_path = "/mnt/huanyuan2/model/image_model/ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-03-09-17/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-03-09-17.caffemodel"
-    args.ssd_caffe_bool = True
+    args.ssd_car_plate_prototxt = None
+    args.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
+    # args.ssd_car_plate_prototxt = "/mnt/huanyuan2/model/image_model/ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-03-09-17/FPN_RFB_3class_3attri_noDilation_prior.prototxt"
+    # args.ssd_car_plate_model_path = "/mnt/huanyuan2/model/image_model/ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-03-09-17/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-03-09-17.caffemodel"
+    args.ssd_caffe_bool = False
 
     args.plate_recognition_prototxt = "/mnt/huanyuan2/model/image_model/license_plate_recognition_moel_lxn/china_softmax.prototxt"
     args.plate_recognition_model_path = "/mnt/huanyuan2/model/image_model/license_plate_recognition_moel_lxn/china.caffemodel"
@@ -270,11 +273,14 @@ def main():
     # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/视频_20220310/264误报视频/"
     # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/视频_20220310/264误报视频_beamsearchs/"
 
-    args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/test/"
-    args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/test_beamsearchs/"
+    # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/test/"
+    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/test_beamsearchs/"
 
     # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/转模型测试数据/"
     # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/转模型测试数据_beamsearchs/"
+
+    args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/原始数据视频/002500041C/2022-03-18/avi/"
+    args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/test/002500041C/2022-03-18/avi_beamsearchs/"
 
     args.suffix = '.avi'
     # args.suffix = '.mp4'
