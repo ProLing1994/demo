@@ -252,14 +252,14 @@ def main():
     args.ocr_threshold_bool = False
     args.ocr_threshold = 0.8
     
-    args.img_bool = False
-    args.img_dir = "/home/huanyuan/share/huanyuan/ssd_rfb_data/"
-    args.output_img_dir = "/home/huanyuan/share/huanyuan/"
+    args.img_bool = True
+    args.img_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/原始数据视频/002500041C/2022-03-18/挑选关键帧/"
+    args.output_img_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/test/002500041C/2022-03-18/挑选关键帧_beamsearchs/"
 
     if args.img_bool:
         inference_images(args)
 
-    args.vidio_bool = True
+    args.vidio_bool = False
     # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/测试视频/"
     # # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_ocr_beamsearch_mergeclass_bboxexpand/"
     # # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearch_mergeclass_bboxexpand/"
