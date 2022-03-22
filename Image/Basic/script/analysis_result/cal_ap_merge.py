@@ -419,10 +419,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    # #####################################
-    # # Car_Bus_Truck_Licenseplate
-    # # 测试集图像
-    # #####################################
+    #####################################
+    # Car_Bus_Truck_Licenseplate
+    # 测试集图像
+    #####################################
     # args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
     # args.imageset_file = os.path.join(args.data_dir, "ImageSets/Main/test.txt")
     # # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_height/")                # 高度大于 24 的 清晰车牌
@@ -443,15 +443,17 @@ if __name__ == "__main__":
     # args.anno_dir =  os.path.join(args.data_dir, "5MH_Annotations_CarBusTruckLicenseplate/")                        # 清晰车牌
     args.anno_dir =  os.path.join(args.data_dir, "5MH_Annotations_CarBusTruckLicenseplate_w_fuzzy/")                # 清晰车牌 & 模糊车牌
     args.jpg_dir =  os.path.join(args.data_dir,  "5MH/")
-    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/加油站测试样本_5MH/results/"
-    args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/加油站测试样本_5MH/results/"
-    
-    args.merge_ap_dict = { 'car_bus_truck': ['car', 'bus', 'truck'] }
+    args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/加油站测试样本_5MH/results/"
+    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/加油站测试样本_5MH/results/"
+
+    # args.merge_ap_dict = { 'car': ['car'], 'bus_truck': ['bus', 'truck'], 'car_bus_truck': ['car', 'bus', 'truck'] }
+    args.merge_ap_dict = { 'bus_truck': ['bus', 'truck'] }
 
     args.det_path_dict = { 'car': args.input_dir + 'det_test_car.txt',
                            'bus': args.input_dir + 'det_test_bus.txt',
                            'truck': args.input_dir + 'det_test_truck.txt',
                            'car_bus_truck': args.input_dir + 'det_test_car_bus_truck.txt', 
+                           'bus_truck': args.input_dir + 'det_test_bus_truck.txt', 
                          } 
 
     args.over_thresh = 0.4
