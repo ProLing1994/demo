@@ -2,11 +2,11 @@ import cv2
 
 
 color_dict = {
-                "car": (0, 0, 255), 
+                "car": (0, 255, 0), 
                 "car_capture": (12, 149, 255), 
                 "bus": (255, 0, 0), 
                 "truck": (0, 255, 255), 
-                "plate": (0, 255, 0),
+                "plate": (0, 0, 255),
                 "ocr_ignore_plate": (12, 149, 255),
                 "height_ignore_plate": (57, 104, 205),
                 "roi_ignore_area": (255, 255, 255),

@@ -93,6 +93,9 @@ def img_detect(args, model, img):
             # greedy
             result_ocr, result_scors_list = license_palte_crnn_recognition_caffe(license_palte_detector, crop_img)
 
+        if args.write_ocr_score_bool:
+            result_ocr = result_ocr + '_{:.2f}'.format(np.array(result_scors_list).mean())
+
         if args.height_threshold_bool and args.ocr_threshold_bool:
             # 方式一：高度阈值判断，ocr 阈值判断
             plate_height = plate_bbox[3] - plate_bbox[1]
@@ -228,14 +231,16 @@ def main():
 
     args.plate_recognition_prototxt = "/mnt/huanyuan2/model/image_model/license_plate_recognition_moel_lxn/china_softmax.prototxt"
     args.plate_recognition_model_path = "/mnt/huanyuan2/model/image_model/license_plate_recognition_moel_lxn/china.caffemodel"
-    args.prefix_beam_search_bool = True
+    args.prefix_beam_search_bool = False
 
     # 是否保存结果
     args.write_bool = True
+    args.write_ocr_score_bool = True
 
     # 是否通过 roi 区域屏蔽部分检测结果
-    args.roi_ignore_bool = False
-    args.roi_ignore_area = [0, 108, 1920, 972]
+    args.roi_ignore_bool = True
+    # args.roi_ignore_area = [0, 108, 1920, 972]
+    args.roi_ignore_area = [0, 300, 1920, 1080]
 
     # 是否将 car\bus\truck 合并为一类输出
     args.merge_class_bool = False
@@ -252,14 +257,14 @@ def main():
     args.ocr_threshold_bool = False
     args.ocr_threshold = 0.8
     
-    args.img_bool = True
+    args.img_bool = False
     args.img_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/原始数据视频/002500041C/2022-03-18/挑选关键帧/"
     args.output_img_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/test/002500041C/2022-03-18/挑选关键帧_beamsearchs/"
 
     if args.img_bool:
         inference_images(args)
 
-    args.vidio_bool = False
+    args.vidio_bool = True
     # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/测试视频/"
     # # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_ocr_beamsearch_mergeclass_bboxexpand/"
     # # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearch_mergeclass_bboxexpand/"
@@ -279,8 +284,10 @@ def main():
     # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/转模型测试数据/"
     # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/转模型测试数据_beamsearchs/"
 
-    args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/原始数据视频/002500041C/2022-03-18/avi/"
-    args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/test/002500041C/2022-03-18/avi_beamsearchs/"
+    # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/视频_20220310/264原始视频/2M/"
+    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/视频_20220310/264原始视频_result/2M_greedy/"
+    args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/视频_20220310/264原始视频/2M_big/"
+    args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/视频_20220310/264原始视频_result/2M_big_greedy/"
 
     args.suffix = '.avi'
     # args.suffix = '.mp4'
