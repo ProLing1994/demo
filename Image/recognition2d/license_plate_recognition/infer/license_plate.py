@@ -14,16 +14,16 @@ sys.path.insert(0, '/home/huanyuan/code/demo/')
 import Speech.API.Kws_weakup_Asr.impl.asr_decode_beamsearch as Decode_BeamSearch
 
 
-# ocr_labels = ["-","皖", "沪", "津", "渝", "冀", "晋", "蒙", "辽", "吉", "黑", "苏", "浙",
-#               "京", "闽", "赣", "鲁", "豫", "鄂", "湘", "粤", "桂", "琼", "川", "贵", "云", "藏",
-#               "陕", "甘", "青", "宁", "新", "警", "学", 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
-#               'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-#               '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '挂']
-ocr_labels = ["-","wan", "hu", "jin", "yu", "ji", "jin", "meng", "liao", "ji", "hei", "su", "zhe",
-              "jing", "min", "gan", "lu", "yu", "e", "xiang", "yue", "gui", "qiong", "chuan", "gui", "yun", "zang",
-              "shan", "gan", "qing", "ning", "xin", "jing", "xue", 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+ocr_labels = ["-","皖", "沪", "津", "渝", "冀", "晋", "蒙", "辽", "吉", "黑", "苏", "浙",
+              "京", "闽", "赣", "鲁", "豫", "鄂", "湘", "粤", "桂", "琼", "川", "贵", "云", "藏",
+              "陕", "甘", "青", "宁", "新", "警", "学", 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
               'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-              '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'gua']
+              '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '挂']
+# ocr_labels = ["-","wan", "hu", "jin", "yu", "ji", "jin", "meng", "liao", "ji", "hei", "su", "zhe",
+#               "jing", "min", "gan", "lu", "yu", "e", "xiang", "yue", "gui", "qiong", "chuan", "gui", "yun", "zang",
+#               "shan", "gan", "qing", "ning", "xin", "jing", "xue", 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+#               'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+#               '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'gua']
 
 def preprocess(src):
     img = cv2.resize(src, (256, 64))

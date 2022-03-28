@@ -286,7 +286,7 @@ if __name__ == "__main__":
     #                 ["positive"], positive_label_idx=positive_label_idx)
 
     # xiaoan8k
-    model_name = "kws_xiaoan8k_3_6_tc-resnet14-hisi_fbankcpu_kd_02252022"
+    model_name = "kws_xiaoan8k_3_7_tc-resnet14-hisi_fbankcpu_kd_03142022"
     threshold = "0.8"
     positive_label_idx = "1"
     show_score_line("/mnt/huanyuan2/model/test_straming_wav/xiaoan8k_1_1_04082021_training_60.csv",

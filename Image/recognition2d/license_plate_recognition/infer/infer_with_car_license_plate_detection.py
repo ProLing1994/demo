@@ -8,7 +8,7 @@ from tqdm import tqdm
 sys.path.insert(0, '/home/huanyuan/code/demo/Image')
 # sys.path.insert(0, '/yuanhuan/code/demo/Image')
 from detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
-from regreesion2d.plate_regreesion.utils.draw_tools import draw_detection_result
+from regreesion2d.plate_regreesion.utils.draw_tools import draw_detection_result, color_dict
 from recognition2d.license_plate_recognition.infer.license_plate import license_palte_model_init_caffe, license_palte_crnn_recognition_caffe, license_palte_beamsearch_init, license_palte_crnn_recognition_beamsearch_caffe
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
@@ -70,13 +70,18 @@ def img_detect(args, model, img):
 
         # plate_bbox_expand
         if args.plate_bbox_expand_bool:
-            plate_height = plate_bbox[3] - plate_bbox[1]
-            if plate_height >= args.height_threshold:
-                pass
-            elif plate_height >= args.plate_bbox_minist_height:
-                expand_height = int(( args.height_threshold - plate_height) / 2.0 + 0.5 )
-                plate_bbox[1] = max(0, plate_bbox[1] - expand_height)
-                plate_bbox[3] = min(img.shape[0], plate_bbox[3] + expand_height)
+            if args.plate_bbox_expand_height_bool:
+                plate_height = plate_bbox[3] - plate_bbox[1]
+                if plate_height >= args.height_threshold:
+                    pass
+                elif plate_height >= args.plate_bbox_minist_height:
+                    expand_height = int(( args.height_threshold - plate_height) / 2.0 + 0.5 )
+                    plate_bbox[1] = max(0, plate_bbox[1] - expand_height)
+                    plate_bbox[3] = min(img.shape[0], plate_bbox[3] + expand_height)
+            
+            if args.plate_bbox_expand_weight_bool:
+                plate_bbox[0] = max(plate_bbox[0] - args.plate_bbox_weight, 0)
+                plate_bbox[2] = min(img.shape[1], plate_bbox[2] + args.plate_bbox_weight) 
 
         # crop
         crop_img = gray_img[plate_bbox[1]:plate_bbox[3], plate_bbox[0]:plate_bbox[2]]
@@ -199,12 +204,28 @@ def inference_vidio(args):
 
             # draw img
             if args.write_bool:
+
+                # draw crop image
+                if args.write_crop_license_plate:
+                    # crop
+                    crop_idx = 0
+                    for key, plate_bbox in show_bboxes.items():
+                        if key not in color_dict:
+                            crop_img = img[plate_bbox[0][1]:plate_bbox[0][3], plate_bbox[0][0]:plate_bbox[0][2]]
+
+                            output_crop_img_path = os.path.join(args.output_vidio_dir, 'crop', vidio_list[idx].replace('.avi', ''), '{}_{}_{}.jpg'.format(key, frame_idx, crop_idx))
+                            create_folder(os.path.dirname(output_crop_img_path))
+                            cv2.imwrite(output_crop_img_path, crop_img)
+
+                            crop_idx += 1       
+
                 img = draw_detection_result(img, show_bboxes, mode='ltrb')
                 # video_writer.write(img)
 
                 output_img_path = os.path.join(args.output_vidio_dir, vidio_list[idx].replace('.avi', ''), vidio_list[idx].replace(args.suffix, '_{}.jpg'.format(frame_idx)))
                 create_folder(os.path.dirname(output_img_path))
                 cv2.imwrite(output_img_path, img)
+
                 frame_idx += 1
 
                 tqdm.write("{}: {}".format(vidio_path, str(frame_idx)))
@@ -236,6 +257,7 @@ def main():
     # 是否保存结果
     args.write_bool = True
     args.write_ocr_score_bool = True
+    args.write_crop_license_plate = True
 
     # 是否通过 roi 区域屏蔽部分检测结果
     args.roi_ignore_bool = True
@@ -246,8 +268,11 @@ def main():
     args.merge_class_bool = False
 
     # 是否扩展高度不足 24 车牌
-    args.plate_bbox_expand_bool = False
+    args.plate_bbox_expand_bool = True
+    args.plate_bbox_expand_height_bool = True
     args.plate_bbox_minist_height = 18
+    args.plate_bbox_expand_weight_bool = True
+    args.plate_bbox_weight = 3
 
     # 是否设置高度阈值挑选车牌
     args.height_threshold_bool = False
@@ -272,22 +297,16 @@ def main():
     # # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearchs_bboxexpand_roiignore/"
     # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_beamsearchs_roiignore/"
 
-    # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/视频_20220310/264漏报视频/"
-    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/视频_20220310/264漏报视频_beamsearchs/"
-
-    # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/视频_20220310/264误报视频/"
-    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/视频_20220310/264误报视频_beamsearchs/"
-
     # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/test/"
     # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/test_beamsearchs/"
 
     # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/转模型测试数据/"
     # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/转模型测试数据_beamsearchs/"
 
-    # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/视频_20220310/264原始视频/2M/"
-    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/视频_20220310/264原始视频_result/2M_greedy/"
-    args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/视频_20220310/264原始视频/2M_big/"
-    args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/视频_20220310/264原始视频_result/2M_big_greedy/"
+    # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_ZHJYZ_220119/264原始视频/2M/"
+    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_ZHJYZ_220119/264原始视频_result/2M_greedy/"
+    args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_ZHJYZ_220119/264原始视频/2M_big/"
+    args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_ZHJYZ_220119/264原始视频_result/2M_big_greedy/"
 
     args.suffix = '.avi'
     # args.suffix = '.mp4'

@@ -63,6 +63,7 @@ __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/test"
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_3_tc-resnet14-hisi_fbankcpu_kd_11222021/"            # 实车误报迭代版本，降低误报率
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_5_tc-resnet14-hisi_fbankcpu_kd_01042022/"            # 清洗小安小安脏数据（包含小声音频）
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_6_tc-resnet14-hisi_fbankcpu_kd_02252022/"            # 剔除小声音频
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_3_7_tc-resnet14-hisi_fbankcpu_kd_03142022/"            # 增加静音样本，增加近期收集到的负样本
 
 # finetune model
 __C.general.finetune_on = False
