@@ -139,34 +139,34 @@ def img_detect(args, model, img):
     return show_bboxes, license_palte_ocr_list, capture_bool
 
 
-def inference_vidio(args):
+def inference_video(args):
     # mkdir 
     if args.write_bool:
-        create_folder(args.output_vidio_dir)
+        create_folder(args.output_video_dir)
 
     # model init
     model = model_init(args)
 
     # image init 
-    vidio_list = np.array(os.listdir(args.vidio_dir))
-    vidio_list = vidio_list[[vidio.endswith('.avi') for vidio in vidio_list]]
-    vidio_list.sort()
+    video_list = np.array(os.listdir(args.video_dir))
+    video_list = video_list[[video.endswith('.avi') for video in video_list]]
+    video_list.sort()
     
-    for idx in tqdm(range(len(vidio_list))):
-        vidio_path = os.path.join(args.vidio_dir, vidio_list[idx])
+    for idx in tqdm(range(len(video_list))):
+        video_path = os.path.join(args.video_dir, video_list[idx])
        
-        cap = cv2.VideoCapture(vidio_path) 
+        cap = cv2.VideoCapture(video_path) 
         print(int(cap.get(cv2.CAP_PROP_FPS)))              # 得到视频的帧率
         print(cap.get(cv2.CAP_PROP_FRAME_WIDTH))           # 得到视频的宽
         print(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))          # 得到视频的高
         print(cap.get(cv2.CAP_PROP_FRAME_COUNT))           # 得到视频的总帧
 
         if args.write_bool:
-            output_vidio_path = os.path.join(args.output_vidio_dir, vidio_list[idx].replace('.avi', ''), vidio_list[idx])
-            create_folder(os.path.dirname(output_vidio_path))
+            output_video_path = os.path.join(args.output_video_dir, video_list[idx].replace('.avi', ''), video_list[idx])
+            create_folder(os.path.dirname(output_video_path))
 
             # fourcc = cv2.VideoWriter_fourcc(*'MP4V')
-            # video_writer = cv2.VideoWriter(output_vidio_path, fourcc, cap.get(cv2.CAP_PROP_FPS), (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))))
+            # video_writer = cv2.VideoWriter(output_video_path, fourcc, cap.get(cv2.CAP_PROP_FPS), (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))))
 
         # init
         frame_idx = 0
@@ -217,7 +217,7 @@ def inference_vidio(args):
                 # video_writer.write(img)
 
                 # 保存图像结果
-                output_img_path = os.path.join(args.output_vidio_dir, vidio_list[idx].replace('.avi', ''), vidio_list[idx].replace('.avi', '_{}.jpg'.format(frame_idx)))
+                output_img_path = os.path.join(args.output_video_dir, video_list[idx].replace('.avi', ''), video_list[idx].replace('.avi', '_{}.jpg'.format(frame_idx)))
                 create_folder(os.path.dirname(output_img_path))
                 cv2.imwrite(output_img_path, img)
 
@@ -246,7 +246,7 @@ def inference_vidio(args):
 
                     for idy in range(len(select_capture_list)):
                         # 保存捕获结果
-                        output_capture_path = os.path.join(args.output_vidio_dir, vidio_list[idx].replace('.avi', ''), 'capture', vidio_list[idx].replace('.avi', '_{}.jpg'.format(capture_idx)))
+                        output_capture_path = os.path.join(args.output_video_dir, video_list[idx].replace('.avi', ''), 'capture', video_list[idx].replace('.avi', '_{}.jpg'.format(capture_idx)))
                         create_folder(os.path.dirname(output_capture_path))
                         cv2.imwrite(output_capture_path, select_capture_list[idy]['image'])
 
@@ -254,7 +254,7 @@ def inference_vidio(args):
 
                 frame_idx += 1
 
-                tqdm.write("{}: {}".format(vidio_path, str(frame_idx)))
+                tqdm.write("{}: {}".format(video_path, str(frame_idx)))
 
 
 def main():
@@ -313,19 +313,19 @@ def main():
     # 是否将 car\bus\truck 合并为一类输出
     args.merge_class_bool = False
 
-    args.vidio_bool = True
+    args.video_bool = True
     # # 2lane captute
-    # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/5MH_2lane/"
-    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/5MH_2lane_capture/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/5MH_2lane/"
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/5MH_2lane_capture/"
     # 3lane captute
-    args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/5MH_3lane/"
-    args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/5MH_3lane_capture/"
+    args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/5MH_3lane/"
+    args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/5MH_3lane_capture/"
     # # test
-    # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/test/"
-    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/test_capture/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/test/"
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/test_capture/"
 
-    if args.vidio_bool:
-        inference_vidio(args)
+    if args.video_bool:
+        inference_video(args)
 
 
 if __name__ == '__main__':

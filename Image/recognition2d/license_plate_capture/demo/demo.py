@@ -12,29 +12,29 @@ from Image.recognition2d.license_plate_capture.demo.RMAI_API import *
 from Image.regreesion2d.plate_regreesion.utils.draw_tools import draw_bbox_info, draw_capture_line
 
 
-def inference_vidio(args):
+def inference_video(args):
     # mkdir 
-    create_folder(args.output_vidio_dir)
+    create_folder(args.output_video_dir)
 
     # capture api
     capture_api = CaptureApi()
 
     # image init 
-    vidio_list = np.array(os.listdir(args.vidio_dir))
-    vidio_list = vidio_list[[vidio.endswith(args.suffix) for vidio in vidio_list]]
-    vidio_list.sort()
+    video_list = np.array(os.listdir(args.video_dir))
+    video_list = video_list[[video.endswith(args.suffix) for video in video_list]]
+    video_list.sort()
 
-    for idx in tqdm(range(len(vidio_list))):
-        vidio_path = os.path.join(args.vidio_dir, vidio_list[idx])
+    for idx in tqdm(range(len(video_list))):
+        video_path = os.path.join(args.video_dir, video_list[idx])
 
-        cap = cv2.VideoCapture(vidio_path) 
+        cap = cv2.VideoCapture(video_path) 
         print(int(cap.get(cv2.CAP_PROP_FPS)))              # 得到视频的帧率
         print(cap.get(cv2.CAP_PROP_FRAME_WIDTH))           # 得到视频的宽
         print(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))          # 得到视频的高
         print(cap.get(cv2.CAP_PROP_FRAME_COUNT))           # 得到视频的总帧
 
-        output_vidio_path = os.path.join(args.output_vidio_dir, vidio_list[idx].replace(args.suffix, ''), vidio_list[idx])
-        create_folder(os.path.dirname(output_vidio_path))
+        output_video_path = os.path.join(args.output_video_dir, video_list[idx].replace(args.suffix, ''), video_list[idx])
+        create_folder(os.path.dirname(output_video_path))
 
         frame_idx = 0
 
@@ -62,7 +62,7 @@ def inference_vidio(args):
             img = draw_bbox_info(img, bbox_info_list, capture_id_list, mode='ltrb')
             img = draw_capture_line(img, capture_line, mode='ltrb')
 
-            output_img_path = os.path.join(args.output_vidio_dir, vidio_list[idx].replace(args.suffix, ''), vidio_list[idx].replace(args.suffix, '_{}.jpg'.format(frame_idx)))
+            output_img_path = os.path.join(args.output_video_dir, video_list[idx].replace(args.suffix, ''), video_list[idx].replace(args.suffix, '_{}.jpg'.format(frame_idx)))
             create_folder(os.path.dirname(output_img_path))
             cv2.imwrite(output_img_path, img)
 
@@ -80,13 +80,13 @@ def inference_vidio(args):
                     bbox_crop = img_idz[max(0, bbox_loc[1]):min(cap.get(cv2.CAP_PROP_FRAME_WIDTH), bbox_loc[3]), max(0, bbox_loc[0]):min(cap.get(cv2.CAP_PROP_FRAME_HEIGHT), bbox_loc[2])]
 
                     # 保存捕获结果
-                    output_capture_path = os.path.join(args.output_vidio_dir, 'capture', vidio_list[idx].replace(args.suffix, ''), '{}_{}_{}.jpg'.format(frame_idx, plate_ocr_idy, idz))
+                    output_capture_path = os.path.join(args.output_video_dir, 'capture', video_list[idx].replace(args.suffix, ''), '{}_{}_{}.jpg'.format(frame_idx, plate_ocr_idy, idz))
                     create_folder(os.path.dirname(output_capture_path))
                     cv2.imwrite(output_capture_path, bbox_crop)
 
             frame_idx += 1
 
-            tqdm.write("{}: {}".format(vidio_path, str(frame_idx)))
+            tqdm.write("{}: {}".format(video_path, str(frame_idx)))
 
 
 def main():
@@ -94,21 +94,21 @@ def main():
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频实验/test/"
-    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频实验/test_capture/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频实验/test/"
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频实验/test_capture/"
     # args.suffix = '.avi'
 
     # zg，智观加油站数据 5M
-    # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频实验/5MH_2lane/"
-    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频实验/5MH_2lane_capture/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频实验/5MH_2lane/"
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频实验/5MH_2lane_capture/"
     # args.suffix = '.avi'
 
     # zg，安徽淮北高速 5M
-    # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_AHHBGS_220327/264原始视频/5M/"
-    args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_AHHBGS_220327/264原始视频/temp/"
-    args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_AHHBGS_220327/pc_20220329_车牌抓拍实验/叠加及抓拍结果/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_AHHBGS_220327/264原始视频/5M/"
+    args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_AHHBGS_220327/264原始视频/temp/"
+    args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_AHHBGS_220327/pc_20220329_车牌抓拍实验/叠加及抓拍结果/"
     args.suffix = '.avi'
-    inference_vidio(args)
+    inference_video(args)
 
 
 if __name__ == '__main__':

@@ -85,11 +85,11 @@ def inference_images(args):
             cv2.imwrite(output_img_path, img)
 
 
-def inference_vidio(args):
+def inference_video(args):
     # mkdir 
     if args.write_bool:
-        if not os.path.isdir(args.output_vidio_dir):
-            os.makedirs(args.output_vidio_dir)
+        if not os.path.isdir(args.output_video_dir):
+            os.makedirs(args.output_video_dir)
 
     # model init
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
@@ -99,17 +99,17 @@ def inference_vidio(args):
     license_palte_beamsearch = license_palte_beamsearch_init()
 
     # image init 
-    vidio_list = np.array(os.listdir(args.vidio_dir))
-    vidio_list = vidio_list[[vidio.endswith('.avi') for vidio in vidio_list]]
-    vidio_list.sort()
+    video_list = np.array(os.listdir(args.video_dir))
+    video_list = video_list[[video.endswith('.avi') for video in video_list]]
+    video_list.sort()
     
-    for idx in tqdm(range(len(vidio_list))):
-        vidio_path = os.path.join(args.vidio_dir, vidio_list[idx])
+    for idx in tqdm(range(len(video_list))):
+        video_path = os.path.join(args.video_dir, video_list[idx])
 
         if args.write_bool:
-            output_vidio_path = os.path.join(args.output_vidio_dir, vidio_list[idx])
+            output_video_path = os.path.join(args.output_video_dir, video_list[idx])
         
-        cap = cv2.VideoCapture(vidio_path) 
+        cap = cv2.VideoCapture(video_path) 
         print(int(cap.get(cv2.CAP_PROP_FPS)))              # 得到视频的帧率
         print(cap.get(cv2.CAP_PROP_FRAME_WIDTH))           # 得到视频的宽
         print(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))          # 得到视频的高
@@ -117,7 +117,7 @@ def inference_vidio(args):
 
         if args.write_bool:
             fourcc = cv2.VideoWriter_fourcc(*'MP4V')
-            video_writer = cv2.VideoWriter(output_vidio_path, fourcc, cap.get(cv2.CAP_PROP_FPS), (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))))
+            video_writer = cv2.VideoWriter(output_video_path, fourcc, cap.get(cv2.CAP_PROP_FPS), (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))))
 
         frame_idx = 0
 
@@ -181,11 +181,11 @@ def inference_vidio(args):
                 frame = draw_detection_result(frame, show_bboxes, mode='ltrb')
                 video_writer.write(frame)
 
-                output_img_path = os.path.join(args.output_vidio_dir, vidio_list[idx].replace('.avi', '_{}.jpg'.format(frame_idx)))
+                output_img_path = os.path.join(args.output_video_dir, video_list[idx].replace('.avi', '_{}.jpg'.format(frame_idx)))
                 cv2.imwrite(output_img_path, frame)
                 frame_idx += 1
 
-                tqdm.write("{}: {}".format(vidio_path, str(frame_idx)))
+                tqdm.write("{}: {}".format(video_path, str(frame_idx)))
 
 
 def main():
@@ -218,15 +218,15 @@ def main():
     if args.img_bool:
         inference_images(args)
 
-    args.vidio_bool = True
-    args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/测试视频/"
-    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_wo_height_thres_wo_plate_thres/"
-    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_thres_wo_plate_thres/"
-    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_thres_plate_thres/"
-    args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_thres_plate_thres_prefix_beam_search/"
+    args.video_bool = True
+    args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/测试视频/"
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_wo_height_thres_wo_plate_thres/"
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_thres_wo_plate_thres/"
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_thres_plate_thres/"
+    args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_thres_plate_thres_prefix_beam_search/"
 
-    if args.vidio_bool:
-        inference_vidio(args)
+    if args.video_bool:
+        inference_video(args)
 
 
 if __name__ == '__main__':

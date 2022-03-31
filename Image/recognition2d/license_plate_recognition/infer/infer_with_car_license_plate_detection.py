@@ -163,32 +163,32 @@ def inference_images(args):
             cv2.imwrite(output_img_path, img)
 
 
-def inference_vidio(args):
+def inference_video(args):
     # mkdir 
-    create_folder(args.output_vidio_dir)
+    create_folder(args.output_video_dir)
 
     # model init
     model = model_init(args)
 
     # image init 
-    vidio_list = np.array(os.listdir(args.vidio_dir))
-    vidio_list = vidio_list[[vidio.endswith(args.suffix) for vidio in vidio_list]]
-    vidio_list.sort()
+    video_list = np.array(os.listdir(args.video_dir))
+    video_list = video_list[[video.endswith(args.suffix) for video in video_list]]
+    video_list.sort()
     
-    for idx in tqdm(range(len(vidio_list))):
-        vidio_path = os.path.join(args.vidio_dir, vidio_list[idx])
+    for idx in tqdm(range(len(video_list))):
+        video_path = os.path.join(args.video_dir, video_list[idx])
        
-        cap = cv2.VideoCapture(vidio_path) 
+        cap = cv2.VideoCapture(video_path) 
         print(int(cap.get(cv2.CAP_PROP_FPS)))              # 得到视频的帧率
         print(cap.get(cv2.CAP_PROP_FRAME_WIDTH))           # 得到视频的宽
         print(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))          # 得到视频的高
         print(cap.get(cv2.CAP_PROP_FRAME_COUNT))           # 得到视频的总帧
 
         if args.write_bool:
-            output_vidio_path = os.path.join(args.output_vidio_dir, vidio_list[idx].replace('.avi', ''), vidio_list[idx])
-            create_folder(os.path.dirname(output_vidio_path))
+            output_video_path = os.path.join(args.output_video_dir, video_list[idx].replace('.avi', ''), video_list[idx])
+            create_folder(os.path.dirname(output_video_path))
             # fourcc = cv2.VideoWriter_fourcc(*'MP4V')
-            # video_writer = cv2.VideoWriter(output_vidio_path, fourcc, cap.get(cv2.CAP_PROP_FPS), (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))))
+            # video_writer = cv2.VideoWriter(output_video_path, fourcc, cap.get(cv2.CAP_PROP_FPS), (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))))
 
         frame_idx = 0
 
@@ -213,7 +213,7 @@ def inference_vidio(args):
                         if key not in color_dict:
                             crop_img = img[plate_bbox[0][1]:plate_bbox[0][3], plate_bbox[0][0]:plate_bbox[0][2]]
 
-                            output_crop_img_path = os.path.join(args.output_vidio_dir, 'crop', vidio_list[idx].replace('.avi', ''), '{}_{}_{}.jpg'.format(key, frame_idx, crop_idx))
+                            output_crop_img_path = os.path.join(args.output_video_dir, 'crop', video_list[idx].replace('.avi', ''), '{}_{}_{}.jpg'.format(key, frame_idx, crop_idx))
                             create_folder(os.path.dirname(output_crop_img_path))
                             cv2.imwrite(output_crop_img_path, crop_img)
 
@@ -222,13 +222,13 @@ def inference_vidio(args):
                 img = draw_detection_result(img, show_bboxes, mode='ltrb')
                 # video_writer.write(img)
 
-                output_img_path = os.path.join(args.output_vidio_dir, vidio_list[idx].replace('.avi', ''), vidio_list[idx].replace(args.suffix, '_{}.jpg'.format(frame_idx)))
+                output_img_path = os.path.join(args.output_video_dir, video_list[idx].replace('.avi', ''), video_list[idx].replace(args.suffix, '_{}.jpg'.format(frame_idx)))
                 create_folder(os.path.dirname(output_img_path))
                 cv2.imwrite(output_img_path, img)
 
                 frame_idx += 1
 
-                tqdm.write("{}: {}".format(vidio_path, str(frame_idx)))
+                tqdm.write("{}: {}".format(video_path, str(frame_idx)))
 
 
 def main():
@@ -292,29 +292,29 @@ def main():
     if args.img_bool:
         inference_images(args)
 
-    args.vidio_bool = True
-    # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/测试视频/"
-    # # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_ocr_beamsearch_mergeclass_bboxexpand/"
-    # # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearch_mergeclass_bboxexpand/"
-    # # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearch_mergeclass_bboxexpand_roiignore/"
-    # # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearchs_bboxexpand_roiignore/"
-    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_beamsearchs_roiignore/"
+    args.video_bool = True
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/测试视频/"
+    # # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_ocr_beamsearch_mergeclass_bboxexpand/"
+    # # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearch_mergeclass_bboxexpand/"
+    # # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearch_mergeclass_bboxexpand_roiignore/"
+    # # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearchs_bboxexpand_roiignore/"
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_beamsearchs_roiignore/"
 
-    # # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_ZHJYZ_220119/264原始视频/2M/"
-    # # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_ZHJYZ_220119/264原始视频_result/2M_greedy/"
-    # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_ZHJYZ_220119/264原始视频/2M_big/"
-    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_ZHJYZ_220119/264原始视频_result/2M_big_greedy/"
+    # # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_ZHJYZ_220119/264原始视频/2M/"
+    # # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_ZHJYZ_220119/264原始视频_result/2M_greedy/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_ZHJYZ_220119/264原始视频/2M_big/"
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_ZHJYZ_220119/264原始视频_result/2M_big_greedy/"
 
-    # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_AHHBGS_220327/264原始视频/5M/"
-    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_AHHBGS_220327/264原始视频_result/5M_greedy/"
-    args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_AHHBGS_220327/264原始视频/5M_big/"
-    args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_AHHBGS_220327/264原始视频_result/5M_big_greedy/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_AHHBGS_220327/264原始视频/5M/"
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_AHHBGS_220327/264原始视频_result/5M_greedy/"
+    args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_AHHBGS_220327/264原始视频/5M_big/"
+    args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_AHHBGS_220327/264原始视频_result/5M_big_greedy/"
 
     args.suffix = '.avi'
     # args.suffix = '.mp4'
 
-    if args.vidio_bool:
-        inference_vidio(args)
+    if args.video_bool:
+        inference_video(args)
 
 
 if __name__ == '__main__':
