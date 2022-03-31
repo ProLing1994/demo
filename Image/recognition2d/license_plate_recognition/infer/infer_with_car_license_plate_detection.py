@@ -261,8 +261,11 @@ def main():
 
     # 是否通过 roi 区域屏蔽部分检测结果
     args.roi_ignore_bool = True
+    # 2M
     # args.roi_ignore_area = [0, 108, 1920, 972]
-    args.roi_ignore_area = [0, 300, 1920, 1080]
+    # args.roi_ignore_area = [0, 300, 1920, 1080]
+    # 5M
+    args.roi_ignore_area = [0, 600, 2592, 1920]
 
     # 是否将 car\bus\truck 合并为一类输出
     args.merge_class_bool = False
@@ -297,16 +300,15 @@ def main():
     # # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearchs_bboxexpand_roiignore/"
     # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_beamsearchs_roiignore/"
 
-    # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/test/"
-    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/test_beamsearchs/"
+    # # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_ZHJYZ_220119/264原始视频/2M/"
+    # # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_ZHJYZ_220119/264原始视频_result/2M_greedy/"
+    # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_ZHJYZ_220119/264原始视频/2M_big/"
+    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_ZHJYZ_220119/264原始视频_result/2M_big_greedy/"
 
-    # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/转模型测试数据/"
-    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频/转模型测试数据_beamsearchs/"
-
-    # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_ZHJYZ_220119/264原始视频/2M/"
-    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_ZHJYZ_220119/264原始视频_result/2M_greedy/"
-    args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_ZHJYZ_220119/264原始视频/2M_big/"
-    args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_ZHJYZ_220119/264原始视频_result/2M_big_greedy/"
+    # args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_AHHBGS_220327/264原始视频/5M/"
+    # args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_AHHBGS_220327/264原始视频_result/5M_greedy/"
+    args.vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_AHHBGS_220327/264原始视频/5M_big/"
+    args.output_vidio_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_AHHBGS_220327/264原始视频_result/5M_big_greedy/"
 
     args.suffix = '.avi'
     # args.suffix = '.mp4'

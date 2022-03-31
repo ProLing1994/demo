@@ -53,20 +53,34 @@ def analysis_image_width_height(args):
     plot_bins = max((int(np.array(image_width_list).max() - np.array(image_width_list).min())), 100)
     print( "max width: ", np.array(image_width_list).max(), ", min width: ", np.array(image_width_list).min())
     plot_hist(np.array(image_width_list), plot_bins, 'Image Width', 'frequency', 'Hist For Image Width', \
-                os.path.join(args.output_dir, "hist_for_image_width_{}.png".format('blue'))) 
+                os.path.join(args.output_dir, "hist_for_image_width_{}.png".format(args.name_format))) 
 
     plot_bins = max((int(np.array(image_height_list).max() - np.array(image_height_list).min())), 100)
     print( "max height: ", np.array(image_height_list).max(), ", min height: ", np.array(image_height_list).min())
     plot_hist(np.array(image_height_list), plot_bins, 'Image Height', 'frequency', 'Hist For Image Height', \
-                os.path.join(args.output_dir, "hist_for_image_height_{}.png".format('blue'))) 
+                os.path.join(args.output_dir, "hist_for_image_height_{}.png".format(args.name_format))) 
 
 
 def main():
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.img_dir = "/mnt/huanyuan2/data/image/LicensePlateRecognition/blue/"
-    args.output_dir = "/mnt/huanyuan2/data/image/LicensePlateRecognition/"
+    # normal，林旭南提供数据
+    # # args.name_format = "blue"
+    # args.name_format = "green"
+    # args.img_dir = os.path.join("/mnt/huanyuan2/data/image/LicensePlateRecognition/normal", args.name_format)
+    # args.output_dir = "/mnt/huanyuan2/data/image/LicensePlateRecognition/normal/"
+    
+    # # zg，智观加油站数据 2M
+    # args.name_format = "blue"
+    # # args.name_format = "green"
+    # args.img_dir = os.path.join("/mnt/huanyuan2/data/image/LicensePlateRecognition/zg_zhjyz_2M", args.name_format)
+    # args.output_dir = "/mnt/huanyuan2/data/image/LicensePlateRecognition/zg_zhjyz_2M/"
+
+    # zg，安徽淮北高速 5M
+    args.name_format = "blue"
+    args.img_dir = os.path.join("/mnt/huanyuan2/data/image/LicensePlateRecognition/zg_ahhbgs_5M", args.name_format)
+    args.output_dir = "/mnt/huanyuan2/data/image/LicensePlateRecognition/zg_ahhbgs_5M/"
     
     analysis_image_width_height(args)
 

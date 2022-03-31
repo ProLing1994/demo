@@ -68,10 +68,11 @@ def inference_images(args):
 
         # pd 
         results_dict['file'] = img_list[idx]
-        results_dict['label'] = str(img_list[idx]).split('@')[1].split('-')[0]
+        # results_dict['label'] = str(img_list[idx]).split('@')[1].split('-')[0]
+        results_dict['label'] = str(img_list[idx]).split('_')[0]
         results_dict['ocr'] = ocr
         results_dict['ocr_score'] = ocr_score
-        results_dict['res'] = int( results_dict['label'] == results_dict['ocr'] )
+        results_dict['res'] = int( results_dict['label'][1:] == results_dict['ocr'][1:] )
         results_dict['width'] = image_width
         results_dict['height'] = image_height
         
@@ -93,10 +94,24 @@ def main():
     args.plate_recognition_model_path = "/mnt/huanyuan2/model/image_model/license_plate_recognition_moel_lxn/china.caffemodel"
     args.prefix_beam_search_bool = False
     
-    # args.img_dir = "/mnt/huanyuan2/data/image/LicensePlateRecognition/blue/"
-    # args.output_csv_path = "/mnt/huanyuan2/data/image/LicensePlateRecognition/blue.csv"
-    args.img_dir = "/mnt/huanyuan2/data/image/LicensePlateRecognition/green/"
-    args.output_csv_path = "/mnt/huanyuan2/data/image/LicensePlateRecognition/green.csv"
+    # normal，林旭南提供数据
+    # args.name_format = "blue"
+    # # args.name_format = "green"
+    # args.img_dir = os.path.join("/mnt/huanyuan2/data/image/LicensePlateRecognition/normal", args.name_format)
+    # args.output_csv_path = os.path.join("/mnt/huanyuan2/data/image/LicensePlateRecognition/normal", args.name_format + ".csv")
+    
+    # # zg，智观加油站数据 2M
+    # # args.name_format = "blue"
+    # # args.name_format = "green"
+    # args.img_dir = os.path.join("/mnt/huanyuan2/data/image/LicensePlateRecognition/zg_zhjyz_2M", args.name_format)
+    # args.output_csv_path = os.path.join("/mnt/huanyuan2/data/image/LicensePlateRecognition/zg_zhjyz_2M", args.name_format + "_zi.csv")
+
+    # zg，安徽淮北高速 5M
+    # args.name_format = "blue"
+    # args.name_format = "green"
+    args.name_format = "temp"
+    args.img_dir = os.path.join("/mnt/huanyuan2/data/image/LicensePlateRecognition/zg_ahhbgs_5M", args.name_format)
+    args.output_csv_path = os.path.join("/mnt/huanyuan2/data/image/LicensePlateRecognition/zg_ahhbgs_5M", args.name_format + ".csv")
 
     inference_images(args)
 
