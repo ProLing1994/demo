@@ -10,7 +10,7 @@ sys.path.insert(0, '/home/huanyuan/code/demo/Image')
 # sys.path.insert(0, '/yuanhuan/code/demo/Image')
 from detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
 from recognition2d.license_plate_capture.sort.mot_sort import Sort
-from recognition2d.license_plate_capture.script.plate_color.plate_color import update_plate_color
+from Basic.script.plate_color.plate_color import update_plate_color
 
 def check_in_roi(in_box, roi_bbox):
     roi_bool = False

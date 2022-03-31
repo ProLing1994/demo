@@ -10,7 +10,7 @@ from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.Basic.utils.folder_tools import *
-from Image.recognition2d.license_plate_capture.script.video_capture.VideoCapture_API import *
+from Image.Basic.script.video_capture.VideoCapture_API import *
 
 
 def video_capture_csv(args):
