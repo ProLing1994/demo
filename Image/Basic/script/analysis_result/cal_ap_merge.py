@@ -444,8 +444,8 @@ if __name__ == "__main__":
     # args.anno_dir =  os.path.join(args.data_dir, "AHHBAS_41c_Annotations_CarBusTruckLicenseplate/")                        # 清晰车牌
     args.anno_dir =  os.path.join(args.data_dir, "AHHBAS_41c_Annotations_CarBusTruckLicenseplate_w_fuzzy/")                # 清晰车牌 & 模糊车牌
     args.jpg_dir =  os.path.join(args.data_dir,  "AHHBAS_41c/")
-    args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/jiayouzhan_test_image_AHHBAS_41c/results/"
-    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/jiayouzhan_test_image_AHHBAS_41c/results/"
+    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/jiayouzhan_test_image_AHHBAS_41c/results/"
+    args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/jiayouzhan_test_image_AHHBAS_41c/results/"
 
     args.merge_ap_dict = { 'car': ['car'], 'bus_truck': ['bus', 'truck'], 'car_bus_truck': ['car', 'bus', 'truck'] }
     # args.merge_ap_dict = { 'bus_truck': ['bus', 'truck'] }
