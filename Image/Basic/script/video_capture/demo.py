@@ -8,7 +8,8 @@ import pandas as pd
 import sys 
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo')
+# sys.path.insert(0, '/home/huanyuan/code/demo')
+sys.path.insert(0, "E:\\project\\demo")
 from Image.Basic.utils.folder_tools import *
 from Image.Basic.script.video_capture.VideoCapture_API import *
 
@@ -131,11 +132,13 @@ def main():
     # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频实验/test_video_capture/"
     # args.suffix = '.avi'
 
-    args.video_dir = "/mnt/huanyuan/temp/卡口2/2022-03-29/temp/"
-    args.output_video_dir = "/mnt/huanyuan/temp/卡口2/2022-03-29/temp_video_capture/"
+    # args.video_dir = "/mnt/huanyuan/temp/卡口2/2022-03-29/temp/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/卡口2/2022-03-29/temp_video_capture/"
+    args.video_dir = "E:\\data\\智观数据\\安徽淮北高速\\卡口2\\2022-03-29\\"
+    args.output_video_dir = "E:\\data\\智观数据\\安徽淮北高速\\卡口2\\2022-03-29_capture\\"
     args.suffix = '.avi'
 
-    # video_capture_csv(args)
+    video_capture_csv(args)
 
     # 截取视频段，前后扩展时间
     args.time_shift_s = 3
