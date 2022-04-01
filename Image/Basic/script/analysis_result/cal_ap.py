@@ -437,15 +437,15 @@ if __name__ == "__main__":
     ######################################
     # 测试集：
     ######################################
-    args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/加油站测试样本/"
-    args.imageset_file = os.path.join(args.data_dir, "2MB/images.txt")
-    # args.anno_dir =  os.path.join(args.data_dir, "2MB_Annotations_CarBusTruckLicenseplate_w_height/")               # 高度大于 24 的 清晰车牌
-    # args.anno_dir =  os.path.join(args.data_dir, "2MB_Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height/")       # 高度大于 24 的 清晰车牌 & 模糊车牌
-    # args.anno_dir =  os.path.join(args.data_dir, "2MB_Annotations_CarBusTruckLicenseplate/")                        # 清晰车牌
-    args.anno_dir =  os.path.join(args.data_dir, "2MB_Annotations_CarBusTruckLicenseplate_w_fuzzy/")                # 清晰车牌 & 模糊车牌
-    args.jpg_dir =  os.path.join(args.data_dir,  "2MB/")
-    args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/加油站测试样本_2MB/results/"
-    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/加油站测试样本_2MB/results/"
+    args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
+    args.imageset_file = os.path.join(args.data_dir, "AHHBAS_41c/images.txt")
+    # args.anno_dir =  os.path.join(args.data_dir, "AHHBAS_41c_Annotations_CarBusTruckLicenseplate_w_height/")               # 高度大于 24 的 清晰车牌
+    # args.anno_dir =  os.path.join(args.data_dir, "AHHBAS_41c_Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height/")       # 高度大于 24 的 清晰车牌 & 模糊车牌
+    # args.anno_dir =  os.path.join(args.data_dir, "AHHBAS_41c_Annotations_CarBusTruckLicenseplate/")                        # 清晰车牌
+    args.anno_dir =  os.path.join(args.data_dir, "AHHBAS_41c_Annotations_CarBusTruckLicenseplate_w_fuzzy/")                # 清晰车牌 & 模糊车牌
+    args.jpg_dir =  os.path.join(args.data_dir,  "AHHBAS_41c/")
+    args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/jiayouzhan_test_image_AHHBAS_41c/results/"
+    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/jiayouzhan_test_image_AHHBAS_41c/results/"
     
     args.det_path_dict = { 'car': args.input_dir + 'det_test_car.txt',
                            'bus': args.input_dir + 'det_test_bus.txt',
@@ -471,13 +471,13 @@ if __name__ == "__main__":
     args.height_over_thresh = 0.75
 
     # 是否保存识别结果和检出结果
-    args.write_bool = False
+    args.write_bool = True
 
     # 是否保存漏检结果
-    args.write_unmatched_bool = False
+    args.write_unmatched_bool = True
 
     # 是否保存假阳结果
-    args.write_false_positive_bool = False
+    args.write_false_positive_bool = True
 
     args.output_dir = args.input_dir
 

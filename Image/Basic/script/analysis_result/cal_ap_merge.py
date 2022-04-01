@@ -201,18 +201,19 @@ def voc_eval(merge_class_name,
                 lines_idx = f.readlines()
 
             splitlines = [x.strip().split('*') for x in lines_idx]  
-            image_ids = [x[0] for x in splitlines]
-            c_scores = np.array([float(x[1]) for x in splitlines])
-            c_bboxes = np.array([[float(z) for z in x[2:]] for x in splitlines])
-            c_dets = np.hstack((c_bboxes, c_scores[:, np.newaxis])).astype(
-                np.float32, copy=False)
+            if len(splitlines):
+                image_ids = [x[0] for x in splitlines]
+                c_scores = np.array([float(x[1]) for x in splitlines])
+                c_bboxes = np.array([[float(z) for z in x[2:]] for x in splitlines])
+                c_dets = np.hstack((c_bboxes, c_scores[:, np.newaxis])).astype(
+                    np.float32, copy=False)
 
-            for image_idx in range(len(image_ids)):
-                image_name_idx = image_ids[image_idx]
-                if image_name_idx in det_dict:
-                    det_dict[image_name_idx] = np.concatenate((det_dict[image_name_idx], c_dets[image_idx][np.newaxis, :]), axis=0)
-                else:
-                    det_dict[image_name_idx] = c_dets[image_idx][np.newaxis, :]
+                for image_idx in range(len(image_ids)):
+                    image_name_idx = image_ids[image_idx]
+                    if image_name_idx in det_dict:
+                        det_dict[image_name_idx] = np.concatenate((det_dict[image_name_idx], c_dets[image_idx][np.newaxis, :]), axis=0)
+                    else:
+                        det_dict[image_name_idx] = c_dets[image_idx][np.newaxis, :]
 
         with open(detfile, 'w') as f:
             
@@ -436,18 +437,18 @@ if __name__ == "__main__":
     ######################################
     # 测试集：
     ######################################
-    args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/加油站测试样本/"
-    args.imageset_file = os.path.join(args.data_dir, "5MH/images.txt")
-    # args.anno_dir =  os.path.join(args.data_dir, "5MH_Annotations_CarBusTruckLicenseplate_w_height/")               # 高度大于 24 的 清晰车牌
-    # args.anno_dir =  os.path.join(args.data_dir, "5MH_Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height/")       # 高度大于 24 的 清晰车牌 & 模糊车牌
-    # args.anno_dir =  os.path.join(args.data_dir, "5MH_Annotations_CarBusTruckLicenseplate/")                        # 清晰车牌
-    args.anno_dir =  os.path.join(args.data_dir, "5MH_Annotations_CarBusTruckLicenseplate_w_fuzzy/")                # 清晰车牌 & 模糊车牌
-    args.jpg_dir =  os.path.join(args.data_dir,  "5MH/")
-    args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/加油站测试样本_5MH/results/"
-    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/加油站测试样本_5MH/results/"
+    args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
+    args.imageset_file = os.path.join(args.data_dir, "AHHBAS_41c/images.txt")
+    # args.anno_dir =  os.path.join(args.data_dir, "AHHBAS_41c_Annotations_CarBusTruckLicenseplate_w_height/")               # 高度大于 24 的 清晰车牌
+    # args.anno_dir =  os.path.join(args.data_dir, "AHHBAS_41c_Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height/")       # 高度大于 24 的 清晰车牌 & 模糊车牌
+    # args.anno_dir =  os.path.join(args.data_dir, "AHHBAS_41c_Annotations_CarBusTruckLicenseplate/")                        # 清晰车牌
+    args.anno_dir =  os.path.join(args.data_dir, "AHHBAS_41c_Annotations_CarBusTruckLicenseplate_w_fuzzy/")                # 清晰车牌 & 模糊车牌
+    args.jpg_dir =  os.path.join(args.data_dir,  "AHHBAS_41c/")
+    args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/jiayouzhan_test_image_AHHBAS_41c/results/"
+    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/jiayouzhan_test_image_AHHBAS_41c/results/"
 
-    # args.merge_ap_dict = { 'car': ['car'], 'bus_truck': ['bus', 'truck'], 'car_bus_truck': ['car', 'bus', 'truck'] }
-    args.merge_ap_dict = { 'bus_truck': ['bus', 'truck'] }
+    args.merge_ap_dict = { 'car': ['car'], 'bus_truck': ['bus', 'truck'], 'car_bus_truck': ['car', 'bus', 'truck'] }
+    # args.merge_ap_dict = { 'bus_truck': ['bus', 'truck'] }
 
     args.det_path_dict = { 'car': args.input_dir + 'det_test_car.txt',
                            'bus': args.input_dir + 'det_test_bus.txt',
@@ -460,7 +461,7 @@ if __name__ == "__main__":
     args.use_07_metric = False
 
     # 是否设置 roi 区域，忽略边缘区域
-    args.roi_set_bool = True
+    args.roi_set_bool = False
     # args.roi_set_bbox = [200, 110, 1720, 970]       # 2M
     args.roi_set_bbox = [300, 150, 2292, 1770]       # 5M
     

@@ -17,7 +17,7 @@ def check_jepg(args):
 
         if check_chars != b'\xff\xd9':
             print('Not complete image: ', jpg_path)
-            os.remove(jpg_path)
+            # os.remove(jpg_path)
 
 
 if __name__ == "__main__":
@@ -32,8 +32,10 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone/"
     # args.jpg_dir =  args.input_dir + "JPEGImages/"
 
-
-    args.input_dir = "/mnt/huanyuan2/data/image/3D_huoche/3D_huoche/压缩2/4/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/AHHBAS_418/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/AHHBAS_41a/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/AHHBAS_41c/"
+    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/AHHBAS_43c/"
     args.jpg_dir =  args.input_dir 
 
     check_jepg(args)
