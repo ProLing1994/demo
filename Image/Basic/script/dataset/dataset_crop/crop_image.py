@@ -72,11 +72,11 @@ def main():
     # args.xml_dir =  args.input_dir + "XML/"
     # args.output_dir = args.input_dir + "Crop/"
 
-    args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/20220303测试/"
+    args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试样本/"
     args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate", "painted_plate"]
-    args.jpg_dir =  args.input_dir + "5MH/"
-    args.xml_dir =  args.input_dir + "5MH_XML/"
-    args.output_dir = args.input_dir + "5MH_Crop/"
+    args.jpg_dir =  args.input_dir + "AHHBAS_418/"
+    args.xml_dir =  args.input_dir + "AHHBAS_418_XML/"
+    args.output_dir = args.input_dir + "AHHBAS_418_Crop/"
 
     crop_image(args)
 
