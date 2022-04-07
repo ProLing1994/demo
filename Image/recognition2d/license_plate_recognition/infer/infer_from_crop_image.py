@@ -109,9 +109,9 @@ def main():
     # zg，安徽淮北高速 5M
     # args.name_format = "blue"
     # args.name_format = "green"
-    args.name_format = "temp"
-    args.img_dir = os.path.join("/mnt/huanyuan2/data/image/LicensePlateRecognition/zg_ahhbgs_5M", args.name_format)
-    args.output_csv_path = os.path.join("/mnt/huanyuan2/data/image/LicensePlateRecognition/zg_ahhbgs_5M", args.name_format + ".csv")
+    args.name_format = "yellow"
+    args.img_dir = os.path.join("/mnt/huanyuan2/data/image/LicensePlateRecognition/zg_ahhbgs_5M_220401", args.name_format)
+    args.output_csv_path = os.path.join("/mnt/huanyuan2/data/image/LicensePlateRecognition/zg_ahhbgs_5M_220401", args.name_format + ".csv")
 
     inference_images(args)
 

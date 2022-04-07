@@ -271,10 +271,10 @@ def main():
     args.merge_class_bool = False
 
     # 是否扩展高度不足 24 车牌
-    args.plate_bbox_expand_bool = True
-    args.plate_bbox_expand_height_bool = True
+    args.plate_bbox_expand_bool = False
+    args.plate_bbox_expand_height_bool = False
     args.plate_bbox_minist_height = 18
-    args.plate_bbox_expand_weight_bool = True
+    args.plate_bbox_expand_weight_bool = False
     args.plate_bbox_weight = 3
 
     # 是否设置高度阈值挑选车牌
@@ -300,16 +300,9 @@ def main():
     # # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearchs_bboxexpand_roiignore/"
     # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_beamsearchs_roiignore/"
 
-    # # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_ZHJYZ_220119/264原始视频/2M/"
-    # # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_ZHJYZ_220119/264原始视频_result/2M_greedy/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_ZHJYZ_220119/264原始视频/2M_big/"
-    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_ZHJYZ_220119/264原始视频_result/2M_big_greedy/"
-
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_AHHBGS_220327/264原始视频/5M/"
-    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_AHHBGS_220327/264原始视频_result/5M_greedy/"
-    args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_AHHBGS_220327/264原始视频/5M_big/"
-    args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/ZG_AHHBGS_220327/264原始视频_result/5M_big_greedy/"
-
+    args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220401/264原始视频/5M_卡口2/"
+    args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220401/pc_20220401_车牌抓拍实验/5M_卡口2_车牌捕获/"
+    
     args.suffix = '.avi'
     # args.suffix = '.mp4'
 

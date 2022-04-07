@@ -37,7 +37,7 @@ def avi_to_jpg(args):
                 break         
 
             if frame_idx % args.frame_strp == 0:
-                output_img_path = os.path.join(args.output_video_dir, video_list[idx].replace('.avi', ''), video_list[idx].replace('.avi', '_{}.jpg'.format(frame_idx)))
+                output_img_path = os.path.join(args.output_video_dir, video_list[idx].replace(args.suffix, ''), video_list[idx].replace(args.suffix, '_{}.jpg'.format(frame_idx)))
                 create_folder(os.path.dirname(output_img_path))
                 cv2.imwrite(output_img_path, img)
 
@@ -49,10 +49,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/视频_20220310/20220322_灌视频测试结果/264误报视频/"
-    args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/视频_20220310/20220322_灌视频测试结果/264误报视频_ori/"
-    args.suffix = '.avi'
-    # args.frame_strp = 10
-    args.frame_strp = 1
+    args.video_dir = "/mnt/huanyuan/temp/卡口2/2022-03-29/avi_video_capture_green/"
+    args.output_video_dir = "/mnt/huanyuan/temp/卡口2/2022-03-29/avi_video_capture_green/jpg/"
+    args.suffix = '.mp4'
+    args.frame_strp = 10
+    # args.frame_strp = 1
 
     avi_to_jpg(args)

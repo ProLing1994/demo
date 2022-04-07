@@ -83,7 +83,8 @@ class CaptureApi():
         self.license_plate_name = 'license_plate'
 
         # 检测框下边界往下移动（检测框不准，车牌匹配不上）
-        self.bbox_bottom_expand = 50
+        # self.bbox_bottom_expand = 50
+        self.bbox_bottom_expand = 0
 
         # sort
         self.max_age = 5 
@@ -104,6 +105,14 @@ class CaptureApi():
         # 更新车辆行驶状态
         self.update_state_per_frame = 10
         self.move_state_threshold = 10
+
+        # 是否通过 roi 区域屏蔽部分检测结果
+        self.roi_bool = False
+        # self.roi_bool = True
+        # 2M
+        # args.roi_area = [0, 300, 1920, 1080]
+        # 5M
+        self.roi_area = [0, 600, 2592, 1920]
 
         # 抓拍线
         self.capture_line_ratio = [0.2, 0.8]
@@ -166,8 +175,8 @@ class CaptureApi():
     def run(self, img, frame_idx):
 
         # info 
-        image_width = img.shape[1]
-        image_height = img.shape[0]
+        self.image_width = img.shape[1]
+        self.image_height = img.shape[0]
 
         # detector
         bboxes = self.car_plate_detector.detect(img, with_score=True)
@@ -177,7 +186,7 @@ class CaptureApi():
             # bboxes expand
             if self.merge_class_name in bboxes:
                 for idx in range(len(bboxes[self.merge_class_name])):
-                    bboxes[self.merge_class_name][idx][3] = min(bboxes[self.merge_class_name][idx][3] + self.bbox_bottom_expand, image_height)
+                    bboxes[self.merge_class_name][idx][3] = min(bboxes[self.merge_class_name][idx][3] + self.bbox_bottom_expand, self.image_height)
 
             # tracker
             if self.merge_class_name in bboxes:
@@ -193,7 +202,7 @@ class CaptureApi():
                 car_name_idx = self.car_name_list[idx]
                 if car_name_idx in bboxes:
                     for idy in range(len(bboxes[car_name_idx])):
-                        bboxes[car_name_idx][idy][3] = min(bboxes[car_name_idx][idy][3] + self.bbox_bottom_expand, image_height)
+                        bboxes[car_name_idx][idy][3] = min(bboxes[car_name_idx][idy][3] + self.bbox_bottom_expand, self.image_height)
 
             # tracker
             dets = np.empty((0, 5))
@@ -215,8 +224,13 @@ class CaptureApi():
         bbox_info_list = self.update_bbox_state_container(bbox_info_list)
 
         # captute
-        capture_line = [ image_height * ratio for ratio in self.capture_line_ratio ]
-        capture_id_list = self.find_capture_id( image_height )
+        ## capture_line
+        if self.roi_bool:
+            capture_line = [ self.roi_area[1] + ( self.roi_area[3] - self.roi_area[1] ) * ratio for ratio in self.capture_line_ratio ]
+        else:
+            capture_line = [ self.image_height * ratio for ratio in self.capture_line_ratio ]
+
+        capture_id_list = self.find_capture_id()
         capture_info = self.update_capture_state(capture_id_list)
 
         return bbox_info_list, capture_line, capture_id_list, capture_info
@@ -349,9 +363,19 @@ class CaptureApi():
                     
                     # 更新车牌识别结果
                     if not bbox_info_idx['plate_ocr'] == '':
-                        bbox_state_idy['plate_ocr_list'].append(bbox_info_idx['plate_ocr'])
-                        bbox_state_idy['plate_ocr_score_list'].append(bbox_info_idx['plate_ocr_score'])
                         bbox_state_idy['plate_disappear_frame_num'] = 0
+
+                        if self.roi_bool:
+                            # 进入 roi 区域，在记录车牌信息
+                            # 原因：远处车牌太小，结果不可信
+                            car_bottom_y = bbox_info_idx['loc'][3]
+                            if car_bottom_y > self.roi_area[1]:
+                                bbox_state_idy['plate_ocr_list'].append(bbox_info_idx['plate_ocr'])
+                                bbox_state_idy['plate_ocr_score_list'].append(bbox_info_idx['plate_ocr_score'])   
+                        else:
+                            bbox_state_idy['plate_ocr_list'].append(bbox_info_idx['plate_ocr'])
+                            bbox_state_idy['plate_ocr_score_list'].append(bbox_info_idx['plate_ocr_score'])
+                        
 
                     bbox_info_idx['state'] = bbox_state_idy['state']
                     bbox_info_idx['frame_num'] = bbox_state_idy['frame_num']
@@ -376,15 +400,23 @@ class CaptureApi():
 
                 # 更新车牌识别结果
                 if not bbox_info_idx['plate_ocr'] == '':
-                    bbox_state_dict['plate_ocr_list'].append(bbox_info_idx['plate_ocr'])
-                    bbox_state_dict['plate_ocr_score_list'].append(bbox_info_idx['plate_ocr_score'])
+                    if self.roi_bool:
+                        # 进入 roi 区域，在记录车牌信息
+                        # 原因：远处车牌太小，结果不可信
+                        car_bottom_y = bbox_info_idx['loc'][3]
+                        if car_bottom_y > self.roi_area[1]:
+                            bbox_state_dict['plate_ocr_list'].append(bbox_info_idx['plate_ocr'])
+                            bbox_state_dict['plate_ocr_score_list'].append(bbox_info_idx['plate_ocr_score'])   
+                    else:
+                        bbox_state_dict['plate_ocr_list'].append(bbox_info_idx['plate_ocr'])
+                        bbox_state_dict['plate_ocr_score_list'].append(bbox_info_idx['plate_ocr_score'])
 
                 self.params_dict['bbox_state_container'].append(bbox_state_dict)
 
         return bbox_info_list
 
 
-    def find_capture_id(self, image_height):
+    def find_capture_id(self):
 
         capture_id_list = []
         for idy in range(len(self.params_dict['bbox_state_container'])):
@@ -392,9 +424,17 @@ class CaptureApi():
             bbox_state_idy = self.params_dict['bbox_state_container'][idy]
             car_bottom_y = bbox_state_idy['loc'][3]
 
-            if bbox_state_idy['state'] == 'Down' and car_bottom_y > image_height * self.capture_line_ratio[1]:
+            if self.roi_bool:
+                Down_threshold = self.roi_area[1] + ( self.roi_area[3] - self.roi_area[1] ) * self.capture_line_ratio[1]
+                Up_threshold = self.roi_area[1] + ( self.roi_area[3] - self.roi_area[1] ) * self.capture_line_ratio[0]
+                
+            else:
+                Down_threshold = self.image_height * self.capture_line_ratio[1]
+                Up_threshold = self.image_height * self.capture_line_ratio[0]
+
+            if bbox_state_idy['state'] == 'Down' and car_bottom_y > Down_threshold:
                 capture_id_list.append(bbox_state_idy['id'])
-            elif bbox_state_idy['state'] == 'Up' and car_bottom_y < image_height * self.capture_line_ratio[0]:
+            elif bbox_state_idy['state'] == 'Up' and car_bottom_y < Up_threshold:
                 capture_id_list.append(bbox_state_idy['id'])
             elif bbox_state_idy['state'] == 'Stop' and bbox_state_idy['frame_num'] >= self.capture_stop_frame_threshold:
                 capture_id_list.append(bbox_state_idy['id'])
