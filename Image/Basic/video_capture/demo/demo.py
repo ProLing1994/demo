@@ -217,8 +217,8 @@ def main():
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.video_dir = "/mnt/huanyuan/temp/卡口2/2022-03-29/avi/"
-    args.output_video_dir = "/mnt/huanyuan/temp/卡口2/2022-03-29/avi_video_capture/"
+    args.video_dir = "/mnt/huanyuan/temp/卡口4/2022-03-29/avi/"
+    args.output_video_dir = "/mnt/huanyuan/temp/卡口4/2022-03-29/avi_video_capture/"
     args.suffix = '.avi'
 
     # args.video_dir = "/mnt/huanyuan/temp/天桥/2022-04-01/avi/"
@@ -256,7 +256,7 @@ def main():
 
     # # step 3: 
     # # 视频剪裁
-    # p = multiprocessing.Pool(3)
+    # p = multiprocessing.Pool(2)
     # out = p.map(vidio_capture_crop_merge, in_params)
     # p.close()
     # p.join()
@@ -270,7 +270,7 @@ def main():
 
     # step 5: 
     # 视频剪裁
-    p = multiprocessing.Pool(3)
+    p = multiprocessing.Pool(2)
     out = list(tqdm(p.map(vidio_capture_crop, in_params), total=len(in_params)))
     p.close()
     p.join()
@@ -278,9 +278,12 @@ def main():
     # step 6: 
     args.select_plate_color = 'green'
 
+    # 挑选车型
+    args.select_car_attri = None
+
     # step 7: 
     # 视频剪裁
-    p = multiprocessing.Pool(3)
+    p = multiprocessing.Pool(2)
     out = list(tqdm(p.map(vidio_capture_crop, in_params), total=len(in_params)))
     p.close()
     p.join()
