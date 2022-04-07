@@ -11,7 +11,7 @@ from tqdm import tqdm
 sys.path.insert(0, "E:\\project\\demo\\Image")
 from detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
 from recognition2d.license_plate_capture.sort.mot_sort import Sort
-from Basic.script.plate_color.plate_color import update_plate_color
+from Basic.video_capture.plate_color.plate_color import update_plate_color
 
 def check_in_roi(in_box, roi_bbox):
     roi_bool = False
