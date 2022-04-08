@@ -168,6 +168,9 @@ def vidio_capture_crop(in_params):
         # mkdir
         output_video_path = os.path.join(args.output_video_dir, '{}_{}'.format(args.select_plate_color, args.select_car_attri), video_name.replace(args.suffix, ''), '{}_{:.2f}_{:.2f}_{}_{}.mp4'.format(video_name.replace(args.suffix, ''), start_s_idx, end_s_idx, attri_idx, plate_color_idx))
         create_folder(os.path.dirname(output_video_path))
+        if os.path.exists(output_video_path):
+            print("ignore path: {}".format(output_video_path))
+            continue
 
         # crop
         clip = video_clip.subclip(start_s_idx, end_s_idx)
@@ -269,25 +272,28 @@ def main():
     # 挑选车型
     args.select_car_attri = None
 
-    # step 5: 
-    # 视频剪裁
-    p = multiprocessing.Pool(3)
-    out = list(tqdm(p.map(vidio_capture_crop, in_params), total=len(in_params)))
-    p.close()
-    p.join()
+    for idx in range(len(in_params)):
+        vidio_capture_crop(in_params[idx])
+        
+    # # step 5: 
+    # # 视频剪裁
+    # p = multiprocessing.Pool(3)
+    # out = list(tqdm(p.map(vidio_capture_crop, in_params), total=len(in_params)))
+    # p.close()
+    # p.join()
 
-    # step 6: 
-    args.select_plate_color = 'green'
+    # # step 6: 
+    # args.select_plate_color = 'green'
 
-    # 挑选车型
-    args.select_car_attri = None
+    # # 挑选车型
+    # args.select_car_attri = None
 
-    # step 7: 
-    # 视频剪裁
-    p = multiprocessing.Pool(3)
-    out = list(tqdm(p.map(vidio_capture_crop, in_params), total=len(in_params)))
-    p.close()
-    p.join()
+    # # step 7: 
+    # # 视频剪裁
+    # p = multiprocessing.Pool(3)
+    # out = list(tqdm(p.map(vidio_capture_crop, in_params), total=len(in_params)))
+    # p.close()
+    # p.join()
 
 
 if __name__ == '__main__':
