@@ -19,6 +19,10 @@ def video_capture_csv(in_params):
     args = in_params[0]
     video_name = in_params[1]
 
+    output_csv_path = os.path.join(args.output_video_dir, video_name.replace(args.suffix, '.csv'))
+    if os.path.exists(output_csv_path):
+        return
+
     # video capture api
     video_capture_api = VideoCaptureApi()
 
@@ -52,6 +56,10 @@ def video_capture_csv(in_params):
             # video_writer.release()
             break
         
+        if frame_idx % args.step_frame != 0:
+            frame_idx += 1
+            continue
+
         # if frame_idx == 178:
         #     print()
 
@@ -76,7 +84,6 @@ def video_capture_csv(in_params):
         tqdm.write("{}: {}".format(video_name, str(frame_idx)))
 
     # out csv
-    output_csv_path = os.path.join(args.output_video_dir, video_name.replace(args.suffix, '.csv'))
     csv_data_pd = pd.DataFrame(video_capture_list)
     csv_data_pd.to_csv(output_csv_path, index=False, encoding="utf_8_sig")
     return 
@@ -97,7 +104,11 @@ def vidio_capture_merge(args, video_name):
     video_capture_dict['end_s'] = 0
 
     # capture_pd
-    capture_pd = pd.read_csv(capture_csv_path, encoding='utf_8_sig')
+    try:
+        capture_pd = pd.read_csv(capture_csv_path, encoding='utf_8_sig')
+    except pd.errors.EmptyDataError as error:
+        print(error)
+        return 
 
     for idx, row in capture_pd.iterrows():
         start_s_idx = row['start_s']
@@ -137,7 +148,11 @@ def vidio_capture_crop(in_params):
         return 
 
     # capture_pd
-    capture_pd = pd.read_csv(capture_csv_path, encoding='utf_8_sig')
+    try:
+        capture_pd = pd.read_csv(capture_csv_path, encoding='utf_8_sig')
+    except pd.errors.EmptyDataError as error:
+        print(error)
+        return 
 
     for idx, row in capture_pd.iterrows():
         # VideoFileClip 
@@ -186,7 +201,11 @@ def vidio_capture_crop_merge(in_params):
         return 
 
     # capture_pd
-    capture_pd = pd.read_csv(capture_csv_path, encoding='utf_8_sig')
+    try:
+        capture_pd = pd.read_csv(capture_csv_path, encoding='utf_8_sig')
+    except pd.errors.EmptyDataError as error:
+        print(error)
+        return 
 
     for idx, row in capture_pd.iterrows():
         # VideoFileClip 
@@ -217,13 +236,15 @@ def main():
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.video_dir = "/mnt/huanyuan/temp/卡口4/2022-03-29/avi/"
-    args.output_video_dir = "/mnt/huanyuan/temp/卡口4/2022-03-29/avi_video_capture/"
+    args.video_dir = "/mnt/huanyuan/temp/卡口4/2022-03-31/avi/"
+    args.output_video_dir = "/mnt/huanyuan/temp/卡口4/2022-03-31/avi_video_capture/"
     args.suffix = '.avi'
 
     # args.video_dir = "/mnt/huanyuan/temp/天桥/2022-04-01/avi/"
     # args.output_video_dir = "/mnt/huanyuan/temp/天桥/2022-04-01/avi_video_capture/"
     # args.suffix = '.avi'
+
+    args.step_frame = 3
 
     # mkdir 
     create_folder(args.output_video_dir)
@@ -238,13 +259,13 @@ def main():
         in_args = [args, video_list[idx]]
         in_params.append(in_args)
 
-    # # step 1: 
-    # # 车辆抓取
-    # ctx = torch.multiprocessing.get_context("spawn")
-    # p = ctx.Pool(2)
-    # out = p.map(video_capture_csv, in_params)
-    # p.close()
-    # p.join()
+    # step 1: 
+    # 车辆抓取
+    ctx = torch.multiprocessing.get_context("spawn")
+    p = ctx.Pool(2)
+    out = p.map(video_capture_csv, in_params)
+    p.close()
+    p.join()
 
     # 截取视频段，前后扩展时间
     args.time_shift_s = 3
@@ -261,32 +282,32 @@ def main():
     # p.close()
     # p.join()
 
-    # step 4: 
-    # 挑选颜色
-    args.select_plate_color = 'yellow'
+    # # step 4: 
+    # # 挑选颜色
+    # args.select_plate_color = 'yellow'
 
-    # 挑选车型
-    args.select_car_attri = None
+    # # 挑选车型
+    # args.select_car_attri = None
 
-    # step 5: 
-    # 视频剪裁
-    p = multiprocessing.Pool(2)
-    out = list(tqdm(p.map(vidio_capture_crop, in_params), total=len(in_params)))
-    p.close()
-    p.join()
+    # # step 5: 
+    # # 视频剪裁
+    # p = multiprocessing.Pool(2)
+    # out = list(tqdm(p.map(vidio_capture_crop, in_params), total=len(in_params)))
+    # p.close()
+    # p.join()
 
-    # step 6: 
-    args.select_plate_color = 'green'
+    # # step 6: 
+    # args.select_plate_color = 'green'
 
-    # 挑选车型
-    args.select_car_attri = None
+    # # 挑选车型
+    # args.select_car_attri = None
 
-    # step 7: 
-    # 视频剪裁
-    p = multiprocessing.Pool(2)
-    out = list(tqdm(p.map(vidio_capture_crop, in_params), total=len(in_params)))
-    p.close()
-    p.join()
+    # # step 7: 
+    # # 视频剪裁
+    # p = multiprocessing.Pool(2)
+    # out = list(tqdm(p.map(vidio_capture_crop, in_params), total=len(in_params)))
+    # p.close()
+    # p.join()
 
 
 if __name__ == '__main__':
