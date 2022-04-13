@@ -59,7 +59,11 @@ def draw_bbox_info(img, bbox_info, capture_id_list, mode='xywh'):
     for idx in range(len(bbox_info)):
         bbox_info_idx = bbox_info[idx]
         
-        capture_bool = bbox_info_idx['id'] in capture_id_list
+        capture_bool = False
+        for idy in range(len(capture_id_list)):
+            if bbox_info_idx['id'] == capture_id_list[idy][0]:
+                capture_bool = True
+
         # car
         if isinstance(bbox_info_idx['loc'][0], float):
             bbox_info_idx['loc'] = [int(b + 0.5) for b in bbox_info_idx['loc'][:4]]

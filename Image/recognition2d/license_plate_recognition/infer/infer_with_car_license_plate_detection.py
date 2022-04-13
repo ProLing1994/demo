@@ -37,21 +37,21 @@ def img_detect(args, model, img):
     bboxes = car_plate_detector.detect(img)
 
     # roi ignore 
-    if args.roi_ignore_bool:
+    if args.roi_bool:
         # init
         temp_bboxes = bboxes
         bboxes = dict()
-        bboxes["roi_ignore_area"] = [args.roi_ignore_area]
+        # bboxes["roi_area"] = [args.roi_area]
 
         for key in temp_bboxes.keys():
             bbox_list = []
             for bbox_idx in range(len(temp_bboxes[key])):
                 bbox = temp_bboxes[key][bbox_idx]
 
-                if bbox[2] < args.roi_ignore_area[0] or \
-                    bbox[3] < args.roi_ignore_area[1] or \
-                    bbox[0] > args.roi_ignore_area[2] or \
-                    bbox[1] > args.roi_ignore_area[3]:
+                if bbox[2] < args.roi_area[0] or \
+                    bbox[3] < args.roi_area[1] or \
+                    bbox[0] > args.roi_area[2] or \
+                    bbox[1] > args.roi_area[3]:
                     pass
                 else:
                     bbox_list.append(bbox)
@@ -260,12 +260,12 @@ def main():
     args.write_crop_license_plate = True
 
     # 是否通过 roi 区域屏蔽部分检测结果
-    args.roi_ignore_bool = True
+    args.roi_bool = True
     # 2M
-    # args.roi_ignore_area = [0, 108, 1920, 972]
-    # args.roi_ignore_area = [0, 300, 1920, 1080]
+    # args.roi_area = [0, 108, 1920, 972]
+    # args.roi_area = [0, 300, 1920, 1080]
     # 5M
-    args.roi_ignore_area = [0, 600, 2592, 1920]
+    args.roi_area = [0, 600, 2592, 1920]
 
     # 是否将 car\bus\truck 合并为一类输出
     args.merge_class_bool = False
@@ -300,9 +300,13 @@ def main():
     # # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearchs_bboxexpand_roiignore/"
     # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_beamsearchs_roiignore/"
 
-    args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220401/264原始视频/5M_卡口2/"
-    args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220401/pc_20220401_车牌抓拍实验/5M_卡口2_车牌捕获/"
-    
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220401/264原始视频/5M_卡口2/"
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220401/pc_20220401_车牌抓拍实验/5M_卡口2_车牌捕获/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220407/264原始视频/5M_卡口3_晚/"
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220407/pc_20220407_车牌抓拍实验/5M_卡口3_晚_车牌捕获/"
+    args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220407/264原始视频/5M_卡口3_白/"
+    args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220407/pc_20220407_车牌抓拍实验/5M_卡口3_白_车牌捕获/"
+
     args.suffix = '.avi'
     # args.suffix = '.mp4'
 

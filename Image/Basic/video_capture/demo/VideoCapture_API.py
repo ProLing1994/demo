@@ -79,7 +79,7 @@ class VideoCaptureApi():
         # 是否将 car\bus\truck 合并为一类输出
         self.merge_class_bool = None
         self.merge_class_name = 'car_bus_truck'
-        self.car_name_list = [ 'car', 'bus', 'truck' ]
+        self.car_attri_name_list = [ 'car', 'bus', 'truck' ]
         self.license_plate_name = 'license_plate'
 
         # 检测框下边界往下移动（检测框不准，车牌匹配不上）
@@ -93,6 +93,14 @@ class VideoCaptureApi():
         # 更新车辆行驶状态
         self.update_state_per_frame = 10
         self.move_state_threshold = 10
+
+        # 是否通过 roi 区域屏蔽部分检测结果
+        self.roi_bool = False
+        # self.roi_bool = True
+        # 2M
+        # args.roi_area = [0, 300, 1920, 1080]
+        # 5M
+        self.roi_area = [0, 600, 2592, 1920]
 
         # 抓拍线
         self.capture_line_ratio = [0.2, 0.8]
@@ -115,14 +123,15 @@ class VideoCaptureApi():
         bbox_state_dict = {}
         bbox_state_dict['id'] = 0                                           # 追踪id
         bbox_state_dict['loc'] = []                                         # 车辆坐标
-        bbox_state_dict['center_y'] = 0.0                                   # 车辆中心坐标
+        bbox_state_dict['init_center_y'] = 0.0                              # 车辆进入画面时的中心坐标
         bbox_state_dict['state'] = ''                                       # 车辆状态（上下行）
+        bbox_state_dict['state_frame_num'] = ''                             # 车辆状态（上下行）帧数
         bbox_state_dict['start_frame'] = 0                                  # 车辆驶入画面的帧数
         bbox_state_dict['end_frame'] = 0                                    # 车辆驶出画面的帧数
         bbox_state_dict['frame_num'] = 0                                    # 车辆进入画面帧数
         bbox_state_dict['attri_list'] = []                                  # 车辆属性列表
         bbox_state_dict['plate_color_list'] = []                            # 车牌颜色列表
-        bbox_state_dict['capture_bool'] = False                             # 车辆抓拍
+        bbox_state_dict['capture_flage'] = False                            # 车辆抓拍
         
         self.params_dict['bbox_state_container'] = []                       # 状态信息容器（bbox_state_dict）
 
@@ -143,8 +152,8 @@ class VideoCaptureApi():
     def run(self, img, frame_idx):
 
         # info 
-        image_width = img.shape[1]
-        image_height = img.shape[0]
+        self.image_width = img.shape[1]
+        self.image_height = img.shape[0]
 
         # detector
         bboxes = self.car_plate_detector.detect(img, with_score=True)
@@ -154,7 +163,7 @@ class VideoCaptureApi():
             # bboxes expand
             if self.merge_class_name in bboxes:
                 for idx in range(len(bboxes[self.merge_class_name])):
-                    bboxes[self.merge_class_name][idx][3] = min(bboxes[self.merge_class_name][idx][3] + self.bbox_bottom_expand, image_height)
+                    bboxes[self.merge_class_name][idx][3] = min(bboxes[self.merge_class_name][idx][3] + self.bbox_bottom_expand, self.image_height)
 
             # tracker
             if self.merge_class_name in bboxes:
@@ -166,16 +175,16 @@ class VideoCaptureApi():
         else:
 
             # bboxes expand
-            for idx in range(len(self.car_name_list)):
-                car_name_idx = self.car_name_list[idx]
+            for idx in range(len(self.car_attri_name_list)):
+                car_name_idx = self.car_attri_name_list[idx]
                 if car_name_idx in bboxes:
                     for idy in range(len(bboxes[car_name_idx])):
-                        bboxes[car_name_idx][idy][3] = min(bboxes[car_name_idx][idy][3] + self.bbox_bottom_expand, image_height)
+                        bboxes[car_name_idx][idy][3] = min(bboxes[car_name_idx][idy][3] + self.bbox_bottom_expand, self.image_height)
 
             # tracker
             dets = np.empty((0, 5))
-            for idx in range(len(self.car_name_list)):
-                car_name_idx = self.car_name_list[idx]
+            for idx in range(len(self.car_attri_name_list)):
+                car_name_idx = self.car_attri_name_list[idx]
                 if car_name_idx in bboxes:
                     dets = np.concatenate((dets, np.array(bboxes[car_name_idx])), axis=0)
                     
@@ -188,7 +197,7 @@ class VideoCaptureApi():
         bbox_info_list = self.update_bbox_state_container( bbox_info_list, frame_idx )
 
         # captute
-        capture_id_list = self.find_capture_id( image_height )
+        capture_id_list = self.find_capture_id( )
         capture_info_list = self.update_capture_state( capture_id_list, frame_idx )
 
         return bbox_info_list, capture_id_list, capture_info_list
@@ -234,13 +243,15 @@ class VideoCaptureApi():
             bbox_info_dict['id'] = tracker_bbox[-1]
             bbox_info_dict['loc'] = tracker_bbox[0:4]
 
+            # 车辆属性更新
             if self.merge_class_bool:
                 pass
             else:
-                for idx in range(len(self.car_name_list)):
-                    car_name_idx = self.car_name_list[idx]
+                for idx in range(len(self.car_attri_name_list)):
+                    car_name_idx = self.car_attri_name_list[idx]
                     if car_name_idx in bboxes:
                         car_roi_list = bboxes[car_name_idx]
+                        # 求交集最大的车辆框
                         match_car_roi = self.match_bbox(bbox_info_dict['loc'], car_roi_list)
                         if len(match_car_roi):
                             bbox_info_dict['attri'] = car_name_idx
@@ -248,6 +259,7 @@ class VideoCaptureApi():
             # license plate
             if self.license_plate_name in bboxes:
                 license_plate_roi_list = bboxes[self.license_plate_name]
+                # 求交集最大的车牌框
                 match_license_plate_roi = self.match_bbox(bbox_info_dict['loc'], license_plate_roi_list)
 
                 if len(match_license_plate_roi):
@@ -281,17 +293,19 @@ class VideoCaptureApi():
                     bbox_state_idy['frame_num'] += 1
                     bbox_state_idy['loc'] = bbox_info_idx['loc']
 
-                    # 间隔几帧更新车辆状态
-                    if bbox_state_idy['frame_num'] % self.update_state_per_frame == 0:
+                    # 更新车辆状态
+                    distance_y = bbox_state_idy['init_center_y'] - car_center_y
+                    if distance_y > self.move_state_threshold:
+                        bbox_state = 'Up'
+                    elif distance_y < ( -1 * self.move_state_threshold ):
+                        bbox_state = 'Down'
+                    else:
+                        bbox_state = "Stop"
                         
-                        distance_y = bbox_state_idy['center_y'] - car_center_y
-                        if distance_y > self.move_state_threshold:
-                            bbox_state_idy['state'] = 'Up'
-                        elif distance_y < ( -1 * self.move_state_threshold ):
-                            bbox_state_idy['state'] = 'Down'
-                        else:
-                            bbox_state_idy['state'] = 'Stop'
-                        bbox_state_idy['center_y'] = car_center_y
+                    if bbox_state_idy['state'] != bbox_state:
+                        bbox_state_idy['state'] = bbox_state
+                        bbox_state_idy['state_frame_num'] = 0
+                    bbox_state_idy['state_frame_num'] += 1 
 
                     bbox_state_idy['attri_list'].append(bbox_info_idx['attri'])
                     
@@ -308,18 +322,19 @@ class VideoCaptureApi():
                 bbox_state_dict = {}
                 bbox_state_dict['id'] = 0                                           # 追踪id
                 bbox_state_dict['loc'] = []                                         # 车辆坐标
-                bbox_state_dict['center_y'] = 0.0                                   # 车辆中心坐标
+                bbox_state_dict['init_center_y'] = 0.0                              # 车辆进入画面时的中心坐标
                 bbox_state_dict['state'] = ''                                       # 车辆状态（上下行）
+                bbox_state_dict['state_frame_num'] = ''                             # 车辆状态（上下行）帧数
                 bbox_state_dict['start_frame'] = 0                                  # 车辆驶入画面的帧数
                 bbox_state_dict['end_frame'] = 0                                    # 车辆驶出画面的帧数
                 bbox_state_dict['frame_num'] = 0                                    # 车辆进入画面帧数
                 bbox_state_dict['attri_list'] = []                                  # 车辆属性列表
                 bbox_state_dict['plate_color_list'] = []                            # 车牌颜色列表
-                bbox_state_dict['capture_bool'] = False                             # 车辆抓拍
+                bbox_state_dict['capture_flage'] = False                            # 车辆抓拍
 
                 bbox_state_dict['id'] = bbox_info_idx['id']
                 bbox_state_dict['loc'] = bbox_info_idx['loc']
-                bbox_state_dict['center_y'] = car_center_y
+                bbox_state_dict['init_center_y'] = car_center_y
                 bbox_state_dict['start_frame'] = frame_idx
                 bbox_state_dict['attri_list'].append(bbox_info_idx['attri'])
 
@@ -332,7 +347,7 @@ class VideoCaptureApi():
         return bbox_info_list
 
 
-    def find_capture_id(self, image_height):
+    def find_capture_id(self):
 
         capture_id_list = []
         for idy in range(len(self.params_dict['bbox_state_container'])):
@@ -340,9 +355,17 @@ class VideoCaptureApi():
             bbox_state_idy = self.params_dict['bbox_state_container'][idy]
             car_bottom_y = bbox_state_idy['loc'][3]
 
-            if bbox_state_idy['state'] == 'Down' and car_bottom_y > image_height * self.capture_line_ratio[1]:
+            # 上下限阈值
+            if self.roi_bool:
+                Down_threshold = self.roi_area[1] + ( self.roi_area[3] - self.roi_area[1] ) * self.capture_line_ratio[1]
+                Up_threshold = self.roi_area[1] + ( self.roi_area[3] - self.roi_area[1] ) * self.capture_line_ratio[0]
+            else:
+                Down_threshold = self.image_height * self.capture_line_ratio[1]
+                Up_threshold = self.image_height * self.capture_line_ratio[0]
+
+            if bbox_state_idy['state'] == 'Down' and bbox_state_idy['state_frame_num'] >= 3 and car_bottom_y > Down_threshold:
                 capture_id_list.append(bbox_state_idy['id'])
-            elif bbox_state_idy['state'] == 'Up' and car_bottom_y < image_height * self.capture_line_ratio[0]:
+            elif bbox_state_idy['state'] == 'Up' and bbox_state_idy['state_frame_num'] >= 3 and car_bottom_y < Up_threshold:
                 capture_id_list.append(bbox_state_idy['id'])
             else:
                 pass
@@ -354,11 +377,11 @@ class VideoCaptureApi():
         
         capture_info_list = []
         for idx in range(len(capture_id_list)):
-            capture_idx = capture_id_list[idx]
+            capture_id_idx = capture_id_list[idx]
 
             # init 
             capture_dict = {}
-            capture_dict['id'] = capture_idx
+            capture_dict['id'] = capture_id_idx
             capture_dict['start_frame'] = 0
             capture_dict['end_frame'] = frame_idx
             capture_dict['attri'] = 'None'
@@ -367,9 +390,9 @@ class VideoCaptureApi():
             for idy in range(len(self.params_dict['bbox_state_container'])):
                 bbox_state_idy = self.params_dict['bbox_state_container'][idy]
 
-                if bbox_state_idy['id'] == capture_idx and not bbox_state_idy['capture_bool']:
+                if bbox_state_idy['id'] == capture_id_idx and not bbox_state_idy['capture_flage']:
                     
-                    bbox_state_idy['capture_bool'] = True
+                    bbox_state_idy['capture_flage'] = True
 
                     attri_np = np.array(bbox_state_idy['attri_list'])
                     plate_color_np = np.array(bbox_state_idy['plate_color_list'])

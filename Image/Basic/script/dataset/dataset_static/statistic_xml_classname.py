@@ -99,9 +99,15 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
     # [('bus', 685), ('car', 12295), ('fuzzy_plate', 1792), ('plate', 9800), ('roi_ignore_plate', 227), ('truck', 180)]
     # [('bus', {'trainval': 607, 'test': 78}), ('car', {'trainval': 11027, 'test': 1268}), ('fuzzy_plate', {'trainval': 1589, 'test': 203}), ('plate', {'trainval': 8806, 'test': 994}), ('roi_ignore_plate', {'trainval': 203, 'test': 24}), ('truck', {'trainval': 160, 'test': 20})]
+    # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_5M/"
+    # [('bus', 488), ('car', 7776), ('fuzzy_plate', 1158), ('painted_plate', 175), ('plate', 4014), ('truck', 22)]
+    # [('bus', {'trainval': 444, 'test': 44}), ('car', {'trainval': 7002, 'test': 774}), ('fuzzy_plate', {'trainval': 1030, 'test': 128}), ('painted_plate', {'trainval': 161, 'test': 14}), ('plate', {'trainval': 3628, 'test': 386}), ('truck', {'trainval': 20, 'test': 2})]
+    args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
+    # [('bus', 1784), ('car', 8992), ('fuzzy_plate', 3799), ('painted_plate', 394), ('plate', 5297), ('truck', 12537)]
+    # [('bus', {'trainval': 1632, 'test': 152}), ('car', {'trainval': 8096, 'test': 896}), ('fuzzy_plate', {'trainval': 3403, 'test': 396}), ('painted_plate', {'trainval': 349, 'test': 45}), ('plate', {'trainval': 4765, 'test': 532}), ('truck', {'trainval': 11271, 'test': 1266})]
     
     # 数据集：ZG_ZHJYZ_detection 加油站测试样本
-    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
     # 2MB: [('car', 155), ('fuzzy_plate', 37), ('plate', 87), ('truck', 1)]
     # 2MH: [('bus', 7), ('car', 570), ('fuzzy_plate', 27), ('plate', 411), ('truck', 9)]
     # 5MB: [('bus', 13), ('car', 453), ('fuzzy_plate', 103), ('plate', 235), ('truck', 8)]
@@ -117,10 +123,10 @@ if __name__ == "__main__":
     args.test_file = args.input_dir + "ImageSets/Main/test.txt"
     args.statistic_dict = {'trainval': args.trainval_file, 'test': args.test_file }
 
-    # args.jpg_dir =  args.input_dir + "JPEGImages/"
-    # args.xml_dir =  args.input_dir + "XML/"
-    args.jpg_dir =  args.input_dir + "AHHBAS_43c/"
-    args.xml_dir =  args.input_dir + "AHHBAS_43c_XML/"
+    args.jpg_dir =  args.input_dir + "JPEGImages/"
+    args.xml_dir =  args.input_dir + "XML/"
+    # args.jpg_dir =  args.input_dir + "AHHBAS_43c/"
+    # args.xml_dir =  args.input_dir + "AHHBAS_43c_XML/"
 
     statistic_classname(args)
-    # statistic_classname_train_val_test(args)
+    statistic_classname_train_val_test(args)

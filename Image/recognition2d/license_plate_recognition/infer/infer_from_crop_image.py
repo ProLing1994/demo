@@ -72,7 +72,8 @@ def inference_images(args):
         results_dict['label'] = str(img_list[idx]).split('_')[0]
         results_dict['ocr'] = ocr
         results_dict['ocr_score'] = ocr_score
-        results_dict['res'] = int( results_dict['label'][1:] == results_dict['ocr'][1:] )
+        # results_dict['res'] = int( results_dict['label'][1:] == results_dict['ocr'][1:] )
+        results_dict['res'] = int( results_dict['label'] == results_dict['ocr'] )
         results_dict['width'] = image_width
         results_dict['height'] = image_height
         
@@ -110,8 +111,9 @@ def main():
     # args.name_format = "blue"
     # args.name_format = "green"
     args.name_format = "yellow"
-    args.img_dir = os.path.join("/mnt/huanyuan2/data/image/LicensePlateRecognition/zg_ahhbgs_5M_220401", args.name_format)
-    args.output_csv_path = os.path.join("/mnt/huanyuan2/data/image/LicensePlateRecognition/zg_ahhbgs_5M_220401", args.name_format + ".csv")
+    args.img_dir = os.path.join("/mnt/huanyuan2/data/image/LicensePlateRecognition/zg_ahhbgs_5M_220401/卡口2/", args.name_format)
+    # args.output_csv_path = os.path.join("/mnt/huanyuan2/data/image/LicensePlateRecognition/zg_ahhbgs_5M_220401/卡口2/", args.name_format + ".csv")
+    args.output_csv_path = os.path.join("/mnt/huanyuan2/data/image/LicensePlateRecognition/zg_ahhbgs_5M_220401/卡口2/", args.name_format + "_all.csv")
 
     inference_images(args)
 

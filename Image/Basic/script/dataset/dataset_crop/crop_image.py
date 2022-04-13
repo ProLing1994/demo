@@ -61,10 +61,12 @@ def main():
     # args.output_dir = args.input_dir + "Crop/"
 
     # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
-    # args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate", "roi_ignore_plate"]
-    # args.jpg_dir =  args.input_dir + "JPEGImages/"
-    # args.xml_dir =  args.input_dir + "XML/"
-    # args.output_dir = args.input_dir + "Crop/"
+    # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_5M/"
+    args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
+    args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate", 'painted_plate', "roi_ignore_plate"]
+    args.jpg_dir =  args.input_dir + "JPEGImages/"
+    args.xml_dir =  args.input_dir + "XML/"
+    args.output_dir = args.input_dir + "Crop/"
 
     # args.input_dir = "/mnt/huanyuan2/data/image/RM_ADAS_AllInOne/allinone_lincense_plate/"
     # args.select_name_list = ["plate", "fuzzy_plate", "painted_plate"]
@@ -72,11 +74,11 @@ def main():
     # args.xml_dir =  args.input_dir + "XML/"
     # args.output_dir = args.input_dir + "Crop/"
 
-    args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试样本/"
-    args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate", "painted_plate"]
-    args.jpg_dir =  args.input_dir + "AHHBAS_418/"
-    args.xml_dir =  args.input_dir + "AHHBAS_418_XML/"
-    args.output_dir = args.input_dir + "AHHBAS_418_Crop/"
+    # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试样本/"
+    # args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate", "painted_plate"]
+    # args.jpg_dir =  args.input_dir + "AHHBAS_418/"
+    # args.xml_dir =  args.input_dir + "AHHBAS_418_XML/"
+    # args.output_dir = args.input_dir + "AHHBAS_418_Crop/"
 
     crop_image(args)
 

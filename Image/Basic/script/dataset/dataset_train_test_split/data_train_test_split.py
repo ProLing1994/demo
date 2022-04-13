@@ -50,7 +50,9 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/LicensePlate/Europe/"            # trainval: 18644, train: 16779, val: 1865, test: 2072
     # args.input_dir = "/yuanhuan/data/image/LicensePlate/Mexico/"            # trainval: 10578, train: 9520, val: 1058, test: 1176
     # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone/"      # trainval: 102242, train: 92017, val: 10225, test: 11361
-    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"    # trainval: 5846, train: 5261, val: 585, test: 650
+    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"    # trainval: 5846, train: 5261, val: 585, test: 650
+    # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_5M/"    # trainval: 1445, train: 1300, val: 145, test: 161
+    args.input_dir =  "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/sandaofangxian/"    # trainval: 4476, train: 4028, val: 448, test: 498
 
     args.trainval_file = args.input_dir + "ImageSets/Main/trainval.txt"
     args.train_file = args.input_dir + "ImageSets/Main/train.txt"
