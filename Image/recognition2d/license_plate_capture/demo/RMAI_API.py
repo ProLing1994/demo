@@ -84,8 +84,8 @@ class CaptureApi():
         self.license_plate_name = 'license_plate'
 
         # 检测框下边界往下移动（检测框不准，车牌匹配不上）
-        # self.bbox_bottom_expand = 50
-        self.bbox_bottom_expand = 0
+        self.bbox_bottom_expand_bool = False
+        self.bbox_bottom_expand = 50
 
         # sort
         self.max_age = 5 
@@ -104,8 +104,8 @@ class CaptureApi():
         self.cache_interval = 2
 
         # 更新车辆行驶状态
-        self.update_state_per_frame = 10
-        self.move_state_threshold = 10
+        self.update_state_interval = 5
+        self.update_state_threshold = 10
 
         # 是否通过 roi 区域屏蔽部分检测结果
         # self.roi_bool = False
@@ -185,9 +185,10 @@ class CaptureApi():
         if self.merge_class_bool:
     
             # bboxes expand
-            if self.merge_class_name in bboxes:
-                for idx in range(len(bboxes[self.merge_class_name])):
-                    bboxes[self.merge_class_name][idx][3] = min(bboxes[self.merge_class_name][idx][3] + self.bbox_bottom_expand, self.image_height)
+            if self.bbox_bottom_expand_bool:
+                if self.merge_class_name in bboxes:
+                    for idx in range(len(bboxes[self.merge_class_name])):
+                        bboxes[self.merge_class_name][idx][3] = min(bboxes[self.merge_class_name][idx][3] + self.bbox_bottom_expand, self.image_height)
 
             # tracker
             if self.merge_class_name in bboxes:
@@ -199,11 +200,12 @@ class CaptureApi():
         else:
 
             # bboxes expand
-            for idx in range(len(self.car_attri_name_list)):
-                car_name_idx = self.car_attri_name_list[idx]
-                if car_name_idx in bboxes:
-                    for idy in range(len(bboxes[car_name_idx])):
-                        bboxes[car_name_idx][idy][3] = min(bboxes[car_name_idx][idy][3] + self.bbox_bottom_expand, self.image_height)
+            if self.bbox_bottom_expand_bool:
+                for idx in range(len(self.car_attri_name_list)):
+                    car_name_idx = self.car_attri_name_list[idx]
+                    if car_name_idx in bboxes:
+                        for idy in range(len(bboxes[car_name_idx])):
+                            bboxes[car_name_idx][idy][3] = min(bboxes[car_name_idx][idy][3] + self.bbox_bottom_expand, self.image_height)
 
             # tracker
             dets = np.empty((0, 5))
@@ -355,9 +357,9 @@ class CaptureApi():
 
                     # 更新车辆状态
                     distance_y = bbox_state_idy['init_center_y'] - car_center_y
-                    if distance_y > self.move_state_threshold:
+                    if distance_y > self.update_state_threshold:
                         bbox_state = 'Up'
-                    elif distance_y < ( -1 * self.move_state_threshold ):
+                    elif distance_y < ( -1 * self.update_state_threshold ):
                         bbox_state = 'Down'
                     else:
                         bbox_state = "Stop"

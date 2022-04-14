@@ -154,12 +154,13 @@ def vidio_capture_crop(in_params):
         print(error)
         return 
 
+    # VideoFileClip 
+    try:
+        video_clip = editor.VideoFileClip(video_path)
+    except:
+        return
+
     for idx, row in capture_pd.iterrows():
-        # VideoFileClip 
-        try:
-            video_clip = editor.VideoFileClip(video_path)
-        except:
-            continue
     
         # info 
         attri_idx = row['attri']
@@ -223,12 +224,13 @@ def vidio_capture_crop_merge(in_params):
         print(error)
         return 
 
+    # VideoFileClip 
+    try:
+        video_clip = editor.VideoFileClip(video_path)
+    except:
+        return
+
     for idx, row in capture_pd.iterrows():
-        # VideoFileClip 
-        try:
-            video_clip = editor.VideoFileClip(video_path)
-        except:
-            continue
 
         # info 
         start_s_idx = max(0, float(row['start_s']) - args.time_shift_s ) 
@@ -306,7 +308,7 @@ def main():
             vidio_capture_merge(args, video_list[idx])
 
         # 视频剪裁
-        p = multiprocessing.Pool(1)
+        p = multiprocessing.Pool(2)
         out = p.map(vidio_capture_crop_merge, in_params)
         p.close()
         p.join()
@@ -320,7 +322,7 @@ def main():
         args.select_car_attri = None
             
         # 视频剪裁
-        p = multiprocessing.Pool(3)
+        p = multiprocessing.Pool(2)
         out = list(tqdm(p.map(vidio_capture_crop, in_params), total=len(in_params)))
         p.close()
         p.join()
@@ -334,7 +336,7 @@ def main():
         args.select_car_attri = 'truck'
 
         # 视频剪裁
-        p = multiprocessing.Pool(3)
+        p = multiprocessing.Pool(2)
         out = list(tqdm(p.map(vidio_capture_crop, in_params), total=len(in_params)))
         p.close()
         p.join()

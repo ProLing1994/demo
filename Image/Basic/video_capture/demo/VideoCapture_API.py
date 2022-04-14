@@ -95,8 +95,8 @@ class VideoCaptureApi():
         self.move_state_threshold = 10
 
         # 是否通过 roi 区域屏蔽部分检测结果
-        self.roi_bool = False
-        # self.roi_bool = True
+        # self.roi_bool = False
+        self.roi_bool = True
         # 2M
         # args.roi_area = [0, 300, 1920, 1080]
         # 5M
@@ -365,8 +365,8 @@ class VideoCaptureApi():
 
             if bbox_state_idy['state'] == 'Down' and bbox_state_idy['state_frame_num'] >= 3 and car_bottom_y > Down_threshold:
                 capture_id_list.append(bbox_state_idy['id'])
-            elif bbox_state_idy['state'] == 'Up' and bbox_state_idy['state_frame_num'] >= 3 and car_bottom_y < Up_threshold:
-                capture_id_list.append(bbox_state_idy['id'])
+            # elif bbox_state_idy['state'] == 'Up' and bbox_state_idy['state_frame_num'] >= 3 and car_bottom_y < Up_threshold:
+            #     capture_id_list.append(bbox_state_idy['id'])
             else:
                 pass
             
