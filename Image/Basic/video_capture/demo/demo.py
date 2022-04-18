@@ -329,7 +329,7 @@ def main():
 
     if '4' in step_list:
         # step 4: 
-        # 挑选颜色：绿色
+        # 挑选颜色：黄色
         args.select_plate_color = 'yellow'
 
         # 挑选车型

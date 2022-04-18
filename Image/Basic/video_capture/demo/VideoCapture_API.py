@@ -95,8 +95,8 @@ class VideoCaptureApi():
         self.move_state_threshold = 10
 
         # 是否通过 roi 区域屏蔽部分检测结果
-        # self.roi_bool = False
-        self.roi_bool = True
+        self.roi_bool = False
+        # self.roi_bool = True
         # 2M
         # args.roi_area = [0, 300, 1920, 1080]
         # 5M

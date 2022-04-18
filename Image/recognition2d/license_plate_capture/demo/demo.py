@@ -51,11 +51,24 @@ def inference_video(args):
             # if frame_idx == 328:
             #     print()
 
-            # capture api 
+            # capture api
+            # bbox_info_list：单检测识别结果
             # capture_line：抓拍线
             # capture_id_list：需要抓拍的车辆id
-            # capture_info：抓拍结果
-            bbox_info_list, capture_line, capture_id_list, capture_info = capture_api.run(img, frame_idx)
+            # capture_result：抓拍结果
+            bbox_info_list, capture_line, capture_id_list, capture_result = capture_api.run(img, frame_idx)
+
+            # crop license plate
+            for idy in range(len(bbox_info_list)):
+                bbox_info_idy = bbox_info_list[idy]
+                plate_ocr_idy = bbox_info_idy['plate_ocr']
+                
+                if bbox_info_idy['plate_crop_bool']:
+                    # car
+                    crop_img = img[bbox_info_idy['plate_loc'][1]:bbox_info_idy['plate_loc'][3], bbox_info_idy['plate_loc'][0]:bbox_info_idy['plate_loc'][2]]
+                    output_crop_img_path = os.path.join(args.output_video_dir, 'plate_crop', video_list[idx].replace(args.suffix, ''), '{}_{}.jpg'.format(plate_ocr_idy, frame_idx))
+                    create_folder(os.path.dirname(output_crop_img_path))
+                    cv2.imwrite(output_crop_img_path, crop_img)
 
             # draw bbox
             img = draw_bbox_info(img, bbox_info_list, capture_id_list, mode='ltrb')
@@ -65,14 +78,14 @@ def inference_video(args):
             create_folder(os.path.dirname(output_img_path))
             cv2.imwrite(output_img_path, img)
 
-            # crop capture info
-            for idy in range(len(capture_info)):
-                capture_info_idy = capture_info[idy]
-                id_idy = capture_info_idy['id']
-                plate_ocr_idy = capture_info_idy['plate_ocr']
+            # crop capture result
+            for idy in range(len(capture_result)):
+                capture_result_idy = capture_result[idy]
+                id_idy = capture_result_idy['id']
+                plate_ocr_idy = capture_result_idy['plate_ocr']
 
-                for idz in range(len(capture_info_idy['img_bbox_info'])):
-                    img_bbox_info_idz = capture_info_idy['img_bbox_info'][idz]
+                for idz in range(len(capture_result_idy['img_bbox_info'])):
+                    img_bbox_info_idz = capture_result_idy['img_bbox_info'][idz]
                     img_idz = img_bbox_info_idz['img']
                     bbox_info_idz = img_bbox_info_idz['bbox_info']
                     bbox_loc = [bbox_info['loc'] for bbox_info in bbox_info_idz if bbox_info['id'] == id_idy][0]
@@ -94,8 +107,11 @@ def main():
     args = parser.parse_args()
 
     # # zg，智观加油站数据 2M
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_ZHJYZ_220119/264原始视频/2M_big/"
-    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_ZHJYZ_220119/pc_20220406_车牌抓拍实验/2M_叠加及抓拍结果/"
+    # # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_ZHJYZ_220119/264原始视频/2M/"
+    # # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_ZHJYZ_220119/264原始视频/2M_big/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_ZHJYZ_220119/test/"
+    # # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_ZHJYZ_220119/pc_20220406_车牌抓拍实验/2M_叠加及抓拍结果/"
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_ZHJYZ_220119/pc_20220414_车牌抓拍实验_车辆状态优化/2M_叠加及抓拍结果/"
     # args.suffix = '.avi'
 
     # zg，智观加油站数据 5M
@@ -104,23 +120,30 @@ def main():
     # args.suffix = '.avi'
 
     # # zg，安徽淮北高速 5M
-    # # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/ZG_AHHBGS_220401/ZG_AHHBGS_220327/264原始视频/5M/"
-    # # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/ZG_AHHBGS_220401/ZG_AHHBGS_220327/pc_20220329_车牌抓拍实验/叠加及抓拍结果/"
-    # # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220401/264原始视频/5M_卡口2/"
-    # # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220401/pc_20220401_车牌抓拍实验/5M_卡口2_叠加及抓拍结果/"
-    # # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220407/264原始视频/5M_卡口3_晚/"
-    # # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220407/pc_20220407_车牌抓拍实验/5M_卡口3_晚_叠加及抓拍结果/"
-    # # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220407/264原始视频/5M_卡口3_白/"
-    # # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220407/pc_20220407_车牌抓拍实验/5M_卡口3_白_叠加及抓拍结果/"
-    # # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220408/264原始视频/5M_卡口2_白_0406/"
-    # # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220408/pc_20220407_车牌抓拍实验/5M_卡口2_白_0406_叠加及抓拍结果/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220327/264原始视频/5M/"
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220327/pc_20220414_车牌抓拍实验_车辆状态优化/叠加及抓拍结果/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220401/264原始视频/5M_卡口2/"
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220401/pc_20220414_车牌抓拍实验_车辆状态优化/5M_卡口2_叠加及抓拍结果/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220407/264原始视频/5M_卡口3_晚/"
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220407/pc_20220407_车牌抓拍实验/5M_卡口3_晚_叠加及抓拍结果/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220407/264原始视频/5M_卡口3_白/"
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220407/pc_20220407_车牌抓拍实验/5M_卡口3_白_叠加及抓拍结果/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220408/264原始视频/5M_卡口2_白_0406/"
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220408/pc_20220414_车牌抓拍实验_车辆状态优化/5M_卡口2_白_0406_叠加及抓拍结果/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220408/264原始视频/5M_卡口2_白_0408/"
-    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220408/pc_20220407_车牌抓拍实验/5M_卡口2_白_0408_叠加及抓拍结果/"
-    # args.suffix = '.mp4'
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220408/pc_20220414_车牌抓拍实验_车辆状态优化/5M_卡口2_白_0408_叠加及抓拍结果/"
+    # args.suffix = '.avi'
 
-    args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/avi/"
-    args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/avi_capture/"
+    # zg，深圳天桥 5M
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ_20220414/264原始视频/5M_12mm_白_0414/"
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ_20220414/pc_20220416_车牌抓拍实验_车辆状态优化/5M_12mm_白_0414_叠加及抓拍结果/"
+    args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ_20220414/264原始视频/5M_16mm_白_0414/"
+    args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ_20220414/pc_20220416_车牌抓拍实验_车辆状态优化/5M_16mm_白_0414_叠加及抓拍结果/"
     args.suffix = '.avi'
+
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/avi/"
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/avi_capture/"
+    # args.suffix = '.avi'
 
     inference_video(args)
 

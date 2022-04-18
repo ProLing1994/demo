@@ -34,8 +34,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.input_dir = "/mnt/huanyuan2/data/image/LicensePlateRecognition/zg_ahhbgs_5M_220401/卡口2/crop/"
-    args.output_dir = "/mnt/huanyuan2/data/image/LicensePlateRecognition/zg_ahhbgs_5M_220401/卡口2/"
+    args.input_dir = "/mnt/huanyuan2/data/image/LicensePlateRecognition/zg_tq_5M_220418/5M_16mm/crop/"
+    args.output_dir = "/mnt/huanyuan2/data/image/LicensePlateRecognition/zg_tq_5M_220418/5M_16mm/"
     args.ignore_suffix = '糊'
 
     find_data()
