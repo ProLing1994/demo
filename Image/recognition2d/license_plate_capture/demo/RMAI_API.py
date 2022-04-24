@@ -12,7 +12,6 @@ from detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
 from recognition2d.license_plate_recognition.infer.license_plate import license_palte_model_init_caffe, license_palte_crnn_recognition_caffe, license_palte_beamsearch_init, license_palte_crnn_recognition_beamsearch_caffe
 from recognition2d.license_plate_capture.sort.mot_sort import Sort
 
-
 def check_in_roi(in_box, roi_bbox):
     roi_bool = False
 
@@ -93,8 +92,8 @@ class CaptureApi():
         self.iou_threshold = 0.3
         
         # lincense plate reader
-        self.plate_recognition_prototxt = "/mnt/huanyuan2/model/image_model/license_plate_recognition_moel_lxn/china_softmax.prototxt"
-        self.plate_recognition_model_path = "/mnt/huanyuan2/model/image_model/license_plate_recognition_moel_lxn/china.caffemodel"
+        self.plate_recognition_prototxt = "/mnt/huanyuan/model_final/image_model/license_plate_recognition_moel_lxn/china_softmax.prototxt"
+        self.plate_recognition_model_path = "/mnt/huanyuan/model_final/image_model/license_plate_recognition_moel_lxn/china.caffemodel"
         self.prefix_beam_search_bool = False
 
         # 缓存容器长度
@@ -114,10 +113,10 @@ class CaptureApi():
         # 是否通过 roi 区域屏蔽部分检测结果
         # self.roi_bool = False
         self.roi_bool = True
-        # 2M
-        # args.roi_area = [0, 300, 1920, 1080]
-        # 5M
-        self.roi_area = [0, 600, 2592, 1920]
+        # 2M：16:9
+        # args.roi_area = [0, 0, 1920, 1080]
+        # 5M：16:9
+        self.roi_area = [0, 462, 2592, 1920]
 
         # 抓拍线
         self.capture_line_ratio = [0.2, 0.8]
@@ -189,14 +188,17 @@ class CaptureApi():
         self.image_width = img.shape[1]
         self.image_height = img.shape[0]
 
+        assert self.image_width == 2592
+        assert self.image_height == 1920
+
         # detector
         bboxes = self.car_plate_detector.detect(img, with_score=True)
-        
+
         # tracker 
         tracker_bboxes = self.update_tracker_bboxes(bboxes)
 
         # update bbox info
-        bbox_info_list = self.update_bbox_info(img, bboxes, tracker_bboxes)
+        bbox_info_list = self.update_bbox_info( img, bboxes, tracker_bboxes )
 
         # store
         # 跳帧存储原图和检测识别结果
@@ -217,7 +219,7 @@ class CaptureApi():
 
         return bbox_info_list, capture_line, capture_id_list, capture_result
 
-    
+
     def update_tracker_bboxes(self, bboxes):
         if self.merge_class_bool:
         
@@ -370,10 +372,11 @@ class CaptureApi():
         for idx in range(len(pop_key_list)):
             self.params_dict['bbox_state_container'].pop(pop_key_list[idx])
 
-        is_new_state_bool = True
         # 遍历单帧结果
         for idx in range(len(bbox_info_list)):
             bbox_info_idx = bbox_info_list[idx]
+
+            is_new_state_bool = True
 
             # 遍历容器
             for key, value in self.params_dict['bbox_state_container'].items():

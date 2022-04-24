@@ -48,7 +48,7 @@ def inference_video(args):
             if not ret: # if the camera over return false
                 break
             
-            # if frame_idx == 328:
+            # if frame_idx == 304:
             #     print()
 
             # capture api
@@ -119,27 +119,35 @@ def main():
     # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频实验/5MH_2lane_capture/"
     # args.suffix = '.avi'
 
-    # # zg，安徽淮北高速 5M
+    # zg，安徽淮北高速 5M
     # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220327/264原始视频/5M/"
     # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220327/pc_20220414_车牌抓拍实验_车辆状态优化/叠加及抓拍结果/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220401/264原始视频/5M_卡口2/"
     # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220401/pc_20220414_车牌抓拍实验_车辆状态优化/5M_卡口2_叠加及抓拍结果/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220407/264原始视频/5M_卡口3_晚/"
-    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220407/pc_20220407_车牌抓拍实验/5M_卡口3_晚_叠加及抓拍结果/"
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220407/pc_20220422_车牌抓拍实验_车辆状态优化/5M_卡口3_晚_叠加及抓拍结果/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220407/264原始视频/5M_卡口3_白/"
-    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220407/pc_20220407_车牌抓拍实验/5M_卡口3_白_叠加及抓拍结果/"
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220407/pc_20220422_车牌抓拍实验_车辆状态优化/5M_卡口3_白_叠加及抓拍结果/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220408/264原始视频/5M_卡口2_白_0406/"
     # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220408/pc_20220414_车牌抓拍实验_车辆状态优化/5M_卡口2_白_0406_叠加及抓拍结果/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220408/264原始视频/5M_卡口2_白_0408/"
     # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220408/pc_20220414_车牌抓拍实验_车辆状态优化/5M_卡口2_白_0408_叠加及抓拍结果/"
-    # args.suffix = '.avi'
-
-    # zg，深圳天桥 5M
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ_20220414/264原始视频/5M_12mm_白_0414/"
-    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ_20220414/pc_20220416_车牌抓拍实验_车辆状态优化/5M_12mm_白_0414_叠加及抓拍结果/"
-    args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ_20220414/264原始视频/5M_16mm_白_0414/"
-    args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ_20220414/pc_20220416_车牌抓拍实验_车辆状态优化/5M_16mm_白_0414_叠加及抓拍结果/"
+    args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS/264原始视频/5M_12mm_卡口2_白_0420/"
+    args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS/pc_车牌抓拍实验_车辆状态优化/5M_12mm_卡口2_白_0420_叠加及抓拍结果/"
+    args.output_video_dir = "/home/huanyuan/temp/pc_车牌抓拍实验_车辆状态优化/5M_12mm_卡口2_白_0420_叠加及抓拍结果/"
     args.suffix = '.avi'
+
+    # # zg，深圳天桥 5M
+    # # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ_20220414/264原始视频/5M_12mm_白_0414/"
+    # # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ_20220414/pc_20220416_车牌抓拍实验_车辆状态优化/5M_12mm_白_0414_叠加及抓拍结果/"
+    # # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ_20220414/264原始视频/5M_16mm_白_0414/"
+    # # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ_20220414/pc_20220416_车牌抓拍实验_车辆状态优化/5M_16mm_白_0414_叠加及抓拍结果/"
+    # # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ_20220419/264原始视频/5M_16mm_白_0419/"
+    # # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ_20220419/pc_20220421_车牌抓拍实验_车辆状态优化/5M_16mm_白_0419_叠加及抓拍结果/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ_20220419/264原始视频/5M_12mm_白_0419/"
+    # # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ_20220419/pc_20220421_车牌抓拍实验_车辆状态优化/5M_12mm_白_0419_叠加及抓拍结果/"
+    # args.output_video_dir = "/home/huanyuan/temp/pc_20220421_车牌抓拍实验_车辆状态优化/5M_12mm_白_0419_叠加及抓拍结果/"
+    # args.suffix = '.avi'
 
     # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/avi/"
     # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/avi_capture/"
