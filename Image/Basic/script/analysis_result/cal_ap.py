@@ -70,6 +70,8 @@ def parse_rec(filename):
     """ Parse a PASCAL VOC xml file """
     tree = ET.parse(filename)
     objects = []
+    img_width = tree.find('size').find('width').text
+    img_height = tree.find('size').find('height').text
     for obj in tree.findall('object'):
         obj_struct = {}
         obj_struct['name'] = obj.find('name').text
@@ -83,7 +85,7 @@ def parse_rec(filename):
                               int(bbox.find('ymax').text) - 1]
         objects.append(obj_struct)
 
-    return objects
+    return objects, img_width, img_height
 
 
 def voc_ap(rec, prec, use_07_metric=True):
@@ -131,7 +133,8 @@ def voc_eval(detpath,
              width_ovthresh=0.5,
              height_ovthresh=0.5,
              roi_set_bool=False,
-             roi_set_bbox=[0, 0, 1920, 1024],
+             roi_set_bbox_2M=[0, 0, 1920, 1024],
+             roi_set_bbox_5M=[0, 0, 2592, 1920],
              use_07_metric=True):
     """rec, prec, ap = voc_eval(detpath,
                            annopath,
@@ -165,27 +168,37 @@ def voc_eval(detpath,
     if not os.path.isfile(cachefile):
         # load annots
         recs = {}
+        img_widths = {}
+        img_heights = {}
         for i, imagename in enumerate(imagenames):
-            recs[imagename] = parse_rec(annopath % (imagename))
+            recs[imagename], img_widths[imagename], img_heights[imagename] = parse_rec(annopath % (imagename))
         # save
         print('Saving cached annotations to {:s}'.format(cachefile))
         with open(cachefile, 'wb') as f:
-            pickle.dump(recs, f)
+            pickle.dump((recs, img_widths, img_heights), f)
     else:
         # load
         with open(cachefile, 'rb') as f:
-            recs = pickle.load(f)
+            recs, img_widths, img_heights = pickle.load(f)
 
     # extract gt objects for this class
     class_recs = {}
     npos = 0
     for imagename in imagenames:
         R = [obj for obj in recs[imagename] if obj['name'] == classname]
+        img_width = int(img_widths[imagename])
+        img_height = int(img_heights[imagename])
 
         # 是否设置 roi 区域，忽略边缘区域
         if roi_set_bool:
-            bbox = np.array([x['bbox'] for x in R if check_set_roi(x['bbox'], roi_set_bbox) ])
-            difficult = np.array([x['difficult'] for x in R if check_set_roi(x['bbox'], roi_set_bbox) ]).astype(np.bool)
+            if (img_width == 1920 and img_height == 1080) or (img_width == 1080 and img_height == 1920):
+                bbox = np.array([x['bbox'] for x in R if check_set_roi(x['bbox'], roi_set_bbox_2M) ])
+                difficult = np.array([x['difficult'] for x in R if check_set_roi(x['bbox'], roi_set_bbox_2M) ]).astype(np.bool)
+            elif (img_width == 2592 and img_height == 1920) or (img_width == 1920 and img_height == 2592):
+                bbox = np.array([x['bbox'] for x in R if check_set_roi(x['bbox'], roi_set_bbox_5M) ])
+                difficult = np.array([x['difficult'] for x in R if check_set_roi(x['bbox'], roi_set_bbox_5M) ]).astype(np.bool)
+            else:
+                raise InterruptedError
         else:
             bbox = np.array([x['bbox'] for x in R])
             difficult = np.array([x['difficult'] for x in R]).astype(np.bool)
@@ -223,12 +236,20 @@ def voc_eval(detpath,
         fp = np.zeros(nd)
         for d in range(nd):
             R = class_recs[image_ids[d]]
+            img_width = int(img_widths[image_ids[d]])
+            img_height = int(img_heights[image_ids[d]])
             bb = BB[d, :].astype(float)
 
             # 是否设置 roi 区域，忽略边缘区域
             if roi_set_bool:
-                if not check_set_roi(bb, roi_set_bbox):
-                    continue
+                if (img_width == 1920 and img_height == 1080) or (img_width == 1080 and img_height == 1920):
+                    if not check_set_roi(bb, roi_set_bbox_2M):
+                        continue
+                elif (img_width == 2592 and img_height == 1920) or (img_width == 1920 and img_height == 2592):
+                    if not check_set_roi(bb, roi_set_bbox_5M):
+                        continue
+                else:
+                    raise InterruptedError
 
             ovmax = -np.inf
             BBGT = R['bbox'].astype(float)
@@ -331,6 +352,8 @@ def voc_eval(detpath,
 
         for imagename in tqdm(imagenames):
             R = class_recs[imagename]
+            img_width = int(img_widths[imagename])
+            img_height = int(img_heights[imagename])
 
             img_path = os.path.join(args.jpg_dir, imagename + '.jpg')
             output_img_path = os.path.join(output_dir, imagename + '.jpg')
@@ -338,12 +361,21 @@ def voc_eval(detpath,
             if args.write_unmatched_bool:
                 # 判断是否有漏检
                 if not len(R['det']) == np.array( R['det'] ).sum():
-                    draw_img(R, img_path, output_img_path, roi_set_bool, roi_set_bbox)
-            
+                    if (img_width == 1920 and img_height == 1080) or (img_width == 1080 and img_height == 1920):
+                        draw_img(R, img_path, output_img_path, roi_set_bool, roi_set_bbox_2M)
+                    elif (img_width == 2592 and img_height == 1920) or (img_width == 1920 and img_height == 2592):
+                        draw_img(R, img_path, output_img_path, roi_set_bool, roi_set_bbox_5M)
+                    else:
+                        raise InterruptedError
             if args.write_false_positive_bool:
                 # 判断是否有假阳
                 if R['fp_bool']:
-                    draw_img(R, img_path, output_img_path, roi_set_bool, roi_set_bbox)
+                    if (img_width == 1920 and img_height == 1080) or (img_width == 1080 and img_height == 1920):
+                        draw_img(R, img_path, output_img_path, roi_set_bool, roi_set_bbox_2M)
+                    elif (img_width == 2592 and img_height == 1920) or (img_width == 1920 and img_height == 2592):
+                        draw_img(R, img_path, output_img_path, roi_set_bool, roi_set_bbox_5M)
+                    else:
+                        raise InterruptedError
 
     return rec, prec, ap
 
@@ -371,7 +403,8 @@ def calculate_ap(args):
             width_ovthresh=args.width_over_thresh,
             height_ovthresh=args.height_over_thresh,
             roi_set_bool=args.roi_set_bool,
-            roi_set_bbox=args.roi_set_bbox,
+            roi_set_bbox_2M=args.roi_set_bbox_2M,
+            roi_set_bbox_5M=args.roi_set_bbox_5M,
             use_07_metric=args.use_07_metric)
 
         aps += [ap]
@@ -420,45 +453,64 @@ if __name__ == "__main__":
     # args.write_unmatched_bool = True
     # args.output_dir = "/yuanhuan/model/image/yolox_vgg/yoloxv2_vggrm_640_384_car_license_plate/eval_epoches_24/LicensePlate_China_xml/"
 
-    # #####################################
-    # # Car_Bus_Truck_Licenseplate
-    # # 测试集图像
-    # #####################################
+    #####################################
+    # Car_Bus_Truck_Licenseplate
+    # 测试集图像
+    #####################################
     # args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
-    # args.imageset_file = os.path.join(args.data_dir, "ImageSets/Main/test.txt")
-    # # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_height/")                # 高度大于 24 的 清晰车牌
-    # # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height/")        # 高度大于 24 的 清晰车牌 & 模糊车牌
-    # # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate/")                         # 清晰车牌
-    # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_fuzzy/")                 # 清晰车牌 & 模糊车牌
-    # args.jpg_dir =  os.path.join(args.data_dir,  "JPEGImages/")
-    # # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/"
-    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/"
+    # args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_5M/"
+    # args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
+    args.data_dir = "/yuanhuan/data/image/ZG_AHHBGS_detection/anhuihuaibeigaosu/"
+    args.imageset_file = os.path.join(args.data_dir, "ImageSets/Main/test.txt")
+    # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_height/")                # 高度大于 24 的 清晰车牌
+    # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height/")        # 高度大于 24 的 清晰车牌 & 模糊车牌
+    # args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate/")                         # 清晰车牌
+    args.anno_dir =  os.path.join(args.data_dir, "Annotations_CarBusTruckLicenseplate_w_fuzzy/")                 # 清晰车牌 & 模糊车牌
+    args.jpg_dir =  os.path.join(args.data_dir,  "JPEGImages/")
 
-    ######################################
-    # 测试集：
-    ######################################
-    args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
-    args.imageset_file = os.path.join(args.data_dir, "AHHBAS_41c/images.txt")
-    # args.anno_dir =  os.path.join(args.data_dir, "AHHBAS_41c_Annotations_CarBusTruckLicenseplate_w_height/")               # 高度大于 24 的 清晰车牌
-    # args.anno_dir =  os.path.join(args.data_dir, "AHHBAS_41c_Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height/")       # 高度大于 24 的 清晰车牌 & 模糊车牌
-    # args.anno_dir =  os.path.join(args.data_dir, "AHHBAS_41c_Annotations_CarBusTruckLicenseplate/")                        # 清晰车牌
-    args.anno_dir =  os.path.join(args.data_dir, "AHHBAS_41c_Annotations_CarBusTruckLicenseplate_w_fuzzy/")                # 清晰车牌 & 模糊车牌
-    args.jpg_dir =  os.path.join(args.data_dir,  "AHHBAS_41c/")
-    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/jiayouzhan_test_image_AHHBAS_41c/results/"
-    args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/jiayouzhan_test_image_AHHBAS_41c/results/"
+    # SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate
+    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/"、
+
+    # SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate
+    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/"
+    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_5M_test/results/"
+    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_sandaofangxian_test/results/"
+    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/ZG_AHHBGS_detection_anhuihuaibeigaosu_test/results/"
+
+    # SSD_VGG_FPN_RFB_2022-04-25-18_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate
+    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-04-25-18_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_test/results/"
+    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-04-25-18_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_jiayouzhan_5M_test/results/"
+    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-04-25-18_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/ZG_ZHJYZ_detection_sandaofangxian_test/results/"
+    args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-04-25-18_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/ZG_AHHBGS_detection_anhuihuaibeigaosu_test/results/"
+
+    # ######################################
+    # # 收集测试图像：
+    # ######################################
+    # args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
+    # args.imageset_file = os.path.join(args.data_dir, "AHHBAS_41c/images.txt")
+    # # args.anno_dir =  os.path.join(args.data_dir, "AHHBAS_41c_Annotations_CarBusTruckLicenseplate_w_height/")               # 高度大于 24 的 清晰车牌
+    # # args.anno_dir =  os.path.join(args.data_dir, "AHHBAS_41c_Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height/")       # 高度大于 24 的 清晰车牌 & 模糊车牌
+    # # args.anno_dir =  os.path.join(args.data_dir, "AHHBAS_41c_Annotations_CarBusTruckLicenseplate/")                        # 清晰车牌
+    # args.anno_dir =  os.path.join(args.data_dir, "AHHBAS_41c_Annotations_CarBusTruckLicenseplate_w_fuzzy/")                # 清晰车牌 & 模糊车牌
+    # args.jpg_dir =  os.path.join(args.data_dir,  "AHHBAS_41c/")
+    # # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-02-24-15_focalloss_4class_car_bus_truck_licenseplate_zg_w_fuzzy_plate/eval_epoches_299/jiayouzhan_test_image_AHHBAS_41c/results/"
+    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/jiayouzhan_test_image_AHHBAS_41c/results/"
     
     args.det_path_dict = { 'car': args.input_dir + 'det_test_car.txt',
                            'bus': args.input_dir + 'det_test_bus.txt',
                            'truck': args.input_dir + 'det_test_truck.txt',
                            'license_plate': args.input_dir + 'det_test_license_plate.txt',
                          } 
-    args.over_thresh = 0.4
+    args.over_thresh = 0.5
     args.use_07_metric = False
 
     # 是否设置 roi 区域，忽略边缘区域
-    args.roi_set_bool = False
-    args.roi_set_bbox = [200, 110, 1720, 970]       # 2M
-    # args.roi_set_bbox = [300, 150, 2292, 1770]       # 5M
+    # args.roi_set_bool = False
+    args.roi_set_bool = True
+    # args.roi_set_bbox_2M = [270, 270, 1650, 1080]   # 2M
+    # args.roi_set_bbox_5M = [0, 462, 2592, 1920]     # 5M
+    args.roi_set_bbox_2M = [320, 360, 1600, 1080]   # 2M
+    args.roi_set_bbox_5M = [432, 640, 2272, 1920]     # 5M
 
     # 是否在计算 iou 的过程中，计算 uni 并集的面积只关注 label 的面积
     args.iou_uni_use_label_bool = False
@@ -471,13 +523,13 @@ if __name__ == "__main__":
     args.height_over_thresh = 0.75
 
     # 是否保存识别结果和检出结果
-    args.write_bool = True
+    args.write_bool = False
 
     # 是否保存漏检结果
-    args.write_unmatched_bool = True
+    args.write_unmatched_bool = False
 
     # 是否保存假阳结果
-    args.write_false_positive_bool = True
+    args.write_false_positive_bool = False
 
     args.output_dir = args.input_dir
 
