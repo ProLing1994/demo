@@ -138,6 +138,9 @@ def voc_eval(merge_class_name,
         lines = f.readlines()
     
     # analysis 
+    tp = np.zeros(0)
+    fp = np.zeros(0)
+    conf = np.zeros(0)
     if any(lines) == 1:
         # lines: CH10-20210615-142026-1429200000010872*0.563*386.8*1382.6*752.2*1548.1
         splitlines = [x.strip().split('*') for x in lines]  

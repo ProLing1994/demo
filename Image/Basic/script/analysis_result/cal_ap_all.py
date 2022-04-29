@@ -17,21 +17,38 @@ def calculate_ap_all(args):
     for idx in range(len(args.data_list)):
         data_name_idx = args.data_list[idx]
         print('Date name = {}'.format(data_name_idx))
-
-        args.imageset_file = os.path.join(args.data_dir, data_name_idx, "ImageSets/Main/test.txt")
-        args.anno_dir =  os.path.join(args.data_dir, data_name_idx, args.anno_name)                 
-        args.jpg_dir =  os.path.join(args.data_dir, data_name_idx,  "JPEGImages/")
         
-        args.det_path_dict = { 'car': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_test', 'results/det_test_car.txt'),
-                            'bus': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_test', 'results/det_test_bus.txt'),
-                            'truck': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_test', 'results/det_test_truck.txt'),
-                            'license_plate': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_test', 'results/det_test_license_plate.txt'),
-                            'car_bus_truck': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_test', 'results/det_test_car_bus_truck.txt'), 
-                           'bus_truck': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_test', 'results/det_test_bus_truck.txt'), 
-                            } 
+        if args.from_dataset_bool:
+            args.imageset_file = os.path.join(args.data_dir, data_name_idx, "ImageSets/Main/test.txt")
+            args.anno_dir = os.path.join(args.data_dir, data_name_idx, args.anno_name)                 
+            args.jpg_dir = os.path.join(args.data_dir, data_name_idx,  "JPEGImages/")
 
-        anno_path = os.path.join(args.anno_dir, '%s.xml')
-        cache_dir = os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_test', 'results')
+            args.det_path_dict = { 'car': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_test', 'results/det_test_car.txt'),
+                                'bus': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_test', 'results/det_test_bus.txt'),
+                                'truck': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_test', 'results/det_test_truck.txt'),
+                                'license_plate': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_test', 'results/det_test_license_plate.txt'),
+                                'car_bus_truck': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_test', 'results/det_test_car_bus_truck.txt'), 
+                                'bus_truck': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_test', 'results/det_test_bus_truck.txt'), 
+                                } 
+
+            anno_path = os.path.join(args.anno_dir, '%s.xml')
+            cache_dir = os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_test', 'results')
+
+        else:
+            args.imageset_file = os.path.join(args.data_dir, data_name_idx, "images.txt")
+            args.anno_dir = os.path.join(args.data_dir, data_name_idx + '_' + args.anno_name)
+            args.jpg_dir = os.path.join(args.data_dir, data_name_idx)
+
+            args.det_path_dict = { 'car': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')), 'results/det_test_car.txt'),
+                                'bus': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')), 'results/det_test_bus.txt'),
+                                'truck': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')), 'results/det_test_truck.txt'),
+                                'license_plate': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')), 'results/det_test_license_plate.txt'),
+                                'car_bus_truck': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')), 'results/det_test_car_bus_truck.txt'), 
+                                'bus_truck': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')), 'results/det_test_bus_truck.txt'), 
+                                } 
+
+            anno_path = os.path.join(args.anno_dir, '%s.xml')
+            cache_dir = os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')), 'results')
 
         # clear
         cache_file = os.path.join(cache_dir, 'annots.pkl')
@@ -140,44 +157,62 @@ if __name__ == "__main__":
     # args.write_unmatched_bool = True
     # args.output_dir = "/yuanhuan/model/image/yolox_vgg/yoloxv2_vggrm_640_384_car_license_plate/eval_epoches_24/LicensePlate_China_xml/"
 
-    #####################################
-    # Car_Bus_Truck_Licenseplate
-    # 测试集图像
-    #####################################
-    args.data_dir = "/yuanhuan/data/image/"
-    args.data_list = ['ZG_ZHJYZ_detection/jiayouzhan', 'ZG_ZHJYZ_detection/jiayouzhan_5M', 'ZG_ZHJYZ_detection/sandaofangxian', 'ZG_AHHBGS_detection/anhuihuaibeigaosu']
+    # #####################################
+    # # Car_Bus_Truck_Licenseplate
+    # # 测试集图像
+    # #####################################
+    # args.data_dir = "/yuanhuan/data/image/"
+    # args.data_list = ['ZG_ZHJYZ_detection/jiayouzhan', 'ZG_ZHJYZ_detection/jiayouzhan_5M', 'ZG_ZHJYZ_detection/sandaofangxian', 'ZG_AHHBGS_detection/anhuihuaibeigaosu']
+
+    # # args.cal_ap_dict = { 'car': ['car'], 
+    # #                     'bus': ['bus'], 'truck': ['truck'], 
+    # #                     'bus_truck': ['bus', 'truck'], 
+    # #                     'car_bus_truck': ['car', 'bus', 'truck'], 
+    # #                     'license_plate': ['license_plate'] }
+    # args.cal_ap_dict = { 'license_plate': ['license_plate'] }
+
+    # # SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate
+    # # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/"
+
+    # # SSD_VGG_FPN_RFB_2022-04-25-18_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate
+    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-04-25-18_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/"
+
+    # args.from_dataset_bool = True
+
+    ######################################
+    # 收集测试图像：
+    ######################################
+
+    args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/"
+
+    # args.data_list = ['jiayouzhan_test_image/2MB', 'jiayouzhan_test_image/2MH' ]
+    # args.data_list = ['jiayouzhan_test_image/5MB', 'jiayouzhan_test_image/5MH' ]
+    # args.data_list = ['jiayouzhan_test_image/SDFX_B1', 'jiayouzhan_test_image/SDFX_B2', 'jiayouzhan_test_image/SDFX_H1', 'jiayouzhan_test_image/SDFX_H2', ]
+    # args.data_list = ['jiayouzhan_test_image/AHHBAS_41a', 'jiayouzhan_test_image/AHHBAS_41c', 'jiayouzhan_test_image/AHHBAS_43c', 'jiayouzhan_test_image/AHHBAS_418', ]
+    args.data_list = ['jiayouzhan_test_image/2MB', 'jiayouzhan_test_image/2MH', 'jiayouzhan_test_image/5MB', 'jiayouzhan_test_image/5MH',
+                      'jiayouzhan_test_image/SDFX_B1', 'jiayouzhan_test_image/SDFX_B2', 'jiayouzhan_test_image/SDFX_H1', 'jiayouzhan_test_image/SDFX_H2',
+                      'jiayouzhan_test_image/AHHBAS_41a', 'jiayouzhan_test_image/AHHBAS_41c', 'jiayouzhan_test_image/AHHBAS_43c', 'jiayouzhan_test_image/AHHBAS_418', ]
+
     args.cal_ap_dict = { 'car': ['car'], 
                         'bus': ['bus'], 'truck': ['truck'], 
                         'bus_truck': ['bus', 'truck'], 
                         'car_bus_truck': ['car', 'bus', 'truck'], 
                         'license_plate': ['license_plate'] }
+    # args.cal_ap_dict = { 'license_plate': ['license_plate'] }
+
+    # SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate
+    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/"
+
+    # SSD_VGG_FPN_RFB_2022-04-25-18_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate
+    args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-04-25-18_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/"
+
+    args.from_dataset_bool = False
 
     # args.anno_name = 'Annotations_CarBusTruckLicenseplate_w_height'             # 高度大于 24 的 清晰车牌
     # args.anno_name = 'Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height'     # 高度大于 24 的 清晰车牌 & 模糊车牌
     # args.anno_name = 'Annotations_CarBusTruckLicenseplate'                      # 清晰车牌
     args.anno_name = 'Annotations_CarBusTruckLicenseplate_w_fuzzy'              # 清晰车牌 & 模糊车牌
 
-    # SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate
-    args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/"
-
-    # SSD_VGG_FPN_RFB_2022-04-25-18_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate
-    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-04-25-18_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/"
-
-    # ######################################
-    # # 收集测试图像：
-    # ######################################
-
-    # args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
-    # args.imageset_file = os.path.join(args.data_dir, "AHHBAS_41c/images.txt")
-    # # args.anno_dir =  os.path.join(args.data_dir, "AHHBAS_41c_Annotations_CarBusTruckLicenseplate_w_height/")               # 高度大于 24 的 清晰车牌
-    # # args.anno_dir =  os.path.join(args.data_dir, "AHHBAS_41c_Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height/")       # 高度大于 24 的 清晰车牌 & 模糊车牌
-    # # args.anno_dir =  os.path.join(args.data_dir, "AHHBAS_41c_Annotations_CarBusTruckLicenseplate/")                        # 清晰车牌
-    # args.anno_dir =  os.path.join(args.data_dir, "AHHBAS_41c_Annotations_CarBusTruckLicenseplate_w_fuzzy/")                # 清晰车牌 & 模糊车牌
-    # args.jpg_dir =  os.path.join(args.data_dir,  "AHHBAS_41c/")
-
-    # # SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate
-    # args.input_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/jiayouzhan_test_image_AHHBAS_41c/results/"
-                         
     args.over_thresh = 0.5
     args.use_07_metric = False
 
@@ -192,7 +227,7 @@ if __name__ == "__main__":
 
     # 是否关注车牌横向iou结果
     args.width_height_over_thresh_bool = False
-    args.width_over_thresh = 0.95
+    args.width_over_thresh = 0.9
     args.height_over_thresh = 0.75
 
     # 是否保存识别结果和检出结果
