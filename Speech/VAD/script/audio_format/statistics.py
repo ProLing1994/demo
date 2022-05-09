@@ -44,7 +44,8 @@ def static_audio_length(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Streamax Engine')
     args = parser.parse_args()
-    args.input_folder = "/home/huanyuan/share/huanyuan/audio_data/wakeup/wakeup_xiaoan8k/平台误唤醒音频/1013_1017/"
+    # args.input_folder = "/home/huanyuan/share/huanyuan/audio_data/wakeup/wakeup_xiaoan8k/平台误唤醒音频/1013_1017/"
+    args.input_folder = "/home/huanyuan/share/huanyuan/audio_data/wakeup/wakeup_xiaoan8k/平台误唤醒音频/0427_0506/"
     args.input_suffix = ".wav"
     args.sample_rate = 8000
 

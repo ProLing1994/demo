@@ -31,7 +31,9 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/LicensePlate/Mexico/"
     # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone/"
     # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_5M/"
-    args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
+    # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
+    # args.input_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/anhuihuaibeigaosu/"
+    args.input_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/shenzhentiaoqiao/"
     args.jpg_dir =  args.input_dir + "JPEGImages/"
 
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/AHHBAS_418/"

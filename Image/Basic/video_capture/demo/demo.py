@@ -265,8 +265,7 @@ def main():
     parser.add_argument('--video_dir', type=str, default="/mnt/huanyuan/temp/test/2022-04-20/avi/") 
     parser.add_argument('--output_video_dir', type=str, default="/mnt/huanyuan/temp/test/2022-04-20/avi_video_capture/") 
     parser.add_argument('--suffix', type=str, default='.avi') 
-    # parser.add_argument('--steps', type=str, default='1,2,3') 
-    parser.add_argument('--steps', type=str, default='3') 
+    parser.add_argument('--steps', type=str, default='1,2,3') 
     args = parser.parse_args()
     
     # option
@@ -323,14 +322,25 @@ def main():
         # 挑选车型
         args.select_car_attri = ['truck', 'bus']
             
-        # # 视频剪裁
-        # p = multiprocessing.Pool(2)
-        # out = list(tqdm(p.map(vidio_capture_crop, in_params), total=len(in_params)))
-        # p.close()
-        # p.join()
-        
-        vidio_capture_crop(in_params[0])
+        # 视频剪裁
+        p = multiprocessing.Pool(2)
+        out = list(tqdm(p.map(vidio_capture_crop, in_params), total=len(in_params)))
+        p.close()
+        p.join()
 
+    if '4' in step_list:
+        # step 4: 
+        # 挑选颜色：黄色
+        args.select_plate_color = [ ]
+
+        # 挑选车型
+        args.select_car_attri = ['truck', 'bus']
+            
+        # 视频剪裁
+        p = multiprocessing.Pool(2)
+        out = list(tqdm(p.map(vidio_capture_crop, in_params), total=len(in_params)))
+        p.close()
+        p.join()
 
 if __name__ == '__main__':
     main()

@@ -286,31 +286,31 @@ if __name__ == "__main__":
     #                 ["positive"], positive_label_idx=positive_label_idx)
 
     # xiaoan8k
-    model_name = "kws_xiaoan8k_3_7_tc-resnet14-hisi_fbankcpu_kd_03142022"
+    model_name = "kws_xiaoan8k_6_7_2s_tc_resnet14_fbankcpu_kd_04192022"
     threshold = "0.8"
     positive_label_idx = "1"
-    show_score_line("/mnt/huanyuan2/model/test_straming_wav/xiaoan8k_1_1_04082021_training_60.csv",
+    show_score_line("/mnt/huanyuan/model_final/test_straming_wav/xiaoan8k_1_1_04082021_training_60.csv",
                     "/mnt/huanyuan/model/kws/kws_xiaoan/{}/test_straming_wav/xiaoan8k_1_1_04082021_training_60_threshold_{}/final_scores.csv".format(model_name, "_".join(threshold.split('.'))),
                     ["xiaoanxiaoan_8k", "xiaoanxiaoan_16k"], positive_label_idx=positive_label_idx)
-    show_score_line("/mnt/huanyuan2/model/test_straming_wav/xiaoan8k_1_1_04082021_training_60.csv",
+    show_score_line("/mnt/huanyuan/model_final/test_straming_wav/xiaoan8k_1_1_04082021_training_60.csv",
                     "/mnt/huanyuan/model/kws/kws_xiaoan/{}/test_straming_wav/xiaoan8k_1_1_04082021_training_60_threshold_{}/original_scores.csv".format(model_name, "_".join(threshold.split('.'))),
                     ["xiaoanxiaoan_8k", "xiaoanxiaoan_16k"], positive_label_idx=positive_label_idx)
-    show_score_line("/mnt/huanyuan2/model/test_straming_wav/xiaoan8k_1_1_04082021_validation_60.csv",
+    show_score_line("/mnt/huanyuan/model_final/test_straming_wav/xiaoan8k_1_1_04082021_validation_60.csv",
                     "/mnt/huanyuan/model/kws/kws_xiaoan/{}/test_straming_wav/xiaoan8k_1_1_04082021_validation_60_threshold_{}/final_scores.csv".format(model_name, "_".join(threshold.split('.'))),
                     ["xiaoanxiaoan_8k", "xiaoanxiaoan_16k"], positive_label_idx=positive_label_idx)
-    show_score_line("/mnt/huanyuan2/model/test_straming_wav/xiaoan8k_1_1_04082021_validation_60.csv",
+    show_score_line("/mnt/huanyuan/model_final/test_straming_wav/xiaoan8k_1_1_04082021_validation_60.csv",
                     "/mnt/huanyuan/model/kws/kws_xiaoan/{}/test_straming_wav/xiaoan8k_1_1_04082021_validation_60_threshold_{}/original_scores.csv".format(model_name, "_".join(threshold.split('.'))),
                     ["xiaoanxiaoan_8k", "xiaoanxiaoan_16k"], positive_label_idx=positive_label_idx)
-    # show_score_line("/mnt/huanyuan2/model/test_straming_wav/xiaoan_3_1_12062021_training_60.csv",
+    # show_score_line("/mnt/huanyuan/model_final/test_straming_wav/xiaoan_3_1_12062021_training_60.csv",
     #                 "/mnt/huanyuan/model/kws/kws_xiaoan/{}/test_straming_wav/xiaoan_3_1_12062021_training_60_threshold_{}/final_scores.csv".format(model_name, "_".join(threshold.split('.'))),
     #                 ["xiaoanxiaoan_8k", "xiaoanxiaoan_16k"], positive_label_idx=positive_label_idx)
-    # show_score_line("/mnt/huanyuan2/model/test_straming_wav/xiaoan_3_1_12062021_training_60.csv",
+    # show_score_line("/mnt/huanyuan/model_final/test_straming_wav/xiaoan_3_1_12062021_training_60.csv",
     #                 "/mnt/huanyuan/model/kws/kws_xiaoan/{}/test_straming_wav/xiaoan_3_1_12062021_training_60_threshold_{}/original_scores.csv".format(model_name, "_".join(threshold.split('.'))),
     #                 ["xiaoanxiaoan_8k", "xiaoanxiaoan_16k"], positive_label_idx=positive_label_idx)
-    # show_score_line("/mnt/huanyuan2/model/test_straming_wav/xiaoan_3_1_12062021_validation_60.csv",
+    # show_score_line("/mnt/huanyuan/model_final/test_straming_wav/xiaoan_3_1_12062021_validation_60.csv",
     #                 "/mnt/huanyuan/model/kws/kws_xiaoan/{}/test_straming_wav/xiaoan_3_1_12062021_validation_60_threshold_{}/final_scores.csv".format(model_name, "_".join(threshold.split('.'))),
     #                 ["xiaoanxiaoan_8k", "xiaoanxiaoan_16k"], positive_label_idx=positive_label_idx)
-    # show_score_line("/mnt/huanyuan2/model/test_straming_wav/xiaoan_3_1_12062021_validation_60.csv",
+    # show_score_line("/mnt/huanyuan/model_final/test_straming_wav/xiaoan_3_1_12062021_validation_60.csv",
     #                 "/mnt/huanyuan/model/kws/kws_xiaoan/{}/test_straming_wav/xiaoan_3_1_12062021_validation_60_threshold_{}/original_scores.csv".format(model_name, "_".join(threshold.split('.'))),
     #                 ["xiaoanxiaoan_8k", "xiaoanxiaoan_16k"], positive_label_idx=positive_label_idx)
 
@@ -370,16 +370,16 @@ if __name__ == "__main__":
     # threshold = "0.8"
     # positive_label_idx = "1"
     # show_score_line("/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_training_60_001.csv",
-    #                 "/mnt/huanyuan2/model/kws/kws_english/{}/test_straming_wav/activatebwc_03232021_training_60_001_threshold_{}/final_scores.csv".format(model_name, "_".join(threshold.split('.'))),
+    #                 "/mnt/huanyuan/model_final/kws/kws_english/{}/test_straming_wav/activatebwc_03232021_training_60_001_threshold_{}/final_scores.csv".format(model_name, "_".join(threshold.split('.'))),
     #                 ["activatebwc"], positive_label_idx=positive_label_idx)
     # show_score_line("/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_training_60_001.csv",
-    #                 "/mnt/huanyuan2/model/kws/kws_english/{}/test_straming_wav/activatebwc_03232021_training_60_001_threshold_{}/original_scores.csv".format(model_name, "_".join(threshold.split('.'))),
+    #                 "/mnt/huanyuan/model_final/kws/kws_english/{}/test_straming_wav/activatebwc_03232021_training_60_001_threshold_{}/original_scores.csv".format(model_name, "_".join(threshold.split('.'))),
     #                 ["activatebwc"], positive_label_idx=positive_label_idx)
     # show_score_line("/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_validation_60_001.csv",
-    #                 "/mnt/huanyuan2/model/kws/kws_english/{}/test_straming_wav/activatebwc_03232021_validation_60_001_threshold_{}/final_scores.csv".format(model_name, "_".join(threshold.split('.'))),
+    #                 "/mnt/huanyuan/model_final/kws/kws_english/{}/test_straming_wav/activatebwc_03232021_validation_60_001_threshold_{}/final_scores.csv".format(model_name, "_".join(threshold.split('.'))),
     #                 ["activatebwc"], positive_label_idx=positive_label_idx)
     # show_score_line("/mnt/huanyuan/model/test_straming_wav/activatebwc_03232021_validation_60_001.csv",
-    #                 "/mnt/huanyuan2/model/kws/kws_english/{}/test_straming_wav/activatebwc_03232021_validation_60_001_threshold_{}/original_scores.csv".format(model_name, "_".join(threshold.split('.'))),
+    #                 "/mnt/huanyuan/model_final/kws/kws_english/{}/test_straming_wav/activatebwc_03232021_validation_60_001_threshold_{}/original_scores.csv".format(model_name, "_".join(threshold.split('.'))),
     #                 ["activatebwc"], positive_label_idx=positive_label_idx)
 
     # # heybodycam

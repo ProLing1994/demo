@@ -115,17 +115,19 @@ if __name__ == "__main__":
     # Annotations_CarBusTruckLicenseplate
     # 方案一：利用 cross data training，生成 Annotations_CarBusTruckLicenseplate
     # 正样本：清晰车牌，负样本：模糊车牌
+    # 注：忽略小于10个像素的数据
     ######################################
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
     # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_5M/"
-    args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
+    # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
+    args.input_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/anhuihuaibeigaosu/"
     args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
     args.set_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate"]
     args.finnal_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
 
     # 判断大小车牌
     args.plate_list = ['plate', "fuzzy_plate"]
-    args.plate_height_threshold = 0
+    args.plate_height_threshold = 10
     args.plate_ignore_name = "license_plate_ignore"
 
     # 标注数据添加了叠加信息，判断是否落入 roi ignore 区域
@@ -147,7 +149,7 @@ if __name__ == "__main__":
 
     # # 判断大小车牌
     # args.plate_list = ['plate', "fuzzy_plate"]
-    # args.plate_height_threshold = 0
+    # args.plate_height_threshold = 10
     # args.plate_ignore_name = "license_plate_ignore"
 
     # # 标注数据添加了叠加信息，判断是否落入 roi ignore 区域
@@ -164,17 +166,19 @@ if __name__ == "__main__":
     # Annotations_CarBusTruckLicenseplate_w_fuzzy
     # 方案二：只要是车牌都检测出来，通过 finetune 的方式训练
     # 正样本：清晰车牌 & 模糊车牌
+    # 注：忽略小于10个像素的数据
     ######################################
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
     # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_5M/"
-    args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
+    # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
+    args.input_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/anhuihuaibeigaosu/"
     args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
     args.set_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate"]
     args.finnal_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
 
     # 判断大小车牌
     args.plate_list = ['plate', "fuzzy_plate"]
-    args.plate_height_threshold = 0
+    args.plate_height_threshold = 10
     args.plate_ignore_name = "license_plate_ignore"
 
     # 标注数据添加了叠加信息，判断是否落入 roi ignore 区域
@@ -196,7 +200,7 @@ if __name__ == "__main__":
 
     # # 判断大小车牌
     # args.plate_list = ['plate', "fuzzy_plate"]
-    # args.plate_height_threshold = 0
+    # args.plate_height_threshold = 10
     # args.plate_ignore_name = "license_plate_ignore"
 
     # # 标注数据添加了叠加信息，判断是否落入 roi ignore 区域
@@ -217,7 +221,8 @@ if __name__ == "__main__":
     ######################################
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
     # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_5M/"
-    args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
+    # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
+    args.input_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/anhuihuaibeigaosu/"
     args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
     args.set_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate"]
     args.finnal_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
@@ -266,7 +271,8 @@ if __name__ == "__main__":
     #####################################
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
     # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_5M/"
-    args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
+    # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
+    args.input_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/anhuihuaibeigaosu/"
     args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
     args.set_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate"]
     args.finnal_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]

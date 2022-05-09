@@ -72,6 +72,7 @@ class CaptureApi():
         # detector
         self.ssd_car_plate_prototxt = None
         self.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
+        # self.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-04-25-18_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
         # self.ssd_car_plate_prototxt = "/mnt/huanyuan2/model/image_model/ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-03-09-17/FPN_RFB_3class_3attri_noDilation_prior.prototxt"
         # self.ssd_car_plate_model_path = "/mnt/huanyuan2/model/image_model/ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-03-09-17/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-03-09-17.caffemodel"
         self.ssd_caffe_bool = False
@@ -114,7 +115,7 @@ class CaptureApi():
         # self.roi_bool = False
         self.roi_bool = True
         # 2M：16:9
-        # args.roi_area = [0, 0, 1920, 1080]
+        # args.roi_area = [270, 270, 1650, 1080]
         # 5M：16:9
         self.roi_area = [0, 462, 2592, 1920]
 
@@ -258,7 +259,7 @@ class CaptureApi():
         return tracker_bboxes
 
 
-    def match_bbox(self, input_roi, match_roi_list):
+    def match_bbox_iou(self, input_roi, match_roi_list):
         # init
         matched_roi_list = []
         max_intersect_iou = 0.0
@@ -275,6 +276,26 @@ class CaptureApi():
         if max_intersect_iou > 0.0:
             matched_roi_list.append(match_roi_list[max_intersect_iou_idx])
         
+        return matched_roi_list
+
+
+    def match_bbox_confidence(self, input_roi, match_roi_list):
+        # sort_key
+        def sort_key(data):
+            return data[-1]
+
+        # init
+        matched_roi_list = []
+
+        for idx in range(len(match_roi_list)):
+            match_roi_idx = match_roi_list[idx][0:4]
+            intersect_iou = intersect(input_roi, match_roi_idx)
+
+            if intersect_iou > 0.0:
+                matched_roi_list.append(match_roi_list[idx])
+        
+        matched_roi_list.sort(key=sort_key, reverse=True)
+
         return matched_roi_list
 
 
@@ -315,15 +336,15 @@ class CaptureApi():
                             car_bbox_list.append([*bboxes[car_attri_name_idx][idy], car_attri_name_idx])
 
                 # 求交集最大的车辆框
-                match_car_roi = self.match_bbox(bbox_info_dict['loc'], car_bbox_list)
+                match_car_roi = self.match_bbox_iou(bbox_info_dict['loc'], car_bbox_list)
                 if len(match_car_roi):
                     bbox_info_dict['attri'] = match_car_roi[0][-1]
                         
             # license plate
             if self.license_plate_name in bboxes:
                 license_plate_roi_list = bboxes[self.license_plate_name]
-                # 求交集最大的车牌框
-                match_license_plate_roi = self.match_bbox(bbox_info_dict['loc'], license_plate_roi_list)
+                # 求相交同时置信度最高的车牌框
+                match_license_plate_roi = self.match_bbox_confidence(bbox_info_dict['loc'], license_plate_roi_list)
 
                 if len(match_license_plate_roi):
                     bbox_info_dict['plate_loc'] = match_license_plate_roi[0][0:4]

@@ -1,14 +1,16 @@
 import glob
 import os
+import random
 
 if __name__ == '__main__':
-    input_dir = "/mnt/huanyuan2/model/image_model/ssd_rfb_zg/image_2M_5M/"
+    input_dir = "/mnt/huanyuan/model_final/image_model/ssd_rfb_zg/image_2M_5M_0509/"
     file_format = 'pic_'
     file_type = ".jpg"
     start_id = 1
 
     file_list = glob.glob(os.path.join(input_dir, '*' + file_type))
     file_list.sort()
+    random.shuffle(file_list)
 
     with open(os.path.join(input_dir, "output.txt"), "w") as f :
         for idx in range(len(file_list)):
