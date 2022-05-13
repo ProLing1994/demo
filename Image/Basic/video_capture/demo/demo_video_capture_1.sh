@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python /home/huanyuan/code/demo/Image/Basic/video_capture/demo/demo.py --video_dir="/mnt/huanyuan/temp/卡口1-新/2022-05-05/avi/" --output_video_dir="/mnt/huanyuan/temp/卡口1-新/2022-05-05/avi_video_capture/" --suffix='.avi' --steps='1,3'
+python /home/huanyuan/code/demo/Image/Basic/video_capture/demo/demo.py --video_dir="/mnt/huanyuan/temp/桐乡三道防线/2022-04-22/avi/7/" --output_video_dir="/mnt/huanyuan/temp/桐乡三道防线/2022-04-22/avi_video_capture/7/" --suffix='.avi' --steps='1,4'

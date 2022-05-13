@@ -49,9 +49,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.video_dir = "/mnt/huanyuan/temp/卡口2/2022-03-29/avi_video_capture_green/"
-    args.output_video_dir = "/mnt/huanyuan/temp/卡口2/2022-03-29/avi_video_capture_green/jpg/"
-    args.suffix = '.mp4'
+    args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ/264原始视频/5M_16mm_16M_白_0424/"
+    args.output_video_dir = "/home/huanyuan/temp/jpg"
+    args.suffix = '.avi'
     args.frame_strp = 10
     # args.frame_strp = 1
 

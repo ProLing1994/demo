@@ -71,8 +71,8 @@ class CaptureApi():
     def option_init(self):
         # detector
         self.ssd_car_plate_prototxt = None
-        self.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
-        # self.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-04-25-18_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
+        # self.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
+        self.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-04-25-18_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
         # self.ssd_car_plate_prototxt = "/mnt/huanyuan2/model/image_model/ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-03-09-17/FPN_RFB_3class_3attri_noDilation_prior.prototxt"
         # self.ssd_car_plate_model_path = "/mnt/huanyuan2/model/image_model/ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-03-09-17/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-03-09-17.caffemodel"
         self.ssd_caffe_bool = False
@@ -88,7 +88,7 @@ class CaptureApi():
         self.bbox_bottom_expand = 50
 
         # sort
-        self.max_age = 5 
+        self.max_age = 10
         self.min_hits = 3 
         self.iou_threshold = 0.3
         
@@ -119,9 +119,18 @@ class CaptureApi():
         # 5M：16:9
         self.roi_area = [0, 462, 2592, 1920]
 
+        # 车牌长宽阈值
+        # 2M：
+        # self.plate_height = [20, 40]
+        # self.plate_width = [50, 130]
+        # 5M：
+        self.plate_height = [20, 70]
+        self.plate_width = [65, 170]
+
         # 抓拍线
-        self.capture_line_ratio = [0.2, 0.8]
+        self.capture_line_ratio = [0.1, 0.9]
         self.capture_stop_frame_threshold = 200     # 同一ID车辆如果存在于画面中帧差大于等于200（大于8秒），同时车辆状态为Stop，那么认为该车处于静止状态
+        self.capture_plate_frame_threshold = 5
         self.capture_plate_disappear_frame_threshold = 5
         self.capture_plate_ocr_score_threshold = 0.8
         self.capture_plate_ocr_frame_threshold = 4
@@ -157,6 +166,7 @@ class CaptureApi():
         bbox_state_dict['plate_ocr_list'] = []                              # 车牌识别结果（多帧）
         bbox_state_dict['plate_ocr_score_list'] = []                        # 车牌识别结果得分（多帧）
         bbox_state_dict['car_disappear_frame_num'] = 0                      # 车辆消失画面帧数
+        bbox_state_dict['plate_frame_num'] = 0                              # 车牌出现画面帧数
         bbox_state_dict['plate_disappear_frame_num'] = 0                    # 车牌消失画面帧数
         bbox_state_dict['up_report_flage'] = False                          # 上行抓拍标志位
         bbox_state_dict['down_report_flage'] = False                        # 下行抓拍标志位
@@ -279,7 +289,7 @@ class CaptureApi():
         return matched_roi_list
 
 
-    def match_bbox_confidence(self, input_roi, match_roi_list):
+    def match_car_license_plate(self, car_roi, license_plate_list):
         # sort_key
         def sort_key(data):
             return data[-1]
@@ -287,12 +297,15 @@ class CaptureApi():
         # init
         matched_roi_list = []
 
-        for idx in range(len(match_roi_list)):
-            match_roi_idx = match_roi_list[idx][0:4]
-            intersect_iou = intersect(input_roi, match_roi_idx)
+        for idx in range(len(license_plate_list)):
+            match_roi_idx = license_plate_list[idx][0:4]
+            intersect_iou = intersect(car_roi, match_roi_idx)
 
+            # 计算车牌检测框与车辆检测框的交集区域，大于 0.0 则认为该车牌属于该车辆
             if intersect_iou > 0.0:
-                matched_roi_list.append(match_roi_list[idx])
+                # 默认车牌均是在车辆的下沿
+                if (car_roi[1] + car_roi[3] / 2.0) < (match_roi_idx[1] + match_roi_idx[3] / 2.0):
+                    matched_roi_list.append(license_plate_list[idx])
         
         matched_roi_list.sort(key=sort_key, reverse=True)
 
@@ -344,25 +357,33 @@ class CaptureApi():
             if self.license_plate_name in bboxes:
                 license_plate_roi_list = bboxes[self.license_plate_name]
                 # 求相交同时置信度最高的车牌框
-                match_license_plate_roi = self.match_bbox_confidence(bbox_info_dict['loc'], license_plate_roi_list)
+                match_license_plate_roi = self.match_car_license_plate(bbox_info_dict['loc'], license_plate_roi_list)
 
                 if len(match_license_plate_roi):
-                    bbox_info_dict['plate_loc'] = match_license_plate_roi[0][0:4]
+                    Latent_plate = match_license_plate_roi[0][0:4]
 
-                    # lincense plate reader
-                    # crop
-                    crop_img = gray_img[bbox_info_dict['plate_loc'][1]:bbox_info_dict['plate_loc'][3], bbox_info_dict['plate_loc'][0]:bbox_info_dict['plate_loc'][2]]
+                    # 按照车牌宽高过滤车牌
+                    if (Latent_plate[3] - Latent_plate[1] > self.plate_height[0]) and \
+                        (Latent_plate[3] - Latent_plate[1] < self.plate_height[1]) and \
+                        (Latent_plate[2] - Latent_plate[0] > self.plate_width[0]) and \
+                        (Latent_plate[2] - Latent_plate[0] < self.plate_width[1]):
 
-                    if self.prefix_beam_search_bool:
-                        # prefix beamsearch
-                        _, plate_scors_list = license_palte_crnn_recognition_caffe(self.license_palte_reader, crop_img)
-                        plate_ocr = license_palte_crnn_recognition_beamsearch_caffe(self.license_palte_reader, crop_img, self.license_palte_beamsearch[0], self.license_palte_beamsearch[1])
-                    else:
-                        # greedy
-                        plate_ocr, plate_scors_list = license_palte_crnn_recognition_caffe(self.license_palte_reader, crop_img)
-                    
-                    bbox_info_dict['plate_ocr'] = plate_ocr
-                    bbox_info_dict['plate_ocr_score'] = np.array(plate_scors_list).mean()
+                        bbox_info_dict['plate_loc'] = Latent_plate
+                        
+                        # lincense plate reader
+                        # crop
+                        crop_img = gray_img[bbox_info_dict['plate_loc'][1]:bbox_info_dict['plate_loc'][3], bbox_info_dict['plate_loc'][0]:bbox_info_dict['plate_loc'][2]]
+
+                        if self.prefix_beam_search_bool:
+                            # prefix beamsearch
+                            _, plate_scors_list = license_palte_crnn_recognition_caffe(self.license_palte_reader, crop_img)
+                            plate_ocr = license_palte_crnn_recognition_beamsearch_caffe(self.license_palte_reader, crop_img, self.license_palte_beamsearch[0], self.license_palte_beamsearch[1])
+                        else:
+                            # greedy
+                            plate_ocr, plate_scors_list = license_palte_crnn_recognition_caffe(self.license_palte_reader, crop_img)
+                        
+                        bbox_info_dict['plate_ocr'] = plate_ocr
+                        bbox_info_dict['plate_ocr_score'] = np.array(plate_scors_list).mean()
                 
             bbox_info_list.append(bbox_info_dict)
         return bbox_info_list
@@ -382,12 +403,12 @@ class CaptureApi():
         pop_key_list = []
         for key, value in self.params_dict['bbox_state_container'].items():
             bbox_state_idy = value
-            bbox_state_idy['car_disappear_frame_num'] += 1
-            bbox_state_idy['plate_disappear_frame_num'] += 1
-            
+           
             # pop
-            if bbox_state_idy['car_disappear_frame_num'] >= self.bbox_state_container_length:
+            if bbox_state_idy['car_disappear_frame_num'] > self.bbox_state_container_length:
                 pop_key_list.append(key)
+            
+            bbox_state_idy['car_disappear_frame_num'] += 1
         
         # pop
         for idx in range(len(pop_key_list)):
@@ -439,6 +460,7 @@ class CaptureApi():
 
                     # 更新车牌识别结果
                     if not bbox_info_idx['plate_ocr'] == '':
+                        bbox_state_idy['plate_frame_num'] += 1
                         bbox_state_idy['plate_disappear_frame_num'] = 0
 
                         if self.roi_bool:
@@ -453,6 +475,10 @@ class CaptureApi():
                             bbox_state_idy['plate_ocr_list'].append(bbox_info_idx['plate_ocr'])
                             bbox_state_idy['plate_ocr_score_list'].append(bbox_info_idx['plate_ocr_score'])
                             bbox_info_idx['plate_crop_bool'] = True
+                    else:
+                        # 保证车牌检测框丢失之前，一定是有检测到车牌的
+                        if bbox_state_idy['plate_frame_num'] > self.capture_plate_frame_threshold:   
+                            bbox_state_idy['plate_disappear_frame_num'] += 1
 
                     bbox_info_idx['state'] = bbox_state_idy['state']
                     bbox_info_idx['state_frame_num'] = bbox_state_idy['state_frame_num']
@@ -472,6 +498,7 @@ class CaptureApi():
                 bbox_state_dict['plate_ocr_list'] = []                              # 车牌识别结果（多帧）
                 bbox_state_dict['plate_ocr_score_list'] = []                        # 车牌识别结果得分（多帧）
                 bbox_state_dict['car_disappear_frame_num'] = 0                      # 车辆消失画面帧数
+                bbox_state_dict['plate_frame_num'] = 0                              # 车牌出现画面帧数
                 bbox_state_dict['plate_disappear_frame_num'] = 0                    # 车牌消失画面帧数
                 bbox_state_dict['up_report_flage'] = False                          # 上行抓拍标志位
                 bbox_state_dict['down_report_flage'] = False                        # 下行抓拍标志位
@@ -516,16 +543,18 @@ class CaptureApi():
                 Down_threshold = self.image_height * self.capture_line_ratio[1]
                 Up_threshold = self.image_height * self.capture_line_ratio[0]
 
-            if bbox_state_idy['state'] == 'Down' and bbox_state_idy['state_frame_num'] >= 3 and car_bottom_y > Down_threshold and not bbox_state_idy['down_report_flage']:
+            if bbox_state_idy['state'] == 'Down' and bbox_state_idy['state_frame_num'] >= 3 and car_bottom_y > Down_threshold  and bbox_state_idy['plate_disappear_frame_num'] == 0 and \
+                    bbox_state_idy['plate_frame_num'] > self.capture_plate_frame_threshold and not bbox_state_idy['down_report_flage'] and not bbox_state_idy['continuous_lost_plate_report_Flag']:
                 capture_id_list.append((bbox_state_idy['id'], 'down_report_flage'))
-            elif bbox_state_idy['state'] == 'Up' and bbox_state_idy['state_frame_num'] >= 3 and car_bottom_y < Up_threshold and not bbox_state_idy['up_report_flage']:
+            elif bbox_state_idy['state'] == 'Up' and bbox_state_idy['state_frame_num'] >= 3 and car_bottom_y < Up_threshold and bbox_state_idy['plate_disappear_frame_num'] == 0 and \
+                    bbox_state_idy['plate_frame_num'] > self.capture_plate_frame_threshold and not bbox_state_idy['up_report_flage'] and not bbox_state_idy['continuous_lost_plate_report_Flag']:
                 capture_id_list.append((bbox_state_idy['id'], 'up_report_flage'))
-            elif bbox_state_idy['state'] == 'Stop' and bbox_state_idy['state_frame_num'] >= 3 and bbox_state_idy['frame_num'] > self.capture_stop_frame_threshold and \
-                    not bbox_state_idy['outtime_report_flage']:
+            elif bbox_state_idy['state'] == 'Stop' and bbox_state_idy['state_frame_num'] >= 3 and bbox_state_idy['frame_num'] > self.capture_stop_frame_threshold and bbox_state_idy['plate_disappear_frame_num'] == 0 and \
+                    bbox_state_idy['plate_frame_num'] > self.capture_plate_frame_threshold and not bbox_state_idy['outtime_report_flage']:
                 capture_id_list.append((bbox_state_idy['id'], 'outtime_report_flage'))
             elif bbox_state_idy['plate_disappear_frame_num'] > self.capture_plate_disappear_frame_threshold and \
                     car_bottom_y < Down_threshold and car_bottom_y > Up_threshold and \
-                    not bbox_state_idy['continuous_lost_plate_report_Flag'] and not bbox_state_idy['down_report_flage'] and not bbox_state_idy['up_report_flage'] :
+                    bbox_state_idy['plate_frame_num'] > self.capture_plate_frame_threshold and not bbox_state_idy['continuous_lost_plate_report_Flag'] and not bbox_state_idy['down_report_flage'] and not bbox_state_idy['up_report_flage'] :
                 capture_id_list.append((bbox_state_idy['id'], 'continuous_lost_plate_report_Flag'))
             
         return capture_id_list

@@ -25,8 +25,8 @@ def main():
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.log_path = "/mnt/huanyuan2/data/image/log_05.log"
-    args.csv_path = "/mnt/huanyuan2/data/image/log_05.csv"
+    args.log_path = "/mnt/huanyuan2/data/image/log_0512_03.log"
+    args.csv_path = "/mnt/huanyuan2/data/image/log_0512_03.csv"
 
     cut_log(args)
 
