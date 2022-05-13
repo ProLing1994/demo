@@ -262,8 +262,8 @@ def vidio_capture_crop_merge(in_params):
 def main():
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--video_dir', type=str, default="/mnt/huanyuan/temp/test/2022-04-20/avi/") 
-    parser.add_argument('--output_video_dir', type=str, default="/mnt/huanyuan/temp/test/2022-04-20/avi_video_capture/") 
+    parser.add_argument('--video_dir', type=str, default="/mnt/huanyuan/test/avi/") 
+    parser.add_argument('--output_video_dir', type=str, default="/mnt/huanyuan/test/avi_video_capture/") 
     parser.add_argument('--suffix', type=str, default='.avi') 
     parser.add_argument('--steps', type=str, default='1,2,3') 
     args = parser.parse_args()

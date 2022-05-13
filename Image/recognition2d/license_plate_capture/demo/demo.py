@@ -119,21 +119,21 @@ def main():
     # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频实验/5MH_2lane_capture/"
     # args.suffix = '.avi'
 
-    # zg，安徽淮北高速 5M
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/264原始视频/264原始视频/5M_12mm_卡口2_白_0327/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/264原始视频/264原始视频/5M_12mm_卡口2_白_0401/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS/264原始视频/5M_12mm_卡口3_晚_0407/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS/264原始视频/5M_12mm_卡口3_白_0407/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS/264原始视频/5M_12mm_卡口2_白_0406/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS/264原始视频/5M_12mm_卡口2_白_0408/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS/264原始视频/5M_12mm_卡口2_白_0420/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS/264原始视频/5M_12mm_卡口1_白_0427/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS/264原始视频/temp/"
-    args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS/原视频结果/5M_12mm_卡口1_卡口2_0506_原视频结果/卡口1-新/2022-05-06/record-sub/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS/原视频结果/5M_12mm_卡口1_卡口2_0506_原视频结果/卡口2/2022-05-06/record-sub/"
-    # args.output_video_dir = "/home/huanyuan/temp/pc_车牌抓拍实验_车辆状态优化_模型迭代更新/5M_12mm_卡口1_白_0427_叠加及抓拍结果/"
-    args.output_video_dir = "/home/huanyuan/temp/pc_车牌抓拍实验_车辆状态优化_模型迭代更新_版本0430/5M_12mm_卡口1_0506_叠加及抓拍结果/"
-    args.suffix = '.avi'
+    # # zg，安徽淮北高速 5M
+    # # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/264原始视频/264原始视频/5M_12mm_卡口2_白_0327/"
+    # # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/264原始视频/264原始视频/5M_12mm_卡口2_白_0401/"
+    # # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS/264原始视频/5M_12mm_卡口3_晚_0407/"
+    # # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS/264原始视频/5M_12mm_卡口3_白_0407/"
+    # # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS/264原始视频/5M_12mm_卡口2_白_0406/"
+    # # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS/264原始视频/5M_12mm_卡口2_白_0408/"
+    # # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS/264原始视频/5M_12mm_卡口2_白_0420/"
+    # # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS/264原始视频/5M_12mm_卡口1_白_0427/"
+    # # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS/264原始视频/temp/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS/原视频结果/5M_12mm_卡口1_卡口2_0506_原视频结果/卡口1-新/2022-05-06/record-sub/"
+    # # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS/原视频结果/5M_12mm_卡口1_卡口2_0506_原视频结果/卡口2/2022-05-06/record-sub/"
+    # # args.output_video_dir = "/home/huanyuan/temp/pc_车牌抓拍实验_车辆状态优化_模型迭代更新/5M_12mm_卡口1_白_0427_叠加及抓拍结果/"
+    # args.output_video_dir = "/home/huanyuan/temp/pc_车牌抓拍实验_车辆状态优化_模型迭代更新_版本0430/5M_12mm_卡口1_0506_叠加及抓拍结果/"
+    # args.suffix = '.avi'
 
     # # zg，深圳天桥 5M
     # # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ/264原始视频/5M_12mm_白_0414/"
@@ -148,9 +148,9 @@ def main():
     # args.output_video_dir = "/home/huanyuan/temp/pc_车牌抓拍实验_车辆状态优化_模型迭代更新_版本0430/5M_12mm_6M_白_0506_叠加及抓拍结果/"
     # args.suffix = '.avi'
 
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/avi/"
-    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/avi_capture/"
-    # args.suffix = '.avi'
+    args.video_dir = "/mnt/huanyuan/test/avi/"
+    args.output_video_dir = "/home/huanyuan/temp/test/avi_capture/"
+    args.suffix = '.avi'
 
     inference_video(args)
 
