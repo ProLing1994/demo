@@ -16,8 +16,10 @@ from Image.Basic.utils.folder_tools import *
 
 
 def model_init(args):
-    # model init
+    # detector
     car_plate_detector = SSDDetector(threshold=0.4, prototxt=args.ssd_car_plate_prototxt, model_path=args.ssd_car_plate_model_path, ssd_caffe_bool=args.ssd_caffe_bool, merge_class_bool=args.merge_class_bool)
+
+    # lincense plate reader
     license_palte_detector = license_palte_model_init_caffe(args.plate_recognition_prototxt, args.plate_recognition_model_path)
     license_palte_beamsearch = license_palte_beamsearch_init()
     return (car_plate_detector, license_palte_detector, license_palte_beamsearch)
@@ -37,21 +39,21 @@ def img_detect(args, model, img):
     bboxes = car_plate_detector.detect(img)
 
     # roi ignore 
-    if args.roi_ignore_bool:
+    if args.roi_bool:
         # init
         temp_bboxes = bboxes
         bboxes = dict()
-        bboxes["roi_ignore_area"] = [args.roi_ignore_area]
+        # bboxes["roi_area"] = [args.roi_area]
 
         for key in temp_bboxes.keys():
             bbox_list = []
             for bbox_idx in range(len(temp_bboxes[key])):
                 bbox = temp_bboxes[key][bbox_idx]
 
-                if bbox[2] < args.roi_ignore_area[0] or \
-                    bbox[3] < args.roi_ignore_area[1] or \
-                    bbox[0] > args.roi_ignore_area[2] or \
-                    bbox[1] > args.roi_ignore_area[3]:
+                if bbox[2] < args.roi_area[0] or \
+                    bbox[3] < args.roi_area[1] or \
+                    bbox[0] > args.roi_area[2] or \
+                    bbox[1] > args.roi_area[3]:
                     pass
                 else:
                     bbox_list.append(bbox)
@@ -67,21 +69,6 @@ def img_detect(args, model, img):
 
     for plate_idx in range(len(bboxes["license_plate"])):
         plate_bbox = bboxes["license_plate"][plate_idx]
-
-        # plate_bbox_expand
-        if args.plate_bbox_expand_bool:
-            if args.plate_bbox_expand_height_bool:
-                plate_height = plate_bbox[3] - plate_bbox[1]
-                if plate_height >= args.height_threshold:
-                    pass
-                elif plate_height >= args.plate_bbox_minist_height:
-                    expand_height = int(( args.height_threshold - plate_height) / 2.0 + 0.5 )
-                    plate_bbox[1] = max(0, plate_bbox[1] - expand_height)
-                    plate_bbox[3] = min(img.shape[0], plate_bbox[3] + expand_height)
-            
-            if args.plate_bbox_expand_weight_bool:
-                plate_bbox[0] = max(plate_bbox[0] - args.plate_bbox_weight, 0)
-                plate_bbox[2] = min(img.shape[1], plate_bbox[2] + args.plate_bbox_weight) 
 
         # crop
         crop_img = gray_img[plate_bbox[1]:plate_bbox[3], plate_bbox[0]:plate_bbox[2]]
@@ -145,11 +132,7 @@ def inference_images(args):
     img_list.sort()
     
     for idx in tqdm(range(len(img_list))):
-        img_path = os.path.join(args.img_dir, img_list[idx])
-
-        if args.write_bool:
-            output_img_path = os.path.join(args.output_img_dir, img_list[idx])
-        
+        img_path = os.path.join(args.img_dir, img_list[idx])      
         tqdm.write(img_path)
 
         img = cv2.imread(img_path)        
@@ -159,6 +142,9 @@ def inference_images(args):
 
         # draw img
         if args.write_bool:
+            output_img_path = os.path.join(args.output_img_dir, img_list[idx])
+            create_folder(os.path.dirname(output_img_path))
+            
             img = draw_detection_result(img, show_bboxes, mode='ltrb')
             cv2.imwrite(output_img_path, img)
 
@@ -212,11 +198,9 @@ def inference_video(args):
                     for key, plate_bbox in show_bboxes.items():
                         if key not in color_dict:
                             crop_img = img[plate_bbox[0][1]:plate_bbox[0][3], plate_bbox[0][0]:plate_bbox[0][2]]
-
                             output_crop_img_path = os.path.join(args.output_video_dir, 'crop', video_list[idx].replace('.avi', ''), '{}_{}_{}.jpg'.format(key, frame_idx, crop_idx))
                             create_folder(os.path.dirname(output_crop_img_path))
                             cv2.imwrite(output_crop_img_path, crop_img)
-
                             crop_idx += 1       
 
                 img = draw_detection_result(img, show_bboxes, mode='ltrb')
@@ -250,6 +234,10 @@ def main():
     # args.ssd_car_plate_model_path = "/mnt/huanyuan2/model/image_model/ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-03-09-17/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-03-09-17.caffemodel"
     args.ssd_caffe_bool = False
 
+    # 是否将 car\bus\truck 合并为一类输出
+    args.merge_class_bool = False
+
+    # lincense plate reader
     args.plate_recognition_prototxt = "/mnt/huanyuan2/model/image_model/license_plate_recognition_moel_lxn/china_softmax.prototxt"
     args.plate_recognition_model_path = "/mnt/huanyuan2/model/image_model/license_plate_recognition_moel_lxn/china.caffemodel"
     args.prefix_beam_search_bool = False
@@ -260,22 +248,12 @@ def main():
     args.write_crop_license_plate = True
 
     # 是否通过 roi 区域屏蔽部分检测结果
-    args.roi_ignore_bool = True
+    # self.roi_bool = False
+    args.roi_bool = True
     # 2M
-    # args.roi_ignore_area = [0, 108, 1920, 972]
-    # args.roi_ignore_area = [0, 300, 1920, 1080]
+    # args.roi_area = [0, 300, 1920, 1080]
     # 5M
-    args.roi_ignore_area = [0, 600, 2592, 1920]
-
-    # 是否将 car\bus\truck 合并为一类输出
-    args.merge_class_bool = False
-
-    # 是否扩展高度不足 24 车牌
-    args.plate_bbox_expand_bool = False
-    args.plate_bbox_expand_height_bool = False
-    args.plate_bbox_minist_height = 18
-    args.plate_bbox_expand_weight_bool = False
-    args.plate_bbox_weight = 3
+    args.roi_area = [0, 600, 2592, 1920]
 
     # 是否设置高度阈值挑选车牌
     args.height_threshold_bool = False
@@ -300,9 +278,17 @@ def main():
     # # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_height_beamsearchs_bboxexpand_roiignore/"
     # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/加油站测试视频_beamsearchs_roiignore/"
 
-    args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220401/264原始视频/5M_卡口2/"
-    args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220401/pc_20220401_车牌抓拍实验/5M_卡口2_车牌捕获/"
-    
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220401/264原始视频/5M_卡口2/"
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220401/pc_20220401_车牌抓拍实验/5M_卡口2_车牌捕获/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220407/264原始视频/5M_卡口3_晚/"
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220407/pc_20220407_车牌抓拍实验/5M_卡口3_晚_车牌捕获/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220407/264原始视频/5M_卡口3_白/"
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220407/pc_20220407_车牌抓拍实验/5M_卡口3_白_车牌捕获/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220413/264原始视频/5M_卡口2_白_0413/"
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS_220413/pc_20220414_车牌抓拍实验/5M_卡口2_白_0413_车牌捕获/"
+    args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ_20220414/264原始视频/5M_16mm_白_0414/"
+    args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ_20220414/pc_20220416_车牌抓拍实验_车辆状态优化/5M_16mm_白_0414_车牌捕获/"
+
     args.suffix = '.avi'
     # args.suffix = '.mp4'
 

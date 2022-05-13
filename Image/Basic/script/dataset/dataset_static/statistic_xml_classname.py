@@ -99,7 +99,18 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
     # [('bus', 685), ('car', 12295), ('fuzzy_plate', 1792), ('plate', 9800), ('roi_ignore_plate', 227), ('truck', 180)]
     # [('bus', {'trainval': 607, 'test': 78}), ('car', {'trainval': 11027, 'test': 1268}), ('fuzzy_plate', {'trainval': 1589, 'test': 203}), ('plate', {'trainval': 8806, 'test': 994}), ('roi_ignore_plate', {'trainval': 203, 'test': 24}), ('truck', {'trainval': 160, 'test': 20})]
-    
+    # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_5M/"
+    # [('bus', 488), ('car', 7776), ('fuzzy_plate', 1158), ('painted_plate', 175), ('plate', 4014), ('truck', 22)]
+    # [('bus', {'trainval': 444, 'test': 44}), ('car', {'trainval': 7002, 'test': 774}), ('fuzzy_plate', {'trainval': 1030, 'test': 128}), ('painted_plate', {'trainval': 161, 'test': 14}), ('plate', {'trainval': 3628, 'test': 386}), ('truck', {'trainval': 20, 'test': 2})]
+    # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
+    # [('bus', 1784), ('car', 8992), ('fuzzy_plate', 3799), ('painted_plate', 394), ('plate', 5297), ('truck', 12537)]
+    # [('bus', {'trainval': 1632, 'test': 152}), ('car', {'trainval': 8096, 'test': 896}), ('fuzzy_plate', {'trainval': 3403, 'test': 396}), ('painted_plate', {'trainval': 349, 'test': 45}), ('plate', {'trainval': 4765, 'test': 532}), ('truck', {'trainval': 11271, 'test': 1266})]
+
+    # ZG_AHHBGS_detection car\bus\truck\plate\fuzzy_plate
+    # args.input_dir = "/yuanhuan/data/image/ZG_AHHBGS_detection/anhuihuaibeigaosu/"
+    # [('bus', 1406), ('car', 105548), ('fuzzy_plate', 30659), ('planted_plate', 363), ('plate', 7888), ('truck', 16424)]
+    # [('bus', {'trainval': 1258, 'test': 148}), ('car', {'trainval': 94584, 'test': 10964}), ('fuzzy_plate', {'trainval': 27440, 'test': 3219}), ('planted_plate', {'trainval': 329, 'test': 34}), ('plate', {'trainval': 7122, 'test': 766}), ('truck', {'trainval': 14777, 'test': 1647})]
+
     # 数据集：ZG_ZHJYZ_detection 加油站测试样本
     args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
     # 2MB: [('car', 155), ('fuzzy_plate', 37), ('plate', 87), ('truck', 1)]
@@ -110,6 +121,10 @@ if __name__ == "__main__":
     # AHHBAS_43c: [('car', 180), ('fuzzy_plate', 25), ('plate', 58), ('truck', 5)]
     # AHHBAS_41a: [('bus', 5), ('car', 245), ('fuzzy_plate', 30), ('plate', 151), ('truck', 77)]
     # AHHBAS_41c: [('bus', 5), ('car', 97), ('fuzzy_plate', 58), ('plate', 38), ('truck', 93)]
+    # SDFX_B1: [('car', 258), ('fuzzy_plate', 110), ('painted_plate', 50), ('plate', 50), ('truck', 362)]
+    # SDFX_B2: [('bus', 6), ('car', 287), ('fuzzy_plate', 148), ('painted_plate', 53), ('plate', 68), ('truck', 360)]
+    # SDFX_H1: [('bus', 3), ('car', 263), ('fuzzy_plate', 108), ('painted_plate', 27), ('plate', 55), ('truck', 367)]
+    # SDFX_H2: [('bus', 1), ('car', 257), ('fuzzy_plate', 95), ('painted_plate', 28), ('plate', 76), ('truck', 314)]
 
     args.trainval_file = args.input_dir + "ImageSets/Main/trainval.txt"
     args.train_file = args.input_dir + "ImageSets/Main/train.txt"
@@ -119,8 +134,9 @@ if __name__ == "__main__":
 
     # args.jpg_dir =  args.input_dir + "JPEGImages/"
     # args.xml_dir =  args.input_dir + "XML/"
-    args.jpg_dir =  args.input_dir + "AHHBAS_43c/"
-    args.xml_dir =  args.input_dir + "AHHBAS_43c_XML/"
+
+    args.jpg_dir =  args.input_dir + "SDFX_H2/"
+    args.xml_dir =  args.input_dir + "SDFX_H2_XML/"
 
     statistic_classname(args)
     # statistic_classname_train_val_test(args)

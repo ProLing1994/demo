@@ -13,13 +13,24 @@ def json_xml(args):
     json_list = np.array(os.listdir(args.json_dir))
     json_list = json_list[[jpg.endswith('.json') for jpg in json_list]]
 
+    jpg_list = np.array(os.listdir(args.jpg_dir))
+    jpg_list = jpg_list[[jpg.endswith('.jpg') for jpg in jpg_list]]
+
     for idx in tqdm(range(len(json_list))):
-        # check json
+        # json
         json_name = json_list[idx]
         json_path = os.path.join(args.json_dir, json_name)
-        if not json_name in json_list:
+
+        # jpg
+        jpg_name = str(json_name).replace('.json', '.jpg')
+        jpg_path = os.path.join(args.jpg_dir, jpg_name)
+        if not jpg_name in jpg_list:
             continue
         
+        # xml 
+        xml_name = str(jpg_name).replace('.jpg', '.xml')
+        xml_path = os.path.join(args.xml_dir, xml_name)
+
         # read json
         with open(json_path, 'r', encoding='UTF-8') as fr:
             try:
@@ -28,34 +39,33 @@ def json_xml(args):
                 print(json_path)
                 continue
 
-        weight = annotation['imageWidth']
-        height = annotation['imageHeight']
+        weight = annotation['width']
+        height = annotation['height']
         img_shape = [weight, height, 3]
-
-        name = os.path.basename(annotation['imagePath'])
 
         xml_bboxes = {}
         for track in annotation['shapes']:
             label = track['label']
-            
-            # 目前提取货车的全车框
-            if not label == 'car':
+
+            if not label in ['car', 'bus', 'truck', 'plate', 'fuzzy_plate', 'planted_plate']:
+                print(label)
                 continue
+            
+            # +1 的目的：更换了标注工具，保证 xml 结果统一：
+            # ssd rfb 代码：cur_pt = int(float(bbox.find(pt).text)) - 1
+            points = np.array(track['points'])
+            x1 = max(int(points[0]) + 1, 1)
+            y1 = max(int(points[1]) + 1, 1)
+            x2 = min(int(points[2]) + 1, weight) 
+            y2 = min(int(points[3]) + 1, height)
 
-            xy = np.array(track['points'])
-            x1 = min(int(xy[0][0]), int(xy[1][0]), int(xy[2][0]), int(xy[3][0]), int(xy[4][0]), int(xy[5][0]), int(xy[6][0]), int(xy[7][0]))
-            y1 = min(int(xy[0][1]), int(xy[1][1]), int(xy[2][1]), int(xy[3][1]), int(xy[4][1]), int(xy[5][1]), int(xy[6][1]), int(xy[7][1]))
-            x2 = max(int(xy[0][0]), int(xy[1][0]), int(xy[2][0]), int(xy[3][0]), int(xy[4][0]), int(xy[5][0]), int(xy[6][0]), int(xy[7][0]))
-            y2 = max(int(xy[0][1]), int(xy[1][1]), int(xy[2][1]), int(xy[3][1]), int(xy[4][1]), int(xy[5][1]), int(xy[6][1]), int(xy[7][1]))
-
-            if not label in xml_bboxes:
-                xml_bboxes[label] = [[x1, y1, x2, y2]]
-            else:
+            if label in xml_bboxes:
                 xml_bboxes[label].append([x1, y1, x2, y2])
-        
-        img_path = os.path.join(args.jpg_dir, name)
-        output_xml_path = os.path.join(args.xml_dir, str(name).replace('.jpg', '.xml'))
-        write_xml(output_xml_path, img_path, xml_bboxes, img_shape)
+            else:
+                xml_bboxes[label] = []
+                xml_bboxes[label].append([x1, y1, x2, y2])
+    
+        write_xml(xml_path, jpg_path, xml_bboxes, img_shape)
 
 
 if __name__ == '__main__':
@@ -63,9 +73,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.jpg_dir = "/mnt/huanyuan2/data/image/3D_huoche/3D_huoche/压缩1/1/"
-    args.json_dir = "/mnt/huanyuan2/data/image/3D_huoche/3D_huoche/压缩1/1/"
-    args.xml_dir = "/mnt/huanyuan2/data/image/3D_huoche/3D_huoche/压缩1/1/"
+    args.jpg_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/shenzhentiaoqiao/JPEGImages/"
+    args.json_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/shenzhentiaoqiao/JPEGImages/"
+    args.xml_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/shenzhentiaoqiao/XML/"
 
     json_xml(args)
 

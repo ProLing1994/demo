@@ -9,8 +9,7 @@ import sys
 import torch
 from tqdm import tqdm
 
-# sys.path.insert(0, '/home/huanyuan/code/demo')
-sys.path.insert(0, "E:\\project\\demo")
+sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.Basic.utils.folder_tools import *
 from Image.Basic.video_capture.demo.VideoCapture_API import *
 
@@ -65,12 +64,13 @@ def video_capture_csv(in_params):
         #     print()
 
         # video capture api 
+        # bbox_info_list：单检测识别结果
         # capture_id_list：需要抓拍的车辆id
-        # capture_info：抓拍结果
-        bbox_info_list, capture_id_list, capture_info_list = video_capture_api.run(img, frame_idx)
+        # capture_result：抓拍结果
+        bbox_info_list, capture_id_list, capture_result = video_capture_api.run(img, frame_idx)
 
-        for idy in range(len(capture_info_list)):
-            capture_info_idy = capture_info_list[idy]
+        for idy in range(len(capture_result)):
+            capture_info_idy = capture_result[idy]
             
             video_capture_dict = {}
             video_capture_dict['id'] = capture_info_idy['id']
@@ -155,40 +155,44 @@ def vidio_capture_crop(in_params):
         print(error)
         return 
 
-    for idx, row in capture_pd.iterrows():
-        # VideoFileClip 
-        try:
-            video_clip = editor.VideoFileClip(video_path)
-        except:
-            continue
+    # VideoFileClip 
+    try:
+        video_clip = editor.VideoFileClip(video_path)
+    except:
+        return
 
+    for idx, row in capture_pd.iterrows():
+    
         # info 
         attri_idx = row['attri']
         plate_color_idx = row['plate_color']
         start_s_idx = max(0, float(row['start_s']) - args.time_shift_s ) 
         end_s_idx = min(video_clip.end, float(row['end_s']) + args.time_shift_s)
 
-        # 挑选车牌颜色
-        if args.select_plate_color != None:
-            if plate_color_idx != args.select_plate_color:
+        # 挑选车型或颜色
+        if len(args.select_plate_color) != 0 and len(args.select_car_attri) != 0:
+            if plate_color_idx not in args.select_plate_color and attri_idx not in args.select_car_attri:
                 continue
-        
+        # 挑选车牌颜色
+        elif len(args.select_plate_color) != 0:
+            if plate_color_idx not in args.select_plate_color:
+                continue
         # 挑选车型
-        if args.select_car_attri != None:
-            if attri_idx != args.select_car_attri:
+        elif len(args.select_car_attri) != 0:
+            if attri_idx not in args.select_car_attri:
                 continue
 
         # 超出视频末尾，原因未知
         if start_s_idx >= video_clip.end:
             continue
-        
+
         # 超长视频裁剪
         if end_s_idx - start_s_idx > args.time_threshold:
             start_s_idx = end_s_idx - args.time_threshold
-        
+
         print(start_s_idx, end_s_idx)
         # mkdir
-        output_video_path = os.path.join(args.output_video_dir, '{}_{}'.format(args.select_plate_color, args.select_car_attri), video_name.replace(args.suffix, ''), '{}_{:.2f}_{:.2f}_{}_{}.mp4'.format(video_name.replace(args.suffix, ''), start_s_idx, end_s_idx, attri_idx, plate_color_idx))
+        output_video_path = os.path.join(args.output_video_dir, '_'.join(args.select_plate_color + args.select_car_attri), video_name.replace(args.suffix, ''), '{}_{:.2f}_{:.2f}_{}_{}.mp4'.format(video_name.replace(args.suffix, ''), start_s_idx, end_s_idx, attri_idx, plate_color_idx))
         create_folder(os.path.dirname(output_video_path))
         if os.path.exists(output_video_path):
             print("ignore path: {}".format(output_video_path))
@@ -221,13 +225,14 @@ def vidio_capture_crop_merge(in_params):
         print(error)
         return 
 
+    # VideoFileClip 
+    try:
+        video_clip = editor.VideoFileClip(video_path)
+    except:
+        return
+
     for idx, row in capture_pd.iterrows():
-        # VideoFileClip 
-        try:
-            video_clip = editor.VideoFileClip(video_path)
-        except:
-            continue
-    
+
         # info 
         start_s_idx = max(0, float(row['start_s']) - args.time_shift_s ) 
         end_s_idx = min(video_clip.end, float(row['end_s']) + args.time_shift_s)
@@ -243,7 +248,7 @@ def vidio_capture_crop_merge(in_params):
         if os.path.exists(output_video_path):
             print("ignore path: {}".format(output_video_path))
             continue
-        
+
         # crop
         try:
             clip = video_clip.subclip(start_s_idx, end_s_idx)
@@ -257,22 +262,25 @@ def vidio_capture_crop_merge(in_params):
 def main():
 
     parser = argparse.ArgumentParser()
+    parser.add_argument('--video_dir', type=str, default="/mnt/huanyuan/test/avi/") 
+    parser.add_argument('--output_video_dir', type=str, default="/mnt/huanyuan/test/avi_video_capture/") 
+    parser.add_argument('--suffix', type=str, default='.avi') 
+    parser.add_argument('--steps', type=str, default='1,2,3') 
     args = parser.parse_args()
+    
+    # option
+    args.step_frame = 2
 
-    args.video_dir = "X:\\temp\\卡口1\\2022-04-10\\avi"
-    args.output_video_dir = "X:\\temp\\卡口1\\2022-04-10\\avi_video_capture"
-    args.suffix = '.avi'
+    # 截取视频段，前后扩展时间
+    args.time_shift_s = 3
 
-    # args.video_dir = "/mnt/huanyuan/temp/天桥/2022-04-01/avi/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/天桥/2022-04-01/avi_video_capture/"
-    # args.suffix = '.avi'
-
-    args.step_frame = 3
+    # 截取视频段，最长时间
+    args.time_threshold = 20
 
     # mkdir 
     create_folder(args.output_video_dir)
 
-    # video init 
+    # video init
     video_list = np.array(os.listdir(args.video_dir))
     video_list = video_list[[video.endswith(args.suffix) for video in video_list]]
     video_list.sort()
@@ -282,65 +290,57 @@ def main():
         in_args = [args, video_list[idx]]
         in_params.append(in_args)
 
-    # # step 1: 
-    # # 车辆抓取
-    # ctx = torch.multiprocessing.get_context("spawn")
-    # p = ctx.Pool(1)
-    # out = p.map(video_capture_csv, in_params)
-    # p.close()
-    # p.join()
+    # steps
+    step_list = str(args.steps).split(',')
 
-    # # 截取视频段，前后扩展时间
-    # args.time_shift_s = 3
+    if '1' in step_list:
+        # step 1: 
+        # 车辆抓取
+        ctx = torch.multiprocessing.get_context("spawn")
+        p = ctx.Pool(2)
+        out = p.map(video_capture_csv, in_params)
+        p.close()
+        p.join()
 
-    # # step 2: 
-    # # 视频合并
-    # for idx in tqdm(range(len(video_list))):
-    #     vidio_capture_merge(args, video_list[idx])
+    if '2' in step_list:
+        # step 2: 
+        # 视频合并
+        for idx in tqdm(range(len(video_list))):
+            vidio_capture_merge(args, video_list[idx])
 
-    # # step 3: 
-    # # 视频剪裁
-    # p = multiprocessing.Pool(2)
-    # out = p.map(vidio_capture_crop_merge, in_params)
-    # p.close()
-    # p.join()
+        # 视频剪裁
+        p = multiprocessing.Pool(2)
+        out = p.map(vidio_capture_crop_merge, in_params)
+        p.close()
+        p.join()
 
-    # 截取视频段，前后扩展时间
-    args.time_shift_s = 3
+    if '3' in step_list:
+        # step 3: 
+        # 挑选颜色：黄色
+        args.select_plate_color = ['yellow']
 
-    # 截取视频段，最长时间
-    args.time_threshold = 20
+        # 挑选车型
+        args.select_car_attri = ['truck', 'bus']
+            
+        # 视频剪裁
+        p = multiprocessing.Pool(2)
+        out = list(tqdm(p.map(vidio_capture_crop, in_params), total=len(in_params)))
+        p.close()
+        p.join()
 
-    # step 4: 
-    # 挑选颜色
-    args.select_plate_color = 'yellow'
+    if '4' in step_list:
+        # step 4: 
+        # 挑选颜色：黄色
+        args.select_plate_color = [ ]
 
-    # 挑选车型
-    args.select_car_attri = None
-    
-    # for idx in range(len(in_params)):
-    #     vidio_capture_crop(in_params[idx])
-
-    # step 5: 
-    # 视频剪裁
-    p = multiprocessing.Pool(3)
-    out = list(tqdm(p.map(vidio_capture_crop, in_params), total=len(in_params)))
-    p.close()
-    p.join()
-
-    # # step 6: 
-    # args.select_plate_color = 'green'
-
-    # # 挑选车型
-    # args.select_car_attri = None
-
-    # # step 7: 
-    # # 视频剪裁
-    # p = multiprocessing.Pool(3)
-    # out = list(tqdm(p.map(vidio_capture_crop, in_params), total=len(in_params)))
-    # p.close()
-    # p.join()
-
+        # 挑选车型
+        args.select_car_attri = ['truck', 'bus']
+            
+        # 视频剪裁
+        p = multiprocessing.Pool(2)
+        out = list(tqdm(p.map(vidio_capture_crop, in_params), total=len(in_params)))
+        p.close()
+        p.join()
 
 if __name__ == '__main__':
     main()
