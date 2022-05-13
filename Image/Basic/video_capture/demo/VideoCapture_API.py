@@ -6,8 +6,9 @@ import sys
 import random
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Image')
+# sys.path.insert(0, '/home/huanyuan/code/demo/Image')
 # sys.path.insert(0, '/yuanhuan/code/demo/Image')
+sys.path.insert(0, 'E:\\project\\demo\\Image')
 from detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
 from Basic.video_capture.plate_color.plate_color import update_plate_color
 from recognition2d.license_plate_capture.sort.mot_sort import Sort
@@ -88,7 +89,7 @@ class VideoCaptureApi():
         # self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-04-25-18/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-04-25-18.caffemodel"
         # openvino
         self.ssd_car_plate_prototxt = None
-        self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-04-25-18/openvino_model/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-04-25-18.xml"
+        self.ssd_car_plate_model_path = "E:\\project\\model\\image\\ssd_rfb\\SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-04-25-18.xml"
 
         self.ssd_caffe_bool = False
         self.ssd_openvino_bool = True
