@@ -6,7 +6,6 @@ import numpy as np
 import os
 import pandas as pd
 import sys 
-import torch
 from tqdm import tqdm
 
 # sys.path.insert(0, '/home/huanyuan/code/demo')
@@ -265,7 +264,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--video_dir', type=str, default="E:\\test\\avi") 
     parser.add_argument('--output_video_dir', type=str, default="E:\\test\\avi_video_capture/") 
-    parser.add_argument('--suffix', type=str, default='.mp4') 
+    parser.add_argument('--suffix', type=str, default='.avi') 
     parser.add_argument('--steps', type=str, default='1,2,3') 
     args = parser.parse_args()
     
@@ -297,12 +296,19 @@ def main():
     if '1' in step_list:
         # step 1: 
         # 车辆抓取
+        # import torch
         # ctx = torch.multiprocessing.get_context("spawn")
         # p = ctx.Pool(2)
         # out = p.map(video_capture_csv, in_params)
         # p.close()
         # p.join()
-        video_capture_csv(in_params[0])
+
+        p = multiprocessing.Pool(2)
+        out = p.map(video_capture_csv, in_params)
+        p.close()
+        p.join()
+
+        # video_capture_csv(in_params[0])
 
     if '2' in step_list:
         # step 2: 

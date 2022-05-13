@@ -19,9 +19,9 @@ import os
 
 import cv2
 import numpy as np
-import torch
 from filterpy.kalman import KalmanFilter
-from torch.autograd import Variable
+# import torch
+# from torch.autograd import Variable
 import warnings
 warnings.filterwarnings('ignore')
 
