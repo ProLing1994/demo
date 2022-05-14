@@ -6,10 +6,10 @@ import numpy as np
 import os
 import pandas as pd
 import sys 
-import torch
 from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
+# sys.path.insert(0, 'E:\\project\\demo')
 from Image.Basic.utils.folder_tools import *
 from Image.Basic.video_capture.demo.VideoCapture_API import *
 
@@ -24,7 +24,7 @@ def video_capture_csv(in_params):
         return
 
     # video capture api
-    video_capture_api = VideoCaptureApi()
+    video_capture_api = VideoCaptureApi(args.model_prototxt, args.model_path, args.GPU)
 
     # pd init
     video_capture_list = []
@@ -265,8 +265,13 @@ def main():
     parser.add_argument('--video_dir', type=str, default="/mnt/huanyuan/test/avi/") 
     parser.add_argument('--output_video_dir', type=str, default="/mnt/huanyuan/test/avi_video_capture/") 
     parser.add_argument('--suffix', type=str, default='.avi') 
-    parser.add_argument('--steps', type=str, default='1,2,3') 
-    args = parser.parse_args()
+    parser.add_argument('--steps', type=str, default='1,2,3')
+    parser.add_argument('--model_prototxt', type=str, default=None) 
+    parser.add_argument('--model_path', type=str, default="E:\\project\\model\\image\\ssd_rfb\\SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-04-25-18.xml") 
+    parser.add_argument('--GPU', action='store_true', default=True) 
+
+    # args = parser.parse_args()
+    args, unparsed = parser.parse_known_args() 
     
     # option
     args.step_frame = 2
@@ -296,11 +301,19 @@ def main():
     if '1' in step_list:
         # step 1: 
         # 车辆抓取
-        ctx = torch.multiprocessing.get_context("spawn")
-        p = ctx.Pool(2)
-        out = p.map(video_capture_csv, in_params)
-        p.close()
-        p.join()
+        # import torch
+        # ctx = torch.multiprocessing.get_context("spawn")
+        # p = ctx.Pool(2)
+        # out = p.map(video_capture_csv, in_params)
+        # p.close()
+        # p.join()
+
+        # p = multiprocessing.Pool(2)
+        # out = p.map(video_capture_csv, in_params)
+        # p.close()
+        # p.join()
+
+        video_capture_csv(in_params[0])
 
     if '2' in step_list:
         # step 2: 
@@ -343,4 +356,5 @@ def main():
         p.join()
 
 if __name__ == '__main__':
+    multiprocessing.freeze_support()
     main()
