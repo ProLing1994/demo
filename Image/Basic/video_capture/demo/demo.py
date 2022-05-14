@@ -301,19 +301,19 @@ def main():
     if '1' in step_list:
         # step 1: 
         # 车辆抓取
-        # import torch
-        # ctx = torch.multiprocessing.get_context("spawn")
-        # p = ctx.Pool(2)
-        # out = p.map(video_capture_csv, in_params)
-        # p.close()
-        # p.join()
+        import torch
+        ctx = torch.multiprocessing.get_context("spawn")
+        p = ctx.Pool(2)
+        out = p.map(video_capture_csv, in_params)
+        p.close()
+        p.join()
 
         # p = multiprocessing.Pool(2)
         # out = p.map(video_capture_csv, in_params)
         # p.close()
         # p.join()
 
-        video_capture_csv(in_params[0])
+        # video_capture_csv(in_params[0])
 
     if '2' in step_list:
         # step 2: 
