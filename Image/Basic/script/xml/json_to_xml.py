@@ -47,6 +47,7 @@ def json_xml(args):
         for track in annotation['shapes']:
             label = track['label']
 
+            assert label in ['car', 'bus', 'truck', 'plate', 'fuzzy_plate', 'planted_plate']
             if not label in ['car', 'bus', 'truck', 'plate', 'fuzzy_plate', 'planted_plate']:
                 print(label)
                 continue
@@ -73,9 +74,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.jpg_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/shenzhentiaoqiao/JPEGImages/"
-    args.json_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/shenzhentiaoqiao/JPEGImages/"
-    args.xml_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/shenzhentiaoqiao/XML/"
+    args.jpg_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/TXSDFX_c/"
+    args.json_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/TXSDFX_c/"
+    args.xml_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/TXSDFX_c/"
 
     json_xml(args)
 

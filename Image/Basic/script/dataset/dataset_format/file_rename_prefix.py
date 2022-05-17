@@ -2,9 +2,9 @@ import glob
 import os
 
 if __name__ == '__main__':
-    input_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/kakou4/JPEGImages/"
-    old_file_format = '卡口4'
-    new_file_format = 'kakou4_'
+    input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/AHHBPS/"
+    old_file_format = 'AHHBPS_G3444_G237'
+    new_file_format = 'AHHBPS_G3444_G237_'
     file_type = ".jpg"
     # file_type = ".json"
 

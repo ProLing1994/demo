@@ -112,7 +112,7 @@ if __name__ == "__main__":
     # [('bus', {'trainval': 1258, 'test': 148}), ('car', {'trainval': 94584, 'test': 10964}), ('fuzzy_plate', {'trainval': 27440, 'test': 3219}), ('planted_plate', {'trainval': 329, 'test': 34}), ('plate', {'trainval': 7122, 'test': 766}), ('truck', {'trainval': 14777, 'test': 1647})]
 
     # 数据集：ZG_ZHJYZ_detection 加油站测试样本
-    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
+    args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
     # 2MB: [('car', 155), ('fuzzy_plate', 37), ('plate', 87), ('truck', 1)]
     # 2MH: [('bus', 7), ('car', 570), ('fuzzy_plate', 27), ('plate', 411), ('truck', 9)]
     # 5MB: [('bus', 13), ('car', 453), ('fuzzy_plate', 103), ('plate', 235), ('truck', 8)]
@@ -125,6 +125,15 @@ if __name__ == "__main__":
     # SDFX_B2: [('bus', 6), ('car', 287), ('fuzzy_plate', 148), ('painted_plate', 53), ('plate', 68), ('truck', 360)]
     # SDFX_H1: [('bus', 3), ('car', 263), ('fuzzy_plate', 108), ('painted_plate', 27), ('plate', 55), ('truck', 367)]
     # SDFX_H2: [('bus', 1), ('car', 257), ('fuzzy_plate', 95), ('painted_plate', 28), ('plate', 76), ('truck', 314)]
+    # AHHBAS_kakou1: [('car', 1218), ('fuzzy_plate', 545), ('plate', 92), ('truck', 223)]
+    # AHHBAS_kakou2: [('car', 1991), ('fuzzy_plate', 1156), ('plate', 202), ('truck', 167)]
+    # AHHBAS_kakou3: [('car', 3838), ('fuzzy_plate', 280), ('plate', 194), ('truck', 211)]
+    # AHHBAS_kakou4: [('car', 2183), ('fuzzy_plate', 116), ('plate', 169), ('truck', 42)]
+    # AHHBPS: [('bus', 12), ('car', 294), ('fuzzy_plate', 160), ('plate', 187), ('truck', 198)]
+    # TXSDFX_6: [('bus', 3), ('car', 94), ('fuzzy_plate', 54), ('plate', 96), ('truck', 57)]
+    # TXSDFX_7: [('car', 14), ('fuzzy_plate', 4), ('plate', 164), ('truck', 155)]
+    # TXSDFX_9: [('car', 30), ('fuzzy_plate', 115), ('planted_plate', 113), ('plate', 2), ('truck', 135)]
+    # TXSDFX_c: [('car', 34), ('fuzzy_plate', 4), ('plate', 157), ('truck', 138)]
 
     args.trainval_file = args.input_dir + "ImageSets/Main/trainval.txt"
     args.train_file = args.input_dir + "ImageSets/Main/train.txt"
@@ -135,8 +144,8 @@ if __name__ == "__main__":
     # args.jpg_dir =  args.input_dir + "JPEGImages/"
     # args.xml_dir =  args.input_dir + "XML/"
 
-    args.jpg_dir =  args.input_dir + "SDFX_H2/"
-    args.xml_dir =  args.input_dir + "SDFX_H2_XML/"
+    args.jpg_dir =  args.input_dir + "TXSDFX_c/"
+    args.xml_dir =  args.input_dir + "TXSDFX_c_XML/"
 
     statistic_classname(args)
     # statistic_classname_train_val_test(args)
