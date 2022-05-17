@@ -8,10 +8,8 @@ import pandas as pd
 import sys 
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo')
-# sys.path.insert(0, 'E:\\project\\demo')
-from Image.Basic.utils.folder_tools import *
-from Image.Basic.video_capture.demo.VideoCapture_API import *
+from utils.folder_tools import *
+from api.VideoCapture_API import *
 
 
 # def video_capture_csv(args, video_name):
@@ -262,13 +260,13 @@ def vidio_capture_crop_merge(in_params):
 def main():
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--video_dir', type=str, default="E:\\test\\avi") 
-    parser.add_argument('--output_video_dir', type=str, default="E:\\test\\avi_video_capture/") 
+    parser.add_argument('--video_dir', type=str, default="E:\\project\\demo\\OpenVINO\\OpenVINO_CAR_CAPTURE\\test\\avi") 
+    parser.add_argument('--output_video_dir', type=str, default="E:\\project\\demo\\OpenVINO\\OpenVINO_CAR_CAPTURE\\test\\avi_video_capture") 
     parser.add_argument('--suffix', type=str, default='.avi') 
-    parser.add_argument('--steps', type=str, default='1,2,3')
+    parser.add_argument('--steps', type=str, default='1,2,3') 
     parser.add_argument('--model_prototxt', type=str, default=None) 
-    parser.add_argument('--model_path', type=str, default="E:\\project\\model\\image\\ssd_rfb\\SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-04-25-18.xml") 
-    parser.add_argument('--GPU', action='store_true', default=True) 
+    parser.add_argument('--model_path', type=str, default="E:\\project\\demo\\OpenVINO\\OpenVINO_CAR_CAPTURE\\model\\ssd_rfb\\SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-04-25-18.xml") 
+    parser.add_argument('--GPU', action='store_true', default=False) 
 
     # args = parser.parse_args()
     args, unparsed = parser.parse_known_args() 
@@ -301,17 +299,17 @@ def main():
     if '1' in step_list:
         # step 1: 
         # 车辆抓取
-        import torch
-        ctx = torch.multiprocessing.get_context("spawn")
-        p = ctx.Pool(2)
-        out = p.map(video_capture_csv, in_params)
-        p.close()
-        p.join()
-
-        # p = multiprocessing.Pool(2)
+        # import torch
+        # ctx = torch.multiprocessing.get_context("spawn")
+        # p = ctx.Pool(2)
         # out = p.map(video_capture_csv, in_params)
         # p.close()
         # p.join()
+
+        p = multiprocessing.Pool(2)
+        out = p.map(video_capture_csv, in_params)
+        p.close()
+        p.join()
 
         # video_capture_csv(in_params[0])
 
@@ -354,6 +352,7 @@ def main():
         out = list(tqdm(p.map(vidio_capture_crop, in_params), total=len(in_params)))
         p.close()
         p.join()
+
 
 if __name__ == '__main__':
     multiprocessing.freeze_support()

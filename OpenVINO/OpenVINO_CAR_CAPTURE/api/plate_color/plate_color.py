@@ -4,9 +4,7 @@ import numpy as np
 import sys 
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo')
-from Image.Basic.utils.folder_tools import *
-
+from utils.folder_tools import *
 
 # 设定阈值
 # 阈值设置参考：https://blog.csdn.net/wanggsx918/article/details/23272669

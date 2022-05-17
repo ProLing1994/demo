@@ -32,6 +32,11 @@ bin/
 *__pycache__/
 *.spec
 *.pyc
+*dist/
+
+# wav
+*.wav
+*.avi
 
 # tar.gz
 *.tar.gz

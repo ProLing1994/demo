@@ -6,12 +6,9 @@ import sys
 import random
 from tqdm import tqdm
 
-# sys.path.insert(0, '/home/huanyuan/code/demo/Image')
-# sys.path.insert(0, '/yuanhuan/code/demo/Image')
-# sys.path.insert(0, 'E:\\project\\demo\\Image')
-from detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
-from Basic.video_capture.plate_color.plate_color import update_plate_color
-from recognition2d.license_plate_capture.sort.mot_sort import Sort
+from api.ssd.test_tools import SSDDetector
+from api.plate_color.plate_color import update_plate_color
+from api.sort.mot_sort import Sort
 
 def check_in_roi(in_box, roi_bbox):
     roi_bool = False
@@ -88,20 +85,21 @@ class VideoCaptureApi():
         
         # 2022-04-25-18
         # pytorch 
-        self.ssd_car_plate_prototxt = None
-        self.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-04-25-18_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
+        # self.ssd_car_plate_prototxt = None
+        # self.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-04-25-18_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
         # caffe
         # self.ssd_car_plate_prototxt = "/mnt/huanyuan/model_final/image_model/ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-04-25-18/FPN_RFB_3class_3attri_noDilation_prior.prototxt"
         # self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-04-25-18/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-04-25-18.caffemodel"
         # openvino
         # self.ssd_car_plate_prototxt = None
-        # self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-04-25-18/openvino_model/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-04-25-18.xml"
+        # self.ssd_car_plate_model_path = "E:\\project\\model\\image\\ssd_rfb\\SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-04-25-18.xml"
 
-        # self.ssd_car_plate_prototxt = self.model_prototxt
-        # self.ssd_car_plate_model_path = self.model_path
+        self.ssd_car_plate_prototxt = self.model_prototxt
+        self.ssd_car_plate_model_path = self.model_path
+        print(self.ssd_car_plate_model_path)
 
         self.ssd_caffe_bool = False
-        self.ssd_openvino_bool = False
+        self.ssd_openvino_bool = True
         self.gpu_bool = self.GPU
 
         # 是否将 car\bus\truck 合并为一类输出
@@ -175,7 +173,7 @@ class VideoCaptureApi():
 
     def model_init(self):
         # detector
-        self.car_plate_detector = SSDDetector(prototxt=self.ssd_car_plate_prototxt, model_path=self.ssd_car_plate_model_path, ssd_caffe_bool=self.ssd_caffe_bool, ssd_openvino_bool=self.ssd_openvino_bool, merge_class_bool=self.merge_class_bool, gpu_bool=self.gpu_bool)
+        self.car_plate_detector = SSDDetector(prototxt=self.ssd_car_plate_prototxt, model_path=self.ssd_car_plate_model_path, ssd_caffe_bool=self.ssd_caffe_bool, ssd_openvino_bool=self.ssd_openvino_bool, merge_class_bool=self.merge_class_bool, gpu_bool = self.gpu_bool)
 
         # tracker
         self.mot_tracker = Sort(max_age=self.max_age, min_hits=self.min_hits, iou_threshold=self.iou_threshold)
