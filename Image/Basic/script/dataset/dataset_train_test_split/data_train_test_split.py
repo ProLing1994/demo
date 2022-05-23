@@ -18,7 +18,7 @@ def split(args):
     trainval_list, test_list = train_test_split(jpg_list, test_size=args.test_size, random_state=0)
     train_list, val_list = train_test_split(trainval_list, test_size=args.val_size, random_state=0)
 
-    print("length: trainval: {}, train: {}, val: {}, test: {}".format(len(trainval_list), len(train_list), len(val_list), len(test_list)))
+    print("length: trainval: {}, train: {}, val: {}, test: {}, all: {}".format(len(trainval_list), len(train_list), len(val_list), len(test_list), (len(train_list) + len(val_list) + len(test_list))))
     with open(args.trainval_file, "w") as f:
         for jpg in trainval_list:
             f.write(jpg.replace(".jpg", ""))
@@ -53,7 +53,14 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"    # trainval: 5846, train: 5261, val: 585, test: 650, all: 6496
     # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_5M/"    # trainval: 1445, train: 1300, val: 145, test: 161, all: 1606
     # args.input_dir =  "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/sandaofangxian/"    # trainval: 4476, train: 4028, val: 448, test: 498, all: 4972
-    args.input_dir =  "/yuanhuan/data/image/ZG_AHHBGS_detection/anhuihuaibeigaosu/"    # trainval: 9024, train: 8121, val: 903, test: 1003, all: 10027
+    # args.input_dir =  "/yuanhuan/data/image/ZG_AHHBGS_detection/anhuihuaibeigaosu/"    # trainval: 9024, train: 8121, val: 903, test: 1003, all: 10027
+    # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/daminghu/"    # trainval: 6485, train: 5836, val: 649, test: 721, all: 7206
+    # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/yongzou_night_hongwai/"    # trainval: 2681, train: 2412, val: 269, test: 298, all: 2979
+    # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/anquandao/"    # trainval: 2370, train: 2133, val: 237, test: 264, all: 2634
+    # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/anquandao_night_hongwai/"    # trainval: 2250, train: 2025, val: 225, test: 250, all: 2500
+    # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/shandongyingzikou/"    # trainval: 1970, train: 1773, val: 197, test: 219, all: 2189
+    # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/shandongyingzikou_night_diguangzhao/"    # trainval: 613, train: 551, val: 62, test: 69, all: 682
+    args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/shenzhenlukou_yejian/"    # trainval: 6987, train: 6288, val: 699, test: 777, all: 7764
 
     args.trainval_file = args.input_dir + "ImageSets/Main/trainval.txt"
     args.train_file = args.input_dir + "ImageSets/Main/train.txt"
