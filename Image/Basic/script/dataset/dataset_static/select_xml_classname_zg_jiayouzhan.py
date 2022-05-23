@@ -142,7 +142,7 @@ if __name__ == "__main__":
     ######################################
     # 测试集：
     ######################################
-    args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
+    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
     args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
     args.set_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate"]
     args.finnal_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
@@ -156,9 +156,9 @@ if __name__ == "__main__":
     args.roi_ignore_plate_bbox = []
     args.roi_ignore_plate_name = "roi_ignore_plate"
 
-    args.jpg_dir =  args.input_dir + "TXSDFX_c/"
-    args.xml_dir =  args.input_dir + "TXSDFX_c_XML/"
-    args.output_xml_dir =  args.input_dir + "TXSDFX_c_Annotations_CarBusTruckLicenseplate"
+    args.jpg_dir =  args.input_dir + "SZTQ/"
+    args.xml_dir =  args.input_dir + "SZTQ_XML/"
+    args.output_xml_dir =  args.input_dir + "SZTQ_Annotations_CarBusTruckLicenseplate"
 
     select_classname(args)
 
@@ -193,7 +193,7 @@ if __name__ == "__main__":
     ######################################
     # 测试集：
     ######################################
-    args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
+    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
     args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
     args.set_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate"]
     args.finnal_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
@@ -207,9 +207,9 @@ if __name__ == "__main__":
     args.roi_ignore_plate_bbox = []
     args.roi_ignore_plate_name = "roi_ignore_plate"
 
-    args.jpg_dir =  args.input_dir + "TXSDFX_c/"
-    args.xml_dir =  args.input_dir + "TXSDFX_c_XML/"
-    args.output_xml_dir =  args.input_dir + "TXSDFX_c_Annotations_CarBusTruckLicenseplate_w_fuzzy/"
+    args.jpg_dir =  args.input_dir + "SZTQ/"
+    args.xml_dir =  args.input_dir + "SZTQ_XML/"
+    args.output_xml_dir =  args.input_dir + "SZTQ_Annotations_CarBusTruckLicenseplate_w_fuzzy/"
 
     select_classname(args)
 
@@ -244,7 +244,7 @@ if __name__ == "__main__":
     ######################################
     # 测试集：
     ######################################
-    args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
+    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
     args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
     args.set_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate"]
     args.finnal_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
@@ -258,9 +258,9 @@ if __name__ == "__main__":
     args.roi_ignore_plate_bbox = []
     args.roi_ignore_plate_name = "roi_ignore_plate"
 
-    args.jpg_dir =  args.input_dir + "TXSDFX_c/"
-    args.xml_dir =  args.input_dir + "TXSDFX_c_XML/"
-    args.output_xml_dir =  args.input_dir + "TXSDFX_c_Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height"
+    args.jpg_dir =  args.input_dir + "SZTQ/"
+    args.xml_dir =  args.input_dir + "SZTQ_XML/"
+    args.output_xml_dir =  args.input_dir + "SZTQ_Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height"
 
     select_classname(args)
 
@@ -294,7 +294,7 @@ if __name__ == "__main__":
     ######################################
     # 测试集：
     ######################################
-    args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
+    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
     args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
     args.set_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate"]
     args.finnal_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
@@ -308,8 +308,8 @@ if __name__ == "__main__":
     args.roi_ignore_plate_bbox = []
     args.roi_ignore_plate_name = "roi_ignore_plate"
 
-    args.jpg_dir =  args.input_dir + "TXSDFX_c/"
-    args.xml_dir =  args.input_dir + "TXSDFX_c_XML/"
-    args.output_xml_dir =  args.input_dir + "TXSDFX_c_Annotations_CarBusTruckLicenseplate_w_height"
+    args.jpg_dir =  args.input_dir + "SZTQ/"
+    args.xml_dir =  args.input_dir + "SZTQ_XML/"
+    args.output_xml_dir =  args.input_dir + "SZTQ_Annotations_CarBusTruckLicenseplate_w_height"
 
     select_classname(args)

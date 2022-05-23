@@ -2,7 +2,7 @@ import glob
 import os
 
 if __name__ == '__main__':
-    input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/AHHBPS/"
+    input_dir = "/mnt/huanyuan2/data/image/ZG_BMX_detection/yongzou_yejian/JPEGImages/4mm"
     old_file_format = 'AHHBPS_G3444_G237'
     new_file_format = 'AHHBPS_G3444_G237_'
     file_type = ".jpg"

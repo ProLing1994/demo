@@ -5,7 +5,8 @@ import os
 import sys 
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Image')
+# sys.path.insert(0, '/home/huanyuan/code/demo/Image')
+sys.path.insert(0, '/yuanhuan/code/demo/Image')
 from Basic.script.xml.xml_write import write_xml
 
 
@@ -74,9 +75,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.jpg_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/TXSDFX_c/"
-    args.json_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/TXSDFX_c/"
-    args.xml_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/TXSDFX_c/"
+    args.jpg_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/SZTQ/"
+    args.json_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/SZTQ/"
+    args.xml_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/SZTQ_XML/"
 
     json_xml(args)
 

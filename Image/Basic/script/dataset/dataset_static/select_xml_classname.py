@@ -72,7 +72,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
+    ######################################
     # Annotations_CarBusTruckLicenseplate
+    ######################################
     # # args.input_dir = "/yuanhuan/data/image/LicensePlate/China/"
     # # args.input_dir = "/yuanhuan/data/image/LicensePlate/China_6mm/"
     # # args.input_dir = "/yuanhuan/data/image/LicensePlate/Europe/"
@@ -81,16 +83,50 @@ if __name__ == "__main__":
     # args.set_name_list = ["license_plate"]
     # args.finnal_name_list = ["license_plate", "neg"]
 
-    args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone/"
-    args.select_name_list = ["car", "bus", "truck"]
-    args.set_name_list = ["car", "bus", "truck"]
-    args.finnal_name_list = ["car", "bus", "truck", "neg"]
+    # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone/"
+    # args.select_name_list = ["car", "bus", "truck"]
+    # args.set_name_list = ["car", "bus", "truck"]
+    # args.finnal_name_list = ["car", "bus", "truck", "neg"]
         
+    # args.jpg_dir =  args.input_dir + "JPEGImages/"
+    # args.xml_dir =  args.input_dir + "XML/"
+    # args.output_xml_dir =  args.input_dir + "Annotations_CarBusTruckLicenseplate/"
+
+    ######################################
+    # Annotations_CarNonMotorizedPerson
+    ######################################
+    # # LicensePlate
+    # args.input_dir = "/yuanhuan/data/image/LicensePlate/China/"
+    # # args.input_dir = "/yuanhuan/data/image/LicensePlate/China_6mm/"
+    # # args.input_dir = "/yuanhuan/data/image/LicensePlate/Mexico/"
+    # args.select_name_list = ["car", "bicycle", "bicycle ", "motorcycle", "person", "person_o"]
+    # args.set_name_list = ["car", "bicycle", "bicycle", "motorcycle", "person", "person_o"]
+    # args.finnal_name_list = ["car", "bicycle", "motorcycle", "person", "person_o", "neg"]
+
+    # # RM_ADAS_AllInOne
+    # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone/"
+    # args.select_name_list = ["car", "bus", "truck", "bicyclist", "motorcyclist", "person", "person_o", "preson"]
+    # args.set_name_list = ["car", "bus", "truck", "bicycle", "motorcycle", "person", "person_o", "person"]
+    # args.finnal_name_list = ["car", "bus", "truck", "bicycle", "motorcycle", "person", "person_o", "neg"]
+
+    # daminghu/yongzou_night_hongwai
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/daminghu/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/yongzou_night_hongwai/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/anquandao/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/anquandao_night_hongwai/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/shandongyingzikou/"
+    args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/shandongyingzikou_night_diguangzhao/"
+    args.select_name_list = ["car", "bicycle", "motorcycle", "non-motorized", "non-motorized ", "preson", "head", "helmet"]
+    args.set_name_list = ["car", "bicycle", "motorcycle", "non-motorized", "non-motorized", "person", "head", "helmet"]
+    args.finnal_name_list = ["car", "bicycle", "motorcycle", "non-motorized", "person", "head", "helmet", "neg"]
+
     args.jpg_dir =  args.input_dir + "JPEGImages/"
     args.xml_dir =  args.input_dir + "XML/"
-    args.output_xml_dir =  args.input_dir + "Annotations_CarBusTruckLicenseplate/"
+    args.output_xml_dir =  args.input_dir + "Annotations_CarNonMotorizedPerson/"
 
+    ######################################
     # 消融实验
+    ######################################
     # Annotations_CarLicenseplate
     # China 提取 car\license_plate 进行实验
     # args.input_dir = "/yuanhuan/data/image/LicensePlate/China/"
