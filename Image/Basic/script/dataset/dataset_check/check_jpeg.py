@@ -33,8 +33,9 @@ if __name__ == "__main__":
     # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_5M/"
     # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
     # args.input_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/anhuihuaibeigaosu/"
-    # args.input_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/shenzhentiaoqiao/"
-    # args.jpg_dir =  args.input_dir + "JPEGImages/"
+    args.input_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/shenzhentiaoqiao/"
+    # args.input_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/20220530_新增数据/"
+    args.jpg_dir =  args.input_dir + "JPEGImages/"
 
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/AHHBAS_418/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/AHHBAS_41a/"
@@ -48,7 +49,7 @@ if __name__ == "__main__":
     # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/TXSDFX_c/"
     # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/TXSDFX_9/"
     # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/TXSDFX_7/"
-    args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/TXSDFX_6/"
-    args.jpg_dir =  args.input_dir 
+    # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/TXSDFX_6/"
+    # args.jpg_dir =  args.input_dir 
 
     check_jepg(args)

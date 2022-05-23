@@ -109,13 +109,16 @@ if __name__ == "__main__":
     # [('bus', 1784), ('car', 8992), ('fuzzy_plate', 3799), ('painted_plate', 394), ('plate', 5297), ('truck', 12537)]
     # [('bus', {'trainval': 1632, 'test': 152}), ('car', {'trainval': 8096, 'test': 896}), ('fuzzy_plate', {'trainval': 3403, 'test': 396}), ('painted_plate', {'trainval': 349, 'test': 45}), ('plate', {'trainval': 4765, 'test': 532}), ('truck', {'trainval': 11271, 'test': 1266})]
 
-    # ZG_AHHBGS_detection car\bus\truck\plate\fuzzy_plate
+    # 数据集：ZG_AHHBGS_detection，包含 car\bus\truck\plate\fuzzy_plate
     # args.input_dir = "/yuanhuan/data/image/ZG_AHHBGS_detection/anhuihuaibeigaosu/"
     # [('bus', 1406), ('car', 105548), ('fuzzy_plate', 30659), ('planted_plate', 363), ('plate', 7888), ('truck', 16424)]
     # [('bus', {'trainval': 1258, 'test': 148}), ('car', {'trainval': 94584, 'test': 10964}), ('fuzzy_plate', {'trainval': 27440, 'test': 3219}), ('planted_plate', {'trainval': 329, 'test': 34}), ('plate', {'trainval': 7122, 'test': 766}), ('truck', {'trainval': 14777, 'test': 1647})]
-
+    args.input_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/shenzhentiaoqiao/"
+    # [('bus', 5448), ('car', 29316), ('fuzzy_plate', 16615), ('planted_plate', 1), ('plate', 7600), ('truck', 731)]
+    # [('bus', {'trainval': 4900, 'test': 548}), ('car', {'trainval': 26397, 'test': 2919}), ('fuzzy_plate', {'trainval': 15012, 'test': 1603}), ('planted_plate', {'trainval': 1, 'test': 0}), ('plate', {'trainval': 6831, 'test': 769}), ('truck', {'trainval': 675, 'test': 56})]
+    
     # 数据集：ZG_ZHJYZ_detection 加油站测试样本
-    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
     # 2MB: [('car', 155), ('fuzzy_plate', 37), ('plate', 87), ('truck', 1)]
     # 2MH: [('bus', 7), ('car', 570), ('fuzzy_plate', 27), ('plate', 411), ('truck', 9)]
     # 5MB: [('bus', 13), ('car', 453), ('fuzzy_plate', 103), ('plate', 235), ('truck', 8)]
@@ -161,11 +164,11 @@ if __name__ == "__main__":
     args.test_file = args.input_dir + "ImageSets/Main/test.txt"
     args.statistic_dict = {'trainval': args.trainval_file, 'test': args.test_file }
 
-    # args.jpg_dir =  args.input_dir + "JPEGImages/"
-    # args.xml_dir =  args.input_dir + "XML/"
+    args.jpg_dir =  args.input_dir + "JPEGImages/"
+    args.xml_dir =  args.input_dir + "XML/"
 
-    args.jpg_dir =  args.input_dir + "SZTQ/"
-    args.xml_dir =  args.input_dir + "SZTQ_XML/"
+    # args.jpg_dir =  args.input_dir + "SZTQ/"
+    # args.xml_dir =  args.input_dir + "SZTQ_XML/"
 
     statistic_classname(args)
-    # statistic_classname_train_val_test(args)
+    statistic_classname_train_val_test(args)

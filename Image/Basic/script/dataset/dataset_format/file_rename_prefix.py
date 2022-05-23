@@ -2,11 +2,12 @@ import glob
 import os
 
 if __name__ == '__main__':
-    input_dir = "/mnt/huanyuan2/data/image/ZG_BMX_detection/yongzou_yejian/JPEGImages/4mm"
-    old_file_format = 'AHHBPS_G3444_G237'
-    new_file_format = 'AHHBPS_G3444_G237_'
-    file_type = ".jpg"
+    input_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/anhuihuaibeigaosu_02/XML/"
+    old_file_format = '卡口2'
+    new_file_format = 'kakou2_'
+    # file_type = ".jpg"
     # file_type = ".json"
+    file_type = ".xml"
 
     file_list = glob.glob(os.path.join(input_dir, '*' + file_type))
     file_list.sort()
