@@ -564,10 +564,16 @@ class CaptureApi():
                 Down_threshold = self.image_height * self.capture_line_ratio[1]
                 Up_threshold = self.image_height * self.capture_line_ratio[0]
 
-            if bbox_state_idy['state'] == 'Down' and bbox_state_idy['state_frame_num'] >= 3 and car_bottom_y > Down_threshold  and bbox_state_idy['plate_disappear_frame_num'] == 0 and \
+            # if bbox_state_idy['state'] == 'Down' and bbox_state_idy['state_frame_num'] >= 3 and car_bottom_y > Down_threshold  and bbox_state_idy['plate_disappear_frame_num'] == 0 and \
+            #         bbox_state_idy['plate_frame_num'] > self.capture_plate_frame_threshold and not bbox_state_idy['down_report_flage'] and not bbox_state_idy['continuous_lost_plate_report_Flag']:
+            #     capture_id_list.append((bbox_state_idy['id'], 'down_report_flage'))
+            # elif bbox_state_idy['state'] == 'Up' and bbox_state_idy['state_frame_num'] >= 3 and car_bottom_y < Up_threshold and bbox_state_idy['plate_disappear_frame_num'] == 0 and \
+            #         bbox_state_idy['plate_frame_num'] > self.capture_plate_frame_threshold and not bbox_state_idy['up_report_flage'] and not bbox_state_idy['continuous_lost_plate_report_Flag']:
+            #     capture_id_list.append((bbox_state_idy['id'], 'up_report_flage'))
+            if bbox_state_idy['state'] == 'Down' and bbox_state_idy['state_frame_num'] >= 3 and car_bottom_y > Down_threshold and \
                     bbox_state_idy['plate_frame_num'] > self.capture_plate_frame_threshold and not bbox_state_idy['down_report_flage'] and not bbox_state_idy['continuous_lost_plate_report_Flag']:
                 capture_id_list.append((bbox_state_idy['id'], 'down_report_flage'))
-            elif bbox_state_idy['state'] == 'Up' and bbox_state_idy['state_frame_num'] >= 3 and car_bottom_y < Up_threshold and bbox_state_idy['plate_disappear_frame_num'] == 0 and \
+            elif bbox_state_idy['state'] == 'Up' and bbox_state_idy['state_frame_num'] >= 3 and car_bottom_y < Up_threshold and \
                     bbox_state_idy['plate_frame_num'] > self.capture_plate_frame_threshold and not bbox_state_idy['up_report_flage'] and not bbox_state_idy['continuous_lost_plate_report_Flag']:
                 capture_id_list.append((bbox_state_idy['id'], 'up_report_flage'))
             elif bbox_state_idy['state'] == 'Stop' and bbox_state_idy['state_frame_num'] >= 3 and bbox_state_idy['frame_num'] > self.capture_stop_frame_threshold and bbox_state_idy['plate_disappear_frame_num'] == 0 and \
