@@ -137,7 +137,7 @@ class CaptureApi():
         self.roi_bool = True
         # 2M：16:9
         # args.roi_area = [270, 270, 1650, 1080]
-        # 5M：16:9
+        # # 5M：16:9
         self.roi_area = [0, 462, 2592, 1920]
 
         # 车牌长宽阈值
@@ -598,6 +598,7 @@ class CaptureApi():
             capture_dict = {}
             capture_dict['id'] = capture_id_idx
             capture_dict['plate_ocr'] = ''
+            capture_dict['plate_state'] = ''
             capture_dict['img_bbox_info'] = []
 
             for key, value in self.params_dict['bbox_state_container'].items():
@@ -617,29 +618,36 @@ class CaptureApi():
                         # 获得抓拍序列
                         if len(plate_ocr_np[plate_ocr_score_np > self.capture_plate_ocr_score_threshold]):
                             capture_license_palte, capture_license_palte_frame = Counter(list(plate_ocr_np[plate_ocr_score_np > self.capture_plate_ocr_score_threshold])).most_common(1)[0]
+
                             if capture_license_palte_frame >= self.capture_plate_ocr_frame_threshold:
                                 capture_from_container_list = self.find_capture_plate(bbox_state_idy['id'], capture_license_palte)
 
-                                # 抓到车牌，标志位置1
-                                if len(capture_from_container_list) and capture_flage_idx == 'down_report_flage':
-                                    bbox_state_idy['down_report_flage'] = True
+                                # 抓拍车牌
+                                if len(capture_from_container_list):
+                                    capture_dict['plate_ocr'] = capture_license_palte
+                                    capture_dict['img_bbox_info'] = capture_from_container_list
 
-                                # 抓到车牌，标志位置1
-                                if len(capture_from_container_list) and capture_flage_idx == 'up_report_flage':
-                                    bbox_state_idy['up_report_flage'] = True
+                                    # 抓到车牌，标志位置1
+                                    if capture_flage_idx == 'down_report_flage':
+                                        bbox_state_idy['down_report_flage'] = True
+                                        capture_dict['plate_state'] = 'down'
 
-                                # 抓到车牌，标志位置1
-                                if len(capture_from_container_list) and capture_flage_idx == 'outtime_report_flage':
-                                    bbox_state_idy['outtime_report_flage'] = True
+                                    # 抓到车牌，标志位置1
+                                    if capture_flage_idx == 'up_report_flage':
+                                        bbox_state_idy['up_report_flage'] = True
+                                        capture_dict['plate_state'] = 'up'
 
-                                # 抓到车牌，标志位置1
-                                if len(capture_from_container_list) and capture_flage_idx == 'continuous_lost_plate_report_Flag':
-                                    bbox_state_idy['continuous_lost_plate_report_Flag'] = True
+                                    # 抓到车牌，标志位置1
+                                    if capture_flage_idx == 'outtime_report_flage':
+                                        bbox_state_idy['outtime_report_flage'] = True
+                                        capture_dict['plate_state'] = 'outtime'
 
-                                capture_dict['plate_ocr'] = capture_license_palte
-                                capture_dict['img_bbox_info'] = capture_from_container_list
+                                    # 抓到车牌，标志位置1
+                                    if capture_flage_idx == 'continuous_lost_plate_report_Flag':
+                                        bbox_state_idy['continuous_lost_plate_report_Flag'] = True
+                                        capture_dict['plate_state'] = 'lost_plate'
 
-                                capture_result.append(capture_dict)
+                                    capture_result.append(capture_dict)
         
         return capture_result
 
