@@ -110,10 +110,10 @@ if __name__ == "__main__":
     # [('bus', {'trainval': 1632, 'test': 152}), ('car', {'trainval': 8096, 'test': 896}), ('fuzzy_plate', {'trainval': 3403, 'test': 396}), ('painted_plate', {'trainval': 349, 'test': 45}), ('plate', {'trainval': 4765, 'test': 532}), ('truck', {'trainval': 11271, 'test': 1266})]
 
     # 数据集：ZG_AHHBGS_detection，包含 car\bus\truck\plate\fuzzy_plate
-    # args.input_dir = "/yuanhuan/data/image/ZG_AHHBGS_detection/anhuihuaibeigaosu/"
-    # [('bus', 1406), ('car', 105548), ('fuzzy_plate', 30659), ('planted_plate', 363), ('plate', 7888), ('truck', 16424)]
-    # [('bus', {'trainval': 1258, 'test': 148}), ('car', {'trainval': 94584, 'test': 10964}), ('fuzzy_plate', {'trainval': 27440, 'test': 3219}), ('planted_plate', {'trainval': 329, 'test': 34}), ('plate', {'trainval': 7122, 'test': 766}), ('truck', {'trainval': 14777, 'test': 1647})]
-    args.input_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/shenzhentiaoqiao/"
+    args.input_dir = "/yuanhuan/data/image/ZG_AHHBGS_detection/anhuihuaibeigaosu/"
+    # [('bus', 1974), ('car', 108930), ('fuzzy_plate', 31471), ('planted_plate', 363), ('plate', 8109), ('truck', 16762)]
+    # [('bus', {'trainval': 1763, 'test': 211}), ('car', {'trainval': 97590, 'test': 11340}), ('fuzzy_plate', {'trainval': 28168, 'test': 3303}), ('planted_plate', {'trainval': 329, 'test': 34}), ('plate', {'trainval': 7318, 'test': 791}), ('truck', {'trainval': 15072, 'test': 1690})]
+    # args.input_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/shenzhentiaoqiao/"
     # [('bus', 5448), ('car', 29316), ('fuzzy_plate', 16615), ('planted_plate', 1), ('plate', 7600), ('truck', 731)]
     # [('bus', {'trainval': 4900, 'test': 548}), ('car', {'trainval': 26397, 'test': 2919}), ('fuzzy_plate', {'trainval': 15012, 'test': 1603}), ('planted_plate', {'trainval': 1, 'test': 0}), ('plate', {'trainval': 6831, 'test': 769}), ('truck', {'trainval': 675, 'test': 56})]
     
