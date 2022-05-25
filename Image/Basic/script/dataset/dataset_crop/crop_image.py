@@ -10,6 +10,7 @@ def crop_image(args):
     jpg_list = np.array(os.listdir(args.jpg_dir))
     jpg_list = jpg_list[[jpg.endswith('.jpg') for jpg in jpg_list]]
     jpg_list = jpg_list[[os.path.exists(os.path.join(args.xml_dir, jpg.replace(".jpg", ".xml"))) for jpg in jpg_list]]
+    jpg_list.sort()
 
     for idx in tqdm(range(len(jpg_list))):
         jpg_apth = os.path.join(args.jpg_dir, jpg_list[idx])
@@ -45,7 +46,14 @@ def crop_image(args):
                 if not os.path.exists( os.path.dirname(output_img_path) ):
                     os.makedirs( os.path.dirname(output_img_path) )
 
-                cv2.imwrite(output_img_path, crop_img)
+                # continue
+                if os.path.exists( output_img_path ):
+                    continue
+                
+                try:
+                    cv2.imwrite(output_img_path, crop_img)
+                except:
+                    print(output_img_path)
                 idy += 1
 
 

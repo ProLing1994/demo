@@ -3,6 +3,7 @@ from tkinter import Image
 import cv2
 import numpy as np
 import os
+import pandas as pd
 import sys 
 from tqdm import tqdm
 
@@ -23,6 +24,9 @@ def inference_video(args):
     video_list = np.array(os.listdir(args.video_dir))
     video_list = video_list[[video.endswith(args.suffix) for video in video_list]]
     video_list.sort()
+
+    # csv init 
+    csv_list = []
 
     for idx in tqdm(range(len(video_list))):
         video_path = os.path.join(args.video_dir, video_list[idx])
@@ -58,47 +62,74 @@ def inference_video(args):
             # capture_result：抓拍结果
             bbox_info_list, capture_line, capture_id_list, capture_result = capture_api.run(img, frame_idx)
 
-            # crop license plate
-            for idy in range(len(bbox_info_list)):
-                bbox_info_idy = bbox_info_list[idy]
-                plate_ocr_idy = bbox_info_idy['plate_ocr']
+            # 是否保存车牌检测框
+            if args.write_plate_crop_bool:
+                # crop license plate
+                for idy in range(len(bbox_info_list)):
+                    bbox_info_idy = bbox_info_list[idy]
+                    plate_ocr_idy = bbox_info_idy['plate_ocr']
+                    
+                    if bbox_info_idy['plate_crop_bool']:
+                        # car
+                        crop_img = img[bbox_info_idy['plate_loc'][1]:bbox_info_idy['plate_loc'][3], bbox_info_idy['plate_loc'][0]:bbox_info_idy['plate_loc'][2]]
+                        output_crop_img_path = os.path.join(args.output_video_dir, 'plate_crop', video_list[idx].replace(args.suffix, ''), '{}_{}.jpg'.format(plate_ocr_idy, frame_idx))
+                        create_folder(os.path.dirname(output_crop_img_path))
+                        cv2.imwrite(output_crop_img_path, crop_img)
+
+            # 是否保存每一帧结果
+            if args.write_result_per_frame_bool:
+                # draw bbox
+                img = draw_bbox_info(img, bbox_info_list, capture_id_list, mode='ltrb')
+                img = draw_capture_line(img, capture_line, mode='ltrb')
+
+                output_img_path = os.path.join(args.output_video_dir, video_list[idx].replace(args.suffix, ''), video_list[idx].replace(args.suffix, '_{}.jpg'.format(frame_idx)))
+                create_folder(os.path.dirname(output_img_path))
+                cv2.imwrite(output_img_path, img)
+
+            # 是否保存抓拍结果
+            if args.write_capture_crop_bool:
+                # crop capture result
+                for idy in range(len(capture_result)):
+                    capture_result_idy = capture_result[idy]
+                    id_idy = capture_result_idy['id']
+                    plate_ocr_idy = capture_result_idy['plate_ocr']
+
+                    for idz in range(len(capture_result_idy['img_bbox_info'])):
+                        img_bbox_info_idz = capture_result_idy['img_bbox_info'][idz]
+                        img_idz = img_bbox_info_idz['img']
+                        bbox_info_idz = img_bbox_info_idz['bbox_info']
+                        bbox_loc = [bbox_info['loc'] for bbox_info in bbox_info_idz if bbox_info['id'] == id_idy][0]
+                        bbox_crop = img_idz[max( 0, bbox_loc[1] ): min( int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)), bbox_loc[3] ), max( 0, bbox_loc[0] ): min( int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), bbox_loc[2] )]
+
+                        # 保存捕获结果
+                        output_capture_path = os.path.join(args.output_video_dir, 'capture', video_list[idx].replace(args.suffix, ''), '{}_{}_{}.jpg'.format(frame_idx, plate_ocr_idy, idz))
+                        create_folder(os.path.dirname(output_capture_path))
+                        cv2.imwrite(output_capture_path, bbox_crop)
+
+            # 是否保存日志
+            if args.write_csv_bool:
                 
-                if bbox_info_idy['plate_crop_bool']:
-                    # car
-                    crop_img = img[bbox_info_idy['plate_loc'][1]:bbox_info_idy['plate_loc'][3], bbox_info_idy['plate_loc'][0]:bbox_info_idy['plate_loc'][2]]
-                    output_crop_img_path = os.path.join(args.output_video_dir, 'plate_crop', video_list[idx].replace(args.suffix, ''), '{}_{}.jpg'.format(plate_ocr_idy, frame_idx))
-                    create_folder(os.path.dirname(output_crop_img_path))
-                    cv2.imwrite(output_crop_img_path, crop_img)
+                for idy in range(len(capture_result)):
+                    csv_dict = {}
 
-            # draw bbox
-            img = draw_bbox_info(img, bbox_info_list, capture_id_list, mode='ltrb')
-            img = draw_capture_line(img, capture_line, mode='ltrb')
+                    csv_dict['name'] = video_list[idx].replace(args.suffix, '')
+                    csv_dict['frame_id'] = frame_idx
+                    capture_result_idy = capture_result[idy]
+                    id_idy = capture_result_idy['id']
+                    csv_dict['plate'] = capture_result_idy['plate_ocr']
+                    csv_dict['plate_state'] = capture_result_idy['plate_state']
+                    csv_dict['plate_times'] = len(capture_result_idy['img_bbox_info'])
 
-            output_img_path = os.path.join(args.output_video_dir, video_list[idx].replace(args.suffix, ''), video_list[idx].replace(args.suffix, '_{}.jpg'.format(frame_idx)))
-            create_folder(os.path.dirname(output_img_path))
-            cv2.imwrite(output_img_path, img)
-
-            # crop capture result
-            for idy in range(len(capture_result)):
-                capture_result_idy = capture_result[idy]
-                id_idy = capture_result_idy['id']
-                plate_ocr_idy = capture_result_idy['plate_ocr']
-
-                for idz in range(len(capture_result_idy['img_bbox_info'])):
-                    img_bbox_info_idz = capture_result_idy['img_bbox_info'][idz]
-                    img_idz = img_bbox_info_idz['img']
-                    bbox_info_idz = img_bbox_info_idz['bbox_info']
-                    bbox_loc = [bbox_info['loc'] for bbox_info in bbox_info_idz if bbox_info['id'] == id_idy][0]
-                    bbox_crop = img_idz[max( 0, bbox_loc[1] ): min( int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)), bbox_loc[3] ), max( 0, bbox_loc[0] ): min( int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), bbox_loc[2] )]
-
-                    # 保存捕获结果
-                    output_capture_path = os.path.join(args.output_video_dir, 'capture', video_list[idx].replace(args.suffix, ''), '{}_{}_{}.jpg'.format(frame_idx, plate_ocr_idy, idz))
-                    create_folder(os.path.dirname(output_capture_path))
-                    cv2.imwrite(output_capture_path, bbox_crop)
+                    csv_list.append(csv_dict)
 
             frame_idx += 1
 
             tqdm.write("{}: {}".format(video_path, str(frame_idx)))
+    
+    # 是否保存日志
+    if args.write_csv_bool:
+        csv_pd = pd.DataFrame(csv_list, columns=['name', 'frame_id', 'plate', 'plate_state', 'plate_times'])
+        csv_pd.to_csv(os.path.join(args.output_video_dir, 'capture.csv'), index=False, encoding="utf_8_sig")
 
 
 def main():
@@ -145,8 +176,8 @@ def main():
     # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ/264原始视频/5M_16mm_16M_白_0424/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ/264原始视频/5M_16mm_6M_白_0506/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ/264原始视频/5M_12mm_6M_白_0506/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ/264原始视频/5M_16mm_16M_白_8m_20m_60km_0518/"
-    args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ/264原始视频/5M_12mm_16M_白_8m_20m_60km_0518/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ/264原始视频/5M_12mm_16M_白_8m_20m_60km_0518/"
+    args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ/264原始视频/5M_16mm_16M_白_8m_20m_60km_0518/"
     args.output_video_dir = "/home/huanyuan/temp/pc_车牌抓拍实验_车辆状态优化_模型迭代更新_版本0430/5M_12mm_16M_白_8m_20m_60km_0518_叠加及抓拍结果/"
     # args.output_video_dir = "/home/huanyuan/temp/test/"
     args.suffix = '.avi'
@@ -154,6 +185,15 @@ def main():
     # args.video_dir = "/mnt/huanyuan/test/avi/"
     # args.output_video_dir = "/home/huanyuan/temp/test/avi_capture/"
     # args.suffix = '.avi'
+
+    # 是否保存每一帧结果
+    args.write_result_per_frame_bool = True
+    # 是否保存抓拍结果
+    args.write_capture_crop_bool = True
+    # 是否保存车牌检测框
+    args.write_plate_crop_bool = False       
+    # 是否保存日志
+    args.write_csv_bool = True
 
     inference_video(args)
 

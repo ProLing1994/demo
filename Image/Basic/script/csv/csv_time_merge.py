@@ -45,8 +45,8 @@ def main():
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.csv_path = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ/264原始视频/5M_16mm_16M_白_8m_20m_60km_1800_1820.csv"
-    args.out_csv_path = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ/264原始视频/5M_16mm_16M_白_8m_20m_60km_1800_1820_time_merge.csv"
+    args.csv_path = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS/原视频结果/5M_12mm_16M_卡口1_0517_1000_1200_原视频结果.csv"
+    args.out_csv_path = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_AHHBGS/原视频结果/5M_12mm_16M_卡口1_0517_1000_1200_原视频结果_time_merge.csv"
 
     # 截取视频段，前后扩展时间
     args.time_shift_s = 3
