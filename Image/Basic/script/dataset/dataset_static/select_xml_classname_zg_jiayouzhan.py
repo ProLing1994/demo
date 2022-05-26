@@ -111,39 +111,17 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
     
-    ######################################
-    # Annotations_CarBusTruckLicenseplate
-    # 方案一：利用 cross data training，生成 Annotations_CarBusTruckLicenseplate
-    # 正样本：清晰车牌，负样本：模糊车牌
-    # 注：忽略小于10个像素的数据
-    ######################################
-    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
-    # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_5M/"
-    # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
-    args.input_dir = "/yuanhuan/data/image/ZG_AHHBGS_detection/anhuihuaibeigaosu/"
-    # args.input_dir = "/yuanhuan/data/image/ZG_AHHBGS_detection/shenzhentiaoqiao/"
-    args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
-    args.set_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate"]
-    args.finnal_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
-
-    # 判断大小车牌
-    args.plate_list = ['plate', "fuzzy_plate"]
-    args.plate_height_threshold = 10
-    args.plate_ignore_name = "license_plate_ignore"
-
-    # 标注数据添加了叠加信息，判断是否落入 roi ignore 区域
-    # args.roi_ignore_plate_bbox = [[570, 51, 1165, 97], [1761, 47, 1920, 101], [57, 983, 387, 1049]]
-    args.roi_ignore_plate_bbox = []
-    args.roi_ignore_plate_name = "roi_ignore_plate"
-
-    args.jpg_dir =  args.input_dir + "JPEGImages/"
-    args.xml_dir =  args.input_dir + "XML/"
-    args.output_xml_dir =  args.input_dir + "Annotations_CarBusTruckLicenseplate/"
-
     # ######################################
-    # # 测试集：
+    # # Annotations_CarBusTruckLicenseplate
+    # # 方案一：利用 cross data training，生成 Annotations_CarBusTruckLicenseplate
+    # # 正样本：清晰车牌，负样本：模糊车牌
+    # # 注：忽略小于10个像素的数据
     # ######################################
-    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
+    # # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
+    # # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_5M/"
+    # # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_AHHBGS_detection/anhuihuaibeigaosu/"
+    # # args.input_dir = "/yuanhuan/data/image/ZG_AHHBGS_detection/shenzhentiaoqiao/"
     # args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
     # args.set_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate"]
     # args.finnal_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
@@ -154,29 +132,21 @@ if __name__ == "__main__":
     # args.plate_ignore_name = "license_plate_ignore"
 
     # # 标注数据添加了叠加信息，判断是否落入 roi ignore 区域
+    # # args.roi_ignore_plate_bbox = [[570, 51, 1165, 97], [1761, 47, 1920, 101], [57, 983, 387, 1049]]
     # args.roi_ignore_plate_bbox = []
     # args.roi_ignore_plate_name = "roi_ignore_plate"
 
-    # args.jpg_dir =  args.input_dir + "SZTQ/"
-    # args.xml_dir =  args.input_dir + "SZTQ_XML/"
-    # args.output_xml_dir =  args.input_dir + "SZTQ_Annotations_CarBusTruckLicenseplate"
-
-    select_classname(args)
+    # args.jpg_dir =  args.input_dir + "JPEGImages/"
+    # args.xml_dir =  args.input_dir + "XML/"
+    # args.output_xml_dir =  args.input_dir + "Annotations_CarBusTruckLicenseplate/"
 
     ######################################
-    # Annotations_CarBusTruckLicenseplate_w_fuzzy
-    # 方案二：只要是车牌都检测出来，通过 finetune 的方式训练
-    # 正样本：清晰车牌 & 模糊车牌
-    # 注：忽略小于10个像素的数据
+    # 测试集：
     ######################################
-    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
-    # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_5M/"
-    # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
-    args.input_dir = "/yuanhuan/data/image/ZG_AHHBGS_detection/anhuihuaibeigaosu/"
-    # args.input_dir = "/yuanhuan/data/image/ZG_AHHBGS_detection/shenzhentiaoqiao/"
+    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
     args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
-    args.set_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate"]
-    args.finnal_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
+    args.set_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate"]
+    args.finnal_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
 
     # 判断大小车牌
     args.plate_list = ['plate', "fuzzy_plate"]
@@ -184,18 +154,26 @@ if __name__ == "__main__":
     args.plate_ignore_name = "license_plate_ignore"
 
     # 标注数据添加了叠加信息，判断是否落入 roi ignore 区域
-    # args.roi_ignore_plate_bbox = [[570, 51, 1165, 97], [1761, 47, 1920, 101], [57, 983, 387, 1049]]
     args.roi_ignore_plate_bbox = []
     args.roi_ignore_plate_name = "roi_ignore_plate"
 
-    args.jpg_dir =  args.input_dir + "JPEGImages/"
-    args.xml_dir =  args.input_dir + "XML/"
-    args.output_xml_dir =  args.input_dir + "Annotations_CarBusTruckLicenseplate_w_fuzzy/"
+    args.jpg_dir =  args.input_dir + "TXSDFX_c/"
+    args.xml_dir =  args.input_dir + "TXSDFX_c_XML/"
+    args.output_xml_dir =  args.input_dir + "TXSDFX_c_Annotations_CarBusTruckLicenseplate"
+
+    select_classname(args)
 
     # ######################################
-    # # 测试集：
+    # # Annotations_CarBusTruckLicenseplate_w_fuzzy
+    # # 方案二：只要是车牌都检测出来，通过 finetune 的方式训练
+    # # 正样本：清晰车牌 & 模糊车牌
+    # # 注：忽略小于10个像素的数据
     # ######################################
-    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
+    # # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
+    # # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_5M/"
+    # # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_AHHBGS_detection/anhuihuaibeigaosu/"
+    # # args.input_dir = "/yuanhuan/data/image/ZG_AHHBGS_detection/shenzhentiaoqiao/"
     # args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
     # args.set_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate"]
     # args.finnal_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
@@ -206,48 +184,48 @@ if __name__ == "__main__":
     # args.plate_ignore_name = "license_plate_ignore"
 
     # # 标注数据添加了叠加信息，判断是否落入 roi ignore 区域
+    # # args.roi_ignore_plate_bbox = [[570, 51, 1165, 97], [1761, 47, 1920, 101], [57, 983, 387, 1049]]
     # args.roi_ignore_plate_bbox = []
     # args.roi_ignore_plate_name = "roi_ignore_plate"
 
-    # args.jpg_dir =  args.input_dir + "SZTQ/"
-    # args.xml_dir =  args.input_dir + "SZTQ_XML/"
-    # args.output_xml_dir =  args.input_dir + "SZTQ_Annotations_CarBusTruckLicenseplate_w_fuzzy/"
-
-    select_classname(args)
+    # args.jpg_dir =  args.input_dir + "JPEGImages/"
+    # args.xml_dir =  args.input_dir + "XML/"
+    # args.output_xml_dir =  args.input_dir + "Annotations_CarBusTruckLicenseplate_w_fuzzy/"
 
     ######################################
-    # 测试方案一：高度大于阈值（24）车牌
-    # 正样本：清晰车牌 & 模糊车牌
-    # 该测试方案存在的问题：标签不统一，高度阈值 24 看似是一个定值，但标注过程中存在人为偏差
-    # 该方案：测试 高度大于阈值（24）且 清晰 & 模糊 车牌的召回率
+    # 测试集：
     ######################################
-    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
-    # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_5M/"
-    # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
-    args.input_dir = "/yuanhuan/data/image/ZG_AHHBGS_detection/anhuihuaibeigaosu/"
-    # args.input_dir = "/yuanhuan/data/image/ZG_AHHBGS_detection/shenzhentiaoqiao/"
+    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
     args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
     args.set_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate"]
     args.finnal_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
 
     # 判断大小车牌
     args.plate_list = ['plate', "fuzzy_plate"]
-    args.plate_height_threshold = 24
+    args.plate_height_threshold = 10
     args.plate_ignore_name = "license_plate_ignore"
 
     # 标注数据添加了叠加信息，判断是否落入 roi ignore 区域
-    # args.roi_ignore_plate_bbox = [[570, 51, 1165, 97], [1761, 47, 1920, 101], [57, 983, 387, 1049]]
     args.roi_ignore_plate_bbox = []
     args.roi_ignore_plate_name = "roi_ignore_plate"
 
-    args.jpg_dir =  args.input_dir + "JPEGImages/"
-    args.xml_dir =  args.input_dir + "XML/"
-    args.output_xml_dir =  args.input_dir + "Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height/"
+    args.jpg_dir =  args.input_dir + "TXSDFX_c/"
+    args.xml_dir =  args.input_dir + "TXSDFX_c_XML/"
+    args.output_xml_dir =  args.input_dir + "TXSDFX_c_Annotations_CarBusTruckLicenseplate_w_fuzzy/"
+
+    select_classname(args)
 
     # ######################################
-    # # 测试集：
+    # # 测试方案一：高度大于阈值（24）车牌
+    # # 正样本：清晰车牌 & 模糊车牌
+    # # 该测试方案存在的问题：标签不统一，高度阈值 24 看似是一个定值，但标注过程中存在人为偏差
+    # # 该方案：测试 高度大于阈值（24）且 清晰 & 模糊 车牌的召回率
     # ######################################
-    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
+    # # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
+    # # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_5M/"
+    # # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_AHHBGS_detection/anhuihuaibeigaosu/"
+    # # args.input_dir = "/yuanhuan/data/image/ZG_AHHBGS_detection/shenzhentiaoqiao/"
     # args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
     # args.set_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate"]
     # args.finnal_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
@@ -258,47 +236,47 @@ if __name__ == "__main__":
     # args.plate_ignore_name = "license_plate_ignore"
 
     # # 标注数据添加了叠加信息，判断是否落入 roi ignore 区域
+    # # args.roi_ignore_plate_bbox = [[570, 51, 1165, 97], [1761, 47, 1920, 101], [57, 983, 387, 1049]]
     # args.roi_ignore_plate_bbox = []
     # args.roi_ignore_plate_name = "roi_ignore_plate"
 
-    # args.jpg_dir =  args.input_dir + "SZTQ/"
-    # args.xml_dir =  args.input_dir + "SZTQ_XML/"
-    # args.output_xml_dir =  args.input_dir + "SZTQ_Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height"
+    # args.jpg_dir =  args.input_dir + "JPEGImages/"
+    # args.xml_dir =  args.input_dir + "XML/"
+    # args.output_xml_dir =  args.input_dir + "Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height/"
 
-    select_classname(args)
-
-    #####################################
-    # 测试方案二：高度大于阈值（24）车牌
-    # 正样本：清晰车牌
-    # 该方案：测试 高度大于阈值（24）且 清晰 车牌的召回率
-    #####################################
-    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
-    # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_5M/"
-    # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
-    args.input_dir = "/yuanhuan/data/image/ZG_AHHBGS_detection/anhuihuaibeigaosu/"
-    # args.input_dir = "/yuanhuan/data/image/ZG_AHHBGS_detection/shenzhentiaoqiao/"
+    ######################################
+    # 测试集：
+    ######################################
+    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
     args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
-    args.set_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate"]
-    args.finnal_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
+    args.set_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate"]
+    args.finnal_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
 
     # 判断大小车牌
-    args.plate_list = ['plate']
+    args.plate_list = ['plate', "fuzzy_plate"]
     args.plate_height_threshold = 24
     args.plate_ignore_name = "license_plate_ignore"
 
     # 标注数据添加了叠加信息，判断是否落入 roi ignore 区域
-    # args.roi_ignore_plate_bbox = [[570, 51, 1165, 97], [1761, 47, 1920, 101], [57, 983, 387, 1049]]
     args.roi_ignore_plate_bbox = []
     args.roi_ignore_plate_name = "roi_ignore_plate"
 
-    args.jpg_dir =  args.input_dir + "JPEGImages/"
-    args.xml_dir =  args.input_dir + "XML/"
-    args.output_xml_dir =  args.input_dir + "Annotations_CarBusTruckLicenseplate_w_height/"
+    args.jpg_dir =  args.input_dir + "TXSDFX_c/"
+    args.xml_dir =  args.input_dir + "TXSDFX_c_XML/"
+    args.output_xml_dir =  args.input_dir + "TXSDFX_c_Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height"
 
-    # ######################################
-    # # 测试集：
-    # ######################################
-    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
+    select_classname(args)
+
+    # #####################################
+    # # 测试方案二：高度大于阈值（24）车牌
+    # # 正样本：清晰车牌
+    # # 该方案：测试 高度大于阈值（24）且 清晰 车牌的召回率
+    # #####################################
+    # # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
+    # # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_5M/"
+    # # args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_AHHBGS_detection/anhuihuaibeigaosu/"
+    # # args.input_dir = "/yuanhuan/data/image/ZG_AHHBGS_detection/shenzhentiaoqiao/"
     # args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
     # args.set_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate"]
     # args.finnal_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
@@ -309,11 +287,33 @@ if __name__ == "__main__":
     # args.plate_ignore_name = "license_plate_ignore"
 
     # # 标注数据添加了叠加信息，判断是否落入 roi ignore 区域
+    # # args.roi_ignore_plate_bbox = [[570, 51, 1165, 97], [1761, 47, 1920, 101], [57, 983, 387, 1049]]
     # args.roi_ignore_plate_bbox = []
     # args.roi_ignore_plate_name = "roi_ignore_plate"
 
-    # args.jpg_dir =  args.input_dir + "SZTQ/"
-    # args.xml_dir =  args.input_dir + "SZTQ_XML/"
-    # args.output_xml_dir =  args.input_dir + "SZTQ_Annotations_CarBusTruckLicenseplate_w_height"
+    # args.jpg_dir =  args.input_dir + "JPEGImages/"
+    # args.xml_dir =  args.input_dir + "XML/"
+    # args.output_xml_dir =  args.input_dir + "Annotations_CarBusTruckLicenseplate_w_height/"
+
+    ######################################
+    # 测试集：
+    ######################################
+    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
+    args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
+    args.set_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate"]
+    args.finnal_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
+
+    # 判断大小车牌
+    args.plate_list = ['plate']
+    args.plate_height_threshold = 24
+    args.plate_ignore_name = "license_plate_ignore"
+
+    # 标注数据添加了叠加信息，判断是否落入 roi ignore 区域
+    args.roi_ignore_plate_bbox = []
+    args.roi_ignore_plate_name = "roi_ignore_plate"
+
+    args.jpg_dir =  args.input_dir + "TXSDFX_c/"
+    args.xml_dir =  args.input_dir + "TXSDFX_c_XML/"
+    args.output_xml_dir =  args.input_dir + "TXSDFX_c_Annotations_CarBusTruckLicenseplate_w_height"
 
     select_classname(args)
