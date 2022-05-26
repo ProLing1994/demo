@@ -54,14 +54,14 @@ def draw_detection_result(img, bboxes, mode='xywh', color=None):
                 img = cv_plot_rectangle(img, box, mode=mode, color=color)
     return img
 
-def draw_bbox_info(img, bbox_info, capture_id_list, mode='xywh'):
+def draw_bbox_info(img, bbox_info, capture_dict, mode='xywh'):
 
     for idx in range(len(bbox_info)):
         bbox_info_idx = bbox_info[idx]
         
         capture_bool = False
-        for idy in range(len(capture_id_list)):
-            if bbox_info_idx['id'] == capture_id_list[idy][0]:
+        for idy, _ in capture_dict.items():
+            if bbox_info_idx['id'] == idy:
                 capture_bool = True
 
         # car
