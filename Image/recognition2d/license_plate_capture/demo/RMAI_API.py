@@ -628,8 +628,9 @@ class CaptureApi():
                     if car_bottom_y > Middle_threshold:
                         if bbox_state_idy['plate_disappear_frame_num'] == 0 and bbox_state_idy['plate_frame_num'] > self.capture_plate_frame_threshold:
                             middle_flage = True            # 此时车辆行驶过中线，处于需要报警状态
-                        if bbox_state_idy['plate_disappear_frame_num'] > self.capture_plate_disappear_frame_threshold and bbox_state_idy['plate_frame_num'] > self.capture_plate_frame_threshold:
-                            continuous_lost_plate_flage = True
+                        # 车牌遮挡逻辑存在漏洞，这里不进行车牌遮挡报警
+                        # if bbox_state_idy['plate_disappear_frame_num'] > self.capture_plate_disappear_frame_threshold and bbox_state_idy['plate_frame_num'] > self.capture_plate_frame_threshold:
+                        #     continuous_lost_plate_flage = True
             # 如果车辆向上行驶，bbox_state_idy['state_frame_num'] 条件用于避免刚进 ROI 或者车辆静止状态下的误判
             elif bbox_state_idy['state'] == 'Up' and bbox_state_idy['state_frame_num'] >= 3:
                 if car_bottom_y < Up_threshold and bbox_state_idy['plate_frame_num'] > self.capture_plate_frame_threshold:
@@ -638,8 +639,9 @@ class CaptureApi():
                     if car_bottom_y < Middle_threshold:
                         if bbox_state_idy['plate_disappear_frame_num'] == 0 and bbox_state_idy['plate_frame_num'] > self.capture_plate_frame_threshold:
                             middle_flage = True            # 此时车辆行驶过中线，处于需要报警状态
-                        if bbox_state_idy['plate_disappear_frame_num'] > self.capture_plate_disappear_frame_threshold and bbox_state_idy['plate_frame_num'] > self.capture_plate_frame_threshold:
-                            continuous_lost_plate_flage = True
+                        # 车牌遮挡逻辑存在漏洞，这里不进行车牌遮挡报警
+                        # if bbox_state_idy['plate_disappear_frame_num'] > self.capture_plate_disappear_frame_threshold and bbox_state_idy['plate_frame_num'] > self.capture_plate_frame_threshold:
+                        #     continuous_lost_plate_flage = True
             elif bbox_state_idy['state'] == 'Stop' and bbox_state_idy['state_frame_num'] >= 3:
                 if bbox_state_idy['stop_frame_num'] > self.capture_stop_frame_num_threshold:
                     if bbox_state_idy['plate_disappear_frame_num'] == 0 and bbox_state_idy['plate_frame_num'] > self.capture_plate_frame_threshold:
