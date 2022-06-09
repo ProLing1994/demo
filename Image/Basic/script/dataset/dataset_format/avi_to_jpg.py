@@ -37,7 +37,7 @@ def avi_to_jpg(args):
                 break         
 
             if frame_idx % args.frame_strp == 0:
-                output_img_path = os.path.join(args.output_video_dir, video_list[idx].replace(args.suffix, ''), video_list[idx].replace(args.suffix, '_{}.jpg'.format(frame_idx)))
+                output_img_path = os.path.join(args.output_video_dir, video_list[idx].replace(args.suffix, ''), video_list[idx].replace(args.suffix, '_{:0>5d}.jpg'.format(frame_idx)))
                 create_folder(os.path.dirname(output_img_path))
                 cv2.imwrite(output_img_path, img)
 
@@ -49,10 +49,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_TQ/264原始视频/5M_16mm_16M_白_0424/"
-    args.output_video_dir = "/home/huanyuan/temp/jpg"
+    args.video_dir = "/mnt/huanyuan2/data/image/ZG_Face/bus_face_20210120/shenzhen/"
+    args.output_video_dir = "/mnt/huanyuan2/data/image/ZG_Face/bus_face_20210120/shenzhen_jpg"
+    # args.suffix = '.mp4'
     args.suffix = '.avi'
-    args.frame_strp = 10
-    # args.frame_strp = 1
+    # args.frame_strp = 10
+    args.frame_strp = 1
 
     avi_to_jpg(args)

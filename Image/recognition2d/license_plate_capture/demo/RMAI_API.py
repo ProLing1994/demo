@@ -90,10 +90,18 @@ class CaptureApi():
         # self.ssd_car_plate_prototxt = None
         # self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-04-25-18/openvino_model/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-04-25-18.xml"
 
-        # 2022-05-14-11 eqlv2
+        # 2022-05-27-00
         # pytorch 
         self.ssd_car_plate_prototxt = None
-        self.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-05-14-11_focalloss_4class_car_bus_truck_licenseplate_eqlv2_attri_softmax_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
+        self.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-05-27-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
+        # caffe
+        # self.ssd_car_plate_prototxt = "/mnt/huanyuan/model_final/image_model/ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-05-27-00/FPN_RFB_3class_3attri_noDilation_prior.prototxt"
+        # self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-05-27-00/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-05-27-00.caffemodel"
+
+        # # 2022-05-14-11 eqlv2
+        # # pytorch 
+        # self.ssd_car_plate_prototxt = None
+        # self.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-05-14-11_focalloss_4class_car_bus_truck_licenseplate_eqlv2_attri_softmax_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
 
         self.ssd_caffe_bool = False
         self.ssd_openvino_bool = False
@@ -629,6 +637,9 @@ class CaptureApi():
                         if bbox_state_idy['plate_disappear_frame_num'] == 0 and bbox_state_idy['plate_frame_num'] > self.capture_plate_frame_threshold:
                             middle_flage = True            # 此时车辆行驶过中线，处于需要报警状态
                         # 车牌遮挡逻辑存在漏洞，这里不进行车牌遮挡报警
+                        # 目的：解决车牌遮挡情况下，车牌提前报警
+                        # 适用范围：车牌遮挡情况；车牌漏检情况
+                        # 存在问题：车牌遮挡，虽然能够完成抓拍，但同时可能导致上报错误车牌，同时造成同一个车牌号上报重复报警
                         # if bbox_state_idy['plate_disappear_frame_num'] > self.capture_plate_disappear_frame_threshold and bbox_state_idy['plate_frame_num'] > self.capture_plate_frame_threshold:
                         #     continuous_lost_plate_flage = True
             # 如果车辆向上行驶，bbox_state_idy['state_frame_num'] 条件用于避免刚进 ROI 或者车辆静止状态下的误判
@@ -640,6 +651,9 @@ class CaptureApi():
                         if bbox_state_idy['plate_disappear_frame_num'] == 0 and bbox_state_idy['plate_frame_num'] > self.capture_plate_frame_threshold:
                             middle_flage = True            # 此时车辆行驶过中线，处于需要报警状态
                         # 车牌遮挡逻辑存在漏洞，这里不进行车牌遮挡报警
+                        # 目的：解决车牌遮挡情况下，车牌提前报警
+                        # 适用范围：车牌遮挡情况；车牌漏检情况
+                        # 存在问题：车牌遮挡，虽然能够完成抓拍，但同时可能导致上报错误车牌，同时造成同一个车牌号上报重复报警
                         # if bbox_state_idy['plate_disappear_frame_num'] > self.capture_plate_disappear_frame_threshold and bbox_state_idy['plate_frame_num'] > self.capture_plate_frame_threshold:
                         #     continuous_lost_plate_flage = True
             elif bbox_state_idy['state'] == 'Stop' and bbox_state_idy['state_frame_num'] >= 3:
@@ -654,12 +668,12 @@ class CaptureApi():
             capture_dict['capture_frame_num'] = 0                               # 抓拍帧数
             capture_dict['capture_bool'] = False                                # 抓拍成功标志
 
-            if down_flage and not bbox_state_idy['down_report_flage'] and not bbox_state_idy['continuous_lost_plate_report_Flag']:
+            if down_flage and not bbox_state_idy['down_report_flage']:
                 bbox_state_idy['down_report_flage'] = True
                 bbox_state_idy['middle_report_flage'] = False
                 report_flag = True
                 capture_dict['flage'] = 'down_report_flage'
-            if up_flage and not bbox_state_idy['up_report_flage'] and not bbox_state_idy['continuous_lost_plate_report_Flag']:
+            if up_flage and not bbox_state_idy['up_report_flage']:
                 bbox_state_idy['up_report_flage'] = True
                 bbox_state_idy['middle_report_flage'] = False
                 report_flag = True
@@ -670,12 +684,12 @@ class CaptureApi():
                  bbox_state_idy['middle_report_flage'] = False
                  report_flag = True
                  capture_dict['flage'] = 'continuous_lost_plate_report_Flag'
-            if outtime_flage and not bbox_state_idy['continuous_lost_plate_report_Flag'] and not bbox_state_idy['outtime_report_flage']: 
+            if outtime_flage and not bbox_state_idy['outtime_report_flage']: 
                 bbox_state_idy['outtime_report_flage'] = True
                 bbox_state_idy['middle_report_flage'] = False
                 report_flag = True
                 capture_dict['flage'] = 'outtime_report_flage'
-            if middle_flage and not bbox_state_idy['middle_report_flage'] and not bbox_state_idy['continuous_lost_plate_report_Flag'] and not bbox_state_idy['outtime_report_flage']:
+            if middle_flage and not bbox_state_idy['middle_report_flage']:
                 bbox_state_idy['middle_report_flage'] = True
 
             if report_flag:

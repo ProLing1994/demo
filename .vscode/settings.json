@@ -89,4 +89,7 @@
     "python.autoComplete.extraPaths": [
         "/home/huanyuan/code/demo",
     ],
+    "python.analysis.extraPaths": [
+        "/home/huanyuan/code/demo"
+    ],
 }
