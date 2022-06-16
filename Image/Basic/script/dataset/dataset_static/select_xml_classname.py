@@ -104,21 +104,33 @@ if __name__ == "__main__":
     # args.finnal_name_list = ["car", "bicycle", "motorcycle", "person", "person_o", "neg"]
 
     # # RM_ADAS_AllInOne
-    # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone/"
+    # # 类别: bicycle、motorcycle 表示没人骑行的数据，这里不参与训练
+    # # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone/"
+    # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_new/"
     # args.select_name_list = ["car", "bus", "truck", "bicyclist", "motorcyclist", "person", "person_o", "preson"]
     # args.set_name_list = ["car", "bus", "truck", "bicycle", "motorcycle", "person", "person_o", "person"]
     # args.finnal_name_list = ["car", "bus", "truck", "bicycle", "motorcycle", "person", "person_o", "neg"]
 
-    # daminghu/yongzou_night_hongwai
-    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/daminghu/"
-    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/yongzou_night_hongwai/"
-    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/anquandao/"
-    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/anquandao_night_hongwai/"
-    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/shandongyingzikou/"
-    args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/shandongyingzikou_night_diguangzhao/"
-    args.select_name_list = ["car", "bicycle", "motorcycle", "non-motorized", "non-motorized ", "preson", "head", "helmet"]
-    args.set_name_list = ["car", "bicycle", "motorcycle", "non-motorized", "non-motorized", "person", "head", "helmet"]
-    args.finnal_name_list = ["car", "bicycle", "motorcycle", "non-motorized", "person", "head", "helmet", "neg"]
+    # RM_BSD
+    # 类别: bicycle、motorcycle 表示没人骑行的数据，这里不参与训练
+    args.input_dir = "/yuanhuan/data/image/RM_BSD/bsd_20220425_20220512/"
+    args.select_name_list = ["car", "bus", "truck", "bicyclist", "motorcyclist", "person"]
+    args.set_name_list = ["car", "bus", "truck", "bicycle", "motorcycle", "person"]
+    args.finnal_name_list = ["car", "bus", "truck", "bicycle", "motorcycle", "person", "neg"]
+
+    # # ZG_BMX_detection
+    # # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/daminghu/"
+    # # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/shandongyingzikou/"
+    # # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/shandongyingzikou_night_hongwai/"
+    # # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/yongzou_night_hongwai/"
+    # # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/shenzhenlukou/"
+    # # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/shenzhenlukou_night_hongwai/"
+    # # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/shenzhenlukou_night_diguangzhao/"
+    # # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/rongheng/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/rongheng_night_hongwai/"
+    # args.select_name_list = ["car", "bicycle", "motorcycle", "non-motorized", "non-motorized ", "person", "head", "helmet"]
+    # args.set_name_list = ["car", "bicycle", "motorcycle", "non-motorized", "non-motorized", "person", "head", "helmet"]
+    # args.finnal_name_list = ["car", "bicycle", "motorcycle", "non-motorized", "person", "head", "helmet", "neg"]
 
     args.jpg_dir =  args.input_dir + "JPEGImages/"
     args.xml_dir =  args.input_dir + "XML/"
@@ -155,5 +167,26 @@ if __name__ == "__main__":
     # args.xml_dir =  args.input_dir + "XML/"
     # args.output_xml_dir =  args.input_dir + "Annotations_CarLicenseplate/"
     # # args.output_xml_dir =  args.input_dir + "Annotations_CarLicenseplate_label/"
+
+    # ######################################
+    # # 清洗标签，错误标签修正
+    # ######################################
+
+    # # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu/"
+
+    # # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
+
+    # args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate", "painted_plate", "planted_plate"]
+    # args.set_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate", "painted_plate", "painted_plate"]
+    # args.finnal_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate", "painted_plate"]
+
+    # args.jpg_dir =  args.input_dir + "JPEGImages/"
+    # args.xml_dir =  args.input_dir + "XML/"
+    # args.output_xml_dir =  args.input_dir + "XML_refine/"
+
+    # # args.jpg_dir =  args.input_dir + "SZTQ/"
+    # # args.xml_dir =  args.input_dir + "SZTQ_XML/"
+    # # args.output_xml_dir =  args.input_dir + "SZTQ_XML_refine/"
 
     select_classname(args)
