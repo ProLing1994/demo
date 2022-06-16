@@ -5,8 +5,8 @@ import os
 import sys 
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Image')
-# sys.path.insert(0, '/yuanhuan/code/demo/Image')
+# sys.path.insert(0, '/home/huanyuan/code/demo/Image')
+sys.path.insert(0, '/yuanhuan/code/demo/Image')
 from Basic.script.xml.xml_write import write_xml
 
 
@@ -47,10 +47,10 @@ def json_xml(args):
         xml_bboxes = {}
         for track in annotation['shapes']:
             label = track['label']
+            type = track['type']
 
-            assert label in ['car', 'bus', 'truck', 'plate', 'fuzzy_plate', 'planted_plate']
-            if not label in ['car', 'bus', 'truck', 'plate', 'fuzzy_plate', 'planted_plate']:
-                print(label)
+            # 只捕获检测框
+            if not type == 'rectangle':
                 continue
             
             # +1 的目的：更换了标注工具，保证 xml 结果统一：
@@ -75,9 +75,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.jpg_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/20220530_新增数据/JPEGImages/"
-    args.json_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/20220530_新增数据/JPEGImages/"
-    args.xml_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/20220530_新增数据/XML/"
+    args.jpg_dir = "/yuanhuan/data/image/RM_BSD/20220425(2.0)/JPEGImages/"
+    args.json_dir = "/yuanhuan/data/image/RM_BSD/20220425(2.0)/JSON/"
+    args.xml_dir = "/yuanhuan/data/image/RM_BSD/20220425(2.0)/XML/"
 
     json_xml(args)
 

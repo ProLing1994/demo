@@ -3,6 +3,7 @@ dataset_format/file_rename_prefix.py 文件重新命名，保证无中文字符
 
 # dataset_check
 dataset_check/check_jpeg.py 检测 jpeg 格式数据完整性（需手动删除不完整数据）
+dataset_check/check_jpeg_exist.py 检测 jpeg 格式数据是否已经存在
 
 # dataset_train_test_split
 dataset_train_test_split/data_train_test_split.py 训练验证测试集划分
