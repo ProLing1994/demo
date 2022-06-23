@@ -26,13 +26,34 @@ def select_classname(args):
         
         # 标签检测和标签转换
         for object in root.findall('object'):
+            # name
             classname = str(object.find('name').text)
-            
-            for select_idx in range(0, len(args.select_name_list)):
-                if args.select_name_list[select_idx] == classname:
-                    object.find('name').text = args.set_name_list[select_idx]
-                    break
 
+            # bbox
+            bbox = object.find('bndbox')
+            pts = ['xmin', 'ymin', 'xmax', 'ymax']
+            bndbox = []
+            for i, pt in enumerate(pts):
+                cur_pt = int(float(bbox.find(pt).text)) - 1
+                bndbox.append(cur_pt)
+
+            # 检测是否在 args.select_name_list 中
+            if classname in args.select_name_list:
+                select_idx = args.select_name_list.index(classname)
+                object.find('name').text = args.set_name_list[select_idx]
+
+                # 是否过滤
+                if args.filter_bool == True:
+
+                    bbox_width = bndbox[2] - bndbox[0]
+                    bbox_height = bndbox[3] - bndbox[1]
+
+                    if classname in args.filter_select_class_list:
+                        filter_select_idx = args.filter_select_class_list.index(classname)
+
+                        if bbox_width < args.width_threshold or bbox_height < args.height_threshold:
+                            object.find('name').text = args.filter_set_class_list[filter_select_idx]
+                    
             if object.find('name').text in args.set_name_list:
                 bool_have_pos = True
         
@@ -95,28 +116,20 @@ if __name__ == "__main__":
     ######################################
     # Annotations_CarNonMotorizedPerson
     ######################################
-    # # LicensePlate
-    # args.input_dir = "/yuanhuan/data/image/LicensePlate/China/"
-    # # args.input_dir = "/yuanhuan/data/image/LicensePlate/China_6mm/"
-    # # args.input_dir = "/yuanhuan/data/image/LicensePlate/Mexico/"
-    # args.select_name_list = ["car", "bicycle", "bicycle ", "motorcycle", "person", "person_o"]
-    # args.set_name_list = ["car", "bicycle", "bicycle", "motorcycle", "person", "person_o"]
-    # args.finnal_name_list = ["car", "bicycle", "motorcycle", "person", "person_o", "neg"]
-
     # # RM_ADAS_AllInOne
     # # 类别: bicycle、motorcycle 表示没人骑行的数据，这里不参与训练
     # # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone/"
     # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_new/"
     # args.select_name_list = ["car", "bus", "truck", "bicyclist", "motorcyclist", "person", "person_o", "preson"]
-    # args.set_name_list = ["car", "bus", "truck", "bicycle", "motorcycle", "person", "person_o", "person"]
-    # args.finnal_name_list = ["car", "bus", "truck", "bicycle", "motorcycle", "person", "person_o", "neg"]
+    # args.set_name_list = ["car", "bus", "truck", "bicyclist", "motorcyclist", "person", "person_o", "person"]
+    # args.finnal_name_list = ["car", "bus", "truck", "bicyclist", "motorcyclist", "person", "person_o", "neg"]
 
     # # RM_BSD
     # # 类别: bicycle、motorcycle 表示没人骑行的数据，这里不参与训练
     # args.input_dir = "/yuanhuan/data/image/RM_BSD/bsd_20220425_20220512/"
-    # args.select_name_list = ["car", "bus", "truck", "bicyclist", "motorcyclist", "person"]
-    # args.set_name_list = ["car", "bus", "truck", "bicycle", "motorcycle", "person"]
-    # args.finnal_name_list = ["car", "bus", "truck", "bicycle", "motorcycle", "person", "neg"]
+    # args.select_name_list = ["car", "bus", "truck", "bicycle", "motorcycle", "person"]
+    # args.set_name_list = ["car", "bus", "truck", "bicyclist", "motorcyclist", "person"]
+    # args.finnal_name_list = ["car", "bus", "truck", "bicyclist", "motorcyclist", "person", "neg"]
 
     # ZG_BMX_detection
     # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/daminghu/"
@@ -127,14 +140,32 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/shenzhenlukou_night_hongwai/"
     # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/shenzhenlukou_night_diguangzhao/"
     # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/rongheng/"
-    args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/rongheng_night_hongwai/"
-    args.select_name_list = ["car", "bus", "truck", "bicyclist", "motorcyclist", "person", "head", "helmet"]
-    args.set_name_list = ["car", "bus", "truck", "bicycle", "motorcycle", "person", "head", "helmet"]
-    args.finnal_name_list = ["car", "bus", "truck", "bicycle", "motorcycle", "person", "head", "helmet", "neg"]
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/rongheng_night_hongwai/"
+    # args.select_name_list = ["car", "tricycle", "bus", "truck", "bicyclist", "motorcyclist", "person"]
+    # args.set_name_list = ["car", "car", "bus", "truck", "bicyclist", "motorcyclist", "person"]
+    # args.finnal_name_list = ["car", "car", "bus", "truck", "bicyclist", "motorcyclist", "person", "neg"]
 
-    args.jpg_dir =  args.input_dir + "JPEGImages/"
+    # 开源数据集: MOT17\MOT20
+    # args.input_dir = "/yuanhuan/data/image/Open_Source/MOT/MOT17/"
+    # args.select_name_list = ["car_bus_truck", "person"]
+    # args.set_name_list = ["car", "person", "car_o", "person_o"]
+    # args.finnal_name_list = ["car", "person", "car_o", "person_o", "neg"]
+
+    # # 开源数据集: NightOwls
+    # args.input_dir = "/yuanhuan/data/image/Open_Source/NightOwls/nightowls/"
+    # args.select_name_list = ["person", "person_o"]
+    # args.set_name_list = ["person", "person_o"]
+    # args.finnal_name_list = ["person", "person_o", "neg"]
+    
+    # 开源数据集: Cityscapes
+    args.input_dir = "/yuanhuan/data/image/Open_Source/Cityscapes/cityscapes/"
+    args.select_name_list = ["car", "caravan", "bus", "train", "truck", "trailer", "bicyclist", "motorcyclist", "person"]
+    args.set_name_list = ["car", "car", "bus", "bus", "truck", "truck", "bicyclist", "motorcyclist", "person", "car_o", "car_o", "bus_o", "bus_o", "truck_o", "truck_o", "bicyclist_o", "motorcyclist_o", "person_o"]
+    args.finnal_name_list = ["car", "bus", "truck", "bicyclist", "motorcyclist", "person", "car_o", "car_o", "bus_o", "bus_o", "truck_o", "truck_o", "bicyclist_o", "motorcyclist_o", "person_o", "neg"]
+
+    args.jpg_dir =  args.input_dir + "JPEGImages/"  
     args.xml_dir =  args.input_dir + "XML/"
-    args.output_xml_dir =  args.input_dir + "Annotations_CarNonMotorizedPerson/"
+    args.output_xml_dir =  args.input_dir + "Annotations_CarBusTruckBicyclistMotorcyclistPerson/"
 
     ######################################
     # 消融实验
@@ -188,5 +219,23 @@ if __name__ == "__main__":
     # # args.jpg_dir =  args.input_dir + "SZTQ/"
     # # args.xml_dir =  args.input_dir + "SZTQ_XML/"
     # # args.output_xml_dir =  args.input_dir + "SZTQ_XML_refine/"
+    
+    ######################################
+    # 大小阈值筛选
+    ######################################
+
+    # # args.filter_bool = False
+    # args.filter_bool = True
+
+    # # 2M
+    # # args.width_threshold = 25
+    # # args.height_threshold = 25
+
+    # # 5M
+    # args.width_threshold = 40
+    # args.height_threshold = 40
+
+    # args.filter_select_class_list = ["car", "caravan", "bus", "train", "truck", "trailer", "bicyclist", "motorcyclist", "person"]
+    # args.filter_set_class_list = ["car_o", "car_o", "bus_o", "bus_o", "truck_o", "truck_o", "bicyclist_o", "motorcyclist_o", "person_o"]
 
     select_classname(args)

@@ -29,7 +29,7 @@ def calculate_ap_all(args):
                                 'license_plate': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_' + test_name, 'results/det_test_license_plate.txt'),
                                 'car_bus_truck': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_' + test_name, 'results/det_test_car_bus_truck.txt'), 
                                 'bus_truck': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_' + test_name, 'results/det_test_bus_truck.txt'), 
-                                'non-motorized': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_' + test_name, 'results/det_test_non-motorized.txt'), 
+                                'non_motorized': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_' + test_name, 'results/det_test_non_motorized.txt'), 
                                 'person': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_' + test_name, 'results/det_test_person.txt'), 
                                 } 
 
@@ -47,7 +47,6 @@ def calculate_ap_all(args):
                                 'license_plate': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')), 'results/det_test_license_plate.txt'),
                                 'car_bus_truck': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')), 'results/det_test_car_bus_truck.txt'), 
                                 'bus_truck': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')), 'results/det_test_bus_truck.txt'), 
-                                'non-motorized': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')), 'results/det_test_non-motorized.txt'), 
                                 'person': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')), 'results/det_test_person.txt'), 
                                 } 
 
@@ -197,50 +196,50 @@ if __name__ == "__main__":
 
     # args.from_dataset_bool = True
 
-    ######################################
-    # 收集测试图像：
-    ######################################
+    # ######################################
+    # # 收集测试图像：
+    # ######################################
 
-    args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/"
+    # args.data_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/"
 
-    # args.data_list = ['jiayouzhan_test_image/2MB', 'jiayouzhan_test_image/2MH' ]
-    # args.data_list = ['jiayouzhan_test_image/5MB', 'jiayouzhan_test_image/5MH' ]
-    # args.data_list = ['jiayouzhan_test_image/SZTQ' ]
-    # args.data_list = ['jiayouzhan_test_image/SDFX_B1', 'jiayouzhan_test_image/SDFX_B2', 'jiayouzhan_test_image/SDFX_H1', 'jiayouzhan_test_image/SDFX_H2' ]
-    # args.data_list = ['jiayouzhan_test_image/TXSDFX_6', 'jiayouzhan_test_image/TXSDFX_7', 'jiayouzhan_test_image/TXSDFX_9', 'jiayouzhan_test_image/TXSDFX_c' ]
-    # args.data_list = ['jiayouzhan_test_image/AHHBAS_41a', 'jiayouzhan_test_image/AHHBAS_41c', 'jiayouzhan_test_image/AHHBAS_43c', 'jiayouzhan_test_image/AHHBAS_418' ]
-    # args.data_list = ['jiayouzhan_test_image/AHHBAS_kakou1', 'jiayouzhan_test_image/AHHBAS_kakou2', 'jiayouzhan_test_image/AHHBAS_kakou3', 'jiayouzhan_test_image/AHHBAS_kakou4' ]
-    # args.data_list = ['jiayouzhan_test_image/AHHBPS' ]
-    args.data_list = ['jiayouzhan_test_image/2MB', 'jiayouzhan_test_image/2MH', 'jiayouzhan_test_image/5MB', 'jiayouzhan_test_image/5MH',
-                      'jiayouzhan_test_image/SZTQ', 
-                      'jiayouzhan_test_image/SDFX_B1', 'jiayouzhan_test_image/SDFX_B2', 'jiayouzhan_test_image/SDFX_H1', 'jiayouzhan_test_image/SDFX_H2',
-                      'jiayouzhan_test_image/TXSDFX_6', 'jiayouzhan_test_image/TXSDFX_7', 'jiayouzhan_test_image/TXSDFX_9', 'jiayouzhan_test_image/TXSDFX_c', 
-                      'jiayouzhan_test_image/AHHBAS_41a', 'jiayouzhan_test_image/AHHBAS_41c', 'jiayouzhan_test_image/AHHBAS_43c', 'jiayouzhan_test_image/AHHBAS_418', 
-                      'jiayouzhan_test_image/AHHBAS_kakou1', 'jiayouzhan_test_image/AHHBAS_kakou2', 'jiayouzhan_test_image/AHHBAS_kakou3', 'jiayouzhan_test_image/AHHBAS_kakou4',                      
-                      'jiayouzhan_test_image/AHHBPS' ]
+    # # args.data_list = ['jiayouzhan_test_image/2MB', 'jiayouzhan_test_image/2MH' ]
+    # # args.data_list = ['jiayouzhan_test_image/5MB', 'jiayouzhan_test_image/5MH' ]
+    # # args.data_list = ['jiayouzhan_test_image/SZTQ' ]
+    # # args.data_list = ['jiayouzhan_test_image/SDFX_B1', 'jiayouzhan_test_image/SDFX_B2', 'jiayouzhan_test_image/SDFX_H1', 'jiayouzhan_test_image/SDFX_H2' ]
+    # # args.data_list = ['jiayouzhan_test_image/TXSDFX_6', 'jiayouzhan_test_image/TXSDFX_7', 'jiayouzhan_test_image/TXSDFX_9', 'jiayouzhan_test_image/TXSDFX_c' ]
+    # # args.data_list = ['jiayouzhan_test_image/AHHBAS_41a', 'jiayouzhan_test_image/AHHBAS_41c', 'jiayouzhan_test_image/AHHBAS_43c', 'jiayouzhan_test_image/AHHBAS_418' ]
+    # # args.data_list = ['jiayouzhan_test_image/AHHBAS_kakou1', 'jiayouzhan_test_image/AHHBAS_kakou2', 'jiayouzhan_test_image/AHHBAS_kakou3', 'jiayouzhan_test_image/AHHBAS_kakou4' ]
+    # # args.data_list = ['jiayouzhan_test_image/AHHBPS' ]
+    # args.data_list = ['jiayouzhan_test_image/2MB', 'jiayouzhan_test_image/2MH', 'jiayouzhan_test_image/5MB', 'jiayouzhan_test_image/5MH',
+    #                   'jiayouzhan_test_image/SZTQ', 
+    #                   'jiayouzhan_test_image/SDFX_B1', 'jiayouzhan_test_image/SDFX_B2', 'jiayouzhan_test_image/SDFX_H1', 'jiayouzhan_test_image/SDFX_H2',
+    #                   'jiayouzhan_test_image/TXSDFX_6', 'jiayouzhan_test_image/TXSDFX_7', 'jiayouzhan_test_image/TXSDFX_9', 'jiayouzhan_test_image/TXSDFX_c', 
+    #                   'jiayouzhan_test_image/AHHBAS_41a', 'jiayouzhan_test_image/AHHBAS_41c', 'jiayouzhan_test_image/AHHBAS_43c', 'jiayouzhan_test_image/AHHBAS_418', 
+    #                   'jiayouzhan_test_image/AHHBAS_kakou1', 'jiayouzhan_test_image/AHHBAS_kakou2', 'jiayouzhan_test_image/AHHBAS_kakou3', 'jiayouzhan_test_image/AHHBAS_kakou4',                      
+    #                   'jiayouzhan_test_image/AHHBPS' ]
 
-    args.cal_ap_dict = { 'car': ['car'], 
-                        'bus': ['bus'], 'truck': ['truck'], 
-                        'bus_truck': ['bus', 'truck'], 
-                        'car_bus_truck': ['car', 'bus', 'truck'], 
-                        'license_plate': ['license_plate'] }
-    # args.cal_ap_dict = { 'license_plate': ['license_plate'] }
+    # args.cal_ap_dict = { 'car': ['car'], 
+    #                     'bus': ['bus'], 'truck': ['truck'], 
+    #                     'bus_truck': ['bus', 'truck'], 
+    #                     'car_bus_truck': ['car', 'bus', 'truck'], 
+    #                     'license_plate': ['license_plate'] }
+    # # args.cal_ap_dict = { 'license_plate': ['license_plate'] }
 
-    # SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate
-    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/"
+    # # SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate
+    # # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/"
 
-    # # SSD_VGG_FPN_RFB_2022-04-25-18_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate
-    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-04-25-18_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/"
+    # # # SSD_VGG_FPN_RFB_2022-04-25-18_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate
+    # # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-04-25-18_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/"
 
-    # SSD_VGG_FPN_RFB_2022-05-27-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate
-    args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-05-27-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/"
+    # # SSD_VGG_FPN_RFB_2022-05-27-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate
+    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-05-27-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/"
 
-    # args.anno_name = 'Annotations_CarBusTruckLicenseplate_w_height'             # 高度大于 24 的 清晰车牌
-    # args.anno_name = 'Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height'     # 高度大于 24 的 清晰车牌 & 模糊车牌
-    # args.anno_name = 'Annotations_CarBusTruckLicenseplate'                      # 清晰车牌
-    args.anno_name = 'Annotations_CarBusTruckLicenseplate_w_fuzzy'              # 清晰车牌 & 模糊车牌
+    # # args.anno_name = 'Annotations_CarBusTruckLicenseplate_w_height'             # 高度大于 24 的 清晰车牌
+    # # args.anno_name = 'Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height'     # 高度大于 24 的 清晰车牌 & 模糊车牌
+    # # args.anno_name = 'Annotations_CarBusTruckLicenseplate'                      # 清晰车牌
+    # args.anno_name = 'Annotations_CarBusTruckLicenseplate_w_fuzzy'              # 清晰车牌 & 模糊车牌
 
-    args.from_dataset_bool = False
+    # args.from_dataset_bool = False
 
     # #####################################
     # # Car_Bus_Truck_Licenseplate
@@ -293,30 +292,44 @@ if __name__ == "__main__":
 
     # args.from_dataset_bool = True
 
-    # ######################################
-    # # Nonmotorized_Car_Person
-    # ######################################
-    # args.data_dir = "/yuanhuan/data/image/"
+    ######################################
+    # Nonmotorized_Car_Person
+    ######################################
+    args.data_dir = "/yuanhuan/data/image/"
 
-    # # yolox
-    # # args.data_list = ['ZG_BMX_detection/daminghu']
-    # # args.data_list = ['ZG_BMX_detection/yongzou_night_hongwai']
-    # # args.data_list = ['ZG_BMX_detection/anquandao']
-    # args.data_list = ['ZG_BMX_detection/anquandao_night_hongwai']
-    # # args.data_list = ['ZG_BMX_detection/shandongyingzikou']
-    # # args.data_list = ['ZG_BMX_detection/shandongyingzikou_night_diguangzhao']
-    # # args.data_list = ['ZG_BMX_detection/daminghu', 'ZG_BMX_detection/yongzou_night_hongwai', 'ZG_BMX_detection/anquandao', 'ZG_BMX_detection/anquandao_night_hongwai', \
-    # #                       'ZG_BMX_detection/shandongyingzikou', 'ZG_BMX_detection/shandongyingzikou_night_diguangzhao']
+    # yolox
+    # args.data_list = ['ZG_BMX_detection/daminghu']
+    # args.data_list = ['ZG_BMX_detection/shandongyingzikou']
+    # args.data_list = ['ZG_BMX_detection/shandongyingzikou_night_hongwai']
+    # args.data_list = ['ZG_BMX_detection/yongzou_night_hongwai']
+    # args.data_list = ['ZG_BMX_detection/shenzhenlukou']
+    # args.data_list = ['ZG_BMX_detection/shenzhenlukou_night_hongwai']
+    # args.data_list = ['ZG_BMX_detection/shenzhenlukou_night_diguangzhao']
+    # args.data_list = ['ZG_BMX_detection/rongheng']
+    # args.data_list = ['ZG_BMX_detection/rongheng_night_hongwai']
+    args.data_list = ['ZG_BMX_detection/daminghu', 
+                        'ZG_BMX_detection/shandongyingzikou', 
+                        'ZG_BMX_detection/shandongyingzikou_night_hongwai',
+                        'ZG_BMX_detection/yongzou_night_hongwai', 
+                        'ZG_BMX_detection/shenzhenlukou', 
+                        'ZG_BMX_detection/shenzhenlukou_night_hongwai', 
+                        'ZG_BMX_detection/shenzhenlukou_night_diguangzhao',
+                        'ZG_BMX_detection/rongheng',
+                        'ZG_BMX_detection/rongheng_night_hongwai']
 
-    # args.cal_ap_dict = {'car': ['car'], 
-    #                     'non-motorized': ['bicycle', 'motorcycle', 'non-motorized'], 
-    #                     'person': ['person'] }
+    args.cal_ap_dict = {'car_bus_truck': ['car', 'bus', 'truck'], 
+                        'non_motorized': ['bicyclist', 'motorcyclist'], 
+                        'person': ['person'] }
 
+    # yolox
     # args.model_dir = "/yuanhuan/model/image/yolox_vgg/car_non_motorized_person_yolox_model_zph/eval_epoches_24/"
 
-    # args.anno_name = 'Annotations_CarNonMotorizedPerson'                            # 车 & 非机动 & 人
+    # SSD_VGG_FPN_RFB_2022-06-20-12_focalloss_3class_car_bus_truck_non_motorized_person_ZG
+    args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-06-20-12_focalloss_3class_car_bus_truck_non_motorized_person_ZG/eval_epoches_299/"
 
-    # args.from_dataset_bool = True
+    args.anno_name = 'Annotations_CarBusTruckBicyclistMotorcyclistPerson'                            # 车 & 非机动 & 人
+
+    args.from_dataset_bool = True
 
     #####################################
     # 分割线
