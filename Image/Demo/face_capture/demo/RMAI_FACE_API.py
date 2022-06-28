@@ -77,7 +77,7 @@ class FaceCaptureApi():
         bbox_state_dict['max_socre'] = 0                                    # 最大行人得分
         bbox_state_dict['caputure_loc'] = 0                                 # 行人保存坐标
         bbox_state_dict['caputure_img'] = 0                                 # 行人保存图像
-        bbox_state_dict['captutr_bool'] = False                             # 行人抓拍标志
+        bbox_state_dict['captute_bool'] = False                             # 行人抓拍标志
 
 
         self.params_dict['bbox_state_container'] = {}                       # 状态信息容器（key: 追踪id, value: bbox_state_dict）
@@ -261,7 +261,7 @@ class FaceCaptureApi():
                 bbox_state_dict['max_socre'] = 0                                    # 最大行人得分
                 bbox_state_dict['caputure_loc'] = 0                                 # 行人保存坐标
                 bbox_state_dict['caputure_img'] = 0                                 # 行人保存图像
-                bbox_state_dict['captutr_bool'] = False                             # 行人抓拍标志
+                bbox_state_dict['captute_bool'] = False                             # 行人抓拍标志
 
                 bbox_state_dict['id'] = bbox_info_idx['id']
                 bbox_state_dict['loc'] = bbox_info_idx['loc']
@@ -297,11 +297,11 @@ class FaceCaptureApi():
             
             if ( end_bool and \
                     bbox_state_idy['max_speed'] > self.speed_threshold and \
-                    not bbox_state_idy['captutr_bool'] ) or \
+                    not bbox_state_idy['captute_bool'] ) or \
                 ( not end_bool and \
                     bbox_state_idy['disappear_frame_num'] > self.update_capture_threshold and \
                     bbox_state_idy['max_speed'] > self.speed_threshold and \
-                    not bbox_state_idy['captutr_bool']) :
+                    not bbox_state_idy['captute_bool']) :
 
                 # bbox_capture_dict
                 bbox_capture_dict = {}
@@ -315,7 +315,7 @@ class FaceCaptureApi():
                 bbox_capture_dict['frame_idx'] = bbox_state_idy['max_speed_frame_idx']
                 bbox_capture_dict['img'] = bbox_state_idy['caputure_img']
 
-                bbox_state_idy['captutr_bool'] = True
+                bbox_state_idy['captute_bool'] = True
 
                 capture_dict[bbox_capture_dict['id']] = bbox_capture_dict
 

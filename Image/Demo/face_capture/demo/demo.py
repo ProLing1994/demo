@@ -131,8 +131,8 @@ def main():
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_Face/face_test_video/原始视频/test_video/"
-    args.video_dir = "/mnt/huanyuan2/data/image/ZG_Face/face_test_video/原始视频/shenzhen_video_0625_1920_1080/"
+    args.video_dir = "/mnt/huanyuan2/data/image/ZG_Face/face_test_video/原始视频/test_video/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_Face/face_test_video/原始视频/shenzhen_video_0625_1920_1080/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZG_Face/face_test_video/原始视频/shenzhen_video_0627_1920_1080/"
     # args.p3d_video_endsname = "000003507600.avi"
     # args.face_video_endsname = "000001507600.avi"
@@ -141,8 +141,8 @@ def main():
     # args.p3d_video_endsname = "000003516600.avi"
     # args.face_video_endsname = "000001516600.avi"
 
-    # args.output_video_dir = "/home/huanyuan/temp/test_video/"
-    args.output_video_dir = "/home/huanyuan/temp/shenzhen_video_0625_1920_1080/"
+    args.output_video_dir = "/home/huanyuan/temp/test_video/"
+    # args.output_video_dir = "/home/huanyuan/temp/shenzhen_video_0625_1920_1080/"
     # args.output_video_dir = "/home/huanyuan/temp/shenzhen_video_0627_1920_1080/"
     args.suffix = '.avi'
     # args.suffix = '.mp4'

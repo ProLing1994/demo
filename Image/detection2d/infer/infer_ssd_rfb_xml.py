@@ -6,26 +6,22 @@ import sys
 import torch
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Image')
-from detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
-from Basic.script.xml.xml_write import write_xml
-
-from recognition2d.license_plate_recognition.infer.license_plate import license_palte_model_init_caffe, license_palte_crnn_recognition_caffe, license_palte_beamsearch_init, license_palte_crnn_recognition_beamsearch_caffe
-
+sys.path.insert(0, '/home/huanyuan/code/demo')
+from Image.detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
+from Image.Basic.script.xml.xml_write import write_xml
+from Image.recognition2d.license_plate_recognition.infer.lpr import LPR
 
 def model_init(args):
     # model init
     merge_class_bool = False
     car_plate_detector = SSDDetector(model_path=args.ssd_car_plate_model_path, merge_class_bool=merge_class_bool)
-    license_palte_detector = license_palte_model_init_caffe(args.plate_recognition_prototxt, args.plate_recognition_model_path)
-    license_palte_beamsearch = license_palte_beamsearch_init()
-    return (car_plate_detector, license_palte_detector, license_palte_beamsearch)
+    lpr = LPR(args.lpr_caffe_prototxt, args.lpr_caffe_model_path, args.lpr_prefix_beam_search_bool)
+    return (car_plate_detector, lpr)
 
 
 def img_detect(args, model, img):
     car_plate_detector = model[0]
-    license_palte_detector = model[1]
-    license_palte_beamsearch = model[2]
+    lpr = model[1]
 
     gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
@@ -52,7 +48,7 @@ def img_detect(args, model, img):
                 continue
 
             # greedy ocr
-            result_ocr, result_scors_list = license_palte_crnn_recognition_caffe(license_palte_detector, crop_img)
+            result_ocr, result_scors_list = lpr.run(crop_img)
 
             # ocr 阈值判断
             if np.array(result_scors_list).mean() >= args.ocr_threshold:

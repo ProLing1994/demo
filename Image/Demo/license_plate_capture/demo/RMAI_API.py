@@ -6,10 +6,10 @@ import sys
 import random
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Image')
-# sys.path.insert(0, '/yuanhuan/code/demo/Image')
-from detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
-from recognition2d.license_plate_recognition.infer.license_plate import license_palte_model_init_caffe, license_palte_crnn_recognition_caffe, license_palte_beamsearch_init, license_palte_crnn_recognition_beamsearch_caffe
+sys.path.insert(0, '/home/huanyuan/code/demo')
+# sys.path.insert(0, '/yuanhuan/code/demo')
+from Image.detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
+from Image.recognition2d.license_plate_recognition.infer.lpr import LPR
 from Image.Demo.license_plate_capture.sort.mot_sort import Sort
 
 
@@ -123,9 +123,10 @@ class CaptureApi():
         self.iou_threshold = 0.3
         
         # lincense plate reader
-        self.plate_recognition_prototxt = "/mnt/huanyuan/model_final/image_model/license_plate_recognition_moel_lxn/china_softmax.prototxt"
-        self.plate_recognition_model_path = "/mnt/huanyuan/model_final/image_model/license_plate_recognition_moel_lxn/china.caffemodel"
-        self.prefix_beam_search_bool = False
+        # china: lpr_zg
+        self.lpr_caffe_prototxt = "/mnt/huanyuan/model_final/image_model/lpr_lxn/china_softmax.prototxt"
+        self.lpr_caffe_model_path = "/mnt/huanyuan/model_final/image_model/lpr_lxn/china.caffemodel"
+        self.lpr_prefix_beam_search_bool = False
 
         # 缓存容器长度
         self.cache_container_length = 8
@@ -228,8 +229,7 @@ class CaptureApi():
         self.mot_tracker = Sort(max_age=self.max_age, min_hits=self.min_hits, iou_threshold=self.iou_threshold)
 
         # lincense plate reader
-        self.license_palte_reader = license_palte_model_init_caffe(self.plate_recognition_prototxt, self.plate_recognition_model_path)
-        self.license_palte_beamsearch = license_palte_beamsearch_init()
+        self.lpr = LPR(self.lpr_caffe_prototxt, self.lpr_caffe_model_path, self.lpr_prefix_beam_search_bool)
     
 
     def clear(self):
@@ -418,13 +418,7 @@ class CaptureApi():
                         # crop
                         crop_img = gray_img[bbox_info_dict['plate_loc'][1]:bbox_info_dict['plate_loc'][3], bbox_info_dict['plate_loc'][0]:bbox_info_dict['plate_loc'][2]]
 
-                        if self.prefix_beam_search_bool:
-                            # prefix beamsearch
-                            _, plate_scors_list = license_palte_crnn_recognition_caffe(self.license_palte_reader, crop_img)
-                            plate_ocr = license_palte_crnn_recognition_beamsearch_caffe(self.license_palte_reader, crop_img, self.license_palte_beamsearch[0], self.license_palte_beamsearch[1])
-                        else:
-                            # greedy
-                            plate_ocr, plate_scors_list = license_palte_crnn_recognition_caffe(self.license_palte_reader, crop_img)
+                        plate_ocr, plate_scors_list = self.lpr.run(crop_img)
                         
                         bbox_info_dict['plate_ocr'] = plate_ocr
                         bbox_info_dict['plate_ocr_score'] = np.array(plate_scors_list).mean()

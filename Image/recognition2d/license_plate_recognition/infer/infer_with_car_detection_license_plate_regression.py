@@ -6,12 +6,11 @@ import sys
 import torch
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Image')
-from regreesion2d.plate_regreesion.infer.ssd_vgg_fpn import SSDDetector
-from regreesion2d.plate_regreesion.infer.plate_regression import PlateRegression
-from regreesion2d.plate_regreesion.utils.draw_tools import draw_detection_result
-
-from recognition2d.license_plate_recognition.infer.license_plate import license_palte_model_init_caffe, license_palte_crnn_recognition_caffe, license_palte_beamsearch_init, license_palte_crnn_recognition_beamsearch_caffe
+sys.path.insert(0, '/home/huanyuan/code/demo')
+from Image.regreesion2d.plate_regreesion.infer.ssd_vgg_fpn import SSDDetector
+from Image.regreesion2d.plate_regreesion.infer.plate_regression import PlateRegression
+from Image.regreesion2d.plate_regreesion.utils.draw_tools import draw_detection_result
+from Image.recognition2d.license_plate_recognition.infer.lpr import LPR
 
 
 def inference_images(args):
@@ -24,7 +23,7 @@ def inference_images(args):
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
     car_detector = SSDDetector(device=device, weight_path=args.car_model_path)
     plate_detector = PlateRegression(args.plate_model_path, args.plate_config_path, device)
-    license_palte_detector = license_palte_model_init_caffe(args.plate_regression_prototxt, args.plate_regression_model_path)
+    lpr = LPR(args.lpr_caffe_prototxt, args.lpr_caffe_model_path, args.lpr_prefix_beam_search_bool)
 
     # image init 
     img_list = np.array(os.listdir(args.img_dir))
@@ -57,7 +56,7 @@ def inference_images(args):
             plate_bbox = bboxes["license_plate"][plate_idx]
 
             crop_img = plate_img[plate_bbox[1]:plate_bbox[3], plate_bbox[0]:plate_bbox[2]]
-            result_ocr, result_scors_list = license_palte_crnn_recognition_caffe(license_palte_detector, crop_img)
+            result_ocr, result_scors_list = lpr.run(crop_img)
 
             if args.height_threshold_bool and args.ocr_threshold_bool:
                 # 方式一：高度阈值判断，ocr 阈值判断
@@ -95,8 +94,7 @@ def inference_video(args):
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
     car_detector = SSDDetector(device=device, weight_path=args.car_model_path)
     plate_detector = PlateRegression(args.plate_model_path, args.plate_config_path, device)
-    license_palte_detector = license_palte_model_init_caffe(args.plate_regression_prototxt, args.plate_regression_model_path)
-    license_palte_beamsearch = license_palte_beamsearch_init()
+    lpr = LPR(args.lpr_caffe_prototxt, args.lpr_caffe_model_path, args.lpr_prefix_beam_search_bool)
 
     # image init 
     video_list = np.array(os.listdir(args.video_dir))
@@ -148,14 +146,9 @@ def inference_video(args):
                 # check
                 if crop_img.shape[0] == 0 or crop_img.shape[1] == 0:
                     continue
-
-                if args.prefix_beam_search_bool:
-                    # prefix beamsearch
-                    _, result_scors_list = license_palte_crnn_recognition_caffe(license_palte_detector, crop_img)
-                    result_ocr = license_palte_crnn_recognition_beamsearch_caffe(license_palte_detector, crop_img, license_palte_beamsearch[0], license_palte_beamsearch[1])
-                else:
-                    # greedy
-                    result_ocr, result_scors_list = license_palte_crnn_recognition_caffe(license_palte_detector, crop_img)
+                
+                # lpr
+                result_ocr, result_scors_list = lpr.run(crop_img)
 
                 if args.height_threshold_bool and args.ocr_threshold_bool:
                     # 方式一：高度阈值判断，ocr 阈值判断
@@ -200,9 +193,9 @@ def main():
     args.plate_model_path = "/mnt/huanyuan2/model/image_model/license_plate_regressioin_model_lpj/best.pt"
     args.plate_config_path = "/mnt/huanyuan2/model/image_model/license_plate_regressioin_model_lpj/config.py"
 
-    args.plate_regression_prototxt = "/mnt/huanyuan2/model/image_model/license_plate_recognition_moel_lxn/china_softmax.prototxt"
-    args.plate_regression_model_path = "/mnt/huanyuan2/model/image_model/license_plate_recognition_moel_lxn/china.caffemodel"
-    args.prefix_beam_search_bool = True
+    args.lpr_caffe_prototxt = "/mnt/huanyuan2/model/image_model/license_plate_recognition_moel_lxn/china_softmax.prototxt"
+    args.lpr_caffe_model_path = "/mnt/huanyuan2/model/image_model/license_plate_recognition_moel_lxn/china.caffemodel"
+    args.lpr_prefix_beam_search_bool = False
 
     args.write_bool = True
     args.height_threshold_bool = True
