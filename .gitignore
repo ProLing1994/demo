@@ -37,9 +37,12 @@ bin/
 # wav
 *.wav
 *.avi
+*.jpg
+*.mp4
 
 # tar.gz
 *.tar.gz
+*.rar
 
 #.caffemodel
 *.caffemodel
