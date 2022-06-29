@@ -6,11 +6,12 @@ import sys
 import random
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Image')
-# sys.path.insert(0, '/yuanhuan/code/demo/Image')
-from detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
-from recognition2d.license_plate_recognition.infer.license_plate import license_palte_model_init_caffe, license_palte_crnn_recognition_caffe, license_palte_beamsearch_init, license_palte_crnn_recognition_beamsearch_caffe
-from recognition2d.license_plate_capture.sort.mot_sort import Sort
+sys.path.insert(0, '/home/huanyuan/code/demo')
+# sys.path.insert(0, '/yuanhuan/code/demo')
+from Image.detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
+from Image.recognition2d.license_plate_recognition.infer.lpr import LPR
+from Image.Demo.license_plate_capture.sort.mot_sort import Sort
+
 
 def check_in_roi(in_box, roi_bbox):
     roi_bool = False
@@ -122,9 +123,10 @@ class CaptureApi():
         self.iou_threshold = 0.3
         
         # lincense plate reader
-        self.plate_recognition_prototxt = "/mnt/huanyuan/model_final/image_model/license_plate_recognition_moel_lxn/china_softmax.prototxt"
-        self.plate_recognition_model_path = "/mnt/huanyuan/model_final/image_model/license_plate_recognition_moel_lxn/china.caffemodel"
-        self.prefix_beam_search_bool = False
+        # china: lpr_zg
+        self.lpr_caffe_prototxt = "/mnt/huanyuan/model_final/image_model/lpr_lxn/china_softmax.prototxt"
+        self.lpr_caffe_model_path = "/mnt/huanyuan/model_final/image_model/lpr_lxn/china.caffemodel"
+        self.lpr_prefix_beam_search_bool = False
 
         # 缓存容器长度
         self.cache_container_length = 8
@@ -227,8 +229,7 @@ class CaptureApi():
         self.mot_tracker = Sort(max_age=self.max_age, min_hits=self.min_hits, iou_threshold=self.iou_threshold)
 
         # lincense plate reader
-        self.license_palte_reader = license_palte_model_init_caffe(self.plate_recognition_prototxt, self.plate_recognition_model_path)
-        self.license_palte_beamsearch = license_palte_beamsearch_init()
+        self.lpr = LPR(self.lpr_caffe_prototxt, self.lpr_caffe_model_path, self.lpr_prefix_beam_search_bool)
     
 
     def clear(self):
@@ -246,20 +247,20 @@ class CaptureApi():
         assert self.image_height == 1920
 
         # detector
-        bboxes = self.car_plate_detector.detect(img, with_score=True)
+        bboxes = self.car_plate_detector.detect( img, with_score=True )
 
         # tracker 
-        tracker_bboxes = self.update_tracker_bboxes(bboxes)
+        tracker_bboxes = self.update_tracker_bboxes( bboxes )
 
         # update bbox info
         bbox_info_list = self.update_bbox_info( img, bboxes, tracker_bboxes )
 
         # store
         # 跳帧存储原图和检测识别结果
-        self.update_cache_container(img, frame_idx, bbox_info_list)
+        self.update_cache_container( img, frame_idx, bbox_info_list )
 
         # 更新状态容器，同时更新车辆行驶状态和帧率
-        bbox_info_list = self.update_bbox_state_container(bbox_info_list)
+        bbox_info_list = self.update_bbox_state_container( bbox_info_list )
 
         # captute
         ## capture_line
@@ -417,13 +418,7 @@ class CaptureApi():
                         # crop
                         crop_img = gray_img[bbox_info_dict['plate_loc'][1]:bbox_info_dict['plate_loc'][3], bbox_info_dict['plate_loc'][0]:bbox_info_dict['plate_loc'][2]]
 
-                        if self.prefix_beam_search_bool:
-                            # prefix beamsearch
-                            _, plate_scors_list = license_palte_crnn_recognition_caffe(self.license_palte_reader, crop_img)
-                            plate_ocr = license_palte_crnn_recognition_beamsearch_caffe(self.license_palte_reader, crop_img, self.license_palte_beamsearch[0], self.license_palte_beamsearch[1])
-                        else:
-                            # greedy
-                            plate_ocr, plate_scors_list = license_palte_crnn_recognition_caffe(self.license_palte_reader, crop_img)
+                        plate_ocr, plate_scors_list = self.lpr.run(crop_img)
                         
                         bbox_info_dict['plate_ocr'] = plate_ocr
                         bbox_info_dict['plate_ocr_score'] = np.array(plate_scors_list).mean()
@@ -471,7 +466,7 @@ class CaptureApi():
         for idx in range(len(bbox_info_list)):
             bbox_info_idx = bbox_info_list[idx]
 
-            is_new_state_bool = True
+            is_new_id_bool = True
 
             # 遍历容器
             for key, bbox_state_idy in self.params_dict['bbox_state_container'].items():
@@ -479,16 +474,16 @@ class CaptureApi():
                 # 容器中存在追踪对象
                 if bbox_info_idx['id'] == bbox_state_idy['id']:
 
-                    is_new_state_bool = False
+                    is_new_id_bool = False
                     bbox_state_idy['frame_num'] += 1
                     bbox_state_idy['loc'] = bbox_info_idx['loc']
                     bbox_state_idy['loc_list'].append(bbox_info_idx['loc'])
                     if len(bbox_state_idy['loc_list']) >= self.update_state_container_length: 
                         bbox_state_idy['loc_list'].pop(0)
-                    bbox_state_idy['stable_loc'] = 0.9 * bbox_state_idy['stable_loc'] + 0.1 * bbox_info_idx['loc']
                     bbox_state_idy['car_disappear_frame_num'] = 0
 
                     # 更新车辆状态
+                    bbox_state_idy['stable_loc'] = 0.9 * bbox_state_idy['stable_loc'] + 0.1 * bbox_info_idx['loc']
                     car_center_y = ( np.array(bbox_state_idy['loc_list']).mean(0)[1] + np.array(bbox_state_idy['loc_list']).mean(0)[3] ) / 2
                     car_stable_center_y = ( bbox_state_idy['stable_loc'][1] + bbox_state_idy['stable_loc'][3] ) / 2
                     distance_y = car_stable_center_y - car_center_y
@@ -542,7 +537,7 @@ class CaptureApi():
                     bbox_info_idx['state_frame_num'] = bbox_state_idy['state_frame_num']
                     bbox_info_idx['frame_num'] = bbox_state_idy['frame_num']
             
-            if is_new_state_bool:
+            if is_new_id_bool:
 
                 # bbox_state_dict
                 bbox_state_dict = {}
