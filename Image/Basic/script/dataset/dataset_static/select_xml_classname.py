@@ -24,6 +24,8 @@ def select_classname(args):
         bool_have_pos = False       # 检测是否包含正样本标注
         bool_have_one_neg = False   # 检测是否包含一个负样本（没有正样本时生效，保证存在一个标签）
         
+        img_width = int(root.find('size').find('width').text)
+        img_height = int(root.find('size').find('height').text)
         # 标签检测和标签转换
         for object in root.findall('object'):
             # name
@@ -51,9 +53,19 @@ def select_classname(args):
                     if classname in args.filter_select_class_list:
                         filter_select_idx = args.filter_select_class_list.index(classname)
 
-                        if bbox_width < args.width_threshold or bbox_height < args.height_threshold:
-                            object.find('name').text = args.filter_set_class_list[filter_select_idx]
-                    
+                        if (img_width == 2592 and img_height == 1920) or \
+                            (img_width == 1024 and img_height == 2048):
+                            if bbox_width < args.width_threshold_5M or bbox_height < args.height_threshold_5M:
+                                object.find('name').text = args.filter_set_class_list[filter_select_idx]
+                        elif (img_width == 1920 and img_height == 1080) or \
+                                (img_width == 1080 and img_height == 1920) or \
+                                (img_width == 480 and img_height == 640) or \
+                                (img_width == 640 and img_height == 1024):
+                            if bbox_width < args.width_threshold_2M or bbox_height < args.height_threshold_2M:
+                                object.find('name').text = args.filter_set_class_list[filter_select_idx]
+                        else:
+                            raise EOFError
+                            
             if object.find('name').text in args.set_name_list:
                 bool_have_pos = True
         
@@ -61,7 +73,7 @@ def select_classname(args):
         for object in root.findall('object'):
             classname = str(object.find('name').text)
 
-            if (classname not in args.set_name_list):
+            if (classname not in args.set_name_list and classname not in args.filter_set_class_list):
                 # 如果存在正样本，删除无用标签
                 if bool_have_pos:
                     root.remove(object)
@@ -83,7 +95,7 @@ def select_classname(args):
         # 检测标签
         for object in root.findall('object'):
             classname = str(object.find('name').text)
-            if not (classname in args.finnal_name_list):
+            if (classname not in args.finnal_name_list and classname not in args.filter_finnal_name_list):
                 print(classname + "---->label is error---->" + classname)
         tree.write(output_xml_path)
 
@@ -132,7 +144,8 @@ if __name__ == "__main__":
     # args.finnal_name_list = ["car", "bus", "truck", "bicyclist", "motorcyclist", "person", "neg"]
 
     # ZG_BMX_detection
-    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/daminghu/"
+    args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/daminghu/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/daminghu_night/"
     # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/shandongyingzikou/"
     # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/shandongyingzikou_night_hongwai/"
     # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/yongzou_night_hongwai/"
@@ -141,15 +154,15 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/shenzhenlukou_night_diguangzhao/"
     # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/rongheng/"
     # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/rongheng_night_hongwai/"
-    # args.select_name_list = ["car", "tricycle", "bus", "truck", "bicyclist", "motorcyclist", "person"]
-    # args.set_name_list = ["car", "car", "bus", "truck", "bicyclist", "motorcyclist", "person"]
-    # args.finnal_name_list = ["car", "car", "bus", "truck", "bicyclist", "motorcyclist", "person", "neg"]
+    args.select_name_list = ["car", "tricycle", "bus", "truck", "bicyclist", "motorcyclist", "person"]
+    args.set_name_list = ["car", "car", "bus", "truck", "bicyclist", "motorcyclist", "person"]
+    args.finnal_name_list = ["car", "car", "bus", "truck", "bicyclist", "motorcyclist", "person", "neg"]
 
-    # 开源数据集: MOT17\MOT20
+    # # 开源数据集: MOT17\MOT20
     # args.input_dir = "/yuanhuan/data/image/Open_Source/MOT/MOT17/"
     # args.select_name_list = ["car_bus_truck", "person"]
-    # args.set_name_list = ["car", "person", "car_o", "person_o"]
-    # args.finnal_name_list = ["car", "person", "car_o", "person_o", "neg"]
+    # args.set_name_list = ["car", "person"]
+    # args.finnal_name_list = ["car", "person", "neg"]
 
     # # 开源数据集: NightOwls
     # args.input_dir = "/yuanhuan/data/image/Open_Source/NightOwls/nightowls/"
@@ -157,15 +170,16 @@ if __name__ == "__main__":
     # args.set_name_list = ["person", "person_o"]
     # args.finnal_name_list = ["person", "person_o", "neg"]
     
-    # 开源数据集: Cityscapes
-    args.input_dir = "/yuanhuan/data/image/Open_Source/Cityscapes/cityscapes/"
-    args.select_name_list = ["car", "caravan", "bus", "train", "truck", "trailer", "bicyclist", "motorcyclist", "person"]
-    args.set_name_list = ["car", "car", "bus", "bus", "truck", "truck", "bicyclist", "motorcyclist", "person", "car_o", "car_o", "bus_o", "bus_o", "truck_o", "truck_o", "bicyclist_o", "motorcyclist_o", "person_o"]
-    args.finnal_name_list = ["car", "bus", "truck", "bicyclist", "motorcyclist", "person", "car_o", "car_o", "bus_o", "bus_o", "truck_o", "truck_o", "bicyclist_o", "motorcyclist_o", "person_o", "neg"]
+    # # 开源数据集: Cityscapes
+    # args.input_dir = "/yuanhuan/data/image/Open_Source/Cityscapes/cityscapes/"
+    # args.select_name_list = ["car", "caravan", "bus", "train", "truck", "trailer", "bicyclist", "motorcyclist", "person"]
+    # args.set_name_list = ["car", "car", "bus", "bus", "truck", "truck", "bicyclist", "motorcyclist", "person"]
+    # args.finnal_name_list = ["car", "bus", "truck", "bicyclist", "motorcyclist", "person", "neg"]
 
     args.jpg_dir =  args.input_dir + "JPEGImages/"  
     args.xml_dir =  args.input_dir + "XML/"
-    args.output_xml_dir =  args.input_dir + "Annotations_CarBusTruckBicyclistMotorcyclistPerson/"
+    # args.output_xml_dir =  args.input_dir + "Annotations_CarBusTruckBicyclistMotorcyclistPerson/"
+    args.output_xml_dir =  args.input_dir + "Annotations_CarBusTruckBicyclistMotorcyclistPerson_filter/"
 
     ######################################
     # 消融实验
@@ -224,18 +238,19 @@ if __name__ == "__main__":
     # 大小阈值筛选
     ######################################
 
-    # # args.filter_bool = False
-    # args.filter_bool = True
+    # args.filter_bool = False
+    args.filter_bool = True
 
-    # # 2M
-    # # args.width_threshold = 25
-    # # args.height_threshold = 25
+    # 2M
+    args.width_threshold_2M = 25
+    args.height_threshold_2M = 25
 
-    # # 5M
-    # args.width_threshold = 40
-    # args.height_threshold = 40
+    # 5M
+    args.width_threshold_5M = 40
+    args.height_threshold_5M = 40
 
-    # args.filter_select_class_list = ["car", "caravan", "bus", "train", "truck", "trailer", "bicyclist", "motorcyclist", "person"]
-    # args.filter_set_class_list = ["car_o", "car_o", "bus_o", "bus_o", "truck_o", "truck_o", "bicyclist_o", "motorcyclist_o", "person_o"]
+    args.filter_select_class_list = ["car", "caravan", "tricycle", "bus", "train", "truck", "trailer", "bicyclist", "motorcyclist", "person"]
+    args.filter_set_class_list = ["car_o", "car_o", "car_o", "bus_o", "bus_o", "truck_o", "truck_o", "bicyclist_o", "motorcyclist_o", "person_o"]
+    args.filter_finnal_name_list = ["car_o", "bus_o", "truck_o", "bicyclist_o", "motorcyclist_o", "person_o"]
 
     select_classname(args)

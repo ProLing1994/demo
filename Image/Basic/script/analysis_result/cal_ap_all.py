@@ -325,7 +325,8 @@ if __name__ == "__main__":
     # args.model_dir = "/yuanhuan/model/image/yolox_vgg/car_non_motorized_person_yolox_model_zph/eval_epoches_24/"
 
     # SSD_VGG_FPN_RFB_2022-06-20-12_focalloss_3class_car_bus_truck_non_motorized_person_ZG
-    args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-06-20-12_focalloss_3class_car_bus_truck_non_motorized_person_ZG/eval_epoches_299/"
+    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-06-20-12_focalloss_3class_car_bus_truck_non_motorized_person_ZG/eval_epoches_299/"
+    args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-06-27-21_focalloss_3class_car_bus_truck_non_motorized_person_ZG/eval_epoches_299/"
 
     args.anno_name = 'Annotations_CarBusTruckBicyclistMotorcyclistPerson'                            # 车 & 非机动 & 人
 

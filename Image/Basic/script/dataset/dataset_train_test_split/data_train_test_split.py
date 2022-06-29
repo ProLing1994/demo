@@ -59,7 +59,8 @@ if __name__ == "__main__":
     # args.input_dir =  "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu/"    # trainval: 18045, train: 16239, val: 1806, test: 2007, all: 20052
     # args.input_dir =  "/yuanhuan/data/image/ZG_ZHJYZ_detection/shenzhentiaoqiao/"    # trainval: 4538, train: 4084, val: 454, test: 505, all: 5043
 
-    # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/daminghu/"    # trainval: 6486, train: 5837, val: 649, test: 721, all: 7207
+    args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/daminghu/"    # trainval: 9218, train: 8296, val: 922, test: 1025, all: 10243
+    # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/daminghu_night/"    # trainval: 2360, train: 2124, val: 236, test: 263, all: 2623
     # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/shandongyingzikou/"    # trainval: 1970, train: 1773, val: 197, test: 219, all: 2189
     # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/shandongyingzikou_night_hongwai/"    # trainval: 613, train: 551, val: 62, test: 69, all: 682
     # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/yongzou_night_hongwai/"    # trainval: 2681, train: 2412, val: 269, test: 298, all: 2979
@@ -72,7 +73,7 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/Open_Source/MOT/MOT17/"    # trainval: 4784, train: 4305, val: 479, test: 532, all: 5316
     # args.input_dir = "/yuanhuan/data/image/Open_Source/MOT/MOT20/"    # trainval: 8037, train: 7233, val: 804, test: 894, all: 8931
     # args.input_dir = "/yuanhuan/data/image/Open_Source/NightOwls/nightowls/"    # trainval: 16332, train: 14698, val: 1634, test: 1815, all: 18147
-    args.input_dir = "/yuanhuan/data/image/Open_Source/Cityscapes/cityscapes/"    # trainval: 3111, train: 2799, val: 312, test: 346, all: 3457
+    # args.input_dir = "/yuanhuan/data/image/Open_Source/Cityscapes/cityscapes/"    # trainval: 3111, train: 2799, val: 312, test: 346, all: 3457
 
     args.trainval_file = args.input_dir + "ImageSets/Main/trainval.txt"
     args.train_file = args.input_dir + "ImageSets/Main/train.txt"

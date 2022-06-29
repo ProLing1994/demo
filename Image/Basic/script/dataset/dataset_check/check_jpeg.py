@@ -35,6 +35,7 @@ if __name__ == "__main__":
     # args.input_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/anhuihuaibeigaosu/"
     # args.input_dir = "/mnt/huanyuan2/data/image/ZG_AHHBGS_detection/shenzhentiaoqiao/"
     # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/daminghu/"
+    args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/daminghu_night/"
     # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/shandongyingzikou/"
     # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/shandongyingzikou_night_hongwai/"
     # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/yongzou_night_hongwai/"
@@ -46,7 +47,7 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/Open_Source/MOT/MOT17/"
     # args.input_dir = "/yuanhuan/data/image/Open_Source/MOT/MOT20/"
     # args.input_dir = "/yuanhuan/data/image/Open_Source/NightOwls/nightowls/"
-    args.input_dir = "/yuanhuan/data/image/Open_Source/Cityscapes/cityscapes/"
+    # args.input_dir = "/yuanhuan/data/image/Open_Source/Cityscapes/cityscapes/"
     args.jpg_dir =  args.input_dir + "JPEGImages/"
 
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/AHHBAS_418/"
