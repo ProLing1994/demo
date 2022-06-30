@@ -37,12 +37,14 @@ class P3DCaptureApi():
         self.iou_threshold = 0.3
 
         # roi 标定框
-        # self.roi_area = [1094, 680, 1412, 810]
-        # self.roi_area = [1094, 810, 1412, 910]
-        self.roi_area = [1094, 910, 1412, 1010]
+        # self.roi_area = [1094, 910, 1412, 1010]
+        # self.roi_area = [750, 600, 1160, 670]
+        self.roi_area = [920, 600, 1200, 720]
 
         # roi 标定框 人脸区域
-        self.roi_area_person = [ 940, 480, 1570, 1070]
+        # self.roi_area_person = [ 940, 480, 1570, 1070]
+        # self.roi_area_person = [ 730, 330, 1220, 810]
+        self.roi_area_person = [ 880, 270, 1240, 760]
 
         # 状态容器长度
         self.bbox_state_container_length = 50       # 行人框连续丢失上报，从容器中清除该行人信息

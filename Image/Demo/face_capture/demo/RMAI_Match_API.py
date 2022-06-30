@@ -15,7 +15,8 @@ class MatchApi():
 
 
     def option_init(self):
-        self.wait_frame_threshold = 100
+        self.wait_frame_threshold = 200
+        self.match_threshold = 3 * 1000
 
 
     def param_init(self):
@@ -52,7 +53,7 @@ class MatchApi():
                 return match_dict
 
             dists = time_distance(self.face_capture_list, self.p3d_capture_list)
-            matches, u_face, u_p3d = linear_assignment(dists, thresh=50)
+            matches, u_face, u_p3d = linear_assignment(dists, thresh=self.match_threshold)
 
             for iface, ip3d in matches:
 
