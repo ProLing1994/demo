@@ -228,8 +228,8 @@ class FaceCaptureApi():
                     # 保存抓拍信息
                     if bbox_state_idy['speed'] > bbox_state_idy['max_speed']:
                         bbox_state_idy['max_speed'] = bbox_state_idy['speed']
-                        bbox_state_idy['max_speed_frame_idx'] = frame_idx
-                    if bbox_state_idy['score'] > bbox_state_idy['max_socre'] and bbox_state_idy['state'] == "Up":
+                        bbox_state_idy['max_speed_frame_idx'] = frame_idx         
+                    if bbox_state_idy['score'] > bbox_state_idy['max_socre'] and ( bbox_state_idy['state'] == "Up" or bbox_state_idy['speed'] == bbox_state_idy['max_speed'] ):
                         bbox_state_idy['max_socre'] = bbox_state_idy['score']
                         bbox_state_idy['caputure_loc'] = bbox_state_idy['loc']                              
                         bbox_state_idy['caputure_img'] = img                             

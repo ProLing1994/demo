@@ -78,7 +78,7 @@ class LPR(object):
         img = img.astype(np.float32)
 
         self.net.blobs['data'].data[...] = img
-        preds = self.net.forward()["reshape"]
+        preds = self.net.forward()["probs"]
         preds = np.transpose(np.squeeze(preds))
 
         if self.prefix_beam_search_bool:
@@ -99,13 +99,13 @@ class LPR(object):
 
 if __name__ == '__main__':
 
-    # china: lpr_lxn
+    # # china: lpr_lxn
     # caffe_prototxt = "/mnt/huanyuan/model_final/image_model/lpr_lxn/china_softmax.prototxt"
     # caffe_model_path = "/mnt/huanyuan/model_final/image_model/lpr_lxn/china.caffemodel"
     
     # china: lpr_zg
-    caffe_prototxt = "/mnt/huanyuan/model_final/image_model/lpr_zg/china/double/china_double_softmax.prototxt"
-    caffe_model_path = "/mnt/huanyuan/model_final/image_model/lpr_zg/china/double/china_double.caffemodel"
+    caffe_prototxt = "/mnt/huanyuan/model_final/image_model/lpr_zg/china/double/0628/china_double_softmax.prototxt"
+    caffe_model_path = "/mnt/huanyuan/model_final/image_model/lpr_zg/china/double/0628/china_double_0628.caffemodel"
 
     # prefix_beam_search_bool = False
     prefix_beam_search_bool = True
@@ -118,9 +118,14 @@ if __name__ == '__main__':
     image_list = os.listdir(image_dir)
     image_list.sort()
     for idx in range(len(image_list)):
-        image_path = os.path.join(image_dir, image_list[idx])
+        image_name = image_list[idx]
+        image_path = os.path.join(image_dir, image_name)
+
+        if not image_name.endswith(".jpg"):
+            continue
+
         img = cv2.imread(image_path, 0) 
         ocr = lpr.run(img)
-        print( "{} -> {}".format(image_list[idx], ocr))
+        print( "{} -> {}".format(image_name, ocr))
 
 

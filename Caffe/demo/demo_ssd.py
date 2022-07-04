@@ -53,8 +53,8 @@ def ssd_detect(net, image_path, ssd_param, ssd_param_CHW, conf_thresh=0.5):
 	return 
 		
 if __name__ == "__main__":
-	input_image_dir = "/home/huanyuan/code/MobileNet-SSD/images"
-	output_image_dir = "/home/huanyuan/code/MobileNet-SSD/images_result"
+	input_image_dir = "/mnt/huanyuan/model_final/image_model/ssd_rfb_jct_zg/image_2M_5M/"
+	output_image_dir = "/mnt/huanyuan/model_final/image_model/ssd_rfb_jct_zg/test_result"
 
 	# ssd(default)
 	# ssd_model = "/home/huanyuan/code/models/mobilenet_iter_73000.caffemodel"
@@ -69,13 +69,13 @@ if __name__ == "__main__":
 	#             'motorbike', 'person', 'pottedplant',
 	#             'sheep', 'sofa', 'train', 'tvmonitor')
 
-	# face
-	ssd_model = "/home/huanyuan/code/models/ssd_face_mask.caffemodel"
-	ssd_prototxt = "/home/huanyuan/code/models/ssd_face_mask.prototxt"
-	ssd_param_CHW  = [3, 300, 300]
-	ssd_mean  = [127.5, 127.5, 127.5]
-	ssd_scale  = 0.007843
-	CLASSES = ('background', "face")
+	# # face
+	# ssd_model = "/home/huanyuan/code/models/ssd_face_mask.caffemodel"
+	# ssd_prototxt = "/home/huanyuan/code/models/ssd_face_mask.prototxt"
+	# ssd_param_CHW  = [3, 300, 300]
+	# ssd_mean  = [127.5, 127.5, 127.5]
+	# ssd_scale  = 0.007843
+	# CLASSES = ('background', "face")
 
 	# car
 	# ssd_model = "/home/huanyuan/code/models/ssd_car_0710.caffemodel"
@@ -93,6 +93,14 @@ if __name__ == "__main__":
 	# ssd_mean  = [104.0, 117.0, 123.0]
 	# ssd_scale  = 1.0
 	# CLASSES = ('background', "License_plate")
+	
+	# car_bus_truck_non_motorized_person
+	ssd_model = "/mnt/huanyuan/model_final/image_model/ssd_rfb_jct_zg/car_bus_truck_non_motorized_person_zg_2022-06-27-21/SSD_VGG_FPN_RFB_VOC_car_bus_truck_non_motorized_person_zg_2022-06-27-21.caffemodel"
+	ssd_prototxt = "/mnt/huanyuan/model_final/image_model/ssd_rfb_jct_zg/car_bus_truck_non_motorized_person_zg_2022-06-27-21/FPN_RFB_4class_noDilation_prior.prototxt"
+	ssd_param_CHW  = [3, 300, 300]
+	ssd_mean  = [104, 117, 123]
+	ssd_scale  = 1.0
+	CLASSES = ('background', 'car_bus_truck', 'non_motorized', 'person')
 
 	# something wronge
 	# ssd_model = "/home/huanyuan/code/MNN/models/face.caffemodel"
