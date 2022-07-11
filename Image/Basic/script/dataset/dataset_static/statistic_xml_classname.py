@@ -149,7 +149,7 @@ if __name__ == "__main__":
     # SZTQ: [('bus', 226), ('car', 1414), ('fuzzy_plate', 431), ('painted_plate', 63), ('plate', 462), ('truck', 18)]
 
     # # 数据集: ZG_BMX_detection 智观斑马线数据集
-    args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/daminghu/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/rongheng_night_hongwai/"
     # daminghu: [('bicycle', 5479), ('bicyclist', 8946), ('bus', 2911), ('car', 26364), ('head', 139209), ('helmet', 11468), ('motorcycle', 12987), ('motorcyclist', 18471), ('person', 110263), ('tricycle', 145), ('truck', 193)]
     # daminghu: [('bicycle', {'trainval': 4930, 'test': 549}), ('bicyclist', {'trainval': 8028, 'test': 918}), ('bus', {'trainval': 2604, 'test': 307}), ('car', {'trainval': 23674, 'test': 2690}), ('head', {'trainval': 125389, 'test': 13820}), ('helmet', {'trainval': 10322, 'test': 1146}), ('motorcycle', {'trainval': 11648, 'test': 1339}), ('motorcyclist', {'trainval': 16699, 'test': 1772}), ('person', {'trainval': 99170, 'test': 11093}), ('tricycle', {'trainval': 134, 'test': 11}), ('truck', {'trainval': 172, 'test': 21})]
     # daminghu_night: [('bicycle', 1267), ('bicyclist', 654), ('bus', 159), ('car', 2112), ('head', 17237), ('helmet', 1046), ('motorcycle', 3795), ('motorcyclist', 3827), ('person', 16402), ('tricycle', 1108), ('truck', 18)]
@@ -216,7 +216,7 @@ if __name__ == "__main__":
     # rongheng_night_hongwai: [('bicyclist', {'trainval': 776, 'test': 80}), ('bicyclist_o', {'trainval': 28, 'test': 3}), ('bus', {'trainval': 225, 'test': 32}), ('car', {'trainval': 17546, 'test': 1949}), ('car_o', {'trainval': 5, 'test': 0}), ('motorcyclist', {'trainval': 1471, 'test': 148}), ('motorcyclist_o', {'trainval': 65, 'test': 8}), ('person', {'trainval': 12369, 'test': 1403}), ('person_o', {'trainval': 1826, 'test': 188}), ('truck', {'trainval': 185, 'test': 22})]
 
     # 开源数据集: MOT17\MOT20\NightOwls\Cityscapes
-    # args.input_dir = "/yuanhuan/data/image/Open_Source/MOT/MOT17/"
+    args.input_dir = "/yuanhuan/data/image/Open_Source/Cityscapes/cityscapes/"
     # MOT17: [('car_bus_truck', 6084), ('person', 86982)]
     # MOT17: [('car_bus_truck', {'trainval': 5534, 'test': 550}), ('person', {'trainval': 78131, 'test': 8851})]
     # MOT20: [('person', 931571)]
@@ -245,7 +245,8 @@ if __name__ == "__main__":
     args.jpg_dir =  args.input_dir + "JPEGImages/"
     # args.xml_dir =  args.input_dir + "XML/"
     # args.xml_dir =  args.input_dir + "Annotations_CarBusTruckBicyclistMotorcyclistPerson/"
-    args.xml_dir =  args.input_dir + "Annotations_CarBusTruckBicyclistMotorcyclistPerson_filter/"
+    # args.xml_dir =  args.input_dir + "Annotations_CarBusTruckBicyclistMotorcyclistPerson_filter/"
+    args.xml_dir =  args.input_dir + "Annotations_Person/"
 
     # args.jpg_dir =  args.input_dir + "SZTQ/"
     # args.xml_dir =  args.input_dir + "SZTQ_XML/"

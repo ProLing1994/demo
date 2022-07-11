@@ -299,6 +299,7 @@ if __name__ == "__main__":
 
     # yolox
     # args.data_list = ['ZG_BMX_detection/daminghu']
+    # args.data_list = ['ZG_BMX_detection/daminghu_night']
     # args.data_list = ['ZG_BMX_detection/shandongyingzikou']
     # args.data_list = ['ZG_BMX_detection/shandongyingzikou_night_hongwai']
     # args.data_list = ['ZG_BMX_detection/yongzou_night_hongwai']
@@ -308,6 +309,7 @@ if __name__ == "__main__":
     # args.data_list = ['ZG_BMX_detection/rongheng']
     # args.data_list = ['ZG_BMX_detection/rongheng_night_hongwai']
     args.data_list = ['ZG_BMX_detection/daminghu', 
+                        'ZG_BMX_detection/daminghu_night', 
                         'ZG_BMX_detection/shandongyingzikou', 
                         'ZG_BMX_detection/shandongyingzikou_night_hongwai',
                         'ZG_BMX_detection/yongzou_night_hongwai', 
@@ -326,9 +328,13 @@ if __name__ == "__main__":
 
     # SSD_VGG_FPN_RFB_2022-06-20-12_focalloss_3class_car_bus_truck_non_motorized_person_ZG
     # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-06-20-12_focalloss_3class_car_bus_truck_non_motorized_person_ZG/eval_epoches_299/"
-    args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-06-27-21_focalloss_3class_car_bus_truck_non_motorized_person_ZG/eval_epoches_299/"
+    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-06-27-21_focalloss_3class_car_bus_truck_non_motorized_person_ZG/eval_epoches_299/"
+    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-06-27-21_focalloss_3class_car_bus_truck_non_motorized_person_ZG/eval_epoches_299/"
+    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-06-29-15_focalloss_3class_car_bus_truck_non_motorized_person_ZG/eval_epoches_299/"
+    args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-06-30-19_focalloss_3class_car_bus_truck_non_motorized_person_ZG_eqlv2/eval_epoches_299/"
 
-    args.anno_name = 'Annotations_CarBusTruckBicyclistMotorcyclistPerson'                            # 车 & 非机动 & 人
+    # args.anno_name = 'Annotations_CarBusTruckBicyclistMotorcyclistPerson'                            # 车 & 非机动 & 人 
+    args.anno_name = 'Annotations_CarBusTruckBicyclistMotorcyclistPerson_filter'                       # 车 & 非机动 & 人 & 大小过滤
 
     args.from_dataset_bool = True
 
