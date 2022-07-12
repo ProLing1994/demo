@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.Basic.utils.folder_tools import *
-from Image.Demo.license_plate_capture.demo.RMAI_API import *
+from Image.Demo.license_plate_capture_gantry_scene.demo.RMAI_API import *
 from Image.regreesion2d.plate_regreesion.utils.draw_tools import draw_bbox_info, draw_capture_line
 
 

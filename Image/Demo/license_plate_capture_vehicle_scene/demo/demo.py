@@ -9,8 +9,8 @@ from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.Basic.utils.folder_tools import *
-from Image.Demo.license_plate_capture_following.demo.RMAI_API import *
-from Image.Demo.license_plate_capture_following.utils.draw_tools import draw_bbox_tracker, draw_bbox_info, draw_bbox_state, draw_capture_line
+from Image.Demo.license_plate_capture_vehicle_scene.demo.RMAI_API import *
+from Image.Demo.license_plate_capture_vehicle_scene.utils.draw_tools import draw_bbox_tracker, draw_bbox_info, draw_bbox_state, draw_capture_line
 
 
 def inference_video(args):
@@ -110,10 +110,10 @@ def main():
     args = parser.parse_args()
 
     # zg, demo
-    args.video_dir = "/mnt/huanyuan2/data/image/ZG_HCZP/test_video/demo/avi视频/2M_0609_白_前/"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/2M_0609_白_前/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_HCZP/test_video/demo/avi视频/2M_0609_白_后/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/2M_0609_白_后/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_HCZP/test_video/demo/avi视频/2M_0609_白_前/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/2M_0609_白_前/"
+    args.video_dir = "/mnt/huanyuan2/data/image/ZG_HCZP/test_video/demo/avi视频/2M_0609_白_后/"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/2M_0609_白_后/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZG_HCZP/test_video/demo/avi视频/test/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test/"
     args.suffix = '.avi'
