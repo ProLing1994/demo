@@ -173,7 +173,7 @@ class CaptureApi():
 
     def model_init(self):
         # detector
-        self.car_plate_detector = SSDDetector(prototxt=self.ssd_car_plate_prototxt, model_path=self.ssd_car_plate_model_path, ssd_caffe_bool=self.ssd_caffe_bool, ssd_openvino_bool=self.ssd_openvino_bool, merge_class_bool=self.merge_class_bool)
+        self.detector = SSDDetector(prototxt=self.ssd_car_plate_prototxt, model_path=self.ssd_car_plate_model_path, ssd_caffe_bool=self.ssd_caffe_bool, ssd_openvino_bool=self.ssd_openvino_bool, merge_class_bool=self.merge_class_bool)
 
         # tracker
         self.mot_tracker = Sort(max_age=self.max_age, min_hits=self.min_hits, iou_threshold=self.iou_threshold)
@@ -197,7 +197,7 @@ class CaptureApi():
         assert self.image_height == image_height
 
         # detector
-        bboxes = self.car_plate_detector.detect( img, with_score=True )
+        bboxes = self.detector.detect( img, with_score=True )
 
         # tracker 
         tracker_bboxes = self.update_tracker_bboxes( bboxes )
