@@ -50,6 +50,7 @@ def draw_bbox_tracker(img, tracker_bboxes, mode='ltrb'):
 
         img = cv_plot_rectangle(img, loc, mode=mode, color=color)
         img = cv2.putText(img, "id: {}".format(int(id)), (int(loc[0]), int(loc[1])), cv2.FONT_HERSHEY_COMPLEX, 1, color, 2)
+        
     return img
 
 
