@@ -115,7 +115,7 @@ def inference_video(args):
                     csv_dict['name'] = video_list[idx].replace(args.suffix, '')
                     csv_dict['frame_id'] = frame_idx
                     capture_result_idy = capture_result[idy]
-                    id_idy = capture_result_idy['id']
+                    csv_dict['id'] = capture_result_idy['id']
                     csv_dict['plate'] = capture_result_idy['plate_ocr']
                     csv_dict['plate_state'] = capture_result_idy['plate_state']
                     csv_dict['plate_times'] = len(capture_result_idy['img_bbox_info'])

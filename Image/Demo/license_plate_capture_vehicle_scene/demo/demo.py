@@ -25,8 +25,8 @@ def inference_video(args):
     video_list = video_list[[video.endswith(args.suffix) for video in video_list]]
     video_list.sort()
 
-    # csv init 
-    csv_list = []
+    if args.write_csv_bool:
+        csv_list = []
 
     for idx in tqdm(range(len(video_list))):
         video_path = os.path.join(args.video_dir, video_list[idx])
@@ -63,8 +63,7 @@ def inference_video(args):
             # capture api
             tracker_bboxes, bbox_info_list, bbox_state_map, capture_line, capture_dict, capture_result = capture_api.run(img, frame_idx)
 
-            # 是否保存每一帧结果
-            if args.write_result_per_frame_bool:
+            if args.write_result_per_frame_bool or args.write_result_video_bool:
                 # draw bbox
                 # img = draw_bbox_tracker(img, tracker_bboxes)
                 # img = draw_bbox_info(img, bbox_info_list, mode='ltrb')
@@ -72,6 +71,8 @@ def inference_video(args):
                 img = draw_bbox_state(img, bbox_state_map)
                 img = draw_capture_line(img, capture_line, mode='ltrb')
 
+            # 是否保存每一帧结果
+            if args.write_result_per_frame_bool:
                 output_img_path = os.path.join(args.output_video_dir, video_list[idx].replace(args.suffix, ''), video_list[idx].replace(args.suffix, '_{}.jpg'.format(frame_idx)))
                 create_folder(os.path.dirname(output_img_path))
                 cv2.imwrite(output_img_path, img)
@@ -99,10 +100,30 @@ def inference_video(args):
                         create_folder(os.path.dirname(output_capture_path))
                         cv2.imwrite(output_capture_path, bbox_crop)
 
+            # 是否保存日志
+            if args.write_csv_bool:
+
+                for idy in range(len(capture_result)):
+                    csv_dict = {}
+
+                    csv_dict['name'] = video_list[idx].replace(args.suffix, '')
+                    csv_dict['frame_id'] = frame_idx
+                    capture_result_idy = capture_result[idy]
+                    csv_dict['id'] = capture_result_idy['id']
+                    csv_dict['plate'] = capture_result_idy['plate_ocr']
+                    csv_dict['plate_state'] = capture_result_idy['plate_state']
+                    csv_dict['plate_times'] = len(capture_result_idy['img_bbox_info'])
+
+                    csv_list.append(csv_dict)
+
             frame_idx += 1
             
             tqdm.write("{}: {}".format(video_path, str(frame_idx)))
 
+    # 是否保存日志
+    if args.write_csv_bool:
+        csv_pd = pd.DataFrame(csv_list, columns=['name', 'frame_id', 'id', 'plate', 'plate_state', 'plate_times'])
+        csv_pd.to_csv(os.path.join(args.output_video_dir, 'capture.csv'), index=False, encoding="utf_8_sig")
 
 def main():
 
@@ -110,10 +131,14 @@ def main():
     args = parser.parse_args()
 
     # zg, demo
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_HCZP/test_video/demo/avi视频/2M_0609_白_前/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/2M_0609_白_前/"
-    args.video_dir = "/mnt/huanyuan2/data/image/ZG_HCZP/test_video/demo/avi视频/2M_0609_白_后/"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/2M_0609_白_后/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_HCZP/test_video/demo/avi视频/5M_6mm_0609_白_前/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_6mm_0609_白_前/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_HCZP/test_video/demo/avi视频/5M_6mm_0609_白_后/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_6mm_0609_白_后/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_HCZP/test_video/demo/avi视频/5M_12mm_0702_白_前/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_12mm_0702_白_前/" 
+    args.video_dir = "/mnt/huanyuan2/data/image/ZG_HCZP/test_video/demo/avi视频/5M_12mm_0707_白_前/"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_12mm_0707_白_前/" 
     # args.video_dir = "/mnt/huanyuan2/data/image/ZG_HCZP/test_video/demo/avi视频/test/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test/"
     args.suffix = '.avi'
@@ -121,7 +146,8 @@ def main():
     # 是否保存视频结果
     args.write_result_video_bool = True
     # 是否保存每一帧结果
-    args.write_result_per_frame_bool = True
+    args.write_result_per_frame_bool = False
+    # args.write_result_per_frame_bool = True
     # 是否保存抓拍结果
     args.write_capture_crop_bool = True
     # 是否保存日志
