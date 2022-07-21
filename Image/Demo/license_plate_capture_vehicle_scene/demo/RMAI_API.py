@@ -92,7 +92,7 @@ class CaptureApi():
         self.update_state_container_length = 1      # 车辆框坐标容器大小，用于判断车辆状态
         self.update_state_num_threshold = 5        # 车辆行驶状态计数最大值，用于记录车辆处于同一行驶状态的帧数
         self.update_state_threshold = 1
-        self.update_state_stable_face_alpha = float(0.6)   # 平滑车辆框参数
+        self.update_state_stable_loc_alpha = float(0.6)   # 平滑车辆框参数
 
         # 报警时间长短
         self.capture_frame_num_threshold = 16
@@ -110,12 +110,17 @@ class CaptureApi():
         self.plate_width = [65, 400]
 
         # 抓拍线
-        # 6mm
+        # 6mm 0609
         # self.capture_line_ratio = [0.6, 0.7, 0.85]
-        # 12mm
-        self.capture_line_ratio = [0.4, 0.5, 0.8]
+        # 6mm 0713
+        self.capture_line_ratio = [0.6, 0.7, 0.85]
+        # # 12mm
+        # # 12mm 0702
+        # self.capture_line_ratio = [0.4, 0.5, 0.8]
+        # 12mm 0713
+        # self.capture_line_ratio = [0.35, 0.45, 0.8]
         self.capture_plate_frame_threshold = 5
-        self.capture_outtime_frame_threshold_01 = 50
+        self.capture_outtime_frame_threshold_01 = 25
         self.capture_outtime_frame_threshold_02 = 150
         self.capture_plate_up_down_distance_boundary_threshold = 50
         self.capture_plate_left_right_distance_boundary_threshold = 50
@@ -139,7 +144,7 @@ class CaptureApi():
         bbox_info_dict['left_right_state_frame_num'] = 0                    # 车辆状态（左右行）帧数
         bbox_info_dict['frame_num'] = 0                                     # 车辆进入画面帧数
         bbox_info_dict['up_down_speed'] = 0                                 # 车辆速度（上下行）
-        bbox_info_dict['left_righr_speed'] = 0                              # 车辆速度（左右行）
+        bbox_info_dict['left_right_speed'] = 0                              # 车辆速度（左右行）
         bbox_info_dict['plate_loc'] = []                                    # 车牌坐标
         bbox_info_dict['plate_ocr'] = ''                                    # 车牌识别结果（单帧）
         bbox_info_dict['plate_ocr_score'] = 0.0                             # 车牌识别结果得分（单帧）
@@ -159,7 +164,7 @@ class CaptureApi():
         bbox_state_dict['left_right_state_frame_num'] = 0                   # 车辆状态（左右行）帧数
         bbox_state_dict['frame_num'] = 0                                    # 车辆进入画面帧数
         bbox_state_dict['up_down_speed'] = 0                                # 车辆速度（上下行）
-        bbox_state_dict['left_righr_speed'] = 0                             # 车辆速度（左右行）  
+        bbox_state_dict['left_right_speed'] = 0                             # 车辆速度（左右行）  
         bbox_state_dict['center_point_list'] = []                           # 车辆中心点轨迹（多帧）      
         bbox_state_dict['plate_ocr_list'] = []                              # 车牌识别结果（多帧）
         bbox_state_dict['plate_ocr_score_list'] = []                        # 车牌识别结果得分（多帧）
@@ -172,8 +177,8 @@ class CaptureApi():
         bbox_state_dict['near_report_flage'] = False                        # 抓拍标志位
         bbox_state_dict['left_report_flage'] = False                        # 抓拍标志位
         bbox_state_dict['right_report_flage'] = False                       # 抓拍标志位
-        bbox_state_dict['outtime_report_flage_01'] = False                  # 抓拍标志位
-        bbox_state_dict['outtime_report_flage_02'] = False                  # 抓拍标志位
+        bbox_state_dict['outtime_flage_01'] = False                         # 抓拍标志位
+        bbox_state_dict['outtime_flage_02'] = False                         # 抓拍标志位
         bbox_state_dict['report_times'] = 0                                 # 抓拍次数
         
         self.params_dict['bbox_state_container'] = {}                       # 状态信息容器（key: 追踪id, value: bbox_state_dict）
@@ -339,7 +344,7 @@ class CaptureApi():
             bbox_info_dict['left_right_state_frame_num'] = 0                    # 车辆状态（左右行）帧数
             bbox_info_dict['frame_num'] = 0                                     # 车辆进入画面帧数
             bbox_info_dict['up_down_speed'] = 0                                 # 车辆速度（上下行）
-            bbox_info_dict['left_righr_speed'] = 0                              # 车辆速度（左右行）
+            bbox_info_dict['left_right_speed'] = 0                              # 车辆速度（左右行）
             bbox_info_dict['plate_loc'] = []                                    # 车牌坐标
             bbox_info_dict['plate_ocr'] = ''                                    # 车牌识别结果（单帧）
             bbox_info_dict['plate_ocr_score'] = 0.0                             # 车牌识别结果得分（单帧）
@@ -441,13 +446,13 @@ class CaptureApi():
                         bbox_state_idy['loc_list'].pop(0)
 
                     # 更新车辆速度
-                    new_stable_loc = self.update_state_stable_face_alpha * bbox_state_idy['stable_loc'] +  (1 - self.update_state_stable_face_alpha) * bbox_info_idx['loc']
+                    new_stable_loc = self.update_state_stable_loc_alpha * bbox_state_idy['stable_loc'] +  (1 - self.update_state_stable_loc_alpha) * bbox_info_idx['loc']
                     old_stable_center_x = ( bbox_state_idy['stable_loc'][0] + bbox_state_idy['stable_loc'][2] ) / 2.0
                     new_stable_center_x = ( new_stable_loc[0] + new_stable_loc[2] ) / 2.0
                     old_stable_center_y = ( bbox_state_idy['stable_loc'][1] + bbox_state_idy['stable_loc'][3] ) / 2.0
                     new_stable_center_y = ( new_stable_loc[1] + new_stable_loc[3] ) / 2.0
                     bbox_state_idy['up_down_speed'] = (old_stable_center_y - new_stable_center_y) / float(bbox_state_idy['car_disappear_frame_num'])
-                    bbox_state_idy['left_righr_speed'] = (old_stable_center_x - new_stable_center_x) / float(bbox_state_idy['car_disappear_frame_num'])
+                    bbox_state_idy['left_right_speed'] = (old_stable_center_x - new_stable_center_x) / float(bbox_state_idy['car_disappear_frame_num'])
                     bbox_state_idy['stable_loc'] = new_stable_loc
 
                     bbox_state_idy['car_disappear_frame_num'] = 0
@@ -470,9 +475,9 @@ class CaptureApi():
                         bbox_state_idy['up_down_state_frame_num'] = min( bbox_state_idy['up_down_state_frame_num'] + 1 , self.update_state_num_threshold)
                     
                     # 车辆状态判断（左右行）
-                    if bbox_state_idy['left_righr_speed'] > self.update_state_threshold:
+                    if bbox_state_idy['left_right_speed'] > self.update_state_threshold:
                         bbox_state = 'Left'
-                    elif bbox_state_idy['left_righr_speed'] < ( -1 * self.update_state_threshold ):
+                    elif bbox_state_idy['left_right_speed'] < ( -1 * self.update_state_threshold ):
                         bbox_state = 'Right'
                     else:
                         bbox_state = "Stop"
@@ -495,6 +500,7 @@ class CaptureApi():
 
                         plate_left_y = bbox_info_idx['plate_loc'][0]
                         plate_right_y = bbox_info_idx['plate_loc'][2]
+                        plate_up_y = bbox_info_idx['plate_loc'][1]
                         plate_bottom_y = bbox_info_idx['plate_loc'][3]
 
                         # 上下限阈值
@@ -507,7 +513,7 @@ class CaptureApi():
                         if car_bottom_y > Up_threshold:
                             bbox_state_idy['plate_frame_num'] += 1
 
-                        if plate_bottom_y > Up_threshold and \
+                        if plate_up_y > Up_threshold and \
                             abs(plate_left_y - 0) > self.capture_plate_left_right_distance_boundary_threshold and \
                             abs(self.image_width - plate_right_y) > self.capture_plate_left_right_distance_boundary_threshold:
                             bbox_state_idy['clear_plate_frame_num'] += 1
@@ -535,7 +541,7 @@ class CaptureApi():
                     bbox_info_idx['stable_loc'] = bbox_state_idy['stable_loc']
                     bbox_info_idx['frame_num'] = bbox_state_idy['frame_num']
                     bbox_info_idx['up_down_speed'] = bbox_state_idy['up_down_speed']
-                    bbox_info_idx['left_righr_speed'] = bbox_state_idy['left_righr_speed']
+                    bbox_info_idx['left_right_speed'] = bbox_state_idy['left_right_speed']
 
             if is_new_id_bool:
 
@@ -551,7 +557,7 @@ class CaptureApi():
                 bbox_state_dict['left_right_state_frame_num'] = 0                   # 车辆状态（左右行）帧数
                 bbox_state_dict['frame_num'] = 0                                    # 车辆进入画面帧数
                 bbox_state_dict['up_down_speed'] = 0                                # 车辆速度
-                bbox_state_dict['left_righr_speed'] = 0                             # 车辆速度（左右行）
+                bbox_state_dict['left_right_speed'] = 0                             # 车辆速度（左右行）
                 bbox_state_dict['center_point_list'] = []                           # 车辆中心点轨迹（多帧）
                 bbox_state_dict['plate_ocr_list'] = []                              # 车牌识别结果（多帧）
                 bbox_state_dict['plate_ocr_score_list'] = []                        # 车牌识别结果得分（多帧）
@@ -564,8 +570,8 @@ class CaptureApi():
                 bbox_state_dict['near_report_flage'] = False                        # 抓拍标志位
                 bbox_state_dict['left_report_flage'] = False                        # 抓拍标志位
                 bbox_state_dict['right_report_flage'] = False                       # 抓拍标志位
-                bbox_state_dict['outtime_report_flage_01'] = False                  # 抓拍标志位
-                bbox_state_dict['outtime_report_flage_02'] = False                  # 抓拍标志位
+                bbox_state_dict['outtime_flage_01'] = False                         # 抓拍标志位
+                bbox_state_dict['outtime_flage_02'] = False                         # 抓拍标志位
                 bbox_state_dict['report_times'] = 0                                 # 抓拍次数
 
                 bbox_state_dict['id'] = bbox_info_idx['id']
@@ -641,8 +647,8 @@ class CaptureApi():
             far_flage = False
             left_flage = False
             right_flage = False
-            outtime_report_01 = False
-            outtime_report_02 = False
+            outtime_flage_01 = False
+            outtime_flage_02 = False
             report_flage = False
 
             car_left_y = bbox_state_idy['loc'][0]
@@ -662,21 +668,20 @@ class CaptureApi():
                     far_flage = True
 
             # 如果车辆向左边行驶
-            if bbox_state_idy['left_right_state'] == 'Left' and bbox_state_idy['up_down_state_frame_num'] >= 3:
-                if car_bottom_y > Middle_threshold and \
-                    abs(car_left_y - 0) < self.capture_plate_left_right_distance_boundary_threshold and \
+            if bbox_state_idy['left_right_state'] == 'Left' and bbox_state_idy['left_right_state_frame_num'] >= 3:
+                if abs(car_left_y - 0) < self.capture_plate_left_right_distance_boundary_threshold and \
                     bbox_state_idy['plate_frame_num'] > self.capture_plate_frame_threshold:
                     left_flage = True
             
             # 如果车辆向右边行驶
-            if bbox_state_idy['left_right_state'] == 'Right' and bbox_state_idy['up_down_state_frame_num'] >= 3:
-                if car_bottom_y > Middle_threshold and \
-                    abs(self.image_width - car_right_y) < self.capture_plate_left_right_distance_boundary_threshold and \
+            if bbox_state_idy['left_right_state'] == 'Right' and bbox_state_idy['left_right_state_frame_num'] >= 3:
+                if abs(self.image_width - car_right_y) < self.capture_plate_left_right_distance_boundary_threshold and \
                     bbox_state_idy['plate_frame_num'] > self.capture_plate_frame_threshold:
                     right_flage = True
 
             # 如果车辆相对静止，直接上报：
-            if ( bbox_state_idy['up_down_state'] == 'Stop' or bbox_state_idy['left_right_state'] == 'Stop') and bbox_state_idy['up_down_state_frame_num'] >= 3:
+            if ( bbox_state_idy['up_down_state'] == 'Stop' and bbox_state_idy['up_down_state_frame_num'] >= 3 ) or \
+                ( bbox_state_idy['left_right_state'] == 'Stop' and bbox_state_idy['left_right_state_frame_num'] >= 3 ):
                 if car_bottom_y > Middle_threshold and \
                         abs(car_left_y - 0) > self.capture_plate_left_right_distance_boundary_threshold and \
                         abs(self.image_width - car_right_y) > self.capture_plate_left_right_distance_boundary_threshold and \
@@ -685,11 +690,11 @@ class CaptureApi():
 
             # 如果车辆在视野内，超过 50 帧
             if bbox_state_idy['clear_plate_frame_num'] > self.capture_outtime_frame_threshold_01:
-                outtime_report_01 = True
+                outtime_flage_01 = True
 
             # 如果车辆在视野内，超过 150 帧
             if bbox_state_idy['clear_plate_frame_num'] > self.capture_outtime_frame_threshold_02:
-                outtime_report_02 = True
+                outtime_flage_02 = True
                          
             # 更新 capture_dict 抓拍字典
             capture_dict = {}                                                   # 抓怕
@@ -723,13 +728,13 @@ class CaptureApi():
                 report_flage = True
                 capture_dict['flage'] = 'right_flage'
 
-            if outtime_report_01 and not bbox_state_idy['outtime_report_flage_01']:
-                bbox_state_idy['outtime_report_flage_01'] = True
+            if outtime_flage_01 and not bbox_state_idy['outtime_flage_01']:
+                bbox_state_idy['outtime_flage_01'] = True
                 report_flage = True
                 capture_dict['flage'] = 'outtime_flage_01'
 
-            if outtime_report_02 and not bbox_state_idy['outtime_report_flage_02']:
-                bbox_state_idy['outtime_report_flage_02'] = True
+            if outtime_flage_02 and not bbox_state_idy['outtime_flage_02']:
+                bbox_state_idy['outtime_flage_02'] = True
                 report_flage = True
                 capture_dict['flage'] = 'outtime_flage_02'
 

@@ -67,7 +67,7 @@ def draw_bbox_info(img, bbox_info, capture_dict=None, mode='xywh'):
         # bbox_info_idx['stable_loc'] = [int(b + 0.5) for b in bbox_info_idx['stable_loc'][:4]]
         # img = cv_plot_rectangle(img, bbox_info_idx['stable_loc'], mode=mode, color=color)
 
-        img = cv2.putText(img, "{}_{}_{}_{}_{}_{}_{}_{:.2f}_{:.2f}".format( bbox_info_idx['id'], bbox_info_idx['frame_num'], bbox_info_idx['up_down_state'], bbox_info_idx['up_down_state_frame_num'], bbox_info_idx['left_right_state'], bbox_info_idx['left_right_state_frame_num'], bbox_info_idx['attri'], bbox_info_idx['up_down_speed'], bbox_info_idx['left_righr_speed'] ), (bbox_info_idx['loc'][0], bbox_info_idx['loc'][1] - 10), 
+        img = cv2.putText(img, "{}_{}_{}_{}_{}_{}_{}_{:.2f}_{:.2f}".format( bbox_info_idx['id'], bbox_info_idx['frame_num'], bbox_info_idx['up_down_state'], bbox_info_idx['up_down_state_frame_num'], bbox_info_idx['left_right_state'], bbox_info_idx['left_right_state_frame_num'], bbox_info_idx['attri'], bbox_info_idx['up_down_speed'], bbox_info_idx['left_right_speed'] ), (bbox_info_idx['loc'][0], bbox_info_idx['loc'][1] - 10), 
                             cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 2)
 
         # license_plate
