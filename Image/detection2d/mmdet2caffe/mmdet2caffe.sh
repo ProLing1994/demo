@@ -1,8 +1,13 @@
  #!/usr/bin/env bash
-CONFIG=/home/huanyuan/code/demo/Image/2ddetection/mmdetection/configs/zhiguan/detect/yoloxv2_rmvgg_rmfpn_nova_3level_zhiguan_non_car_person_detection_320x320.py
-CHECKPOINT=/home/huanyuan/code/demo/Image/2ddetection/mmdetection/checkpoints/epoch_24.pth
-NAME=yoloxv2_guoshengdaoData_patch_mix
-OUTPUT_DIR=/home/huanyuan/code/demo/Image/2ddetection/mmdet2caffe/caffe_model
+CONFIG=/mnt/huanyuan/model/image/yolov6/yolov6_zg_bmx_zg_data/yolov6_zg_bmx.py
+CHECKPOINT=/mnt/huanyuan/model/image/yolov6/yolov6_zg_bmx_zg_data/epoch_300.pth
+NAME=yolov6_zg_bmx
+OUTPUT_DIR=/home/huanyuan/code/demo/Image/detection2d/mmdet2caffe/caffe_model
+
+# CONFIG=/mnt/huanyuan/model/image/yolov6/yolov6_zg_bmx_zg_data/yolov6_zg_bmx_deploy.py
+# CHECKPOINT=/mnt/huanyuan/model/image/yolov6/yolov6_zg_bmx_zg_data/epoch_300_deploy.pth
+# NAME=yolov6_zg_bmx_deploy
+# OUTPUT_DIR=/home/huanyuan/code/demo/Image/detection2d/mmdet2caffe/caffe_model
 
 python deployment/pytorch2caffe/mmdet2caffe.py \
    --config-file $CONFIG \

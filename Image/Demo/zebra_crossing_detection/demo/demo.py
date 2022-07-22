@@ -103,7 +103,7 @@ def main():
 
     # zg, demo
     args.video_dir = "/mnt/huanyuan2/data/image/ZG_BMX_detection/banmaxian_test_video/ZG_RongHeng/avi视频/test/"
-    args.output_video_dir = "/home/huanyuan/temp/pc_demo/test/"
+    args.output_video_dir = "/home/huanyuan/temp/pc_demo/yolov6_test/"
     args.suffix = '.avi'
 
     # 是否保存视频结果
