@@ -249,14 +249,15 @@ def voc_eval(merge_class_name,
         fp_sum = np.cumsum(fp)
         tp_sum = np.cumsum(tp)
         rec = tp_sum / float(npos)
-        print("npos: {}".format(npos))
+        # print("npos: {}".format(npos))
         if npos != 0:
-            print("tpr: {:.3f}({}/{})".format(tp.sum()/ float(npos), tp.sum(), npos))
+            print("recall(TPR): {:.3f}({}/{})".format(tp.sum()/ float(npos), tp.sum(), npos))
         else:
-            print("tpr: None")
+            print("TPR: None")
         # avoid divide by zero in case the first detection matches a difficult
         # ground truth
         prec = tp_sum / np.maximum(tp_sum + fp_sum, np.finfo(np.float64).eps)
+        print("precision(PPV): {:.3f}({}/{})".format(tp.sum()/ (tp.sum() + fp.sum()), tp.sum(), (tp.sum() + fp.sum())))
         ap = voc_ap(rec, prec, use_07_metric)
     else:
         rec = -1.
