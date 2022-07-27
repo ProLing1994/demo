@@ -64,9 +64,10 @@ def draw_bbox_info(img, bbox_info, capture_dict, mode='xywh'):
             if bbox_info_idx['id'] == idy:
                 capture_bool = True
 
-        # car
         if isinstance(bbox_info_idx['loc'][0], float):
             bbox_info_idx['loc'] = [int(b + 0.5) for b in bbox_info_idx['loc'][:4]]
+
+        # car
         img = cv2.putText(img, "{}_{}_{}_{}_{}".format(bbox_info_idx['attri'], bbox_info_idx['id'], bbox_info_idx['frame_num'], bbox_info_idx['state'], bbox_info_idx['state_frame_num']), (bbox_info_idx['loc'][0], bbox_info_idx['loc'][1] - 10), 
                             cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["car"], 2)
         if not capture_bool:

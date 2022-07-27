@@ -79,7 +79,6 @@ class FaceCaptureApi():
         bbox_state_dict['caputure_img'] = 0                                 # 行人保存图像
         bbox_state_dict['captute_bool'] = False                             # 行人抓拍标志
 
-
         self.params_dict['bbox_state_container'] = {}                       # 状态信息容器（key: 追踪id, value: bbox_state_dict）
 
         # bbox_capture_dict
@@ -268,6 +267,7 @@ class FaceCaptureApi():
                 bbox_state_dict['score'] = bbox_info_idx['score']
                 bbox_state_dict['loc_list'].append(bbox_info_idx['loc'])
                 bbox_state_dict['stable_loc'] = bbox_info_idx['loc']
+                
                 bbox_info_idx['stable_loc'] = bbox_info_idx['loc']
 
                 self.params_dict['bbox_state_container'][bbox_state_dict['id']] = bbox_state_dict
