@@ -141,10 +141,10 @@ def main():
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_12mm_0707_白_前/" 
     # args.video_dir = "/mnt/huanyuan2/data/image/ZG_HCZP/test_video/avi视频/5M_12mm_0713_白_前/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_12mm_0713_白_前/"
+    args.video_dir = "/mnt/huanyuan2/data/image/ZG_HCZP/test_video/avi视频/5M_12mm_0723_白_前/"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_12mm_0723_白_前/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZG_HCZP/test_video/avi视频/test/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test/"
-    args.video_dir = "/mnt/huanyuan2/data/image/ZG_HCZP/test_video/avi视频/test_6mm/"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test_6mm/"
     args.suffix = '.avi'
 
     # 是否保存视频结果

@@ -4,7 +4,7 @@ import os
 import sys
 import time
 
-caffe_root = "/home/huanyuan/code/caffe_ssd/"
+caffe_root = "/home/huanyuan/code/caffe/"
 sys.path.insert(0, caffe_root + 'python')
 sys.path.append('./')
 import caffe

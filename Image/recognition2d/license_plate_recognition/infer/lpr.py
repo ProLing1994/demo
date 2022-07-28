@@ -5,9 +5,8 @@ import sys
 import time
 import torch
 
-caffe_root = "/home/huanyuan/code/caffe_ssd/"
+caffe_root = '/home/huanyuan/code/caffe/'
 sys.path.insert(0, caffe_root + 'python')
-sys.path.append('./')
 import caffe
 
 sys.path.insert(0, '/home/huanyuan/code/demo/')

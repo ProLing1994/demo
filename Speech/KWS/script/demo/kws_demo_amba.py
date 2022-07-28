@@ -11,7 +11,7 @@ sys.path.insert(0, '/home/huanyuan/code/demo/Speech/ASR')
 from impl.asr_data_loader_pyimpl import WaveLoader
 from impl.asr_feature_pyimpl import Feature
 
-caffe_root = "/home/huanyuan/code/caffe_ssd/"
+caffe_root = "/home/huanyuan/code/caffe/"
 sys.path.insert(0, caffe_root+'python')
 import caffe
 

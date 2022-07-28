@@ -59,13 +59,13 @@ class CaptureApi():
         # yolov6
         self.yolov6_bool = True
         # pytorch
-        self.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_zg_bmx_zg_data/yolov6_zg_bmx.py"
-        self.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_zg_bmx_zg_data/epoch_300.pth"
+        self.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_zg_bmx_adas_bsd_zg_data_0722/yolov6_zg_bmx.py"
+        self.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_zg_bmx_adas_bsd_zg_data_0722/epoch_300.pth"
 
         # 是否将 non_motorized\person 合并为一类输出
         self.merge_class_bool = False
         self.class_name = ['car_bus_truck', 'non_motorized', 'person']
-        self.class_threshold_list = [0.3, 0.3, 0.3]
+        self.class_threshold_list = [0.5, 0.4, 0.4]
         
         # sort
         self.max_age = 10

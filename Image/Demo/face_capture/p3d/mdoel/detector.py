@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import sys
 
-caffe_root = '/home/huanyuan/code/caffe_ssd/'
+caffe_root = '/home/huanyuan/code/caffe/'
 sys.path.insert(0, caffe_root+'python')
 import caffe
 

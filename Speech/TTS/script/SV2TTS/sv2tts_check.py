@@ -13,7 +13,7 @@ from ASR.impl.asr_feature_pyimpl import Feature
 import ASR.impl.asr_decode_pyimpl as Decode_Python
 import ASR.impl.asr_data_loader_pyimpl as WaveLoader_Python
 
-caffe_root = "/home/huanyuan/code/caffe_ssd/"
+caffe_root = "/home/huanyuan/code/caffe/"
 sys.path.insert(0, caffe_root + 'python')
 sys.path.append('./')
 import caffe
