@@ -30,6 +30,7 @@ def calculate_ap_all(args):
                                 'car_bus_truck': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_' + test_name, 'results/det_test_car_bus_truck.txt'), 
                                 'bus_truck': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_' + test_name, 'results/det_test_bus_truck.txt'), 
                                 'non_motorized': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_' + test_name, 'results/det_test_non_motorized.txt'), 
+                                'non_motorized_person': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_' + test_name, 'results/det_test_non_motorized_person.txt'), 
                                 'person': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_' + test_name, 'results/det_test_person.txt'), 
                                 } 
 
@@ -47,6 +48,8 @@ def calculate_ap_all(args):
                                 'license_plate': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')), 'results/det_test_license_plate.txt'),
                                 'car_bus_truck': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')), 'results/det_test_car_bus_truck.txt'), 
                                 'bus_truck': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')), 'results/det_test_bus_truck.txt'), 
+                                'non_motorized': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')), 'results/det_test_non_motorized.txt'), 
+                                'non_motorized_person': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')), 'results/det_test_non_motorized_person.txt'), 
                                 'person': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')), 'results/det_test_person.txt'), 
                                 } 
 
@@ -107,17 +110,17 @@ def calculate_ap_all(args):
         fp_sum = np.cumsum(fp)
         tp_sum = np.cumsum(tp)
         rec = tp_sum / float(npos)
-        print("npos: {}".format(npos))
+        # print("npos: {}".format(npos))
         if npos != 0:
-            print("tpr: {:.3f}({}/{})".format(tp.sum()/ float(npos), tp.sum(), npos))
+            print("recall(TPR): {:.3f}({}/{})".format(tp.sum()/ float(npos), tp.sum(), npos))
         else:
             print("tpr: None")
         # avoid divide by zero in case the first detection matches a difficult
         # ground truth
         prec = tp_sum / np.maximum(tp_sum + fp_sum, np.finfo(np.float64).eps)
+        print("precision(PPV): {:.3f}({}/{})".format(tp.sum()/ (tp.sum() + fp.sum()), tp.sum(), (tp.sum() + fp.sum())))
         ap = voc_ap(rec, prec, args.use_07_metric)
-
-        print('ALL AP for {} = {:.3f}'.format(class_name, ap))
+        print('ALL AP for {} = {:.3f}\n'.format(class_name, ap))
 
     return 
 
@@ -197,6 +200,7 @@ if __name__ == "__main__":
     # args.from_dataset_bool = True
 
     # ######################################
+    # # Car_Bus_Truck_Licenseplate
     # # 收集测试图像：
     # ######################################
 
@@ -321,7 +325,9 @@ if __name__ == "__main__":
 
     args.cal_ap_dict = {'car_bus_truck': ['car', 'bus', 'truck'], 
                         'non_motorized': ['bicyclist', 'motorcyclist'], 
-                        'person': ['person'] }
+                        'person': ['person']}
+
+    # args.cal_ap_dict = {'person': ['person']}
 
     # yolox
     # args.model_dir = "/yuanhuan/model/image/yolox_vgg/car_non_motorized_person_yolox_model_zph/eval_epoches_24/"
@@ -330,13 +336,62 @@ if __name__ == "__main__":
     # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-06-20-12_focalloss_3class_car_bus_truck_non_motorized_person_ZG/eval_epoches_299/"
     # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-06-27-21_focalloss_3class_car_bus_truck_non_motorized_person_ZG/eval_epoches_299/"
     # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-06-27-21_focalloss_3class_car_bus_truck_non_motorized_person_ZG/eval_epoches_299/"
-    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-06-29-15_focalloss_3class_car_bus_truck_non_motorized_person_ZG/eval_epoches_299/"
-    args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-06-30-19_focalloss_3class_car_bus_truck_non_motorized_person_ZG_eqlv2/eval_epoches_299/"
+    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-06-29-15_focalloss_3class_car_bus_truck_non_motorized_person_ZG/eval_epoches_299_0.3/"
+    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-06-29-15_focalloss_3class_car_bus_truck_non_motorized_person_ZG/eval_epoches_299_0.3_nms/"
+    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-06-30-19_focalloss_3class_car_bus_truck_non_motorized_person_ZG_eqlv2/eval_epoches_299/"
+    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-06-30-19_focalloss_3class_car_bus_truck_non_motorized_person_ZG_eqlv2/eval_epoches_499_0.5_nms/"
+    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-06-30-19_focalloss_3class_car_bus_truck_non_motorized_person_ZG_eqlv2/eval_epoches_499_0.7_nms/"
+
+    # SSD_VGG_FPN_RFB_2022-07-04-21_focalloss_3class_car_bus_truck_non_motorized_person_softmax_ADAS_BAD_ZG
+    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-07-04-21_focalloss_3class_car_bus_truck_non_motorized_person_softmax_ADAS_BAD_ZG/eval_epoches_299_0.3/"
+    
+    # # SSD_VGG_FPN_RFB_2022-06-30-15_focalloss_1class_person_ADAS_BAD_ZG
+    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-06-30-15_focalloss_1class_person_ADAS_BAD_ZG/eval_epoches_299/"
+
+    # yolov6
+    # # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_zg_bmx_adas_bsd_zg_data_0722/eval_epoches_300_0.4/"
+    args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_zg_bmx_adas_bsd_zg_data_attribute/eval_epoches_300_0.4/"
 
     # args.anno_name = 'Annotations_CarBusTruckBicyclistMotorcyclistPerson'                            # 车 & 非机动 & 人 
     args.anno_name = 'Annotations_CarBusTruckBicyclistMotorcyclistPerson_filter'                       # 车 & 非机动 & 人 & 大小过滤
 
     args.from_dataset_bool = True
+
+    ######################################
+    # Nonmotorized_Car_Person
+    # 收集测试图像：
+    ######################################
+
+    args.data_dir = "/yuanhuan/data/image/ZG_BMX_detection/"
+
+    # args.data_list = ['banmaxian_test_image/2M_DaMingHu_far', 'banmaxian_test_image/2M_DaMingHu_near', 'banmaxian_test_image/2M_DaMingHu_night_far', 'banmaxian_test_image/2M_DaMingHu_night_near' ]
+    # args.data_list = ['banmaxian_test_image/2M_RongHeng_far', 'banmaxian_test_image/2M_RongHeng_near', 'banmaxian_test_image/2M_RongHeng_night_far', 'banmaxian_test_image/2M_RongHeng_night_near' ]
+    args.data_list = ['banmaxian_test_image/2M_DaMingHu_far', 'banmaxian_test_image/2M_DaMingHu_near', 'banmaxian_test_image/2M_DaMingHu_night_far', 'banmaxian_test_image/2M_DaMingHu_night_near',
+                      'banmaxian_test_image/2M_RongHeng_far', 'banmaxian_test_image/2M_RongHeng_near', 'banmaxian_test_image/2M_RongHeng_night_far', 'banmaxian_test_image/2M_RongHeng_night_near', 
+                      ]
+
+    args.cal_ap_dict = {'car_bus_truck': ['car', 'bus', 'truck'], 
+                        'non_motorized': ['bicyclist', 'motorcyclist'], 
+                        'person': ['person']}
+    # args.cal_ap_dict = {'person': ['person']}
+
+    # SSD_VGG_FPN_RFB_2022-06-29-15_focalloss_3class_car_bus_truck_non_motorized_person_ZG
+    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-06-29-15_focalloss_3class_car_bus_truck_non_motorized_person_ZG/eval_epoches_299/"
+
+    # SSD_VGG_FPN_RFB_2022-07-04-21_focalloss_3class_car_bus_truck_non_motorized_person_softmax_ADAS_BAD_ZG
+    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-07-04-21_focalloss_3class_car_bus_truck_non_motorized_person_softmax_ADAS_BAD_ZG/eval_epoches_299_0.3_nms/"
+    
+    # # SSD_VGG_FPN_RFB_2022-06-30-15_focalloss_1class_person_ADAS_BAD_ZG
+    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-06-30-15_focalloss_1class_person_ADAS_BAD_ZG/eval_epoches_299/"
+
+    # yolov6
+    args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_zg_bmx_adas_bsd_zg_data_0722/eval_epoches_300_0.4/"
+    args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_zg_bmx_adas_bsd_zg_data_attribute/eval_epoches_300_0.4/"
+
+    # args.anno_name = 'Annotations_CarBusTruckBicyclistMotorcyclistPerson'                            # 车 & 非机动 & 人 
+    args.anno_name = 'Annotations_CarBusTruckBicyclistMotorcyclistPerson_filter'                       # 车 & 非机动 & 人 & 大小过滤
+
+    args.from_dataset_bool = False
 
     #####################################
     # 分割线
@@ -346,9 +401,6 @@ if __name__ == "__main__":
     # test_name = "val"
     test_name = "test"
 
-    # yolox 
-    # args.over_thresh = 0.4
-    # ssd
     args.over_thresh = 0.5
     args.use_07_metric = False
 

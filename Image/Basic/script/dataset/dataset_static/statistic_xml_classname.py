@@ -122,6 +122,9 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu/"
     # [('bus', 2783), ('car', 231859), ('fuzzy_plate', 90631), ('painted_plate', 448), ('plate', 17824), ('truck', 46680)]
     # [('bus', {'trainval': 2488, 'test': 295}), ('car', {'trainval': 208033, 'test': 23826}), ('fuzzy_plate', {'trainval': 81251, 'test': 9380}), ('painted_plate', {'trainval': 406, 'test': 42}), ('plate', {'trainval': 16027, 'test': 1797}), ('truck', {'trainval': 41976, 'test': 4704})]
+    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu_night_diguangzhao/"
+    # [('bus', 3629), ('car', 80339), ('fuzzy_plate', 21505), ('plate', 8605), ('truck', 11480)]
+    # [('bus', {'trainval': 3271, 'test': 358}), ('car', {'trainval': 72341, 'test': 7998}), ('fuzzy_plate', {'trainval': 19419, 'test': 2086}), ('plate', {'trainval': 7733, 'test': 872}), ('truck', {'trainval': 10380, 'test': 1100})]
     
     # 数据集: ZG_ZHJYZ_detection 加油站测试样本
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
@@ -215,8 +218,19 @@ if __name__ == "__main__":
     # rongheng_night_hongwai: [('bicyclist', 856), ('bicyclist_o', 31), ('bus', 257), ('car', 19495), ('car_o', 5), ('motorcyclist', 1619), ('motorcyclist_o', 73), ('person', 13772), ('person_o', 2014), ('truck', 207)]
     # rongheng_night_hongwai: [('bicyclist', {'trainval': 776, 'test': 80}), ('bicyclist_o', {'trainval': 28, 'test': 3}), ('bus', {'trainval': 225, 'test': 32}), ('car', {'trainval': 17546, 'test': 1949}), ('car_o', {'trainval': 5, 'test': 0}), ('motorcyclist', {'trainval': 1471, 'test': 148}), ('motorcyclist_o', {'trainval': 65, 'test': 8}), ('person', {'trainval': 12369, 'test': 1403}), ('person_o', {'trainval': 1826, 'test': 188}), ('truck', {'trainval': 185, 'test': 22})]
 
+    # 数据集: ZG_BMX_detection 斑马线测试样本
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/banmaxian_test_image/"
+    # 2M_DaMingHu_far: [('bicycle', 119), ('bicyclist', 59), ('bus', 10), ('car', 93), ('head', 703), ('helmet', 100), ('motorcycle', 148), ('motorcyclist', 249), ('person', 556), ('tricycle', 5)]
+    # 2M_DaMingHu_near: [('bicycle', 31), ('bicyclist', 31), ('bus', 4), ('car', 75), ('head', 494), ('helmet', 68), ('motorcycle', 171), ('motorcyclist', 154), ('person', 410), ('plate', 1), ('trcycle', 3), ('truck', 6)]
+    # 2M_DaMingHu_night_far: [('bicycle', 71), ('bicyclist', 21), ('bus', 7), ('car', 95), ('head', 304), ('helmet', 38), ('motorcycle', 171), ('motorcyclist', 113), ('person', 297), ('trcycle', 4), ('truck', 2)]
+    # 2M_DaMingHu_night_near: [('bicycle', 57), ('bicyclist', 12), ('bus', 1), ('car', 62), ('head', 303), ('helmet', 43), ('motorcycle', 104), ('motorcyclist', 101), ('person', 236), ('tricycle', 2), ('truck', 3)]
+    # 2M_RongHeng_far: [('bicycle', 28), ('bicyclist', 34), ('bus', 48), ('car', 790), ('head', 303), ('helmet', 51), ('motorcycle', 3), ('motorcyclist', 96), ('person', 367), ('truck', 5)]
+    # 2M_RongHeng_near: [('bicycle', 65), ('bicyclist', 15), ('bus', 1), ('car', 60), ('head', 299), ('helmet', 57), ('motorcycle', 2), ('motorcyclist', 72), ('person', 297), ('truck', 3)]
+    # 2M_RongHeng_night_far: [('bicycle', 35), ('bicyclist', 26), ('bus', 21), ('car', 845), ('head', 559), ('helmet', 57), ('motorcycle', 17), ('motorcyclist', 122), ('person', 557), ('truck', 3)]
+    # 2M_RongHeng_night_near: [('bicycle', 46), ('bicyclist', 5), ('bus', 2), ('car', 85), ('head', 253), ('helmet', 44), ('motorcycle', 59), ('motorcyclist', 66), ('person', 266)]
+
     # 开源数据集: MOT17\MOT20\NightOwls\Cityscapes
-    args.input_dir = "/yuanhuan/data/image/Open_Source/Cityscapes/cityscapes/"
+    # args.input_dir = "/yuanhuan/data/image/Open_Source/Cityscapes/cityscapes/"
     # MOT17: [('car_bus_truck', 6084), ('person', 86982)]
     # MOT17: [('car_bus_truck', {'trainval': 5534, 'test': 550}), ('person', {'trainval': 78131, 'test': 8851})]
     # MOT20: [('person', 931571)]
@@ -243,13 +257,13 @@ if __name__ == "__main__":
     args.statistic_dict = {'trainval': args.trainval_file, 'test': args.test_file }
 
     args.jpg_dir =  args.input_dir + "JPEGImages/"
-    # args.xml_dir =  args.input_dir + "XML/"
+    args.xml_dir =  args.input_dir + "XML/"
     # args.xml_dir =  args.input_dir + "Annotations_CarBusTruckBicyclistMotorcyclistPerson/"
     # args.xml_dir =  args.input_dir + "Annotations_CarBusTruckBicyclistMotorcyclistPerson_filter/"
-    args.xml_dir =  args.input_dir + "Annotations_Person/"
+    # args.xml_dir =  args.input_dir + "Annotations_Person/"
 
-    # args.jpg_dir =  args.input_dir + "SZTQ/"
-    # args.xml_dir =  args.input_dir + "SZTQ_XML/"
+    # args.jpg_dir =  args.input_dir + "2M_RongHeng_night_near/"
+    # args.xml_dir =  args.input_dir + "2M_RongHeng_night_near_XML/"
 
     statistic_classname(args)
     statistic_classname_train_val_test(args)
