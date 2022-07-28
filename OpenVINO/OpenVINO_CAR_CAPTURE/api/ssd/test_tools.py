@@ -29,7 +29,7 @@ class SSDDetector(object):
 
     def load_net(self):
         if self.ssd_caffe_bool:
-            caffe_root = '/home/huanyuan/code/caffe_ssd/'
+            caffe_root = '/home/huanyuan/code/caffe/'
             sys.path.insert(0, caffe_root+'python')
             import caffe
 
