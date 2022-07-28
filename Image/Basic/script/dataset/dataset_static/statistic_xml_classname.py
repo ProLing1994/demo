@@ -122,12 +122,12 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu/"
     # [('bus', 2783), ('car', 231859), ('fuzzy_plate', 90631), ('painted_plate', 448), ('plate', 17824), ('truck', 46680)]
     # [('bus', {'trainval': 2488, 'test': 295}), ('car', {'trainval': 208033, 'test': 23826}), ('fuzzy_plate', {'trainval': 81251, 'test': 9380}), ('painted_plate', {'trainval': 406, 'test': 42}), ('plate', {'trainval': 16027, 'test': 1797}), ('truck', {'trainval': 41976, 'test': 4704})]
-    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu_night_diguangzhao/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu_night_diguangzhao/"
     # [('bus', 3629), ('car', 80339), ('fuzzy_plate', 21505), ('plate', 8605), ('truck', 11480)]
     # [('bus', {'trainval': 3271, 'test': 358}), ('car', {'trainval': 72341, 'test': 7998}), ('fuzzy_plate', {'trainval': 19419, 'test': 2086}), ('plate', {'trainval': 7733, 'test': 872}), ('truck', {'trainval': 10380, 'test': 1100})]
     
     # 数据集: ZG_ZHJYZ_detection 加油站测试样本
-    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
+    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/"
     # 2MB: [('car', 155), ('fuzzy_plate', 37), ('plate', 87), ('truck', 1)]
     # 2MH: [('bus', 7), ('car', 570), ('fuzzy_plate', 27), ('plate', 411), ('truck', 9)]
     # 5MB: [('bus', 13), ('car', 453), ('fuzzy_plate', 103), ('plate', 235), ('truck', 8)]
@@ -144,6 +144,8 @@ if __name__ == "__main__":
     # AHHBAS_kakou2: [('car', 1991), ('fuzzy_plate', 1156), ('plate', 202), ('truck', 167)]
     # AHHBAS_kakou3: [('car', 3838), ('fuzzy_plate', 280), ('plate', 194), ('truck', 211)]
     # AHHBAS_kakou4: [('car', 2183), ('fuzzy_plate', 116), ('plate', 169), ('truck', 42)]
+    # AHHBAS_kakou2_night: [('car', 290), ('fuzzy_plate', 91), ('plate', 37), ('truck', 88)]
+    # AHHBAS_kakou3_night: [('car', 621), ('fuzzy_plate', 69), ('plate', 70), ('truck', 22)]
     # AHHBPS: [('bus', 12), ('car', 294), ('fuzzy_plate', 160), ('plate', 187), ('truck', 198)]
     # TXSDFX_6: [('bus', 3), ('car', 94), ('fuzzy_plate', 54), ('plate', 96), ('truck', 57)]
     # TXSDFX_7: [('car', 14), ('fuzzy_plate', 4), ('plate', 164), ('truck', 155)]
@@ -256,14 +258,14 @@ if __name__ == "__main__":
     args.test_file = args.input_dir + "ImageSets/Main/test.txt"
     args.statistic_dict = {'trainval': args.trainval_file, 'test': args.test_file }
 
-    args.jpg_dir =  args.input_dir + "JPEGImages/"
-    args.xml_dir =  args.input_dir + "XML/"
-    # args.xml_dir =  args.input_dir + "Annotations_CarBusTruckBicyclistMotorcyclistPerson/"
-    # args.xml_dir =  args.input_dir + "Annotations_CarBusTruckBicyclistMotorcyclistPerson_filter/"
-    # args.xml_dir =  args.input_dir + "Annotations_Person/"
+    # args.jpg_dir =  args.input_dir + "JPEGImages/"
+    # args.xml_dir =  args.input_dir + "XML/"
+    # # args.xml_dir =  args.input_dir + "Annotations_CarBusTruckBicyclistMotorcyclistPerson/"
+    # # args.xml_dir =  args.input_dir + "Annotations_CarBusTruckBicyclistMotorcyclistPerson_filter/"
+    # # args.xml_dir =  args.input_dir + "Annotations_Person/"
 
-    # args.jpg_dir =  args.input_dir + "2M_RongHeng_night_near/"
-    # args.xml_dir =  args.input_dir + "2M_RongHeng_night_near_XML/"
+    args.jpg_dir =  args.input_dir + "AHHBAS_kakou3_night/"
+    args.xml_dir =  args.input_dir + "AHHBAS_kakou3_night_XML/"
 
     statistic_classname(args)
-    statistic_classname_train_val_test(args)
+    # statistic_classname_train_val_test(args)

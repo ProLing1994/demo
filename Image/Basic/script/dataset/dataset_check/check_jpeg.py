@@ -33,7 +33,7 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_5M/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu/"
-    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu_night_diguangzhao/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu_night_diguangzhao/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/shenzhentiaoqiao/"
     # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/daminghu/"
     # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/daminghu_night/"
@@ -49,7 +49,7 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/Open_Source/MOT/MOT20/"
     # args.input_dir = "/yuanhuan/data/image/Open_Source/NightOwls/nightowls/"
     # args.input_dir = "/yuanhuan/data/image/Open_Source/Cityscapes/cityscapes/"
-    args.jpg_dir =  args.input_dir + "JPEGImages/"
+    # args.jpg_dir =  args.input_dir + "JPEGImages/"
 
     # 测试数据集
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/AHHBAS_418/"
@@ -60,6 +60,8 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/AHHBAS_kakou2/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/AHHBAS_kakou3/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/AHHBAS_kakou4/"
+    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/AHHBAS_kakou2_night/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/AHHBAS_kakou3_night/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/AHHBPS/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/TXSDFX_c/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/TXSDFX_9/"
@@ -74,6 +76,6 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/banmaxian_test_image/2M_RongHeng_near/"
     # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/banmaxian_test_image/2M_RongHeng_night_far/"
     # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/banmaxian_test_image/2M_RongHeng_night_near/"
-    # args.jpg_dir =  args.input_dir 
+    args.jpg_dir =  args.input_dir 
 
     check_jepg(args)
