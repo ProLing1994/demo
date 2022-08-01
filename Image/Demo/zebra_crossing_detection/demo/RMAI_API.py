@@ -45,10 +45,12 @@ class CaptureApi():
         # detector
 
         # ssd 
+        # self.ssd_bool = True
         self.ssd_bool = False
         # pytorch
         self.ssd_car_plate_prototxt = None
-        self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/ssd_rfb_jct_zg/car_bus_truck_non_motorized_person_softmax_zg_2022-07-04-21/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
+        # self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/jct_ssd_rfb_zg/car_bus_truck_non_motorized_person_softmax_zg_2022-07-04-21/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
+        self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/jct_ssd_rfb_zg/car_bus_truck_non_motorized_person_softmax_zg_YUVaug_2022-07-29-00/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
         # caffe
         # self.ssd_car_plate_prototxt = 
         # self.ssd_car_plate_model_path = 
@@ -58,6 +60,7 @@ class CaptureApi():
 
         # yolov6
         self.yolov6_bool = True
+        # self.yolov6_bool = False
         # pytorch
         self.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_zg_bmx_adas_bsd_zg_data_0722/yolov6_zg_bmx.py"
         self.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_zg_bmx_adas_bsd_zg_data_0722/epoch_300.pth"
