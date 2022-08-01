@@ -19,9 +19,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # args.jpg_dir = "/yuanhuan/data/image/Distance_detection/"
-    # args.jpg_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/SZTQ/"
+    args.jpg_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_image/AHHBAS_kakou2_night/"
     # args.jpg_dir = "/yuanhuan/data/image/ZG_BMX_detection/banmaxian_test_image/2M_RongHeng_night_near/"
-    args.jpg_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu_night_diguangzhao/JPEGImages_test/"
+    # args.jpg_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu_night_diguangzhao/JPEGImages_test/"
     args.output_path = os.path.join(args.jpg_dir, "images.txt")
 
     gen_txt(args)

@@ -122,7 +122,8 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/shenzhentiaoqiao/"
-    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu_night_diguangzhao/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu_night_diguangzhao/"
+    args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate/"
     args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
     args.set_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate"]
     args.finnal_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
@@ -158,9 +159,9 @@ if __name__ == "__main__":
     # args.roi_ignore_plate_bbox = []
     # args.roi_ignore_plate_name = "roi_ignore_plate"
 
-    # args.jpg_dir =  args.input_dir + "TXSDFX_c/"
-    # args.xml_dir =  args.input_dir + "TXSDFX_c_XML/"
-    # args.output_xml_dir =  args.input_dir + "TXSDFX_c_Annotations_CarBusTruckLicenseplate"
+    # args.jpg_dir =  args.input_dir + "AHHBAS_kakou2_night/"
+    # args.xml_dir =  args.input_dir + "AHHBAS_kakou2_night_XML/"
+    # args.output_xml_dir =  args.input_dir + "AHHBAS_kakou2_night_Annotations_CarBusTruckLicenseplate"
 
     select_classname(args)
 
@@ -175,7 +176,8 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/shenzhentiaoqiao/"
-    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu_night_diguangzhao/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu_night_diguangzhao/"
+    args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate/"
     args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
     args.set_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate"]
     args.finnal_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
@@ -211,9 +213,9 @@ if __name__ == "__main__":
     # args.roi_ignore_plate_bbox = []
     # args.roi_ignore_plate_name = "roi_ignore_plate"
 
-    # args.jpg_dir =  args.input_dir + "TXSDFX_c/"
-    # args.xml_dir =  args.input_dir + "TXSDFX_c_XML/"
-    # args.output_xml_dir =  args.input_dir + "TXSDFX_c_Annotations_CarBusTruckLicenseplate_w_fuzzy/"
+    # args.jpg_dir =  args.input_dir + "AHHBAS_kakou2_night/"
+    # args.xml_dir =  args.input_dir + "AHHBAS_kakou2_night_XML/"
+    # args.output_xml_dir =  args.input_dir + "AHHBAS_kakou2_night_Annotations_CarBusTruckLicenseplate_w_fuzzy/"
 
     select_classname(args)
 
@@ -228,7 +230,8 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/shenzhentiaoqiao/"
-    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu_night_diguangzhao/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu_night_diguangzhao/"
+    args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate/"
     args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
     args.set_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate"]
     args.finnal_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
@@ -264,9 +267,9 @@ if __name__ == "__main__":
     # args.roi_ignore_plate_bbox = []
     # args.roi_ignore_plate_name = "roi_ignore_plate"
 
-    # args.jpg_dir =  args.input_dir + "TXSDFX_c/"
-    # args.xml_dir =  args.input_dir + "TXSDFX_c_XML/"
-    # args.output_xml_dir =  args.input_dir + "TXSDFX_c_Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height"
+    # args.jpg_dir =  args.input_dir + "AHHBAS_kakou2_night/"
+    # args.xml_dir =  args.input_dir + "AHHBAS_kakou2_night_XML/"
+    # args.output_xml_dir =  args.input_dir + "AHHBAS_kakou2_night_Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height"
 
     select_classname(args)
 
@@ -280,7 +283,8 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/shenzhentiaoqiao/"
-    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu_night_diguangzhao/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu_night_diguangzhao/"
+    args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate/"
     args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
     args.set_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate"]
     args.finnal_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
@@ -316,8 +320,8 @@ if __name__ == "__main__":
     # args.roi_ignore_plate_bbox = []
     # args.roi_ignore_plate_name = "roi_ignore_plate"
 
-    # args.jpg_dir =  args.input_dir + "TXSDFX_c/"
-    # args.xml_dir =  args.input_dir + "TXSDFX_c_XML/"
-    # args.output_xml_dir =  args.input_dir + "TXSDFX_c_Annotations_CarBusTruckLicenseplate_w_height"
+    # args.jpg_dir =  args.input_dir + "AHHBAS_kakou2_night/"
+    # args.xml_dir =  args.input_dir + "AHHBAS_kakou2_night_XML/"
+    # args.output_xml_dir =  args.input_dir + "AHHBAS_kakou2_night_Annotations_CarBusTruckLicenseplate_w_height"
 
     select_classname(args)
