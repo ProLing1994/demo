@@ -123,10 +123,21 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/shenzhentiaoqiao/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu_night_diguangzhao/"
-    args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate/"
-    args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
-    args.set_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate"]
-    args.finnal_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
+    # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/england/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/england_1080p/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/france/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/italy/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/netherlands/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/moni/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/moni_0415/"
+    args.input_dir = "/yuanhuan/data/image/ZF_Europe/hardNeg/"
+    # args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
+    # args.set_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate"]
+    # args.finnal_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
+    args.select_name_list = ["car_bus_truck", "plate", "fuzzy_plate"]
+    args.set_name_list = ["car_bus_truck",  "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate"]
+    args.finnal_name_list = ["car_bus_truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
 
     # 判断大小车牌
     args.plate_list = ['plate', "fuzzy_plate"]
@@ -139,7 +150,8 @@ if __name__ == "__main__":
     args.roi_ignore_plate_name = "roi_ignore_plate"
 
     args.jpg_dir =  args.input_dir + "JPEGImages/"
-    args.xml_dir =  args.input_dir + "XML/"
+    # args.xml_dir =  args.input_dir + "XML/"
+    args.xml_dir =  args.input_dir + "XML_refine/"
     args.output_xml_dir =  args.input_dir + "Annotations_CarBusTruckLicenseplate/"
 
     # ######################################
@@ -177,10 +189,21 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/shenzhentiaoqiao/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu_night_diguangzhao/"
-    args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate/"
-    args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
-    args.set_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate"]
-    args.finnal_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
+    # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/england/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/england_1080p/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/france/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/italy/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/netherlands/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/moni/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/moni_0415/"
+    args.input_dir = "/yuanhuan/data/image/ZF_Europe/hardNeg/"
+    # args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
+    # args.set_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate"]
+    # args.finnal_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
+    args.select_name_list = ["car_bus_truck", "plate", "fuzzy_plate"]
+    args.set_name_list = ["car_bus_truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate"]
+    args.finnal_name_list = ["car_bus_truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
 
     # 判断大小车牌
     args.plate_list = ['plate', "fuzzy_plate"]
@@ -193,7 +216,8 @@ if __name__ == "__main__":
     args.roi_ignore_plate_name = "roi_ignore_plate"
 
     args.jpg_dir =  args.input_dir + "JPEGImages/"
-    args.xml_dir =  args.input_dir + "XML/"
+    # args.xml_dir =  args.input_dir + "XML/"
+    args.xml_dir =  args.input_dir + "XML_refine/"
     args.output_xml_dir =  args.input_dir + "Annotations_CarBusTruckLicenseplate_w_fuzzy/"
 
     # ######################################
@@ -231,10 +255,21 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/shenzhentiaoqiao/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu_night_diguangzhao/"
-    args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate/"
-    args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
-    args.set_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate"]
-    args.finnal_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
+    # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/england/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/england_1080p/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/france/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/italy/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/netherlands/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/moni/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/moni_0415/"
+    args.input_dir = "/yuanhuan/data/image/ZF_Europe/hardNeg/"
+    # args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
+    # args.set_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate"]
+    # args.finnal_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
+    args.select_name_list = ["car_bus_truck", "plate", "fuzzy_plate"]
+    args.set_name_list = ["car_bus_truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate"]
+    args.finnal_name_list = ["car_bus_truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
 
     # 判断大小车牌
     args.plate_list = ['plate', "fuzzy_plate"]
@@ -247,7 +282,8 @@ if __name__ == "__main__":
     args.roi_ignore_plate_name = "roi_ignore_plate"
 
     args.jpg_dir =  args.input_dir + "JPEGImages/"
-    args.xml_dir =  args.input_dir + "XML/"
+    # args.xml_dir =  args.input_dir + "XML/"
+    args.xml_dir =  args.input_dir + "XML_refine/"
     args.output_xml_dir =  args.input_dir + "Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height/"
 
     # ######################################
@@ -284,10 +320,21 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/shenzhentiaoqiao/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu_night_diguangzhao/"
-    args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate/"
-    args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
-    args.set_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate"]
-    args.finnal_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
+    # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/england/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/england_1080p/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/france/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/italy/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/netherlands/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/moni/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/moni_0415/"
+    args.input_dir = "/yuanhuan/data/image/ZF_Europe/hardNeg/"
+    # args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
+    # args.set_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate"]
+    # args.finnal_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
+    args.select_name_list = ["car_bus_truck", "plate", "fuzzy_plate"]
+    args.set_name_list = ["car_bus_truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate"]
+    args.finnal_name_list = ["car_bus_truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
 
     # 判断大小车牌
     args.plate_list = ['plate']
@@ -300,7 +347,8 @@ if __name__ == "__main__":
     args.roi_ignore_plate_name = "roi_ignore_plate"
 
     args.jpg_dir =  args.input_dir + "JPEGImages/"
-    args.xml_dir =  args.input_dir + "XML/"
+    # args.xml_dir =  args.input_dir + "XML/"
+    args.xml_dir =  args.input_dir + "XML_refine/"
     args.output_xml_dir =  args.input_dir + "Annotations_CarBusTruckLicenseplate_w_height/"
 
     # ######################################

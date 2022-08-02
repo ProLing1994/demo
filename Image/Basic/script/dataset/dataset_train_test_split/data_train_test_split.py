@@ -51,8 +51,17 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/LicensePlate/Mexico/"            # trainval: 10578, train: 9520, val: 1058, test: 1176
     # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone/"      # trainval: 102242, train: 92017, val: 10225, test: 11361
     # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_new/"  # trainval: 8840, train: 7956, val: 884, test: 983, all: 9823
-    args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate/"  # trainval: 13485, train: 12136, val: 1349, test: 1499, all: 14984
+    # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate/"  # trainval: 13485, train: 12136, val: 1349, test: 1499, all: 14984
     # args.input_dir = "/yuanhuan/data/image/RM_BSD/bsd_20220425_20220512/"   # trainval: 13317, train: 11985, val: 1332, test: 1480, all: 14797
+
+    args.input_dir = "/yuanhuan/data/image/ZF_Europe/england/"              # trainval: 33597, train: 30237, val: 3360, test: 3733, all: 37330
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/england_1080p/"        # trainval: 22255, train: 20029, val: 2226, test: 2473, all: 24728
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/france/"               # trainval: 39950, train: 35955, val: 3995, test: 4439, all: 44389
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/italy/"                # trainval: 6088, train: 5479, val: 609, test: 677, all: 6765
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/netherlands/"          # trainval: 32608, train: 29347, val: 3261, test: 3624, all: 36232
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/moni/"                 # trainval: 7582, train: 6823, val: 759, test: 843, all: 8425
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/moni_0415/"            # trainval: 9661, train: 8694, val: 967, test: 1074, all: 10735
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/hardNeg/"              # trainval: 17540, train: 15786, val: 1754, test: 1949, all: 19489
 
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"    # trainval: 5846, train: 5261, val: 585, test: 650, all: 6496
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_5M/"    # trainval: 1445, train: 1300, val: 145, test: 161, all: 1606
