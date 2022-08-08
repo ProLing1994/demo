@@ -391,7 +391,7 @@ class CaptureApi():
                 match_car_roi = self.match_bbox_iou(bbox_info_dict['loc'], car_bbox_list)
                 if len(match_car_roi):
                     bbox_info_dict['attri'] = match_car_roi[0][-1]
-                        
+
             # license plate
             if self.license_plate_name in bboxes:
                 license_plate_roi_list = bboxes[self.license_plate_name]
@@ -432,11 +432,11 @@ class CaptureApi():
 
 
     def update_bbox_state_container(self, bbox_info_list):
-        
+
         # update
         pop_key_list = []
         for key, bbox_state_idy in self.params_dict['bbox_state_container'].items():
-          
+            
             # pop
             if bbox_state_idy['car_disappear_frame_num'] > self.bbox_state_container_length:
                 pop_key_list.append(key)
@@ -626,7 +626,7 @@ class CaptureApi():
 
 
     def update_capture_dict(self):
-        
+
         # update
         pop_key_list = []
         for key, capture_dict_idy in self.params_dict['capture_dict'].items():
@@ -639,7 +639,7 @@ class CaptureApi():
                 pop_key_list.append(key)
             
             capture_dict_idy['capture_frame_num'] += 1
-        
+
         # pop
         for idx in range(len(pop_key_list)):
             self.params_dict['capture_dict'].pop(pop_key_list[idx])
@@ -653,7 +653,7 @@ class CaptureApi():
             Up_threshold = self.image_height * self.capture_line_ratio[0]
             Middle_threshold = self.image_height * self.capture_line_ratio[1]
             Down_threshold = self.image_height * self.capture_line_ratio[2]
-        
+
         # 报警逻辑
         # 1、快速抓怕：车辆行驶到触发线，执行抓拍。（近处、远处、左边、右边）
         for _, bbox_state_idy in self.params_dict['bbox_state_container'].items():
@@ -695,7 +695,7 @@ class CaptureApi():
                 if abs(car_left_y - 0) < self.capture_plate_left_right_distance_boundary_threshold and \
                     bbox_state_idy['plate_frame_num'] > self.capture_plate_frame_threshold:
                     left_flage = True
-            
+
             # 如果车辆向右边行驶
             if bbox_state_idy['left_right_state'] == 'Right' and bbox_state_idy['left_right_state_frame_num'] >= 3:
                 if abs(self.image_width - car_right_y) < self.capture_plate_left_right_distance_boundary_threshold and \
