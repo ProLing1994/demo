@@ -87,7 +87,7 @@ class SSDDetector(object):
 
         # return (exec_network, input_blob)
 
-        api: OpenVINO™ Runtime API 2.0:
+        # api: OpenVINO™ Runtime API 2.0:
         from openvino.runtime import Core
         # Load the Model
         ie = Core()

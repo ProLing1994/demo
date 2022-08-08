@@ -265,14 +265,14 @@ def main():
     parser.add_argument('--suffix', type=str, default='.avi') 
     parser.add_argument('--steps', type=str, default='1,2,3') 
     parser.add_argument('--model_prototxt', type=str, default=None) 
-    parser.add_argument('--model_path', type=str, default="E:\\project\\demo\\OpenVINO\\OpenVINO_CAR_CAPTURE\\model\\ssd_rfb\\SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-04-25-18.xml") 
+    parser.add_argument('--model_path', type=str, default="E:\\project\\demo\\OpenVINO\\OpenVINO_CAR_CAPTURE\\model\\ssd_rfb\\SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-07-22-00.xml") 
     parser.add_argument('--GPU', action='store_true', default=False) 
 
     # args = parser.parse_args()
     args, unparsed = parser.parse_known_args() 
     
     # option
-    args.step_frame = 2
+    args.step_frame = 1
 
     # 截取视频段，前后扩展时间
     args.time_shift_s = 3
