@@ -1,5 +1,4 @@
 import cv2 
-import numpy as np
 
 color_dict = {
                 "car": (0, 255, 0), 

@@ -1,7 +1,6 @@
 from collections import Counter
 import cv2
 import numpy as np
-import os
 import sys 
 import random
 
@@ -33,7 +32,7 @@ class CaptureApi():
 
     def __init__(self):
 
-       # option
+        # option
         self.option_init()
 
         # param_init
@@ -48,18 +47,28 @@ class CaptureApi():
         self.image_width = 2592
         self.image_height = 1920
 
-        # detector
-        # 2022-05-27-00
+        # # 2022-05-27-00
+        # # pytorch 
+        # self.ssd_car_plate_prototxt = None
+        # self.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-05-27-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
+        # # caffe
+        # # self.ssd_car_plate_prototxt = "/mnt/huanyuan/model_final/image_model/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-05-27-00/FPN_RFB_3class_3attri_noDilation_prior.prototxt"
+        # # self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-05-27-00/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-05-27-00.caffemodel"
+
+        # 2022-07-30-00
         # pytorch 
         self.ssd_car_plate_prototxt = None
-        self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-05-27-00/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
-        # caffe
-        # self.ssd_car_plate_prototxt = "/mnt/huanyuan/model_final/image_model/ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-05-27-00/FPN_RFB_3class_3attri_noDilation_prior.prototxt"
-        # self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-05-27-00/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-05-27-00.caffemodel"
+        self.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-07-22-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
+        # # caffe
+        # self.ssd_car_plate_prototxt = "/mnt/huanyuan/model_final/image_model/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-07-22-00/FPN_RFB_3class_3attri_noDilation_prior.prototxt"
+        # self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-07-22-00/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-07-22-00.caffemodel"
+        # openvino
+        # self.ssd_car_plate_prototxt = None
+        # self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-07-22-00/openvino_model/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-07-22-00.xml"
 
         self.ssd_caffe_bool = False
         self.ssd_openvino_bool = False
-    
+
         # 是否将 car\bus\truck 合并为一类输出
         self.merge_class_bool = True
         self.merge_class_name = 'car_bus_truck'
@@ -90,7 +99,7 @@ class CaptureApi():
 
         # 更新车辆行驶状态
         self.update_state_container_length = 1      # 车辆框坐标容器大小，用于判断车辆状态
-        self.update_state_num_threshold = 5        # 车辆行驶状态计数最大值，用于记录车辆处于同一行驶状态的帧数
+        self.update_state_num_threshold = 5         # 车辆行驶状态计数最大值，用于记录车辆处于同一行驶状态的帧数
         self.update_state_threshold = 1
         self.update_state_stable_loc_alpha = float(0.6)   # 平滑车辆框参数
 
@@ -166,8 +175,8 @@ class CaptureApi():
         bbox_state_dict['left_right_state_frame_num'] = 0                   # 车辆状态（左右行）帧数
         bbox_state_dict['frame_num'] = 0                                    # 车辆进入画面帧数
         bbox_state_dict['up_down_speed'] = 0                                # 车辆速度（上下行）
-        bbox_state_dict['left_right_speed'] = 0                             # 车辆速度（左右行）  
-        bbox_state_dict['center_point_list'] = []                           # 车辆中心点轨迹（多帧）      
+        bbox_state_dict['left_right_speed'] = 0                             # 车辆速度（左右行）
+        bbox_state_dict['center_point_list'] = []                           # 车辆中心点轨迹（多帧）
         bbox_state_dict['plate_ocr_list'] = []                              # 车牌识别结果（多帧）
         bbox_state_dict['plate_ocr_score_list'] = []                        # 车牌识别结果得分（多帧）
         bbox_state_dict['car_disappear_frame_num'] = 0                      # 车辆消失画面帧数
@@ -196,7 +205,6 @@ class CaptureApi():
         self.params_dict['capture_list'] = []                               # 抓拍结果
 
 
-
     def model_init(self):
         # detector
         self.detector = SSDDetector(prototxt=self.ssd_car_plate_prototxt, model_path=self.ssd_car_plate_model_path, ssd_caffe_bool=self.ssd_caffe_bool, ssd_openvino_bool=self.ssd_openvino_bool, merge_class_bool=self.merge_class_bool)
@@ -211,7 +219,7 @@ class CaptureApi():
     def clear(self):
         # param_init
         self.param_init()
-    
+
 
     def run(self, img, frame_idx):
 
@@ -314,14 +322,14 @@ class CaptureApi():
             #     # 默认车牌均是在车辆的下沿
             #     if (car_roi[1] + car_roi[3] / 2.0) < (match_roi_idx[1] + match_roi_idx[3] / 2.0):
             #         matched_roi_list.append(license_plate_list[idx])
-            
+
             # 方案二：计算车牌框完全位于车框内
             bool_in = bool_box_in_roi(match_roi_idx, car_roi)
             if bool_in:
                 # 默认车牌均是在车辆的下沿
                 if (car_roi[1] + car_roi[3] / 2.0) < (match_roi_idx[1] + match_roi_idx[3] / 2.0):
                     matched_roi_list.append(license_plate_list[idx])
-        
+
         matched_roi_list.sort(key=sort_key, reverse=True)
 
         return matched_roi_list
@@ -337,7 +345,7 @@ class CaptureApi():
             # bbox_info_dict
             bbox_info_dict = {}
             bbox_info_dict['id'] = 0                                            # 追踪id
-            bbox_info_dict['loc'] = []                                          # 车辆识别坐标
+            bbox_info_dict['loc'] = []                                          # 车辆坐标
             bbox_info_dict['attri'] = 'None'                                    # 车辆属性：car, bus, truck
             bbox_info_dict['stable_loc'] = []                                   # 车辆坐标（稳定）
             bbox_info_dict['up_down_state'] = 'Stop'                            # 车辆状态（上下行）
@@ -410,7 +418,7 @@ class CaptureApi():
 
         if len(self.params_dict['cache_container']) > self.cache_container_length:
             self.params_dict['cache_container'].pop(0)
-    
+
 
     def update_bbox_state_container(self, bbox_info_list):
         
@@ -558,7 +566,7 @@ class CaptureApi():
                 bbox_state_dict['left_right_state'] = 'Stop'                        # 车辆状态（左右行）
                 bbox_state_dict['left_right_state_frame_num'] = 0                   # 车辆状态（左右行）帧数
                 bbox_state_dict['frame_num'] = 0                                    # 车辆进入画面帧数
-                bbox_state_dict['up_down_speed'] = 0                                # 车辆速度
+                bbox_state_dict['up_down_speed'] = 0                                # 车辆速度（上下行）
                 bbox_state_dict['left_right_speed'] = 0                             # 车辆速度（左右行）
                 bbox_state_dict['center_point_list'] = []                           # 车辆中心点轨迹（多帧）
                 bbox_state_dict['plate_ocr_list'] = []                              # 车牌识别结果（多帧）
@@ -591,7 +599,7 @@ class CaptureApi():
                         car_bottom_y = bbox_info_idx['loc'][3]
                         if car_bottom_y > self.roi_area[1]:
                             bbox_state_dict['plate_ocr_list'].append(bbox_info_idx['plate_ocr'])
-                            bbox_state_dict['plate_ocr_score_list'].append(bbox_info_idx['plate_ocr_score'])   
+                            bbox_state_dict['plate_ocr_score_list'].append(bbox_info_idx['plate_ocr_score'])
                     else:
                         bbox_state_dict['plate_ocr_list'].append(bbox_info_idx['plate_ocr'])
                         bbox_state_dict['plate_ocr_score_list'].append(bbox_info_idx['plate_ocr_score'])
@@ -599,6 +607,7 @@ class CaptureApi():
                 self.params_dict['bbox_state_container'][bbox_state_dict['id']] = bbox_state_dict
 
         # update
+        # center_point_list
         pop_key_list = []
         for key, bbox_state_idy in self.params_dict['bbox_state_container'].items():
 
@@ -611,7 +620,7 @@ class CaptureApi():
 
 
     def update_capture_dict(self):
-    
+        
         # update
         pop_key_list = []
         for key, capture_dict_idy in self.params_dict['capture_dict'].items():
@@ -656,7 +665,7 @@ class CaptureApi():
             car_left_y = bbox_state_idy['loc'][0]
             car_right_y = bbox_state_idy['loc'][2]
             car_bottom_y = bbox_state_idy['loc'][3]
-                    
+            
             # 如果车辆向近处行驶, bbox_state_idy['up_down_state_frame_num'] >= 3 条件用于避免刚进 ROI 或者车辆静止状态下的误判
             if bbox_state_idy['up_down_state'] == 'Near' and bbox_state_idy['up_down_state_frame_num'] >= 3:
                 if abs(car_bottom_y - Down_threshold) < self.capture_plate_up_down_distance_boundary_threshold and \

@@ -263,7 +263,7 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--video_dir', type=str, default="E:\\test\\avi") 
-    parser.add_argument('--output_video_dir', type=str, default="E:\\test\\avi_video_capture/") 
+    parser.add_argument('--output_video_dir', type=str, default="E:\\test\\avi_video_capture") 
     parser.add_argument('--suffix', type=str, default='.avi') 
     parser.add_argument('--steps', type=str, default='1,2,3')
     parser.add_argument('--model_prototxt', type=str, default=None) 

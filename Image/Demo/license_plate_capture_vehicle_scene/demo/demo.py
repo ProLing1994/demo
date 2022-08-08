@@ -4,7 +4,6 @@ import numpy as np
 import os
 import pandas as pd
 import sys
-from pyrsistent import v 
 from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
@@ -36,7 +35,7 @@ def inference_video(args):
         print(cap.get(cv2.CAP_PROP_FRAME_WIDTH))           # 得到视频的宽
         print(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))          # 得到视频的高
         print(cap.get(cv2.CAP_PROP_FRAME_COUNT))           # 得到视频的总帧
-    
+
         output_video_path = os.path.join(args.output_video_dir, video_list[idx].replace(args.suffix, ''), video_list[idx])
         create_folder(os.path.dirname(output_video_path))
 
@@ -77,6 +76,7 @@ def inference_video(args):
                 create_folder(os.path.dirname(output_img_path))
                 cv2.imwrite(output_img_path, img)
 
+            # 是否保存视频结果
             if args.write_result_video_bool:
                 output_video.write(img)
 
@@ -117,13 +117,14 @@ def inference_video(args):
                     csv_list.append(csv_dict)
 
             frame_idx += 1
-            
+
             tqdm.write("{}: {}".format(video_path, str(frame_idx)))
 
     # 是否保存日志
     if args.write_csv_bool:
         csv_pd = pd.DataFrame(csv_list, columns=['name', 'frame_id', 'id', 'plate', 'plate_state', 'plate_times'])
         csv_pd.to_csv(os.path.join(args.output_video_dir, 'capture.csv'), index=False, encoding="utf_8_sig")
+
 
 def main():
 
@@ -150,14 +151,15 @@ def main():
     # 是否保存视频结果
     args.write_result_video_bool = True
     # 是否保存每一帧结果
-    args.write_result_per_frame_bool = False
     # args.write_result_per_frame_bool = True
+    args.write_result_per_frame_bool = False
     # 是否保存抓拍结果
     args.write_capture_crop_bool = True
     # 是否保存日志
     args.write_csv_bool = True
 
     inference_video(args)
+
 
 if __name__ == '__main__':
     main()
