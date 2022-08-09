@@ -117,6 +117,8 @@ if __name__ == "__main__":
     # 正样本：清晰车牌，负样本：模糊车牌
     # 注：忽略小于10个像素的数据
     ######################################
+    # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone/"
+    args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_new/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_5M/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
@@ -131,13 +133,16 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/ZF_Europe/netherlands/"
     # args.input_dir = "/yuanhuan/data/image/ZF_Europe/moni/"
     # args.input_dir = "/yuanhuan/data/image/ZF_Europe/moni_0415/"
-    args.input_dir = "/yuanhuan/data/image/ZF_Europe/hardNeg/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/hardNeg/"
+    args.select_name_list = ["car", "bus", "truck"]
+    args.set_name_list = ["car", "bus", "truck", "license_plate_ignore", "roi_ignore_plate"]
+    args.finnal_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
     # args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
     # args.set_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate"]
     # args.finnal_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
-    args.select_name_list = ["car_bus_truck", "plate", "fuzzy_plate"]
-    args.set_name_list = ["car_bus_truck",  "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate"]
-    args.finnal_name_list = ["car_bus_truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
+    # args.select_name_list = ["car_bus_truck", "plate", "fuzzy_plate"]
+    # args.set_name_list = ["car_bus_truck",  "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate"]
+    # args.finnal_name_list = ["car_bus_truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
 
     # 判断大小车牌
     args.plate_list = ['plate', "fuzzy_plate"]
@@ -150,8 +155,8 @@ if __name__ == "__main__":
     args.roi_ignore_plate_name = "roi_ignore_plate"
 
     args.jpg_dir =  args.input_dir + "JPEGImages/"
-    # args.xml_dir =  args.input_dir + "XML/"
-    args.xml_dir =  args.input_dir + "XML_refine/"
+    args.xml_dir =  args.input_dir + "XML/"
+    # args.xml_dir =  args.input_dir + "XML_refine/"
     args.output_xml_dir =  args.input_dir + "Annotations_CarBusTruckLicenseplate/"
 
     # ######################################
@@ -183,6 +188,8 @@ if __name__ == "__main__":
     # 正样本：清晰车牌 & 模糊车牌
     # 注：忽略小于10个像素的数据
     ######################################
+    # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone/"
+    args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_new/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_5M/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
@@ -197,13 +204,16 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/ZF_Europe/netherlands/"
     # args.input_dir = "/yuanhuan/data/image/ZF_Europe/moni/"
     # args.input_dir = "/yuanhuan/data/image/ZF_Europe/moni_0415/"
-    args.input_dir = "/yuanhuan/data/image/ZF_Europe/hardNeg/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/hardNeg/"
+    args.select_name_list = ["car", "bus", "truck"]
+    args.set_name_list = ["car", "bus", "truck", "license_plate_ignore", "roi_ignore_plate"]
+    args.finnal_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
     # args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
     # args.set_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate"]
     # args.finnal_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
-    args.select_name_list = ["car_bus_truck", "plate", "fuzzy_plate"]
-    args.set_name_list = ["car_bus_truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate"]
-    args.finnal_name_list = ["car_bus_truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
+    # args.select_name_list = ["car_bus_truck", "plate", "fuzzy_plate"]
+    # args.set_name_list = ["car_bus_truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate"]
+    # args.finnal_name_list = ["car_bus_truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
 
     # 判断大小车牌
     args.plate_list = ['plate', "fuzzy_plate"]
@@ -216,8 +226,8 @@ if __name__ == "__main__":
     args.roi_ignore_plate_name = "roi_ignore_plate"
 
     args.jpg_dir =  args.input_dir + "JPEGImages/"
-    # args.xml_dir =  args.input_dir + "XML/"
-    args.xml_dir =  args.input_dir + "XML_refine/"
+    args.xml_dir =  args.input_dir + "XML/"
+    # args.xml_dir =  args.input_dir + "XML_refine/"
     args.output_xml_dir =  args.input_dir + "Annotations_CarBusTruckLicenseplate_w_fuzzy/"
 
     # ######################################
@@ -249,6 +259,8 @@ if __name__ == "__main__":
     # 该测试方案存在的问题：标签不统一，高度阈值 24 看似是一个定值，但标注过程中存在人为偏差
     # 该方案：测试 高度大于阈值（24）且 清晰 & 模糊 车牌的召回率
     ######################################
+    # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone/"
+    args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_new/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_5M/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
@@ -263,13 +275,16 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/ZF_Europe/netherlands/"
     # args.input_dir = "/yuanhuan/data/image/ZF_Europe/moni/"
     # args.input_dir = "/yuanhuan/data/image/ZF_Europe/moni_0415/"
-    args.input_dir = "/yuanhuan/data/image/ZF_Europe/hardNeg/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/hardNeg/"
+    args.select_name_list = ["car", "bus", "truck"]
+    args.set_name_list = ["car", "bus", "truck", "license_plate_ignore", "roi_ignore_plate"]
+    args.finnal_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
     # args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
     # args.set_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate"]
     # args.finnal_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
-    args.select_name_list = ["car_bus_truck", "plate", "fuzzy_plate"]
-    args.set_name_list = ["car_bus_truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate"]
-    args.finnal_name_list = ["car_bus_truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
+    # args.select_name_list = ["car_bus_truck", "plate", "fuzzy_plate"]
+    # args.set_name_list = ["car_bus_truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate"]
+    # args.finnal_name_list = ["car_bus_truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
 
     # 判断大小车牌
     args.plate_list = ['plate', "fuzzy_plate"]
@@ -282,8 +297,8 @@ if __name__ == "__main__":
     args.roi_ignore_plate_name = "roi_ignore_plate"
 
     args.jpg_dir =  args.input_dir + "JPEGImages/"
-    # args.xml_dir =  args.input_dir + "XML/"
-    args.xml_dir =  args.input_dir + "XML_refine/"
+    args.xml_dir =  args.input_dir + "XML/"
+    # args.xml_dir =  args.input_dir + "XML_refine/"
     args.output_xml_dir =  args.input_dir + "Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height/"
 
     # ######################################
@@ -314,6 +329,8 @@ if __name__ == "__main__":
     # 正样本：清晰车牌
     # 该方案：测试 高度大于阈值（24）且 清晰 车牌的召回率
     #####################################
+    # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone/"
+    args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_new/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_5M/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
@@ -328,13 +345,16 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/ZF_Europe/netherlands/"
     # args.input_dir = "/yuanhuan/data/image/ZF_Europe/moni/"
     # args.input_dir = "/yuanhuan/data/image/ZF_Europe/moni_0415/"
-    args.input_dir = "/yuanhuan/data/image/ZF_Europe/hardNeg/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/hardNeg/"
+    args.select_name_list = ["car", "bus", "truck"]
+    args.set_name_list = ["car", "bus", "truck", "license_plate_ignore", "roi_ignore_plate"]
+    args.finnal_name_list = ["car", "bus", "truck", "license_plate", "license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
     # args.select_name_list = ["car", "bus", "truck", "plate", "fuzzy_plate"]
     # args.set_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate"]
     # args.finnal_name_list = ["car", "bus", "truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
-    args.select_name_list = ["car_bus_truck", "plate", "fuzzy_plate"]
-    args.set_name_list = ["car_bus_truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate"]
-    args.finnal_name_list = ["car_bus_truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
+    # args.select_name_list = ["car_bus_truck", "plate", "fuzzy_plate"]
+    # args.set_name_list = ["car_bus_truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate"]
+    # args.finnal_name_list = ["car_bus_truck", "license_plate", "fuzzy_license_plate", "license_plate_ignore", "roi_ignore_plate", "neg"]
 
     # 判断大小车牌
     args.plate_list = ['plate']
@@ -347,8 +367,8 @@ if __name__ == "__main__":
     args.roi_ignore_plate_name = "roi_ignore_plate"
 
     args.jpg_dir =  args.input_dir + "JPEGImages/"
-    # args.xml_dir =  args.input_dir + "XML/"
-    args.xml_dir =  args.input_dir + "XML_refine/"
+    args.xml_dir =  args.input_dir + "XML/"
+    # args.xml_dir =  args.input_dir + "XML_refine/"
     args.output_xml_dir =  args.input_dir + "Annotations_CarBusTruckLicenseplate_w_height/"
 
     # ######################################
