@@ -39,7 +39,8 @@ def label_to_xml(img_folder, gt_path, output_folder, args):
 
         # json
         gt_dict = {}
-        json_path = os.path.join(gt_path, img_name.replace('_leftImg8bit.png', '_gtFine_polygons.json'))
+        # json_path = os.path.join(gt_path, img_name.replace('_leftImg8bit.png', '_gtFine_polygons.json'))
+        json_path = os.path.join(gt_path, img_name.replace('_leftImg8bit.png', '_gtCoarse_polygons.json'))
         with open(json_path, 'r', encoding='UTF-8') as fr:
             try:
                 annotation = json.load(fr)
@@ -162,8 +163,10 @@ if __name__ == '__main__':
     # args.dataset_type = "val"           # 验证集
 
     args.input_dir = "/mnt/huanyuan/temp/Cityscapes/leftImg8bit/" + args.dataset_type + "/" 
-    args.label_dir = "/mnt/huanyuan/temp/Cityscapes/gtFine/" + args.dataset_type + "/" 
-    args.output_dir = "/mnt/huanyuan/temp/Cityscapes/xml_gt/" + args.dataset_type + "/" 
+    # args.label_dir = "/mnt/huanyuan/temp/Cityscapes/gtFine/" + args.dataset_type + "/" 
+    # args.output_dir = "/mnt/huanyuan/temp/Cityscapes/xml_gt/" + args.dataset_type + "/" 
+    args.label_dir = "/mnt/huanyuan/temp/Cityscapes/gtCoarse/" + args.dataset_type + "/" 
+    args.output_dir = "/mnt/huanyuan/temp/Cityscapes/xml_gt_coarse/" + args.dataset_type + "/" 
 
     args.select_name_list = ['car', 'bus', 'truck', 'trailer', 'train', 'caravan', 'license plate', 'person', 'bicycle', 'bicyclegroup', 'motorcycle', 'rider']
     args.set_class_list = ['car', 'bus', 'truck', 'trailer', 'train', 'caravan', 'license plate', 'person', 'bicycle', 'motorcycle', 'bicyclist', 'motorcyclist']

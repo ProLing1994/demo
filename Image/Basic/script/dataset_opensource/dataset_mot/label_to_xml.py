@@ -25,13 +25,11 @@ label_dict = {  "-1": 'none',
                 "12": "reflection",
                 "13": "crowd",
             }
-
-zg_label_dict = {   "1": 'person',
-                    "3": "car_bus_truck",
-                    "7": "person",
+zg_label_dict = { "1": 'head',
+                  "2": 'head' 
                 }
-                
-ignore_label_id = ["2", "4", "5", "6", "8", "9", "10", "11", "12", "13"]
+
+ignore_label_id = [ '3', '4' ]
 ignore_dataset = [ ]
 
 def label_to_xml(img_folder, gt_path, output_folder, dataset_name, subfolder_name, args):
@@ -145,14 +143,15 @@ if __name__ == '__main__':
 
     # args.dataset_name = "MOT15"       # MOT15，行人被完全遮挡，仍然标注了，无法使用
     # args.dataset_name = "MOT16"       # MOT16，包含部分 MOT15 数据
-    args.dataset_name = "MOT17"       # MOT17，包含 MOT16 数据
+    # args.dataset_name = "MOT17"       # MOT17，包含 MOT16 数据
     # args.dataset_name = "MOT20"       # MOT20
+    args.dataset_name = "HT21"        # HT21，Head_Tracking_21，包含 MOT20 数据，标签不同
 
-    # args.dataset_type = "train"       # 训练集，标签
-    args.dataset_type = "test"          # 测试集，检测效果不好
+    args.dataset_type = "train"       # 训练集，标签/
+    # args.dataset_type = "test"          # 测试集，检测效果不好
 
-    args.input_dir = "/mnt/huanyuan2/data/image/ZG_BMX_detection/公开数据集/MOT/" + args.dataset_name + "/" + args.dataset_type + "/"
-    args.output_dir = "/mnt/huanyuan2/data/image/ZG_BMX_detection/公开数据集/MOT/" + args.dataset_name + "/" + args.dataset_type + "_xml_gt/"
+    args.input_dir = "/mnt/huanyuan/temp/MOT/" + args.dataset_name + "/" + args.dataset_type + "/"
+    args.output_dir = "/mnt/huanyuan/temp/MOT/" + args.dataset_name + "/" + args.dataset_type + "_xml_gt/"
     args.person_visibility_threh = 0.3
     args.car_visibility_threh = 0.1
 

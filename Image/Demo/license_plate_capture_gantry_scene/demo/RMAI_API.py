@@ -328,8 +328,8 @@ class CaptureApi():
             # # 方案一：使用 IOU 判断
             # intersect_iou = intersect(car_roi, match_roi_idx)
 
-            # # 计算车牌检测框与车辆检测框的交集区域，大于 0.0 则认为该车牌属于该车辆
-            # if intersect_iou > 0.0:
+            # # 计算车牌检测框与车辆检测框的交集区域，大于 0.2 则认为该车牌属于该车辆
+            # if intersect_iou > 0.2:
             #     # 默认车牌均是在车辆的下沿
             #     if (car_roi[1] + car_roi[3] / 2.0) < (match_roi_idx[1] + match_roi_idx[3] / 2.0):
             #         matched_roi_list.append(license_plate_list[idx])
@@ -489,6 +489,7 @@ class CaptureApi():
                     bbox_state_idy['left_right_speed'] = (old_stable_center_x - new_stable_center_x) / float(bbox_state_idy['car_disappear_frame_num'])
                     bbox_state_idy['stable_loc'] = new_stable_loc
 
+                    # 车辆框漏检状态更新
                     bbox_state_idy['car_disappear_frame_num'] = 0
 
                     # 车辆状态判断（上下行）
@@ -525,7 +526,7 @@ class CaptureApi():
                     else:
                         bbox_state_idy['left_right_state_frame_num'] = min( bbox_state_idy['left_right_state_frame_num'] + 1 , self.update_state_num_threshold)
 
-                    # 停止车辆计数
+                    # 车辆状态更新，判断静止时长
                     if bbox_state_idy['up_down_state'] == "Stop" and bbox_state_idy['left_right_state'] == "Stop":
                         bbox_state_idy['stop_frame_num'] += 1
                     else:
