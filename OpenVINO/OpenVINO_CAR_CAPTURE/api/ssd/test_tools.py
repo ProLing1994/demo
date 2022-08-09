@@ -73,6 +73,7 @@ class SSDDetector(object):
 
 
     def openvino_load_net(self):
+        # # api: Inference Engine API
         # import openvino.inference_engine as ie
         # # Inference Engine API
         # core = ie.IECore()
@@ -84,6 +85,9 @@ class SSDDetector(object):
         # exec_network = core.load_network(network, "CPU")
         # input_blob = next(iter(network.input_info))
 
+        # return (exec_network, input_blob)
+
+        # api: OpenVINO™ Runtime API 2.0:
         from openvino.runtime import Core
         # Load the Model
         ie = Core()
@@ -301,18 +305,22 @@ class SSDDetector(object):
             boxes *= np.array([w, h, w, h])
             return (boxes.astype(np.int32), scores, attris)
         
+        # api: Inference Engine API
         # exec_network, input_blob = net
+        # api: OpenVINO™ Runtime API 2.0:
         compiled_model, input_layer_ir = net
         img = preprocess(img_ori)
 
         img = np.expand_dims(img.transpose(2, 0, 1), 0)
 
         # # Start Inference
+        # # api: Inference Engine API
         # res = exec_network.infer(inputs={input_blob: img})
         # boxes = res['mbox_loc_reshape'][0]
         # scores = res['mbox_conf_reshape'][0]
         # attris = res['mbox_attri_reshape'][0]
 
+        # api: OpenVINO™ Runtime API 2.0:
         request = compiled_model.create_infer_request()
         request.infer({input_layer_ir.any_name: img})
         boxes = request.get_tensor("mbox_loc_reshape").data[0]

@@ -32,6 +32,7 @@ def video_capture_csv(in_params):
     video_capture_dict['end_s'] = 0
     video_capture_dict['attri'] = 0
     video_capture_dict['plate_color'] = 0
+    video_capture_dict['capture_flage'] = 0
 
     video_path = os.path.join(args.video_dir, video_name)
 
@@ -62,10 +63,7 @@ def video_capture_csv(in_params):
         #     print()
 
         # video capture api 
-        # bbox_info_list：单检测识别结果
-        # capture_id_list：需要抓拍的车辆id
-        # capture_result：抓拍结果
-        bbox_info_list, capture_id_list, capture_result = video_capture_api.run(img, frame_idx)
+        bbox_info_list, capture_dict, capture_result = video_capture_api.run(img, frame_idx)
 
         for idy in range(len(capture_result)):
             capture_info_idy = capture_result[idy]
@@ -76,6 +74,7 @@ def video_capture_csv(in_params):
             video_capture_dict['end_s'] = float(capture_info_idy['end_frame']) / float(cap.get(cv2.CAP_PROP_FPS))
             video_capture_dict['attri'] = capture_info_idy['attri']
             video_capture_dict['plate_color'] = capture_info_idy['plate_color']
+            video_capture_dict['capture_flage'] = capture_info_idy['capture_flage']
             video_capture_list.append(video_capture_dict)
 
         frame_idx += 1
@@ -205,6 +204,7 @@ def vidio_capture_crop(in_params):
 
     return 
 
+
 # def vidio_capture_crop_merge(args, video_name):
 def vidio_capture_crop_merge(in_params):
     args = in_params[0]
@@ -265,20 +265,20 @@ def main():
     parser.add_argument('--suffix', type=str, default='.avi') 
     parser.add_argument('--steps', type=str, default='1,2,3') 
     parser.add_argument('--model_prototxt', type=str, default=None) 
-    parser.add_argument('--model_path', type=str, default="E:\\project\\demo\\OpenVINO\\OpenVINO_CAR_CAPTURE\\model\\ssd_rfb\\SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-04-25-18.xml") 
+    parser.add_argument('--model_path', type=str, default="E:\\project\\demo\\OpenVINO\\OpenVINO_CAR_CAPTURE\\model\\ssd_rfb\\SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-07-22-00.xml") 
     parser.add_argument('--GPU', action='store_true', default=False) 
 
     # args = parser.parse_args()
     args, unparsed = parser.parse_known_args() 
     
     # option
-    args.step_frame = 2
+    args.step_frame = 1
 
     # 截取视频段，前后扩展时间
     args.time_shift_s = 3
 
     # 截取视频段，最长时间
-    args.time_threshold = 20
+    args.time_threshold = 30
 
     # mkdir 
     create_folder(args.output_video_dir)
@@ -327,24 +327,10 @@ def main():
 
     if '3' in step_list:
         # step 3: 
-        # 挑选颜色：黄色
+        # 挑选颜色
         args.select_plate_color = ['yellow']
 
-        # 挑选车型
-        args.select_car_attri = ['truck', 'bus']
-            
-        # 视频剪裁
-        p = multiprocessing.Pool(2)
-        out = list(tqdm(p.map(vidio_capture_crop, in_params), total=len(in_params)))
-        p.close()
-        p.join()
-
-    if '4' in step_list:
-        # step 4: 
-        # 挑选颜色：黄色
-        args.select_plate_color = [ ]
-
-        # 挑选车型
+        # 挑选车型，与颜色取并集
         args.select_car_attri = ['truck', 'bus']
             
         # 视频剪裁
