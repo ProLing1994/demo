@@ -8,14 +8,18 @@ dataset_check/check_jpeg_exist.py 检测 jpeg 格式数据是否已经存在
 # dataset_train_test_split
 dataset_train_test_split/data_train_test_split.py 训练验证测试集划分
 
-# dataset_static
-dataset_static/statistic_xml_classname.py 统计每个数据集的类别
-dataset_static/select_xml_classname.py 每个数据集挑选合适的类别用于训练
+# dataset_xml
+dataset_xml/select_xml_classname.py 每个数据集挑选合适的类别用于训练
+
+# analysis_dataset
+analysis_dataset/analysis_dataset_label_width_heght.py 统计每个数据集每个标签的长宽比
+analysis_dataset/statistic_xml_classname.py 统计每个数据集的类别
 
 # dataset_format
 dataset_format/bmp_to_jpg.py 数据格式转换
 
 # dataset_crop
+dataset_crop/crop_image_720p_w_xml.py 图像裁剪，裁剪 720p 数据，供训练使用
 dataset_crop/crop_image.py 图像裁剪
 dataset_crop/gen_crop_info.py 图像裁剪信息统计
 dataset_crop/analysis_crop_info.py 绘制图像裁剪信息统计结果

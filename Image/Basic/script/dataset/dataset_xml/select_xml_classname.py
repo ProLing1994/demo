@@ -63,6 +63,9 @@ def select_classname(args):
                                 (img_width == 640 and img_height == 1024):
                             if bbox_width < args.width_threshold_2M or bbox_height < args.height_threshold_2M:
                                 object.find('name').text = args.filter_set_class_list[filter_select_idx]
+                        elif (img_width == 1280 and img_height == 720):
+                            if bbox_width < args.width_threshold_720p or bbox_height < args.height_threshold_720p:
+                                object.find('name').text = args.filter_set_class_list[filter_select_idx]
                         else:
                             raise EOFError
                             
@@ -248,6 +251,39 @@ if __name__ == "__main__":
     # # args.output_xml_dir =  args.input_dir + "Annotations_Person_filter/"
 
     ######################################
+    # Annotations_HeadHelmet
+    ######################################
+    # ZG_BMX_detection
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/daminghu/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/daminghu_night/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/rongheng/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/rongheng_night_hongwai/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/daminghu/crop_720p/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/daminghu_night/crop_720p/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/rongheng/crop_720p/"
+    args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/rongheng_night_hongwai/crop_720p/"
+    args.select_name_list = ["head", "helmet"]
+    args.set_name_list = ["head", "helmet"]
+    args.finnal_name_list = ["head", "helmet", "neg"]
+
+    # # 开源数据集: MOT17\MOT20
+    # args.input_dir = "/yuanhuan/data/image/Open_Source/MOT/HT21/"
+    # args.select_name_list = ["head", "helmet"]
+    # args.set_name_list = ["head", "helmet"]
+    # args.finnal_name_list = ["head", "helmet", "neg"]
+
+    # # 开源数据集: Safety_helmet\VOC2028
+    # # args.input_dir = "/yuanhuan/data/image/Open_Source/helmet/Safety_helmet/" 
+    # args.input_dir = "/yuanhuan/data/image/Open_Source/helmet/VOC2028/" 
+    # args.select_name_list = ["head", "helmet"]
+    # args.set_name_list = ["head", "helmet"]
+    # args.finnal_name_list = ["head", "helmet", "neg"]
+
+    args.jpg_dir =  args.input_dir + "JPEGImages/"  
+    args.xml_dir =  args.input_dir + "XML/"
+    args.output_xml_dir =  args.input_dir + "Annotations_HeadHelmet_w_size/"
+
+    ######################################
     # 消融实验
     ######################################
     # Annotations_CarLicenseplate
@@ -279,33 +315,37 @@ if __name__ == "__main__":
     # args.output_xml_dir =  args.input_dir + "Annotations_CarLicenseplate/"
     # # args.output_xml_dir =  args.input_dir + "Annotations_CarLicenseplate_label/"
 
-    ######################################
-    # 清洗标签，错误标签修正
-    ######################################
+    # ######################################
+    # # 清洗标签，错误标签修正
+    # ######################################
 
-    args.input_dir = "/yuanhuan/data/image/ZF_Europe/england/"
-    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/england_1080p/"
-    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/france/"
-    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/italy/"
-    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/netherlands/"
-    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/moni/"
-    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/moni_0415/"
-    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/hardNeg/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/england/"
+    # # args.input_dir = "/yuanhuan/data/image/ZF_Europe/england_1080p/"
+    # # args.input_dir = "/yuanhuan/data/image/ZF_Europe/france/"
+    # # args.input_dir = "/yuanhuan/data/image/ZF_Europe/italy/"
+    # # args.input_dir = "/yuanhuan/data/image/ZF_Europe/netherlands/"
+    # # args.input_dir = "/yuanhuan/data/image/ZF_Europe/moni/"
+    # # args.input_dir = "/yuanhuan/data/image/ZF_Europe/moni_0415/"
+    # # args.input_dir = "/yuanhuan/data/image/ZF_Europe/hardNeg/"
 
-    args.select_name_list = ["car", "face", "face.", "fance", "licenseplate", "licence", "licence_f", 'licence_o', "person", "person_o"]
-    args.set_name_list = ["car_bus_truck", "face", "face", "face", "plate", "plate", "fuzzy_plate", "plate_o", "person", "person_o"]
-    args.finnal_name_list = ["car_bus_truck", "face", "plate", "fuzzy_plate", "plate_o", "person", "person_o"]
+    # args.select_name_list = ["car", "face", "face.", "fance", "licenseplate", "licence", "licence_f", 'licence_o', "person", "person_o"]
+    # args.set_name_list = ["car_bus_truck", "face", "face", "face", "plate", "plate", "fuzzy_plate", "plate_o", "person", "person_o"]
+    # args.finnal_name_list = ["car_bus_truck", "face", "plate", "fuzzy_plate", "plate_o", "person", "person_o"]
 
-    args.jpg_dir =  args.input_dir + "JPEGImages/"
-    args.xml_dir =  args.input_dir + "XML/"
-    args.output_xml_dir =  args.input_dir + "XML_refine/"
+    # args.jpg_dir =  args.input_dir + "JPEGImages/"
+    # args.xml_dir =  args.input_dir + "XML/"
+    # args.output_xml_dir =  args.input_dir + "XML_refine/"
     
     ######################################
     # 大小阈值筛选
     ######################################
 
-    args.filter_bool = False
-    # args.filter_bool = True
+    # args.filter_bool = False
+    args.filter_bool = True
+
+    # 720p
+    args.width_threshold_720p = 15
+    args.height_threshold_720p = 15
 
     # 2M
     args.width_threshold_2M = 25
@@ -315,8 +355,8 @@ if __name__ == "__main__":
     args.width_threshold_5M = 40
     args.height_threshold_5M = 40
 
-    args.filter_select_class_list = ["car", "caravan", "tricycle", "bus", "train", "truck", "trailer", "bicyclist", "motorcyclist", "person"]
-    args.filter_set_class_list = ["car_o", "car_o", "car_o", "bus_o", "bus_o", "truck_o", "truck_o", "bicyclist_o", "motorcyclist_o", "person_o"]
-    args.filter_finnal_name_list = ["car_o", "bus_o", "truck_o", "bicyclist_o", "motorcyclist_o", "person_o"]
+    args.filter_select_class_list = ["car", "caravan", "tricycle", "bus", "train", "truck", "trailer", "bicyclist", "motorcyclist", "person", "head", "helmet"]
+    args.filter_set_class_list = ["car_o", "car_o", "car_o", "bus_o", "bus_o", "truck_o", "truck_o", "bicyclist_o", "motorcyclist_o", "person_o", "head_o", "helmet_o"]
+    args.filter_finnal_name_list = ["car_o", "bus_o", "truck_o", "bicyclist_o", "motorcyclist_o", "person_o", "head_o", "helmet_o"]
 
     select_classname(args)

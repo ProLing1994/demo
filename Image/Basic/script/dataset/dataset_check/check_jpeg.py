@@ -42,7 +42,7 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/ZF_Europe/netherlands/"
     # args.input_dir = "/yuanhuan/data/image/ZF_Europe/moni/"
     # args.input_dir = "/yuanhuan/data/image/ZF_Europe/moni_0415/"
-    args.input_dir = "/yuanhuan/data/image/ZF_Europe/hardNeg/"
+    # args.input_dir = "/yuanhuan/data/image/ZF_Europe/hardNeg/"
 
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_5M/"
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/sandaofangxian/"
@@ -63,8 +63,11 @@ if __name__ == "__main__":
 
     # args.input_dir = "/yuanhuan/data/image/Open_Source/MOT/MOT17/"
     # args.input_dir = "/yuanhuan/data/image/Open_Source/MOT/MOT20/"
+    # args.input_dir = "/yuanhuan/data/image/Open_Source/MOT/HT21/"
     # args.input_dir = "/yuanhuan/data/image/Open_Source/NightOwls/nightowls/"
     # args.input_dir = "/yuanhuan/data/image/Open_Source/Cityscapes/cityscapes/"
+    # args.input_dir = "/yuanhuan/data/image/Open_Source/helmet/Safety_helmet/"
+    args.input_dir = "/yuanhuan/data/image/Open_Source/helmet/VOC2028/"
     args.jpg_dir =  args.input_dir + "JPEGImages/"
 
     #####################################
