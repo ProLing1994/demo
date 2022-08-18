@@ -408,8 +408,8 @@ if __name__ == "__main__":
     args.use_07_metric = False
 
     # 是否设置 roi 区域，忽略边缘区域
-    args.roi_set_bool = False
-    # args.roi_set_bool = True
+    # args.roi_set_bool = False
+    args.roi_set_bool = True
     args.roi_set_bbox_2M = [320, 360, 1600, 1080]   # 2M
     args.roi_set_bbox_5M = [432, 640, 2272, 1920]   # 5M
 
