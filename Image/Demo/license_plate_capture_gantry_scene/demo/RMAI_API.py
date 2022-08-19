@@ -6,7 +6,7 @@ import random
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
-from Image.recognition2d.license_plate_recognition.infer.lpr import LPR
+from Image.recognition2d.license_plate_ocr.infer.lpr import LPR
 from Image.Demo.license_plate_capture_gantry_scene.sort.mot_sort import Sort
 
 

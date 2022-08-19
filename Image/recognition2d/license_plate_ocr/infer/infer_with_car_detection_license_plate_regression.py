@@ -10,7 +10,7 @@ sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.regreesion2d.plate_regreesion.infer.ssd_vgg_fpn import SSDDetector
 from Image.regreesion2d.plate_regreesion.infer.plate_regression import PlateRegression
 from Image.regreesion2d.plate_regreesion.utils.draw_tools import draw_detection_result
-from Image.recognition2d.license_plate_recognition.infer.lpr import LPR
+from Image.recognition2d.license_plate_ocr.infer.lpr import LPR
 
 
 def inference_images(args):
