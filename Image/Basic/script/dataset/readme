@@ -3,7 +3,7 @@ dataset_format/file_rename_prefix.py 文件重新命名，保证无中文字符
 
 # dataset_check
 dataset_check/check_jpeg.py 检测 jpeg 格式数据完整性（需手动删除不完整数据）
-dataset_check/check_jpeg_exist.py 检测 jpeg 格式数据是否已经存在
+dataset_check/check_jpeg_exist.py 检测 jpeg 格式数据是否已经存在，删除已有数据
 
 # dataset_train_test_split
 dataset_train_test_split/data_train_test_split.py 训练验证测试集划分
@@ -14,6 +14,9 @@ dataset_xml/select_xml_classname.py 每个数据集挑选合适的类别用于�
 # analysis_dataset
 analysis_dataset/analysis_dataset_label_width_heght.py 统计每个数据集每个标签的长宽比
 analysis_dataset/statistic_xml_classname.py 统计每个数据集的类别
+
+# dataset_move
+dataset_move/dataset_copmbine.py 合并新新增加数据
 
 # dataset_format
 dataset_format/bmp_to_jpg.py 数据格式转换
