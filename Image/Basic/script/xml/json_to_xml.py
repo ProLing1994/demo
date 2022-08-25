@@ -5,8 +5,8 @@ import os
 import sys 
 from tqdm import tqdm
 
-# sys.path.insert(0, '/home/huanyuan/code/demo/Image')
-sys.path.insert(0, '/yuanhuan/code/demo/Image')
+sys.path.insert(0, '/home/huanyuan/code/demo/Image')
+# sys.path.insert(0, '/yuanhuan/code/demo/Image')
 from Basic.script.xml.xml_write import write_xml
 
 
@@ -49,7 +49,7 @@ def json_xml(args):
             label = track['label']
             type = track['type']
 
-            # 只捕获检测框
+            # 目前只支持检测框(rectangle)
             if not type == 'rectangle':
                 continue
             
@@ -75,9 +75,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.jpg_dir = "/yuanhuan/data/image/RM_BSD/20220425(2.0)/JPEGImages/"
-    args.json_dir = "/yuanhuan/data/image/RM_BSD/20220425(2.0)/JSON/"
-    args.xml_dir = "/yuanhuan/data/image/RM_BSD/20220425(2.0)/XML/"
+    args.jpg_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/test/JPEGImages/"
+    args.json_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/test/JPEGImages/"
+    args.xml_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/test/JPEGImages/"
 
     json_xml(args)
 
