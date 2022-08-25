@@ -78,8 +78,8 @@ if __name__ == "__main__":
     # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/shenzhenlukou/"    # trainval: 1264, train: 1137, val: 127, test: 141, all: 1405
     # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/shenzhenlukou_night_hongwai/"    # trainval: 3427, train: 3084, val: 343, test: 381, all: 3808
     # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/shenzhenlukou_night_diguangzhao/"    # trainval: 2295, train: 2065, val: 230, test: 256, all: 2551
-    # # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/rongheng/"    # trainval: 4619, train: 4157, val: 462, test: 514, all: 5133
-    # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/rongheng_night_hongwai/"    # trainval: 4499, train: 4049, val: 450, test: 500, all: 4999
+    # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/rongheng/"    # trainval: 9119, train: 8207, val: 912, test: 1014, all: 10133
+    # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/rongheng_night_hongwai/"    # trainval: 8860, train: 7973, val: 887, test: 985, all: 9845
     # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/daminghu/crop_720p/"    # trainval: 9218, train: 8296, val: 922, test: 1025, all: 10243
     # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/daminghu_night/crop_720p/"    # trainval: 2360, train: 2124, val: 236, test: 263, all: 2623
     # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/rongheng/crop_720p/"    # trainval: 4619, train: 4157, val: 462, test: 514, all: 5133

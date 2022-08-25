@@ -21,7 +21,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.input_dir = "/yuanhuan/data/image//RM_ADAS_AllInOne/allinone_w_licenseplate/"
+    args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/new/rongheng_night_hongwai/"
 
     args.trainval_file = args.input_dir + "ImageSets/Main/trainval.txt"
     args.train_file = args.input_dir + "ImageSets/Main/train.txt"

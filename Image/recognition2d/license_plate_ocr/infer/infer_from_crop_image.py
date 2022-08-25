@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
 # sys.path.insert(0, '/yuanhuan/code/demo')
-from Image.recognition2d.license_plate_recognition.infer.lpr import LPR
+from Image.recognition2d.license_plate_ocr.infer.lpr import LPR
 from Image.Basic.utils.folder_tools import *
 
 

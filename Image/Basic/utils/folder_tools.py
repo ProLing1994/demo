@@ -22,4 +22,13 @@ def get_sub_filepaths_suffix(folder, suffix='.wav'):
             path = os.path.join(root, name)
             paths.append(path)
     return paths
-    
+
+def get_sub_filepaths_prefix(folder, prefix='img'):
+    paths = []
+    for root, dirs, files in os.walk(folder):
+        for name in files:
+            if not str(name).startswith(prefix):
+                continue
+            path = os.path.join(root, name)
+            paths.append(path)
+    return paths

@@ -9,7 +9,7 @@ from tqdm import tqdm
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
 from Image.Basic.script.xml.xml_write import write_xml
-from Image.recognition2d.license_plate_recognition.infer.lpr import LPR
+from Image.recognition2d.license_plate_ocr.infer.lpr import LPR
 
 def model_init(args):
     # model init
