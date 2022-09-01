@@ -196,9 +196,12 @@ if __name__ == "__main__":
     # # SSD_VGG_FPN_RFB_2022-07-29-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate
     # # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-07-29-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/"
 
+    # # SSD_VGG_FPN_RFB_2022-08-10-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_zf_w_fuzzy_plate
+    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-08-10-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_zf_w_fuzzy_plate/eval_epoches_299/"
+
     # # yolov6
     # # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_zg_gvd_adas_zg_data_attribute_conv_0804/eval_epoches_300_0.4"
-    # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_zg_gvd_adas_zg_data_attribute_conv_0809/eval_epoches_300_0.4"
+    # # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_zg_gvd_adas_zg_data_attribute_conv_0809/eval_epoches_300_0.4"
 
     # # args.anno_name = 'Annotations_CarBusTruckLicenseplate_w_height'             # 高度大于 24 的 清晰车牌
     # # args.anno_name = 'Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height'     # 高度大于 24 的 清晰车牌 & 模糊车牌
@@ -259,9 +262,12 @@ if __name__ == "__main__":
     # # SSD_VGG_FPN_RFB_2022-07-22-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate
     # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-07-22-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/"
 
+    # SSD_VGG_FPN_RFB_2022-08-10-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_zf_w_fuzzy_plate
+    args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-08-10-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_zf_w_fuzzy_plate/eval_epoches_299/"
+
     # yolov6
     # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_zg_gvd_adas_zg_data_attribute_conv_0804/eval_epoches_300_0.4"
-    args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_zg_gvd_adas_zg_data_attribute_conv_0809/eval_epoches_300_0.4"
+    # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_zg_gvd_adas_zg_data_attribute_conv_0809/eval_epoches_300_0.4"
 
     # args.anno_name = 'Annotations_CarBusTruckLicenseplate_w_height'             # 高度大于 24 的 清晰车牌
     # args.anno_name = 'Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height'     # 高度大于 24 的 清晰车牌 & 模糊车牌
@@ -301,17 +307,17 @@ if __name__ == "__main__":
     # # args.data_list = ['ZG_BMX_detection/daminghu', 
     # #                     'ZG_BMX_detection/daminghu_night']
                         
-    # args.cal_ap_dict = { 'car': ['car'], 
-    #                     'bus': ['bus'], 
-    #                     'truck': ['truck'], 
-    #                     'bus_truck': ['bus', 'truck'], 
-    #                     'car_bus_truck': ['car', 'bus', 'truck'], 
-    #                     'non_motorized': ['bicyclist', 'motorcyclist'], 
-    #                     'person': ['person'] }
-
-    # # args.cal_ap_dict = {'car_bus_truck': ['car', 'bus', 'truck'], 
+    # # args.cal_ap_dict = { 'car': ['car'], 
+    # #                     'bus': ['bus'], 
+    # #                     'truck': ['truck'], 
+    # #                     'bus_truck': ['bus', 'truck'], 
+    # #                     'car_bus_truck': ['car', 'bus', 'truck'], 
     # #                     'non_motorized': ['bicyclist', 'motorcyclist'], 
-    # #                     'person': ['person']}
+    # #                     'person': ['person'] }
+
+    # args.cal_ap_dict = {'car_bus_truck': ['car', 'bus', 'truck'], 
+    #                     'non_motorized': ['bicyclist', 'motorcyclist'], 
+    #                     'person': ['person']}
 
     # # args.cal_ap_dict = {'person': ['person']}
 
@@ -335,12 +341,13 @@ if __name__ == "__main__":
     # # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-06-30-15_focalloss_1class_person_ADAS_BAD_ZG/eval_epoches_299/"
 
     # # yolov6
-    # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_zg_bmx_adas_bsd_zg_data_0722/eval_epoches_300_0.4/"
+    # # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_zg_bmx_adas_bsd_zg_data_0722/eval_epoches_300_0.4/"
+    # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_zg_bmx_adas_bsd_zg_data_0824/eval_epoches_300_0.4/"
     # # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_zg_bmx_adas_bsd_zg_data_attribute_conv/eval_epoches_300_0.4/"
 
     # # args.anno_name = 'Annotations_CarBusTruckBicyclistMotorcyclistPerson'                             # 车 & 非机动 & 人 
-    # # args.anno_name = 'Annotations_CarBusTruckBicyclistMotorcyclistPerson_filter'                      # 车 & 非机动 & 人 & 大小过滤
-    # args.anno_name = 'Annotations_person_10_20'                                                       # 人(10_20)
+    # args.anno_name = 'Annotations_CarBusTruckBicyclistMotorcyclistPerson_filter'                      # 车 & 非机动 & 人 & 大小过滤
+    # # args.anno_name = 'Annotations_person_10_20'                                                       # 人(10_20)
     # # args.anno_name = 'Annotations_person_20_30'                                                       # 人(20_30)
     # # args.anno_name = 'Annotations_person_30_40'                                                       # 人(30_40)
     # # args.anno_name = 'Annotations_person_40_50'                                                       # 人(40_50)
@@ -380,7 +387,8 @@ if __name__ == "__main__":
     # # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-06-30-15_focalloss_1class_person_ADAS_BAD_ZG/eval_epoches_299/"
 
     # # yolov6
-    # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_zg_bmx_adas_bsd_zg_data_0722/eval_epoches_300_0.4/"
+    # # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_zg_bmx_adas_bsd_zg_data_0722/eval_epoches_300_0.4/"
+    # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_zg_bmx_adas_bsd_zg_data_0824/eval_epoches_300_0.4/"
     # # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_zg_bmx_adas_bsd_zg_data_attribute/eval_epoches_300_0.4/"
 
     # # args.anno_name = 'Annotations_CarBusTruckBicyclistMotorcyclistPerson'                             # 车 & 非机动 & 人 
@@ -408,8 +416,8 @@ if __name__ == "__main__":
     args.use_07_metric = False
 
     # 是否设置 roi 区域，忽略边缘区域
-    # args.roi_set_bool = False
-    args.roi_set_bool = True
+    args.roi_set_bool = False
+    # args.roi_set_bool = True
     args.roi_set_bbox_2M = [320, 360, 1600, 1080]   # 2M
     args.roi_set_bbox_5M = [432, 640, 2272, 1920]   # 5M
 
