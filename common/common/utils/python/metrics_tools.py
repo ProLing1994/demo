@@ -43,6 +43,13 @@ def get_fpr(tn, fp, fn, tp):
     fpr = fp/(fp+tn)
     return fpr
 
+# 精度 = precision = PPV(positive predictive value)
+def get_ppv(tn, fp, fn, tp):
+    if (tp+fp) == 0:
+        return 0
+    ppv = tp/(tp+fp)
+    return ppv
+
 def get_average_precision(y_true, y_pred, average=None):
     average_precision = sklearn.metrics.average_precision_score(y_true=y_true, y_score=y_pred, average=average)
     return average_precision
