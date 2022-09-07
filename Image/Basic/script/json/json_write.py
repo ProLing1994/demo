@@ -15,6 +15,7 @@ class JsonWriter(object):
 
 
     def insert_object(self, key, box, bboxes_type):
+        # box: [x, y, w, h]
         # 目前只支持多边形 polygon
         assert bboxes_type in ['polygon']
 
@@ -54,6 +55,6 @@ if __name__ == '__main__':
     output_json_path = "/yuanhuan/data/test/test.json"
     filename = "20220819_000002_UAE_DUBAI_none_T#72058.jpg"
     image_shape = np.array([110, 170])
-    bboxes = {'kind': [[ 14, 15, 50, 25, 549]]}
+    bboxes = {'kind': [[ 14, 15, 50, 25]]}          # { 'label': [[x, y, w, h]] }
     bboxes_type = "polygon"
     write_json(output_json_path, filename, image_shape, bboxes, bboxes_type)

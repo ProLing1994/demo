@@ -40,9 +40,9 @@ def json_xml(args):
                 print(json_path)
                 continue
 
-        weight = annotation['width']
-        height = annotation['height']
-        img_shape = [weight, height, 3]
+        img_width = annotation['width']
+        img_height = annotation['height']
+        img_shape = [img_width, img_height, 3]
 
         xml_bboxes = {}
         for track in annotation['shapes']:
@@ -58,14 +58,12 @@ def json_xml(args):
             points = np.array(track['points'])
             x1 = max(int(points[0]) + 1, 1)
             y1 = max(int(points[1]) + 1, 1)
-            x2 = min(int(points[2]) + 1, weight) 
-            y2 = min(int(points[3]) + 1, height)
+            x2 = min(int(points[2]) + 1, img_width) 
+            y2 = min(int(points[3]) + 1, img_height)
 
-            if label in xml_bboxes:
-                xml_bboxes[label].append([x1, y1, x2, y2])
-            else:
-                xml_bboxes[label] = []
-                xml_bboxes[label].append([x1, y1, x2, y2])
+            if label not in xml_bboxes:
+                xml_bboxes[label] = []              
+            xml_bboxes[label].append([x1, y1, x2, y2])
     
         write_xml(xml_path, jpg_path, xml_bboxes, img_shape)
 
@@ -75,9 +73,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.jpg_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/test/JPEGImages/"
-    args.json_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/test/JPEGImages/"
-    args.xml_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/test/JPEGImages/"
+    args.jpg_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/test_json/"
+    args.json_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/test_json/"
+    args.xml_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/test_json/"
 
     json_xml(args)
 

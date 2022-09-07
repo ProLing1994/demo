@@ -11,7 +11,7 @@ from tqdm import tqdm
 sys.path.insert(0, '/home/huanyuan/code/demo')
 # sys.path.insert(0, 'E:\\project\\demo')
 from Image.Basic.utils.folder_tools import *
-from Image.Basic.video_capture.demo.VideoCapture_API import *
+from Image.Capture.video_capture.demo.VideoCapture_API import *
 
 
 # def video_capture_csv(args, video_name):
