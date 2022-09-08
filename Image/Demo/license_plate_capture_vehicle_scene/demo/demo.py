@@ -146,13 +146,17 @@ def main():
     args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_12mm_0723_白_前/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZG_HCZP/test_video/avi视频/test/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test/"
+
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_GDZP/test_video/avi视频/test/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZG_GDZP/test_video/"
     args.suffix = '.avi'
+    # args.suffix = '.mp4'
 
     # 是否保存视频结果
     args.write_result_video_bool = True
     # 是否保存每一帧结果
-    # args.write_result_per_frame_bool = True
-    args.write_result_per_frame_bool = False
+    args.write_result_per_frame_bool = True
+    # args.write_result_per_frame_bool = False
     # 是否保存抓拍结果
     args.write_capture_crop_bool = True
     # 是否保存日志

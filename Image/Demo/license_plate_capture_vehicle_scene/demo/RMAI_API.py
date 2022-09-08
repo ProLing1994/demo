@@ -66,6 +66,17 @@ class CaptureApi():
         # self.ssd_car_plate_prototxt = None
         # self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-07-22-00/openvino_model/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-07-22-00.xml"
 
+        # # 2022-08-10-00
+        # # pytorch 
+        # self.ssd_car_plate_prototxt = None
+        # self.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-08-10-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_zf_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
+        # # # caffe
+        # # self.ssd_car_plate_prototxt = ""
+        # # self.ssd_car_plate_model_path = ""
+        # # openvino
+        # # self.ssd_car_plate_prototxt = None
+        # # self.ssd_car_plate_model_path = ""
+
         self.ssd_caffe_bool = False
         self.ssd_openvino_bool = False
 
@@ -118,18 +129,19 @@ class CaptureApi():
         self.plate_height = [20, 130]
         self.plate_width = [65, 400]
 
+        # ignore：
+        # self.plate_height = [0, 1000]
+        # self.plate_width = [0, 1000]
+
         # 抓拍线
-        # 6mm 0609
-        # self.capture_line_ratio = [0.6, 0.7, 0.85]
-        # 6mm 0713
-        # self.capture_line_ratio = [0.6, 0.7, 0.85]
-        # # 12mm
-        # # 12mm 0702
+        # 12mm 0702
         # self.capture_line_ratio = [0.4, 0.5, 0.8]
         # 12mm 0713
         # self.capture_line_ratio = [0.35, 0.45, 0.8]
         # 12mm 0723
         self.capture_line_ratio = [0.43, 0.53, 0.8]
+        # ignore
+        # self.capture_line_ratio = [0.0, 0.5, 1.0]
         self.capture_plate_frame_threshold = 5
         self.capture_outtime_frame_threshold_01 = 25
         self.capture_outtime_frame_threshold_02 = 150
