@@ -7,7 +7,7 @@ import random
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
 from Image.recognition2d.license_plate_ocr.infer.lpr import LPR
-from Image.Demo.license_plate_capture_gantry_scene.sort.mot_sort import Sort
+from Image.Demo.license_plate_capture_china_gantry_scene.sort.mot_sort import Sort
 
 
 def intersect(box_a, box_b):
@@ -75,7 +75,7 @@ class CaptureApi():
         # # self.ssd_car_plate_prototxt = "/mnt/huanyuan/model_final/image_model/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-05-27-00/FPN_RFB_3class_3attri_noDilation_prior.prototxt"
         # # self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-05-27-00/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-05-27-00.caffemodel"
 
-        # 2022-07-30-00
+        # 2022-07-22-00
         # pytorch 
         self.ssd_car_plate_prototxt = None
         self.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-07-22-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"

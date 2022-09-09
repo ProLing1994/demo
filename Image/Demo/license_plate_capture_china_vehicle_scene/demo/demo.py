@@ -8,8 +8,8 @@ from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.Basic.utils.folder_tools import *
-from Image.Demo.license_plate_capture_vehicle_scene.demo.RMAI_API import *
-from Image.Demo.license_plate_capture_vehicle_scene.utils.draw_tools import draw_bbox_tracker, draw_bbox_info, draw_bbox_state, draw_capture_line
+from Image.Demo.license_plate_capture_china_vehicle_scene.demo.RMAI_API import *
+from Image.Demo.license_plate_capture_china_vehicle_scene.utils.draw_tools import draw_bbox_tracker, draw_bbox_info, draw_bbox_state, draw_capture_line
 
 
 def inference_video(args):
@@ -147,10 +147,11 @@ def main():
     # args.video_dir = "/mnt/huanyuan2/data/image/ZG_HCZP/test_video/avi视频/test/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test/"
 
-    args.video_dir = "/mnt/huanyuan2/data/image/ZG_GDZP/test_video/avi视频/test/"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZG_GDZP/test_video/"
-    # args.suffix = '.avi'
-    args.suffix = '.mp4'
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_GDZP/test_video/avi视频/test/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZG_GDZP/test_video/"
+    
+    args.suffix = '.avi'
+    # args.suffix = '.mp4'
 
     # 是否保存视频结果
     args.write_result_video_bool = True
