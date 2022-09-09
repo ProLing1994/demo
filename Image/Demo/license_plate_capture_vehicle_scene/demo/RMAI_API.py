@@ -44,8 +44,10 @@ class CaptureApi():
 
     def option_init(self):
 
-        self.image_width = 2592
-        self.image_height = 1920
+        # self.image_width = 2592
+        # self.image_height = 1920
+        self.image_width = 1280
+        self.image_height = 720
 
         # # 2022-05-27-00
         # # pytorch 
@@ -55,27 +57,27 @@ class CaptureApi():
         # # self.ssd_car_plate_prototxt = "/mnt/huanyuan/model_final/image_model/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-05-27-00/FPN_RFB_3class_3attri_noDilation_prior.prototxt"
         # # self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-05-27-00/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-05-27-00.caffemodel"
 
-        # 2022-07-30-00
-        # pytorch 
-        self.ssd_car_plate_prototxt = None
-        self.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-07-22-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
-        # # caffe
-        # self.ssd_car_plate_prototxt = "/mnt/huanyuan/model_final/image_model/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-07-22-00/FPN_RFB_3class_3attri_noDilation_prior.prototxt"
-        # self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-07-22-00/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-07-22-00.caffemodel"
-        # openvino
-        # self.ssd_car_plate_prototxt = None
-        # self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-07-22-00/openvino_model/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-07-22-00.xml"
-
-        # # 2022-08-10-00
+        # # 2022-07-30-00
         # # pytorch 
         # self.ssd_car_plate_prototxt = None
-        # self.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-08-10-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_zf_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
+        # self.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-07-22-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
         # # # caffe
-        # # self.ssd_car_plate_prototxt = ""
-        # # self.ssd_car_plate_model_path = ""
+        # # self.ssd_car_plate_prototxt = "/mnt/huanyuan/model_final/image_model/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-07-22-00/FPN_RFB_3class_3attri_noDilation_prior.prototxt"
+        # # self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-07-22-00/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-07-22-00.caffemodel"
         # # openvino
         # # self.ssd_car_plate_prototxt = None
-        # # self.ssd_car_plate_model_path = ""
+        # # self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-07-22-00/openvino_model/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-07-22-00.xml"
+
+        # 2022-09-08-00
+        # pytorch 
+        self.ssd_car_plate_prototxt = None
+        self.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-09-08-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_zf_zt_crop_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_225.pth"
+        # # caffe
+        # self.ssd_car_plate_prototxt = ""
+        # self.ssd_car_plate_model_path = ""
+        # openvino
+        # self.ssd_car_plate_prototxt = None
+        # self.ssd_car_plate_model_path = ""
 
         self.ssd_caffe_bool = False
         self.ssd_openvino_bool = False
@@ -125,23 +127,23 @@ class CaptureApi():
         # self.roi_area = [0, 360, 2592, 1920]
 
         # 车牌长宽阈值
-        # 5M：
-        self.plate_height = [20, 130]
-        self.plate_width = [65, 400]
+        # # 5M：
+        # self.plate_height = [20, 130]
+        # self.plate_width = [65, 400]
 
         # ignore：
-        # self.plate_height = [0, 1000]
-        # self.plate_width = [0, 1000]
+        self.plate_height = [0, 1000]
+        self.plate_width = [0, 1000]
 
         # 抓拍线
         # 12mm 0702
         # self.capture_line_ratio = [0.4, 0.5, 0.8]
         # 12mm 0713
         # self.capture_line_ratio = [0.35, 0.45, 0.8]
-        # 12mm 0723
-        self.capture_line_ratio = [0.43, 0.53, 0.8]
+        # # 12mm 0723
+        # self.capture_line_ratio = [0.43, 0.53, 0.8]
         # ignore
-        # self.capture_line_ratio = [0.0, 0.5, 1.0]
+        self.capture_line_ratio = [0.0, 0.5, 1.0]
         self.capture_plate_frame_threshold = 5
         self.capture_outtime_frame_threshold_01 = 25
         self.capture_outtime_frame_threshold_02 = 150
@@ -239,8 +241,8 @@ class CaptureApi():
         image_width = img.shape[1]
         image_height = img.shape[0]
 
-        assert self.image_width == image_width
-        assert self.image_height == image_height
+        # assert self.image_width == image_width
+        # assert self.image_height == image_height
 
         # detector
         bboxes = self.detector.detect( img, with_score=True )
@@ -338,9 +340,9 @@ class CaptureApi():
             # 方案二：计算车牌框完全位于车框内
             bool_in = bool_box_in_roi(match_roi_idx, car_roi)
             if bool_in:
-                # 默认车牌均是在车辆的下沿
-                if (car_roi[1] + car_roi[3] / 2.0) < (match_roi_idx[1] + match_roi_idx[3] / 2.0):
-                    matched_roi_list.append(license_plate_list[idx])
+                # # 默认车牌均是在车辆的下沿
+                # if (car_roi[1] + car_roi[3] / 2.0) < (match_roi_idx[1] + match_roi_idx[3] / 2.0):
+                matched_roi_list.append(license_plate_list[idx])
 
         matched_roi_list.sort(key=sort_key, reverse=True)
 

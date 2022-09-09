@@ -120,7 +120,7 @@ def rotate_img_with_points(image, points, degree):
     return rotated_img, rotated_points
 
 
-def sitch_pitch_aug_rotate(image, bbox, sitch_pitch_aug_rotate_angle_list):
+def sitch_pitch_aug_rotate_bbox(image, bbox, sitch_pitch_aug_rotate_angle_list):
 
     x1 = bbox[0]
     y1 = bbox[1]
@@ -140,7 +140,7 @@ def sitch_pitch_aug_rotate(image, bbox, sitch_pitch_aug_rotate_angle_list):
     return rotate_img, rotate_bbox
 
 
-def sitch_pitch_aug_mirror(image, boxes, sitch_pitch_aug_rotate_mirror_list):
+def sitch_pitch_aug_mirror_bbox(image, boxes, sitch_pitch_aug_rotate_mirror_list):
 
     # init
     mirror_bbox = np.array(boxes).copy()
@@ -156,7 +156,7 @@ def sitch_pitch_aug_mirror(image, boxes, sitch_pitch_aug_rotate_mirror_list):
     return mirror_img, list(mirror_bbox)
     
 
-def sitch_pitch_aug_scale(image, boxes, sitch_pitch_aug_rotate_scale_list):
+def sitch_pitch_aug_scale_bbox(image, boxes, sitch_pitch_aug_rotate_scale_list):
 
     # init
     scale_bbox = np.array(boxes).copy()
@@ -172,6 +172,53 @@ def sitch_pitch_aug_scale(image, boxes, sitch_pitch_aug_rotate_scale_list):
     scale_bbox = scale_bbox.astype(np.int32)
 
     return scale_image, list(scale_bbox)
+
+
+def sitch_pitch_aug_rotate_mask(image, corner, sitch_pitch_aug_rotate_angle_list):
+    
+    corner = np.array(corner)
+    points = np.array((corner[:, 0 ], corner[:, 1]))
+
+    sitch_pitch_aug_rotate_angle = random.sample(sitch_pitch_aug_rotate_angle_list, 1)[0]
+    rotate_img, rotate_points = rotate_img_with_points(image, points, sitch_pitch_aug_rotate_angle)
+
+    rotate_corner = np.transpose(rotate_points)
+
+    return rotate_img, rotate_corner
+
+
+def sitch_pitch_aug_mirror_mask(image, corner, sitch_pitch_aug_rotate_mirror_list):
+    
+    # init
+    mirror_corner = np.array(corner).copy()
+    mirror_img = image
+
+    _, width, _ = image.shape
+    if random.sample(sitch_pitch_aug_rotate_mirror_list, 1)[0]:
+        mirror_img = image[:, ::-1]
+        mirror_corner[:, 0] = width - mirror_corner[:, 0]
+
+    # contiguous
+    mirror_img = np.ascontiguousarray(mirror_img)
+    return mirror_img, mirror_corner
+
+
+def sitch_pitch_aug_scale_mask(image, corner, sitch_pitch_aug_rotate_scale_list):
+    
+    # init
+    scale_corner = np.array(corner).copy()
+    scale_image = image
+
+    sitch_pitch_aug_rotate_scale = random.sample(sitch_pitch_aug_rotate_scale_list, 1)[0]
+
+    h, w = image.shape[:2]
+    h_scale, w_scale = int(h * sitch_pitch_aug_rotate_scale), int(w * sitch_pitch_aug_rotate_scale)
+    scale_image = cv2.resize(image, (w_scale, h_scale))
+    scale_corner[:, 0] = scale_corner[:, 0] / w * w_scale
+    scale_corner[:, 1] = scale_corner[:, 1] / h * h_scale
+    scale_corner = scale_corner.astype(np.int32)
+
+    return scale_image, scale_corner
 
 
 def sitch_pitch_foreground_extract(img, sitch_pitch_processing_method_list):

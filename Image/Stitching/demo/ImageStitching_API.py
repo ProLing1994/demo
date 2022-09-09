@@ -7,7 +7,7 @@ import random
 import sys 
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
-from Image.Stitching.utils.json_code import load_bbox_json
+from Image.Stitching.utils.json_code import load_bbox_json, load_mask_json
 from Image.Stitching.utils.xml_code import load_bbox_xml
 from Image.Stitching.utils.image_processing import *
 
@@ -81,10 +81,10 @@ class ImageSitchApi():
 
             if bbox_mask_type == "bbox":
                 bbox_list = self.load_bbox(annotation_path_list[idx], json_xml_type)
-                self.sitch_pitch_list.extend(self.get_sitch_pitch(img, bbox_list))
+                self.sitch_pitch_list.extend(self.get_sitch_pitch_from_bbox(img, bbox_list))
             elif bbox_mask_type == "mask":
-                # mask_list = self.load_mask(annotation_path_list[idx], json_xml_type)
-            
+                mask_list = self.load_mask(annotation_path_list[idx], json_xml_type)
+                self.sitch_pitch_list.extend(self.get_sitch_pitch_from_mask(img, mask_list))
 
 
     def load_bbox(self, annotation_path, json_xml_type):
@@ -97,6 +97,16 @@ class ImageSitchApi():
             raise Exception
         return bbox_list
     
+
+    def load_mask(self, annotation_path, json_xml_type):
+
+        if json_xml_type == "json":
+            mask_list = load_mask_json(annotation_path)
+        else:
+            raise Exception
+
+        return mask_list
+
 
     def add_bkg(self, bkg_path_list, bkg_roi_list):
         """
@@ -130,7 +140,7 @@ class ImageSitchApi():
         return sitch_res_img, stich_label_list
 
 
-    def get_sitch_pitch(self, img, bbox_list):
+    def get_sitch_pitch_from_bbox(self, img, bbox_list):
         """
         img: np.narray
         bbox_list: list [{'label': label, 'bbox': [x1, y1, x2, y2]}]
@@ -152,9 +162,9 @@ class ImageSitchApi():
 
             # 贴图小块增强
             # 旋转 + 镜像 + 缩放
-            rotate_img, rotate_bbox = sitch_pitch_aug_rotate(img, bbox_idx['bbox'], self.sitch_pitch_aug_rotate_angle_list)
-            mirror_img, mirror_bbox = sitch_pitch_aug_mirror(rotate_img, rotate_bbox, self.sitch_pitch_aug_rotate_mirror_list)
-            scaler_img, scale_bbox = sitch_pitch_aug_scale(mirror_img, mirror_bbox, self.sitch_pitch_aug_rotate_scale_list)
+            rotate_img, rotate_bbox = sitch_pitch_aug_rotate_bbox(img, bbox_idx['bbox'], self.sitch_pitch_aug_rotate_angle_list)
+            mirror_img, mirror_bbox = sitch_pitch_aug_mirror_bbox(rotate_img, rotate_bbox, self.sitch_pitch_aug_rotate_mirror_list)
+            scaler_img, scale_bbox = sitch_pitch_aug_scale_bbox(mirror_img, mirror_bbox, self.sitch_pitch_aug_rotate_scale_list)
 
             # 前景提取：获得 贴图 和 mask
             # sitch_pitch = rotate_img[rotate_bbox[1] : rotate_bbox[3], rotate_bbox[0] : rotate_bbox[2]]
@@ -180,6 +190,52 @@ class ImageSitchApi():
             # cv2.circle(scaler_img, (scale_bbox[0], scale_bbox[1]), 5, (0, 0, 255), 5)
             # cv2.circle(scaler_img, (scale_bbox[2], scale_bbox[3]), 5, (0, 0, 255), 5)
             # cv2.imwrite(output_img_path, scaler_img)
+
+        return sitch_pitch_list
+
+
+    def get_sitch_pitch_from_mask(self, img, mask_list):
+        """
+        img: np.narray
+        mask_list: list [{'label': label, 'corner': [points]}]
+
+        return:
+        sitch_pitch_list: list [{'label': label, 'img': img, "mask": mask, "corner":cornermask}]
+        """
+        sitch_pitch_list = [] # [{'label': label, 'img': img, "mask": mask, "corner":cornermask}]
+
+        for idx in range(len(mask_list)):
+
+            mask_idx = mask_list[idx]
+
+            # corner
+            sitch_pitch_corner = np.array(mask_idx['corner'])
+
+            # # 贴图小块增强
+            # # 旋转 + 镜像 + 缩放
+            rotate_img, rotate_corner = sitch_pitch_aug_rotate_mask(img, sitch_pitch_corner, self.sitch_pitch_aug_rotate_angle_list)
+            mirror_img, mirror_corner = sitch_pitch_aug_mirror_mask(rotate_img, rotate_corner, self.sitch_pitch_aug_rotate_mirror_list)
+            scaler_img, scale_corner = sitch_pitch_aug_scale_mask(mirror_img, mirror_corner, self.sitch_pitch_aug_rotate_scale_list)
+
+            # bbox 
+            sitch_pitch_bbox = [min(scale_corner[:, 0]), min(scale_corner[:, 1]),  max(scale_corner[:, 0]), max(scale_corner[:, 1])]
+
+            # mask
+            scale_corner = [scale_corner.reshape(-1, 1, 2)]
+            rotate_mask = np.zeros((scaler_img.shape[0], scaler_img.shape[1]), dtype=img.dtype)
+            rotate_mask = cv2.drawContours(rotate_mask, scale_corner, -1, 1, cv2.FILLED)
+            sitch_pitch_mask = rotate_mask[sitch_pitch_bbox[1] : sitch_pitch_bbox[3], sitch_pitch_bbox[0] : sitch_pitch_bbox[2]]
+            sitch_pitch_mask = np.expand_dims(sitch_pitch_mask, axis=2)
+
+            # 贴图
+            sitch_pitch = scaler_img[sitch_pitch_bbox[1] : sitch_pitch_bbox[3], sitch_pitch_bbox[0] : sitch_pitch_bbox[2]]
+            sitch_pitch = sitch_pitch * sitch_pitch_mask
+           
+            sitch_pitch_list.append({"label": mask_idx['label'], "img":sitch_pitch, "mask":sitch_pitch_mask, "corner":sitch_pitch_corner})
+
+            output_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/test_res/"
+            output_img_path = os.path.join(output_dir, "sitch_pitch_{}.jpg".format(idx))
+            cv2.imwrite(output_img_path, sitch_pitch)
 
         return sitch_pitch_list
 

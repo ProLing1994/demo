@@ -18,10 +18,14 @@ def image_stitching(args):
     xml_path_list = [os.path.join(args.json_dir, str(os.path.basename(img_path)).replace('.jpg', '.xml')) for img_path in img_path_list]
 
     # image stitch api
-    # image_stitch_api = ImageSitchApi(args.bkg_path_list, args.bkg_roi_list, img_path_list, json_path_list, 'bbox', 'json')
-    image_stitch_api = ImageSitchApi(args.bkg_path_list, args.bkg_roi_list, img_path_list, json_path_list, 'mask', 'json')
+    # load bbox 
+    image_stitch_api = ImageSitchApi(args.bkg_path_list, args.bkg_roi_list, img_path_list, json_path_list, 'bbox', 'json')
+    # image_stitch_api = ImageSitchApi(args.bkg_path_list, args.bkg_roi_list, img_path_list, json_path_list, 'mask', 'json')
     # image_stitch_api = ImageSitchApi(args.bkg_path_list, args.bkg_roi_list, img_path_list, xml_path_list, 'bbox', 'xml')
-        
+    
+    # load mask
+    image_stitch_api.add_img(img_path_list, json_path_list, 'mask', 'json')
+
     for idx in range(10):
 
         # run
@@ -32,13 +36,11 @@ def image_stitching(args):
         # stich_label_list.append({'label': sitch_pitch_idx['label'], 'bbox': [pitch_roi[0], pitch_roi[1], pitch_roi[2], pitch_roi[3]], 'corner': pitch_corner})
         for img_stitch_idx in range(len(img_stitch_list)):
             bbox = img_stitch_list[img_stitch_idx]['bbox']
-            # cv2.rectangle(img_stitch, (bbox[0], bbox[1]), (bbox[2], bbox[3]), (0, 0, 255), 0)
+            cv2.rectangle(img_stitch, (bbox[0], bbox[1]), (bbox[2], bbox[3]), (0, 0, 255), 0)
 
             corner = img_stitch_list[img_stitch_idx]['corner']
             corner = corner.reshape((-1, 1, 2)).astype(np.int)
-            # cv2.polylines(img_stitch, corner, True, (0, 255, 0), 2)
-            # for corner_idx in range(len(list(corner))):
-            #     cv2.circle(img_stitch, (corner[corner_idx][0], corner[corner_idx][1]), 2, (0, 255, 0), 2)
+            cv2.polylines(img_stitch, corner, True, (0, 255, 0), 2)
         cv2.imwrite(output_img_path, img_stitch)
 
 
