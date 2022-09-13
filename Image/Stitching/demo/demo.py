@@ -52,9 +52,12 @@ def main():
     # args.img_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/test_json/"
     # args.json_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/test_json/"
     # args.xml_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/test_json/"
-    args.img_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/rubbish_img/task1-8mm/"
-    args.json_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/rubbish_img/task1-8mm/"
-    args.xml_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/rubbish_img/task1-8mm/"
+    # args.img_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/rubbish_img/task1-8mm/"
+    # args.json_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/rubbish_img/task1-8mm/"
+    # args.xml_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/rubbish_img/task1-8mm/"
+    args.img_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/rubbish_img/task2-6mm/"
+    args.json_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/rubbish_img/task2-6mm/"
+    args.xml_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/rubbish_img/task2-6mm/"
 
     args.bkg_path_list = ["/mnt/huanyuan2/data/image/RM_DSLJ_detection/test_img/00base.jpg", "/mnt/huanyuan2/data/image/RM_DSLJ_detection/test_img/01base.jpg", "/mnt/huanyuan2/data/image/RM_DSLJ_detection/test_img/03base.jpg"]
     args.bkg_roi_list = [[[0, 1080], [0, 780], [280, 630], [1310, 700], [1660, 1080], [0, 1080]], [[0, 1080], [0, 780], [280, 630], [1310, 700], [1660, 1080], [0, 1080]], [[0, 1080], [0, 780], [280, 630], [1310, 700], [1660, 1080], [0, 1080]]]

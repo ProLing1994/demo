@@ -48,39 +48,21 @@ class CaptureApi():
         self.image_height = 1920
 
         # ssd
-        self.ssd_bool = True
-        self.ssd_caffe_bool = False
-        self.ssd_openvino_bool = False
-        # 2022-08-10-00
-        # pytorch 
-        self.ssd_car_plate_prototxt = None
-        self.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-08-10-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_zf_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
-        # # # caffe
-        # # self.ssd_car_plate_prototxt = ""
-        # # self.ssd_car_plate_model_path = ""
-        # # openvino
-        # # self.ssd_car_plate_prototxt = None
-        # # self.ssd_car_plate_model_path = ""
+        self.ssd_bool = False
 
         # yolov6
-        self.yolov6_bool = False
+        self.yolov6_bool = True
         # pytorch
-        self.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_zg_bmx_adas_bsd_zg_data_0722/yolov6_zg_bmx.py"
-        self.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_zg_bmx_adas_bsd_zg_data_0722/epoch_300.pth"
-
-        # 是否将 car\bus\truck 合并为一类输出
-        self.merge_class_bool = True
-        self.merge_class_name = 'car_bus_truck'
-        self.car_attri_name_list = [ 'car', 'bus', 'truck' ]
-        self.license_plate_name = 'license_plate'
-
-        # self.detect_class_name = ['car_bus_truck', 'non_motorized', 'person']
-        # self.detect_class_threshold_list = [0.5, 0.4, 0.4]
+        self.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_zd_plate_wmr/yolov6_licenseplate_deploy.py"
+        self.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_zd_plate_wmr/epoch_95_deploy.pth"
+        
+        self.detect_class_name = ['license_plate']
+        self.detect_class_threshold_list = [0.35]
 
         # sort
         self.max_age = 10
         self.min_hits = 3 
-        self.iou_threshold = 0.3
+        self.iou_threshold = 0.1
     
 
     def param_init(self):
@@ -90,7 +72,6 @@ class CaptureApi():
         bbox_info_dict = {}
         bbox_info_dict['id'] = 0                                            # 追踪id
         bbox_info_dict['loc'] = []                                          # 检测框坐标
-        bbox_info_dict['plate_loc'] = []                                    # 车牌坐标
 
 
     def model_init(self):
@@ -135,23 +116,14 @@ class CaptureApi():
 
     def update_tracker_bboxes(self, bboxes):
     
-        if self.merge_class_bool:
-            # tracker
-            if self.merge_class_name in bboxes:
-                dets = np.array(bboxes[self.merge_class_name])
-            else:
-                dets = np.empty((0, 5))
-            tracker_bboxes = self.mot_tracker.update(dets)
-
-        else:
-            # tracker
-            dets = np.empty((0, 5))
-            for idx in range(len(self.car_attri_name_list)):
-                car_attri_name_idx = self.car_attri_name_list[idx]
-                if car_attri_name_idx in bboxes:
-                    dets = np.concatenate((dets, np.array(bboxes[car_attri_name_idx])), axis=0)
-                    
-            tracker_bboxes = self.mot_tracker.update(dets)
+        # tracker
+        dets = np.empty((0, 5))
+        for idx in range(len(self.detect_class_name)):
+            detect_class_name_idx = self.detect_class_name[idx]
+            if detect_class_name_idx in bboxes:
+                dets = np.concatenate((dets, np.array(bboxes[detect_class_name_idx])), axis=0)
+                
+        tracker_bboxes = self.mot_tracker.update(dets)
 
         return tracker_bboxes
 
@@ -207,22 +179,11 @@ class CaptureApi():
             bbox_info_dict = {}
             bbox_info_dict['id'] = 0                                            # 追踪id
             bbox_info_dict['loc'] = []                                          # 检测框坐标
-            bbox_info_dict['plate_loc'] = []                                    # 车牌坐标
 
-            # car
+            # license_plate
             tracker_bbox = tracker_bboxes[idx]
             bbox_info_dict['id'] = tracker_bbox[-1]
             bbox_info_dict['loc'] = tracker_bbox[0:4]
-
-            # license plate
-            if self.license_plate_name in bboxes:
-
-                license_plate_roi_list = bboxes[self.license_plate_name]
-                # 求相交同时置信度最高的车牌框
-                match_license_plate_roi = self.match_car_license_plate(bbox_info_dict['loc'], license_plate_roi_list)
-
-                if len(match_license_plate_roi):
-                    bbox_info_dict['plate_loc'] = match_license_plate_roi[0][0:4]
 
             bbox_info_list.append(bbox_info_dict)
 
