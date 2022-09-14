@@ -117,7 +117,7 @@ class CaptureApi():
         self.capture_line_left_right_ratio = [0.1, 0.9]
         self.capture_plate_frame_threshold = 5
         self.capture_outtime_frame_threshold_01 = 50
-        self.capture_outtime_frame_threshold_02 = 300
+        self.capture_outtime_frame_threshold_02 = 250
         self.capture_plate_up_down_distance_boundary_threshold = 50
         self.capture_plate_left_right_distance_boundary_threshold = 50
         self.capture_plate_ocr_score_threshold = 0.8
