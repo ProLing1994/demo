@@ -7,10 +7,9 @@ import random
 import sys 
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
-from Image.Stitching.utils.json_code import load_bbox_json, load_mask_json
-from Image.Stitching.utils.xml_code import load_bbox_xml
-from Image.Stitching.utils.image_processing import *
-
+from Image.Demo.Stitching.utils.json_code import load_bbox_json, load_mask_json
+from Image.Demo.Stitching.utils.xml_code import load_bbox_xml
+from Image.Demo.Stitching.utils.image_processing import *
 
 class ImageSitchApi():
     """

@@ -49,10 +49,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.video_dir = "/mnt/huanyuan2/data/image/HY_Tanker/test_video/side/avi文件/220919"
-    args.output_video_dir = "/mnt/huanyuan2/data/image/HY_Tanker/test_video/side/jpg/"
-    # args.suffix = '.mp4'
-    args.suffix = '.avi'
+    args.video_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/rubbish_img/video/"
+    args.output_video_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/rubbish_img/jpg/"
+    args.suffix = '.mp4'
+    # args.suffix = '.avi'
     args.frame_strp = 10
     # args.frame_strp = 1
 

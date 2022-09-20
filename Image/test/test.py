@@ -77,7 +77,6 @@ def absdiff(args):
                 os.makedirs(args.output_dir)
             cv2.imwrite(output_img_path, ori_img)
 
-
 def harris(image):
 
     # Detector parameters
@@ -396,11 +395,123 @@ def rectMerge_sxf(rects: []):
     return complete, new_array
 
 
+def gradientdiff(args):
+    
+    img_list = os.listdir(args.input_dir)
+    img_list.sort()
+
+    # init
+    bkg_list = []
+    size_thres = [200, 70000]
+
+    # 生成椭圆结构元素
+    es = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+
+    # 背景建模
+    for idx in range(len(img_list)):
+        img_name = img_list[idx]
+        img_path = os.path.join(args.input_dir, img_name)
+
+        if 'base' in img_name:
+            img = cv2.imread(img_path)
+
+            # 灰度图
+            img_bkg= cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+            # 对灰度图进行高斯模糊,平滑图像
+            img_bkg = cv2.GaussianBlur(img_bkg, (11, 11), 0)
+            # img_bkg = cv2.GaussianBlur(img_bkg, (3, 3), 0)
+
+            x = cv2.Sobel(img_bkg, cv2.CV_16S, 1, 0)
+            y = cv2.Sobel(img_bkg, cv2.CV_16S, 0, 1)
+
+            x = cv2.convertScaleAbs(x)  # convert 转换  scale 缩放
+            y = cv2.convertScaleAbs(y)
+
+            img_bkg = cv2.addWeighted(x, 0.5, y, 0.5, 0)
+
+            bkg_list.append(img_bkg)
+
+            output_img_path = os.path.join(args.output_dir, img_name)
+            if not os.path.exists(args.output_dir):
+                os.makedirs(args.output_dir)
+            cv2.imwrite(output_img_path, img_bkg)
+
+
+    for idx in range(len(img_list)):
+
+        img_name = img_list[idx]
+        img_path = os.path.join(args.input_dir, img_name)
+
+        if 'base' not in img_name:
+
+            ori_img = cv2.imread(img_path)
+
+            # 灰度图
+            img = cv2.cvtColor(ori_img, cv2.COLOR_BGR2GRAY)
+
+            # 对灰度图进行高斯模糊,平滑图像
+            img = cv2.GaussianBlur(img, (11, 11), 0)
+            # img = cv2.GaussianBlur(img, (3, 3), 0)
+
+            x = cv2.Sobel(img, cv2.CV_16S, 1, 0)
+            y = cv2.Sobel(img, cv2.CV_16S, 0, 1)
+
+            x = cv2.convertScaleAbs(x)  # convert 转换  scale 缩放
+            y = cv2.convertScaleAbs(y)
+            
+            img = cv2.addWeighted(x, 0.5, y, 0.5, 0)
+
+            output_img_path = os.path.join(args.output_dir, img_name)
+            if not os.path.exists(args.output_dir):
+                os.makedirs(args.output_dir)
+            cv2.imwrite(output_img_path, img)
+
+            diff = np.zeros(img.shape)
+            # 获取当前帧与背景帧之间的图像差异,得到差分图
+            for idy in range(len(bkg_list)):
+                bkg_np = bkg_list[idy]
+                # bkg_np = bkg_list[idy].astype(np.uint8)
+                # img = img.astype(np.uint8)
+                diff += (1/len(bkg_list)) * cv2.absdiff(bkg_np, img)
+
+            # 利用像素点值进行阈值分割,得到一副黑白图像
+            diff = cv2.threshold(diff, 70, 255, cv2.THRESH_BINARY)[1]
+            # diff = cv2.threshold(diff, 150, 255, cv2.THRESH_BINARY)[1]
+            # diff = diff.astype(np.uint8)
+            # retval, diff = cv2.threshold(diff, 0, 255, cv2.THRESH_OTSU)
+
+            # 膨胀图像,减少错误
+            # diff = cv2.erode(diff, es, iterations=1)
+            # diff = cv2.dilate(diff, es, iterations=2)
+            # diff = cv2.dilate(diff, es, iterations=4)
+            diff = cv2.dilate(diff, es, iterations=6)
+
+            # 得到图像中的目标轮廓
+            diff = diff.astype(np.uint8)
+            cnts, hierarchy = cv2.findContours(diff.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+            for c in cnts:
+                if cv2.contourArea(c) < size_thres[0] or cv2.contourArea(c) > size_thres[1]:
+                    continue
+                # 绘制目标矩形框
+                (x, y, w, h) = cv2.boundingRect(c)
+                cv2.rectangle(ori_img, (x+2, y+2), (x+w, y+h), (0, 255, 0), 2)
+
+            output_img_path = os.path.join(args.output_dir, img_name)
+            output_diff_path = os.path.join(args.output_dir, img_name.replace('.jpg', '_diff.jpg'))
+            if not os.path.exists(args.output_dir):
+                os.makedirs(args.output_dir)
+            cv2.imwrite(output_img_path, ori_img)
+            cv2.imwrite(output_diff_path, diff)
+
+
 def test(args):
 
     # absdiff(args)
     # corner(args)
-    absdiff_corner(args)
+    # absdiff_corner(args)
+    gradientdiff(args)
 
 
 if __name__ == "__main__":
@@ -408,7 +519,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.input_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/test_img/"
+    args.input_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/rubbish_img/jpg/select_2/"
     args.output_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/test_res/"
 
     test(args)

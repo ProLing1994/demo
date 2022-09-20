@@ -6,8 +6,8 @@ import sys
 from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
-from Image.Stitching.demo.ImageStitching_API import *
-from Image.Stitching.utils.folder_tools import *
+from Image.Demo.Stitching.demo.ImageStitching_API import *
+from Image.Demo.Stitching.utils.folder_tools import *
 
 
 def image_stitching(args):
