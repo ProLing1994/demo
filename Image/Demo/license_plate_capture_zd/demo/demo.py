@@ -9,7 +9,7 @@ from tqdm import tqdm
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.Basic.utils.folder_tools import *
 from Image.Demo.license_plate_capture_zd.demo.RMAI_API import *
-from Image.Demo.license_plate_capture_zd.utils.draw_tools import draw_bbox_info
+from Image.Demo.license_plate_capture_zd.utils.draw_tools import draw_bbox_info, draw_bbox_state, draw_capture_line
 
 
 def inference_video(args):
@@ -60,10 +60,12 @@ def inference_video(args):
             #     print()
 
             # capture api
-            tracker_bboxes, bbox_info_list = capture_api.run(img, frame_idx)
+            tracker_bboxes, bbox_info_list, bbox_state_map, capture_line_up_down, capture_line_left_right, capture_list, capture_res_list = capture_api.run(img, frame_idx)
 
             if args.write_result_per_frame_bool or args.write_result_video_bool:
-                img = draw_bbox_info(img, bbox_info_list, mode='ltrb')
+                img = draw_bbox_info(img, bbox_info_list, capture_list=capture_list, mode='ltrb')
+                img = draw_bbox_state(img, bbox_state_map)
+                img = draw_capture_line(img, capture_line_up_down, capture_line_left_right, mode='ltrb')
 
             # 是否保存每一帧结果
             if args.write_result_per_frame_bool:
@@ -77,11 +79,50 @@ def inference_video(args):
             
             # 是否保存抓拍结果
             if args.write_capture_crop_bool:
-                pass
+                # crop capture result
+                for idy, capture_res_idy in capture_res_list.items():
 
-            # 是否保存日志
-            if args.write_csv_bool:
-                pass
+                    if capture_res_idy['draw_bool']:
+                        continue
+
+                    id = capture_res_idy['id']
+                    country = capture_res_idy['country']
+                    city = capture_res_idy['city']
+                    car_type = capture_res_idy['car_type']
+                    kind = capture_res_idy['kind']
+                    num = capture_res_idy['num']
+                    column = capture_res_idy['column']
+                    img_bbox_info_list = capture_res_idy['img_bbox_info_list']
+                    capture_res_idy['draw_bool'] = True
+
+                    for idz in range(len(img_bbox_info_list)):
+                        img_bbox_info = img_bbox_info_list[idz]
+                        img_crop = img_bbox_info['img']
+                        bbox_info = img_bbox_info['bbox_info']
+
+                        bbox_loc = [bbox_info['loc'] for bbox_info in bbox_info if bbox_info['id'] == id][0]
+                        bbox_crop = img_crop[max( 0, bbox_loc[1] ): min( int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)), bbox_loc[3] ), max( 0, bbox_loc[0] ): min( int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), bbox_loc[2] )]
+
+                        # 保存捕获结果
+                        output_capture_path = os.path.join(args.output_video_dir, 'capture', video_list[idx].replace(args.suffix, ''), '{}_{}_{}_{}_{}_{}_{}_{}.jpg'.format(frame_idx, country, city, car_type, column, kind, num, idz))
+                        create_folder(os.path.dirname(output_capture_path))
+                        cv2.imwrite(output_capture_path, bbox_crop)
+                    
+                    # 是否保存日志
+                    if args.write_csv_bool:
+                        csv_dict = {}
+
+                        csv_dict['name'] = video_list[idx].replace(args.suffix, '')
+                        csv_dict['frame_id'] = frame_idx
+                        csv_dict['id'] = capture_res_idy['id']
+                        csv_dict['country'] = capture_res_idy['country']
+                        csv_dict['city'] = capture_res_idy['city']
+                        csv_dict['kind'] = len(capture_res_idy['kind'])
+                        csv_dict['num'] = len(capture_res_idy['num'])
+                        csv_dict['column'] = len(capture_res_idy['column'])
+                        csv_dict['flage'] = capture_res_idy['flage']
+
+                        csv_list.append(csv_dict)
             
             frame_idx += 1
 
@@ -89,7 +130,8 @@ def inference_video(args):
 
     # 是否保存日志
     if args.write_csv_bool:
-        pass
+        csv_pd = pd.DataFrame(csv_list, columns=['name', 'frame_id', 'id', 'country', 'city', 'kind', 'num', 'column', 'flage'])
+        csv_pd.to_csv(os.path.join(args.output_video_dir, 'capture.csv'), index=False, encoding="utf_8_sig")
 
 
 def main():
@@ -98,8 +140,20 @@ def main():
     args = parser.parse_args()
 
     # zd, demo
-    args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_白天_侧向_0615/截取视频/"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_白天_侧向_0615/截取视频/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_白天_侧向_0615/截取视频/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_白天_侧向_0615/截取视频/"
+    args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_夜晚_侧向_0615/截取视频/"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_夜晚_侧向_0615/截取视频/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_白天_后向_0615/截取视频/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_白天_后向_0615/截取视频/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_夜晚_后向_0615/00000G000170/截取视频/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_夜晚_后向_0615/00000G000170/截取视频/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_夜晚_后向_0615/00000G000171/截取视频/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_夜晚_后向_0615/00000G000171/截取视频/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_白天_侧向_0615/test/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_白天_侧向_0615/test/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_夜晚_侧向_0615/test/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_夜晚_侧向_0615/test/"
 
     args.suffix = '.avi'
     # args.suffix = '.mp4'

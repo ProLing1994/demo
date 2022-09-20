@@ -95,9 +95,9 @@ class CaptureApi():
         self.bbox_state_container_length = 10       # 车牌框连续丢失上报，从容器中清除该车辆信息
 
         # 更新车辆行驶状态
-        self.update_state_num_threshold = 5         # 车辆行驶状态计数最大值，用于记录车辆处于同一行驶状态的帧数
+        self.update_state_num_threshold = 5         # 行驶状态计数最大值，用于记录车辆处于同一行驶状态的帧数
         self.update_state_threshold = 1
-        self.update_state_stable_loc_alpha = float(0.6)   # 平滑车辆框参数
+        self.update_state_stable_loc_alpha = float(0.6)   # 平滑检测框参数
 
         # 报警时间长短
         self.capture_frame_num_threshold = 16
@@ -135,7 +135,6 @@ class CaptureApi():
             self.Down_threshold = self.image_height * self.capture_line_up_down_ratio[1]
             self.Left_threshold = self.image_width * self.capture_line_left_right_ratio[0]
             self.Right_threshold = self.image_width * self.capture_line_left_right_ratio[1]
-
 
 
     def param_init(self):
@@ -462,13 +461,14 @@ class CaptureApi():
 
                 bbox_info_idx['stable_loc'] = bbox_info_idx['loc']
 
+                # 更新车牌识别有效帧数
                 loc_center_x = (bbox_info_idx['loc'][0] + bbox_info_idx['loc'][2]) / 2.0
                 loc_center_y = (bbox_info_idx['loc'][1] + bbox_info_idx['loc'][3]) / 2.0
-
-                # 更新车牌识别有效帧数
+                
                 if not bbox_info_idx['plate_ocr'] == '':
                     if loc_center_x > self.Left_threshold and loc_center_x < self.Right_threshold and \
                         loc_center_y > self.Up_threshold and loc_center_y < self.Down_threshold:
+                        bbox_state_dict['plate_ocr_num'] += 1
                         bbox_state_dict['plate_ocr_list'].append(bbox_info_idx['plate_ocr'])
                         bbox_state_dict['plate_ocr_score_list'].append(bbox_info_idx['plate_ocr_score'])
 

@@ -144,19 +144,13 @@ class CaptureApi():
         self.plate_height = [20, 130]
         self.plate_width = [65, 400]
 
-        # # ignore：
-        # self.plate_height = [0, 1000]
-        # self.plate_width = [0, 1000]
-
         # 抓拍线
         # 12mm 0702
         # self.capture_line_ratio = [0.4, 0.5, 0.8]
         # 12mm 0713
         # self.capture_line_ratio = [0.35, 0.45, 0.8]
-        # # 12mm 0723
-        # self.capture_line_ratio = [0.43, 0.53, 0.8]
-        # ignore
-        self.capture_line_ratio = [0.0, 0.5, 1.0]
+        # 12mm 0723
+        self.capture_line_ratio = [0.43, 0.53, 0.8]
         self.capture_plate_frame_threshold = 5
         self.capture_outtime_frame_threshold_01 = 25
         self.capture_outtime_frame_threshold_02 = 150
