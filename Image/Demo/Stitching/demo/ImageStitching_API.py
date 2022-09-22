@@ -43,7 +43,8 @@ class ImageSitchApi():
         # 贴图增强方法
         self.sitch_pitch_aug_rotate_angle_list = range(-20, 20)
         self.sitch_pitch_aug_rotate_mirror_list = [0, 1]
-        self.sitch_pitch_aug_rotate_scale_list = list(np.arange(0.8, 1.2, 0.01))
+        # self.sitch_pitch_aug_rotate_scale_list = list(np.arange(0.8, 1.2, 0.01))
+        self.sitch_pitch_aug_rotate_scale_list = list(np.arange(0.5, 1.5, 0.01))
 
         # 贴图处理方法
         # self.sitch_pitch_processing_method_list = ['']

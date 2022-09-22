@@ -233,9 +233,21 @@ def sitch_pitch_foreground_extract(img, sitch_pitch_processing_method_list):
         mask = mask.astype(np.uint8)
     elif sitch_pitch_processing_method == "otsu":
         img, mask = otsu(img)
+
+        if mask.sum() == 0:
+            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            mask = np.ones(gray.shape)
+            mask = np.expand_dims(mask, axis=2)
+            mask = mask.astype(np.uint8)
     elif sitch_pitch_processing_method == "Gaussian&otsu":
         img, mask = gaussian_otsu(img)
-    
+
+        if mask.sum() == 0:
+            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            mask = np.ones(gray.shape)
+            mask = np.expand_dims(mask, axis=2)
+            mask = mask.astype(np.uint8)
+            
     # 获得更加紧致的边界框
     y1 = min(np.where(mask != 0)[0])
     y2 = max(np.where(mask != 0)[0])
