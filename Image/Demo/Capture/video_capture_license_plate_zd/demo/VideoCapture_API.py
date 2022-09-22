@@ -1,17 +1,15 @@
 from collections import Counter
-import cv2
 import numpy as np
 import sys 
 import random
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.Demo.license_plate_capture_zd.model.LPR_detect import LPRDetectCaffe, LPRDetectOpenVINO
-from Image.detection2d.mmdetection.demo.detector.yolov6_detector import YOLOV6Detector
-from Image.recognition2d.lpr.infer.lpr_seg_ocr import LPRSegOcrcffe
+# from Image.detection2d.mmdetection.demo.detector.yolov6_detector import YOLOV6Detector
 from Image.Demo.license_plate_capture_zd.sort.mot_sort import Sort
 
 
-class CaptureApi():
+class VideoCaptureApi():
     """
     CaptureApi
     """
@@ -40,12 +38,12 @@ class CaptureApi():
         # self.ssd_plate_prototxt = None
         # self.ssd_plate_model_path = ""
         # # caffe
-        self.ssd_plate_prototxt = "/mnt/huanyuan/model_final/image_model/zd_ssd_rfb_wmr/ssd_mbv2_2class/caffe_model/ssd_mobilenetv2_fpn.prototxt"
-        self.ssd_plate_model_path = "/mnt/huanyuan/model_final/image_model/zd_ssd_rfb_wmr/ssd_mbv2_2class/caffe_model/ssd_mobilenetv2_0421.caffemodel"
+        # self.ssd_plate_prototxt = "/mnt/huanyuan/model_final/image_model/zd_ssd_rfb_wmr/ssd_mbv2_2class/caffe_model/ssd_mobilenetv2_fpn.prototxt"
+        # self.ssd_plate_model_path = "/mnt/huanyuan/model_final/image_model/zd_ssd_rfb_wmr/ssd_mbv2_2class/caffe_model/ssd_mobilenetv2_0421.caffemodel"
         # openvino
-        # self.ssd_plate_model_path = "/mnt/huanyuan/model_final/image_model/zd_ssd_rfb_wmr/ssd_mbv2_2class/openvino_model/ssd_mobilenetv2_fpn.xml"
-        self.ssd_caffe_bool = True
-        self.ssd_openvino_bool = False
+        self.ssd_plate_model_path = "/mnt/huanyuan/model_final/image_model/zd_ssd_rfb_wmr/ssd_mbv2_2class/openvino_model/ssd_mobilenetv2_fpn.xml"
+        self.ssd_caffe_bool = False
+        self.ssd_openvino_bool = True
 
         # yolov6
         self.yolov6_bool = False
@@ -56,32 +54,14 @@ class CaptureApi():
         self.detect_class_name = ['license_plate']
         self.detect_class_threshold_list = [0.4]
 
-        # lpr
-        # seg: zd
-        self.lpr_seg_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/seg_city_cartype_kind_num_zd_0826/LaneNetNova_class_15.prototxt"
-        self.lpr_seg_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/seg_city_cartype_kind_num_zd_0826/LaneNetNova_seg_city_cartype_kind_num_zd_0826.caffemodel"
-        # ocr: zd
-        self.lpr_ocr_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_all_UAE_0901/cnn_256x64_38.prototxt"
-        self.lpr_ocr_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_all_UAE_0901/ocr_zd_mask_UAE_0901.caffemodel"
-
-        # lpr params
-        self.lpr_ocr_width_expand_ratio = 0.05
-        self.lpr_ocr_column_threshold = 2.5
-
         # sort
         self.max_age = 10
         self.min_hits = 3 
         self.iou_threshold = 0.1
         self.sort_expand_ratio = 1.5
 
-        # 缓存间隔
-        self.cache_interval = 2
-        # 缓存容器长度
-        self.cache_container_length = 8
-
         # 状态容器长度
         self.bbox_state_container_length = 10       # 车牌框连续丢失上报，从容器中清除该车辆信息
-        self.lpr_ocr_state_container_length = 20    # 车牌状态长度容器
 
         # 更新车辆行驶状态
         self.update_state_num_threshold = 5         # 行驶状态计数最大值，用于记录车辆处于同一行驶状态的帧数
@@ -97,28 +77,13 @@ class CaptureApi():
         # self.roi_bool = True
         self.roi_area = [0, 0, self.image_width, self.image_height]
 
-        # 车牌长宽阈值
-        # 后向
-        # self.plate_signel_height = [45, 1000]
-        # self.plate_signel_width = [0, 1000]
-        # self.plate_double_height = [65, 1000]
-        # self.plate_double_width = [0, 1000]
-        # 侧向
-        self.plate_signel_height = [0, 1000]
-        self.plate_signel_width = [0, 1000]
-        self.plate_double_height = [0, 1000]
-        self.plate_double_width = [0, 1000]
-
         # 抓拍线
         self.capture_line_up_down_ratio = [0.1, 0.5, 0.9, 0.9]
         self.capture_line_left_right_ratio = [0.1, 0.25, 0.75, 0.9]
         self.capture_plate_frame_threshold = 5
-        self.capture_outtime_frame_threshold_01 = 25
+        self.capture_outtime_frame_threshold_01 = 75
         self.capture_plate_up_down_distance_boundary_threshold = 100
         self.capture_plate_left_right_distance_boundary_threshold = 250
-        self.capture_plate_ocr_score_threshold = 0.8
-        self.capture_lpr_kind_frame_threshold = 4
-        self.capture_lpr_num_frame_threshold = 4
 
         # 上下限阈值 & 左右限阈值
         if self.roi_bool:
@@ -148,13 +113,6 @@ class CaptureApi():
         bbox_info_dict = {}
         bbox_info_dict['id'] = 0                                            # 追踪id
         bbox_info_dict['loc'] = []                                          # 车牌坐标
-        bbox_info_dict['country'] = 'None'                                  # 车牌国家
-        bbox_info_dict['city'] = 'None'                                     # 车牌城市
-        bbox_info_dict['car_type'] = 'None'                                 # 车牌车型
-        bbox_info_dict['kind'] = 'None'                                     # 车牌编号
-        bbox_info_dict['num'] = 'None'                                      # 车牌号码
-        bbox_info_dict['column'] = 'None'                                   # 车牌单双行
-        bbox_info_dict['score'] = 0.0                                       # 车牌得分
         bbox_info_dict['frame_num'] = 0                                     # 车牌进入画面帧数
         bbox_info_dict['up_down_speed'] = 0                                 # 车牌速度（上下行）
         bbox_info_dict['left_right_speed'] = 0                              # 车牌速度（左右行
@@ -174,6 +132,8 @@ class CaptureApi():
         bbox_state_dict['center_point_list'] = []                           # 车牌中心点轨迹（多帧）
         bbox_state_dict['frame_num'] = 0                                    # 车牌进入画面帧数
         bbox_state_dict['disappear_frame_num'] = 0                          # 车牌消失画面帧数
+        bbox_state_dict['start_frame'] = 0                                  # 车牌驶入画面的帧数
+        bbox_state_dict['end_frame'] = 0                                    # 车牌驶出画面的帧数
         bbox_state_dict['up_down_speed'] = 0                                # 车牌速度（上下行）
         bbox_state_dict['left_right_speed'] = 0                             # 车牌速度（左右行）
         bbox_state_dict['up_down_state'] = 'Stop'                           # 车牌状态（上下行）
@@ -181,13 +141,6 @@ class CaptureApi():
         bbox_state_dict['left_right_state'] = 'Stop'                        # 车牌状态（左右行）
         bbox_state_dict['left_right_state_frame_num'] = 0                   # 车牌状态（左右行）帧数
         bbox_state_dict['lpr_num'] = 0                                      # 车牌识别帧数
-        bbox_state_dict['lpr_country_list'] = []                            # 车牌国家结果（多帧）
-        bbox_state_dict['lpr_city_list'] = []                               # 车牌城市结果（多帧）
-        bbox_state_dict['lpr_car_type_list'] = []                           # 车牌车型结果（多帧）
-        bbox_state_dict['lpr_kind_list'] = []                               # 车牌编号结果（多帧）
-        bbox_state_dict['lpr_num_list'] = []                                # 车牌号码结果（多帧）
-        bbox_state_dict['lpr_column_list'] = []                             # 车牌单双行结果（多帧）
-        bbox_state_dict['lpr_score_list'] = []                              # 车牌识别得分（多帧）
         bbox_state_dict['far_report_flage'] = False                         # 抓拍标志位
         bbox_state_dict['near_report_flage'] = False                        # 抓拍标志位
         bbox_state_dict['left_report_flage'] = False                        # 抓拍标志位
@@ -208,18 +161,9 @@ class CaptureApi():
         # capture_res_dict
         capture_res_dict = {}
         capture_res_dict['id'] = 0                                          # 抓拍id
-        capture_res_dict['country'] = 'None'                                # 车牌国家结果
-        capture_res_dict['city'] = 'None'                                   # 车牌城市结果
-        capture_res_dict['car_type'] = 'None'                               # 车牌车型结果
-        capture_res_dict['kind'] = 'None'                                   # 车牌编号结果
-        capture_res_dict['num'] = 'None'                                    # 车牌号码结果
-        capture_res_dict['column'] = 'None'                                 # 车牌单双行
         capture_res_dict['flage'] = ''                                      # 抓拍标志信息
-        capture_res_dict['capture_frame_num'] = 0                           # 抓拍帧数
-        capture_res_dict['img_bbox_info_list'] = []                         # 抓拍结果
-        capture_res_dict['draw_bool'] = False                               # 绘图标志
-
-        self.params_dict['capture_res_container'] = {}                      # 抓拍结果容器（key: 车牌号码结果, value: capture_res_dict）
+        capture_res_dict['start_frame'] = 0                                 # 开始帧数
+        capture_res_dict['end_frame'] = 0                                   # 结束帧数
 
 
     def model_init(self):
@@ -236,10 +180,6 @@ class CaptureApi():
 
         # tracker
         self.mot_tracker = Sort(max_age=self.max_age, min_hits=self.min_hits, iou_threshold=self.iou_threshold)
-
-        # lincense plate seg
-        # self.lpr_seg = LPRSegCaffe(self.lpr_seg_zd_caffe_prototxt, self.lpr_seg_zd_caffe_model_path)
-        self.lpr_seg_ocr = LPRSegOcrcffe(self.lpr_seg_zd_caffe_prototxt, self.lpr_seg_zd_caffe_model_path, self.lpr_ocr_zd_caffe_prototxt, self.lpr_ocr_zd_caffe_model_path)
 
 
     def clear(self):
@@ -266,32 +206,16 @@ class CaptureApi():
         # update bbox info
         bbox_info_list = self.update_bbox_info( tracker_bboxes )
 
-        # update plate info
-        bbox_info_list = self.update_plate_info( img, bbox_info_list )
-
-        # store
-        # 跳帧存储原图和检测识别结果
-        self.update_cache_container( img, frame_idx, bbox_info_list )
-
         # 更新状态容器，同时更新车辆行驶状态和帧率
-        bbox_info_list = self.update_bbox_state_container( bbox_info_list )
+        bbox_info_list = self.update_bbox_state_container( bbox_info_list, frame_idx )
         bbox_state_map = self.params_dict['bbox_state_container']
 
         # captute
         self.update_capture_dict()
         capture_list = self.params_dict['capture_container']
-        self.update_capture_state()
-        capture_res_list = self.params_dict['capture_res_container']
+        capture_result = self.update_capture_state( frame_idx )
 
-        ## capture_line
-        if self.roi_bool:
-            capture_line_up_down = [ self.roi_area[1] + ( self.roi_area[3] - self.roi_area[1] ) * ratio for ratio in self.capture_line_up_down_ratio ]
-            capture_line_left_right = [ self.roi_area[0] + ( self.roi_area[2] - self.roi_area[0] ) * ratio for ratio in self.capture_line_left_right_ratio ]
-        else:
-            capture_line_up_down = [ self.image_height * ratio for ratio in self.capture_line_up_down_ratio ]
-            capture_line_left_right = [ self.image_width * ratio for ratio in self.capture_line_left_right_ratio ]
-
-        return tracker_bboxes, bbox_info_list, bbox_state_map, capture_line_up_down, capture_line_left_right, capture_list, capture_res_list
+        return bbox_info_list, capture_list, capture_result
 
 
     def update_tracker_bboxes(self, bboxes):
@@ -316,7 +240,7 @@ class CaptureApi():
                     bboxes_idx[3] = bboxes_idx[3] + bboxes_idx_height
 
                 dets = np.concatenate((dets, np.array(bboxes_class_list)), axis=0)
-        
+                
         tracker_bboxes = self.mot_tracker.update(dets)
 
         # license_plate
@@ -343,13 +267,6 @@ class CaptureApi():
             bbox_info_dict = {}
             bbox_info_dict['id'] = 0                                            # 追踪id
             bbox_info_dict['loc'] = []                                          # 车牌坐标
-            bbox_info_dict['country'] = 'None'                                  # 车牌国家
-            bbox_info_dict['city'] = 'None'                                     # 车牌城市
-            bbox_info_dict['car_type'] = 'None'                                 # 车牌车型
-            bbox_info_dict['kind'] = 'None'                                     # 车牌编号
-            bbox_info_dict['num'] = 'None'                                      # 车牌号码
-            bbox_info_dict['column'] = 'None'                                   # 车牌单双行
-            bbox_info_dict['score'] = 0.0                                       # 车牌得分
             bbox_info_dict['frame_num'] = 0                                     # 车牌进入画面帧数
             bbox_info_dict['up_down_speed'] = 0                                 # 车牌速度（上下行）
             bbox_info_dict['left_right_speed'] = 0                              # 车牌速度（左右行
@@ -368,54 +285,8 @@ class CaptureApi():
 
         return bbox_info_list
     
-    
-    def update_plate_info( self, img, bbox_info_list ):
 
-        # 遍历单帧结果
-        for idx in range(len(bbox_info_list)):
-            bbox_info_idx = bbox_info_list[idx]
-
-            # lincense plate reader
-            # crop
-            x1 = min(max(0, int(bbox_info_idx['loc'][0] - self.lpr_ocr_width_expand_ratio * (bbox_info_idx['loc'][2] - bbox_info_idx['loc'][0]))), self.image_width)
-            x2 = min(max(0, int(bbox_info_idx['loc'][2] + self.lpr_ocr_width_expand_ratio * (bbox_info_idx['loc'][2] - bbox_info_idx['loc'][0]))), self.image_width)
-            y1 = min(max(0, int(bbox_info_idx['loc'][1])), self.image_height)
-            y2 = min(max(0, int(bbox_info_idx['loc'][3])), self.image_height)
-            crop_img = img[y1: y2, x1: x2]
-            crop_img_aspect = crop_img.shape[1] / crop_img.shape[0]
-
-            seg_mask, seg_bbox, seg_info, ocr, ocr_score = self.lpr_seg_ocr.run(crop_img)
-            bbox_info_idx['country'] = seg_info['country']
-            bbox_info_idx['city'] = seg_info['city']
-            bbox_info_idx['car_type'] = seg_info['car_type']
-            bbox_info_idx['kind'] = seg_info['kind']
-            bbox_info_idx['num'] = seg_info['num']
-            bbox_info_idx['column'] = 'Single' if crop_img_aspect > self.lpr_ocr_column_threshold else 'Double'
-            bbox_info_idx['score'] = np.array(ocr_score).mean() if len(ocr_score) else 0.0
-
-            if seg_info['kind'] == 'kind':
-                kind = ocr.split('#')[0] 
-                if kind != "#":
-                    bbox_info_idx['kind'] = kind
-                
-            if seg_info['num'] == 'num':  
-                num = ocr.split('#')[-1] 
-                if num != "#":
-                    bbox_info_idx['num'] = num
-        
-        return bbox_info_list
-
-
-    def update_cache_container(self, img, frame_idx, bbox_info_list):
-
-        if frame_idx % self.cache_interval == 0:
-            self.params_dict['bbox_info_container'].append({'img': img, 'bbox_info': bbox_info_list})
-
-        if len(self.params_dict['bbox_info_container']) > self.cache_container_length:
-            self.params_dict['bbox_info_container'].pop(0)
-    
-
-    def update_bbox_state_container(self, bbox_info_list):
+    def update_bbox_state_container(self, bbox_info_list, frame_idx):
 
         # update
         pop_key_list = []
@@ -500,44 +371,10 @@ class CaptureApi():
                     if loc_center_x > self.ROI_Left_threshold and loc_center_x < self.ROI_Right_threshold and \
                         loc_center_y > self.ROI_Up_threshold and loc_center_y < self.ROI_Down_threshold:
 
-                            if bbox_info_idx['column'] == 'Single' and \
-                                lpr_width >= self.plate_signel_width[0] and \
-                                lpr_width < self.plate_signel_width[1] and \
-                                lpr_height >= self.plate_signel_height[0] and \
-                                lpr_height < self.plate_signel_height[1]:
-                                bool_add_lpr = True
-
-                            if bbox_info_idx['column'] == 'Double' and \
-                                lpr_width >= self.plate_double_width[0] and \
-                                lpr_width < self.plate_double_width[1] and \
-                                lpr_height >= self.plate_double_height[0] and \
-                                lpr_height < self.plate_double_height[1]:
-                                bool_add_lpr = True
+                            bool_add_lpr = True
 
                     if bool_add_lpr:
                         bbox_state_idy['lpr_num'] += 1
-                        bbox_state_idy['lpr_country_list'].append(bbox_info_idx['country'])
-                        bbox_state_idy['lpr_city_list'].append(bbox_info_idx['city'])
-                        bbox_state_idy['lpr_car_type_list'].append(bbox_info_idx['car_type'])
-                        bbox_state_idy['lpr_kind_list'].append(bbox_info_idx['kind'])
-                        bbox_state_idy['lpr_num_list'].append(bbox_info_idx['num'])
-                        bbox_state_idy['lpr_column_list'].append(bbox_info_idx['column'])
-                        bbox_state_idy['lpr_score_list'].append(bbox_info_idx['score'])
-
-                        if len( bbox_state_idy['lpr_country_list'] ) > self.lpr_ocr_state_container_length:
-                            bbox_state_idy['lpr_country_list'].pop(0)
-                        if len( bbox_state_idy['lpr_city_list'] ) > self.lpr_ocr_state_container_length:
-                            bbox_state_idy['lpr_city_list'].pop(0)
-                        if len( bbox_state_idy['lpr_car_type_list'] ) > self.lpr_ocr_state_container_length:
-                            bbox_state_idy['lpr_car_type_list'].pop(0)
-                        if len( bbox_state_idy['lpr_kind_list'] ) > self.lpr_ocr_state_container_length:
-                            bbox_state_idy['lpr_kind_list'].pop(0)
-                        if len( bbox_state_idy['lpr_num_list'] ) > self.lpr_ocr_state_container_length:
-                            bbox_state_idy['lpr_num_list'].pop(0)
-                        if len( bbox_state_idy['lpr_column_list'] ) > self.lpr_ocr_state_container_length:
-                            bbox_state_idy['lpr_column_list'].pop(0)
-                        if len( bbox_state_idy['lpr_score_list'] ) > self.lpr_ocr_state_container_length:
-                            bbox_state_idy['lpr_score_list'].pop(0)
 
                     # 信息同步
                     bbox_info_idx['frame_num'] = bbox_state_idy['frame_num']
@@ -558,6 +395,8 @@ class CaptureApi():
                 bbox_state_dict['stable_loc'] = []                                  # 车牌坐标（稳定）
                 bbox_state_dict['center_point_list'] = []                           # 车牌中心点轨迹（多帧）
                 bbox_state_dict['frame_num'] = 0                                    # 车牌进入画面帧数
+                bbox_state_dict['start_frame'] = 0                                  # 车牌驶入画面的帧数
+                bbox_state_dict['end_frame'] = 0                                    # 车牌驶出画面的帧数
                 bbox_state_dict['disappear_frame_num'] = 0                          # 车牌消失画面帧数
                 bbox_state_dict['up_down_speed'] = 0                                # 车牌速度（上下行）
                 bbox_state_dict['left_right_speed'] = 0                             # 车牌速度（左右行）
@@ -566,13 +405,6 @@ class CaptureApi():
                 bbox_state_dict['left_right_state'] = 'Stop'                        # 车牌状态（左右行）
                 bbox_state_dict['left_right_state_frame_num'] = 0                   # 车牌状态（左右行）帧数
                 bbox_state_dict['lpr_num'] = 0                                      # 车牌识别帧数
-                bbox_state_dict['lpr_country_list'] = []                            # 车牌国家结果（多帧）
-                bbox_state_dict['lpr_city_list'] = []                               # 车牌城市结果（多帧）
-                bbox_state_dict['lpr_car_type_list'] = []                           # 车牌车型结果（多帧）
-                bbox_state_dict['lpr_kind_list'] = []                               # 车牌编号结果（多帧）
-                bbox_state_dict['lpr_num_list'] = []                                # 车牌号码结果（多帧）
-                bbox_state_dict['lpr_column_list'] = []                             # 车牌单双行结果（多帧）
-                bbox_state_dict['lpr_score_list'] = []                              # 车牌识别得分（多帧）
                 bbox_state_dict['far_report_flage'] = False                         # 抓拍标志位
                 bbox_state_dict['near_report_flage'] = False                        # 抓拍标志位
                 bbox_state_dict['left_report_flage'] = False                        # 抓拍标志位
@@ -582,6 +414,7 @@ class CaptureApi():
                 bbox_state_dict['id'] = bbox_info_idx['id']
                 bbox_state_dict['loc'] = bbox_info_idx['loc']
                 bbox_state_dict['stable_loc'] = bbox_info_idx['loc']
+                bbox_state_dict['start_frame'] = frame_idx
 
                 # 更新车牌识别有效帧数
                 loc_center_x = (bbox_info_idx['loc'][0] + bbox_info_idx['loc'][2]) / 2.0
@@ -593,29 +426,10 @@ class CaptureApi():
                 if loc_center_x > self.ROI_Left_threshold and loc_center_x < self.ROI_Right_threshold and \
                     loc_center_y > self.ROI_Up_threshold and loc_center_y < self.ROI_Down_threshold:
 
-                        if bbox_info_idx['column'] == 'Single' and \
-                            lpr_width >= self.plate_signel_width[0] and \
-                            lpr_width < self.plate_signel_width[1] and \
-                            lpr_height >= self.plate_signel_height[0] and \
-                            lpr_height < self.plate_signel_height[1]:
-                            bool_add_lpr = True
-
-                        if bbox_info_idx['column'] == 'Double' and \
-                            lpr_width >= self.plate_double_width[0] and \
-                            lpr_width < self.plate_double_width[1] and \
-                            lpr_height >= self.plate_double_height[0] and \
-                            lpr_height < self.plate_double_height[1]:
-                            bool_add_lpr = True
+                        bool_add_lpr = True
 
                 if bool_add_lpr:
                     bbox_state_dict['lpr_num'] += 1
-                    bbox_state_dict['lpr_country_list'].append(bbox_info_idx['country'])
-                    bbox_state_dict['lpr_city_list'].append(bbox_info_idx['city'])
-                    bbox_state_dict['lpr_car_type_list'].append(bbox_info_idx['car_type'])
-                    bbox_state_dict['lpr_kind_list'].append(bbox_info_idx['kind'])
-                    bbox_state_dict['lpr_num_list'].append(bbox_info_idx['num'])
-                    bbox_state_dict['lpr_column_list'].append(bbox_info_idx['column'])
-                    bbox_state_dict['lpr_score_list'].append(bbox_info_idx['score'])
 
                 self.params_dict['bbox_state_container'][bbox_state_dict['id']] = bbox_state_dict
         
@@ -650,7 +464,6 @@ class CaptureApi():
         
         # 报警逻辑
         # 1、快速抓怕：车辆行驶到触发线，执行抓拍。（近处、远处、左边、右边）
-        # 2、稳定抓拍：车牌位于图像正中央，超过一定时间，执行抓拍。
         for _, bbox_state_idy in self.params_dict['bbox_state_container'].items():
             # init
             near_flage = False
@@ -686,7 +499,7 @@ class CaptureApi():
                 if abs(loc_center_x - self.Right_threshold) < self.capture_plate_left_right_distance_boundary_threshold and \
                     bbox_state_idy['lpr_num'] > self.capture_plate_frame_threshold:
                     right_flage = True
-
+            
             # 如果车辆在视野内，超过 25 帧
             if bbox_state_idy['lpr_num'] >= self.capture_outtime_frame_threshold_01:
                 outtime_flage_01 = True
@@ -733,24 +546,11 @@ class CaptureApi():
         return
 
 
-    def update_capture_state(self):
+    def update_capture_state(self, frame_idx):
 
-        # update
-        pop_key_list = []
-        for key, capture_res_dict_idy in self.params_dict['capture_res_container'].items():
-          
-            # pop
-            if capture_res_dict_idy['capture_frame_num'] > self.capture_clear_frame_num_threshold:
-                pop_key_list.append(key)
-            
-            capture_res_dict_idy['capture_frame_num'] += 1
-        
-        # pop
-        for idx in range(len(pop_key_list)):
-            self.params_dict['capture_res_container'].pop(pop_key_list[idx])
+        capture_res_list = []
 
         # 抓拍逻辑
-        # 1、查找稳定结果
         for capture_id_idx, capture_dict_idy in self.params_dict['capture_container'].items():
             
             if capture_dict_idy['capture_bool']:
@@ -759,94 +559,20 @@ class CaptureApi():
             # capture_res_dict
             capture_res_dict = {}
             capture_res_dict['id'] = 0                                          # 抓拍id
-            capture_res_dict['country'] = 'None'                                # 车牌国家结果
-            capture_res_dict['city'] = 'None'                                   # 车牌城市结果
-            capture_res_dict['car_type'] = 'None'                               # 车牌车型结果
-            capture_res_dict['kind'] = 'None'                                   # 车牌编号结果
-            capture_res_dict['num'] = 'None'                                    # 车牌号码结果
-            capture_res_dict['column'] = 'None'                                 # 车牌单双行
             capture_res_dict['flage'] = ''                                      # 抓拍标志信息
-            capture_res_dict['capture_frame_num'] = 0                           # 抓拍帧数
-            capture_res_dict['img_bbox_info_list'] = []                         # 抓拍结果
-            capture_res_dict['draw_bool'] = False                               # 绘图标志
+            capture_res_dict['start_frame'] = 0                                 # 开始帧数
+            capture_res_dict['end_frame'] = 0                                   # 结束帧数
 
             for _, bbox_state_idy in self.params_dict['bbox_state_container'].items():
 
                 if bbox_state_idy['id'] == capture_id_idx:
 
-                    lpr_country_np = np.array(bbox_state_idy['lpr_country_list'])
-                    lpr_country_np = lpr_country_np[lpr_country_np != "None"]
-                    lpr_city_np = np.array(bbox_state_idy['lpr_city_list'])
-                    lpr_city_np = lpr_city_np[lpr_city_np != "None"]
-                    lpr_car_type_np = np.array(bbox_state_idy['lpr_car_type_list'])
-                    lpr_car_type_np = lpr_car_type_np[lpr_car_type_np != "None"]
-                    lpr_kind_np = np.array(bbox_state_idy['lpr_kind_list'])
-                    lpr_num_np = np.array(bbox_state_idy['lpr_num_list'])
-                    lpr_column_np = np.array(bbox_state_idy['lpr_column_list'])
-                    lpr_score_np = np.array(bbox_state_idy['lpr_score_list'])
+                    capture_dict_idy['capture_bool'] = True
+                    capture_res_dict['id'] = capture_id_idx
+                    capture_res_dict['flage'] = capture_dict_idy['flage']
+                    capture_res_dict['start_frame'] = bbox_state_idy['start_frame']
+                    capture_res_dict['end_frame'] = frame_idx
+                    
+                    capture_res_list.append(capture_res_dict)
 
-                    # 获得抓拍序列
-                    if len(lpr_num_np[lpr_score_np > self.capture_plate_ocr_score_threshold]):
-                        capture_lpr_kind, capture_lpr_kind_frame = Counter(list(lpr_kind_np[lpr_score_np > self.capture_plate_ocr_score_threshold])).most_common(1)[0]
-                        capture_lpr_num, capture_lpr_num_frame = Counter(list(lpr_num_np[lpr_score_np > self.capture_plate_ocr_score_threshold])).most_common(1)[0]
-                        capture_lpr_column, capture_lpr_column_frame = Counter(list(lpr_column_np)).most_common(1)[0]
-                        
-                        if capture_lpr_kind_frame >= self.capture_lpr_kind_frame_threshold and \
-                            capture_lpr_num_frame >= self.capture_lpr_num_frame_threshold:
-                            capture_from_container_list = self.find_capture_plate(bbox_state_idy['id'], capture_lpr_num)
-                        
-                            # 抓拍车牌
-                            if len(capture_from_container_list):
-
-                                capture_dict_idy['capture_bool'] = True
-                                capture_res_dict['id'] = capture_id_idx
-
-                                if lpr_country_np.shape[0]:
-                                    capture_lpr_country, capture_lpr_country_frame = Counter(list(lpr_country_np)).most_common(1)[0]
-                                    capture_res_dict['country'] = capture_lpr_country
-                                else:
-                                    capture_res_dict['country'] = "None"
-                                
-                                if lpr_city_np.shape[0]:
-                                    capture_lpr_city, capture_lpr_city_frame = Counter(list(lpr_city_np)).most_common(1)[0]
-                                    capture_res_dict['city'] = capture_lpr_city
-                                else:
-                                    capture_res_dict['city'] = "None"
-                                
-                                if lpr_car_type_np.shape[0]:
-                                    capture_lpr_car_type, capture_lpr_car_type_frame = Counter(list(lpr_car_type_np)).most_common(1)[0]
-                                    capture_res_dict['car_type'] = capture_lpr_car_type
-                                else:
-                                    capture_res_dict['car_type'] = "None"
-
-                                capture_res_dict['kind'] = capture_lpr_kind
-                                capture_res_dict['num'] = capture_lpr_num
-                                capture_res_dict['column'] = capture_lpr_column
-                                capture_res_dict['flage'] = capture_dict_idy['flage']
-                                capture_res_dict['img_bbox_info_list'] = capture_from_container_list
-
-                                if capture_res_dict['num'] not in self.params_dict['capture_res_container']:
-    
-                                    self.params_dict['capture_res_container'][capture_res_dict['num']] = capture_res_dict
-
-        return 
-
-
-    def find_capture_plate(self, captute_id, capture_license_palte):
-        
-        capture_from_container_list = []
-
-        for idy in range(len(self.params_dict['bbox_info_container'])):
-            bbox_info_list = self.params_dict['bbox_info_container'][idy]['bbox_info']
-
-            for idx in range(len(bbox_info_list)):
-                bbox_info_idx = bbox_info_list[idx]
-
-                # 容器中存在追踪对象
-                if bbox_info_idx['id'] == captute_id and bbox_info_idx['num'] == capture_license_palte:
-                    capture_from_container_list.append(self.params_dict['bbox_info_container'][idy])
-        
-        if len(capture_from_container_list) > 3:
-            capture_from_container_list = random.sample(capture_from_container_list, 3)
-        
-        return capture_from_container_list
+        return capture_res_list

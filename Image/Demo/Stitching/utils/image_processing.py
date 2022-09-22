@@ -227,7 +227,10 @@ def sitch_pitch_foreground_extract(img, sitch_pitch_processing_method_list):
     
     if sitch_pitch_processing_method == "":
         img = img
-        mask = np.ones(img.shape)
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        mask = np.ones(gray.shape)
+        mask = np.expand_dims(mask, axis=2)
+        mask = mask.astype(np.uint8)
     elif sitch_pitch_processing_method == "otsu":
         img, mask = otsu(img)
     elif sitch_pitch_processing_method == "Gaussian&otsu":
@@ -242,4 +245,4 @@ def sitch_pitch_foreground_extract(img, sitch_pitch_processing_method_list):
     img = img[y1:y2, x1:x2]
     mask = mask[y1:y2, x1:x2]
 
-    return img, mask
+    return img, mask, sitch_pitch_processing_method

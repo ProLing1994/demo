@@ -14,7 +14,7 @@ class JsonWriter(object):
         self.json_dict["imageData"] = None
 
 
-    def insert_object(self, key, box, bboxes_type):
+    def insert_object(self, key, bbox_list, bboxes_type):
         # box: [x, y, w, h]
         # 目前只支持多边形 polygon
         assert bboxes_type in ['polygon']
@@ -24,11 +24,12 @@ class JsonWriter(object):
         obj_dict["line_color"] = [int(0), int(255), int(0), int(128)]
         obj_dict["fill_color"] = [int(255), int(0), int(0), int(128)]
 
-        x1 = int(box[0])
-        x2 = int(box[0] + box[2])
-        y1 = int(box[1])
-        y2 = int(box[1] + box[3])
-        obj_dict["points"] = [[x1, y1], [x1, y2], [x2, y2], [x2, y1]]
+        # x1 = int(box[0])
+        # x2 = int(box[0] + box[2])
+        # y1 = int(box[1])
+        # y2 = int(box[1] + box[3])
+        # obj_dict["points"] = [[x1, y1], [x1, y2], [x2, y2], [x2, y1]]
+        obj_dict["points"] = bbox_list
 
         obj_dict["z_order"] = int(len(self.json_dict["shapes"]))
         obj_dict["shape_type"] = bboxes_type
@@ -45,8 +46,8 @@ def write_json(output_json_path, filename, image_shape, bboxes, bboxes_type):
     json_writer = JsonWriter(filename, image_shape)
 
     for key, values in bboxes.items():
-        for box in values:
-            json_writer.insert_object(key, box, bboxes_type)
+        for bbox_list in values:
+            json_writer.insert_object(key, bbox_list, bboxes_type)
 
     json_writer.write_json(output_json_path)
 

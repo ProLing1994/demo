@@ -24,7 +24,7 @@ def image_stitching(args):
     # image_stitch_api = ImageSitchApi(args.bkg_path_list, args.bkg_roi_list, img_path_list, xml_path_list, 'bbox', 'xml')
     
     # load mask
-    image_stitch_api.add_img(img_path_list, json_path_list, 'mask', 'json')
+    # image_stitch_api.add_img(img_path_list, json_path_list, 'mask', 'json')
 
     for idx in range(10):
 
@@ -52,12 +52,12 @@ def main():
     # args.img_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/test_json/"
     # args.json_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/test_json/"
     # args.xml_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/test_json/"
-    # args.img_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/rubbish_img/task1-8mm/"
-    # args.json_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/rubbish_img/task1-8mm/"
-    # args.xml_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/rubbish_img/task1-8mm/"
-    args.img_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/rubbish_img/task2-6mm/"
-    args.json_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/rubbish_img/task2-6mm/"
-    args.xml_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/rubbish_img/task2-6mm/"
+    args.img_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/rubbish_img/task1-8mm/"
+    args.json_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/rubbish_img/task1-8mm/"
+    args.xml_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/rubbish_img/task1-8mm/"
+    # args.img_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/rubbish_img/task2-6mm/"
+    # args.json_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/rubbish_img/task2-6mm/"
+    # args.xml_dir = "/mnt/huanyuan2/data/image/RM_DSLJ_detection/rubbish_img/task2-6mm/"
 
     args.bkg_path_list = ["/mnt/huanyuan2/data/image/RM_DSLJ_detection/test_img/00base.jpg", "/mnt/huanyuan2/data/image/RM_DSLJ_detection/test_img/01base.jpg", "/mnt/huanyuan2/data/image/RM_DSLJ_detection/test_img/03base.jpg"]
     args.bkg_roi_list = [[[0, 1080], [0, 780], [280, 630], [1310, 700], [1660, 1080], [0, 1080]], [[0, 1080], [0, 780], [280, 630], [1310, 700], [1660, 1080], [0, 1080]], [[0, 1080], [0, 780], [280, 630], [1310, 700], [1660, 1080], [0, 1080]]]

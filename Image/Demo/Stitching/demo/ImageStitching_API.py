@@ -48,8 +48,8 @@ class ImageSitchApi():
         # 贴图处理方法
         # self.sitch_pitch_processing_method_list = ['']
         # self.sitch_pitch_processing_method_list = ['otsu']
-        self.sitch_pitch_processing_method_list = ['Gaussian&otsu']
-        # self.sitch_pitch_processing_method_list = ['otsu', 'Gaussian&otsu']
+        # self.sitch_pitch_processing_method_list = ['Gaussian&otsu']
+        self.sitch_pitch_processing_method_list = ['', 'otsu', 'Gaussian&otsu']
 
         # 忽略贴图不太好的小块
         self.sitch_pitch_processing_ignore_bool = True
@@ -169,14 +169,14 @@ class ImageSitchApi():
             # sitch_pitch = rotate_img[rotate_bbox[1] : rotate_bbox[3], rotate_bbox[0] : rotate_bbox[2]]
             # sitch_pitch = mirror_img[mirror_bbox[1] : mirror_bbox[3], mirror_bbox[0] : mirror_bbox[2]]
             sitch_pitch = scaler_img[scale_bbox[1] : scale_bbox[3], scale_bbox[0] : scale_bbox[2]]
-            sitch_pitch, sitch_pitch_mask = sitch_pitch_foreground_extract(sitch_pitch, self.sitch_pitch_processing_method_list)
+            sitch_pitch, sitch_pitch_mask, sitch_pitch_processing_method = sitch_pitch_foreground_extract(sitch_pitch, self.sitch_pitch_processing_method_list)
 
             # corner
             sitch_pitch_corner, hierarchy = cv2.findContours(sitch_pitch_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             sitch_pitch_corner = np.squeeze(np.concatenate(sitch_pitch_corner, axis=0))
 
             # 剔除不合格的小块
-            if self.sitch_pitch_processing_ignore_bool:
+            if self.sitch_pitch_processing_ignore_bool and sitch_pitch_processing_method != '':
                 if sitch_pitch_corner.shape[0] <= 15:
                     continue
             
