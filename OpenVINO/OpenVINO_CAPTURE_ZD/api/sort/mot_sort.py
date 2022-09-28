@@ -20,8 +20,8 @@ import os
 import cv2
 import numpy as np
 from filterpy.kalman import KalmanFilter
-import torch
-from torch.autograd import Variable
+# import torch
+# from torch.autograd import Variable
 import warnings
 warnings.filterwarnings('ignore')
 
