@@ -180,7 +180,7 @@ class CaptureApi():
                     for idy in range(len(bboxes[clase_name_idx])):
                         detect_bbox_list.append([*bboxes[clase_name_idx][idy], clase_name_idx])
 
-                # 求交集最大的车辆框
+                # 求交集最大的框
                 match_bbox_roi = self.match_bbox_iou(bbox_info_dict['loc'], detect_bbox_list)
                 if len(match_bbox_roi):
                     bbox_info_dict['label'] = match_bbox_roi[0][-1]

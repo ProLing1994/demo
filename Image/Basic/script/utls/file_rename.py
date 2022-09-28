@@ -3,8 +3,8 @@ import os
 import random
 
 if __name__ == '__main__':
-    input_dir = "/mnt/huanyuan/model_final/image_model/lpr_seg_zd/seg_image/"
-    file_format = './seg_image/pic_'
+    input_dir = "/mnt/huanyuan/model_final/image_model/lpr_zd/ocr_image/"
+    file_format = 'pic_'
     file_type = ".jpg"
     start_id = 1
 
@@ -26,5 +26,5 @@ if __name__ == '__main__':
 
             print(file_path, '->', rename_path)
             os.rename(file_path, rename_path)
-            f.write("{}\n".format(os.path.basename(rename_path)))
+            f.write("{}\n".format('./ocr_image/' + os.path.basename(rename_path)))
         
