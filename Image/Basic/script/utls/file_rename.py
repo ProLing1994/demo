@@ -3,8 +3,8 @@ import os
 import random
 
 if __name__ == '__main__':
-    input_dir = "/mnt/huanyuan/model_final/image_model/lpr_zg/china/double/image/"
-    file_format = 'pic_'
+    input_dir = "/mnt/huanyuan/model_final/image_model/lpr_seg_zd/seg_image/"
+    file_format = './seg_image/pic_'
     file_type = ".jpg"
     start_id = 1
 
