@@ -192,10 +192,15 @@ def main():
     # # args.output_video_dir = "/home/huanyuan/temp/test/"
     # args.suffix = '.avi'
 
-    # zg，安徽抛洒 5M
-    args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_PS/264原始视频/5M_白_0803/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_PS/264原始视频/5M_夜_0803/"
-    args.output_video_dir = "/home/huanyuan/temp/ZG_PS/5M_白_0803/"
+    # # zg，安徽抛洒 5M
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_PS/264原始视频/5M_白_0803/"
+    # # args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_PS/264原始视频/5M_夜_0803/"
+    # args.output_video_dir = "/home/huanyuan/temp/ZG_PS/5M_白_0803/"
+    # args.suffix = '.avi'
+
+    # zg，工地车牌 2M
+    args.video_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/jiayouzhan_test_video/ZG_GDCP/avi文件/test/"
+    args.output_video_dir = "/home/huanyuan/temp/ZG_GDCP/test/"
     args.suffix = '.avi'
 
     # 是否保存视频结果
