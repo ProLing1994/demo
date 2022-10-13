@@ -197,7 +197,10 @@ if __name__ == "__main__":
     # # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-07-29-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/"
 
     # # SSD_VGG_FPN_RFB_2022-08-10-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_zf_w_fuzzy_plate
-    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-08-10-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_zf_w_fuzzy_plate/eval_epoches_299/"
+    # # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-08-10-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_zf_w_fuzzy_plate/eval_epoches_299/"
+
+    # # SSD_VGG_FPN_RFB_2022-09-09-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_zf_crop_w_fuzzy_plate
+    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-09-09-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_zf_crop_w_fuzzy_plate/eval_epoches_250/"
 
     # # yolov6
     # # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_zg_gvd_adas_zg_data_attribute_conv_0804/eval_epoches_300_0.4"
@@ -263,7 +266,10 @@ if __name__ == "__main__":
     # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-07-22-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/"
 
     # SSD_VGG_FPN_RFB_2022-08-10-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_zf_w_fuzzy_plate
-    args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-08-10-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_zf_w_fuzzy_plate/eval_epoches_299/"
+    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-08-10-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_zf_w_fuzzy_plate/eval_epoches_299/"
+
+    # SSD_VGG_FPN_RFB_2022-09-09-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_zf_crop_w_fuzzy_plate
+    args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-09-09-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_zf_crop_w_fuzzy_plate/eval_epoches_250/"
 
     # yolov6
     # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_zg_gvd_adas_zg_data_attribute_conv_0804/eval_epoches_300_0.4"

@@ -11,8 +11,15 @@ def copy_dataset(args):
     with open(args.test_file, "r") as f:
         lines = f.readlines()
         for line in tqdm(lines):
-            jpg_path = os.path.join(args.jpg_dir, line.strip() + '.jpg')
-            output_jpg_path = os.path.join(args.jpg_output_dir, line.strip() + '.jpg')
+            # normal
+            # jpg_path = os.path.join(args.jpg_dir, line.strip() + '.jpg')
+            # output_jpg_path = os.path.join(args.jpg_output_dir, line.strip() + '.jpg')
+            # shutil.copy(jpg_path, output_jpg_path)
+            
+            # seg plate
+            jpg_name = os.path.basename(line.strip().split(' ')[0])
+            jpg_path = os.path.join(args.jpg_dir, jpg_name)
+            output_jpg_path = os.path.join(args.jpg_output_dir, jpg_name)
             shutil.copy(jpg_path, output_jpg_path)
 
 
@@ -21,14 +28,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/new/rongheng_night_hongwai/"
+    args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/training/seg_city_cartype_kind_num_zd/"
 
     args.trainval_file = args.input_dir + "ImageSets/Main/trainval.txt"
     args.train_file = args.input_dir + "ImageSets/Main/train.txt"
     args.val_file = args.input_dir + "ImageSets/Main/val.txt"
     args.test_file = args.input_dir + "ImageSets/Main/test.txt"
 
-    args.jpg_dir =  args.input_dir + "JPEGImages/"
-    args.jpg_output_dir =  args.input_dir + "JPEGImages_test/"
+    args.jpg_dir =  args.input_dir + "Images/"
+    args.jpg_output_dir =  args.input_dir + "Images_test/"
 
     copy_dataset(args)

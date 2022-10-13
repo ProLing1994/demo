@@ -8,13 +8,13 @@ import sys
 from sympy import deg
 
 sys.path.insert(0, '/home/huanyuan/code/demo/')
-from Image.recognition2d.license_plate_ocr.infer.lpr import LPR
+from Image.recognition2d.lpr.infer.lpr import LPRCaffe
 from Image.Basic.utils.folder_tools import *
 
 
 def gen_ocr_result(args):
     # init
-    lpr = LPR(args.lpr_caffe_prototxt, args.lpr_caffe_model_path, args.lpr_prefix_beam_search_bool)
+    lpr = LPRCaffe(args.lpr_caffe_prototxt, args.lpr_caffe_model_path, args.lpr_prefix_beam_search_bool)
 
     for label_idx in range(len(args.select_label)):
         img_label = args.select_label[label_idx]

@@ -9,13 +9,13 @@ from tqdm import tqdm
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
 from Image.Basic.script.xml.xml_write import write_xml
-from Image.recognition2d.license_plate_ocr.infer.lpr import LPR
+from Image.recognition2d.lpr.infer.lpr import LPRCaffe
 
 def model_init(args):
     # model init
     merge_class_bool = False
     car_plate_detector = SSDDetector(model_path=args.ssd_car_plate_model_path, merge_class_bool=merge_class_bool)
-    lpr = LPR(args.lpr_caffe_prototxt, args.lpr_caffe_model_path, args.lpr_prefix_beam_search_bool)
+    lpr = LPRCaffe(args.lpr_caffe_prototxt, args.lpr_caffe_model_path, args.lpr_prefix_beam_search_bool)
     return (car_plate_detector, lpr)
 
 

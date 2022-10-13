@@ -6,7 +6,7 @@ import random
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
-from Image.recognition2d.license_plate_ocr.infer.lpr import LPR
+from Image.recognition2d.lpr.infer.lpr import LPRCaffe
 from Image.Demo.license_plate_capture_china_vehicle_scene.sort.mot_sort import Sort
 
 
@@ -234,7 +234,7 @@ class CaptureApi():
         self.mot_tracker = Sort(max_age=self.max_age, min_hits=self.min_hits, iou_threshold=self.iou_threshold)
 
         # lincense plate reader
-        self.lpr = LPR(self.lpr_caffe_prototxt, self.lpr_caffe_model_path, self.lpr_prefix_beam_search_bool)
+        self.lpr = LPRCaffe(self.lpr_caffe_prototxt, self.lpr_caffe_model_path, self.lpr_prefix_beam_search_bool)
 
 
     def clear(self):
