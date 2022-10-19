@@ -16,7 +16,7 @@ def json_2_platform_json(args):
     create_folder(args.platform_json_dir)
 
     json_list = np.array(os.listdir(args.json_dir))
-    json_list = json_list[[jpg.endswith('.json') for jpg in json_list]]
+    json_list = json_list[[json.endswith('.json') for json in json_list]]
     json_list.sort()
 
     jpg_list = np.array(os.listdir(args.jpg_dir))
