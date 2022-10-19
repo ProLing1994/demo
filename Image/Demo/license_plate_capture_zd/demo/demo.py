@@ -36,6 +36,9 @@ def inference_video(args):
         print(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))          # 得到视频的高
         print(cap.get(cv2.CAP_PROP_FRAME_COUNT))           # 得到视频的总帧
 
+        if cap.get(cv2.CAP_PROP_FRAME_WIDTH) != capture_api.image_width or cap.get(cv2.CAP_PROP_FRAME_HEIGHT) != capture_api.image_height:
+            continue
+
         output_video_path = os.path.join(args.output_video_dir, video_list[idx].replace(args.suffix, ''), video_list[idx])
         create_folder(os.path.dirname(output_video_path))
 
@@ -50,17 +53,22 @@ def inference_video(args):
             fourcc = cv2.VideoWriter_fourcc(*'mp4v')
             output_video = cv2.VideoWriter(output_video_path, fourcc, 20.0, (capture_api.image_width, capture_api.image_height), True)
 
-        while True:
-            ret, img = cap.read()
+        # 是否保存原始图像
+        if args.write_ori_jpg_bool:
+            txt_detect_list = []
 
+        while True:
+            ret, ori_img = cap.read()
             if not ret: # if the camera over return false
                 break
+
+            img = ori_img.copy()
 
             # if frame_idx == 17:
             #     print()
 
             # capture api
-            tracker_bboxes, bbox_info_list, bbox_state_map, capture_line_up_down, capture_line_left_right, capture_list, capture_res_list = capture_api.run(img, frame_idx)
+            bboxes, tracker_bboxes, bbox_info_list, bbox_state_map, capture_line_up_down, capture_line_left_right, capture_list, capture_res_list = capture_api.run(img, frame_idx)
 
             if args.write_result_per_frame_bool or args.write_result_video_bool:
                 img = draw_bbox_info(img, bbox_info_list, capture_list=capture_list, mode='ltrb')
@@ -123,10 +131,39 @@ def inference_video(args):
                         csv_dict['flage'] = capture_res_idy['flage']
 
                         csv_list.append(csv_dict)
+                    
+            # 是否保存原始图像
+            if args.write_ori_jpg_bool:
+
+                txt_detect_str = ""
+                txt_detect_str = txt_detect_str + video_list[idx].replace(args.suffix, '_{}.jpg'.format(frame_idx)) + ";"
+
+                for key in bboxes.keys():
+                    for idb in range(len(bboxes[key])):
+                        txt_detect_str = txt_detect_str + str(key) + ","
+                        txt_detect_str = txt_detect_str + str(bboxes[key][idb][0]) + ","
+                        txt_detect_str = txt_detect_str + str(bboxes[key][idb][1]) + ","
+                        txt_detect_str = txt_detect_str + str(bboxes[key][idb][2]) + ","
+                        txt_detect_str = txt_detect_str + str(bboxes[key][idb][3]) + ";"
+
+                txt_detect_list.append(txt_detect_str)
+
+                # 保存原图
+                output_jpg_path = os.path.join(args.output_video_dir, 'jpg', video_list[idx].replace(args.suffix, ''), video_list[idx].replace(args.suffix, '_{}.jpg'.format(frame_idx)))
+                create_folder(os.path.dirname(output_jpg_path))
+                cv2.imwrite(output_jpg_path, ori_img)
             
             frame_idx += 1
 
             tqdm.write("{}: {}".format(video_path, str(frame_idx)))
+
+        # 是否保存原始图像
+        if args.write_ori_jpg_bool:
+            output_txt_path = os.path.join(args.output_video_dir, 'jpg', video_list[idx].replace(args.suffix, ''), video_list[idx].replace(args.suffix, '.txt'))
+            with open(output_txt_path, "w") as f:
+                for idw in range(len(txt_detect_list)):
+                    f.writelines(txt_detect_list[idw]) 
+                    f.writelines("\n") 
 
     # 是否保存日志
     if args.write_csv_bool:
@@ -150,8 +187,14 @@ def main():
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_夜晚_后向_0615/00000G000170/截取视频/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_夜晚_后向_0615/00000G000171/截取视频/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_夜晚_后向_0615/00000G000171/截取视频/"
-    args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_白天_侧向_0615/test/"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_白天_侧向_0615/test/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_全_多方向_0905/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_全_多方向_0905/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_全_多方向_0904/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_全_多方向_0904/"
+    args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_全_多方向_0903/"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_全_多方向_0903/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_白天_侧向_0615/test/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_白天_侧向_0615/test/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_夜晚_侧向_0615/test/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_夜晚_侧向_0615/test/"
 
@@ -167,6 +210,8 @@ def main():
     args.write_capture_crop_bool = True
     # 是否保存日志
     args.write_csv_bool = True
+    # 是否保存原始图像
+    args.write_ori_jpg_bool = True
 
     inference_video(args)
 
