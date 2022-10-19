@@ -86,6 +86,7 @@ class CaptureApi():
         # 状态容器长度
         self.bbox_state_container_length = 10       # 车牌框连续丢失上报，从容器中清除该车辆信息
         self.lpr_ocr_state_container_length = 20    # 车牌状态长度阈值
+        self.lpr_city_state_container_length = 10   # 车牌状态长度阈值
 
         # 更新车辆行驶状态
         self.update_state_num_threshold = 5         # 行驶状态计数最大值，用于记录车辆处于同一行驶状态的帧数
@@ -102,22 +103,28 @@ class CaptureApi():
         self.roi_area = [0, 0, self.image_width, self.image_height]
 
         # 车牌长宽阈值
-        self.plate_signel_height = [25, 960]
+        # # 白天
+        # self.plate_signel_height = [25, 960]
+        # self.plate_signel_width = [0, 1920]
+        # self.plate_double_height = [45, 960]
+        # self.plate_double_width = [0, 1920]
+        # 夜间
+        self.plate_signel_height = [55, 960]
         self.plate_signel_width = [0, 1920]
-        self.plate_double_height = [45, 960]
+        self.plate_double_height = [75, 960]
         self.plate_double_width = [0, 1920]
 
         # 抓拍线
-        self.capture_line_up_down_ratio = [0.02, 0.5, 0.9, 0.98]
-        self.capture_line_left_right_ratio = [0.01, 0.25, 0.75, 0.99]
+        self.capture_line_up_down_ratio = [0.03, 0.5, 0.9, 0.97]
+        self.capture_line_left_right_ratio = [0.03, 0.25, 0.75, 0.97]
         self.capture_plate_frame_threshold = 5
         self.capture_outtime_frame_threshold_01 = 25
         self.capture_plate_up_down_distance_boundary_threshold = 100
-        self.capture_plate_left_right_distance_near_boundary_threshold = 100
+        self.capture_plate_left_right_distance_near_boundary_threshold = 200
         self.capture_plate_left_right_distance_far_boundary_threshold = 400
         self.capture_plate_ocr_score_threshold = 0.8
         self.capture_lpr_contry_frame_threshold = 3
-        self.capture_lpr_city_frame_threshold = 2
+        self.capture_lpr_city_frame_threshold = 1
         self.capture_lpr_car_type_frame_threshold = 3
         self.capture_lpr_kind_frame_threshold = 4
         self.capture_lpr_num_frame_threshold = 4
@@ -549,7 +556,7 @@ class CaptureApi():
 
                         if len( bbox_state_idy['lpr_country_list'] ) > self.lpr_ocr_state_container_length:
                             bbox_state_idy['lpr_country_list'].pop(0)
-                        if len( bbox_state_idy['lpr_city_list'] ) > self.lpr_ocr_state_container_length:
+                        if len( bbox_state_idy['lpr_city_list'] ) > self.lpr_city_state_container_length:
                             bbox_state_idy['lpr_city_list'].pop(0)
                         if len( bbox_state_idy['lpr_car_type_list'] ) > self.lpr_ocr_state_container_length:
                             bbox_state_idy['lpr_car_type_list'].pop(0)
@@ -614,7 +621,7 @@ class CaptureApi():
                 lpr_height =  bbox_info_idx['loc'][3] - bbox_info_idx['loc'][1]
 
                 bool_add_lpr = False
-                if bbox_state_idy['loc'][0] > self.ROI_Left_threshold and bbox_info_idx['loc'][2] < self.ROI_Right_threshold and \
+                if bbox_info_idx['loc'][0] > self.ROI_Left_threshold and bbox_info_idx['loc'][2] < self.ROI_Right_threshold and \
                     bbox_info_idx['loc'][1] > self.ROI_Up_threshold and bbox_info_idx['loc'][3] < self.ROI_Down_threshold and \
                     bbox_info_idx['ignore'] == False:
 

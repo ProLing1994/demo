@@ -179,20 +179,20 @@ def main():
     # zd, demo
     # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_白天_侧向_0615/截取视频/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_白天_侧向_0615/截取视频/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_夜晚_侧向_0615/截取视频/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_夜晚_侧向_0615/截取视频/"
+    args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_夜晚_侧向_0615/截取视频/"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_夜晚_侧向_0615_new/截取视频/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_白天_后向_0615/截取视频/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_白天_后向_0615/截取视频/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_夜晚_后向_0615/00000G000170/截取视频/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_夜晚_后向_0615/00000G000170/截取视频/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_夜晚_后向_0615_new/00000G000170/截取视频/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_夜晚_后向_0615/00000G000171/截取视频/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_夜晚_后向_0615/00000G000171/截取视频/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_夜晚_后向_0615_new//00000G000171/截取视频/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_全_多方向_0905/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_全_多方向_0905/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_全_多方向_0904/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_全_多方向_0904/"
-    args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_全_多方向_0903/"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_全_多方向_0903/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_全_多方向_0903/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_全_多方向_0903/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_白天_侧向_0615/test/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_白天_侧向_0615/test/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_夜晚_侧向_0615/test/"
@@ -211,7 +211,7 @@ def main():
     # 是否保存日志
     args.write_csv_bool = True
     # 是否保存原始图像
-    args.write_ori_jpg_bool = True
+    args.write_ori_jpg_bool = False
 
     inference_video(args)
 
