@@ -2,18 +2,20 @@ import cv2
 import numpy as np
 import sys
 
-caffe_root = '/home/huanyuan/code/caffe_ssd-ssd/'
+# caffe_root = '/home/huanyuan/code/caffe_ssd-ssd/'
+caffe_root = '/home/huanyuan/code/caffe_ssd-ssd-gpu/'
 sys.path.insert(0, caffe_root + 'python')
 import caffe
 
 
 class LPRDetectCaffe(object):
 
-    def __init__(self, prototxt, model_path, input_shape=(300, 300)):
+    def __init__(self, prototxt, model_path, input_shape=(300, 300), gpu_bool=False):
 
         self.prototxt = prototxt
         self.model_path = model_path
         self.input_shape = input_shape
+        self.gpu_bool = gpu_bool
 
         self.conf_thres = 0.4
         self.classes = ('__background__', 'license_plate') 
@@ -21,7 +23,15 @@ class LPRDetectCaffe(object):
 
 
     def model_init(self):
-        
+
+        if self.gpu_bool:
+            caffe.set_device(0)
+            caffe.set_mode_gpu()
+            print("[Information:] GPU mode")
+        else:
+            caffe.set_mode_cpu()
+            print("[Information:] CPU mode")
+
         self.net = caffe.Net(self.prototxt, self.model_path, caffe.TEST)
 
 

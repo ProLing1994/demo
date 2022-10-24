@@ -147,8 +147,8 @@ def main():
     # args.video_dir = "/mnt/huanyuan2/data/image/ZG_HCZP/test_video/avi视频/test/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test/"
 
-    args.video_dir = "/mnt/huanyuan2/data/image/ZG_GDZP/test_video/avi视频/test/"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZG_GDZP/test_video/"
+    args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/BM_Brazil/test/"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZG_GDZP/test_video/BM_Brazil/"
     
     args.suffix = '.avi'
     # args.suffix = '.mp4'

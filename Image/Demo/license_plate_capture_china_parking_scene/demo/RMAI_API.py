@@ -51,7 +51,7 @@ class CaptureApi():
         # self.image_width = 640
         # self.image_height = 368
 
-        # 2022-09-08-00
+        # 2022-09-08-00 zt_crop
         # pytorch 
         self.ssd_car_plate_prototxt = None
         self.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-09-08-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_zf_zt_crop_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_225.pth"

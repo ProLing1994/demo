@@ -30,9 +30,17 @@ class CaptureApi():
 
 
     def option_init(self):
-
+        
+        # 5M
         self.image_width = 2592
         self.image_height = 1920
+
+        # # 2M
+        # self.image_width = 1920
+        # self.image_height = 1080
+
+        self.gpu_bool = True
+        # gpu_bool=False
 
         # detector
         # ssd
@@ -58,9 +66,13 @@ class CaptureApi():
         self.detect_class_threshold_list = [0.4]
 
         # lpr
-        # seg: zd
-        self.lpr_seg_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/seg_city_cartype_kind_num_zd_0826/LaneNetNova_class_15.prototxt"
-        self.lpr_seg_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/seg_city_cartype_kind_num_zd_0826/LaneNetNova_seg_city_cartype_kind_num_zd_0826.caffemodel"
+        # seg: zd seg_city_cartype_kind_num_zd_0826
+        # self.lpr_seg_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/seg_city_cartype_kind_num_zd_0826/LaneNetNova_class_15.prototxt"
+        # self.lpr_seg_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/seg_city_cartype_kind_num_zd_0826/LaneNetNova_seg_city_cartype_kind_num_zd_0826.caffemodel"
+        # seg: zd seg_city_cartype_kind_num_zd_1019
+        self.lpr_seg_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/seg_city_cartype_kind_num_zd_1019/LaneNetNova_class_15.prototxt"
+        self.lpr_seg_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/seg_city_cartype_kind_num_zd_1019/LaneNetNova_seg_city_cartype_kind_num_zd_1019.caffemodel"
+
         # # ocr: zd 0901
         # self.lpr_ocr_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_all_UAE_0901/cnn_256x64_38.prototxt"
         # self.lpr_ocr_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_all_UAE_0901/ocr_zd_mask_UAE_0901.caffemodel"
@@ -103,16 +115,16 @@ class CaptureApi():
         self.roi_area = [0, 0, self.image_width, self.image_height]
 
         # 车牌长宽阈值
-        # # 白天
-        # self.plate_signel_height = [25, 960]
-        # self.plate_signel_width = [0, 1920]
-        # self.plate_double_height = [45, 960]
-        # self.plate_double_width = [0, 1920]
-        # 夜间
-        self.plate_signel_height = [55, 960]
+        # 白天
+        self.plate_signel_height = [25, 960]
         self.plate_signel_width = [0, 1920]
-        self.plate_double_height = [75, 960]
+        self.plate_double_height = [45, 960]
         self.plate_double_width = [0, 1920]
+        # # 夜间
+        # self.plate_signel_height = [55, 960]
+        # self.plate_signel_width = [0, 1920]
+        # self.plate_double_height = [75, 960]
+        # self.plate_double_width = [0, 1920]
 
         # 抓拍线
         self.capture_line_up_down_ratio = [0.03, 0.5, 0.9, 0.97]
@@ -239,7 +251,7 @@ class CaptureApi():
         # detector
         if self.ssd_bool:
             if self.ssd_caffe_bool:
-                self.detector = LPRDetectCaffe(self.ssd_plate_prototxt, self.ssd_plate_model_path)
+                self.detector = LPRDetectCaffe(self.ssd_plate_prototxt, self.ssd_plate_model_path, gpu_bool=self.gpu_bool)
             elif self.ssd_openvino_bool:
                 self.detector = LPRDetectOpenVINO(self.ssd_plate_model_path)
 
@@ -251,7 +263,7 @@ class CaptureApi():
 
         # lincense plate seg
         # self.lpr_seg = LPRSegCaffe(self.lpr_seg_zd_caffe_prototxt, self.lpr_seg_zd_caffe_model_path)
-        self.lpr_seg_ocr = LPRSegOcrcffe(self.lpr_seg_zd_caffe_prototxt, self.lpr_seg_zd_caffe_model_path, self.lpr_ocr_zd_caffe_prototxt, self.lpr_ocr_zd_caffe_model_path)
+        self.lpr_seg_ocr = LPRSegOcrcffe(self.lpr_seg_zd_caffe_prototxt, self.lpr_seg_zd_caffe_model_path, self.lpr_ocr_zd_caffe_prototxt, self.lpr_ocr_zd_caffe_model_path, gpu_bool=self.gpu_bool)
 
 
     def clear(self):
@@ -558,7 +570,7 @@ class CaptureApi():
                             bbox_state_idy['lpr_country_list'].pop(0)
                         if len( bbox_state_idy['lpr_city_list'] ) > self.lpr_city_state_container_length:
                             bbox_state_idy['lpr_city_list'].pop(0)
-                        if len( bbox_state_idy['lpr_car_type_list'] ) > self.lpr_ocr_state_container_length:
+                        if len( bbox_state_idy['lpr_car_type_list'] ) > self.lpr_city_state_container_length:
                             bbox_state_idy['lpr_car_type_list'].pop(0)
                         if len( bbox_state_idy['lpr_kind_list'] ) > self.lpr_ocr_state_container_length:
                             bbox_state_idy['lpr_kind_list'].pop(0)
