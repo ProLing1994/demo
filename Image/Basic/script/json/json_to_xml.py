@@ -56,10 +56,10 @@ def json_xml(args):
             # +1 的目的：更换了标注工具，保证 xml 结果统一：
             # ssd rfb 代码：cur_pt = int(float(bbox.find(pt).text)) - 1
             points = np.array(track['points'])
-            x1 = max(int(points[0]) + 1, 1)
-            y1 = max(int(points[1]) + 1, 1)
-            x2 = min(int(points[2]) + 1, img_width) 
-            y2 = min(int(points[3]) + 1, img_height)
+            x1 = max(int(points[0]), 1)
+            y1 = max(int(points[1]), 1)
+            x2 = min(int(points[2]), img_width) 
+            y2 = min(int(points[3]), img_height)
 
             if label not in xml_bboxes:
                 xml_bboxes[label] = []              

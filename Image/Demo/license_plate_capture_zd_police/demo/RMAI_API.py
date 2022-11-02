@@ -6,10 +6,10 @@ import sys
 import random
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
-from Image.Demo.license_plate_capture_zd.model.LPR_detect import LPRDetectCaffe, LPRDetectOpenVINO
+from Image.Demo.license_plate_capture_zd_police.model.LPR_detect import LPRDetectCaffe, LPRDetectOpenVINO
 from Image.detection2d.mmdetection.demo.detector.yolov6_detector import YOLOV6Detector
 from Image.recognition2d.lpr.infer.lpr_seg_ocr import LPRSegOcrcffe
-from Image.Demo.license_plate_capture_zd.sort.mot_sort import Sort
+from Image.Demo.license_plate_capture_zd_police.sort.mot_sort import Sort
 
 
 class CaptureApi():
@@ -251,7 +251,7 @@ class CaptureApi():
         # detector
         if self.ssd_bool:
             if self.ssd_caffe_bool:
-                self.detector = LPRDetectCaffe(self.ssd_plate_prototxt, self.ssd_plate_model_path, gpu_bool=self.gpu_bool)
+                self.detector = LPRDetectCaffe(self.ssd_plate_prototxt, self.ssd_plate_model_path, class_name=self.detect_class_name, gpu_bool=self.gpu_bool)
             elif self.ssd_openvino_bool:
                 self.detector = LPRDetectOpenVINO(self.ssd_plate_model_path)
 
@@ -708,8 +708,8 @@ class CaptureApi():
             outtime_flage_01 = False
             report_flage = False
 
-            loc_center_x = (bbox_state_idy['stable_loc'][0] + bbox_state_idy['stable_loc'][2]) / 2.0
-            loc_center_y = (bbox_state_idy['stable_loc'][1] + bbox_state_idy['stable_loc'][3]) / 2.0
+            loc_center_x = (bbox_state_idy['loc'][0] + bbox_state_idy['loc'][2]) / 2.0
+            loc_center_y = (bbox_state_idy['loc'][1] + bbox_state_idy['loc'][3]) / 2.0
 
             # 如果车辆向近处行驶, bbox_state_idy['up_down_state_frame_num'] >= 3 条件用于避免刚进 ROI 或者车辆静止状态下的误判
             if bbox_state_idy['up_down_state'] == 'Near' and bbox_state_idy['up_down_state_frame_num'] >= 3:

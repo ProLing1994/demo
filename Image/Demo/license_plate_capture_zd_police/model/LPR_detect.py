@@ -10,7 +10,7 @@ import caffe
 
 class LPRDetectCaffe(object):
 
-    def __init__(self, prototxt, model_path, input_shape=(300, 300), gpu_bool=False):
+    def __init__(self, prototxt, model_path, class_name=['license_plate'], input_shape=(300, 300), gpu_bool=False):
 
         self.prototxt = prototxt
         self.model_path = model_path
@@ -18,7 +18,8 @@ class LPRDetectCaffe(object):
         self.gpu_bool = gpu_bool
 
         self.conf_thres = 0.4
-        self.classes = ('__background__', 'license_plate') 
+        self.classes = ['__background__']
+        self.classes.extend(class_name)
         self.model_init()
 
 
