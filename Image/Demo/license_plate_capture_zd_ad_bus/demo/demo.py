@@ -8,8 +8,8 @@ from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.Basic.utils.folder_tools import *
-from Image.Demo.license_plate_capture_zd.demo.RMAI_API import *
-from Image.Demo.license_plate_capture_zd.utils.draw_tools import draw_bbox_info, draw_bbox_state, draw_capture_line
+from Image.Demo.license_plate_capture_zd_ad_bus.demo.RMAI_API import *
+from Image.Demo.license_plate_capture_zd_police.utils.draw_tools import draw_bbox_info, draw_bbox_state, draw_capture_line
 
 
 def inference_video(args):
@@ -64,7 +64,7 @@ def inference_video(args):
 
             img = ori_img.copy()
 
-            # if frame_idx == 17:
+            # if frame_idx == 154 or frame_idx == 155:
             #     print()
 
             # capture api
@@ -125,9 +125,9 @@ def inference_video(args):
                         csv_dict['id'] = capture_res_idy['id']
                         csv_dict['country'] = capture_res_idy['country']
                         csv_dict['city'] = capture_res_idy['city']
-                        csv_dict['kind'] = len(capture_res_idy['kind'])
-                        csv_dict['num'] = len(capture_res_idy['num'])
-                        csv_dict['column'] = len(capture_res_idy['column'])
+                        csv_dict['kind'] = capture_res_idy['kind']
+                        csv_dict['num'] = capture_res_idy['num']
+                        csv_dict['column'] = capture_res_idy['column']
                         csv_dict['flage'] = capture_res_idy['flage']
 
                         csv_list.append(csv_dict)
@@ -138,13 +138,15 @@ def inference_video(args):
                 txt_detect_str = ""
                 txt_detect_str = txt_detect_str + video_list[idx].replace(args.suffix, '_{}.jpg'.format(frame_idx)) + ";"
 
-                for key in bboxes.keys():
-                    for idb in range(len(bboxes[key])):
-                        txt_detect_str = txt_detect_str + str(key) + ","
-                        txt_detect_str = txt_detect_str + str(bboxes[key][idb][0]) + ","
-                        txt_detect_str = txt_detect_str + str(bboxes[key][idb][1]) + ","
-                        txt_detect_str = txt_detect_str + str(bboxes[key][idb][2]) + ","
-                        txt_detect_str = txt_detect_str + str(bboxes[key][idb][3]) + ";"
+                if "license_plate" in bboxes.keys():
+
+                    for key in bboxes.keys():
+                        for idb in range(len(bboxes[key])):
+                            txt_detect_str = txt_detect_str + str(key) + ","
+                            txt_detect_str = txt_detect_str + str(bboxes[key][idb][0]) + ","
+                            txt_detect_str = txt_detect_str + str(bboxes[key][idb][1]) + ","
+                            txt_detect_str = txt_detect_str + str(bboxes[key][idb][2]) + ","
+                            txt_detect_str = txt_detect_str + str(bboxes[key][idb][3]) + ";"
 
                 txt_detect_list.append(txt_detect_str)
 
@@ -176,30 +178,20 @@ def main():
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    # zd, demo
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_白天_侧向_0615/截取视频/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_白天_侧向_0615/截取视频/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_夜晚_侧向_0615/截取视频/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_夜晚_侧向_0615/截取视频/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_白天_后向_0615/截取视频/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_白天_后向_0615/截取视频/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_夜晚_后向_0615/00000G000170/截取视频/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_夜晚_后向_0615/00000G000170/截取视频/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_夜晚_后向_0615/00000G000171/截取视频/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_夜晚_后向_0615/00000G000171/截取视频/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_全_多方向_0905/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_全_多方向_0905/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_全_多方向_0904/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_全_多方向_0904/"
-    args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_全_多方向_0903/"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_全_多方向_0903/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_白天_侧向_0615/test/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_白天_侧向_0615/test/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_夜晚_侧向_0615/test/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_夜晚_侧向_0615/test/"
+    # zd, ZD_AD_BUS
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_AD_BUS/avi文件/5M_白天_侧向_20210315"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_白天_侧向_20210315/"
+    args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_AD_BUS/avi文件/5M_白天_侧向_20210401/L23"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_白天_侧向_20210401/L23/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_AD_BUS/avi文件/5M_白天_侧向_20210401/L45"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_白天_侧向_20210401/L45/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_AD_BUS/avi文件/5M_夜间_侧向_20210417/L45"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_夜间_侧向_20210417/L45/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_AD_BUS/avi文件/test"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test/"
 
-    args.suffix = '.avi'
-    # args.suffix = '.mp4'
+    # args.suffix = '.avi'
+    args.suffix = '.mp4'
 
     # 是否保存视频结果
     args.write_result_video_bool = True

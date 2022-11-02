@@ -4,9 +4,9 @@ import sys
 import random
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
-from Image.Demo.license_plate_capture_zd.model.LPR_detect import LPRDetectCaffe, LPRDetectOpenVINO
+from Image.Demo.license_plate_capture_zd_police.model.LPR_detect import LPRDetectCaffe, LPRDetectOpenVINO
 # from Image.detection2d.mmdetection.demo.detector.yolov6_detector import YOLOV6Detector
-from Image.Demo.license_plate_capture_zd.sort.mot_sort import Sort
+from Image.Demo.license_plate_capture_zd_police.sort.mot_sort import Sort
 
 
 class VideoCaptureApi():

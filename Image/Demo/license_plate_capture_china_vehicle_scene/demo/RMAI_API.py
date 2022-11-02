@@ -79,17 +79,6 @@ class CaptureApi():
         # # self.ssd_car_plate_prototxt = None
         # # self.ssd_car_plate_model_path = ""
 
-        # # 2022-09-08-00
-        # # pytorch 
-        # self.ssd_car_plate_prototxt = None
-        # self.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-09-08-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_zf_zt_crop_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_225.pth"
-        # # # caffe
-        # # self.ssd_car_plate_prototxt = ""
-        # # self.ssd_car_plate_model_path = ""
-        # # openvino
-        # # self.ssd_car_plate_prototxt = None
-        # # self.ssd_car_plate_model_path = ""
-
         self.ssd_caffe_bool = False
         self.ssd_openvino_bool = False
 
@@ -234,8 +223,7 @@ class CaptureApi():
         self.mot_tracker = Sort(max_age=self.max_age, min_hits=self.min_hits, iou_threshold=self.iou_threshold)
 
         # lincense plate reader
-        self.lpr = LPRCaffe(self.lpr_caffe_prototxt, self.lpr_caffe_model_path, self.lpr_prefix_beam_search_bool)
-
+        self.lpr = LPRCaffe(self.lpr_caffe_prototxt, self.lpr_caffe_model_path, prefix_beam_search_bool=self.lpr_prefix_beam_search_bool)
 
     def clear(self):
         # param_init

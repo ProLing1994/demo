@@ -6,10 +6,10 @@ import sys
 import random
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
-from Image.Demo.license_plate_capture_zd.model.LPR_detect import LPRDetectCaffe, LPRDetectOpenVINO
+from Image.Demo.license_plate_capture_zd_police.model.LPR_detect import LPRDetectCaffe, LPRDetectOpenVINO
 from Image.detection2d.mmdetection.demo.detector.yolov6_detector import YOLOV6Detector
 from Image.recognition2d.lpr.infer.lpr_seg_ocr import LPRSegOcrcffe
-from Image.Demo.license_plate_capture_zd.sort.mot_sort import Sort
+from Image.Demo.license_plate_capture_zd_police.sort.mot_sort import Sort
 
 
 class CaptureApi():
@@ -30,9 +30,17 @@ class CaptureApi():
 
 
     def option_init(self):
-
+        
+        # 5M
         self.image_width = 2592
         self.image_height = 1920
+
+        # # 2M
+        # self.image_width = 1920
+        # self.image_height = 1080
+
+        self.gpu_bool = True
+        # gpu_bool=False
 
         # detector
         # ssd
@@ -58,9 +66,13 @@ class CaptureApi():
         self.detect_class_threshold_list = [0.4]
 
         # lpr
-        # seg: zd
-        self.lpr_seg_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/seg_city_cartype_kind_num_zd_0826/LaneNetNova_class_15.prototxt"
-        self.lpr_seg_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/seg_city_cartype_kind_num_zd_0826/LaneNetNova_seg_city_cartype_kind_num_zd_0826.caffemodel"
+        # seg: zd seg_city_cartype_kind_num_zd_0826
+        # self.lpr_seg_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/seg_city_cartype_kind_num_zd_0826/LaneNetNova_class_15.prototxt"
+        # self.lpr_seg_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/seg_city_cartype_kind_num_zd_0826/LaneNetNova_seg_city_cartype_kind_num_zd_0826.caffemodel"
+        # seg: zd seg_city_cartype_kind_num_zd_1019
+        self.lpr_seg_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/seg_city_cartype_kind_num_zd_1019/LaneNetNova_class_15.prototxt"
+        self.lpr_seg_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/seg_city_cartype_kind_num_zd_1019/LaneNetNova_seg_city_cartype_kind_num_zd_1019.caffemodel"
+
         # # ocr: zd 0901
         # self.lpr_ocr_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_all_UAE_0901/cnn_256x64_38.prototxt"
         # self.lpr_ocr_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_all_UAE_0901/ocr_zd_mask_UAE_0901.caffemodel"
@@ -86,6 +98,7 @@ class CaptureApi():
         # 状态容器长度
         self.bbox_state_container_length = 10       # 车牌框连续丢失上报，从容器中清除该车辆信息
         self.lpr_ocr_state_container_length = 20    # 车牌状态长度阈值
+        self.lpr_city_state_container_length = 10   # 车牌状态长度阈值
 
         # 更新车辆行驶状态
         self.update_state_num_threshold = 5         # 行驶状态计数最大值，用于记录车辆处于同一行驶状态的帧数
@@ -102,22 +115,28 @@ class CaptureApi():
         self.roi_area = [0, 0, self.image_width, self.image_height]
 
         # 车牌长宽阈值
+        # 白天
         self.plate_signel_height = [25, 960]
         self.plate_signel_width = [0, 1920]
         self.plate_double_height = [45, 960]
         self.plate_double_width = [0, 1920]
+        # # 夜间
+        # self.plate_signel_height = [55, 960]
+        # self.plate_signel_width = [0, 1920]
+        # self.plate_double_height = [75, 960]
+        # self.plate_double_width = [0, 1920]
 
         # 抓拍线
-        self.capture_line_up_down_ratio = [0.02, 0.5, 0.9, 0.98]
-        self.capture_line_left_right_ratio = [0.01, 0.25, 0.75, 0.99]
+        self.capture_line_up_down_ratio = [0.03, 0.5, 0.9, 0.97]
+        self.capture_line_left_right_ratio = [0.03, 0.25, 0.75, 0.97]
         self.capture_plate_frame_threshold = 5
         self.capture_outtime_frame_threshold_01 = 25
         self.capture_plate_up_down_distance_boundary_threshold = 100
-        self.capture_plate_left_right_distance_near_boundary_threshold = 100
+        self.capture_plate_left_right_distance_near_boundary_threshold = 200
         self.capture_plate_left_right_distance_far_boundary_threshold = 400
         self.capture_plate_ocr_score_threshold = 0.8
         self.capture_lpr_contry_frame_threshold = 3
-        self.capture_lpr_city_frame_threshold = 2
+        self.capture_lpr_city_frame_threshold = 1
         self.capture_lpr_car_type_frame_threshold = 3
         self.capture_lpr_kind_frame_threshold = 4
         self.capture_lpr_num_frame_threshold = 4
@@ -232,7 +251,7 @@ class CaptureApi():
         # detector
         if self.ssd_bool:
             if self.ssd_caffe_bool:
-                self.detector = LPRDetectCaffe(self.ssd_plate_prototxt, self.ssd_plate_model_path)
+                self.detector = LPRDetectCaffe(self.ssd_plate_prototxt, self.ssd_plate_model_path, class_name=self.detect_class_name, gpu_bool=self.gpu_bool)
             elif self.ssd_openvino_bool:
                 self.detector = LPRDetectOpenVINO(self.ssd_plate_model_path)
 
@@ -244,7 +263,7 @@ class CaptureApi():
 
         # lincense plate seg
         # self.lpr_seg = LPRSegCaffe(self.lpr_seg_zd_caffe_prototxt, self.lpr_seg_zd_caffe_model_path)
-        self.lpr_seg_ocr = LPRSegOcrcffe(self.lpr_seg_zd_caffe_prototxt, self.lpr_seg_zd_caffe_model_path, self.lpr_ocr_zd_caffe_prototxt, self.lpr_ocr_zd_caffe_model_path)
+        self.lpr_seg_ocr = LPRSegOcrcffe(self.lpr_seg_zd_caffe_prototxt, self.lpr_seg_zd_caffe_model_path, self.lpr_ocr_zd_caffe_prototxt, self.lpr_ocr_zd_caffe_model_path, gpu_bool=self.gpu_bool)
 
 
     def clear(self):
@@ -549,9 +568,9 @@ class CaptureApi():
 
                         if len( bbox_state_idy['lpr_country_list'] ) > self.lpr_ocr_state_container_length:
                             bbox_state_idy['lpr_country_list'].pop(0)
-                        if len( bbox_state_idy['lpr_city_list'] ) > self.lpr_ocr_state_container_length:
+                        if len( bbox_state_idy['lpr_city_list'] ) > self.lpr_city_state_container_length:
                             bbox_state_idy['lpr_city_list'].pop(0)
-                        if len( bbox_state_idy['lpr_car_type_list'] ) > self.lpr_ocr_state_container_length:
+                        if len( bbox_state_idy['lpr_car_type_list'] ) > self.lpr_city_state_container_length:
                             bbox_state_idy['lpr_car_type_list'].pop(0)
                         if len( bbox_state_idy['lpr_kind_list'] ) > self.lpr_ocr_state_container_length:
                             bbox_state_idy['lpr_kind_list'].pop(0)
@@ -614,7 +633,7 @@ class CaptureApi():
                 lpr_height =  bbox_info_idx['loc'][3] - bbox_info_idx['loc'][1]
 
                 bool_add_lpr = False
-                if bbox_state_idy['loc'][0] > self.ROI_Left_threshold and bbox_info_idx['loc'][2] < self.ROI_Right_threshold and \
+                if bbox_info_idx['loc'][0] > self.ROI_Left_threshold and bbox_info_idx['loc'][2] < self.ROI_Right_threshold and \
                     bbox_info_idx['loc'][1] > self.ROI_Up_threshold and bbox_info_idx['loc'][3] < self.ROI_Down_threshold and \
                     bbox_info_idx['ignore'] == False:
 
@@ -689,8 +708,8 @@ class CaptureApi():
             outtime_flage_01 = False
             report_flage = False
 
-            loc_center_x = (bbox_state_idy['stable_loc'][0] + bbox_state_idy['stable_loc'][2]) / 2.0
-            loc_center_y = (bbox_state_idy['stable_loc'][1] + bbox_state_idy['stable_loc'][3]) / 2.0
+            loc_center_x = (bbox_state_idy['loc'][0] + bbox_state_idy['loc'][2]) / 2.0
+            loc_center_y = (bbox_state_idy['loc'][1] + bbox_state_idy['loc'][3]) / 2.0
 
             # 如果车辆向近处行驶, bbox_state_idy['up_down_state_frame_num'] >= 3 条件用于避免刚进 ROI 或者车辆静止状态下的误判
             if bbox_state_idy['up_down_state'] == 'Near' and bbox_state_idy['up_down_state_frame_num'] >= 3:
