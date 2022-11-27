@@ -152,7 +152,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE_crop/check_crop_0804_0809/"
+    args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE_crop/check_crop_1024_1029/"
     args.jpg_dir = os.path.join(args.input_dir, "Images/")
     args.platform_json_dir = os.path.join(args.input_dir, "Json/")
     args.xml_dir = os.path.join(args.input_dir, "xml/")
