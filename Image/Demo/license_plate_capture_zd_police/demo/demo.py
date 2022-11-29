@@ -220,8 +220,16 @@ def main():
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_2M_全_多方向_误报_1024/2022-10-24_14/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_2M_全_多方向_误报_1024/2022-10-24_18/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_2M_全_多方向_误报_1024/2022-10-24_18/"
-    args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_2M_全_多方向_误报_1024/2022-10-24_19/"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_2M_全_多方向_误报_1024/2022-10-24_19/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_2M_全_多方向_误报_1024/2022-10-24_19/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_2M_全_多方向_误报_1024/2022-10-24_19/"
+    args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_2M_全_多方向_误报_1115/2022-11-15_12_16/"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_2M_全_多方向_误报_1115/2022-11-15_12_16/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_2M_全_多方向_误报_1115/2022-11-16_07/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_2M_全_多方向_误报_1115/2022-11-16_07/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_2M_全_多方向_误报_1115/2022-11-16_06/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_2M_全_多方向_误报_1115/2022-11-16_06/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_2M_全_多方向_误报_1115/2022-11-16_00_01/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_2M_全_多方向_误报_1115/2022-11-16_00_01/"
 
     args.suffix = '.avi'
     # args.suffix = '.mp4'

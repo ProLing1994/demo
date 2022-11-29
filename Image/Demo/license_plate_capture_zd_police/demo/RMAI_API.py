@@ -39,8 +39,8 @@ class CaptureApi():
         # self.image_width = 1920
         # self.image_height = 1080
 
-        self.gpu_bool = True
-        # gpu_bool=False
+        # self.gpu_bool = True
+        self.gpu_bool=False
 
         # detector
         # ssd
@@ -127,16 +127,16 @@ class CaptureApi():
         self.roi_area = [0, 0, self.image_width, self.image_height]
 
         # 车牌长宽阈值
-        # # 白天
-        # self.plate_signel_height = [30, 960]      # 25 -> 30 - 35
-        # self.plate_signel_width = [0, 1920]
-        # self.plate_double_height = [50, 960]      # 45 -> 50 - 55   
-        # self.plate_double_width = [0, 1920]
-        # 夜间
-        self.plate_signel_height = [55, 960]
+        # 白天
+        self.plate_signel_height = [35, 960]      # 25 -> 30 - 35
         self.plate_signel_width = [0, 1920]
-        self.plate_double_height = [75, 960]
+        self.plate_double_height = [55, 960]      # 45 -> 50 - 55   
         self.plate_double_width = [0, 1920]
+        # # 夜间
+        # self.plate_signel_height = [55, 960]
+        # self.plate_signel_width = [0, 1920]
+        # self.plate_double_height = [75, 960]
+        # self.plate_double_width = [0, 1920]
 
         # 抓拍线
         self.capture_line_up_down_ratio = [0.03, 0.5, 0.9, 0.97]
