@@ -52,7 +52,7 @@ def draw_bbox_info(img, bbox_info, capture_list=None, mode='xywh'):
             img = cv_plot_rectangle(img, bbox_info_idx['num_loc'], mode=mode, color=color_dict["plate_capture"])
 
 
-        img = cv2.putText(img, "{}_{}_{}_{}_{}_{}_{}_{:.2f}".format( bbox_info_idx['id'], bbox_info_idx['country'], bbox_info_idx['city'], bbox_info_idx['car_type'], bbox_info_idx['column'], bbox_info_idx['kind'], bbox_info_idx['num'], bbox_info_idx['score'] ), \
+        img = cv2.putText(img, "{}_{}_{}_{}_{}_{}_{}_{}_{:.2f}".format( bbox_info_idx['id'], bbox_info_idx['country'], bbox_info_idx['city'], bbox_info_idx['car_type'], bbox_info_idx['color'], bbox_info_idx['column'], bbox_info_idx['kind'], bbox_info_idx['num'], bbox_info_idx['score'] ), \
                             (bbox_info_idx['loc'][0], bbox_info_idx['loc'][1] - 10), 
                             cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 2)
 
