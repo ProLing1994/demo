@@ -1,16 +1,20 @@
 import cv2
 import numpy as np
 import math
-import paddle
 import sys
 import yaml
 
-sys.path.insert(0, '/yuanhuan/code/demo/Image/recognition2d/PaddleOCR')
-from ppocr.data import create_operators, transform
-from ppocr.modeling.architectures import build_model
-from ppocr.postprocess import build_post_process
-from ppocr.utils.save_load import load_model
-from tools.program import load_config, merge_config
+# import paddle
+# sys.path.insert(0, '/yuanhuan/code/demo/Image/recognition2d/PaddleOCR')
+# from ppocr.data import create_operators, transform
+# from ppocr.modeling.architectures import build_model
+# from ppocr.postprocess import build_post_process
+# from ppocr.utils.save_load import load_model
+# from tools.program import load_config, merge_config
+
+caffe_root = '/home/huanyuan/code/caffe_ssd-ssd-gpu/'
+sys.path.insert(0, caffe_root + 'python')
+import caffe
 
 
 def greedy_decode( probs, blank_id = 0 ):
@@ -264,6 +268,69 @@ class LPROnnx(object):
         return result_ocr, result_scors
 
 
+class LPRCaffe(object):
+    
+    def __init__(self, config_path, model_path, prototxt_path, dict_path):
+
+        self.config_path = config_path
+        self.model_path = model_path
+        self.prototxt_path = prototxt_path
+        self.dict_path = dict_path
+        self.gpu_bool = True
+        self.img_shape = (3, 64, 256)
+
+        self.model_init()
+        self.ocr_labels_init()
+
+
+    def model_init(self):
+        
+        # build model
+        if self.gpu_bool:
+            caffe.set_device(0)
+            caffe.set_mode_gpu()
+            print("[Information:] GPU mode")
+        else:
+            caffe.set_mode_cpu()
+            print("[Information:] CPU mode")
+
+        self.net = caffe.Net(self.prototxt_path, self.model_path, caffe.TEST)
+
+
+    def ocr_labels_init(self):
+        
+        self.character_str = []
+        with open(self.dict_path, "rb") as fin:
+            lines = fin.readlines()
+            for line in lines:
+                line = line.decode('utf-8').strip("\n").strip("\r\n")
+                self.character_str.append(line)
+            self.character_str.append(" ")
+        self.ocr_labels = list(self.character_str)
+
+
+    def preprocess_rm(self, img, image_shape):
+        img = cv2.resize(img, (image_shape[2], image_shape[1]))
+        img = img.transpose((2, 0, 1)) / 255.0
+        return img
+
+
+    def run(self, img):
+
+        img = self.preprocess_rm(img, self.img_shape)
+        img = np.expand_dims(img, axis=0)
+        img = img.astype(np.float32)
+
+        self.net.blobs['x'].data[...] = img
+        preds = self.net.forward()["probs"]
+        preds = np.transpose(np.squeeze(preds))
+
+        result_str, result_scors = greedy_decode(preds)
+        result_ocr = ''.join([self.ocr_labels[result_str[idx] - 1] for idx in range(len(result_str))])
+
+        return result_ocr, result_scors
+
+
 if __name__ == '__main__': 
 
     # ###############################
@@ -282,20 +349,36 @@ if __name__ == '__main__':
     # res_ocr, res_scors = lpr_paddle.run(img)
     # print(res_ocr, res_scors)
 
+    # ###############################
+    # # onnx
+    # ###############################
+    # # config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile/config.yml"
+    # # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile/inference/onnx/model.onnx"
+
+    # config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize/config.yml"
+    # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize/inference/onnx/model.onnx"
+
+    # img_path = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask_paddle_ocr/train_data/rec/test/0000000000000000-220804-131737-131833-00000D000150_26.56_43.63-sn00070-00_none_none_none_Double_J#18886.jpg"
+
+    # lpr_onnx = LPROnnx(config_path, model_path)
+    
+    # img = cv2.imread(img_path)
+    # res_ocr, res_scors = lpr_onnx.run(img)
+    # print(res_ocr, res_scors)
+    
     ###############################
-    # onnx
+    # caffe
     ###############################
-    # config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile/config.yml"
-    # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile/inference/onnx/model.onnx"
 
     config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize/config.yml"
-    model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize/inference/onnx/model.onnx"
+    model_path = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize/inference/caffe/deploy.caffemodel"
+    prototxt_path = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize/inference/caffe/deploy.prototxt"
+    dict_path = "/mnt/huanyuan/model/image/lpr/paddle_ocr/test_img/zd_dict.txt"
 
-    img_path = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask_paddle_ocr/train_data/rec/test/0000000000000000-220804-131737-131833-00000D000150_26.56_43.63-sn00070-00_none_none_none_Double_J#18886.jpg"
+    img_path = "/mnt/huanyuan/model/image/lpr/paddle_ocr/test_img/0000000000000000-220804-131737-131833-00000D000150_26.56_43.63-sn00070-00_none_none_none_Double_J#18886.jpg"
 
-    lpr_paddle = LPROnnx(config_path, model_path)
+    lpr_caffe = LPRCaffe(config_path, model_path, prototxt_path, dict_path)
     
     img = cv2.imread(img_path)
-    res_ocr, res_scors = lpr_paddle.run(img)
+    res_ocr, res_scors = lpr_caffe.run(img)
     print(res_ocr, res_scors)
-    
