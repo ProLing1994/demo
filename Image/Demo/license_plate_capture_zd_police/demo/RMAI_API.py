@@ -39,8 +39,8 @@ class CaptureApi():
         # self.image_width = 1920
         # self.image_height = 1080
 
-        # self.gpu_bool = True
-        self.gpu_bool=False
+        self.gpu_bool = True
+        # self.gpu_bool=False
 
         # detector
         # ssd
@@ -75,9 +75,15 @@ class CaptureApi():
         # # seg: zd seg_city_color_class_zd_1107
         # self.lpr_seg_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1107/LaneNetNovaHeadColorClass_class_15.prototxt"
         # self.lpr_seg_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1107/LaneNetNova_seg_city_color_class_zd_1107.caffemodel"
-        # seg: zd seg_city_color_class_zd_1117
-        self.lpr_seg_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1117/LaneNetNovaHeadColorClass_class_15.prototxt"
-        self.lpr_seg_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1117/LaneNetNova_seg_city_color_class_zd_1117.caffemodel"
+        # # seg: zd seg_city_color_class_zd_1117
+        # self.lpr_seg_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1117/LaneNetNovaHeadColorClass_class_15.prototxt"
+        # self.lpr_seg_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1117/LaneNetNova_seg_city_color_class_zd_1117.caffemodel"
+        # seg: zd seg_city_color_class_zd_1210
+        # self.lpr_seg_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1210/LaneNetNovaHeadColorClass_class_17.prototxt"
+        # self.lpr_seg_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1210/LaneNetNova_seg_city_color_class_zd_1210.caffemodel"
+        # seg: zd seg_city_color_class_zd_1216
+        self.lpr_seg_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1216/LaneNetNovaHeadColorClass_class_17.prototxt"
+        self.lpr_seg_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1216/LaneNetNova_seg_city_color_class_zd_1216.caffemodel"
 
         # # ocr: zd 0901
         # self.lpr_ocr_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_all_UAE_0901/cnn_256x64_38.prototxt"
