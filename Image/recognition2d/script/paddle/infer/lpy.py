@@ -4,17 +4,17 @@ import math
 import sys
 import yaml
 
-# import paddle
-# sys.path.insert(0, '/yuanhuan/code/demo/Image/recognition2d/PaddleOCR')
-# from ppocr.data import create_operators, transform
-# from ppocr.modeling.architectures import build_model
-# from ppocr.postprocess import build_post_process
-# from ppocr.utils.save_load import load_model
-# from tools.program import load_config, merge_config
+import paddle
+sys.path.insert(0, '/yuanhuan/code/demo/Image/recognition2d/PaddleOCR')
+from ppocr.data import create_operators, transform
+from ppocr.modeling.architectures import build_model
+from ppocr.postprocess import build_post_process
+from ppocr.utils.save_load import load_model
+from tools.program import load_config, merge_config
 
-caffe_root = '/home/huanyuan/code/caffe_ssd-ssd-gpu/'
-sys.path.insert(0, caffe_root + 'python')
-import caffe
+# # caffe_root = '/home/huanyuan/code/caffe_ssd-ssd-gpu/'
+# # sys.path.insert(0, caffe_root + 'python')
+# import caffe
 
 
 def greedy_decode( probs, blank_id = 0 ):
@@ -112,6 +112,14 @@ class LPRPaddle(object):
 
         self.model = build_model(self.config['Architecture'])
 
+        # 计算参数量和 FLOPS
+        # paddle.summary(self.model, (1, 3, 32, 320))
+        # FLOPs = paddle.flops(self.model, input_size=[1, 3, 32, 320], print_detail=True)
+        # paddle.summary(self.model, (1, 3, 64, 256))
+        # FLOPs = paddle.flops(self.model, input_size=[1, 3, 64, 256], print_detail=True)
+        # paddle.summary(self.model, (1, 1, 64, 320))
+        # FLOPs = paddle.flops(self.model, input_size=[1, 1, 64, 320], print_detail=True)
+
         load_model(self.config, self.model)
 
         self.model.eval()
@@ -185,7 +193,9 @@ class LPROnnx(object):
         self.config_path = config_path
         self.model_path = model_path
         self.gpu_bool = True
-        self.img_shape = (3, 64, 256)
+        # self.img_shape = (3, 64, 256)
+        # self.img_shape = (1, 64, 256)
+        self.img_shape = (1, 64, 320)
 
         self.config_init()
         self.model_init()
@@ -246,15 +256,67 @@ class LPROnnx(object):
 
 
     def preprocess_rm(self, img, image_shape):
-        img = cv2.resize(img, (image_shape[2], image_shape[1]))
-        img = img.transpose((2, 0, 1)) / 255.0
-        return img
+
+        imgC, imgH, imgW = image_shape
+
+        if imgC == 1:
+            resized_image = cv2.resize(img, (imgW, imgH))
+
+            # gray
+            resized_image = cv2.cvtColor(resized_image, cv2.COLOR_BGR2GRAY)
+            resized_image = resized_image[:, :, np.newaxis]
+        else:
+            resized_image = cv2.resize(img, (imgW, imgH))
+
+        resized_image = resized_image.transpose((2, 0, 1)) / 255.0
+        return resized_image
+
+
+    def preprocess_rm_ratio(self, img, image_shape):
+        
+        img = img[: img.shape[0]//4*4, : img.shape[1]//4*4, :]
+
+        h, w = img.shape[0], img.shape[1]
+        imgC, imgH, imgW = image_shape
+
+        max_wh_ratio = imgW * 1.0 / imgH
+        ratio = w * 1.0 / h
+      
+        # pad
+        if ratio < max_wh_ratio:
+            to_imgW = int(math.ceil(h * max_wh_ratio)) // 4 * 4
+            if (to_imgW - w < 32):
+                to_imgW = w + 32
+                pad_img = np.zeros((h, to_imgW, 3), dtype=np.uint8)
+                pad_img[:, 0:w, :] = img  
+                img = pad_img  
+            else:
+                pad_img = np.zeros((h, to_imgW, 3), dtype=np.uint8)
+                pad_img[:, 0:w, :] = img  
+                img = pad_img  
+        else:
+            img = img
+
+        if imgC == 1:
+            resized_image = cv2.resize(img, (imgW, imgH))
+
+            # gray
+            resized_image = cv2.cvtColor(resized_image, cv2.COLOR_BGR2GRAY)
+            resized_image = resized_image[:, :, np.newaxis]
+        else:
+            resized_image = cv2.resize(img, (imgW, imgH))
+
+        resized_image.astype(np.float32)
+        resized_image = resized_image.transpose((2, 0, 1)) / 255.0
+
+        return resized_image
 
 
     def run(self, img):
 
         # img = self.preprocess(img, self.img_shape)
-        img = self.preprocess_rm(img, self.img_shape)
+        # img = self.preprocess_rm(img, self.img_shape)
+        img = self.preprocess_rm_ratio(img, self.img_shape)
         img = np.expand_dims(img, axis=0)
         img = img.astype(np.float32)
 
@@ -270,14 +332,15 @@ class LPROnnx(object):
 
 class LPRCaffe(object):
     
-    def __init__(self, config_path, model_path, prototxt_path, dict_path):
+    def __init__(self, model_path, prototxt_path, dict_path):
 
-        self.config_path = config_path
         self.model_path = model_path
         self.prototxt_path = prototxt_path
         self.dict_path = dict_path
-        self.gpu_bool = True
-        self.img_shape = (3, 64, 256)
+        self.gpu_bool = False
+        # self.img_shape = (3, 64, 256)
+        # self.img_shape = (1, 64, 256)
+        self.img_shape = (1, 64, 320)
 
         self.model_init()
         self.ocr_labels_init()
@@ -310,14 +373,67 @@ class LPRCaffe(object):
 
 
     def preprocess_rm(self, img, image_shape):
-        img = cv2.resize(img, (image_shape[2], image_shape[1]))
-        img = img.transpose((2, 0, 1)) / 255.0
-        return img
+
+        imgC, imgH, imgW = image_shape
+
+        if imgC == 1:
+            resized_image = cv2.resize(img, (imgW, imgH))
+
+            # gray
+            resized_image = cv2.cvtColor(resized_image, cv2.COLOR_BGR2GRAY)
+            resized_image = resized_image[:, :, np.newaxis]
+        else:
+            resized_image = cv2.resize(img, (imgW, imgH))
+
+        resized_image = resized_image.transpose((2, 0, 1)) / 255.0
+        return resized_image
+
+
+    def preprocess_rm_ratio(self, img, image_shape):
+        
+        img = img[: img.shape[0]//4*4, : img.shape[1]//4*4, :]
+
+        h, w = img.shape[0], img.shape[1]
+        imgC, imgH, imgW = image_shape
+
+        max_wh_ratio = imgW * 1.0 / imgH
+        ratio = w * 1.0 / h
+      
+        # pad
+        if ratio < max_wh_ratio:
+            to_imgW = int(math.ceil(h * max_wh_ratio)) // 4 * 4
+            if (to_imgW - w < 32):
+                to_imgW = w + 32
+                pad_img = np.zeros((h, to_imgW, 3), dtype=np.uint8)
+                pad_img[:, 0:w, :] = img  
+                img = pad_img  
+                # img = img
+            else:
+                pad_img = np.zeros((h, to_imgW, 3), dtype=np.uint8)
+                pad_img[:, 0:w, :] = img  
+                img = pad_img  
+        else:
+            img = img
+
+        if imgC == 1:
+            resized_image = cv2.resize(img, (imgW, imgH))
+
+            # gray
+            resized_image = cv2.cvtColor(resized_image, cv2.COLOR_BGR2GRAY)
+            resized_image = resized_image[:, :, np.newaxis]
+        else:
+            resized_image = cv2.resize(img, (imgW, imgH))
+
+        resized_image.astype(np.float32)
+        resized_image = resized_image.transpose((2, 0, 1)) / 255.0
+
+        return resized_image
 
 
     def run(self, img):
 
-        img = self.preprocess_rm(img, self.img_shape)
+        # img = self.preprocess_rm(img, self.img_shape)
+        img = self.preprocess_rm_ratio(img, self.img_shape)
         img = np.expand_dims(img, axis=0)
         img = img.astype(np.float32)
 
@@ -333,32 +449,53 @@ class LPRCaffe(object):
 
 if __name__ == '__main__': 
 
-    # ###############################
-    # # paddle
-    # ###############################
+    ###############################
+    # paddle
+    ###############################
 
-    # config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile/config.yml"
-    # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile/best_accuracy"
+    # config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_gray_64_320_1215_simple/config.yml"
+    # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_gray_64_320_1215_simple/best_accuracy"
+
+    # config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_gray_64_320_1215_simple/config.yml"
+    # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_gray_64_320_1215_simple/best_accuracy"
+
+    # config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_center_rmresize_ratio_gray_64_320_1215_simple/config.yml"
+    # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_center_rmresize_ratio_gray_64_320_1215_simple/best_accuracy"
+
+    config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_gray_64_320_1215_all/config.yml"
+    model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_gray_64_320_1215_all/best_accuracy"
+    # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_gray_64_320_1215_all/iter_epoch_500"
+
+    # config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_gray_64_320_1215_all/config.yml"
+    # # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_gray_64_320_1215_all/best_accuracy"
+    # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_gray_64_320_1215_all/iter_epoch_500"
+
+    # config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_center_rmresize_ratio_gray_64_320_1215_all/config.yml"
+    # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_center_rmresize_ratio_gray_64_320_1215_all/best_accuracy"
+    # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_center_rmresize_ratio_gray_64_320_1215_all/iter_epoch_200"
+
+    # config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_gray_64_320_1215_all_aug/config.yml"
+    # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_gray_64_320_1215_all_aug/best_accuracy"
+    # # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_gray_64_320_1215_all_aug/iter_epoch_200"
 
     # img_path = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask_paddle_ocr/train_data/rec/test/0000000000000000-220804-131737-131833-00000D000150_26.56_43.63-sn00070-00_none_none_none_Double_J#18886.jpg"
+    img_path = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask_paddle_ocr/test/crop.jpg"
 
-    # lpr_paddle = LPRPaddle(config_path, model_path)
+    lpr_paddle = LPRPaddle(config_path, model_path)
 
-    # with open(img_path, 'rb') as f:
-    #     img = f.read()
-    # res_ocr, res_scors = lpr_paddle.run(img)
-    # print(res_ocr, res_scors)
+    with open(img_path, 'rb') as f:
+        img = f.read()
+    res_ocr, res_scors = lpr_paddle.run(img)
+    print(res_ocr, res_scors)
 
     # ###############################
     # # onnx
     # ###############################
-    # # config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile/config.yml"
-    # # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile/inference/onnx/model.onnx"
+    # config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_gray_64_320_1214_simple/config.yml"
+    # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_gray_64_320_1214_simple/inference/onnx/model.onnx"
 
-    # config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize/config.yml"
-    # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize/inference/onnx/model.onnx"
-
-    # img_path = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask_paddle_ocr/train_data/rec/test/0000000000000000-220804-131737-131833-00000D000150_26.56_43.63-sn00070-00_none_none_none_Double_J#18886.jpg"
+    # # img_path = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask_paddle_ocr/train_data/rec/test/0000000000000000-220804-131737-131833-00000D000150_26.56_43.63-sn00070-00_none_none_none_Double_J#18886.jpg"
+    # img_path = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask_paddle_ocr/test/crop.jpg"
 
     # lpr_onnx = LPROnnx(config_path, model_path)
     
@@ -366,19 +503,17 @@ if __name__ == '__main__':
     # res_ocr, res_scors = lpr_onnx.run(img)
     # print(res_ocr, res_scors)
     
-    ###############################
-    # caffe
-    ###############################
+    # ###############################
+    # # caffe
+    # ###############################
 
-    config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize/config.yml"
-    model_path = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize/inference/caffe/deploy.caffemodel"
-    prototxt_path = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize/inference/caffe/deploy.prototxt"
-    dict_path = "/mnt/huanyuan/model/image/lpr/paddle_ocr/test_img/zd_dict.txt"
+    # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_gray_64_320_1214_simple/inference/caffe/modified_model-sim-rename.caffemodel"
+    # prototxt_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_gray_64_320_1214_simple/inference/caffe/modified_model-sim-rename.prototxt"
+    # dict_path = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/type/zd_dict.txt"
+    # img_path = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask_paddle_ocr/train_data/rec/test/0000000000000000-220804-131737-131833-00000D000150_26.56_43.63-sn00070-00_none_none_none_Double_J#18886.jpg"
 
-    img_path = "/mnt/huanyuan/model/image/lpr/paddle_ocr/test_img/0000000000000000-220804-131737-131833-00000D000150_26.56_43.63-sn00070-00_none_none_none_Double_J#18886.jpg"
-
-    lpr_caffe = LPRCaffe(config_path, model_path, prototxt_path, dict_path)
+    # lpr_caffe = LPRCaffe(model_path, prototxt_path, dict_path)
     
-    img = cv2.imread(img_path)
-    res_ocr, res_scors = lpr_caffe.run(img)
-    print(res_ocr, res_scors)
+    # img = cv2.imread(img_path)
+    # res_ocr, res_scors = lpr_caffe.run(img)
+    # print(res_ocr, res_scors)
