@@ -22,8 +22,8 @@ def copy_dataset(args):
             # output_jpg_path = os.path.join(args.jpg_output_dir, jpg_name)
             # shutil.copy(jpg_path, output_jpg_path)
 
-            jpg_name = os.path.basename(line.strip().split(' ')[0])
-            jpg_path = line.strip().split(' ')[0]
+            jpg_name = os.path.basename(line.strip())
+            jpg_path = line.strip()
             output_jpg_path = os.path.join(args.jpg_output_dir, jpg_name)
             shutil.copy(jpg_path, output_jpg_path)
 

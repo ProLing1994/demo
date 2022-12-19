@@ -12,45 +12,34 @@ from Image.Basic.utils.folder_tools import *
 
 def lpr_to_paddleocr_label(args):
 
-    # input list 
-    input_list = []
-    input_path = os.path.join(args.input_dir, args.txt_dir, "{}.txt".format(args.format))
-    with open(input_path, "r") as f:
-        for line in f:
-            input_list.append(line.strip())
-    
-    # output path
-    if args.format == "train":
-        output_folder = os.path.join(args.output_dir, "train_data", "rec")
-        output_label_txt = os.path.join(output_folder, "rec_gt_train.txt")
-        output_data_folder = os.path.join(output_folder, "train")
-        output_data_relative_folder = os.path.join("train_data", "rec", "train")
-    elif args.format == "test":
-        output_folder = os.path.join(args.output_dir, "train_data", "rec")
-        output_label_txt = os.path.join(output_folder, "rec_gt_test.txt")
-        output_data_folder = os.path.join(output_folder, "test")
-        output_data_relative_folder = os.path.join("train_data", "rec", "test")
+    for format_idx in range(len(args.format_list)):
+        format_path = args.format_list[format_idx]
+        
+        # input list 
+        input_list = []
+        input_path = os.path.join(args.input_dir, format_path)
+        with open(input_path, "r") as f:
+            for line in f:
+                input_list.append(line.strip())
+        
+        # output path
+        output_label_txt = os.path.join(args.output_dir, format_path)
 
-    # mkdir
-    create_folder(output_data_folder)
+        # mkdir
+        create_folder(os.path.dirname(output_label_txt))
 
-    # run
-    with open(output_label_txt, "w") as f:
-        for idx in tqdm(range(len(input_list))):
+        # run
+        with open(output_label_txt, "w") as f:
+            for idx in tqdm(range(len(input_list))):
 
-            input_path = input_list[idx]
-            input_name = os.path.basename(input_path)
-            input_label = str(input_name).split('.jpg')[0].split('_')[-1]
+                input_path = input_list[idx]
+                input_name = os.path.basename(input_path)
+                input_label = str(input_name).split('.jpg')[0].split('_')[-1]
 
-            output_path = os.path.join(output_data_folder, input_name)
-            output_relative_path = os.path.join(output_data_relative_folder, input_name)
-
-            f.write('{}'.format(output_relative_path))
-            f.write("\t")
-            f.write('{}'.format(input_label))
-            f.write("\n")
-
-            shutil.copy(input_path, output_path)
+                f.write('{}'.format(input_path))
+                f.write("\t")
+                f.write('{}'.format(input_label))
+                f.write("\n")
             
 
 if __name__ == "__main__":
@@ -58,11 +47,15 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask/ocr_merge_test/"
-    args.txt_dir = "ImageSets/Main/"
+    args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask/ocr_merge_test_1210/"
+    args.output_dir = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask/paddle_dict/ocr_merge_test_1210/"
 
-    args.output_dir = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask_paddle_ocr"
-    args.format = "train"
+    args.format_list = [
+                        "ImageSets/Main/trainval.txt", 
+                        "ImageSets/Main/train.txt",
+                        "ImageSets/Main/val.txt",
+                        "ImageSets/Main/test.txt",
+                        ]
 
     lpr_to_paddleocr_label(args)
     

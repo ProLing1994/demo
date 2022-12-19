@@ -7,18 +7,25 @@ from tqdm import tqdm
 import sys
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo')
+sys.path.insert(0, '/yuanhuan/code/demo')
 from Image.Basic.utils.folder_tools import *
 
 
 def pad_ratio(img, image_shape):
 
+<<<<<<< HEAD
     img = img[: img.shape[0]//4*4, : img.shape[1]//4*4]
 
     h, w = img.shape[0], img.shape[1]
     imgH, imgW = image_shape
 
     max_wh_ratio = imgW * 1.0 / imgH
+=======
+    imgH, imgW = image_shape
+
+    max_wh_ratio = imgW * 1.0 / imgH
+    h, w = img.shape[0], img.shape[1]
+>>>>>>> 7cb62011b59f6cd7e46b1dd002671d9efee1361a
     ratio = w * 1.0 / h
 
     # pad
