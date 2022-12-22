@@ -4,17 +4,18 @@ import math
 import sys
 import yaml
 
-import paddle
-sys.path.insert(0, '/yuanhuan/code/demo/Image/recognition2d/PaddleOCR')
-from ppocr.data import create_operators, transform
-from ppocr.modeling.architectures import build_model
-from ppocr.postprocess import build_post_process
-from ppocr.utils.save_load import load_model
-from tools.program import load_config, merge_config
+# import paddle
+# sys.path.insert(0, '/yuanhuan/code/demo/Image/recognition2d/PaddleOCR')
+# from ppocr.data import create_operators, transform
+# from ppocr.modeling.architectures import build_model
+# from ppocr.postprocess import build_post_process
+# from ppocr.utils.save_load import load_model
+# from tools.program import load_config, merge_config
 
-# # caffe_root = '/home/huanyuan/code/caffe_ssd-ssd-gpu/'
-# # sys.path.insert(0, caffe_root + 'python')
-# import caffe
+caffe_root = '/home/huanyuan/code/caffe_ssd-ssd/'
+# caffe_root = '/home/huanyuan/code/caffe_ssd-ssd-gpu/'
+sys.path.insert(0, caffe_root + 'python')
+import caffe
 
 
 def greedy_decode( probs, blank_id = 0 ):

@@ -39,8 +39,8 @@ class CaptureApi():
         # self.image_width = 1920
         # self.image_height = 1080
 
-        self.gpu_bool = True
-        # self.gpu_bool=False
+        # self.gpu_bool = True
+        self.gpu_bool=False
 
         # detector
         # ssd
@@ -58,12 +58,21 @@ class CaptureApi():
 
         # yolov6
         self.yolov6_bool = False
-        # pytorch
-        self.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_zd_plate_wmr/yolov6_licenseplate_deploy.py"
-        self.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_zd_plate_wmr/epoch_95_deploy.pth"
-        
+        # yolov6_zd_plate_wmr
+        # self.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_zd_plate_wmr/yolov6_licenseplate_deploy.py"
+        # self.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_zd_plate_wmr/epoch_95_deploy.pth"
+        # self.yolov6_class_name = ['license_plate']
+        # self.yolov6_threshold_list = [0.4]
+        # yolov6_jpf
+        self.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_jpf/yolov6.py"
+        self.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_jpf/epoch_260.pth"
+        self.yolov6_class_name = ['car', 'bus', 'truck', 'car_reg', 'car_big_reg', 'car_front',
+                                'car_big_front', 'person', 'motorcyclist', 'bicyclist',
+                                'sign_upspeed_round', 'sign_upspeed_square', 'sign_stop', 'sign_height',
+                                'light_share0', 'light_share', 'bridge', 'zebra_crossing', 'license_plate']
+        self.yolov6_threshold_list = [0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3]
+
         self.detect_class_name = ['license_plate']
-        self.detect_class_threshold_list = [0.4]
 
         # lpr
         # seg: zd seg_city_cartype_kind_num_zd_0826
@@ -75,7 +84,7 @@ class CaptureApi():
         # # seg: zd seg_city_color_class_zd_1107
         # self.lpr_seg_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1107/LaneNetNovaHeadColorClass_class_15.prototxt"
         # self.lpr_seg_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1107/LaneNetNova_seg_city_color_class_zd_1107.caffemodel"
-        # # seg: zd seg_city_color_class_zd_1117
+        # seg: zd seg_city_color_class_zd_1117
         # self.lpr_seg_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1117/LaneNetNovaHeadColorClass_class_15.prototxt"
         # self.lpr_seg_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1117/LaneNetNova_seg_city_color_class_zd_1117.caffemodel"
         # seg: zd seg_city_color_class_zd_1210
@@ -94,9 +103,15 @@ class CaptureApi():
         # # ocr: zd 1111
         # self.lpr_ocr_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_1111/cnn_256x64_38.prototxt"
         # self.lpr_ocr_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_1111/ocr_zd_mask_1111.caffemodel"
-        # ocr: zd 1120
-        self.lpr_ocr_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_1120/cnn_256x64_38.prototxt"
-        self.lpr_ocr_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_1120/ocr_zd_mask_1120.caffemodel"
+        # # ocr: zd 1120
+        # self.lpr_ocr_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_1120/cnn_256x64_38.prototxt"
+        # self.lpr_ocr_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_1120/ocr_zd_mask_1120.caffemodel"
+        # paddle_ocr: v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_gray_64_320_1215_all
+        # self.lpr_ocr_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_gray_64_320_1215_all/inference/caffe/model-sim.clip.rename.prototxt"
+        # self.lpr_ocr_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_gray_64_320_1215_all/inference/caffe/model-sim.clip.rename.caffemodel"
+        # paddle_ocr: v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_gray_64_320_1215_all
+        self.lpr_ocr_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug/inference/caffe/model-sim.clip.rename.prototxt"
+        self.lpr_ocr_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug/inference/caffe/model-sim.clip.rename.caffemodel"
 
         # lpr params
         self.lpr_ocr_width_expand_ratio = 0.05
@@ -278,7 +293,7 @@ class CaptureApi():
                 self.detector = LPRDetectOpenVINO(self.ssd_plate_model_path)
 
         elif self.yolov6_bool:
-            self.detector = YOLOV6Detector(self.yolov6_config, self.yolov6_checkpoint, class_name=self.detect_class_name, threshold_list=self.detect_class_threshold_list)
+            self.detector = YOLOV6Detector(self.yolov6_config, self.yolov6_checkpoint, class_name=self.yolov6_class_name, threshold_list=self.yolov6_threshold_list, device='cpu')
 
         # tracker
         self.mot_tracker = Sort(max_age=self.max_age, min_hits=self.min_hits, iou_threshold=self.iou_threshold)
@@ -877,7 +892,8 @@ class CaptureApi():
                         capture_lpr_column, capture_lpr_column_frame = Counter(list(lpr_column_np)).most_common(1)[0]
                         
                         if capture_lpr_kind_frame >= self.capture_lpr_kind_frame_threshold and \
-                            capture_lpr_num_frame >= self.capture_lpr_num_frame_threshold:
+                            capture_lpr_num_frame >= self.capture_lpr_num_frame_threshold and \
+                            capture_lpr_num != "none":
                             capture_from_container_list = self.find_capture_plate(bbox_state_idy['id'], capture_lpr_num)
                         
                             # 抓拍车牌
