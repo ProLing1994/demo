@@ -9,7 +9,7 @@ import xml.etree.ElementTree as ET
 
 sys.path.insert(0, '/yuanhuan/code/demo')
 from Image.detection2d.ssd_rfb_crossdatatraining.utils import nms
-from Image.Basic.script.analysis_result.cal_ap import draw_img, check_set_roi, parse_rec, voc_ap
+from Image.detection2d.script.analysis_result.cal_ap import draw_img, check_set_roi, parse_rec, voc_ap
 
 
 def voc_eval(merge_class_name,
