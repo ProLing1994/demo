@@ -194,6 +194,7 @@ class LPROnnx(object):
         self.config_path = config_path
         self.model_path = model_path
         self.gpu_bool = True
+        self.bool_white = True
         # self.img_shape = (3, 64, 256)
         # self.img_shape = (1, 64, 256)
         self.img_shape = (1, 64, 320)
@@ -288,13 +289,15 @@ class LPROnnx(object):
             to_imgW = int(math.ceil(h * max_wh_ratio)) // 4 * 4
             if (to_imgW - w < 32):
                 to_imgW = w + 32
-                pad_img = np.zeros((h, to_imgW, 3), dtype=np.uint8)
-                pad_img[:, 0:w, :] = img  
-                img = pad_img  
+
+            if self.bool_white:
+                pad_img = np.ones((h, to_imgW, 3), dtype=np.uint8)
+                pad_img *= 255
             else:
                 pad_img = np.zeros((h, to_imgW, 3), dtype=np.uint8)
-                pad_img[:, 0:w, :] = img  
-                img = pad_img  
+
+            pad_img[:, 0:w, :] = img  
+            img = pad_img  
         else:
             img = img
 
@@ -339,6 +342,7 @@ class LPRCaffe(object):
         self.prototxt_path = prototxt_path
         self.dict_path = dict_path
         self.gpu_bool = False
+        self.bool_white = True
         # self.img_shape = (3, 64, 256)
         # self.img_shape = (1, 64, 256)
         self.img_shape = (1, 64, 320)
@@ -405,14 +409,15 @@ class LPRCaffe(object):
             to_imgW = int(math.ceil(h * max_wh_ratio)) // 4 * 4
             if (to_imgW - w < 32):
                 to_imgW = w + 32
-                pad_img = np.zeros((h, to_imgW, 3), dtype=np.uint8)
-                pad_img[:, 0:w, :] = img  
-                img = pad_img  
-                # img = img
+
+            if self.bool_white:
+                pad_img = np.ones((h, to_imgW, 3), dtype=np.uint8)
+                pad_img *= 255
             else:
                 pad_img = np.zeros((h, to_imgW, 3), dtype=np.uint8)
-                pad_img[:, 0:w, :] = img  
-                img = pad_img  
+
+            pad_img[:, 0:w, :] = img  
+            img = pad_img  
         else:
             img = img
 
@@ -463,21 +468,26 @@ if __name__ == '__main__':
     # config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_center_rmresize_ratio_gray_64_320_1215_simple/config.yml"
     # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_center_rmresize_ratio_gray_64_320_1215_simple/best_accuracy"
 
-    config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_gray_64_320_1215_all/config.yml"
-    model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_gray_64_320_1215_all/best_accuracy"
-    # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_gray_64_320_1215_all/iter_epoch_500"
+    # config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_gray_64_320_1215_all/config.yml"
+    # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_gray_64_320_1215_all/best_accuracy"
 
     # config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_gray_64_320_1215_all/config.yml"
-    # # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_gray_64_320_1215_all/best_accuracy"
-    # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_gray_64_320_1215_all/iter_epoch_500"
+    # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_gray_64_320_1215_all/best_accuracy"
 
     # config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_center_rmresize_ratio_gray_64_320_1215_all/config.yml"
     # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_center_rmresize_ratio_gray_64_320_1215_all/best_accuracy"
-    # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_center_rmresize_ratio_gray_64_320_1215_all/iter_epoch_200"
 
     # config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_gray_64_320_1215_all_aug/config.yml"
     # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_gray_64_320_1215_all_aug/best_accuracy"
-    # # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_gray_64_320_1215_all_aug/iter_epoch_200"
+
+    # config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_gray_64_320_1215_all_aug/config.yml"
+    # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_gray_64_320_1215_all_aug/best_accuracy"
+
+    config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug/config.yml"
+    model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug/best_accuracy"
+
+    # config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_white_gray_64_320_1220_all_aug/config.yml"
+    # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_white_gray_64_320_1220_all_aug/best_accuracy"
 
     # img_path = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask_paddle_ocr/train_data/rec/test/0000000000000000-220804-131737-131833-00000D000150_26.56_43.63-sn00070-00_none_none_none_Double_J#18886.jpg"
     img_path = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask_paddle_ocr/test/crop.jpg"
@@ -492,8 +502,8 @@ if __name__ == '__main__':
     # ###############################
     # # onnx
     # ###############################
-    # config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_gray_64_320_1214_simple/config.yml"
-    # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_gray_64_320_1214_simple/inference/onnx/model.onnx"
+    # config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug/config.yml"
+    # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug/inference/onnx/model.onnx"
 
     # # img_path = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask_paddle_ocr/train_data/rec/test/0000000000000000-220804-131737-131833-00000D000150_26.56_43.63-sn00070-00_none_none_none_Double_J#18886.jpg"
     # img_path = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask_paddle_ocr/test/crop.jpg"
@@ -508,10 +518,12 @@ if __name__ == '__main__':
     # # caffe
     # ###############################
 
-    # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_gray_64_320_1214_simple/inference/caffe/modified_model-sim-rename.caffemodel"
-    # prototxt_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_gray_64_320_1214_simple/inference/caffe/modified_model-sim-rename.prototxt"
+    # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug/inference/caffe/model-sim.clip.rename.caffemodel"
+    # prototxt_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug/inference/caffe/model-sim.clip.rename.prototxt"
     # dict_path = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/type/zd_dict.txt"
-    # img_path = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask_paddle_ocr/train_data/rec/test/0000000000000000-220804-131737-131833-00000D000150_26.56_43.63-sn00070-00_none_none_none_Double_J#18886.jpg"
+
+    # # img_path = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask_paddle_ocr/train_data/rec/test/0000000000000000-220804-131737-131833-00000D000150_26.56_43.63-sn00070-00_none_none_none_Double_J#18886.jpg"
+    # img_path = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask_paddle_ocr/test/crop.jpg"
 
     # lpr_caffe = LPRCaffe(model_path, prototxt_path, dict_path)
     
