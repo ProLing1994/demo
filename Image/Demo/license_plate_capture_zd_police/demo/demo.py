@@ -186,8 +186,8 @@ def main():
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_白天_后向_0615/截取视频/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_夜晚_后向_0615/00000G000170/截取视频/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_夜晚_后向_0615/00000G000170/截取视频/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_夜晚_后向_0615/00000G000171/截取视频/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_夜晚_后向_0615/00000G000171/截取视频/"
+    args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_夜晚_后向_0615/00000G000171/截取视频/"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_夜晚_后向_0615/00000G000171/截取视频/"
 
     # # zd, car type
     # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/车牌车型/PUBLIC/"
@@ -222,8 +222,8 @@ def main():
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_2M_全_多方向_误报_1024/2022-10-24_18/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_2M_全_多方向_误报_1024/2022-10-24_19/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_2M_全_多方向_误报_1024/2022-10-24_19/"
-    args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_2M_全_多方向_误报_1115/2022-11-15_12_16/"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_2M_全_多方向_误报_1115/2022-11-15_12_16/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_2M_全_多方向_误报_1115/2022-11-15_12_16/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_2M_全_多方向_误报_1115/2022-11-15_12_16/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_2M_全_多方向_误报_1115/2022-11-16_07/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_2M_全_多方向_误报_1115/2022-11-16_07/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_2M_全_多方向_误报_1115/2022-11-16_06/"

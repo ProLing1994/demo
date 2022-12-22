@@ -13,10 +13,19 @@ from Image.Basic.utils.folder_tools import *
 
 def pad_ratio(img, image_shape):
 
+<<<<<<< HEAD
+    img = img[: img.shape[0]//4*4, : img.shape[1]//4*4]
+
+    h, w = img.shape[0], img.shape[1]
+    imgH, imgW = image_shape
+
+    max_wh_ratio = imgW * 1.0 / imgH
+=======
     imgH, imgW = image_shape
 
     max_wh_ratio = imgW * 1.0 / imgH
     h, w = img.shape[0], img.shape[1]
+>>>>>>> 7cb62011b59f6cd7e46b1dd002671d9efee1361a
     ratio = w * 1.0 / h
 
     # pad
@@ -61,8 +70,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask/Images_ocr_merge_test/"
-    args.output_dir = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask/Images_ocr_merge_test_gray/"
+    args.input_dir = "/mnt/huanyuan/model_final/image_model/lpr_zd/ocr_image/"
+    args.output_dir = "/mnt/huanyuan/model_final/image_model/lpr_zd/ocr_image_gray_ratio/"
     args.suffix = '.jpg'
     args.bool_pad = True
     args.image_shape = [64, 256]
