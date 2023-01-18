@@ -38,7 +38,7 @@ def RGBToNV12(image):
 
 
 def test():
-    image_path = "/mnt/huanyuan2/data/image/HY_Tanker/test_video/test/test_side_00000.jpg"
+    # image_path = "/mnt/huanyuan2/data/image/HY_Tanker/test_video/test/test_side_00000.jpg"
     # image_path = "/mnt/huanyuan2/data/image/HY_Tanker/test_video/test/test_side_00010.jpg"
     # image_path = "/mnt/huanyuan2/data/image/HY_Tanker/算法误报_1121/jpg/top/7118000000000000-221117-073418-073438-01p014000000/7118000000000000-221117-073418-073438-01p014000000_00000.jpg"
     # image_path = "/mnt/huanyuan2/data/image/HY_Tanker/算法误报_1121/jpg/top/7118000000000000-221117-073418-073438-01p014000000/7118000000000000-221117-073418-073438-01p014000000_00010.jpg"
@@ -47,8 +47,10 @@ def test():
     # image_path = "/mnt/huanyuan2/data/image/HY_Tanker/算法误报_1121/jpg/side/0927000000000000-221117-073200-073220-01p013000000/0927000000000000-221117-073200-073220-01p013000000_00240.jpg"
     # image_path = "/mnt/huanyuan2/data/image/HY_Tanker/算法误报_1121/jpg/side/0927000000000000-221117-073200-073220-01p013000000/0927000000000000-221117-073200-073220-01p013000000_00250.jpg"
     # image_path = "/mnt/huanyuan2/data/image/HY_Tanker/算法误报_1121/jpg/side/0927000000000000-221117-073200-073220-01p013000000/0927000000000000-221117-073200-073220-01p013000000_00260.jpg"
+    # image_path = "/mnt/huanyuan2/data/image/HY_Tanker/算法误报_1222/jpg/皖AH711800000000-221222-140157-140257-01p013000079/皖AH711800000000-221222-140157-140257-01p013000079_00160.jpg"
+    image_path = "/mnt/huanyuan2/data/image/HY_Tanker/算法误报_20230101/jpg/img_01500.jpg"
 
-    caffe_model = "/home/huanyuan/share/huanyuan/GAF/huanyuan/novt/Tanker/Tanker/tanker_1125.caffemodel"
+    caffe_model = "/home/huanyuan/share/huanyuan/GAF/huanyuan/novt/Tanker/Tanker/tanker_1209.caffemodel"
     prototxt_file = "/home/huanyuan/share/huanyuan/GAF/huanyuan/novt/Tanker/Tanker/deploy.prototxt"
     size = (256, 144)
 
@@ -75,9 +77,9 @@ def test():
     element = cv2.getStructuringElement(cv2.MORPH_RECT, (7, 7))  # 形态学去噪
     output = cv2.morphologyEx(output, cv2.MORPH_OPEN, element)  # 闭运算去噪
 
-    # img_resize[:,:,2][np.where(output == 1)] = 255
-    # output_path = os.path.join("/mnt/huanyuan2/data/image/HY_Tanker/pc/", "caffe_res_{}.jpg".format(os.path.basename(image_path)[:-4]))
-    # cv2.imwrite(output_path, img_resize)
+    img_resize[:,:,2][np.where(output == 1)] = 255
+    output_path = os.path.join("/mnt/huanyuan2/data/image/HY_Tanker/test/", "caffe_{}.jpg".format(os.path.basename(image_path)[:-4]))
+    cv2.imwrite(output_path, img_resize)
 
     contours, hierarchy = cv2.findContours(output.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
@@ -112,17 +114,27 @@ def test():
         top_points = []
         angle_points = []
         for i in range(max_cnt.shape[0]):
-            if(max_cnt[i,0,0] > 5 and max_cnt[i,0,0] < 250 and max_cnt[i,0,1] < 140):  # 移除边界点
+            # if(max_cnt[i,0,0] > 5 and max_cnt[i,0,0] < 250 and max_cnt[i,0,1] < 140):  # 移除边界点
 
-                if ((max_cnt[i, 0, 0])<center[0] and (max_cnt[i, 0, 1])>center[1]):#左下
-                    side_points.append([max_cnt[i, 0, 0],max_cnt[i, 0, 1]])
-                    cv2.circle(img_resize, (max_cnt[i,0,0],max_cnt[i,0,1]), 1, [0, 0, 255], 2)
-                elif ((max_cnt[i, 0, 0])>center[0] and (max_cnt[i, 0, 1])<center[1]):#右上
-                    top_points.append([max_cnt[i, 0, 0],max_cnt[i, 0, 1]])
-                    cv2.circle(img_resize, (max_cnt[i,0,0],max_cnt[i,0,1]), 1, [255, 0, 0], 2)
-                else:
-                    angle_points.append([max_cnt[i, 0, 0],max_cnt[i, 0, 1]])
-                    cv2.circle(img_resize, (max_cnt[i, 0, 0], max_cnt[i, 0, 1]), 1, [0, 255, 0], 2)
+            #     if ((max_cnt[i, 0, 0])<center[0] and (max_cnt[i, 0, 1])>center[1]):#左下
+            #         side_points.append([max_cnt[i, 0, 0],max_cnt[i, 0, 1]])
+            #         cv2.circle(img_resize, (max_cnt[i,0,0],max_cnt[i,0,1]), 1, [0, 0, 255], 2)
+            #     elif ((max_cnt[i, 0, 0])>center[0] and (max_cnt[i, 0, 1])<center[1]):#右上
+            #         top_points.append([max_cnt[i, 0, 0],max_cnt[i, 0, 1]])
+            #         cv2.circle(img_resize, (max_cnt[i,0,0],max_cnt[i,0,1]), 1, [255, 0, 0], 2)
+            #     else:
+            #         angle_points.append([max_cnt[i, 0, 0],max_cnt[i, 0, 1]])
+            #         cv2.circle(img_resize, (max_cnt[i, 0, 0], max_cnt[i, 0, 1]), 1, [0, 255, 0], 2)
+
+            if ((max_cnt[i, 0, 0])<center[0] and (max_cnt[i, 0, 1])>center[1]):#左下
+                side_points.append([max_cnt[i, 0, 0],max_cnt[i, 0, 1]])
+                cv2.circle(img_resize, (max_cnt[i,0,0],max_cnt[i,0,1]), 1, [0, 0, 255], 2)
+            elif ((max_cnt[i, 0, 0])>center[0] and (max_cnt[i, 0, 1])<center[1]):#右上
+                top_points.append([max_cnt[i, 0, 0],max_cnt[i, 0, 1]])
+                cv2.circle(img_resize, (max_cnt[i,0,0],max_cnt[i,0,1]), 1, [255, 0, 0], 2)
+            else:
+                angle_points.append([max_cnt[i, 0, 0],max_cnt[i, 0, 1]])
+                cv2.circle(img_resize, (max_cnt[i, 0, 0], max_cnt[i, 0, 1]), 1, [0, 255, 0], 2)
 
         side_points.sort(key = lambda x:x[1],reverse=True)
         side_points = np.array(side_points)
@@ -184,7 +196,8 @@ def test():
     cv2.circle(img_resize, (far_point[0],far_point[1]), 2, [255, 0, 255], 2)
     cv2.circle(img_resize, (right_point[0],right_point[1]), 2, [255, 0, 255], 2)
 
-    output_path = os.path.join("/mnt/huanyuan2/data/image/HY_Tanker/pc/", "caffe_res_{}.jpg".format(os.path.basename(image_path)[:-4]))
+    # output_path = os.path.join("/mnt/huanyuan2/data/image/HY_Tanker/pc/", "caffe_res_{}.jpg".format(os.path.basename(image_path)[:-4]))
+    output_path = os.path.join("/mnt/huanyuan2/data/image/HY_Tanker/test/", "caffe_res_{}.jpg".format(os.path.basename(image_path)[:-4]))
     cv2.imwrite(output_path, img_resize)
 
 

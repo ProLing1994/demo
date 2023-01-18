@@ -336,12 +336,12 @@ class LPROnnx(object):
 
 class LPRCaffe(object):
     
-    def __init__(self, model_path, prototxt_path, dict_path):
+    def __init__(self, model_path, prototxt_path, dict_path, gpu_bool=False):
 
         self.model_path = model_path
         self.prototxt_path = prototxt_path
         self.dict_path = dict_path
-        self.gpu_bool = False
+        self.gpu_bool = gpu_bool
         self.bool_white = True
         # self.img_shape = (3, 64, 256)
         # self.img_shape = (1, 64, 256)
@@ -483,11 +483,14 @@ if __name__ == '__main__':
     # config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_gray_64_320_1215_all_aug/config.yml"
     # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_gray_64_320_1215_all_aug/best_accuracy"
 
-    config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug/config.yml"
-    model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug/best_accuracy"
+    # config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug/config.yml"
+    # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug/best_accuracy"
 
     # config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_white_gray_64_320_1220_all_aug/config.yml"
     # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_white_gray_64_320_1220_all_aug/best_accuracy"
+
+    config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_end_64_384_1226_all_aug/config.yml"
+    model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_end_64_384_1226_all_aug/best_accuracy"
 
     # img_path = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask_paddle_ocr/train_data/rec/test/0000000000000000-220804-131737-131833-00000D000150_26.56_43.63-sn00070-00_none_none_none_Double_J#18886.jpg"
     img_path = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask_paddle_ocr/test/crop.jpg"

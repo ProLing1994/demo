@@ -6,10 +6,10 @@ import sys
 import random
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
-from Image.Demo.license_plate_capture_zd_police.model.LPR_detect import LPRDetectCaffe, LPRDetectOpenVINO
+from Image.Demo.license_plate_capture_Brazil_police.model.LPR_detect import LPRDetectCaffe, LPRDetectOpenVINO
 from Image.detection2d.mmdetection.demo.detector.yolov6_detector import YOLOV6Detector
-from Image.recognition2d.lpr.infer.lpr_seg_ocr import LPRSegOcrcffe
-from Image.Demo.license_plate_capture_zd_police.sort.mot_sort import Sort
+from Image.recognition2d.lpr.infer.lpr import LPRCaffe, ocr_labels_brazil
+from Image.Demo.license_plate_capture_Brazil_police.sort.mot_sort import Sort
 
 
 class CaptureApi():
@@ -39,8 +39,8 @@ class CaptureApi():
         # self.image_width = 1920
         # self.image_height = 1080
 
-        self.gpu_bool = True
-        # self.gpu_bool = False
+        # self.gpu_bool = True
+        self.gpu_bool = False
 
         # detector
         # ssd
@@ -52,70 +52,55 @@ class CaptureApi():
         self.ssd_plate_prototxt = "/mnt/huanyuan/model_final/image_model/zd_ssd_rfb_wmr/ssd_mbv2_2class/caffe_model/ssd_mobilenetv2_fpn.prototxt"
         self.ssd_plate_model_path = "/mnt/huanyuan/model_final/image_model/zd_ssd_rfb_wmr/ssd_mbv2_2class/caffe_model/ssd_mobilenetv2_0421.caffemodel"
         # openvino
-        # self.ssd_plate_model_path = "/mnt/huanyuan/model_final/image_model/zd_ssd_rfb_wmr/ssd_mbv2_2class/openvino_model/ssd_mobilenetv2_fpn.xml"
+        # self.ssd_plate_model_path = ""
         self.ssd_caffe_bool = True
         self.ssd_openvino_bool = False
+        self.ssd_conf_thres = 0.25
 
         # yolov6
         self.yolov6_bool = False
         # yolov6_zd_plate_wmr
-        # self.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_zd_plate_wmr/yolov6_licenseplate_deploy.py"
-        # self.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_zd_plate_wmr/epoch_95_deploy.pth"
-        # self.yolov6_class_name = ['license_plate']
-        # self.yolov6_threshold_list = [0.4]
-        # yolov6_jpf
-        self.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_jpf/yolov6.py"
-        self.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_jpf/epoch_260.pth"
-        self.yolov6_class_name = ['car', 'bus', 'truck', 'car_reg', 'car_big_reg', 'car_front',
-                                'car_big_front', 'person', 'motorcyclist', 'bicyclist',
-                                'sign_upspeed_round', 'sign_upspeed_square', 'sign_stop', 'sign_height',
-                                'light_share0', 'light_share', 'bridge', 'zebra_crossing', 'license_plate']
-        self.yolov6_threshold_list = [0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3]
+        self.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_zd_plate_wmr/yolov6_licenseplate_deploy.py"
+        self.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_zd_plate_wmr/epoch_95_deploy.pth"
+        self.yolov6_class_name = ['license_plate']
+        self.yolov6_threshold_list = [0.4]
 
         self.detect_class_name = ['license_plate']
 
         # lpr
-        # seg: zd seg_city_cartype_kind_num_zd_0826
-        # self.lpr_seg_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/seg_city_cartype_kind_num_zd_0826/LaneNetNova_class_15.prototxt"
-        # self.lpr_seg_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/seg_city_cartype_kind_num_zd_0826/LaneNetNova_seg_city_cartype_kind_num_zd_0826.caffemodel"
-        # # seg: zd seg_city_cartype_kind_num_zd_1019
-        # self.lpr_seg_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/seg_city_cartype_kind_num_zd_1019/LaneNetNova_class_15.prototxt"
-        # self.lpr_seg_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/seg_city_cartype_kind_num_zd_1019/LaneNetNova_seg_city_cartype_kind_num_zd_1019.caffemodel"
-        # # seg: zd seg_city_color_class_zd_1107
-        # self.lpr_seg_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1107/LaneNetNovaHeadColorClass_class_15.prototxt"
-        # self.lpr_seg_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1107/LaneNetNova_seg_city_color_class_zd_1107.caffemodel"
-        # seg: zd seg_city_color_class_zd_1117
-        # self.lpr_seg_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1117/LaneNetNovaHeadColorClass_class_15.prototxt"
-        # self.lpr_seg_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1117/LaneNetNova_seg_city_color_class_zd_1117.caffemodel"
-        # seg: zd seg_city_color_class_zd_1210
-        # self.lpr_seg_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1210/LaneNetNovaHeadColorClass_class_17.prototxt"
-        # self.lpr_seg_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1210/LaneNetNova_seg_city_color_class_zd_1210.caffemodel"
-        # seg: zd seg_city_color_class_zd_1216
-        self.lpr_seg_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1216/LaneNetNovaHeadColorClass_class_17.prototxt"
-        self.lpr_seg_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1216/LaneNetNova_seg_city_color_class_zd_1216.caffemodel"
+        # ocr: mexico_1201_lxn
+        self.lpr_ocr_brazil_caffe_prototxt = "/mnt/huanyuan/model_final/image_model/lpr_bm_lxn/mexico_1201/cnn_turkey.prototxt"
+        self.lpr_ocr_brazil_caffe_model_path = "/mnt/huanyuan/model_final/image_model/lpr_bm_lxn/mexico_1201/mexico_1201.caffemodel"
+        self.lpr_ocr_brazil_caffe_shape = (256, 32)
 
-        # # ocr: zd 0901
-        # self.lpr_ocr_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_all_UAE_0901/cnn_256x64_38.prototxt"
-        # self.lpr_ocr_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_all_UAE_0901/ocr_zd_mask_UAE_0901.caffemodel"
-        # # ocr: zd 1010
-        # self.lpr_ocr_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_all_UAE_hisi_1010/cnn_256x64_38.prototxt"
-        # self.lpr_ocr_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_all_UAE_hisi_1010/ocr_zd_mask_UAE_hisi_1010.caffemodel"
-        # # ocr: zd 1111
-        # self.lpr_ocr_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_1111/cnn_256x64_38.prototxt"
-        # self.lpr_ocr_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_1111/ocr_zd_mask_1111.caffemodel"
-        # # ocr: zd 1120
-        # self.lpr_ocr_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_1120/cnn_256x64_38.prototxt"
-        # self.lpr_ocr_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_1120/ocr_zd_mask_1120.caffemodel"
-        # paddle_ocr: v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_gray_64_320_1215_all
-        # self.lpr_ocr_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_gray_64_320_1215_all/inference/caffe/model-sim.clip.rename.prototxt"
-        # self.lpr_ocr_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_gray_64_320_1215_all/inference/caffe/model-sim.clip.rename.caffemodel"
-        # paddle_ocr: v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug
-        self.lpr_ocr_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug/inference/caffe/model-sim.clip.rename.prototxt"
-        self.lpr_ocr_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug/inference/caffe/model-sim.clip.rename.caffemodel"
+        # lpr
+        # # ocr_2_line: ocr_brazil_2_line_20230111
+        # self.lpr_ocr_brazil_2_line_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/brazil/ocr_brazil_2_line_20230111/cnn_256x64_38.prototxt"
+        # self.lpr_ocr_brazil_2_line_caffe_model_path = "/mnt/huanyuan/model/image/lpr/brazil/ocr_brazil_2_line_20230111/ocr_brazil_2_line_20230111.caffemodel"
+        # self.lpr_ocr_brazil_2_line_caffe_shape = (256, 64)
+        # # ocr_2_line: ocr_brazil_2_line_20230112
+        # self.lpr_ocr_brazil_2_line_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/brazil/ocr_brazil_2_line_20230112/cnn_256x64_38.prototxt"
+        # self.lpr_ocr_brazil_2_line_caffe_model_path = "/mnt/huanyuan/model/image/lpr/brazil/ocr_brazil_2_line_20230112/ocr_brazil_2_line_20230112.caffemodel"
+        # self.lpr_ocr_brazil_2_line_caffe_shape = (256, 64)
+        # ocr_2_line: ocr_brazil_2_line_20230112
+        self.lpr_ocr_brazil_2_line_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/brazil/ocr_brazil_2_line_256_32_20230116/cnn_turkey.prototxt"
+        self.lpr_ocr_brazil_2_line_caffe_model_path = "/mnt/huanyuan/model/image/lpr/brazil/ocr_brazil_2_line_256_32_20230116/ocr_brazil_2_line_256_32_20230116.caffemodel"
+        self.lpr_ocr_brazil_2_line_caffe_shape = (256, 32)
+        self.lpr_ocr_kind_id_height_thres_list = [0.65, 0.45]
+
+        # lpr first line
+        self.lpr_ocr_brazil_first_line_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/brazil/ocr_brazil_first_line_20230116/cnn_256x64_38.prototxt"
+        self.lpr_ocr_brazil_first_line_caffe_model_path = "/mnt/huanyuan/model/image/lpr/brazil/ocr_brazil_first_line_20230116/ocr_brazil_first_line_20230116.caffemodel"
+        self.lpr_ocr_brazil_first_line_caffe_shape = (256, 64)
+
+        # lpr second line
+        self.lpr_ocr_brazil_second_line_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/brazil/ocr_brazil_second_line_20230116/cnn_256x64_38.prototxt"
+        self.lpr_ocr_brazil_second_line_caffe_model_path = "/mnt/huanyuan/model/image/lpr/brazil/ocr_brazil_second_line_20230116/ocr_brazil_second_line_20230116.caffemodel"
+        self.lpr_ocr_brazil_second_line_caffe_shape = (256, 64)
 
         # lpr params
         self.lpr_ocr_width_expand_ratio = 0.05
-        self.lpr_ocr_column_threshold = 2.5
+        self.lpr_ocr_column_threshold = 2.0
 
         # sort
         self.max_age = 10
@@ -149,31 +134,29 @@ class CaptureApi():
 
         # 车牌长宽阈值
         # 白天
-        # self.plate_signel_height = [35, 960]      # 25 -> 30 - 35
-        # self.plate_signel_width = [0, 1920]
-        # self.plate_double_height = [55, 960]      # 45 -> 50 - 55   
-        # self.plate_double_width = [0, 1920]
-        # 夜间
-        self.plate_signel_height = [55, 960]
+        self.plate_signel_height = [35, 960]      # 25 -> 30 - 35
         self.plate_signel_width = [0, 1920]
-        self.plate_double_height = [75, 960]
+        self.plate_double_height = [55, 960]      # 45 -> 50 - 55   
         self.plate_double_width = [0, 1920]
+        # # 夜间
+        # self.plate_signel_height = [55, 960]
+        # self.plate_signel_width = [0, 1920]
+        # self.plate_double_height = [75, 960]
+        # self.plate_double_width = [0, 1920]
 
         # 抓拍线
         self.capture_line_up_down_ratio = [0.03, 0.5, 0.9, 0.97]
         self.capture_line_left_right_ratio = [0.03, 0.25, 0.75, 0.97]
         self.capture_plate_frame_threshold = 5
-        self.capture_outtime_frame_threshold_01 = 25
+        self.capture_outtime_frame_threshold_single_01 = 25
+        self.capture_outtime_frame_threshold_double_01 = 7
         self.capture_plate_up_down_distance_boundary_threshold = 100
         self.capture_plate_left_right_distance_near_boundary_threshold = 200
         self.capture_plate_left_right_distance_far_boundary_threshold = 400
         self.capture_plate_ocr_score_threshold = 0.8
-        self.capture_lpr_contry_frame_threshold = 3
-        self.capture_lpr_city_frame_threshold = 1
-        self.capture_lpr_car_type_frame_threshold = 3
-        self.capture_lpr_color_frame_threshold = 3
-        self.capture_lpr_kind_frame_threshold = 4
-        self.capture_lpr_num_frame_threshold = 4
+        self.capture_lpr_num_frame_single_threshold = 4
+        self.capture_lpr_kind_frame_double_threshold = 4
+        self.capture_lpr_num_frame_double_threshold = 4
 
         # 上下限阈值 & 左右限阈值
         if self.roi_bool:
@@ -203,12 +186,6 @@ class CaptureApi():
         bbox_info_dict = {}
         bbox_info_dict['id'] = 0                                            # 追踪id
         bbox_info_dict['loc'] = []                                          # 车牌坐标
-        bbox_info_dict['kind_loc'] = [0,0,0,0]                              # 车牌编号坐标
-        bbox_info_dict['num_loc'] = [0,0,0,0]                               # 车牌号码坐标
-        bbox_info_dict['country'] = 'None'                                  # 车牌国家
-        bbox_info_dict['city'] = 'None'                                     # 车牌城市
-        bbox_info_dict['car_type'] = 'None'                                 # 车牌车型
-        bbox_info_dict['color'] = 'None'                                    # 车牌颜色
         bbox_info_dict['kind'] = 'None'                                     # 车牌编号
         bbox_info_dict['num'] = 'None'                                      # 车牌号码
         bbox_info_dict['column'] = 'None'                                   # 车牌单双行
@@ -240,10 +217,6 @@ class CaptureApi():
         bbox_state_dict['left_right_state'] = 'Stop'                        # 车牌状态（左右行）
         bbox_state_dict['left_right_state_frame_num'] = 0                   # 车牌状态（左右行）帧数
         bbox_state_dict['lpr_num'] = 0                                      # 车牌识别帧数
-        bbox_state_dict['lpr_country_list'] = []                            # 车牌国家结果（多帧）
-        bbox_state_dict['lpr_city_list'] = []                               # 车牌城市结果（多帧）
-        bbox_state_dict['lpr_car_type_list'] = []                           # 车牌车型结果（多帧）
-        bbox_state_dict['lpr_color_list'] = []                              # 车牌颜色结果（多帧）
         bbox_state_dict['lpr_kind_list'] = []                               # 车牌编号结果（多帧）
         bbox_state_dict['lpr_num_list'] = []                                # 车牌号码结果（多帧）
         bbox_state_dict['lpr_column_list'] = []                             # 车牌单双行结果（多帧）
@@ -252,7 +225,8 @@ class CaptureApi():
         bbox_state_dict['near_report_flage'] = False                        # 抓拍标志位
         bbox_state_dict['left_report_flage'] = False                        # 抓拍标志位
         bbox_state_dict['right_report_flage'] = False                       # 抓拍标志位
-        bbox_state_dict['outtime_flage_01'] = False                         # 抓拍标志位
+        bbox_state_dict['outtime_flage_single_01'] = False                  # 抓拍标志位
+        bbox_state_dict['outtime_flage_double_01'] = False                  # 抓拍标志位
         
         self.params_dict['bbox_state_container'] = {}                       # 状态信息容器（key: 追踪id, value: bbox_state_dict）
 
@@ -260,6 +234,8 @@ class CaptureApi():
         capture_dict = {}                                                   
         capture_dict['id'] = 0                                              # 抓拍id
         capture_dict['flage'] = ''                                          # 抓拍标志信息
+        capture_dict['num'] = 'None'                                        # 车牌号码结果
+        capture_dict['column'] = 'None'                                     # 车牌单双行
         capture_dict['capture_frame_num'] = 0                               # 抓拍帧数
         capture_dict['capture_bool'] = False                                # 抓拍成功标志
 
@@ -268,11 +244,6 @@ class CaptureApi():
         # capture_res_dict
         capture_res_dict = {}
         capture_res_dict['id'] = 0                                          # 抓拍id
-        capture_res_dict['country'] = 'None'                                # 车牌国家结果
-        capture_res_dict['city'] = 'None'                                   # 车牌城市结果
-        capture_res_dict['car_type'] = 'None'                               # 车牌车型结果
-        capture_res_dict['color'] = 'None'                                  # 车牌颜色结果
-        capture_res_dict['kind'] = 'None'                                   # 车牌编号结果
         capture_res_dict['num'] = 'None'                                    # 车牌号码结果
         capture_res_dict['column'] = 'None'                                 # 车牌单双行
         capture_res_dict['flage'] = ''                                      # 抓拍标志信息
@@ -288,7 +259,7 @@ class CaptureApi():
         # detector
         if self.ssd_bool:
             if self.ssd_caffe_bool:
-                self.detector = LPRDetectCaffe(self.ssd_plate_prototxt, self.ssd_plate_model_path, class_name=self.detect_class_name, gpu_bool=self.gpu_bool)
+                self.detector = LPRDetectCaffe(self.ssd_plate_prototxt, self.ssd_plate_model_path, class_name=self.detect_class_name, gpu_bool=self.gpu_bool, conf_thres=self.ssd_conf_thres)
             elif self.ssd_openvino_bool:
                 self.detector = LPRDetectOpenVINO(self.ssd_plate_model_path)
 
@@ -298,8 +269,13 @@ class CaptureApi():
         # tracker
         self.mot_tracker = Sort(max_age=self.max_age, min_hits=self.min_hits, iou_threshold=self.iou_threshold)
 
-        # lincense plate seg & ocr
-        self.lpr_seg_ocr = LPRSegOcrcffe(self.lpr_seg_zd_caffe_prototxt, self.lpr_seg_zd_caffe_model_path, self.lpr_ocr_zd_caffe_prototxt, self.lpr_ocr_zd_caffe_model_path, gpu_bool=self.gpu_bool)
+        # ocr
+        self.lpr_ocr = LPRCaffe(self.lpr_ocr_brazil_caffe_prototxt, self.lpr_ocr_brazil_caffe_model_path, input_shape=self.lpr_ocr_brazil_caffe_shape, ocr_labels=ocr_labels_brazil, gpu_bool=self.gpu_bool)
+
+        # self.lpr_ocr_2_line = LPRCaffe(self.lpr_ocr_brazil_2_line_caffe_prototxt, self.lpr_ocr_brazil_2_line_caffe_model_path, input_shape=self.lpr_ocr_brazil_2_line_caffe_shape, ocr_labels=ocr_labels_brazil, gpu_bool=self.gpu_bool)
+    
+        self.lpr_ocr_first_line = LPRCaffe(self.lpr_ocr_brazil_first_line_caffe_prototxt, self.lpr_ocr_brazil_first_line_caffe_model_path, input_shape=self.lpr_ocr_brazil_first_line_caffe_shape, ocr_labels=ocr_labels_brazil, gpu_bool=self.gpu_bool)
+        self.lpr_ocr_second_line = LPRCaffe(self.lpr_ocr_brazil_second_line_caffe_prototxt, self.lpr_ocr_brazil_second_line_caffe_model_path, input_shape=self.lpr_ocr_brazil_second_line_caffe_shape, ocr_labels=ocr_labels_brazil, gpu_bool=self.gpu_bool)
 
 
     def clear(self):
@@ -339,8 +315,8 @@ class CaptureApi():
 
         # captute
         self.update_capture_dict()
-        capture_list = self.params_dict['capture_container']
         self.update_capture_state()
+        capture_list = self.params_dict['capture_container']
         capture_res_list = self.params_dict['capture_res_container']
 
         ## capture_line
@@ -403,12 +379,6 @@ class CaptureApi():
             bbox_info_dict = {}
             bbox_info_dict['id'] = 0                                            # 追踪id
             bbox_info_dict['loc'] = []                                          # 车牌坐标
-            bbox_info_dict['kind_loc'] = [0,0,0,0]                              # 车牌编号坐标
-            bbox_info_dict['num_loc'] = [0,0,0,0]                               # 车牌号码坐标
-            bbox_info_dict['country'] = 'None'                                  # 车牌国家
-            bbox_info_dict['city'] = 'None'                                     # 车牌城市
-            bbox_info_dict['car_type'] = 'None'                                 # 车牌车型
-            bbox_info_dict['color'] = 'None'                                    # 车牌颜色
             bbox_info_dict['kind'] = 'None'                                     # 车牌编号
             bbox_info_dict['num'] = 'None'                                      # 车牌号码
             bbox_info_dict['column'] = 'None'                                   # 车牌单双行
@@ -448,39 +418,39 @@ class CaptureApi():
             crop_img = img[y1: y2, x1: x2]
             crop_img_aspect = crop_img.shape[1] / crop_img.shape[0]
 
-            seg_bbox, seg_info, ocr, ocr_score, ocr_ignore = self.lpr_seg_ocr.run(crop_img)
+            # 'Single'
+            if crop_img_aspect > self.lpr_ocr_column_threshold:
+                
+                gray_crop_img = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
 
-            if 'kind' in seg_bbox:
-                bbox_info_idx['kind_loc'][0] = x1 + seg_bbox['kind'][0][0]
-                bbox_info_idx['kind_loc'][1] = y1 + seg_bbox['kind'][0][1]
-                bbox_info_idx['kind_loc'][2] = x1 + seg_bbox['kind'][0][0] + seg_bbox['kind'][0][2]
-                bbox_info_idx['kind_loc'][3] = y1 + seg_bbox['kind'][0][1] + seg_bbox['kind'][0][3]
+                ocr_kind = ""
+                ocr_num, ocr_score = self.lpr_ocr.run(gray_crop_img)
 
-            if 'num' in seg_bbox:
-                bbox_info_idx['num_loc'][0] = x1 + seg_bbox['num'][0][0]
-                bbox_info_idx['num_loc'][1] = y1 + seg_bbox['num'][0][1]
-                bbox_info_idx['num_loc'][2] = x1 + seg_bbox['num'][0][0] + seg_bbox['num'][0][2]
-                bbox_info_idx['num_loc'][3] = y1 + seg_bbox['num'][0][1] + seg_bbox['num'][0][3]
+            # 'Double'
+            else:
+                gray_crop_img = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
+                img_h = gray_crop_img.shape[0]
 
-            bbox_info_idx['country'] = seg_info['country']
-            bbox_info_idx['city'] = seg_info['city']
-            bbox_info_idx['car_type'] = seg_info['car_type']
-            bbox_info_idx['color'] = seg_info['color']
-            bbox_info_idx['kind'] = seg_info['kind']
-            bbox_info_idx['num'] = seg_info['num']
+                # gray_crop_img_kind = gray_crop_img[: int(img_h * self.lpr_ocr_kind_id_height_thres_list[0]), :]
+                # gray_crop_img_id = gray_crop_img[int(img_h * self.lpr_ocr_kind_id_height_thres_list[1]) :, :]
+
+                # ocr_kind, ocr_score_kind = self.lpr_ocr_2_line.run(gray_crop_img_kind)
+                # ocr_id, ocr_score_id = self.lpr_ocr_2_line.run(gray_crop_img_id)
+
+                ocr_kind, ocr_score_kind = self.lpr_ocr_first_line.run(gray_crop_img)
+                ocr_id, ocr_score_id = self.lpr_ocr_second_line.run(gray_crop_img)
+
+                ocr_num = ocr_id
+                ocr_score = ocr_score_kind
+                ocr_score.extend(ocr_score_id)
+
+            bbox_info_idx['kind'] = ocr_kind
+            bbox_info_idx['num'] = ocr_num
+            bbox_info_idx['score'] = np.array(ocr_score).mean() if len(ocr_score) else 0.0
+
             bbox_info_idx['column'] = 'Single' if crop_img_aspect > self.lpr_ocr_column_threshold else 'Double'
             bbox_info_idx['score'] = np.array(ocr_score).mean() if len(ocr_score) else 0.0
-            bbox_info_idx['ignore'] = ocr_ignore
-
-            if seg_info['kind'] == 'kind':
-                kind = ocr.split('#')[0] 
-                if kind != "#":
-                    bbox_info_idx['kind'] = kind
-                
-            if seg_info['num'] == 'num':  
-                num = ocr.split('#')[-1] 
-                if num != "#":
-                    bbox_info_idx['num'] = num
+            bbox_info_idx['ignore'] = False
         
         return bbox_info_list
 
@@ -596,27 +566,15 @@ class CaptureApi():
 
                     if bool_add_lpr:
                         bbox_state_idy['lpr_num'] += 1
-                        bbox_state_idy['lpr_country_list'].append(bbox_info_idx['country'])
-                        bbox_state_idy['lpr_city_list'].append(bbox_info_idx['city'])
-                        bbox_state_idy['lpr_car_type_list'].append(bbox_info_idx['car_type'])
-                        bbox_state_idy['lpr_color_list'].append(bbox_info_idx['color'])
                         bbox_state_idy['lpr_kind_list'].append(bbox_info_idx['kind'])
                         bbox_state_idy['lpr_num_list'].append(bbox_info_idx['num'])
                         bbox_state_idy['lpr_column_list'].append(bbox_info_idx['column'])
                         bbox_state_idy['lpr_score_list'].append(bbox_info_idx['score'])
 
-                        if len( bbox_state_idy['lpr_country_list'] ) > self.lpr_ocr_state_container_length:
-                            bbox_state_idy['lpr_country_list'].pop(0)
-                        if len( bbox_state_idy['lpr_city_list'] ) > self.lpr_city_state_container_length:
-                            bbox_state_idy['lpr_city_list'].pop(0)
-                        if len( bbox_state_idy['lpr_car_type_list'] ) > self.lpr_city_state_container_length:
-                            bbox_state_idy['lpr_car_type_list'].pop(0)
-                        if len( bbox_state_idy['lpr_color_list'] ) > self.lpr_city_state_container_length:
-                            bbox_state_idy['lpr_color_list'].pop(0)
-                        if len( bbox_state_idy['lpr_kind_list'] ) > self.lpr_ocr_state_container_length:
-                            bbox_state_idy['lpr_kind_list'].pop(0)
                         if len( bbox_state_idy['lpr_num_list'] ) > self.lpr_ocr_state_container_length:
                             bbox_state_idy['lpr_num_list'].pop(0)
+                        if len( bbox_state_idy['lpr_kind_list'] ) > self.lpr_ocr_state_container_length:
+                            bbox_state_idy['lpr_kind_list'].pop(0)
                         if len( bbox_state_idy['lpr_column_list'] ) > self.lpr_ocr_state_container_length:
                             bbox_state_idy['lpr_column_list'].pop(0)
                         if len( bbox_state_idy['lpr_score_list'] ) > self.lpr_ocr_state_container_length:
@@ -649,10 +607,6 @@ class CaptureApi():
                 bbox_state_dict['left_right_state'] = 'Stop'                        # 车牌状态（左右行）
                 bbox_state_dict['left_right_state_frame_num'] = 0                   # 车牌状态（左右行）帧数
                 bbox_state_dict['lpr_num'] = 0                                      # 车牌识别帧数
-                bbox_state_dict['lpr_country_list'] = []                            # 车牌国家结果（多帧）
-                bbox_state_dict['lpr_city_list'] = []                               # 车牌城市结果（多帧）
-                bbox_state_dict['lpr_car_type_list'] = []                           # 车牌车型结果（多帧）
-                bbox_state_dict['lpr_color_list'] = []                              # 车牌颜色结果（多帧）
                 bbox_state_dict['lpr_kind_list'] = []                               # 车牌编号结果（多帧）
                 bbox_state_dict['lpr_num_list'] = []                                # 车牌号码结果（多帧）
                 bbox_state_dict['lpr_column_list'] = []                             # 车牌单双行结果（多帧）
@@ -661,7 +615,8 @@ class CaptureApi():
                 bbox_state_dict['near_report_flage'] = False                        # 抓拍标志位
                 bbox_state_dict['left_report_flage'] = False                        # 抓拍标志位
                 bbox_state_dict['right_report_flage'] = False                       # 抓拍标志位
-                bbox_state_dict['outtime_flage_01'] = False                         # 抓拍标志位
+                bbox_state_dict['outtime_flage_single_01'] = False                  # 抓拍标志位
+                bbox_state_dict['outtime_flage_double_01'] = False                  # 抓拍标志位
 
                 bbox_state_dict['id'] = bbox_info_idx['id']
                 bbox_state_dict['loc'] = bbox_info_idx['loc']
@@ -695,10 +650,6 @@ class CaptureApi():
 
                 if bool_add_lpr:
                     bbox_state_dict['lpr_num'] += 1
-                    bbox_state_dict['lpr_country_list'].append(bbox_info_idx['country'])
-                    bbox_state_dict['lpr_city_list'].append(bbox_info_idx['city'])
-                    bbox_state_dict['lpr_car_type_list'].append(bbox_info_idx['car_type'])
-                    bbox_state_dict['lpr_color_list'].append(bbox_info_idx['color'])
                     bbox_state_dict['lpr_kind_list'].append(bbox_info_idx['kind'])
                     bbox_state_dict['lpr_num_list'].append(bbox_info_idx['num'])
                     bbox_state_dict['lpr_column_list'].append(bbox_info_idx['column'])
@@ -748,7 +699,8 @@ class CaptureApi():
             far_flage = False
             left_flage = False
             right_flage = False
-            outtime_flage_01 = False
+            outtime_flage_single_01 = False
+            outtime_flage_double_01 = False
             report_flage = False
 
             loc_center_x = (bbox_state_idy['loc'][0] + bbox_state_idy['loc'][2]) / 2.0
@@ -785,13 +737,20 @@ class CaptureApi():
                     right_flage = True
 
             # 如果车辆在视野内，超过 25 帧
-            if bbox_state_idy['lpr_num'] >= self.capture_outtime_frame_threshold_01:
-                outtime_flage_01 = True
+            if bbox_state_idy['lpr_num'] > self.capture_outtime_frame_threshold_single_01:
+                outtime_flage_single_01 = True
+
+            # 如果摩托车在视野内，超过 7 帧
+            if bbox_state_idy['lpr_num'] > self.capture_outtime_frame_threshold_double_01 and \
+                sum(np.array(bbox_state_idy['lpr_column_list'])== 'Double') >= int(self.capture_outtime_frame_threshold_double_01 / 2.0) :
+                outtime_flage_double_01 = True
 
             # 更新 capture_dict 抓拍字典
             capture_dict = {}                                                   # 抓拍
             capture_dict['id'] = bbox_state_idy['id']                           # 抓拍id
             capture_dict['flage'] = ''                                          # 抓拍标志信息
+            capture_dict['num'] = 'None'                                        # 车牌号码结果
+            capture_dict['column'] = 'None'                                     # 车牌单双行
             capture_dict['capture_frame_num'] = 0                               # 抓拍帧数
             capture_dict['capture_bool'] = False                                # 抓拍成功标志
 
@@ -815,10 +774,15 @@ class CaptureApi():
                 report_flage = True
                 capture_dict['flage'] = 'right_flage'
 
-            if outtime_flage_01 and not bbox_state_idy['outtime_flage_01']:
-                bbox_state_idy['outtime_flage_01'] = True
+            if outtime_flage_single_01 and not bbox_state_idy['outtime_flage_single_01']:
+                bbox_state_idy['outtime_flage_single_01'] = True
                 report_flage = True
-                capture_dict['flage'] = 'outtime_flage_01'
+                capture_dict['flage'] = 'outtime_flage_single_01'
+
+            if outtime_flage_double_01 and not bbox_state_idy['outtime_flage_double_01']:
+                bbox_state_idy['outtime_flage_double_01'] = True
+                report_flage = True
+                capture_dict['flage'] = 'outtime_flage_double_01'
 
             if report_flage:
 
@@ -856,11 +820,6 @@ class CaptureApi():
             # capture_res_dict
             capture_res_dict = {}
             capture_res_dict['id'] = 0                                          # 抓拍id
-            capture_res_dict['country'] = 'None'                                # 车牌国家结果
-            capture_res_dict['city'] = 'None'                                   # 车牌城市结果
-            capture_res_dict['car_type'] = 'None'                               # 车牌车型结果
-            capture_res_dict['color'] = 'None'                                  # 车牌颜色结果
-            capture_res_dict['kind'] = 'None'                                   # 车牌编号结果
             capture_res_dict['num'] = 'None'                                    # 车牌号码结果
             capture_res_dict['column'] = 'None'                                 # 车牌单双行
             capture_res_dict['flage'] = ''                                      # 抓拍标志信息
@@ -871,15 +830,7 @@ class CaptureApi():
             for _, bbox_state_idy in self.params_dict['bbox_state_container'].items():
 
                 if bbox_state_idy['id'] == capture_id_idx:
-
-                    lpr_country_np = np.array(bbox_state_idy['lpr_country_list'])
-                    lpr_country_np = lpr_country_np[lpr_country_np != "None"]
-                    lpr_city_np = np.array(bbox_state_idy['lpr_city_list'])
-                    lpr_city_np = lpr_city_np[lpr_city_np != "None"]
-                    lpr_car_type_np = np.array(bbox_state_idy['lpr_car_type_list'])
-                    lpr_car_type_np = lpr_car_type_np[lpr_car_type_np != "None"]
-                    lpr_color_np = np.array(bbox_state_idy['lpr_color_list'])
-                    lpr_color_np = lpr_color_np[lpr_color_np != "None"]
+                    
                     lpr_kind_np = np.array(bbox_state_idy['lpr_kind_list'])
                     lpr_num_np = np.array(bbox_state_idy['lpr_num_list'])
                     lpr_column_np = np.array(bbox_state_idy['lpr_column_list'])
@@ -891,62 +842,48 @@ class CaptureApi():
                         capture_lpr_num, capture_lpr_num_frame = Counter(list(lpr_num_np[lpr_score_np > self.capture_plate_ocr_score_threshold])).most_common(1)[0]
                         capture_lpr_column, capture_lpr_column_frame = Counter(list(lpr_column_np)).most_common(1)[0]
                         
-                        if capture_lpr_kind_frame >= self.capture_lpr_kind_frame_threshold and \
-                            capture_lpr_num_frame >= self.capture_lpr_num_frame_threshold and \
-                            capture_lpr_num != "none":
-                            capture_from_container_list = self.find_capture_plate(bbox_state_idy['id'], capture_lpr_num)
+                        # 普通车牌抓拍
+                        if capture_lpr_column == 'Single':
+                            if capture_lpr_num_frame >= self.capture_lpr_num_frame_single_threshold and \
+                                capture_lpr_num != "none":
+                                capture_from_container_list = self.find_capture_plate(bbox_state_idy['id'], capture_lpr_num)
+                            
+                                # 抓拍车牌
+                                if len(capture_from_container_list):
+
+                                    capture_dict_idy['capture_bool'] = True
+                                    capture_res_dict['id'] = capture_id_idx
+                                        
+                                    capture_res_dict['num'] = capture_lpr_num
+                                    capture_res_dict['column'] = capture_lpr_column
+                                    capture_res_dict['flage'] = capture_dict_idy['flage']
+                                    capture_res_dict['img_bbox_info_list'] = capture_from_container_list
                         
-                            # 抓拍车牌
-                            if len(capture_from_container_list):
+                        # 摩托车牌抓拍
+                        else:
+                            if capture_lpr_kind_frame >= self.capture_lpr_kind_frame_double_threshold and \
+                                capture_lpr_num_frame >= self.capture_lpr_num_frame_double_threshold and \
+                                capture_lpr_num != "none" and \
+                                len(capture_lpr_kind) == 3 and len(capture_lpr_num) == 4:
+                                capture_from_container_list = self.find_capture_plate(bbox_state_idy['id'], capture_lpr_num)
+                            
+                                # 抓拍车牌
+                                if len(capture_from_container_list):
 
-                                capture_dict_idy['capture_bool'] = True
-                                capture_res_dict['id'] = capture_id_idx
+                                    capture_dict_idy['capture_bool'] = True
+                                    capture_res_dict['id'] = capture_id_idx
+                                        
+                                    capture_res_dict['num'] = capture_lpr_kind + capture_lpr_num
+                                    capture_res_dict['column'] = capture_lpr_column
+                                    capture_res_dict['flage'] = capture_dict_idy['flage']
+                                    capture_res_dict['img_bbox_info_list'] = capture_from_container_list                        
 
-                                if lpr_country_np.shape[0]:
-                                    capture_lpr_country, capture_lpr_country_frame = Counter(list(lpr_country_np)).most_common(1)[0]
-                                    if capture_lpr_country_frame >= self.capture_lpr_contry_frame_threshold:
-                                        capture_res_dict['country'] = capture_lpr_country
-                                    else:
-                                        capture_res_dict['country'] = "None"
-                                else:
-                                    capture_res_dict['country'] = "None"
-                                
-                                if lpr_city_np.shape[0]:
-                                    capture_lpr_city, capture_lpr_city_frame = Counter(list(lpr_city_np)).most_common(1)[0]
-                                    if capture_lpr_city_frame >= self.capture_lpr_city_frame_threshold:
-                                        capture_res_dict['city'] = capture_lpr_city
-                                    else:
-                                        capture_res_dict['city'] = "None"
-                                else:
-                                    capture_res_dict['city'] = "None"
-                                
-                                if lpr_car_type_np.shape[0]:
-                                    capture_lpr_car_type, capture_lpr_car_type_frame = Counter(list(lpr_car_type_np)).most_common(1)[0]
-                                    if capture_lpr_car_type_frame >= self.capture_lpr_car_type_frame_threshold:
-                                        capture_res_dict['car_type'] = capture_lpr_car_type
-                                    else:
-                                        capture_res_dict['car_type'] = "None"
-                                else:
-                                    capture_res_dict['car_type'] = "None"
-                                    
-                                if lpr_color_np.shape[0]:
-                                    capture_lpr_color, capture_lpr_color_frame = Counter(list(lpr_color_np)).most_common(1)[0]
-                                    if capture_lpr_color_frame >= self.capture_lpr_color_frame_threshold:
-                                        capture_res_dict['color'] = capture_lpr_color
-                                    else:
-                                        capture_res_dict['color'] = "None"
-                                else:
-                                    capture_res_dict['color'] = "None"
+                        # 信息同步
+                        if capture_res_dict['num'] not in self.params_dict['capture_res_container']:
 
-                                capture_res_dict['kind'] = capture_lpr_kind
-                                capture_res_dict['num'] = capture_lpr_num
-                                capture_res_dict['column'] = capture_lpr_column
-                                capture_res_dict['flage'] = capture_dict_idy['flage']
-                                capture_res_dict['img_bbox_info_list'] = capture_from_container_list
-
-                                if capture_res_dict['num'] not in self.params_dict['capture_res_container']:
-    
-                                    self.params_dict['capture_res_container'][capture_res_dict['num']] = capture_res_dict
+                            capture_dict_idy['num'] = capture_res_dict['num']
+                            capture_dict_idy['column'] = capture_res_dict['column']
+                            self.params_dict['capture_res_container'][capture_res_dict['num']] = capture_res_dict
 
         return 
 

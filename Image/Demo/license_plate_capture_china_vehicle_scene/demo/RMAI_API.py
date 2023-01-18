@@ -6,6 +6,7 @@ import random
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
+from Image.detection2d.mmdetection.demo.detector.yolov6_detector import YOLOV6Detector
 from Image.recognition2d.lpr.infer.lpr import LPRCaffe
 from Image.Demo.license_plate_capture_china_vehicle_scene.sort.mot_sort import Sort
 
@@ -49,6 +50,10 @@ class CaptureApi():
         # self.image_width = 1280
         # self.image_height = 720
 
+        # detector
+        self.ssd_bool = False
+        self.ssd_caffe_bool = False
+        self.ssd_openvino_bool = False
         # # 2022-05-27-00
         # # pytorch 
         # self.ssd_car_plate_prototxt = None
@@ -79,11 +84,19 @@ class CaptureApi():
         # # self.ssd_car_plate_prototxt = None
         # # self.ssd_car_plate_model_path = ""
 
-        self.ssd_caffe_bool = False
-        self.ssd_openvino_bool = False
+        # yolov6_jpf
+        self.yolov6_bool = True
+        self.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_jpf/yolov6.py"
+        self.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_jpf/epoch_260.pth"
+        self.yolov6_class_name = ['car', 'bus', 'truck', 'car_reg', 'car_big_reg', 'car_front',
+                                'car_big_front', 'person', 'motorcyclist', 'bicyclist',
+                                'sign_upspeed_round', 'sign_upspeed_square', 'sign_stop', 'sign_height',
+                                'light_share0', 'light_share', 'bridge', 'zebra_crossing', 'license_plate']
+        self.yolov6_threshold_list = [0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3]
 
         # 是否将 car\bus\truck 合并为一类输出
-        self.merge_class_bool = True
+        # self.merge_class_bool = True
+        self.merge_class_bool = False
         self.merge_class_name = 'car_bus_truck'
         self.car_attri_name_list = [ 'car', 'bus', 'truck' ]
         self.license_plate_name = 'license_plate'
@@ -217,7 +230,10 @@ class CaptureApi():
 
     def model_init(self):
         # detector
-        self.detector = SSDDetector(prototxt=self.ssd_car_plate_prototxt, model_path=self.ssd_car_plate_model_path, ssd_caffe_bool=self.ssd_caffe_bool, ssd_openvino_bool=self.ssd_openvino_bool, merge_class_bool=self.merge_class_bool)
+        if self.ssd_bool:
+            self.detector = SSDDetector(prototxt=self.ssd_car_plate_prototxt, model_path=self.ssd_car_plate_model_path, ssd_caffe_bool=self.ssd_caffe_bool, ssd_openvino_bool=self.ssd_openvino_bool, merge_class_bool=self.merge_class_bool)
+        elif self.yolov6_bool:
+            self.detector = YOLOV6Detector(self.yolov6_config, self.yolov6_checkpoint, class_name=self.yolov6_class_name, threshold_list=self.yolov6_threshold_list, device='cpu')
 
         # tracker
         self.mot_tracker = Sort(max_age=self.max_age, min_hits=self.min_hits, iou_threshold=self.iou_threshold)
