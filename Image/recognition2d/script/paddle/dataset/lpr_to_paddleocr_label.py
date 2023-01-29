@@ -18,6 +18,9 @@ def lpr_to_paddleocr_label(args):
         # input list 
         input_list = []
         input_path = os.path.join(args.input_dir, format_path)
+        print(args.input_dir)
+        print(format_path)
+        print(input_path)
         with open(input_path, "r") as f:
             for line in f:
                 input_list.append(line.strip())
@@ -45,10 +48,11 @@ def lpr_to_paddleocr_label(args):
 if __name__ == "__main__":
     
     parser = argparse.ArgumentParser()
+    parser.add_argument('--input_dir', type=str, default="/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask_202301/") 
+    parser.add_argument('--output_dir', type=str, default="/yuanhuan/model/image/lpr/paddle_dict/plate_zd_mask_202301/") 
     args = parser.parse_args()
 
-    args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask/ocr_merge_test_1210/"
-    args.output_dir = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask/paddle_dict/ocr_merge_test_1210/"
+    args.input_dir = os.path.join(args.input_dir, "ImageSets")
 
     args.format_list = [
                         "ImageSets/Main/trainval.txt", 
