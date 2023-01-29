@@ -4,17 +4,18 @@ import math
 import sys
 import yaml
 
-import paddle
-sys.path.insert(0, '/yuanhuan/code/demo/Image/recognition2d/PaddleOCR')
-from ppocr.data import create_operators, transform
-from ppocr.modeling.architectures import build_model
-from ppocr.postprocess import build_post_process
-from ppocr.utils.save_load import load_model
-from tools.program import load_config, merge_config
+# import paddle
+# sys.path.insert(0, '/yuanhuan/code/demo/Image/recognition2d/PaddleOCR')
+# from ppocr.data import create_operators, transform
+# from ppocr.modeling.architectures import build_model
+# from ppocr.postprocess import build_post_process
+# from ppocr.utils.save_load import load_model
+# from tools.program import load_config, merge_config
 
-# # caffe_root = '/home/huanyuan/code/caffe_ssd-ssd-gpu/'
-# # sys.path.insert(0, caffe_root + 'python')
-# import caffe
+caffe_root = '/home/huanyuan/code/caffe_ssd-ssd/'
+# caffe_root = '/home/huanyuan/code/caffe_ssd-ssd-gpu/'
+sys.path.insert(0, caffe_root + 'python')
+import caffe
 
 
 def greedy_decode( probs, blank_id = 0 ):
@@ -335,12 +336,12 @@ class LPROnnx(object):
 
 class LPRCaffe(object):
     
-    def __init__(self, model_path, prototxt_path, dict_path):
+    def __init__(self, model_path, prototxt_path, dict_path, gpu_bool=False):
 
         self.model_path = model_path
         self.prototxt_path = prototxt_path
         self.dict_path = dict_path
-        self.gpu_bool = False
+        self.gpu_bool = gpu_bool
         self.bool_white = True
         # self.img_shape = (3, 64, 256)
         # self.img_shape = (1, 64, 256)
@@ -488,8 +489,11 @@ if __name__ == '__main__':
     # # config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_white_gray_64_320_1220_all_aug/config.yml"
     # # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_white_gray_64_320_1220_all_aug/best_accuracy"
 
-    # # config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_end_64_320_1222_all_aug/config.yml"
-    # # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_end_64_320_1222_all_aug/best_accuracy"
+    config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_end_64_384_1226_all_aug/config.yml"
+    model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_end_64_384_1226_all_aug/best_accuracy"
+
+    # img_path = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask_paddle_ocr/train_data/rec/test/0000000000000000-220804-131737-131833-00000D000150_26.56_43.63-sn00070-00_none_none_none_Double_J#18886.jpg"
+    img_path = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask_paddle_ocr/test/crop.jpg"
 
     # # config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_white_gray_end_64_320_1220_all_aug/config.yml"
     # # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_white_gray_end_64_320_1220_all_aug/best_accuracy"

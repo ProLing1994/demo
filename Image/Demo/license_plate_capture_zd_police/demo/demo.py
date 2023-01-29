@@ -9,7 +9,7 @@ from tqdm import tqdm
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.Basic.utils.folder_tools import *
 from Image.Demo.license_plate_capture_zd_police.demo.RMAI_API import *
-from Image.Demo.license_plate_capture_zd_police.utils.draw_tools import draw_bbox_info, draw_bbox_state, draw_capture_line
+from Image.Demo.license_plate_capture_zd_police.utils.draw_tools import draw_bbox_info, draw_bbox_state, draw_capture_line, draw_bbox_info_result_jpg
 
 
 def inference_video(args):
@@ -80,6 +80,14 @@ def inference_video(args):
                 output_img_path = os.path.join(args.output_video_dir, video_list[idx].replace(args.suffix, ''), video_list[idx].replace(args.suffix, '_{}.jpg'.format(frame_idx)))
                 create_folder(os.path.dirname(output_img_path))
                 cv2.imwrite(output_img_path, img)
+
+            # 是否保存预测结果图像
+            if args.write_result_jpg_bool:
+                result_jpg_img = np.zeros((100, 1000, 3))
+                result_jpg_img = draw_bbox_info_result_jpg(result_jpg_img, bbox_info_list)
+
+                output_img_path = os.path.join(args.output_video_dir, video_list[idx].replace(args.suffix, ''), video_list[idx].replace(args.suffix, '_{}_res.jpg'.format(frame_idx)))
+                cv2.imwrite(output_img_path, result_jpg_img)
 
             # 是否保存视频结果
             if args.write_result_video_bool:
@@ -180,14 +188,14 @@ def main():
     # zd, ZD_DUBAI
     # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_白天_侧向_0615/截取视频/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_白天_侧向_0615/截取视频/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_夜晚_侧向_0615/截取视频/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_夜晚_侧向_0615/截取视频/"
+    args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_夜晚_侧向_0615/截取视频/"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_夜晚_侧向_0615/截取视频/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_白天_后向_0615/截取视频/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_白天_后向_0615/截取视频/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_夜晚_后向_0615/00000G000170/截取视频/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_夜晚_后向_0615/00000G000170/截取视频/"
-    args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_夜晚_后向_0615/00000G000171/截取视频/"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_夜晚_后向_0615/00000G000171/截取视频/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_夜晚_后向_0615/00000G000171/截取视频/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_夜晚_后向_0615/00000G000171/截取视频/"
 
     # # zd, car type
     # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/车牌车型/PUBLIC/"
@@ -230,6 +238,8 @@ def main():
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_2M_全_多方向_误报_1115/2022-11-16_06/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/5M_2M_全_多方向_误报_1115/2022-11-16_00_01/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_2M_全_多方向_误报_1115/2022-11-16_00_01/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_DUBAI/avi文件/test"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/test/"
 
     args.suffix = '.avi'
     # args.suffix = '.mp4'
@@ -245,6 +255,8 @@ def main():
     args.write_csv_bool = True
     # 是否保存原始图像
     args.write_ori_jpg_bool = False
+    # 是否保存预测结果图像
+    args.write_result_jpg_bool = False
 
     inference_video(args)
 

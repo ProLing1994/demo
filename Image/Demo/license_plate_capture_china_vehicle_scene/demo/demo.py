@@ -140,15 +140,15 @@ def main():
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_12mm_0702_白_前/" 
     # args.video_dir = "/mnt/huanyuan2/data/image/ZG_HCZP/test_video/avi视频/5M_12mm_0707_白_前/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_12mm_0707_白_前/" 
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZG_HCZP/test_video/avi视频/5M_12mm_0713_白_前/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_12mm_0713_白_前/"
+    args.video_dir = "/mnt/huanyuan2/data/image/ZG_HCZP/test_video/avi视频/5M_12mm_0713_白_前/"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_12mm_0713_白_前/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZG_HCZP/test_video/avi视频/5M_12mm_0723_白_前/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_12mm_0723_白_前/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZG_HCZP/test_video/avi视频/test/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test/"
 
-    args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/BM_Brazil/test/"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZG_GDZP/test_video/BM_Brazil/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/BM_Brazil/test/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZG_GDZP/test_video/BM_Brazil/"
     
     args.suffix = '.avi'
     # args.suffix = '.mp4'

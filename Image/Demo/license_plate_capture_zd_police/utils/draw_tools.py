@@ -68,6 +68,19 @@ def draw_bbox_info(img, bbox_info, capture_list=None, mode='xywh'):
     return img
 
 
+def draw_bbox_info_result_jpg(img, bbox_info):
+
+    if len(bbox_info):
+        idx = 0
+        bbox_info_idx = bbox_info[idx]
+
+        img = cv2.putText(img, "{}_{}_{}_{}_{}_{}_{}_{:.2f}".format( bbox_info_idx['country'], bbox_info_idx['city'], bbox_info_idx['car_type'], bbox_info_idx['color'], bbox_info_idx['column'], bbox_info_idx['kind'], bbox_info_idx['num'], bbox_info_idx['score'] ), \
+                            (0, 50), 
+                            cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 2)
+
+    return img
+
+
 def draw_bbox_state(img, bbox_state_map):
     
     for key, bbox_state_idy in bbox_state_map.items():
