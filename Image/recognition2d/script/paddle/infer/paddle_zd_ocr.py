@@ -62,9 +62,10 @@ def model_test(args, from_jpg_dir=False, bool_onnx=False, bool_caffe=False):
         results_dict['label'] = img_name.replace('.jpg', '').split('_')[-1]
         results_dict['ocr'] = ocr
         results_dict['ocr_score'] = np.array(ocr_score).mean()
-        results_dict['res'] = int( results_dict['label'] == results_dict['ocr'] )
+        # results_dict['res'] = int( results_dict['label'] == results_dict['ocr'] )
+        results_dict['res'] = int( results_dict['label'] == results_dict['ocr'].replace('@', '') )
 
-        tqdm_write = '{} {} {}'.format( results_dict['label'], results_dict['ocr'], int( results_dict['label'] == results_dict['ocr'] ) )
+        tqdm_write = '{} {} {}'.format( results_dict['label'], results_dict['ocr'], results_dict['res'] )
         tqdm.write(tqdm_write)
 
         results_list.append(results_dict)
@@ -195,22 +196,46 @@ if __name__ == '__main__':
     # args.config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_gray_64_320_1215_all_aug/config.yml"
     # args.model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_gray_64_320_1215_all_aug/best_accuracy"
     # args.output_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_gray_64_320_1215_all_aug/best_accuracy/
-    
-    args.config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug/config.yml"
-    args.model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug/best_accuracy"
-    args.output_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug/best_accuracy/"
 
-    # ocr_merge_test
+    # args.config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_gray_64_320_1215_all_aug/config.yml"
+    # args.model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_gray_64_320_1215_all_aug/best_accuracy"
+    # args.output_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_gray_64_320_1215_all_aug/best_accuracy/"
+    
+    # args.config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug/config.yml"
+    # args.model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug/best_accuracy"
+    # args.output_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug/best_accuracy/"
+
+    # args.config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_white_gray_64_320_1220_all_aug/config.yml"
+    # args.model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_white_gray_64_320_1220_all_aug/best_accuracy"
+    # args.output_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_white_gray_64_320_1220_all_aug/best_accuracy/"
+
+    # args.config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_end_64_320_1222_all_aug/config.yml"
+    # args.model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_end_64_320_1222_all_aug/best_accuracy"
+    # args.output_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_end_64_320_1222_all_aug/best_accuracy/"
+
+    # args.config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_white_gray_end_64_320_1220_all_aug/config.yml"
+    # args.model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_white_gray_end_64_320_1220_all_aug/best_accuracy"
+    # args.output_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_white_gray_end_64_320_1220_all_aug/best_accuracy/"
+
+    # args.config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_end_64_384_1226_all_aug/config.yml"
+    # args.model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_end_64_384_1226_all_aug/best_accuracy"
+    # args.output_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_end_64_384_1226_all_aug/best_accuracy/"
+
+    args.config_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_white_gray_end_64_384_1220_all_aug/config.yml"
+    args.model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_white_gray_end_64_384_1220_all_aug/best_accuracy"
+    args.output_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_gtc_rmresize_ratio_white_gray_end_64_384_1220_all_aug/best_accuracy/"
+
+    # # ocr_merge_test
     # args.img_list = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask/ocr_merge_test/ImageSets/Main/test.txt"
     # args.output_csv_path = os.path.join(args.output_dir, 'test/ocr_merge_test_result.csv')
-    args.img_list = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask/data_crop_1024_1029/ImageSets/Main/trainval.txt"
-    args.output_csv_path = os.path.join(args.output_dir, 'trainval_1024_1029/ocr_merge_test_result.csv')
-    model_test(args)
+    # # args.img_list = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask/data_crop_1024_1029/ImageSets/Main/trainval.txt"
+    # # args.output_csv_path = os.path.join(args.output_dir, 'trainval_1024_1029/ocr_merge_test_result.csv')
+    # model_test(args)
 
     # from_jpg_dir
-    # args.input_jpg_path = "/yuanhuan/data/image/ZD_anpr/test_video/ZD_DUBAI/jpg文件/特殊车牌_crop/豹子号"
-    # args.output_csv_path = os.path.join(args.output_dir, 'test/data_synthesis_baozihao_result.csv')
-    # model_test(args, from_jpg_dir=True)
+    args.input_jpg_path = "/yuanhuan/data/image/ZD_anpr/test_video/ZD_DUBAI/jpg文件/特殊车牌_crop/豹子号"
+    args.output_csv_path = os.path.join(args.output_dir, 'test/data_synthesis_baozihao_result.csv')
+    model_test(args, from_jpg_dir=True)
 
     # ###############################
     # # onnx

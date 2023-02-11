@@ -33,10 +33,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask/"
-    args.test_file = args.input_dir + "ocr_merge_test/ImageSets/Main/test.txt"
+    args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_brazil/"
+    args.test_file = args.input_dir + "/ImageSetsNoAug/ImageSets/Main/test.txt"
 
     args.jpg_dir =  args.input_dir + "Images/"
-    args.jpg_output_dir =  args.input_dir + "Images_ocr_merge_test/"
+    args.jpg_output_dir =  args.input_dir + "Images_ocr_test/"
 
     copy_dataset(args)

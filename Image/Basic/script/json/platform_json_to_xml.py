@@ -33,7 +33,9 @@ def platform_json_2_xml(args):
         # jpg
         jpg_name = str(json_name).replace('.json', '.jpg')
         jpg_path = os.path.join(args.jpg_dir, jpg_name)
-        assert jpg_name in jpg_list
+        if jpg_name not in jpg_list:
+            print("[ERROR]: unknow: {}".format(jpg_name))
+            continue
 
         # xml 
         xml_name = str(jpg_name).replace('.jpg', '.xml')
@@ -90,49 +92,14 @@ def platform_json_2_xml(args):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
+    parser.add_argument('--input_dir', type=str, default="/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE_crop/check_crop_1115_1116/") 
     args = parser.parse_args()
+    
+    print("1、platform json to xml.")
+    print("input_dir: {}".format(args.input_dir))
 
-    # # normal: UAE
-    # # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE/check_0804_0809/"
-    # # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE/check_0810_0811/"
-    # # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE/check_0828_0831/"
-    # # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE/check_0901_0903/"
-    # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE/check_0904_0905/"
-    
-    # args.jpg_dir = os.path.join(args.input_dir)
-    # args.platform_json_dir = os.path.join(args.input_dir)
-    # args.xml_dir = os.path.join(args.input_dir)
-    
-    # platform_json_2_xml(args)
-
-    # normal: UAE_crop
-    # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE_crop/check_crop_0804_0809/"
-    # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE_crop/check_crop_0810_0811/"
-    # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE_crop/check_crop_0828_0831/"
-    # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE_crop/check_crop_0901_0903/"
-    # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE_crop/check_crop_0904_0905/"
-    # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE_crop/check_crop_1024_1029/"
-    # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE_crop/check_crop_0/"
-    # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE_crop/check_crop_1/"
-    # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE_crop/check_crop_2/"
-    # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE_crop/check_crop_3/"
-    # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE_crop/check_crop_4/"
-    args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE_crop/check_crop_5/"
-    
     args.jpg_dir = os.path.join(args.input_dir, "Images/")
     args.platform_json_dir = os.path.join(args.input_dir, "Json/")
     args.xml_dir = os.path.join(args.input_dir, "xml/")
     
     platform_json_2_xml(args)
-
-    # # test
-    # # args.input_dir = "/yuanhuan/model/image/lpr/zd/size_signal_small/"
-    # # args.input_dir = "/yuanhuan/model/image/lpr/zd/size_signal_big/"
-    # # args.input_dir = "/yuanhuan/model/image/lpr/zd/size_double_small/"
-    # args.input_dir = "/yuanhuan/model/image/lpr/zd/size_double_big"
-    
-    # args.jpg_dir = os.path.join(args.input_dir)
-    # args.platform_json_dir = os.path.join(args.input_dir)
-    # args.xml_dir = os.path.join(args.input_dir)
-
-    # platform_json_2_xml(args)
