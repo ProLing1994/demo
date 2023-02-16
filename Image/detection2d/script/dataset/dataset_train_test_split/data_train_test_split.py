@@ -45,15 +45,19 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    # args.input_dir = "/yuanhuan/data/image/LicensePlate/China/"             # trainval: 35396, train: 31856, val: 3540, test: 3933
-    # args.input_dir = "/yuanhuan/data/image/LicensePlate/China_6mm/"         # trainval: 1762, train: 1585, val: 177, test: 196
-    # args.input_dir = "/yuanhuan/data/image/LicensePlate/Europe/"            # trainval: 18644, train: 16779, val: 1865, test: 2072
-    # args.input_dir = "/yuanhuan/data/image/LicensePlate/Mexico/"            # trainval: 10578, train: 9520, val: 1058, test: 1176
+    # 数据集: RM_ADAS_AllInOne
     # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone/"      # trainval: 102242, train: 92017, val: 10225, test: 11361
     # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_new/"  # trainval: 8840, train: 7956, val: 884, test: 983, all: 9823
     # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate/"  # trainval: 13485, train: 12136, val: 1349, test: 1499, all: 14984
-    # args.input_dir = "/yuanhuan/data/image/RM_BSD/bsd_20220425_20220512/"   # trainval: 13317, train: 11985, val: 1332, test: 1480, all: 14797
+    # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate_2023_zph/ADAS_ADPLUS2.0/"  # trainval: 1545, train: 1390, val: 155, test: 172, all: 1717
+    # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate_2023_zph/ADAS_ADPLUS2.0_5M_Backlight/"  # trainval: 2055, train: 1849, val: 206, test: 229, all: 2284
+    # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate_2023_zph/ADAS_ADPLUS2.0_NearPerson/"  # trainval: 4174, train: 3756, val: 418, test: 464, all: 4638
+    # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate_2023_zph/ADAS_AllInOne_Backlight_AbnormalVehicle/"  # trainval: 3971, train: 3573, val: 398, test: 442, all: 4413
+    # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate_2023_zph/ADAS_AllInOne_MS1/"  # trainval: 6093, train: 5483, val: 610, test: 678, all: 6771
+    # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate_2023_zph/ADAS_AllInOne_New_Test/"  # trainval: 20064, train: 18057, val: 2007, test: 2230, all: 22294
+    # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate_2023_zph/ADAS_AllInOne_Rainy_Night/"  # trainval: 4039, train: 3635, val: 404, test: 449, all: 4488
 
+    # 数据集: ZF_Europe，ADAS 视角
     # args.input_dir = "/yuanhuan/data/image/ZF_Europe/england/"              # trainval: 33597, train: 30237, val: 3360, test: 3733, all: 37330/
     # args.input_dir = "/yuanhuan/data/image/ZF_Europe/england_1080p/"        # trainval: 22255, train: 20029, val: 2226, test: 2473, all: 24728
     # args.input_dir = "/yuanhuan/data/image/ZF_Europe/france/"               # trainval: 39950, train: 35955, val: 3995, test: 4439, all: 44389
@@ -63,6 +67,27 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/ZF_Europe/moni_0415/"            # trainval: 9661, train: 8694, val: 967, test: 1074, all: 10735
     # args.input_dir = "/yuanhuan/data/image/ZF_Europe/hardNeg/"              # trainval: 17540, train: 15786, val: 1754, test: 1949, all: 19489
 
+    # 数据集: LicensePlate_detection
+    # args.input_dir = "/yuanhuan/data/image/LicensePlate_detection/China/"             # trainval: 35396, train: 31856, val: 3540, test: 3933
+    # args.input_dir = "/yuanhuan/data/image/LicensePlate_detection/China_6mm/"         # trainval: 1762, train: 1585, val: 177, test: 196
+    # args.input_dir = "/yuanhuan/data/image/LicensePlate_detection/Europe/"            # trainval: 18644, train: 16779, val: 1865, test: 2072
+    # args.input_dir = "/yuanhuan/data/image/LicensePlate_detection/Mexico/"            # trainval: 10578, train: 9520, val: 1058, test: 1176
+
+    # 数据集: RM_C27_detection
+    # args.input_dir = "/yuanhuan/data/image/RM_C27_detection/zd_c27_2020_0209_1125/"   # trainval: 133923, train: 120530, val: 13393, test: 14881, all: 148804
+
+    # 数据集: RM_BSD
+    # args.input_dir = "/yuanhuan/data/image/RM_BSD/bsd_20220425_20220512/"   # trainval: 13317, train: 11985, val: 1332, test: 1480, all: 14797
+    # args.input_dir = "/yuanhuan/data/image/RM_BSD/wideangle_2022_2023/"  # trainval: 25587, train: 23028, val: 2559, test: 2844, all: 28431
+    
+    # 数据集: RM_C28_detection
+    # args.input_dir = "/yuanhuan/data/image/RM_C28_detection/zhongdong/"       # trainval: 84491, train: 76041, val: 8450, test: 9388, all: 93879
+    # args.input_dir = "/yuanhuan/data/image/RM_C28_detection/safezone/"        # trainval: 77750, train: 69975, val: 7775, test: 8639, all: 86389
+    # args.input_dir = "/yuanhuan/data/image/RM_C28_detection/finished/"        # trainval: 226449, train: 203804, val: 22645, test: 25162, all: 251611
+    # args.input_dir = "/yuanhuan/data/image/RM_C28_detection/canada/"          # trainval: 29720, train: 26748, val: 2972, test: 3303, all: 33023
+    args.input_dir = "/yuanhuan/data/image/RM_C28_detection/america/"         # trainval: 54946, train: 49451, val: 5495, test: 6106, all: 61052
+
+    # 数据集: ZG_ZHJYZ_detection，包含 car\bus\truck\plate\fuzzy_plate，龙门架视角 
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"    # trainval: 5846, train: 5261, val: 585, test: 650, all: 6496
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_5M/"    # trainval: 1445, train: 1300, val: 145, test: 161, all: 1606
     # args.input_dir =  "/yuanhuan/data/image/ZG_ZHJYZ_detection/sandaofangxian/"    # trainval: 5060, train: 4553, val: 507, test: 563, all: 5623
@@ -70,6 +95,7 @@ if __name__ == "__main__":
     # args.input_dir =  "/yuanhuan/data/image/ZG_ZHJYZ_detection/shenzhentiaoqiao/"    # trainval: 4538, train: 4084, val: 454, test: 505, all: 5043
     # args.input_dir =  "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu_night_diguangzhao/"    # trainval: 23315, train: 20983, val: 2332, test: 2591, all: 25906
 
+    # # 数据集: ZG_BMX_detection 智观斑马线数据集
     # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/daminghu/"    # trainval: 9218, train: 8296, val: 922, test: 1025, all: 10243
     # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/daminghu_night/"    # trainval: 2360, train: 2124, val: 236, test: 263, all: 2623
     # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/shandongyingzikou/"    # trainval: 1970, train: 1773, val: 197, test: 219, all: 2189
@@ -83,8 +109,9 @@ if __name__ == "__main__":
     # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/daminghu/crop_720p/"    # trainval: 9218, train: 8296, val: 922, test: 1025, all: 10243
     # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/daminghu_night/crop_720p/"    # trainval: 2360, train: 2124, val: 236, test: 263, all: 2623
     # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/rongheng/crop_720p/"    # trainval: 4619, train: 4157, val: 462, test: 514, all: 5133
-    args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/rongheng_night_hongwai/crop_720p/"    # trainval: 4499, train: 4049, val: 450, test: 500, all: 4999
+    # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/rongheng_night_hongwai/crop_720p/"    # trainval: 4499, train: 4049, val: 450, test: 500, all: 4999
 
+    # 开源数据集: MOT17\MOT20\HT21\NightOwls\Cityscapes\Safety_helmet\VOC2028
     # args.input_dir = "/yuanhuan/data/image/Open_Source/MOT/MOT17/"    # trainval: 4784, train: 4305, val: 479, test: 532, all: 5316
     # args.input_dir = "/yuanhuan/data/image/Open_Source/MOT/MOT20/"    # trainval: 8037, train: 7233, val: 804, test: 894, all: 8931
     # args.input_dir = "/yuanhuan/data/image/Open_Source/MOT/HT21/"    # trainval: 5166, train: 4649, val: 517, test: 575, all: 5741
@@ -102,6 +129,7 @@ if __name__ == "__main__":
     args.val_size = 0.1
 
     args.jpg_dir =  args.input_dir + "JPEGImages/"
-    args.xml_dir =  args.input_dir + "XML/"
+    # args.xml_dir =  args.input_dir + "XML/"
+    args.xml_dir =  args.input_dir + "Annotations/"
 
     split(args)

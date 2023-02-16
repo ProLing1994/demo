@@ -26,6 +26,7 @@ def calculate_ap_all(args):
             args.det_path_dict = { 'car': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_' + test_name, 'results/det_test_car.txt'),
                                 'bus': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_' + test_name, 'results/det_test_bus.txt'),
                                 'truck': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_' + test_name, 'results/det_test_truck.txt'),
+                                'total_license_plate': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_' + test_name, 'results/det_test_total_license_plate.txt'),
                                 'license_plate': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_' + test_name, 'results/det_test_license_plate.txt'),
                                 'car_bus_truck': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_' + test_name, 'results/det_test_car_bus_truck.txt'), 
                                 'bus_truck': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_' + test_name, 'results/det_test_bus_truck.txt'), 
@@ -45,6 +46,7 @@ def calculate_ap_all(args):
             args.det_path_dict = { 'car': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')), 'results/det_test_car.txt'),
                                 'bus': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')), 'results/det_test_bus.txt'),
                                 'truck': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')), 'results/det_test_truck.txt'),
+                                'total_license_plate': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')), 'results/det_test_total_license_plate.txt'),
                                 'license_plate': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')), 'results/det_test_license_plate.txt'),
                                 'car_bus_truck': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')), 'results/det_test_car_bus_truck.txt'), 
                                 'bus_truck': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')), 'results/det_test_bus_truck.txt'), 
@@ -163,56 +165,80 @@ if __name__ == "__main__":
     # args.write_unmatched_bool = True
     # args.output_dir = "/yuanhuan/model/image/yolox_vgg/yoloxv2_vggrm_640_384_car_license_plate/eval_epoches_24/LicensePlate_China_xml/"
 
+    # #####################################
+    # # Car_Bus_Truck_Licenseplate
+    # # 测试集图像
+    # #####################################
+    # args.data_dir = "/yuanhuan/data/image/"
+    # # args.data_list = ['ZG_ZHJYZ_detection/jiayouzhan', 'ZG_ZHJYZ_detection/jiayouzhan_5M', 'ZG_ZHJYZ_detection/sandaofangxian', 'ZG_ZHJYZ_detection/anhuihuaibeigaosu', 'ZG_ZHJYZ_detection/shenzhentiaoqiao']
+    # # args.data_list = ['ZG_ZHJYZ_detection/anhuihuaibeigaosu_night_diguangzhao']
+    # # args.data_list = ['ZG_ZHJYZ_detection/jiayouzhan', 'ZG_ZHJYZ_detection/jiayouzhan_5M', 'ZG_ZHJYZ_detection/sandaofangxian', 'ZG_ZHJYZ_detection/anhuihuaibeigaosu', 'ZG_ZHJYZ_detection/shenzhentiaoqiao', 'ZG_ZHJYZ_detection/anhuihuaibeigaosu_night_diguangzhao']
+    # # args.data_list = ['RM_ADAS_AllInOne/allinone_w_licenseplate']
+    # args.data_list = ['ZG_ZHJYZ_detection/jiayouzhan', 'ZG_ZHJYZ_detection/jiayouzhan_5M', 'ZG_ZHJYZ_detection/sandaofangxian', 'ZG_ZHJYZ_detection/anhuihuaibeigaosu', 'ZG_ZHJYZ_detection/shenzhentiaoqiao', 'ZG_ZHJYZ_detection/anhuihuaibeigaosu_night_diguangzhao', 'RM_ADAS_AllInOne/allinone_w_licenseplate']
+
+    # args.cal_ap_dict = { 'car': ['car'], 
+    #                     'bus': ['bus'], 'truck': ['truck'], 
+    #                     'bus_truck': ['bus', 'truck'], 
+    #                     'car_bus_truck': ['car', 'bus', 'truck'], 
+    #                     'license_plate': ['license_plate'] }
+    # # args.cal_ap_dict = { 'license_plate': ['license_plate'] }
+
+    # # SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate
+    # # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/"
+
+    # # SSD_VGG_FPN_RFB_2022-04-25-18_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate
+    # # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-04-25-18_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/"
+
+    # # # SSD_VGG_FPN_RFB_2022-05-27-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate
+    # # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-05-27-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/"
+
+    # # SSD_VGG_FPN_RFB_2022-07-22-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate
+    # # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-07-22-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/"
+
+    # # SSD_VGG_FPN_RFB_2022-07-29-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate
+    # # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-07-29-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/"
+
+    # # SSD_VGG_FPN_RFB_2022-08-10-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_zf_w_fuzzy_plate
+    # # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-08-10-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_zf_w_fuzzy_plate/eval_epoches_299/"
+
+    # # SSD_VGG_FPN_RFB_2022-09-09-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_zf_crop_w_fuzzy_plate
+    # # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-09-09-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_zf_crop_w_fuzzy_plate/eval_epoches_250/"
+
+    # # yolov6_jpf
+    # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_jpf/eval_epoches_0.3/"
+
+    # # yolov6
+    # # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_zg_gvd_adas_zg_data_attribute_conv_0804/eval_epoches_300_0.4"
+    # # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_zg_gvd_adas_zg_data_attribute_conv_0809/eval_epoches_300_0.4"
+
+    # # args.anno_name = 'Annotations_CarBusTruckLicenseplate_w_height'             # 高度大于 24 的 清晰车牌
+    # # args.anno_name = 'Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height'     # 高度大于 24 的 清晰车牌 & 模糊车牌
+    # # args.anno_name = 'Annotations_CarBusTruckLicenseplate'                      # 清晰车牌
+    # args.anno_name = 'Annotations_CarBusTruckLicenseplate_w_fuzzy'              # 清晰车牌 & 模糊车牌
+
+    # args.from_dataset_bool = True
+
     #####################################
-    # Car_Bus_Truck_Licenseplate
+    # Car_Bus_Truck_Motorcyclist_Licenseplate
     # 测试集图像
     #####################################
     args.data_dir = "/yuanhuan/data/image/"
-    # args.data_list = ['ZG_ZHJYZ_detection/jiayouzhan', 'ZG_ZHJYZ_detection/jiayouzhan_5M', 'ZG_ZHJYZ_detection/sandaofangxian', 'ZG_ZHJYZ_detection/anhuihuaibeigaosu', 'ZG_ZHJYZ_detection/shenzhentiaoqiao']
-    # args.data_list = ['ZG_ZHJYZ_detection/anhuihuaibeigaosu_night_diguangzhao']
-    # args.data_list = ['ZG_ZHJYZ_detection/jiayouzhan', 'ZG_ZHJYZ_detection/jiayouzhan_5M', 'ZG_ZHJYZ_detection/sandaofangxian', 'ZG_ZHJYZ_detection/anhuihuaibeigaosu', 'ZG_ZHJYZ_detection/shenzhentiaoqiao', 'ZG_ZHJYZ_detection/anhuihuaibeigaosu_night_diguangzhao']
-    # args.data_list = ['RM_ADAS_AllInOne/allinone_w_licenseplate']
-    args.data_list = ['ZG_ZHJYZ_detection/jiayouzhan', 'ZG_ZHJYZ_detection/jiayouzhan_5M', 'ZG_ZHJYZ_detection/sandaofangxian', 'ZG_ZHJYZ_detection/anhuihuaibeigaosu', 'ZG_ZHJYZ_detection/shenzhentiaoqiao', 'ZG_ZHJYZ_detection/anhuihuaibeigaosu_night_diguangzhao', 'RM_ADAS_AllInOne/allinone_w_licenseplate']
+    args.data_list = ['RM_ADAS_AllInOne/allinone_w_licenseplate']
 
     args.cal_ap_dict = { 'car': ['car'], 
                         'bus': ['bus'], 'truck': ['truck'], 
                         'bus_truck': ['bus', 'truck'], 
                         'car_bus_truck': ['car', 'bus', 'truck'], 
-                        'license_plate': ['license_plate'] }
-    # args.cal_ap_dict = { 'license_plate': ['license_plate'] }
+                        'total_license_plate': ['license_plate', 'moto_license_plate'] }
+    # args.cal_ap_dict = { 'total_license_plate': ['license_plate', 'moto_license_plate'] }
 
-    # SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate
-    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-03-09-17_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/"
-
-    # SSD_VGG_FPN_RFB_2022-04-25-18_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate
-    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-04-25-18_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/"
-
-    # # SSD_VGG_FPN_RFB_2022-05-27-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate
-    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-05-27-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/"
-
-    # SSD_VGG_FPN_RFB_2022-07-22-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate
-    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-07-22-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/"
-
-    # SSD_VGG_FPN_RFB_2022-07-29-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate
-    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-07-29-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/eval_epoches_299/"
-
-    # SSD_VGG_FPN_RFB_2022-08-10-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_zf_w_fuzzy_plate
-    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-08-10-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_zf_w_fuzzy_plate/eval_epoches_299/"
-
-    # SSD_VGG_FPN_RFB_2022-09-09-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_zf_crop_w_fuzzy_plate
-    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2022-09-09-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_zf_crop_w_fuzzy_plate/eval_epoches_250/"
-
-    # yolov6_jpf
-    args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_jpf/eval_epoches_0.3/"
+    # SSD_VGG_FPN_RFB_2023-02-01-07_focalloss_6class_car_bus_truck_motorcyclist_licenseplate_motolicenseplate_softmax
+    args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2023-02-01-07_focalloss_6class_car_bus_truck_motorcyclist_licenseplate_motolicenseplate_softmax/eval_epoches_5/"
 
     # yolov6
     # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_zg_gvd_adas_zg_data_attribute_conv_0804/eval_epoches_300_0.4"
-    # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_zg_gvd_adas_zg_data_attribute_conv_0809/eval_epoches_300_0.4"
 
-    # args.anno_name = 'Annotations_CarBusTruckLicenseplate_w_height'             # 高度大于 24 的 清晰车牌
-    # args.anno_name = 'Annotations_CarBusTruckLicenseplate_w_fuzzy_w_height'     # 高度大于 24 的 清晰车牌 & 模糊车牌
-    # args.anno_name = 'Annotations_CarBusTruckLicenseplate'                      # 清晰车牌
-    args.anno_name = 'Annotations_CarBusTruckLicenseplate_w_fuzzy'              # 清晰车牌 & 模糊车牌
+    args.anno_name = 'Annotations_CarBusTruckMotorcyclePlateMotoplate_w_fuzzy'
 
     args.from_dataset_bool = True
 
@@ -418,8 +444,8 @@ if __name__ == "__main__":
     #####################################
 
     # test_name = "trainval"
-    # test_name = "val"
-    test_name = "test"
+    test_name = "val"
+    # test_name = "test"
 
     args.over_thresh = 0.5
     args.use_07_metric = False

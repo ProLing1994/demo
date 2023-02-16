@@ -14,7 +14,7 @@ def find_data():
         input_path = os.path.join(args.input_dir, data_list[data_idx])
         output_path = os.path.join(args.output_dir, data_list[data_idx])
 
-        if args.file_format in input_path:
+        if (args.suffix in os.path.basename(input_path)):
             print(input_path, '->', output_path)
             # shutil.copy(input_path, output_path)
             shutil.move(input_path, output_path)
@@ -24,10 +24,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.input_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/视频_20220310/264原始视频/"
-    # args.output_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/视频_20220310/264原始视频/2M/"
-    args.output_dir = "/mnt/huanyuan2/data/image/ZG_ZHJYZ_detection/test/视频_20220310/264原始视频/5M/"
+    args.input_dir = "/yuanhuan/data/image/RM_BSD/wideangle_2022_2023/JPEGImages/"
+    args.output_dir = "/yuanhuan/data/image/RM_BSD/wideangle_2022_2023/JSON/"
+    args.suffix = ".json"
 
-    # 5M: 000005000390, 2M: 000006000390
-    args.file_format = "000005000390"
     find_data()
