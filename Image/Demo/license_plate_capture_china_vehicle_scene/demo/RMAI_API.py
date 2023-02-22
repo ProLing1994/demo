@@ -241,6 +241,7 @@ class CaptureApi():
         # lincense plate reader
         self.lpr = LPRCaffe(self.lpr_caffe_prototxt, self.lpr_caffe_model_path, prefix_beam_search_bool=self.lpr_prefix_beam_search_bool)
 
+
     def clear(self):
         # param_init
         self.param_init()
