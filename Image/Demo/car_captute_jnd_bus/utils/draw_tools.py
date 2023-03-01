@@ -63,6 +63,8 @@ def draw_bbox_info(img, bbox_info, mode='xywh'):
                             cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 2)
         img = cv2.putText(img, "{}_{}_{}_{}_{}".format( int(bbox_info_idx['left_alarm_flage']), int(bbox_info_idx['right_alarm_flage']), int(bbox_info_idx['top_alarm_flage']), int(bbox_info_idx['warning_flage']), int(bbox_info_idx['alarm_flage'])), (bbox_info_idx['loc'][0], bbox_info_idx['loc'][1] + 20), 
                             cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 2)
+        img = cv2.putText(img, "{:.1f}_{:.1f}_{}_{}".format( int(bbox_info_idx['dist_observed_horizontal']), int(bbox_info_idx['dist_observed_vertical']), int(bbox_info_idx['horizontal_move_flage']), int(bbox_info_idx['vertical_move_flage'])), (bbox_info_idx['loc'][0], bbox_info_idx['loc'][1] + 50), 
+                            cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 2)
         
     return img
 

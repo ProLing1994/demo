@@ -6,7 +6,7 @@ import random
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.detection2d.mmdetection.demo.detector.yolov6_detector import YOLOV6Detector
-from Image.Demo.car_captute_bm_bus.sort.mot_sort import Sort
+from Image.Demo.car_captute_jnd_bus.sort.mot_sort import Sort
 
 
 class CaptureApi():
@@ -59,12 +59,13 @@ class CaptureApi():
         self.update_state_stable_loc_alpha = float(0.6)   # 平滑车辆框参数
 
         # 抓拍区域
-        self.capture_points = [(780, 190), (1070, 175), (1345, 190), (1730, 710), (330, 720)]
+        self.capture_points = [(320, 290), (960, 180), (1600, 290), (1800, 840), (120, 840)]
         # self.capture_left_warning = [10, 200]
         self.capture_left_alarm = [10, 200]
         # self.capture_right_warning = [10, 200]
         self.capture_right_alarm = [10, 200]
         self.capture_up_alarm = [25, 200]
+        self.moving_scale_threth = 0.1
 
     def param_init(self):
         self.params_dict = {}
@@ -74,6 +75,7 @@ class CaptureApi():
         bbox_info_dict['id'] = 0                                            # 追踪id
         bbox_info_dict['loc'] = []                                          # 车辆坐标
         bbox_info_dict['stable_loc'] = []                                   # 车辆坐标（稳定）
+        bbox_info_dict['observed_loc'] = []                                 # 车辆坐标（进入抓拍区域）
         bbox_info_dict['up_down_state'] = 'Stop'                            # 车辆状态（上下行）
         bbox_info_dict['up_down_state_frame_num'] = 0                       # 车辆状态（上下行）帧数
         bbox_info_dict['left_right_state'] = 'Stop'                         # 车辆状态（左右行）
@@ -85,6 +87,8 @@ class CaptureApi():
         bbox_info_dict['dist_capture_line_right'] = 0                       # 距离抓拍线位置
         bbox_info_dict['dist_capture_line_left_top'] = 0                    # 距离抓拍线位置
         bbox_info_dict['dist_capture_line_right_top'] = 0                   # 距离抓拍线位置
+        bbox_info_dict['dist_observed_horizontal'] = 0                      # 观测车辆水平距离
+        bbox_info_dict['dist_observed_vertical'] = 0                        # 观测车辆垂直距离
 
         bbox_info_dict['left_warning_state'] = 0                            # 抓拍标志位
         bbox_info_dict['left_alarm_flage'] = False                          # 抓拍标志位
@@ -92,7 +96,9 @@ class CaptureApi():
         bbox_info_dict['right_alarm_flage'] = False                         # 抓拍标志位
         bbox_info_dict['top_warning_state'] = 0                             # 抓拍标志位
         bbox_info_dict['top_alarm_flage'] = False                           # 抓拍标志位
-        
+        bbox_info_dict['horizontal_move_flage'] = False                     # 抓拍标志位
+        bbox_info_dict['vertical_move_flage'] = False                       # 抓拍标志位
+
         bbox_info_dict['warning_flage'] = False                             # 抓拍标志位
         bbox_info_dict['alarm_flage'] = False                               # 抓拍标志位
         bbox_info_dict['warning_cnt'] = 0                                   # 抓拍标志位
@@ -106,6 +112,7 @@ class CaptureApi():
         bbox_state_dict['loc'] = []                                         # 车辆坐标
         bbox_state_dict['loc_list'] = []                                    # 车辆坐标（多帧）
         bbox_state_dict['stable_loc'] = []                                  # 车辆坐标（稳定）
+        bbox_state_dict['observed_loc'] = []                                # 车辆坐标（进入抓拍区域）
         bbox_state_dict['up_down_state'] = 'Stop'                           # 车辆状态（上下行）
         bbox_state_dict['up_down_state_frame_num'] = 0                      # 车辆状态（上下行）帧数
         bbox_state_dict['left_right_state'] = 'Stop'                        # 车辆状态（左右行）
@@ -119,6 +126,8 @@ class CaptureApi():
         bbox_state_dict['dist_capture_line_right'] = 0                      # 距离抓拍线位置
         bbox_state_dict['dist_capture_line_left_top'] = 0                   # 距离抓拍线位置
         bbox_state_dict['dist_capture_line_right_top'] = 0                  # 距离抓拍线位置
+        bbox_state_dict['dist_observed_horizontal'] = 0                     # 观测车辆水平距离
+        bbox_state_dict['dist_observed_vertical'] = 0                       # 观测车辆垂直距离
 
         bbox_state_dict['left_warning_state'] = 0                           # 抓拍标志位
         bbox_state_dict['left_alarm_flage'] = False                         # 抓拍标志位
@@ -126,6 +135,8 @@ class CaptureApi():
         bbox_state_dict['right_alarm_flage'] = False                        # 抓拍标志位
         bbox_state_dict['top_warning_state'] = 0                            # 抓拍标志位
         bbox_state_dict['top_alarm_flage'] = False                          # 抓拍标志位
+        bbox_state_dict['horizontal_move_flage'] = False                    # 抓拍标志位
+        bbox_state_dict['vertical_move_flage'] = False                      # 抓拍标志位
         bbox_state_dict['warning_flage'] = False                            # 抓拍标志位
         bbox_state_dict['alarm_flage'] = False                              # 抓拍标志位
         bbox_state_dict['warning_cnt'] = 0                                  # 抓拍标志位
@@ -200,6 +211,7 @@ class CaptureApi():
             bbox_info_dict['id'] = 0                                            # 追踪id
             bbox_info_dict['loc'] = []                                          # 车辆坐标
             bbox_info_dict['stable_loc'] = []                                   # 车辆坐标（稳定）
+            bbox_info_dict['observed_loc'] = []                                 # 车辆坐标（进入抓拍区域）
             bbox_info_dict['up_down_state'] = 'Stop'                            # 车辆状态（上下行）
             bbox_info_dict['up_down_state_frame_num'] = 0                       # 车辆状态（上下行）帧数
             bbox_info_dict['left_right_state'] = 'Stop'                         # 车辆状态（左右行）
@@ -211,12 +223,16 @@ class CaptureApi():
             bbox_info_dict['dist_capture_line_right'] = 0                       # 距离抓拍线位置
             bbox_info_dict['dist_capture_line_left_top'] = 0                    # 距离抓拍线位置
             bbox_info_dict['dist_capture_line_right_top'] = 0                   # 距离抓拍线位置
+            bbox_info_dict['dist_observed_horizontal'] = 0                      # 观测车辆水平距离
+            bbox_info_dict['dist_observed_vertical'] = 0                        # 观测车辆垂直距离
             bbox_info_dict['left_warning_state'] = 0                            # 抓拍标志位
             bbox_info_dict['left_alarm_flage'] = False                          # 抓拍标志位
             bbox_info_dict['right_warning_state'] = 0                           # 抓拍标志位
             bbox_info_dict['right_alarm_flage'] = False                         # 抓拍标志位
             bbox_info_dict['top_warning_state'] = 0                             # 抓拍标志位
             bbox_info_dict['top_alarm_flage'] = False                           # 抓拍标志位
+            bbox_info_dict['horizontal_move_flage'] = False                     # 抓拍标志位
+            bbox_info_dict['vertical_move_flage'] = False                       # 抓拍标志位
             bbox_info_dict['warning_flage'] = False                             # 抓拍标志位
             bbox_info_dict['alarm_flage'] = False                               # 抓拍标志位
             bbox_info_dict['warning_cnt'] = 0                                   # 抓拍标志位
@@ -357,11 +373,25 @@ class CaptureApi():
                     # dist
                     bbox_state_idy['dist_capture_line_right_top'] = (-1) * ( car_center_x * (capture_line_right_top_k + 1e-5) + capture_line_right_top_b - car_bottom_y )
 
+                    # observed_loc
+                    if len(bbox_state_idy['observed_loc']) == 0:
+                        if bbox_state_idy['dist_capture_line_left_top'] > 0 and bbox_state_idy['dist_capture_line_right_top'] > 0 and \
+                            bbox_state_idy['dist_capture_line_left'] > 0 and bbox_state_idy['dist_capture_line_right'] < 0:
+                            bbox_state_idy['observed_loc'] = bbox_state_idy['stable_loc']
+                    
+                    if len(bbox_state_idy['observed_loc']):
+                        # 观测车辆距离度量（左右抓拍线）
+                        car_observed_center_x = ( bbox_state_idy['observed_loc'][0] + bbox_state_idy['observed_loc'][2] ) / 2.0
+                        car_observed_center_y = ( bbox_state_idy['observed_loc'][1] + bbox_state_idy['observed_loc'][3] ) / 2.0
+                        bbox_state_idy['dist_observed_horizontal'] = (-1) * (car_observed_center_x - car_center_x)
+                        bbox_state_idy['dist_observed_vertical'] = (-1) * (car_observed_center_y - car_center_y)
+
                     bbox_info_idx['up_down_state'] = bbox_state_idy['up_down_state']
                     bbox_info_idx['up_down_state_frame_num'] = bbox_state_idy['up_down_state_frame_num']
                     bbox_info_idx['left_right_state'] = bbox_state_idy['left_right_state']
                     bbox_info_idx['left_right_state_frame_num'] = bbox_state_idy['left_right_state_frame_num']
                     bbox_info_idx['stable_loc'] = bbox_state_idy['stable_loc']
+                    bbox_info_idx['observed_loc'] = bbox_state_idy['observed_loc']
                     bbox_info_idx['frame_num'] = bbox_state_idy['frame_num']
                     bbox_info_idx['up_down_speed'] = bbox_state_idy['up_down_speed']
                     bbox_info_idx['left_right_speed'] = bbox_state_idy['left_right_speed']
@@ -369,12 +399,16 @@ class CaptureApi():
                     bbox_info_idx['dist_capture_line_right'] = bbox_state_idy['dist_capture_line_right']
                     bbox_info_idx['dist_capture_line_left_top'] = bbox_state_idy['dist_capture_line_left_top']
                     bbox_info_idx['dist_capture_line_right_top'] = bbox_state_idy['dist_capture_line_right_top']
+                    bbox_info_idx['dist_observed_horizontal'] = bbox_state_idy['dist_observed_horizontal']
+                    bbox_info_idx['dist_observed_vertical'] = bbox_state_idy['dist_observed_vertical']
                     bbox_info_idx['left_warning_state'] = bbox_state_idy['left_warning_state']
                     bbox_info_idx['left_alarm_flage'] = bbox_state_idy['left_alarm_flage']
                     bbox_info_idx['right_warning_state'] = bbox_state_idy['right_warning_state']
                     bbox_info_idx['right_alarm_flage'] = bbox_state_idy['right_alarm_flage']
                     bbox_info_idx['top_warning_state'] = bbox_state_idy['top_warning_state']
                     bbox_info_idx['top_alarm_flage'] = bbox_state_idy['top_alarm_flage']
+                    bbox_info_idx['horizontal_move_flage'] = bbox_state_idy['horizontal_move_flage']
+                    bbox_info_idx['vertical_move_flage'] = bbox_state_idy['vertical_move_flage']
                     bbox_info_idx['warning_flage'] = bbox_state_idy['warning_flage']
                     bbox_info_idx['alarm_flage'] = bbox_state_idy['alarm_flage']
                     bbox_info_idx['warning_cnt'] = bbox_state_idy['warning_cnt']
@@ -388,6 +422,7 @@ class CaptureApi():
                 bbox_state_dict['loc'] = []                                         # 车辆坐标
                 bbox_state_dict['loc_list'] = []                                    # 车辆坐标（多帧）
                 bbox_state_dict['stable_loc'] = []                                  # 车辆坐标（稳定）
+                bbox_state_dict['observed_loc'] = []                                # 车辆坐标（进入抓拍区域）
                 bbox_state_dict['up_down_state'] = 'Stop'                           # 车辆状态（上下行）
                 bbox_state_dict['up_down_state_frame_num'] = 0                      # 车辆状态（上下行）帧数
                 bbox_state_dict['left_right_state'] = 'Stop'                        # 车辆状态（左右行）
@@ -401,12 +436,16 @@ class CaptureApi():
                 bbox_state_dict['dist_capture_line_right'] = 0                      # 距离抓拍线位置
                 bbox_state_dict['dist_capture_line_left_top'] = 0                   # 距离抓拍线位置
                 bbox_state_dict['dist_capture_line_right_top'] = 0                  # 距离抓拍线位置
+                bbox_state_dict['dist_observed_horizontal'] = 0                     # 观测车辆水平距离
+                bbox_state_dict['dist_observed_vertical'] = 0                       # 观测车辆垂直距离
                 bbox_state_dict['left_warning_state'] = 0                           # 抓拍标志位
                 bbox_state_dict['left_alarm_flage'] = False                         # 抓拍标志位
                 bbox_state_dict['right_warning_state'] = 0                          # 抓拍标志位
                 bbox_state_dict['right_alarm_flage'] = False                        # 抓拍标志位
                 bbox_state_dict['top_warning_state'] = 0                            # 抓拍标志位
                 bbox_state_dict['top_alarm_flage'] = False                          # 抓拍标志位
+                bbox_state_dict['horizontal_move_flage'] = False                    # 抓拍标志位
+                bbox_state_dict['vertical_move_flage'] = False                      # 抓拍标志位
                 bbox_state_dict['warning_flage'] = False                            # 抓拍标志位
                 bbox_state_dict['alarm_flage'] = False                              # 抓拍标志位
                 bbox_state_dict['warning_cnt'] = 0                                  # 抓拍标志位
@@ -437,18 +476,18 @@ class CaptureApi():
     def update_capture(self):
 
         # 报警逻辑
-        # 1、车辆从左侧驶入 -> 右侧驶出
-        # 2、车辆从右侧驶入 -> 左侧驶出
-        # 3、车辆从上方驶入 -> 左侧驶出
-        # 4、车辆从上方驶入 -> 右侧驶出
-        # 5、车辆从左侧驶入 -> 上方驶出
-        # 6、车辆从右侧驶入 -> 上方驶出
+        # 1、车辆撞线：左侧线
+        # 2、车辆撞线：右侧线
+        # 3、车辆撞线：上方线
+        # 4、车辆移动：左右
+        # 5、车辆移动：上下
 
         for _, bbox_state_idy in self.params_dict['bbox_state_container'].items():
 
             car_left_x = bbox_state_idy['loc'][0]
             car_right_x = bbox_state_idy['loc'][2]
             car_bottom_y = bbox_state_idy['loc'][3]
+            car_center_x = ( bbox_state_idy['loc'][0] + bbox_state_idy['loc'][2] ) / 2.0
 
             capture_point_left_top = self.capture_points[0]
             capture_point_left_bottom = self.capture_points[4]
@@ -529,16 +568,43 @@ class CaptureApi():
                         bbox_state_idy['top_alarm_flage'] = True 
                     else:
                         bbox_state_idy['top_warning_state'] = 2
-                        
+
+            # capture line left
+            capture_point_left_top = self.capture_points[0]
+            capture_point_left_bottom = self.capture_points[4]
+            # y = kx + b
+            capture_line_left_k = float(capture_point_left_top[1] - capture_point_left_bottom[1]) / float(capture_point_left_top[0] - capture_point_left_bottom[0] + 1e-5);
+            capture_line_left_b = float(capture_point_left_top[1] - capture_point_left_top[0] * capture_line_left_k);
+            # capture line right
+            capture_point_right_top = self.capture_points[2]
+            capture_point_right_bottom = self.capture_points[3]
+            # y = kx + b
+            capture_line_right_k = float(capture_point_right_top[1] - capture_point_right_bottom[1]) / float(capture_point_right_top[0] - capture_point_right_bottom[0] + 1e-5);
+            capture_line_right_b = float(capture_point_right_top[1] - capture_point_right_top[0] * capture_line_right_k);
+            # capture line top
+            # y = kx + b
+            capture_line_top_k = float(capture_point_left_top[1] - capture_point_right_top[1]) / float(capture_point_left_top[0] - capture_point_right_top[0] + 1e-5);
+            capture_line_top_b = float(capture_point_left_top[1] - capture_point_left_top[0] * capture_line_top_k);
+            # capture line top
+            # y = kx + b
+            capture_line_bottom_k = float(capture_point_left_bottom[1] - capture_point_right_bottom[1]) / float(capture_point_left_bottom[0] - capture_point_right_bottom[0] + 1e-5);
+            capture_line_bottom_b = float(capture_point_left_bottom[1] - capture_point_left_bottom[0] * capture_line_top_k);
+            # dist
+            capture_line_horizontal_dist = abs(((car_bottom_y - capture_line_left_b) / (capture_line_left_k + 1e-5)) - ((car_bottom_y - capture_line_right_b) / (capture_line_right_k + 1e-5)))
+            capture_line_vertical_dist = abs(( car_center_x * (capture_line_top_k + 1e-5) + capture_line_top_b ) - ( car_center_x * (capture_line_bottom_k + 1e-5) + capture_line_bottom_b ))
+
+            if bbox_state_idy['dist_capture_line_left_top'] > 0 and bbox_state_idy['dist_capture_line_right_top'] > 0 and \
+                bbox_state_idy['dist_capture_line_left'] > 0 and bbox_state_idy['dist_capture_line_right'] < 0:
+
+                if (abs(bbox_state_idy['dist_observed_horizontal']) > capture_line_horizontal_dist * self.moving_scale_threth):
+                    bbox_state_idy['horizontal_move_flage'] = True
+                
+                if (abs(bbox_state_idy['dist_observed_vertical']) > capture_line_vertical_dist * self.moving_scale_threth):
+                    bbox_state_idy['vertical_move_flage'] = True
+
             # warning_flage
-            if bbox_state_idy['left_alarm_flage'] or bbox_state_idy['right_alarm_flage'] or bbox_state_idy['top_alarm_flage']:
-
-                bbox_state_idy['warning_cnt'] += 1
-                bbox_state_idy['warning_flage'] = True
-            
-            # alarm_flage
-            if bbox_state_idy['left_alarm_flage'] + bbox_state_idy['right_alarm_flage'] + bbox_state_idy['top_alarm_flage'] == 2:
-
+            if bbox_state_idy['left_alarm_flage'] or bbox_state_idy['right_alarm_flage'] or bbox_state_idy['top_alarm_flage'] or \
+                bbox_state_idy['horizontal_move_flage'] or bbox_state_idy['vertical_move_flage']:
+    
                 bbox_state_idy['alarm_cnt'] += 1
                 bbox_state_idy['alarm_flage'] = True
-        

@@ -9,8 +9,8 @@ from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.Basic.utils.folder_tools import *
-from Image.Demo.car_captute_bm_bus.demo.RMAI_API import *
-from Image.Demo.car_captute_bm_bus.utils.draw_tools import draw_bbox_tracker, draw_bbox_info, draw_bbox_state, draw_capture_line
+from Image.Demo.car_captute_jnd_bus.demo.RMAI_API import *
+from Image.Demo.car_captute_jnd_bus.utils.draw_tools import draw_bbox_tracker, draw_bbox_info, draw_bbox_state, draw_capture_line
 
 
 def inference_video(args):
@@ -62,7 +62,7 @@ def inference_video(args):
             if not ret: # if the camera over return false
                 break
                 
-            # if frame_idx == 17:
+            # if frame_idx == 830:
             #     print()
 
             # capture api
@@ -119,13 +119,13 @@ def main():
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    # bm, demo
+    # jna, demo
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/JND_C28/avi文件/2M_误报数据_20230109/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/718/2M_误报数据_20230109/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/JND_C28/avi文件/test/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/718/test/"
     args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/BM_C28/avi文件/2M_正报数据_20221026_20221115/"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/1448/2M_正报数据_20221026_20221115/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/BM_C28/avi文件/2M_误报数据/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/1448/2M_误报数据/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/BM_C28/avi文件/difficult_sample/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/1448/difficult_sample/"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/718/2M_正报数据_20221026_20221115/"
 
     args.suffix = '.avi'
     # args.suffix = '.mp4'
