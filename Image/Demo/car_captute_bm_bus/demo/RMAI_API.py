@@ -94,8 +94,8 @@ class CaptureApi():
         
         bbox_info_dict['warning_flage'] = False                             # 抓拍标志位
         bbox_info_dict['alarm_flage'] = False                               # 抓拍标志位
-        bbox_info_dict['first_warning_flage'] = False                       # 抓拍标志位
-        bbox_info_dict['first_alarm_flage'] = False                         # 抓拍标志位
+        bbox_info_dict['warning_cnt'] = 0                                   # 抓拍标志位
+        bbox_info_dict['alarm_cnt'] = 0                                     # 抓拍标志位
 
         self.params_dict['cache_container'] = []                            # 缓存容器（imag & bbox_info_dict）
 
@@ -127,8 +127,8 @@ class CaptureApi():
         
         bbox_state_dict['warning_flage'] = False                            # 抓拍标志位
         bbox_state_dict['alarm_flage'] = False                              # 抓拍标志位
-        bbox_state_dict['first_warning_flage'] = False                      # 抓拍标志位
-        bbox_state_dict['first_alarm_flage'] = False                        # 抓拍标志位
+        bbox_state_dict['warning_cnt'] = 0                                  # 抓拍标志位
+        bbox_state_dict['alarm_cnt'] = 0                                    # 抓拍标志位
 
         self.params_dict['bbox_state_container'] = {}                       # 状态信息容器（key: 追踪id, value: bbox_state_dict）
 
@@ -217,8 +217,8 @@ class CaptureApi():
             bbox_info_dict['up_alarm_flage'] = False                            # 抓拍标志位
             bbox_info_dict['warning_flage'] = False                             # 抓拍标志位
             bbox_info_dict['alarm_flage'] = False                               # 抓拍标志位
-            bbox_info_dict['first_warning_flage'] = False                       # 抓拍标志位
-            bbox_info_dict['first_alarm_flage'] = False                         # 抓拍标志位
+            bbox_info_dict['warning_cnt'] = 0                                   # 抓拍标志位
+            bbox_info_dict['alarm_cnt'] = 0                                     # 抓拍标志位
 
             # car
             tracker_bbox = tracker_bboxes[idx]
@@ -364,8 +364,8 @@ class CaptureApi():
                     bbox_info_idx['up_alarm_flage'] = bbox_state_idy['up_alarm_flage']
                     bbox_info_idx['warning_flage'] = bbox_state_idy['warning_flage']
                     bbox_info_idx['alarm_flage'] = bbox_state_idy['alarm_flage']
-                    bbox_info_idx['first_warning_flage'] = bbox_state_idy['first_warning_flage']
-                    bbox_info_idx['first_alarm_flage'] = bbox_state_idy['first_alarm_flage']
+                    bbox_info_idx['warning_cnt'] = bbox_state_idy['warning_cnt']
+                    bbox_info_idx['alarm_cnt'] = bbox_state_idy['alarm_cnt']
 
             if is_new_id_bool:
 
@@ -395,8 +395,8 @@ class CaptureApi():
                 bbox_state_dict['up_alarm_flage'] = False                           # 抓拍标志位
                 bbox_state_dict['warning_flage'] = False                            # 抓拍标志位
                 bbox_state_dict['alarm_flage'] = False                              # 抓拍标志位
-                bbox_state_dict['first_warning_flage'] = False                      # 抓拍标志位
-                bbox_state_dict['first_alarm_flage'] = False                        # 抓拍标志位
+                bbox_state_dict['warning_cnt'] = 0                                  # 抓拍标志位
+                bbox_state_dict['alarm_cnt'] = 0                                    # 抓拍标志位
 
                 bbox_state_dict['id'] = bbox_info_idx['id']
                 bbox_state_dict['loc'] = bbox_info_idx['loc']
@@ -503,11 +503,7 @@ class CaptureApi():
             # warning_flage
             if bbox_state_idy['left_alarm_flage'] or bbox_state_idy['right_alarm_flage'] or bbox_state_idy['up_alarm_flage']:
 
-                if not bbox_state_idy['warning_flage']:
-                    bbox_state_idy['first_warning_flage'] = True
-                else:
-                    bbox_state_idy['first_warning_flage'] = False   
-
+                bbox_state_idy['warning_cnt'] += 1
                 bbox_state_idy['warning_flage'] = True
             
             # alarm_flage
@@ -515,10 +511,6 @@ class CaptureApi():
                (bbox_state_idy['left_alarm_flage'] and bbox_state_idy['up_alarm_flage']) or \
                (bbox_state_idy['right_alarm_flage'] and bbox_state_idy['up_alarm_flage']):
 
-                if not bbox_state_idy['alarm_flage']:
-                    bbox_state_idy['first_alarm_flage'] = True
-                else:
-                    bbox_state_idy['first_alarm_flage'] = False   
-
+                bbox_state_idy['alarm_cnt'] += 1
                 bbox_state_idy['alarm_flage'] = True
         

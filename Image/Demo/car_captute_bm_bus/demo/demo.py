@@ -90,12 +90,12 @@ def inference_video(args):
                 for idy in range(len(bbox_info_list)):
                     bbox_info_idx = bbox_info_list[idy]
 
-                    if bbox_info_idx['first_warning_flage']:
+                    if bbox_info_idx['warning_cnt'] == 1:
                         # 保存捕获结果
                         output_capture_path = os.path.join(args.output_video_dir, 'capture', video_list[idx].replace(args.suffix, ''), '{}_{}_warning.jpg'.format(bbox_info_idx['id'], frame_idx))
                         create_folder(os.path.dirname(output_capture_path))
                         cv2.imwrite(output_capture_path, img)
-                    if bbox_info_idx['first_alarm_flage']:
+                    if bbox_info_idx['alarm_cnt'] == 1:
                         # 保存捕获结果
                         output_capture_path = os.path.join(args.output_video_dir, 'capture', video_list[idx].replace(args.suffix, ''), '{}_{}_alarm.jpg'.format(bbox_info_idx['id'], frame_idx))
                         create_folder(os.path.dirname(output_capture_path))
@@ -120,10 +120,12 @@ def main():
     args = parser.parse_args()
 
     # bm, demo
-    args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/BM_C28/avi文件/2M_正报数据_20221026_20221115/"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/2M_正报数据_20221026_20221115/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/BM_C28/avi文件/2M_正报数据_20221026_20221115/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/2M_正报数据_20221026_20221115/"
     # args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/BM_C28/avi文件/2M_误报数据/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/2M_误报数据/"
+    args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/JND_C28/avi文件/2M_误报数据_20230109/"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/2M_误报数据_20230109/"
     # args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/BM_C28/avi文件/difficult_sample/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test/"
 
