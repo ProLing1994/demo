@@ -120,10 +120,12 @@ def main():
     args = parser.parse_args()
 
     # bm, demo
-    args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/BM_C28/avi文件/2M_正报数据_20221026_20221115/"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/1448/2M_正报数据_20221026_20221115/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/BM_C28/avi文件/2M_误报数据/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/1448/2M_误报数据/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/BM_C28/avi文件/2M_正报数据_20221026_20221115/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/1448/2M_正报数据_20221026_20221115/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/BM_C28/avi文件/2M_误报数据_雨天误报/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/1448/2M_误报数据_雨天误报/"
+    args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/BM_C28/avi文件/2M_误报数据_2022022/"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/1448/2M_误报数据_2022022/"
     # args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/BM_C28/avi文件/difficult_sample/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/1448/difficult_sample/"
 

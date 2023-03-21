@@ -67,11 +67,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.input_dir = "/mnt/huanyuan/model_final/image_model/lpr_zd/ocr_image/"
-    args.output_dir = "/mnt/huanyuan/model_final/image_model/lpr_zd/ocr_image_gray_white_ratio_64_320/"
+    args.input_dir = "/mnt/huanyuan/model_final/image_model/lpr/lpr_zd/ocr_image/"
+    args.output_dir = "/mnt/huanyuan/model_final/image_model/lpr/lpr_zd/ocr_image_gray_white_ratio/"
     args.suffix = '.jpg'
     args.bool_pad = True
     args.bool_white = True
-    args.image_shape = [64, 320]
+    args.image_shape = [64, 256]
 
     bgr_to_gray(args)

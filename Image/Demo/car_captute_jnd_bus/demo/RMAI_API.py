@@ -60,11 +60,9 @@ class CaptureApi():
 
         # 抓拍区域
         self.capture_points = [(320, 290), (960, 180), (1600, 290), (1800, 840), (120, 840)]
-        # self.capture_left_warning = [10, 200]
-        self.capture_left_alarm = [10, 200]
-        # self.capture_right_warning = [10, 200]
-        self.capture_right_alarm = [10, 200]
-        self.capture_up_alarm = [25, 200]
+        self.alarm_left_threshold = [10, 200]
+        self.alarm_right_threshold = [10, 200]
+        self.alarm_top_threshold = [25, 200]
         self.moving_scale_threth = 0.1
 
     def param_init(self):
@@ -498,16 +496,16 @@ class CaptureApi():
             # 如果车辆向右边行驶/向左边行驶
             # left_warning/left_alarm
             if car_bottom_y > capture_point_left_top[1]:
-                if bbox_state_idy['dist_capture_line_left'] > ( -1 * self.capture_left_alarm[1] ) and \
-                    bbox_state_idy['dist_capture_line_left'] < ( -1 * self.capture_left_alarm[0] ) : 
+                if bbox_state_idy['dist_capture_line_left'] > ( -1 * self.alarm_left_threshold[1] ) and \
+                    bbox_state_idy['dist_capture_line_left'] < ( -1 * self.alarm_left_threshold[0] ) : 
 
                     if bbox_state_idy['left_warning_state'] == 2:
                         bbox_state_idy['left_alarm_flage'] = True 
                     else:
                         bbox_state_idy['left_warning_state'] = 1
 
-                if bbox_state_idy['dist_capture_line_left'] > self.capture_left_alarm[0] and \
-                    bbox_state_idy['dist_capture_line_left'] < self.capture_left_alarm[1]:
+                if bbox_state_idy['dist_capture_line_left'] > self.alarm_left_threshold[0] and \
+                    bbox_state_idy['dist_capture_line_left'] < self.alarm_left_threshold[1]:
 
                     if bbox_state_idy['left_warning_state'] == 1:
                         bbox_state_idy['left_alarm_flage'] = True 
@@ -516,16 +514,16 @@ class CaptureApi():
             
             # right_warning/right_alarm
             if car_bottom_y > capture_point_right_top[1]:
-                if bbox_state_idy['dist_capture_line_right'] > ( -1 * self.capture_right_alarm[1]) and \
-                    bbox_state_idy['dist_capture_line_right'] < ( -1 * self.capture_right_alarm[0]): 
+                if bbox_state_idy['dist_capture_line_right'] > ( -1 * self.alarm_right_threshold[1]) and \
+                    bbox_state_idy['dist_capture_line_right'] < ( -1 * self.alarm_right_threshold[0]): 
 
                     if bbox_state_idy['right_warning_state'] == 2:
                         bbox_state_idy['right_alarm_flage'] = True 
                     else:
                         bbox_state_idy['right_warning_state'] = 1
 
-                if bbox_state_idy['dist_capture_line_right'] > self.capture_right_alarm[0] and \
-                    bbox_state_idy['dist_capture_line_right'] < self.capture_right_alarm[1]:
+                if bbox_state_idy['dist_capture_line_right'] > self.alarm_right_threshold[0] and \
+                    bbox_state_idy['dist_capture_line_right'] < self.alarm_right_threshold[1]:
 
                     if bbox_state_idy['right_warning_state'] == 1:
                         bbox_state_idy['right_alarm_flage'] = True 
@@ -535,49 +533,50 @@ class CaptureApi():
             # 如果车辆向远处行驶
             # left_top_warning / left_top_alarm
             if (car_right_x > capture_point_left_top[0] and car_left_x <= capture_point_middle_top[0]):
-                if bbox_state_idy['dist_capture_line_left_top'] > ( -1 * self.capture_up_alarm[1]) and \
-                    bbox_state_idy['dist_capture_line_left_top'] < ( -1 * self.capture_up_alarm[0]) : 
+                if bbox_state_idy['dist_capture_line_left_top'] > ( -1 * self.alarm_top_threshold[1]) and \
+                    bbox_state_idy['dist_capture_line_left_top'] < ( -1 * self.alarm_top_threshold[0]) : 
 
                     if bbox_state_idy['top_warning_state'] == 2:
                         bbox_state_idy['top_alarm_flage'] = True 
                     else:
                         bbox_state_idy['top_warning_state'] = 1
             
-                if bbox_state_idy['dist_capture_line_left_top'] > self.capture_up_alarm[0] and \
-                    bbox_state_idy['dist_capture_line_left_top'] < self.capture_up_alarm[1] :
+                if bbox_state_idy['dist_capture_line_left_top'] > self.alarm_top_threshold[0] and \
+                    bbox_state_idy['dist_capture_line_left_top'] < self.alarm_top_threshold[1] :
 
                     if bbox_state_idy['top_warning_state'] == 1: 
                         bbox_state_idy['top_alarm_flage'] = True 
                     else:
                         bbox_state_idy['top_warning_state'] = 2
 
-            # left_top_warning / left_top_alarm
+            # right_top_warning / right_top_alarm
             if (car_right_x > capture_point_middle_top[0] and car_left_x < capture_point_right_top[0]):
-                if bbox_state_idy['dist_capture_line_right_top'] > ( -1 * self.capture_up_alarm[1]) and \
-                    bbox_state_idy['dist_capture_line_right_top'] < ( -1 * self.capture_up_alarm[0]) : 
+                if bbox_state_idy['dist_capture_line_right_top'] > ( -1 * self.alarm_top_threshold[1]) and \
+                    bbox_state_idy['dist_capture_line_right_top'] < ( -1 * self.alarm_top_threshold[0]) : 
 
                     if bbox_state_idy['top_warning_state'] == 2:
                         bbox_state_idy['top_alarm_flage'] = True 
                     else:
                         bbox_state_idy['top_warning_state'] = 1
             
-                if bbox_state_idy['dist_capture_line_right_top'] > self.capture_up_alarm[0] and \
-                    bbox_state_idy['dist_capture_line_right_top'] < self.capture_up_alarm[1] :
+                if bbox_state_idy['dist_capture_line_right_top'] > self.alarm_top_threshold[0] and \
+                    bbox_state_idy['dist_capture_line_right_top'] < self.alarm_top_threshold[1] :
 
                     if bbox_state_idy['top_warning_state'] == 1: 
                         bbox_state_idy['top_alarm_flage'] = True 
                     else:
                         bbox_state_idy['top_warning_state'] = 2
 
-            # capture line left
             capture_point_left_top = self.capture_points[0]
             capture_point_left_bottom = self.capture_points[4]
+            capture_point_right_top = self.capture_points[2]
+            capture_point_right_bottom = self.capture_points[3]
+
+            # capture line left
             # y = kx + b
             capture_line_left_k = float(capture_point_left_top[1] - capture_point_left_bottom[1]) / float(capture_point_left_top[0] - capture_point_left_bottom[0] + 1e-5);
             capture_line_left_b = float(capture_point_left_top[1] - capture_point_left_top[0] * capture_line_left_k);
             # capture line right
-            capture_point_right_top = self.capture_points[2]
-            capture_point_right_bottom = self.capture_points[3]
             # y = kx + b
             capture_line_right_k = float(capture_point_right_top[1] - capture_point_right_bottom[1]) / float(capture_point_right_top[0] - capture_point_right_bottom[0] + 1e-5);
             capture_line_right_b = float(capture_point_right_top[1] - capture_point_right_top[0] * capture_line_right_k);
@@ -585,10 +584,10 @@ class CaptureApi():
             # y = kx + b
             capture_line_top_k = float(capture_point_left_top[1] - capture_point_right_top[1]) / float(capture_point_left_top[0] - capture_point_right_top[0] + 1e-5);
             capture_line_top_b = float(capture_point_left_top[1] - capture_point_left_top[0] * capture_line_top_k);
-            # capture line top
+            # capture line bottom
             # y = kx + b
             capture_line_bottom_k = float(capture_point_left_bottom[1] - capture_point_right_bottom[1]) / float(capture_point_left_bottom[0] - capture_point_right_bottom[0] + 1e-5);
-            capture_line_bottom_b = float(capture_point_left_bottom[1] - capture_point_left_bottom[0] * capture_line_top_k);
+            capture_line_bottom_b = float(capture_point_left_bottom[1] - capture_point_left_bottom[0] * capture_line_bottom_k);
             # dist
             capture_line_horizontal_dist = abs(((car_bottom_y - capture_line_left_b) / (capture_line_left_k + 1e-5)) - ((car_bottom_y - capture_line_right_b) / (capture_line_right_k + 1e-5)))
             capture_line_vertical_dist = abs(( car_center_x * (capture_line_top_k + 1e-5) + capture_line_top_b ) - ( car_center_x * (capture_line_bottom_k + 1e-5) + capture_line_bottom_b ))
@@ -602,7 +601,7 @@ class CaptureApi():
                 if (abs(bbox_state_idy['dist_observed_vertical']) > capture_line_vertical_dist * self.moving_scale_threth):
                     bbox_state_idy['vertical_move_flage'] = True
 
-            # warning_flage
+            # alarm_flage
             if bbox_state_idy['left_alarm_flage'] or bbox_state_idy['right_alarm_flage'] or bbox_state_idy['top_alarm_flage'] or \
                 bbox_state_idy['horizontal_move_flage'] or bbox_state_idy['vertical_move_flage']:
     
