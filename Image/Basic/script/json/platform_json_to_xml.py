@@ -13,6 +13,10 @@ from Basic.script.xml.xml_write import write_xml
 
 
 def platform_json_2_xml(args):
+    ########################################################
+    # 普通模式
+    # json & img 同时存在
+    ########################################################
 
     # mkdir 
     create_folder(args.xml_dir)
@@ -45,9 +49,6 @@ def platform_json_2_xml(args):
         with open(json_path, 'r', encoding='UTF-8') as fr:
             annotation = json.load(fr)
 
-        ########################################################
-        # 普通模式
-        ########################################################
         img_width = annotation['width']
         img_height = annotation['height']
         img_shape = np.array([img_height, img_width, 3])
@@ -89,17 +90,60 @@ def platform_json_2_xml(args):
 
         write_xml(xml_path, jpg_path, xml_bboxes, img_shape)
 
+
+def platform_json_2_xml_empty(args):
+    ########################################################
+    # Empty 模式
+    # json 不存在 & img 存在
+    ########################################################
+
+    # mkdir 
+    create_folder(args.xml_dir)
+
+    json_list = np.array(os.listdir(args.platform_json_dir))
+    json_list = json_list[[jpg.endswith('.json') for jpg in json_list]]
+    json_list.sort()
+
+    jpg_list = np.array(os.listdir(args.jpg_dir))
+    jpg_list = jpg_list[[jpg.endswith('.jpg') for jpg in jpg_list]]
+    jpg_list.sort()
+    jpg_list = jpg_list[[jpg.replace('.jpg', '.json') not in json_list for jpg in jpg_list]]
+
+    for idx in tqdm(range(len(jpg_list))):
+        # jpg
+        jpg_name = jpg_list[idx]
+        jpg_path = os.path.join(args.jpg_dir, jpg_name)
+
+        # json
+        json_name = str(jpg_name).replace('.jpg', '.json')
+        json_path = os.path.join(args.platform_json_dir, json_name)
+
+        # xml 
+        xml_name = str(jpg_name).replace('.jpg', '.xml')
+        xml_path = os.path.join(args.xml_dir, xml_name)
+
+        if json_name in json_list:
+            print("[ERROR]: unknow: {}".format(json_name))
+            continue
+
+        img = cv2.imread(jpg_path)
+        img_shape = img.shape
+        xml_bboxes = {}
+        write_xml(xml_path, jpg_path, xml_bboxes, img_shape)
+
+
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input_dir', type=str, default="/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE_crop/check_crop_1115_1116/") 
+    parser.add_argument('--input_dir', type=str, default="/yuanhuan/data/image/LicensePlate_ocr/original/Brazil/Brazil/Brazil_all/") 
     args = parser.parse_args()
     
     print("1、platform json to xml.")
     print("input_dir: {}".format(args.input_dir))
 
-    args.jpg_dir = os.path.join(args.input_dir, "Images/")
+    args.jpg_dir = os.path.join(args.input_dir, "JPEGImages/")
     args.platform_json_dir = os.path.join(args.input_dir, "Json/")
     args.xml_dir = os.path.join(args.input_dir, "xml/")
     
     platform_json_2_xml(args)
+    platform_json_2_xml_empty(args)

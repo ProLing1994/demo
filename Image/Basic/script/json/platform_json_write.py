@@ -80,14 +80,19 @@ class PlatformJsonWriter(object):
 
     def add_det_tag(self, json_file, rect_list):
         for i in range(len(rect_list)):
-            try:
+            if len(rect_list[i]) == 5:
                 x1, y1, x2, y2, name = rect_list[i]
                 new_shape = deepcopy(self.NewShape_rec)
                 new_shape['label'] = name
                 new_shape['points'] = np.array([x1,y1,x2,y2], dtype=int).reshape(-1).tolist()
                 json_file['shapes'].append(new_shape)
-            except:
-                pass
+            if len(rect_list[i]) == 6:
+                x1, y1, x2, y2, name, attributes = rect_list[i]
+                new_shape = deepcopy(self.NewShape_rec)
+                new_shape['label'] = name
+                new_shape['points'] = np.array([x1,y1,x2,y2], dtype=int).reshape(-1).tolist()
+                new_shape['attributes'] = attributes
+                json_file['shapes'].append(new_shape)
 
 
     def add_seg_tag(self, json_file, polygon_dict):

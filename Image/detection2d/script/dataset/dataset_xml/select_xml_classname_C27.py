@@ -149,12 +149,12 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate_2023_zph/ADAS_AllInOne_MS1/"
     # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate_2023_zph/ADAS_AllInOne_New_Test/"
     # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate_2023_zph/ADAS_AllInOne_Rainy_Night/"
-    args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate_2023_zph/ADAS_Night_Highway_Backlight/"
-    args.select_name_list = ["car", "bus", "truck", "motorcyclist", "licence", "licence_f"]
-    args.set_name_list = ["car", "bus", "truck", "motorcyclist", "license_plate", "license_plate"]
-    args.finnal_name_list = ["car", "bus", "truck", "motorcyclist", "license_plate", "neg"]
-    args.jpg_dir = args.input_dir + "JPEGImages/"  
-    args.xml_dir = args.input_dir + "Annotations/"
+    # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate_2023_zph/ADAS_Night_Highway_Backlight/"
+    # args.select_name_list = ["car", "bus", "truck", "motorcyclist", "licence", "licence_f"]
+    # args.set_name_list = ["car", "bus", "truck", "motorcyclist", "license_plate", "license_plate"]
+    # args.finnal_name_list = ["car", "bus", "truck", "motorcyclist", "license_plate", "neg"]
+    # args.jpg_dir = args.input_dir + "JPEGImages/"  
+    # args.xml_dir = args.input_dir + "Annotations/"
 
     # # ZF_Europe
     # # 类别: "car_bus_truck", "plate"（汽车车牌）
@@ -190,14 +190,22 @@ if __name__ == "__main__":
     # args.jpg_dir = args.input_dir + "JPEGImages/"  
     # args.xml_dir = args.input_dir + "XML/"
 
-    # # RM_C27_detection
-    # # 类别: "car", "license_plate"（汽车车牌）
+    # RM_C27_detection
+    # 类别: "car", "license_plate"（汽车车牌）
     # args.input_dir = "/yuanhuan/data/image/RM_C27_detection/zd_c27_2020_0209_1125/"
     # args.select_name_list = ["car", "license_plate"]
     # args.set_name_list = ["car_bus_truck", "license_plate"]
     # args.finnal_name_list = ["car_bus_truck", "license_plate", "neg"]
     # args.jpg_dir = args.input_dir + "JPEGImages/"  
     # args.xml_dir = args.input_dir + "XML/"
+    
+    # RM_C27_detection
+    args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/Brazil/Brazil/Brazil_all/"
+    args.select_name_list = ["car", "bus", "truck", "motorcycle", "lince-plate", "fuzzy-plate", "lince-motorplate", "fuzzy-motorplate"]
+    args.set_name_list = ["car", "bus", "truck", "motorcyclist", "license_plate", "license_plate", "moto_license_plate", "moto_license_plate"]
+    args.finnal_name_list = ["car", "bus", "truck", "motorcyclist", "license_plate", "moto_license_plate", "neg"]
+    args.jpg_dir = args.input_dir + "JPEGImages/"  
+    args.xml_dir = args.input_dir + "Annotations/"
 
     args.output_xml_dir =  args.input_dir + "Annotations_CarBusTruckMotorcyclePlateMotoplate_w_fuzzy/"
 

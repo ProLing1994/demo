@@ -288,7 +288,7 @@ def voc_eval(merge_class_name,
             if write_unmatched_bool:
                 # 判断是否有漏检
                 if not len(R['det']) == np.array( R['det'] ).sum():
-                    if (img_width == 1920 and img_height == 1080) or (img_width == 1080 and img_height == 1920):
+                    if (img_width == 1920 and img_height == 1080) or (img_width == 1080 and img_height == 1920) or (img_width == 1280 and img_height == 720):
                         draw_img(R, img_path, output_img_path, roi_set_bool, roi_set_bbox_2M)
                     elif (img_width == 2592 and img_height == 1920) or (img_width == 1920 and img_height == 2592):
                         draw_img(R, img_path, output_img_path, roi_set_bool, roi_set_bbox_5M)
@@ -298,7 +298,7 @@ def voc_eval(merge_class_name,
             if write_false_positive_bool:
                 # 判断是否有假阳
                 if R['fp_bool']:
-                    if (img_width == 1920 and img_height == 1080) or (img_width == 1080 and img_height == 1920):
+                    if (img_width == 1920 and img_height == 1080) or (img_width == 1080 and img_height == 1920) or (img_width == 1280 and img_height == 720):
                         draw_img(R, img_path, output_img_path, roi_set_bool, roi_set_bbox_2M)
                     elif (img_width == 2592 and img_height == 1920) or (img_width == 1920 and img_height == 2592):
                         draw_img(R, img_path, output_img_path, roi_set_bool, roi_set_bbox_5M)
