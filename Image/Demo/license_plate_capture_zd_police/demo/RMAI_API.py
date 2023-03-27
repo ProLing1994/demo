@@ -7,6 +7,7 @@ import random
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.Demo.license_plate_capture_zd_police.model.LPR_detect import LPRDetectCaffe, LPRDetectOpenVINO
+from Image.detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
 from Image.detection2d.mmdetection.demo.detector.yolov6_detector import YOLOV6Detector
 from Image.recognition2d.lpr.infer.lpr_seg_ocr import LPRSegOcrcffe
 from Image.Demo.license_plate_capture_zd_police.sort.mot_sort import Sort
@@ -39,22 +40,32 @@ class CaptureApi():
         # self.image_width = 1920
         # self.image_height = 1080
 
-        self.gpu_bool = True
-        # self.gpu_bool = False
+        # self.gpu_bool = True
+        self.gpu_bool = False
 
         # detector
         # ssd
         self.ssd_bool = True
-        # # pytorch 
-        # self.ssd_plate_prototxt = None
-        # self.ssd_plate_model_path = ""
-        # # caffe
-        self.ssd_plate_prototxt = "/mnt/huanyuan/model_final/image_model/zd_ssd_rfb_wmr/ssd_mbv2_2class/caffe_model/ssd_mobilenetv2_fpn.prototxt"
-        self.ssd_plate_model_path = "/mnt/huanyuan/model_final/image_model/zd_ssd_rfb_wmr/ssd_mbv2_2class/caffe_model/ssd_mobilenetv2_0421.caffemodel"
-        # openvino
-        # self.ssd_plate_model_path = "/mnt/huanyuan/model_final/image_model/zd_ssd_rfb_wmr/ssd_mbv2_2class/openvino_model/ssd_mobilenetv2_fpn.xml"
         self.ssd_caffe_bool = True
         self.ssd_openvino_bool = False
+
+        # # pytorch 
+        # # self.ssd_plate_prototxt = None
+        # # self.ssd_plate_model_path = ""
+        # # caffe
+        # # zd_ssd_rfb_wmr
+        # self.ssd_plate_prototxt = "/mnt/huanyuan/model_final/image_model/zd_ssd_rfb_wmr/ssd_mbv2_2class/caffe_model/ssd_mobilenetv2_fpn.prototxt"
+        # self.ssd_plate_model_path = "/mnt/huanyuan/model_final/image_model/zd_ssd_rfb_wmr/ssd_mbv2_2class/caffe_model/ssd_mobilenetv2_0421.caffemodel"
+        # # openvino
+        # # self.ssd_plate_model_path = "/mnt/huanyuan/model_final/image_model/zd_ssd_rfb_wmr/ssd_mbv2_2class/openvino_model/ssd_mobilenetv2_fpn.xml"
+
+        # # 2022-08-10-00
+        # self.ssd_car_plate_prototxt = "/mnt/huanyuan/model_final/image_model/zg/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-08-10-00/FPN_RFB_3class_3attri_noDilation_prior.prototxt"
+        # self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/zg/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-08-10-00/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-08-10-00.caffemodel"
+
+        ## car_bus_truck_motorcyclist_licenseplate_motolicenseplate_softmax
+        self.ssd_car_plate_prototxt = "/mnt/huanyuan/model_final/image_model/schoolbus/ssd_rfb/car_bus_truck_motorcyclist_licenseplate_motolicenseplate_softmax/FPN_RFB_4class_3attri_noDilation_prior.prototxt"
+        self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/schoolbus/ssd_rfb/car_bus_truck_motorcyclist_licenseplate_motolicenseplate_softmax/SSD_VGG_FPN_RFB_VOC_car_bus_truck_motorcyclist_licenseplate_motolicenseplate_2023_03_06.caffemodel"
 
         # yolov6
         self.yolov6_bool = False
@@ -72,7 +83,15 @@ class CaptureApi():
                                 'light_share0', 'light_share', 'bridge', 'zebra_crossing', 'license_plate']
         self.yolov6_threshold_list = [0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3]
 
-        self.detect_class_name = ['license_plate']
+        # self.detect_class_name = ['license_plate']
+        self.detect_class_name = ['total_license_plate']
+
+        # 是否将 car\bus\truck 合并为一类输出
+        # self.merge_class_bool = True
+        self.merge_class_bool = False
+        self.merge_class_name = 'car_bus_truck'
+        self.car_attri_name_list = [ 'car', 'bus', 'truck' ]
+        self.license_plate_name = 'license_plate'
 
         # lpr
         # seg: zd seg_city_cartype_kind_num_zd_0826
@@ -149,15 +168,15 @@ class CaptureApi():
 
         # 车牌长宽阈值
         # 白天
-        # self.plate_signel_height = [35, 960]      # 25 -> 30 - 35
-        # self.plate_signel_width = [0, 1920]
-        # self.plate_double_height = [55, 960]      # 45 -> 50 - 55   
-        # self.plate_double_width = [0, 1920]
-        # 夜间
-        self.plate_signel_height = [55, 960]
+        self.plate_signel_height = [35, 960]      # 25 -> 30 - 35
         self.plate_signel_width = [0, 1920]
-        self.plate_double_height = [75, 960]
+        self.plate_double_height = [55, 960]      # 45 -> 50 - 55   
         self.plate_double_width = [0, 1920]
+        # # 夜间
+        # self.plate_signel_height = [55, 960]
+        # self.plate_signel_width = [0, 1920]
+        # self.plate_double_height = [75, 960]
+        # self.plate_double_width = [0, 1920]
 
         # 抓拍线
         self.capture_line_up_down_ratio = [0.03, 0.5, 0.9, 0.97]
@@ -288,7 +307,8 @@ class CaptureApi():
         # detector
         if self.ssd_bool:
             if self.ssd_caffe_bool:
-                self.detector = LPRDetectCaffe(self.ssd_plate_prototxt, self.ssd_plate_model_path, class_name=self.detect_class_name, gpu_bool=self.gpu_bool)
+                # self.detector = LPRDetectCaffe(self.ssd_plate_prototxt, self.ssd_plate_model_path, class_name=self.detect_class_name, gpu_bool=self.gpu_bool)
+                self.detector = SSDDetector(prototxt=self.ssd_car_plate_prototxt, model_path=self.ssd_car_plate_model_path, ssd_caffe_bool=self.ssd_caffe_bool, ssd_openvino_bool=self.ssd_openvino_bool, merge_class_bool=self.merge_class_bool, gpu_bool=False)
             elif self.ssd_openvino_bool:
                 self.detector = LPRDetectOpenVINO(self.ssd_plate_model_path)
 

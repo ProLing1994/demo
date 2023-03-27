@@ -4,18 +4,18 @@ import math
 import sys
 import yaml
 
-import paddle
-sys.path.insert(0, '/yuanhuan/code/demo/Image/recognition2d/PaddleOCR')
-from ppocr.data import create_operators, transform
-from ppocr.modeling.architectures import build_model
-from ppocr.postprocess import build_post_process
-from ppocr.utils.save_load import load_model
-from tools.program import load_config, merge_config
+# import paddle
+# sys.path.insert(0, '/yuanhuan/code/demo/Image/recognition2d/PaddleOCR')
+# from ppocr.data import create_operators, transform
+# from ppocr.modeling.architectures import build_model
+# from ppocr.postprocess import build_post_process
+# from ppocr.utils.save_load import load_model
+# from tools.program import load_config, merge_config
 
 # caffe_root = '/home/huanyuan/code/caffe_ssd-ssd/'
-# # caffe_root = '/home/huanyuan/code/caffe_ssd-ssd-gpu/'
-# sys.path.insert(0, caffe_root + 'python')
-# import caffe
+caffe_root = '/home/huanyuan/code/caffe_ssd-ssd-gpu/'
+sys.path.insert(0, caffe_root + 'python')
+import caffe
 
 
 def greedy_decode( probs, blank_id = 0 ):
@@ -182,7 +182,7 @@ class LPRPaddle(object):
             result_str, result_scors = greedy_decode(preds['Student']['head_out'].numpy()[0])
         else:
             result_str, result_scors = greedy_decode(preds.numpy()[0])
-        result_ocr = ''.join([self.ocr_labels[result_str[idx] - 1] for idx in range(len(result_str))])
+        result_ocr = ''.join([self.ocr_labels[result_str[idx]] for idx in range(len(result_str))])
 
         return result_ocr, result_scors
 
@@ -194,10 +194,9 @@ class LPROnnx(object):
         self.config_path = config_path
         self.model_path = model_path
         self.gpu_bool = True
-        self.bool_white = True
-        # self.img_shape = (3, 64, 256)
-        # self.img_shape = (1, 64, 256)
-        self.img_shape = (1, 64, 320)
+        self.white_bool = True
+        self.padding_bool = True
+        self.img_shape = (1, 64, 256)
 
         self.config_init()
         self.model_init()
@@ -290,7 +289,7 @@ class LPROnnx(object):
             if (to_imgW - w < 32):
                 to_imgW = w + 32
 
-            if self.bool_white:
+            if self.white_bool:
                 pad_img = np.ones((h, to_imgW, 3), dtype=np.uint8)
                 pad_img *= 255
             else:
@@ -318,9 +317,11 @@ class LPROnnx(object):
 
     def run(self, img):
 
-        # img = self.preprocess(img, self.img_shape)
-        # img = self.preprocess_rm(img, self.img_shape)
-        img = self.preprocess_rm_ratio(img, self.img_shape)
+        if self.padding_bool:
+            img = self.preprocess_rm_ratio(img, self.img_shape)
+        else:
+            img = self.preprocess_rm(img, self.img_shape)
+            
         img = np.expand_dims(img, axis=0)
         img = img.astype(np.float32)
 
@@ -329,7 +330,7 @@ class LPROnnx(object):
         preds = self.model.run(None, input_dict)[0]
 
         result_str, result_scors = greedy_decode(preds[0])
-        result_ocr = ''.join([self.ocr_labels[result_str[idx] - 1] for idx in range(len(result_str))])
+        result_ocr = ''.join([self.ocr_labels[result_str[idx]] for idx in range(len(result_str))])
 
         return result_ocr, result_scors
 
@@ -342,10 +343,9 @@ class LPRCaffe(object):
         self.prototxt_path = prototxt_path
         self.dict_path = dict_path
         self.gpu_bool = gpu_bool
-        self.bool_white = True
-        # self.img_shape = (3, 64, 256)
-        # self.img_shape = (1, 64, 256)
-        self.img_shape = (1, 64, 320)
+        self.white_bool = True
+        self.padding_bool = True
+        self.img_shape = (1, 64, 256)
 
         self.model_init()
         self.ocr_labels_init()
@@ -410,7 +410,7 @@ class LPRCaffe(object):
             if (to_imgW - w < 32):
                 to_imgW = w + 32
 
-            if self.bool_white:
+            if self.white_bool:
                 pad_img = np.ones((h, to_imgW, 3), dtype=np.uint8)
                 pad_img *= 255
             else:
@@ -437,18 +437,21 @@ class LPRCaffe(object):
 
 
     def run(self, img):
-
-        # img = self.preprocess_rm(img, self.img_shape)
-        img = self.preprocess_rm_ratio(img, self.img_shape)
+        
+        if self.padding_bool:
+            img = self.preprocess_rm_ratio(img, self.img_shape)
+        else:
+            img = self.preprocess_rm(img, self.img_shape)
+        
         img = np.expand_dims(img, axis=0)
         img = img.astype(np.float32)
 
-        self.net.blobs['x'].data[...] = img
+        self.net.blobs['data'].data[...] = img
         preds = self.net.forward()["probs"]
         preds = np.transpose(np.squeeze(preds))
 
         result_str, result_scors = greedy_decode(preds)
-        result_ocr = ''.join([self.ocr_labels[result_str[idx] - 1] for idx in range(len(result_str))])
+        result_ocr = ''.join([self.ocr_labels[result_str[idx]] for idx in range(len(result_str))])
 
         return result_ocr, result_scors
 

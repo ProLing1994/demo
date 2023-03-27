@@ -138,7 +138,8 @@ def inference_video(args):
                 txt_detect_str = ""
                 txt_detect_str = txt_detect_str + video_list[idx].replace(args.suffix, '_{}.jpg'.format(frame_idx)) + ";"
 
-                if "license_plate" in bboxes.keys():
+                assert capture_api.detect_class_name[0] == "license_plate"
+                if capture_api.detect_class_name[0] in bboxes.keys():
 
                     for key in bboxes.keys():
                         for idb in range(len(bboxes[key])):
@@ -179,15 +180,17 @@ def main():
     args = parser.parse_args()
 
     # zd, ZD_AD_BUS
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_AD_BUS/avi文件/5M_白天_侧向_20210315"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_白天_侧向_20210315/"
-    args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_AD_BUS/avi文件/5M_白天_侧向_20210401/L23"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_白天_侧向_20210401/L23/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_AD_BUS/avi文件/5M_白天_侧向_20210401/L45"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_白天_侧向_20210401/L45/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_AD_BUS/avi文件/5M_夜间_侧向_20210417/L45"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/5M_夜间_侧向_20210417/L45/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/ZD_AD_BUS/avi文件/test"
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_AD_BUS/avi文件/5M_白天_侧向_20210315"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_SCH_BUS/5M_白天_侧向_20210315/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_AD_BUS/avi文件/5M_白天_侧向_20210401/L23"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_SCH_BUS/5M_白天_侧向_20210401/L23/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_AD_BUS/avi文件/5M_白天_侧向_20210401/L45"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_SCH_BUS/5M_白天_侧向_20210401/L45/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_AD_BUS/avi文件/5M_夜间_侧向_20210417/L45"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_SCH_BUS/5M_夜间_侧向_20210417/L45/"
+    args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_AD_BUS/avi文件/误报数据_20230301/"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_SCH_BUS/误报数据_20230301/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_AD_BUS/avi文件/test"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test/"
 
     # args.suffix = '.avi'
