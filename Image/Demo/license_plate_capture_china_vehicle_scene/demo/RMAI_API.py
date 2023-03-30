@@ -51,7 +51,7 @@ class CaptureApi():
         # self.image_height = 720
 
         # detector
-        self.ssd_bool = False
+        self.ssd_bool = True
         self.ssd_caffe_bool = False
         self.ssd_openvino_bool = False
         # # 2022-05-27-00
@@ -59,19 +59,19 @@ class CaptureApi():
         # self.ssd_car_plate_prototxt = None
         # self.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-05-27-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
         # # caffe
-        # # self.ssd_car_plate_prototxt = "/mnt/huanyuan/model_final/image_model/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-05-27-00/FPN_RFB_3class_3attri_noDilation_prior.prototxt"
-        # # self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-05-27-00/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-05-27-00.caffemodel"
+        # # self.ssd_car_plate_prototxt = "/mnt/huanyuan/model_final/image_model/zg/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-05-27-00/FPN_RFB_3class_3attri_noDilation_prior.prototxt"
+        # # self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/zg/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-05-27-00/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-05-27-00.caffemodel"
 
         # # 2022-07-22-00
         # # pytorch 
         # self.ssd_car_plate_prototxt = None
         # self.ssd_car_plate_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-07-22-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
-        # # # caffe
-        # # self.ssd_car_plate_prototxt = "/mnt/huanyuan/model_final/image_model/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-07-22-00/FPN_RFB_3class_3attri_noDilation_prior.prototxt"
-        # # self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-07-22-00/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-07-22-00.caffemodel"
+        # caffe
+        # self.ssd_car_plate_prototxt = "/mnt/huanyuan/model_final/image_model/zg/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-07-22-00/FPN_RFB_3class_3attri_noDilation_prior.prototxt"
+        # self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/zg/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-07-22-00/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-07-22-00.caffemodel"
         # # openvino
         # # self.ssd_car_plate_prototxt = None
-        # # self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-07-22-00/openvino_model/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-07-22-00.xml"
+        # # self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/zg/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-07-22-00/openvino_model/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-07-22-00.xml"
 
         # 2022-08-10-00
         # pytorch 
@@ -85,7 +85,7 @@ class CaptureApi():
         # # self.ssd_car_plate_model_path = ""
 
         # yolov6_jpf
-        self.yolov6_bool = True
+        self.yolov6_bool = False
         self.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_jpf/yolov6.py"
         self.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_jpf/epoch_260.pth"
         self.yolov6_class_name = ['car', 'bus', 'truck', 'car_reg', 'car_big_reg', 'car_front',
@@ -113,8 +113,8 @@ class CaptureApi():
         # self.lpr_caffe_prototxt = "/mnt/huanyuan/model_final/image_model/lpr_lxn/china_softmax.prototxt"
         # self.lpr_caffe_model_path = "/mnt/huanyuan/model_final/image_model/lpr_lxn/china.caffemodel"
         # china: lpr_zg
-        self.lpr_caffe_prototxt = "/mnt/huanyuan/model_final/image_model/lpr_zg/china/0628/china_double_softmax.prototxt"
-        self.lpr_caffe_model_path = "/mnt/huanyuan/model_final/image_model/lpr_zg/china/0628/china_double.caffemodel"
+        self.lpr_caffe_prototxt = "/mnt/huanyuan/model_final/image_model/lpr/lpr_zg/china/0628/china_double_softmax.prototxt"
+        self.lpr_caffe_model_path = "/mnt/huanyuan/model_final/image_model/lpr/lpr_zg/china/0628/china_double.caffemodel"
         self.lpr_prefix_beam_search_bool = False
 
         # 缓存间隔
@@ -143,8 +143,10 @@ class CaptureApi():
 
         # 车牌长宽阈值
         # 5M：
-        self.plate_height = [20, 130]
-        self.plate_width = [65, 400]
+        # self.plate_height = [20, 130]
+        # self.plate_width = [65, 400]
+        self.plate_height = [20, 250]
+        self.plate_width = [65, 500]
 
         # 抓拍线
         # 12mm 0702

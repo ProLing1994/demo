@@ -97,6 +97,7 @@ def inference_video(args):
                     country = capture_res_idy['country']
                     city = capture_res_idy['city']
                     car_type = capture_res_idy['car_type']
+                    color = capture_res_idy['color']
                     kind = capture_res_idy['kind']
                     num = capture_res_idy['num']
                     column = capture_res_idy['column']
@@ -112,7 +113,7 @@ def inference_video(args):
                         bbox_crop = img_crop[max( 0, bbox_loc[1] ): min( int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)), bbox_loc[3] ), max( 0, bbox_loc[0] ): min( int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), bbox_loc[2] )]
 
                         # 保存捕获结果
-                        output_capture_path = os.path.join(args.output_video_dir, 'capture', video_list[idx].replace(args.suffix, ''), '{}_{}_{}_{}_{}_{}_{}_{}.jpg'.format(frame_idx, country, city, car_type, column, kind, num, idz))
+                        output_capture_path = os.path.join(args.output_video_dir, 'capture', video_list[idx].replace(args.suffix, ''), '{}_{}_{}_{}_{}_{}_{}_{}_{}.jpg'.format(frame_idx, country, city, car_type, color, column, kind, num, idz))
                         create_folder(os.path.dirname(output_capture_path))
                         cv2.imwrite(output_capture_path, bbox_crop)
                     
@@ -180,18 +181,14 @@ def main():
     args = parser.parse_args()
 
     # zd, ZD_AD_BUS
-    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_AD_BUS/avi文件/5M_白天_侧向_20210315"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_SCH_BUS/5M_白天_侧向_20210315/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_AD_BUS/avi文件/5M_白天_侧向_20210401/L23"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_SCH_BUS/5M_白天_侧向_20210401/L23/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_AD_BUS/avi文件/5M_白天_侧向_20210401/L45"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_SCH_BUS/5M_白天_侧向_20210401/L45/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_AD_BUS/avi文件/5M_夜间_侧向_20210417/L45"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_SCH_BUS/5M_夜间_侧向_20210417/L45/"
-    args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_AD_BUS/avi文件/误报数据_20230301/"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_SCH_BUS/误报数据_20230301/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_AD_BUS/avi文件/test"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_AD_BUS/avi/20210220_20210419/C27_mini/BL2-BL3/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_SCH_BUS/20210220_20210419/C27_mini/BL2-BL3/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_AD_BUS/avi/20210220_20210419/C27_mini/BL4-BL5/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_SCH_BUS/20210220_20210419/C27_mini/BL4-BL5/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_AD_BUS/avi/20210220_20210419/C27_mini/FL2-FL3/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_SCH_BUS/20210220_20210419/C27_mini/FL2-FL3/"
+    args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_AD_BUS/avi/20210220_20210419/C27_mini/FL4-FL5/"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_SCH_BUS/20210220_20210419/C27_mini/FL4-FL5/"
 
     # args.suffix = '.avi'
     args.suffix = '.mp4'

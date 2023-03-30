@@ -36,10 +36,17 @@ class CaptureApi():
         self.ssd_caffe_bool = False
         self.ssd_openvino_bool = False
 
+        # # yolov6_c28_car_0214
+        # self.yolov6_bool = True
+        # self.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_c28_car_0214/yolov6_rm_c28.py"
+        # self.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_c28_car_0214/epoch_135.pth"
+        # self.yolov6_class_name = ['car']
+        # self.yolov6_threshold_list = [0.3]
+
         # yolov6_c28_car_0214
         self.yolov6_bool = True
-        self.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_c28_car_0214/yolov6_rm_c28.py"
-        self.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_c28_car_0214/epoch_135.pth"
+        self.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_c28_car_0320/yolov6_rm_c28.py"
+        self.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_c28_car_0320/epoch_340.pth"
         self.yolov6_class_name = ['car']
         self.yolov6_threshold_list = [0.3]
 
@@ -86,8 +93,12 @@ class CaptureApi():
 
         bbox_info_dict['left_warning_state'] = 0                            # 抓拍标志位
         bbox_info_dict['left_alarm_flage'] = False                          # 抓拍标志位
+        bbox_info_dict['left_in_alarm_flage'] = False                       # 抓拍标志位
+        bbox_info_dict['left_out_alarm_flage'] = False                      # 抓拍标志位
         bbox_info_dict['right_warning_state'] = 0                           # 抓拍标志位
         bbox_info_dict['right_alarm_flage'] = False                         # 抓拍标志位
+        bbox_info_dict['right_in_alarm_flage'] = False                      # 抓拍标志位
+        bbox_info_dict['right_out_alarm_flage'] = False                     # 抓拍标志位
         bbox_info_dict['top_warning_state'] = 0                             # 抓拍标志位
         bbox_info_dict['top_alarm_flage'] = False                           # 抓拍标志位
         
@@ -120,8 +131,13 @@ class CaptureApi():
 
         bbox_state_dict['left_warning_state'] = 0                           # 抓拍标志位
         bbox_state_dict['left_alarm_flage'] = False                         # 抓拍标志位
+        bbox_state_dict['left_in_alarm_flage'] = False                      # 抓拍标志位
+        bbox_state_dict['left_out_alarm_flage'] = False                     # 抓拍标志位
         bbox_state_dict['right_warning_state'] = 0                          # 抓拍标志位
         bbox_state_dict['right_alarm_flage'] = False                        # 抓拍标志位
+        bbox_state_dict['right_in_alarm_flage'] = False                     # 抓拍标志位
+        bbox_state_dict['right_out_alarm_flage'] = False                    # 抓拍标志位
+
         bbox_state_dict['top_warning_state'] = 0                            # 抓拍标志位
         bbox_state_dict['top_alarm_flage'] = False                          # 抓拍标志位
         bbox_state_dict['warning_flage'] = False                            # 抓拍标志位
@@ -211,8 +227,12 @@ class CaptureApi():
             bbox_info_dict['dist_capture_line_right_top'] = 0                   # 距离抓拍线位置
             bbox_info_dict['left_warning_state'] = 0                            # 抓拍标志位
             bbox_info_dict['left_alarm_flage'] = False                          # 抓拍标志位
+            bbox_info_dict['left_in_alarm_flage'] = False                       # 抓拍标志位
+            bbox_info_dict['left_out_alarm_flage'] = False                      # 抓拍标志位
             bbox_info_dict['right_warning_state'] = 0                           # 抓拍标志位
             bbox_info_dict['right_alarm_flage'] = False                         # 抓拍标志位
+            bbox_info_dict['right_in_alarm_flage'] = False                      # 抓拍标志位
+            bbox_info_dict['right_out_alarm_flage'] = False                     # 抓拍标志位
             bbox_info_dict['top_warning_state'] = 0                             # 抓拍标志位
             bbox_info_dict['top_alarm_flage'] = False                           # 抓拍标志位
             bbox_info_dict['warning_flage'] = False                             # 抓拍标志位
@@ -369,8 +389,12 @@ class CaptureApi():
                     bbox_info_idx['dist_capture_line_right_top'] = bbox_state_idy['dist_capture_line_right_top']
                     bbox_info_idx['left_warning_state'] = bbox_state_idy['left_warning_state']
                     bbox_info_idx['left_alarm_flage'] = bbox_state_idy['left_alarm_flage']
+                    bbox_info_idx['left_in_alarm_flage'] = bbox_state_idy['left_in_alarm_flage']
+                    bbox_info_idx['left_out_alarm_flage'] = bbox_state_idy['left_out_alarm_flage']
                     bbox_info_idx['right_warning_state'] = bbox_state_idy['right_warning_state']
                     bbox_info_idx['right_alarm_flage'] = bbox_state_idy['right_alarm_flage']
+                    bbox_info_idx['right_in_alarm_flage'] = bbox_state_idy['right_in_alarm_flage']
+                    bbox_info_idx['right_out_alarm_flage'] = bbox_state_idy['right_out_alarm_flage']
                     bbox_info_idx['top_warning_state'] = bbox_state_idy['top_warning_state']
                     bbox_info_idx['top_alarm_flage'] = bbox_state_idy['top_alarm_flage']
                     bbox_info_idx['warning_flage'] = bbox_state_idy['warning_flage']
@@ -401,8 +425,12 @@ class CaptureApi():
                 bbox_state_dict['dist_capture_line_right_top'] = 0                  # 距离抓拍线位置
                 bbox_state_dict['left_warning_state'] = 0                           # 抓拍标志位
                 bbox_state_dict['left_alarm_flage'] = False                         # 抓拍标志位
+                bbox_state_dict['left_in_alarm_flage'] = False                      # 抓拍标志位
+                bbox_state_dict['left_out_alarm_flage'] = False                     # 抓拍标志位
                 bbox_state_dict['right_warning_state'] = 0                          # 抓拍标志位
                 bbox_state_dict['right_alarm_flage'] = False                        # 抓拍标志位
+                bbox_state_dict['right_in_alarm_flage'] = False                     # 抓拍标志位
+                bbox_state_dict['right_out_alarm_flage'] = False                    # 抓拍标志位
                 bbox_state_dict['top_warning_state'] = 0                            # 抓拍标志位
                 bbox_state_dict['top_alarm_flage'] = False                          # 抓拍标志位
                 bbox_state_dict['warning_flage'] = False                            # 抓拍标志位
@@ -462,6 +490,7 @@ class CaptureApi():
 
                     if bbox_state_idy['left_warning_state'] == 2:
                         bbox_state_idy['left_alarm_flage'] = True 
+                        bbox_state_idy['left_out_alarm_flage'] = True 
                     else:
                         bbox_state_idy['left_warning_state'] = 1
 
@@ -470,9 +499,10 @@ class CaptureApi():
 
                     if bbox_state_idy['left_warning_state'] == 1:
                         bbox_state_idy['left_alarm_flage'] = True 
+                        bbox_state_idy['left_in_alarm_flage'] = True
                     else:
                         bbox_state_idy['left_warning_state'] = 2
-            
+
             # right_warning/right_alarm
             if car_bottom_y > capture_point_right_top[1]:
                 if bbox_state_idy['dist_capture_line_right'] > ( -1 * self.alarm_right_threshold[1]) and \
@@ -480,6 +510,7 @@ class CaptureApi():
 
                     if bbox_state_idy['right_warning_state'] == 2:
                         bbox_state_idy['right_alarm_flage'] = True 
+                        bbox_state_idy['right_in_alarm_flage'] = True 
                     else:
                         bbox_state_idy['right_warning_state'] = 1
 
@@ -488,6 +519,7 @@ class CaptureApi():
 
                     if bbox_state_idy['right_warning_state'] == 1:
                         bbox_state_idy['right_alarm_flage'] = True 
+                        bbox_state_idy['right_out_alarm_flage'] = True
                     else:
                         bbox_state_idy['right_warning_state'] = 2
 
@@ -535,7 +567,8 @@ class CaptureApi():
                 bbox_state_idy['warning_flage'] = True
             
             # alarm_flage
-            if bbox_state_idy['left_alarm_flage'] + bbox_state_idy['right_alarm_flage'] + bbox_state_idy['top_alarm_flage'] == 2:
+            if bbox_state_idy['left_alarm_flage'] + bbox_state_idy['right_alarm_flage'] + bbox_state_idy['top_alarm_flage'] >= 2 or \
+                bbox_state_idy['left_out_alarm_flage'] or bbox_state_idy['right_out_alarm_flage']:
 
                 bbox_state_idy['alarm_cnt'] += 1
                 bbox_state_idy['alarm_flage'] = True

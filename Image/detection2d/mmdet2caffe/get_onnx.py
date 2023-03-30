@@ -28,7 +28,7 @@ def parse_args():
     parser.add_argument(
         '--save_path',
         type=str,
-        default='/home/huanyuan/code/demo/Image/2ddetection/mmdet2caffe/onnx_model',
+        default='/home/huanyuan/code/demo/Image/detection2d/mmdet2caffe/onnx_model/',
         help='the path for saving onnx file ')
     parser.add_argument(
         '--cfg-options',
