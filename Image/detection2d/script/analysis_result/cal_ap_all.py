@@ -218,29 +218,29 @@ if __name__ == "__main__":
 
     # args.from_dataset_bool = True
 
-    #####################################
-    # Car_Bus_Truck_Motorcyclist_Licenseplate
-    # 测试集图像
-    #####################################
-    args.data_dir = "/yuanhuan/data/image/"
-    args.data_list = ['RM_ADAS_AllInOne/allinone_w_licenseplate']
+    # #####################################
+    # # Car_Bus_Truck_Motorcyclist_Licenseplate
+    # # 测试集图像
+    # #####################################
+    # args.data_dir = "/yuanhuan/data/image/"
+    # args.data_list = ['RM_ADAS_AllInOne/allinone_w_licenseplate']
 
-    args.cal_ap_dict = { 'car': ['car'], 
-                        'bus': ['bus'], 'truck': ['truck'], 
-                        'bus_truck': ['bus', 'truck'], 
-                        'car_bus_truck': ['car', 'bus', 'truck'], 
-                        'total_license_plate': ['license_plate', 'moto_license_plate'] }
-    # args.cal_ap_dict = { 'total_license_plate': ['license_plate', 'moto_license_plate'] }
+    # args.cal_ap_dict = { 'car': ['car'], 
+    #                     'bus': ['bus'], 'truck': ['truck'], 
+    #                     'bus_truck': ['bus', 'truck'], 
+    #                     'car_bus_truck': ['car', 'bus', 'truck'], 
+    #                     'total_license_plate': ['license_plate', 'moto_license_plate'] }
+    # # args.cal_ap_dict = { 'total_license_plate': ['license_plate', 'moto_license_plate'] }
 
-    # SSD_VGG_FPN_RFB_2023-02-01-07_focalloss_6class_car_bus_truck_motorcyclist_licenseplate_motolicenseplate_softmax
-    args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2023-02-01-07_focalloss_6class_car_bus_truck_motorcyclist_licenseplate_motolicenseplate_softmax/eval_epoches_5/"
+    # # SSD_VGG_FPN_RFB_2023-02-01-07_focalloss_6class_car_bus_truck_motorcyclist_licenseplate_motolicenseplate_softmax
+    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2023-02-01-07_focalloss_6class_car_bus_truck_motorcyclist_licenseplate_motolicenseplate_softmax/eval_epoches_5/"
 
-    # yolov6
-    # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_zg_gvd_adas_zg_data_attribute_conv_0804/eval_epoches_300_0.4"
+    # # yolov6
+    # # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_zg_gvd_adas_zg_data_attribute_conv_0804/eval_epoches_300_0.4"
 
-    args.anno_name = 'Annotations_CarBusTruckMotorcyclePlateMotoplate_w_fuzzy'
+    # args.anno_name = 'Annotations_CarBusTruckMotorcyclePlateMotoplate_w_fuzzy'
 
-    args.from_dataset_bool = True
+    # args.from_dataset_bool = True
 
     # ######################################
     # # Car_Bus_Truck_Licenseplate
@@ -439,13 +439,31 @@ if __name__ == "__main__":
 
     # args.from_dataset_bool = False
 
+    ######################################
+    # Nonmotorized_Car_Person
+    ######################################
+    args.data_dir = "/yuanhuan/data/image/"
+
+    # yolov6
+    args.data_list = ['RM_C28_detection/america_new']
+                        
+    args.cal_ap_dict = { 'car': ['car'] }
+
+    # yolov6
+    # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_c28_car_0214/eval_epoches_240_0.4/"
+    args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_c28_car_0312/eval_epoches_300_0.4/"
+
+    args.anno_name = 'Annotations_Car'  # 车
+
+    args.from_dataset_bool = True
+
     #####################################
     # 分割线
     #####################################
 
     # test_name = "trainval"
-    test_name = "val"
-    # test_name = "test"
+    # test_name = "val"
+    test_name = "test"
 
     args.over_thresh = 0.5
     args.use_07_metric = False
@@ -468,9 +486,9 @@ if __name__ == "__main__":
     args.write_bool = True
 
     # 是否保存漏检结果
-    args.write_unmatched_bool = False
+    args.write_unmatched_bool = True
 
     # 是否保存假阳结果
-    args.write_false_positive_bool = False
+    args.write_false_positive_bool = True
 
     calculate_ap_all(args)

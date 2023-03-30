@@ -138,9 +138,10 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/RM_C28_detection/safezone/"
     # args.input_dir = "/yuanhuan/data/image/RM_C28_detection/finished/"
     # args.input_dir = "/yuanhuan/data/image/RM_C28_detection/canada/"
-    args.input_dir = "/yuanhuan/data/image/RM_C28_detection/america/"
-    args.select_name_list = ["car", "CAR", "car "]
-    args.set_name_list = ["car", "car", "car"]
+    # args.input_dir = "/yuanhuan/data/image/RM_C28_detection/america/"
+    args.input_dir = "/yuanhuan/data/image/RM_C28_detection/america_new/"
+    args.select_name_list = ["car", "CAR", "car ", "bus", "truck"]
+    args.set_name_list = ["car", "car", "car", "car", "car"]
     args.finnal_name_list = ["car", "neg"]
     args.jpg_dir = args.input_dir + "JPEGImages/"  
     args.xml_dir = args.input_dir + "Annotations/"

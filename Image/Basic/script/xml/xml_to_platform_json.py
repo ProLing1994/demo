@@ -65,28 +65,48 @@ def xml_2_platform_json(args):
     out_meta_json_path = os.path.join(args.platform_json_dir, 'meta.json')
     platform_json_writer.write_meta_json(out_meta_json_path, task_name="{}_{}".format(args.task_name, len(xml_list)), label_list=args.label_list)
 
+
 if __name__ == '__main__':
     
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE_crop/check_crop_0804_0809/"
-    # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE_crop/check_crop_0810_0811/"
-    # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE_crop/check_crop_0828_0831/"
-    # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE_crop/check_crop_0901_0903/"
-    args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE_crop/check_crop_0904_0905/"
-    args.jpg_dir = os.path.join(args.input_dir, "Images/")
-    args.xml_dir = os.path.join(args.input_dir, "xml/")
-    args.platform_json_dir = os.path.join(args.input_dir, "Json/")
-    args.task_name = "anpr"
-    args.label_list =  [
-                        "kind", "num", 
-                        "UAE", "UAE_f", "Oman", "Oman_f", 
-                        "AD", "ABUDHABI", "DUBAI", "AJMAN", "SHARJAH", "SHJ", "RAK", "UMMALQAIWAIN", "FUJAIRAH",
-                        "AD_f", "ABUDHABI_f", "DUBAI_f", "AJMAN_f", "SHARJAH_f", "SHJ_f", "RAK_f", "UMMALQAIWAIN_f", "FUJAIRAH_f",
-                        "TAXI", "POLICE", "PUBLIC", "TRP", "PROTOCOL", "PTR", 
-                        "TAXI_f", "POLICE_f", "PUBLIC_f", "TRP_f", "PROTOCOL_f", "PTR_f",
-                        "YELLOW", "RED", "GREEN", "BULE", "ORANGE", "BROWN"
-                        ]
+    # anpr
+    # # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE_crop/check_crop_0804_0809/"
+    # # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE_crop/check_crop_0810_0811/"
+    # # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE_crop/check_crop_0828_0831/"
+    # # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE_crop/check_crop_0901_0903/"
+    # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE_crop/check_crop_0904_0905/"
+    # args.jpg_dir = os.path.join(args.input_dir, "Images/")
+    # args.xml_dir = os.path.join(args.input_dir, "xml/")
+    # args.platform_json_dir = os.path.join(args.input_dir, "Json/")
+    # args.task_name = "anpr"
+    # args.label_list =  [
+    #                     "kind", "num", 
+    #                     "UAE", "UAE_f", "Oman", "Oman_f", 
+    #                     "AD", "ABUDHABI", "DUBAI", "AJMAN", "SHARJAH", "SHJ", "RAK", "UMMALQAIWAIN", "FUJAIRAH",
+    #                     "AD_f", "ABUDHABI_f", "DUBAI_f", "AJMAN_f", "SHARJAH_f", "SHJ_f", "RAK_f", "UMMALQAIWAIN_f", "FUJAIRAH_f",
+    #                     "TAXI", "POLICE", "PUBLIC", "TRP", "PROTOCOL", "PTR", 
+    #                     "TAXI_f", "POLICE_f", "PUBLIC_f", "TRP_f", "PROTOCOL_f", "PTR_f",
+    #                     "YELLOW", "RED", "GREEN", "BULE", "ORANGE", "BROWN"
+    #                     ]
+    
+    # BM_ANPR_c27
+    args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/Brazil/Brazil/Brazil_src2/groundTruth/"
+    args.jpg_dir = os.path.join(args.input_dir, "JPEGImages/")
+    args.xml_dir = os.path.join(args.input_dir, "Annotations/")
+    args.platform_json_dir = os.path.join(args.input_dir, "Annotations_Json/")
+    args.task_name = "BM_ANPR_c27"
+    args.label_list =  ['car','truck','bus','motorcyclist']
 
     xml_2_platform_json(args)
+
+    # america_C28
+    # args.input_dir = "/yuanhuan/data/image/RM_C28_detection/america_new/"
+    # args.jpg_dir = os.path.join(args.input_dir, "JPEGImages/")
+    # args.xml_dir = os.path.join(args.input_dir, "Annotations/")
+    # args.platform_json_dir = os.path.join(args.input_dir, "Annotations_Json/")
+    # args.task_name = "america_C28"
+    # args.label_list =  ['car','truck','bus']
+
+    # xml_2_platform_json(args)

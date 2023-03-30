@@ -4,9 +4,9 @@ import shutil
 
 if __name__ == "__main__":
 
-    jpg_dir = "/yuanhuan/data/image/ZG_BMX_detection/daminghu_new/daminghu/unmath_JPEGImages/"
-    xml_dir = "/yuanhuan/data/image/ZG_BMX_detection/daminghu_new/daminghu/XML/"
-    find_xml_dir = "/yuanhuan/data/image/ZG_BMX_detection/daminghu_new/daminghu/unmath_JPEGImages/"
+    jpg_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/Brazil/Brazil/Brazil_all/JPEGImages_test/"
+    xml_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/Brazil/Brazil/Brazil_all/Annotations_CarBusTruckMotorcyclePlateMotoplate_w_fuzzy/"
+    find_xml_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/Brazil/Brazil/Brazil_all/JPEGImages_test/"
 
     jpg_path = os.path.join(jpg_dir, '%s.jpg')
     xml_path = os.path.join(xml_dir, '%s.xml')

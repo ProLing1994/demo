@@ -56,6 +56,7 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate_2023_zph/ADAS_AllInOne_MS1/"  # trainval: 6093, train: 5483, val: 610, test: 678, all: 6771
     # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate_2023_zph/ADAS_AllInOne_New_Test/"  # trainval: 20064, train: 18057, val: 2007, test: 2230, all: 22294
     # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate_2023_zph/ADAS_AllInOne_Rainy_Night/"  # trainval: 4039, train: 3635, val: 404, test: 449, all: 4488
+    # args.input_dir = "/yuanhuan/data/image/RM_ADAS_AllInOne/allinone_w_licenseplate_2023_zph/ADAS_Night_Highway_Backlight/"  # trainval: 3456, train: 3110, val: 346, test: 385, all: 3841
 
     # 数据集: ZF_Europe，ADAS 视角
     # args.input_dir = "/yuanhuan/data/image/ZF_Europe/england/"              # trainval: 33597, train: 30237, val: 3360, test: 3733, all: 37330/
@@ -75,6 +76,7 @@ if __name__ == "__main__":
 
     # 数据集: RM_C27_detection
     # args.input_dir = "/yuanhuan/data/image/RM_C27_detection/zd_c27_2020_0209_1125/"   # trainval: 133923, train: 120530, val: 13393, test: 14881, all: 148804
+    args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/Brazil/Brazil/Brazil_all/"     # trainval: 13105, train: 11794, val: 1311, test: 1457, all: 14562
 
     # 数据集: RM_BSD
     # args.input_dir = "/yuanhuan/data/image/RM_BSD/bsd_20220425_20220512/"   # trainval: 13317, train: 11985, val: 1332, test: 1480, all: 14797
@@ -82,10 +84,11 @@ if __name__ == "__main__":
     
     # 数据集: RM_C28_detection
     # args.input_dir = "/yuanhuan/data/image/RM_C28_detection/zhongdong/"       # trainval: 84491, train: 76041, val: 8450, test: 9388, all: 93879
-    # args.input_dir = "/yuanhuan/data/image/RM_C28_detection/safezone/"        # trainval: 77750, train: 69975, val: 7775, test: 8639, all: 86389
-    # args.input_dir = "/yuanhuan/data/image/RM_C28_detection/finished/"        # trainval: 226449, train: 203804, val: 22645, test: 25162, all: 251611
+    # args.input_dir = "/yuanhuan/data/image/RM_C28_detection/safezone/"        # trainval: 70813, train: 63731, val: 7082, test: 7869, all: 78682
+    # args.input_dir = "/yuanhuan/data/image/RM_C28_detection/china/"           # trainval: 221949, train: 199754, val: 22195, test: 24662, all: 246611
     # args.input_dir = "/yuanhuan/data/image/RM_C28_detection/canada/"          # trainval: 29720, train: 26748, val: 2972, test: 3303, all: 33023
-    args.input_dir = "/yuanhuan/data/image/RM_C28_detection/america/"         # trainval: 54946, train: 49451, val: 5495, test: 6106, all: 61052
+    # args.input_dir = "/yuanhuan/data/image/RM_C28_detection/america/"         # trainval: 54946, train: 49451, val: 5495, test: 6106, all: 61052
+    # args.input_dir = "/yuanhuan/data/image/RM_C28_detection/america_new/"     # trainval: 32863, train: 29576, val: 3287, test: 3652, all: 36515
 
     # 数据集: ZG_ZHJYZ_detection，包含 car\bus\truck\plate\fuzzy_plate，龙门架视角 
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"    # trainval: 5846, train: 5261, val: 585, test: 650, all: 6496
@@ -94,6 +97,7 @@ if __name__ == "__main__":
     # args.input_dir =  "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu/"    # trainval: 18045, train: 16239, val: 1806, test: 2007, all: 20052
     # args.input_dir =  "/yuanhuan/data/image/ZG_ZHJYZ_detection/shenzhentiaoqiao/"    # trainval: 4538, train: 4084, val: 454, test: 505, all: 5043
     # args.input_dir =  "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu_night_diguangzhao/"    # trainval: 23315, train: 20983, val: 2332, test: 2591, all: 25906
+    # args.input_dir =  "/yuanhuan/data/image/ZG_ZHJYZ_detection/shaobing/"    # trainval: 10063, train: 9056, val: 1007, test: 1119, all: 11182
 
     # # 数据集: ZG_BMX_detection 智观斑马线数据集
     # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/daminghu/"    # trainval: 9218, train: 8296, val: 922, test: 1025, all: 10243
