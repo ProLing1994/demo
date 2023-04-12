@@ -107,7 +107,7 @@ class CaptureApi():
         bbox_info_dict['left_right_state'] = 'Stop'                         # 车辆状态（左右行）
         bbox_info_dict['left_right_state_frame_num'] = 0                    # 车辆状态（左右行）帧数
         bbox_info_dict['lane_line_info'] = []                               # 车道线状态
-        bbox_info_dict['lane_line_state'] = '-1'                             # 车道线状态
+        bbox_info_dict['lane_line_state'] = '-1'                            # 车道线状态
         bbox_info_dict['lane_line_state_frame_num'] = 0                     # 车道线状态帧数
         bbox_info_dict['frame_num'] = 0                                     # 车辆进入画面帧数
         bbox_info_dict['up_down_speed'] = 0                                 # 车辆速度（上下行）
@@ -139,7 +139,7 @@ class CaptureApi():
         bbox_state_dict['left_right_state'] = 'Stop'                        # 车辆状态（左右行）
         bbox_state_dict['left_right_state_frame_num'] = 0                   # 车辆状态（左右行）帧数
         bbox_state_dict['lane_line_info'] = []                              # 车道线状态
-        bbox_state_dict['lane_line_state'] = '-1'                            # 车道线状态
+        bbox_state_dict['lane_line_state'] = '-1'                           # 车道线状态
         bbox_state_dict['lane_line_state_frame_num'] = 0                    # 车道线状态帧数
         bbox_state_dict['frame_num'] = 0                                    # 车辆进入画面帧数
         bbox_state_dict['up_down_speed'] = 0                                # 车辆速度（上下行）
@@ -233,7 +233,7 @@ class CaptureApi():
             bbox_info_dict['up_down_state_frame_num'] = 0                       # 车辆状态（上下行）帧数
             bbox_info_dict['left_right_state'] = 'Stop'                         # 车辆状态（左右行）
             bbox_info_dict['left_right_state_frame_num'] = 0                    # 车辆状态（左右行）帧数
-            bbox_info_dict['lane_line_state'] = '-1'                             # 车道线状态
+            bbox_info_dict['lane_line_state'] = '-1'                            # 车道线状态
             bbox_info_dict['lane_line_info'] = []                               # 车道线状态
             bbox_info_dict['lane_line_state_frame_num'] = 0                     # 车道线状态帧数
             bbox_info_dict['frame_num'] = 0                                     # 车辆进入画面帧数
@@ -511,7 +511,7 @@ class CaptureApi():
                 bbox_state_dict['up_down_state_frame_num'] = 0                      # 车辆状态（上下行）帧数
                 bbox_state_dict['left_right_state'] = 'Stop'                        # 车辆状态（左右行）
                 bbox_state_dict['left_right_state_frame_num'] = 0                   # 车辆状态（左右行）帧数
-                bbox_state_dict['lane_line_state'] = '-1'                            # 车道线状态
+                bbox_state_dict['lane_line_state'] = '-1'                           # 车道线状态
                 bbox_state_dict['lane_line_info'] = []                              # 车道线状态
                 bbox_state_dict['lane_line_state_frame_num'] = 0                    # 车道线状态帧数
                 bbox_state_dict['frame_num'] = 0                                    # 车辆进入画面帧数

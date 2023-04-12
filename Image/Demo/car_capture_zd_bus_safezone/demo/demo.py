@@ -9,8 +9,8 @@ from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.Basic.utils.folder_tools import *
-from Image.Demo.car_capture_zd_bus.demo.RMAI_API import *
-from Image.Demo.car_capture_zd_bus.utils.draw_tools import draw_bbox_tracker, draw_bbox_info, draw_bbox_state, draw_capture_line
+from Image.Demo.car_capture_zd_bus_safezone.demo.RMAI_API import *
+from Image.Demo.car_capture_zd_bus_safezone.utils.draw_tools import draw_bbox_tracker, draw_bbox_info, draw_bbox_state, draw_capture_line
 
 
 def inference_video(args):
@@ -71,9 +71,9 @@ def inference_video(args):
             if args.write_result_per_frame_bool or args.write_result_video_bool:
                 # draw bbox
                 # img = draw_bbox_tracker(img, tracker_bboxes)
-                img = draw_bbox_info(img, bbox_info_list, mode='ltrb')
-                img = draw_bbox_state(img, bbox_state_map)
                 img = draw_capture_line(img, capture_points)
+                img = draw_bbox_info(img, bbox_info_list, capture_points, mode='ltrb')
+                img = draw_bbox_state(img, bbox_state_map)
 
             # 是否保存每一帧结果
             if args.write_result_per_frame_bool:
@@ -84,28 +84,6 @@ def inference_video(args):
             # 是否保存视频结果
             if args.write_result_video_bool:
                 output_video.write(img)
-
-            # 是否保存抓拍结果
-            if args.write_capture_crop_bool:
-                for idy in range(len(bbox_info_list)):
-                    bbox_info_idx = bbox_info_list[idy]
-
-                    if bbox_info_idx['waring_line_10m_cnt'] == 1:
-                        # 保存捕获结果
-                        output_capture_path = os.path.join(args.output_video_dir, 'capture', video_list[idx].replace(args.suffix, ''), '{}_{}_waring_line_10m.jpg'.format(bbox_info_idx['id'], frame_idx))
-                        create_folder(os.path.dirname(output_capture_path))
-                        cv2.imwrite(output_capture_path, img)
-                    if bbox_info_idx['alarm_line_5m_cnt'] == 1:
-                        # 保存捕获结果
-                        output_capture_path = os.path.join(args.output_video_dir, 'capture', video_list[idx].replace(args.suffix, ''), '{}_{}_alarm_line_5m_cnt.jpg'.format(bbox_info_idx['id'], frame_idx))
-                        create_folder(os.path.dirname(output_capture_path))
-                        cv2.imwrite(output_capture_path, img)
-
-                    if bbox_info_idx['alarm_line_3m_cnt'] == 1:
-                        # 保存捕获结果
-                        output_capture_path = os.path.join(args.output_video_dir, 'capture', video_list[idx].replace(args.suffix, ''), '{}_{}_alarm_line_3m_cnt.jpg'.format(bbox_info_idx['id'], frame_idx))
-                        create_folder(os.path.dirname(output_capture_path))
-                        cv2.imwrite(output_capture_path, img)
 
             # 是否保存日志
             if args.write_csv_bool:
@@ -125,28 +103,22 @@ def main():
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    # bm, demo
-    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/ZD_C28/avi文件/后向C28/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/90038/后向C28/"
-    args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_AD_BUS/avi/20210220_20210419/C28_mini/BL2-BL3/"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/90038/BL2-BL3/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_AD_BUS/avi/20210220_20210419/C28_mini/BL4-BL5/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/90038/BL4-BL5/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/ZD_C28/avi文件/前向C28/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/90038/前向C28/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_AD_BUS/avi/20210220_20210419/C28_mini/FL2-FL3/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/90038/FL2-FL3/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_AD_BUS/avi/20210220_20210419/C28_mini/FL4-FL5/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/90038/FL4-FL5/"
+    # zd, safezone, demo
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/ZD_safezone_C28/avi/moni_0329/校车靠右边车道（0米）"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_safezone_C28/moni_0329/校车靠右边车道（0米）"
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/ZD_safezone_C28/avi/moni_0329/校车靠左边车道（1米）"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_safezone_C28/moni_0329/校车靠左边车道（1米）"
+    args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/ZD_safezone_C28/avi/moni_0329/校车倾斜"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_safezone_C28/moni_0329/校车倾斜"
 
-    # args.suffix = '.avi'
-    args.suffix = '.mp4'
+    args.suffix = '.avi'
+    # args.suffix = '.mp4'
 
     # 是否保存视频结果
     args.write_result_video_bool = True
     # 是否保存每一帧结果
-    args.write_result_per_frame_bool = True
-    # args.write_result_per_frame_bool = False
+    # args.write_result_per_frame_bool = True
+    args.write_result_per_frame_bool = False
     # 是否保存抓拍结果
     args.write_capture_crop_bool = True
     # 是否保存日志
