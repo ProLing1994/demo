@@ -49,8 +49,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/ZD_safezone_C28/avi/moni_0329/校车靠左边车道（1米）/"
-    args.output_video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/ZD_safezone_C28/avi/moni_0329/jpg/"
+    args.video_dir = "/mnt/huanyuan2/data/image/test/"
+    args.output_video_dir = "/mnt/huanyuan2/data/image/test/jpg/"
     # args.suffix = '.mp4'
     args.suffix = '.avi'
     # args.frame_strp = 25
