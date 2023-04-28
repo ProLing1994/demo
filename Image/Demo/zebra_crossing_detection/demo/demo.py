@@ -10,7 +10,7 @@ from tqdm import tqdm
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.Basic.utils.folder_tools import *
 from Image.Demo.zebra_crossing_detection.demo.RMAI_API import *
-from Image.Demo.zebra_crossing_detection.utils.draw_tools import draw_bbox_info
+from Image.Demo.zebra_crossing_detection.utils.draw_tools import draw_bbox_info, draw_zebra
 
 
 def inference_video(args):
@@ -61,14 +61,19 @@ def inference_video(args):
             #     print()
 
             # capture api
-            tracker_bboxes, bbox_info_list = capture_api.run(img, frame_idx)
+            load_xml_dir = os.path.join(args.load_xml_dir, video_list[idx].replace(args.suffix, ''))
+            tracker_bboxes, bbox_info_list = capture_api.run(img, args.load_xml_bool, load_xml_dir, video_list[idx].replace(args.suffix, '_{:0>5d}.jpg'.format(frame_idx)))
 
             # 是否保存每一帧结果
-            if args.write_result_per_frame_bool:
+            if args.write_result_per_frame_bool or args.write_result_video_bool:
                 # draw bbox
                 img = draw_bbox_info(img, bbox_info_list, mode='ltrb')
 
-                output_img_path = os.path.join(args.output_video_dir, video_list[idx].replace(args.suffix, ''), video_list[idx].replace(args.suffix, '_{}.jpg'.format(frame_idx)))
+                # if args.load_zebra_bool:
+                #     img = draw_zebra(img, args.load_zebra_json_dir, video_list[idx].replace(args.suffix, '.json'))
+
+            if args.write_result_per_frame_bool:
+                output_img_path = os.path.join(args.output_video_dir, video_list[idx].replace(args.suffix, ''), video_list[idx].replace(args.suffix, '_{:0>5d}.jpg'.format(frame_idx)))
                 create_folder(os.path.dirname(output_img_path))
                 cv2.imwrite(output_img_path, img)
 
@@ -102,17 +107,25 @@ def main():
     args = parser.parse_args()
 
     # zg, demo
-    args.video_dir = "/mnt/huanyuan2/data/image/ZG_BMX_detection/banmaxian_test_video/ZG_RongHeng/avi视频/test/"
-    args.output_video_dir = "/home/huanyuan/temp/pc_demo/yolov6_test/"
-    args.suffix = '.avi'
+    args.video_dir = "/mnt/huanyuan/temp/智观数据/展会/demo_car_person/"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/智观数据/展会/demo_car_person/"
+    # args.suffix = '.avi'
+    args.suffix = '.mp4'
 
     # 是否保存视频结果
     args.write_result_video_bool = True
     # 是否保存每一帧结果
-    args.write_result_per_frame_bool = True
+    args.write_result_per_frame_bool = False
     # 是否保存日志
     args.write_csv_bool = True
-
+    
+    # load xml dir
+    args.load_xml_bool = True
+    args.load_xml_dir = "/mnt/huanyuan/temp/智观数据/展会/demo_car_person/jpg/refine_xml"
+    # load zebra json
+    # args.load_zebra_bool = True
+    # args.load_zebra_json_dir = "/mnt/huanyuan/temp/智观数据/展会/demo_car_person/jpg/zebra_json"
+    
     inference_video(args)
 
 if __name__ == '__main__':

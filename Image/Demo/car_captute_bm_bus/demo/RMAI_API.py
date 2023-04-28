@@ -31,6 +31,10 @@ class CaptureApi():
         self.image_width = 1920
         self.image_height = 1080
 
+        # custom id 
+        # self.custom_id = 1448
+        self.custom_id = 3928
+
         # detector
         self.ssd_bool = False
         self.ssd_caffe_bool = False
@@ -66,10 +70,15 @@ class CaptureApi():
         self.update_state_stable_loc_alpha = float(0.6)   # 平滑车辆框参数
 
         # 抓拍区域
-        self.capture_points = [(780, 190), (1070, 175), (1345, 190), (1730, 710), (330, 720)]
+        if self.custom_id == 1448:
+            self.capture_points = [(780, 190), (1070, 175), (1345, 190), (1730, 710), (330, 720)]
+        elif self.custom_id == 3928:
+            self.capture_points = [(780, 190), (1070, 175), (1345, 190), (1496, 404), (1730, 710), (330, 720), (613, 387)]
+
         self.alarm_left_threshold = [10, 200]
         self.alarm_right_threshold = [10, 200]
         self.alarm_top_threshold = [25, 200]
+        self.alarm_lane_line_autio = 0.05
 
     def param_init(self):
         self.params_dict = {}
@@ -83,6 +92,9 @@ class CaptureApi():
         bbox_info_dict['up_down_state_frame_num'] = 0                       # 车辆状态（上下行）帧数
         bbox_info_dict['left_right_state'] = 'Stop'                         # 车辆状态（左右行）
         bbox_info_dict['left_right_state_frame_num'] = 0                    # 车辆状态（左右行）帧数
+        bbox_info_dict['lane_line_info'] = []                               # 车道线状态
+        bbox_info_dict['lane_line_state'] = '-1'                            # 车道线状态
+        bbox_info_dict['lane_line_state_frame_num'] = 0                     # 车道线状态帧数
         bbox_info_dict['frame_num'] = 0                                     # 车辆进入画面帧数
         bbox_info_dict['up_down_speed'] = 0                                 # 车辆速度（上下行）
         bbox_info_dict['left_right_speed'] = 0                              # 车辆速度（左右行）
@@ -119,6 +131,9 @@ class CaptureApi():
         bbox_state_dict['up_down_state_frame_num'] = 0                      # 车辆状态（上下行）帧数
         bbox_state_dict['left_right_state'] = 'Stop'                        # 车辆状态（左右行）
         bbox_state_dict['left_right_state_frame_num'] = 0                   # 车辆状态（左右行）帧数
+        bbox_state_dict['lane_line_info'] = []                              # 车道线状态
+        bbox_state_dict['lane_line_state'] = '-1'                           # 车道线状态
+        bbox_state_dict['lane_line_state_frame_num'] = 0                    # 车道线状态帧数
         bbox_state_dict['frame_num'] = 0                                    # 车辆进入画面帧数
         bbox_state_dict['up_down_speed'] = 0                                # 车辆速度（上下行）
         bbox_state_dict['left_right_speed'] = 0                             # 车辆速度（左右行）
@@ -218,6 +233,9 @@ class CaptureApi():
             bbox_info_dict['up_down_state_frame_num'] = 0                       # 车辆状态（上下行）帧数
             bbox_info_dict['left_right_state'] = 'Stop'                         # 车辆状态（左右行）
             bbox_info_dict['left_right_state_frame_num'] = 0                    # 车辆状态（左右行）帧数
+            bbox_info_dict['lane_line_state'] = '-1'                            # 车道线状态
+            bbox_info_dict['lane_line_info'] = []                               # 车道线状态
+            bbox_info_dict['lane_line_state_frame_num'] = 0                     # 车道线状态帧数
             bbox_info_dict['frame_num'] = 0                                     # 车辆进入画面帧数
             bbox_info_dict['up_down_speed'] = 0                                 # 车辆速度（上下行）
             bbox_info_dict['left_right_speed'] = 0                              # 车辆速度（左右行）
@@ -339,8 +357,12 @@ class CaptureApi():
                     car_bottom_y = bbox_state_idy['stable_loc'][3]
 
                     # capture line left
-                    capture_point_left_top = self.capture_points[0]
-                    capture_point_left_bottom = self.capture_points[4]
+                    if self.custom_id == 1448:
+                        capture_point_left_top = self.capture_points[0]
+                        capture_point_left_bottom = self.capture_points[4]
+                    elif self.custom_id == 3928:
+                        capture_point_left_top = self.capture_points[0]
+                        capture_point_left_bottom = self.capture_points[5]
                     # y = kx + b
                     capture_line_left_k = float(capture_point_left_top[1] - capture_point_left_bottom[1]) / float(capture_point_left_top[0] - capture_point_left_bottom[0] + 1e-5);
                     capture_line_left_b = float(capture_point_left_top[1] - capture_point_left_top[0] * capture_line_left_k);
@@ -348,8 +370,12 @@ class CaptureApi():
                     bbox_state_idy['dist_capture_line_left'] = (-1) * ((car_bottom_y - capture_line_left_b) / (capture_line_left_k + 1e-5) - car_center_x)
 
                     # capture line right
-                    capture_point_right_top = self.capture_points[2]
-                    capture_point_right_bottom = self.capture_points[3]
+                    if self.custom_id == 1448:
+                        capture_point_right_top = self.capture_points[2]
+                        capture_point_right_bottom = self.capture_points[3]
+                    elif self.custom_id == 3928:
+                        capture_point_right_top = self.capture_points[2]
+                        capture_point_right_bottom = self.capture_points[4]
                     # y = kx + b
                     capture_line_right_k = float(capture_point_right_top[1] - capture_point_right_bottom[1]) / float(capture_point_right_top[0] - capture_point_right_bottom[0] + 1e-5);
                     capture_line_right_b = float(capture_point_right_top[1] - capture_point_right_top[0] * capture_line_right_k);
@@ -375,10 +401,83 @@ class CaptureApi():
                     # dist
                     bbox_state_idy['dist_capture_line_right_top'] = (-1) * ( car_center_x * (capture_line_right_top_k + 1e-5) + capture_line_right_top_b - car_bottom_y )
 
+                    # 车道线度量
+                    # 记录车道线
+                    # [[point_1, point_2, point_k, point_b, point_intersect], ]
+                    bbox_state_idy['lane_line_info'] = []
+                    bbox_state_idy['lane_line_info'] = []
+                    if self.custom_id == 1448:
+                        bbox_state_idy['lane_line_info'].append([self.capture_points[0], self.capture_points[2], 0, 0, [0, 0]])
+                        bbox_state_idy['lane_line_info'].append([self.capture_points[4], self.capture_points[3], 0, 0, [0, 0]])
+                    elif self.custom_id == 3928:
+                        bbox_state_idy['lane_line_info'].append([self.capture_points[0], self.capture_points[2], 0, 0, [0, 0]])
+                        bbox_state_idy['lane_line_info'].append([self.capture_points[6], self.capture_points[3], 0, 0, [0, 0]])
+                        bbox_state_idy['lane_line_info'].append([self.capture_points[5], self.capture_points[4], 0, 0, [0, 0]])
+
+                    # 更新车道线截距斜率
+                    for lane_line_idx in range(len(bbox_state_idy['lane_line_info'])):
+                        point_1 = bbox_state_idy['lane_line_info'][lane_line_idx][0]
+                        point_2 = bbox_state_idy['lane_line_info'][lane_line_idx][1]
+
+                        point_k = float(point_1[1] - point_2[1]) / float(point_1[0] - point_2[0] + 1e-5);
+                        point_b = float(point_1[1] - point_1[0] * point_k);
+
+                        bbox_state_idy['lane_line_info'][lane_line_idx][2] = point_k
+                        bbox_state_idy['lane_line_info'][lane_line_idx][3] = point_b
+                    
+                    if ( bbox_state_idy['dist_capture_line_right'] < 0 and bbox_state_idy['dist_capture_line_left'] > 0 ):
+
+                        # 更新车道线交点坐标
+                        ## 获得平行线(capture_line_right_k, b_intersect)
+                        b_intersect = car_bottom_y - (capture_line_right_k * car_center_x)
+
+                        ## 获得交点坐标
+                        for lane_line_idx in range(len(bbox_state_idy['lane_line_info'])):
+                            point_k = bbox_state_idy['lane_line_info'][lane_line_idx][2]
+                            point_b = bbox_state_idy['lane_line_info'][lane_line_idx][3]
+
+                            point_intersect_x = (point_b - b_intersect)/(capture_line_right_k - point_k)
+                            point_intersect_y = capture_line_right_k * point_intersect_x + b_intersect
+
+                            bbox_state_idy['lane_line_info'][lane_line_idx][4] = [int(point_intersect_x + 0.5), int(point_intersect_y + 0.5)]
+                        
+                        ## 获得车道线
+                        bbox_lane_line = -1
+                        for lane_line_idx in range(len(bbox_state_idy['lane_line_info']) - 1):
+                            lane_line_num = len(bbox_state_idy['lane_line_info']) - 1 - lane_line_idx
+                            point_intersect_top = bbox_state_idy['lane_line_info'][lane_line_idx][4]
+                            point_intersect_bottom = bbox_state_idy['lane_line_info'][lane_line_idx + 1][4]
+
+                            if (car_bottom_y > point_intersect_top[1] and car_bottom_y <= point_intersect_bottom[1]):
+                                # 如果 （车辆底边位置 y 到 车道线上沿 长度）/ 车道线长度 > 0.95，则认为是下一个车道
+                                # 如果 （车辆底边位置 y 到 车道线上沿 长度）/ 车道线长度 <= 0.95，则认为是当前车道
+                                if ((car_bottom_y - point_intersect_top[1]) / (point_intersect_bottom[1] - point_intersect_top[1])) > (1 - self.alarm_lane_line_autio):
+                                    bbox_lane_line = max(1, lane_line_num - 1)
+                                else:
+                                    bbox_lane_line = lane_line_num
+
+                            # 边缘车道特殊处理，防止出界
+                            if lane_line_num == (len(bbox_state_idy['lane_line_info']) - 1) and car_bottom_y <= point_intersect_top[1]:
+                                if (-1 * (car_bottom_y - point_intersect_top[1])) / (point_intersect_bottom[1] - point_intersect_top[1]) < self.alarm_lane_line_autio:
+                                    bbox_lane_line = lane_line_num
+
+                        # 更新车道状态
+                        if bbox_state_idy['lane_line_state'] != bbox_lane_line:
+                            if bbox_state_idy['lane_line_state_frame_num'] > 0:
+                                bbox_state_idy['lane_line_state_frame_num'] -= 1
+                            else:
+                                bbox_state_idy['lane_line_state'] = bbox_lane_line
+                                bbox_state_idy['lane_line_state_frame_num'] = 0
+                        else:
+                            bbox_state_idy['lane_line_state_frame_num'] = min( bbox_state_idy['lane_line_state_frame_num'] + 1 , self.update_state_num_threshold)
+
                     bbox_info_idx['up_down_state'] = bbox_state_idy['up_down_state']
                     bbox_info_idx['up_down_state_frame_num'] = bbox_state_idy['up_down_state_frame_num']
                     bbox_info_idx['left_right_state'] = bbox_state_idy['left_right_state']
                     bbox_info_idx['left_right_state_frame_num'] = bbox_state_idy['left_right_state_frame_num']
+                    bbox_info_idx['lane_line_info'] = bbox_state_idy['lane_line_info']
+                    bbox_info_idx['lane_line_state'] = bbox_state_idy['lane_line_state']
+                    bbox_info_idx['lane_line_state_frame_num'] = bbox_state_idy['lane_line_state_frame_num']
                     bbox_info_idx['stable_loc'] = bbox_state_idy['stable_loc']
                     bbox_info_idx['frame_num'] = bbox_state_idy['frame_num']
                     bbox_info_idx['up_down_speed'] = bbox_state_idy['up_down_speed']
@@ -414,6 +513,9 @@ class CaptureApi():
                 bbox_state_dict['up_down_state_frame_num'] = 0                      # 车辆状态（上下行）帧数
                 bbox_state_dict['left_right_state'] = 'Stop'                        # 车辆状态（左右行）
                 bbox_state_dict['left_right_state_frame_num'] = 0                   # 车辆状态（左右行）帧数
+                bbox_state_dict['lane_line_state'] = '-1'                           # 车道线状态
+                bbox_state_dict['lane_line_info'] = []                              # 车道线状态
+                bbox_state_dict['lane_line_state_frame_num'] = 0                    # 车道线状态帧数
                 bbox_state_dict['frame_num'] = 0                                    # 车辆进入画面帧数
                 bbox_state_dict['up_down_speed'] = 0                                # 车辆速度（上下行）
                 bbox_state_dict['left_right_speed'] = 0                             # 车辆速度（左右行）
@@ -476,11 +578,18 @@ class CaptureApi():
             car_right_x = bbox_state_idy['loc'][2]
             car_bottom_y = bbox_state_idy['loc'][3]
 
-            capture_point_left_top = self.capture_points[0]
-            capture_point_left_bottom = self.capture_points[4]
-            capture_point_right_top = self.capture_points[2]
-            capture_point_right_bottom = self.capture_points[3]
-            capture_point_middle_top = self.capture_points[1]
+            if self.custom_id == 1448:
+                capture_point_left_top = self.capture_points[0]
+                capture_point_left_bottom = self.capture_points[4]
+                capture_point_right_top = self.capture_points[2]
+                capture_point_right_bottom = self.capture_points[3]
+                capture_point_middle_top = self.capture_points[1]
+            elif self.custom_id == 3928:
+                capture_point_left_top = self.capture_points[0]
+                capture_point_left_bottom = self.capture_points[5]
+                capture_point_right_top = self.capture_points[2]
+                capture_point_right_bottom = self.capture_points[4]
+                capture_point_middle_top = self.capture_points[1]
 
             # 如果车辆向右边行驶/向左边行驶
             # left_warning/left_alarm

@@ -96,18 +96,24 @@ class BaseTransform:
 
 
 def linear_assignment(cost_matrix):
-    try:
-        import lap
-        _, x, y = lap.lapjv(cost_matrix, extend_cost=True)
+    # try:
+    #     import lap
+    #     _, x, y = lap.lapjv(cost_matrix, extend_cost=True)
 
-        return np.array([[y[i], i] for i in x if i >= 0])  #
-    except ImportError:
+    #     return np.array([[y[i], i] for i in x if i >= 0])  #
+    # except ImportError:
 
-        from scipy.optimize import linear_sum_assignment
+    #     from scipy.optimize import linear_sum_assignment
 
-        x, y = linear_sum_assignment(cost_matrix)
+    #     x, y = linear_sum_assignment(cost_matrix)
 
-        return np.array(list(zip(x, y)))
+    #     return np.array(list(zip(x, y)))
+
+    from scipy.optimize import linear_sum_assignment
+
+    x, y = linear_sum_assignment(cost_matrix)
+
+    return np.array(list(zip(x, y)))
 
 
 def IOU(xmin1, ymin1, xmax1, ymax1, xmin2, ymin2, xmax2, ymax2):

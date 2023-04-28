@@ -450,7 +450,7 @@ class CaptureApi():
                         ## 获得车道线
                         bbox_lane_line = -1
                         for lane_line_idx in range(len(bbox_state_idy['lane_line_info']) - 1):
-                            lane_line_num = 5 - lane_line_idx
+                            lane_line_num = (len(bbox_state_idy['lane_line_info']) - 1) - lane_line_idx
                             point_intersect_top = bbox_state_idy['lane_line_info'][lane_line_idx][4]
                             point_intersect_bottom = bbox_state_idy['lane_line_info'][lane_line_idx + 1][4]
 
@@ -461,7 +461,7 @@ class CaptureApi():
                                     if ((car_bottom_y - point_intersect_top[1]) / (point_intersect_bottom[1] - point_intersect_top[1])) > self.alarm_lane_line_autio:
                                         bbox_lane_line = lane_line_num
                                     else:
-                                        bbox_lane_line = min(5, lane_line_num + 1)
+                                        bbox_lane_line = min((len(bbox_state_idy['lane_line_info']) - 1), lane_line_num + 1)
                                 else:
                                     # 如果 （车辆底边位置 y 到 车道线上沿 长度）/ 车道线长度 > 0.75，则认为是下一个车道
                                     # 如果 （车辆底边位置 y 到 车道线上沿 长度）/ 车道线长度 <= 0.75，则认为是当前车道
@@ -471,10 +471,11 @@ class CaptureApi():
                                         bbox_lane_line = lane_line_num
                             
                             # 边缘车道特殊处理，防止出界
-                            if lane_line_num == 5 and car_bottom_y <= point_intersect_top[1]:
+                            if lane_line_num == (len(bbox_state_idy['lane_line_info']) - 1) and car_bottom_y <= point_intersect_top[1]:
                                 if (-1 * (car_bottom_y - point_intersect_top[1])) / (point_intersect_bottom[1] - point_intersect_top[1]) < self.alarm_lane_line_autio:
                                     bbox_lane_line = lane_line_num
-    
+
+                        # 更新车道状态
                         if bbox_state_idy['lane_line_state'] != bbox_lane_line:
                             if bbox_state_idy['lane_line_state_frame_num'] > 0:
                                 bbox_state_idy['lane_line_state_frame_num'] -= 1

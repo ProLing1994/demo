@@ -1,8 +1,11 @@
 from collections import Counter
 import cv2
 import numpy as np
+import os
+import pickle
 import sys 
 import random
+import xml.etree.ElementTree as ET
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
@@ -47,6 +50,7 @@ class CaptureApi():
 
         self.image_width = 2592
         self.image_height = 1920
+        # self.image_height = 1520
         # self.image_width = 1280
         # self.image_height = 720
 
@@ -223,6 +227,7 @@ class CaptureApi():
         capture_dict = {}                                                   # 抓怕
         capture_dict['id'] = 0                                              # 抓怕id
         capture_dict['flage'] = ''                                          # 抓拍标志信息
+        capture_dict['plate_ocr'] = 0                                       # 抓拍车牌
         capture_dict['capture_frame_num'] = 0                               # 抓拍帧数
         capture_dict['capture_bool'] = False                                # 抓拍成功标志
 
@@ -249,7 +254,7 @@ class CaptureApi():
         self.param_init()
 
 
-    def run(self, img, frame_idx):
+    def run(self, img, frame_idx, load_xml_bool, load_xml_dir, img_name, load_pkl_bool, load_pkl_dir, pkl_name):
 
         # info 
         image_width = img.shape[1]
@@ -258,8 +263,21 @@ class CaptureApi():
         assert self.image_width == image_width
         assert self.image_height == image_height
 
+        # load_pkl
+        self.load_pkl_bool = load_pkl_bool
+        if load_pkl_bool:
+            pkl_path = os.path.join(load_pkl_dir, pkl_name)
+            f = open(pkl_path, 'rb')
+            self.plate_dict = pickle.load(f)
+            f.close()
+
         # detector
-        bboxes = self.detector.detect( img, with_score=True )
+        self.load_xml_bool = load_xml_bool
+        if load_xml_bool:
+            # 'car', 'bus', 'truck', 'license_plate'
+            bboxes, self.plate_list= self.load_xml(load_xml_dir, img_name)
+        else:
+            bboxes = self.detector.detect( img, with_score=True )
 
         # tracker 
         tracker_bboxes = self.update_tracker_bboxes( bboxes )
@@ -288,6 +306,56 @@ class CaptureApi():
 
         return tracker_bboxes, bbox_info_list, bbox_state_map, capture_line, capture_dict, capture_res_list
 
+
+    def load_xml(self, load_xml_dir, img_name):
+        bboxes = {}
+        plate_list = []
+
+        # read xml
+        xml_name = img_name.replace('.jpg', '.xml')
+        xml_path = os.path.join(load_xml_dir, xml_name)
+        tree = ET.parse(xml_path)  # ET是一个 xml 文件解析库，ET.parse（）打开 xml 文件，parse--"解析"
+        root = tree.getroot()   # 获取根节点
+
+        for object in root.findall('object'):
+            # name
+            classname = str(object.find('name').text)
+
+            # bbox
+            bbox = object.find('bndbox')
+            pts = ['xmin', 'ymin', 'xmax', 'ymax']
+            bndbox = []
+            for i, pt in enumerate(pts):
+                cur_pt = int(float(bbox.find(pt).text)) - 1
+                bndbox.append(cur_pt)
+            bndbox.append(1.0)
+
+            if classname == 'car':
+                if 'car' not in bboxes:
+                    bboxes['car'] = []
+                bboxes['car'].append(bndbox)
+            elif classname == 'bus':
+                if 'bus' not in bboxes:
+                    bboxes['bus'] = []
+                bboxes['bus'].append(bndbox)
+            elif classname == 'truck':
+                if 'truck' not in bboxes:
+                    bboxes['truck'] = []
+                bboxes['truck'].append(bndbox)
+            elif 'plate' in classname:
+                if 'license_plate' not in bboxes:
+                    bboxes['license_plate'] = []
+                bboxes['license_plate'].append(bndbox)
+
+                classname_list = classname.split('_')
+                if len(classname_list) > 1:
+                    plate_num = classname_list[-1]
+                plate_list.append({'num': plate_num, 'bbox': bndbox})
+            else:
+                print()
+
+        return bboxes, plate_list
+    
 
     def update_tracker_bboxes(self, bboxes):
         if self.merge_class_bool:
@@ -433,8 +501,29 @@ class CaptureApi():
 
                         plate_ocr, plate_scors_list = self.lpr.run(crop_img)
                         
-                        bbox_info_dict['plate_ocr'] = plate_ocr
-                        bbox_info_dict['plate_ocr_score'] = np.array(plate_scors_list).mean()
+                        if self.load_xml_bool:
+                            # {'num': plate_num, 'bbox': bndbox}
+                            bool_find_plate_num = False
+                            for idy in range(len(self.plate_list)):
+                                bndbox = self.plate_list[idy]['bbox']
+                                # 使用 IOU 判断
+                                intersect_iou = intersect(Latent_plate, bndbox)
+                                if intersect_iou > 0.3:
+                                    bbox_info_dict['plate_ocr'] = self.plate_list[idy]['num']
+                                    bbox_info_dict['plate_ocr_score'] = 1.0
+                                    bool_find_plate_num = True
+                                    break
+                            
+                            if bool_find_plate_num == False:
+                                bbox_info_dict['plate_ocr'] = plate_ocr
+                                bbox_info_dict['plate_ocr_score'] = np.array(plate_scors_list).mean()
+                        else:                            
+                            if self.load_pkl_bool and str(bbox_info_dict['id']) in self.plate_dict.keys():
+                                bbox_info_dict['plate_ocr'] = self.plate_dict[str(bbox_info_dict['id'])]
+                                bbox_info_dict['plate_ocr_score'] = 1.0
+                            else:
+                                bbox_info_dict['plate_ocr'] = plate_ocr
+                                bbox_info_dict['plate_ocr_score'] = np.array(plate_scors_list).mean()
                 
             bbox_info_list.append(bbox_info_dict)
 
@@ -740,6 +829,7 @@ class CaptureApi():
             capture_dict = {}                                                   # 抓怕
             capture_dict['id'] = bbox_state_idy['id']                           # 抓怕id
             capture_dict['flage'] = ''                                          # 抓拍标志信息
+            capture_dict['plate_ocr'] = 0                                       # 抓拍车牌
             capture_dict['capture_frame_num'] = 0                               # 抓拍帧数
             capture_dict['capture_bool'] = False                                # 抓拍成功标志
 
@@ -857,6 +947,7 @@ class CaptureApi():
 
                                     self.params_dict['capture_list'].append(capture_res_dict['plate_ocr'])
                                     capture_res_list.append(capture_res_dict)
+                                    capture_dict_idy['plate_ocr'] = capture_res_dict['plate_ocr']
                                 
 
         return capture_res_list

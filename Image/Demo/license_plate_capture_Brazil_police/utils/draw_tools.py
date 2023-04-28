@@ -6,7 +6,7 @@ color_dict = {
                 "roi_capture_area": (255, 255, 255),
             }
 
-draw_show_frame_num_threshold = 25
+draw_alarm_frame_num_threshold = 25
 draw_frame_num_threshold = 50
 
 capture_draw_dict = {}
@@ -72,7 +72,7 @@ def draw_bbox_info(img, bbox_info, capture_list=None, mode='xywh'):
 
         # 报警状态
         capture_bool = False
-        if capture_draw_idy['draw_frame_num'] < draw_show_frame_num_threshold:
+        if capture_draw_idy['draw_frame_num'] < draw_alarm_frame_num_threshold:
             capture_bool = True
 
         text = "{}_{}".format( capture_draw_idy['num'], capture_draw_idy['column'] )
@@ -94,7 +94,7 @@ def draw_bbox_info(img, bbox_info, capture_list=None, mode='xywh'):
         # 报警状态
         capture_bool = False
         for key, capture_draw_idy in capture_draw_container.items():
-            if bbox_info_idx['id'] == capture_draw_idy['id'] and capture_draw_idy['draw_frame_num'] < draw_show_frame_num_threshold:
+            if bbox_info_idx['id'] == capture_draw_idy['id'] and capture_draw_idy['draw_frame_num'] < draw_alarm_frame_num_threshold:
                 capture_bool = True
 
         # license_plate

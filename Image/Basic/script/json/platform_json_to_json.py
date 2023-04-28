@@ -29,7 +29,8 @@ def platform_json_2_json(args):
 
         # jpg
         jpg_name = str(json_name).replace('.json', '.jpg')
-        assert jpg_name in jpg_list
+        if jpg_name not in jpg_list:
+            continue
 
         # read json
         with open(json_path, 'r', encoding='UTF-8') as fr:
@@ -44,7 +45,9 @@ def platform_json_2_json(args):
             label = track['label']
             points = track['points']
             type = track['type']
-            assert type == "polygon"
+            
+            if type != args.type:
+                continue
 
             points_list = []
             for x, y in zip(points[::2], points[1::2]):
@@ -63,8 +66,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.jpg_dir = "/mnt/huanyuan/model/image/lpr/zd/test_0920/"
-    args.platform_json_dir = "/mnt/huanyuan/model/image/lpr/zd/test_0920/"
-    args.json_dir = "/mnt/huanyuan/model/image/lpr/zd/test_0920_res/"
-
+    args.jpg_dir = "/mnt/huanyuan/temp/safeisland/data_safeisland/JPEGImages/"
+    args.platform_json_dir = "/mnt/huanyuan/temp/safeisland/data_safeisland/Platform_Json/"
+    args.json_dir = "/mnt/huanyuan/temp/safeisland/data_safeisland/Json_polyline/"
+    # args.type = "polygon"
+    args.type = "polyline"
     platform_json_2_json(args)

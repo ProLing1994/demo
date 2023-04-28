@@ -92,12 +92,12 @@ def inference_video(args):
 
                     if bbox_info_idx['warning_cnt'] == 1:
                         # 保存捕获结果
-                        output_capture_path = os.path.join(args.output_video_dir, 'capture', video_list[idx].replace(args.suffix, ''), '{}_{}_warning.jpg'.format(bbox_info_idx['id'], frame_idx))
+                        output_capture_path = os.path.join(args.output_video_dir, 'capture', video_list[idx].replace(args.suffix, ''), '{}_{}_{}_warning.jpg'.format(bbox_info_idx['id'], frame_idx, bbox_info_idx['lane_line_state']))
                         create_folder(os.path.dirname(output_capture_path))
                         cv2.imwrite(output_capture_path, img)
                     if bbox_info_idx['alarm_cnt'] == 1:
                         # 保存捕获结果
-                        output_capture_path = os.path.join(args.output_video_dir, 'capture', video_list[idx].replace(args.suffix, ''), '{}_{}_alarm.jpg'.format(bbox_info_idx['id'], frame_idx))
+                        output_capture_path = os.path.join(args.output_video_dir, 'capture', video_list[idx].replace(args.suffix, ''), '{}_{}_{}_alarm.jpg'.format(bbox_info_idx['id'], frame_idx, bbox_info_idx['lane_line_state']))
                         create_folder(os.path.dirname(output_capture_path))
                         cv2.imwrite(output_capture_path, img)
 
@@ -119,15 +119,21 @@ def main():
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    # bm, demo
+    # bm, 1448，demo
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/BM_C28/avi文件/2M_正报数据_20221026_20221115/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/1448/2M_正报数据_20221026_20221115/"
+    # # args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/BM_C28/avi文件/2M_误报数据_雨天误报/"
+    # # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/1448/2M_误报数据_雨天误报/"
+    # # args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/BM_C28/avi文件/2M_误报数据_2022022/"
+    # # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/1448/2M_误报数据_2022022/"
+    # # args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/BM_C28/avi文件/difficult_sample/"
+    # # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/1448/difficult_sample/"
+
+    # bm, 3928，demo
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/BM_C28/avi文件/2M_正报数据_四车道_20221026_20221115/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/3928/2M_正报数据_四车道_20221026_20221115/"
     args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/BM_C28/avi文件/2M_正报数据_20221026_20221115/"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/1448/2M_正报数据_20221026_20221115/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/BM_C28/avi文件/2M_误报数据_雨天误报/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/1448/2M_误报数据_雨天误报/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/BM_C28/avi文件/2M_误报数据_2022022/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/1448/2M_误报数据_2022022/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/BM_C28/avi文件/difficult_sample/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/1448/difficult_sample/"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/3928/2M_正报数据_20221026_20221115/"
 
     args.suffix = '.avi'
     # args.suffix = '.mp4'

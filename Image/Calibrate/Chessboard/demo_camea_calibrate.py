@@ -41,12 +41,16 @@ def calibrate(args):
             # view the corners
             cv2.drawChessboardCorners(img, (w, h), cp_img, ret)
 
+            # mkdir 
+            if not os.path.exists(args.output_chessboard_corners_img_dir):
+                os.mkdir(args.output_chessboard_corners_img_dir)
+
             # output img
             output_img_path = os.path.join(args.output_chessboard_corners_img_dir, img_name)
             cv2.imwrite(output_img_path, img)
         else:
             print(img_name)
-            # os.remove(img_name)
+            # os.remove(img_path)
 
     # calibrate the camera
     ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(obj_points, img_points, gray_img.shape[::-1], None, None)
@@ -79,14 +83,23 @@ def calibrate(args):
         total_error += error
 
         # output img
-        cp_int = np.zeros((4 * w * 4 * h, 3), np.float32)
-        cp_int[:, :2] = np.mgrid[-2*w:2*w, -2*h:2*h].T.reshape(-1, 2)
+        # cp_int = np.zeros((4 * w * 4 * h, 3), np.float32)
+        # cp_int[:, :2] = np.mgrid[-2*w:2*w, -2*h:2*h].T.reshape(-1, 2)
+
+        cp_int = np.zeros((2 * w * 2 * h, 3), np.float32)
+        cp_int[:, :2] = np.mgrid[-1*w:1*w, -1*h:1*h].T.reshape(-1, 2)
+        cp_int = cp_int + [int(w/2), int(h/2), 0]
+
         img_world = cp_int * args.chessboard_size_per_grid
         img_point, _ = cv2.projectPoints(img_world, rvecs[idx], tvecs[idx], mtx, dist)
         for idy in range(len(img_point)):
             if int(img_point[idy][0][0]) >= 0 and int(img_point[idy][0][0]) <= img.shape[1] and int(img_point[idy][0][1]) >= 0 and int(img_point[idy][0][1]) <= img.shape[0]:
                 cv2.circle(img, (int(img_point[idy][0][0]), int(img_point[idy][0][1])), 5, (0, 0, 255), 10)
-        
+
+        # mkdir 
+        if not os.path.exists(args.output_calibrate_img_dir):
+            os.mkdir(args.output_calibrate_img_dir)
+
         img_name = img_list[idx]
         output_img_path = os.path.join(args.output_calibrate_img_dir, img_name)
         cv2.imwrite(output_img_path, img)
@@ -145,10 +158,12 @@ def solvePnP(args):
         img = cv2.imread(img_path)
 
         # PnP 算法获取旋转矩阵和平移向量
-        # 计算外参：所有棋盘格点
+        # # 计算外参：所有棋盘格点
         # _, rvecs, tvecs = cv2.solvePnP(obj_points[idx], img_points[idx], mtx, dist)
         # 计算外参：4个棋盘格点
-        _, rvecs, tvecs = cv2.solvePnP(np.array(obj_points[idx][[11,23,30,47], :]), np.array(img_points[idx][[11,23,30,47], :]), mtx, dist)
+        _, rvecs, tvecs = cv2.solvePnP(np.array(obj_points[idx][[27,28,29,38,39,40,49,50,51], :]), np.array(img_points[idx][[27,28,29,38,39,40,49,50,51], :]), mtx, dist)
+        # # 计算外参：4个棋盘格点
+        # _, rvecs, tvecs = cv2.solvePnP(np.array(obj_points[idx][[11,23,30,47], :]), np.array(img_points[idx][[11,23,30,47], :]), mtx, dist)
         # 计算外参：4个棋盘格点 P3P
         # _, rvecs, tvecs = cv2.solvePnP(np.array(obj_points[idx][[11,23,30,47], :]), np.array(img_points[idx][[11,23,30,47], :]), mtx, dist, flags = 3)
 
@@ -165,8 +180,13 @@ def solvePnP(args):
         print('Homogeneous_matrix:\n', rotation_t_Homogeneous_matrix)
 
         # output img
-        cp_int = np.zeros((4 * w * 4 * h, 3), np.float32)
-        cp_int[:, :2] = np.mgrid[-2*w:2*w, -2*h:2*h].T.reshape(-1, 2)
+        # cp_int = np.zeros((4 * w * 4 * h, 3), np.float32)
+        # cp_int[:, :2] = np.mgrid[-2*w:2*w, -2*h:2*h].T.reshape(-1, 2)
+        
+        cp_int = np.zeros((2 * w * 2 * h, 3), np.float32)
+        cp_int[:, :2] = np.mgrid[-1*w:1*w, -1*h:1*h].T.reshape(-1, 2)
+        cp_int = cp_int + [int(w/2), int(h/2), 0]
+
         img_world = cp_int * args.chessboard_size_per_grid
         img_point, _ = cv2.projectPoints(img_world, rvecs, tvecs, mtx, dist)
         for idy in range(len(img_point)):
@@ -176,8 +196,12 @@ def solvePnP(args):
             except:
                 pass
         
+        # mkdir 
+        if not os.path.exists(args.output_solvePnP_img_dir):
+            os.mkdir(args.output_solvePnP_img_dir)
+
         img_name = img_list[idx]
-        output_img_path = os.path.join(args.output_calibrate_img_dir, img_name)
+        output_img_path = os.path.join(args.output_solvePnP_img_dir, img_name)
         cv2.imwrite(output_img_path, img)
 
     print(("Average Error of Reproject: "), total_error / len(obj_points))
@@ -214,15 +238,22 @@ def threeD_to_twoD(args):
     # 计算外参：所有棋盘格点
     # _, rvecs, tvecs = cv2.solvePnP(cp_world, cp_img, mtx, dist)
     # 计算外参：4个棋盘格点
-    _, rvecs, tvecs = cv2.solvePnP(np.array(cp_world[[11,23,30,47], :]), np.array(cp_img[[11,23,30,47], :]), mtx, dist)
+    _, rvecs, tvecs = cv2.solvePnP(np.array(cp_world[[27,28,29,38,39,40,49,50,51], :]), np.array(cp_img[[27,28,29,38,39,40,49,50,51], :]), mtx, dist)
+    # 计算外参：4个棋盘格点
+    # _, rvecs, tvecs = cv2.solvePnP(np.array(cp_world[[11,23,30,47], :]), np.array(cp_img[[11,23,30,47], :]), mtx, dist)
     # 计算外参：4个棋盘格点 P3P
     # _, rvecs, tvecs = cv2.solvePnP(np.array(cp_world[[11,23,30,47], :]), np.array(cp_img[[11,23,30,47], :]), mtx, dist, flags = 3)
     print(rvecs)
     print(tvecs)
 
     # output img
-    cp_int = np.zeros((4 * w * 4 * h, 3), np.float32)
-    cp_int[:, :2] = np.mgrid[-2*w:2*w, -2*h:2*h].T.reshape(-1, 2)
+    # cp_int = np.zeros((4 * w * 4 * h, 3), np.float32)
+    # cp_int[:, :2] = np.mgrid[-2*w:2*w, -2*h:2*h].T.reshape(-1, 2)
+
+    cp_int = np.zeros((2 * w * 2 * h, 3), np.float32)
+    cp_int[:, :2] = np.mgrid[-1*w:1*w, -1*h:1*h].T.reshape(-1, 2)
+    cp_int = cp_int + [int(w/2), int(h/2), 0]
+    
     img_world = cp_int * args.chessboard_size_per_grid
     img_point, _ = cv2.projectPoints(img_world, rvecs, tvecs, mtx, dist)
     for idy in range(len(img_point)):
@@ -260,7 +291,8 @@ def undistort(args):
 
     # 去畸变
     img = cv2.undistort(img, mtx, dist)
-    cp_img_undistort = cv2.undistortPoints(cp_img[[0,7,40,47]], mtx, dist, P=mtx)
+    # cp_img_undistort = cv2.undistortPoints(cp_img[[0,7,40,47]], mtx, dist, P=mtx)
+    cp_img_undistort = cv2.undistortPoints(cp_img[[27,28,29,38,39,40,49,50,51]], mtx, dist, P=mtx)
     for idy in range(len(cp_img_undistort)):
         cv2.circle(img, (int(cp_img_undistort[idy][0][0]), int(cp_img_undistort[idy][0][1])), 5, (0, 0, 255), 10)
 
@@ -272,7 +304,8 @@ def undistort(args):
     # test 畸变系数归零 -> 推算外参（与带畸变，外参一致）
     ##########################################################
     wo_dist = np.array([0.0, 0.0, 0.0, 0.0, 0.0]).reshape(1,5)
-    _, wo_dist_rvecs, wo_dist_tvecs = cv2.solvePnP(np.array(cp_world[[0,7,40,47], :]), np.array(cp_img_undistort), mtx, wo_dist)
+    # _, wo_dist_rvecs, wo_dist_tvecs = cv2.solvePnP(np.array(cp_world[[0,7,40,47], :]), np.array(cp_img_undistort), mtx, wo_dist)
+    _, wo_dist_rvecs, wo_dist_tvecs = cv2.solvePnP(np.array(cp_world[[27,28,29,38,39,40,49,50,51], :]), np.array(cp_img_undistort), mtx, wo_dist)
     print(wo_dist_rvecs)
     print(wo_dist_tvecs)
 
@@ -332,14 +365,20 @@ if __name__ == '__main__':
     
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
-
-    args.chessboard_corner_shape = (8, 6)
-    args.chessboard_size_per_grid = 0.021
     
-    args.file_dir = "/mnt/huanyuan2/data/image/Calibrate/Chessboard/"
+    # 自定义标定板
+    # args.chessboard_corner_shape = (8, 6)
+    # args.chessboard_size_per_grid = 0.021
+
+    # 公司标定板
+    args.chessboard_corner_shape = (11, 8)
+    args.chessboard_size_per_grid = 0.025
+    
+    args.file_dir = "/mnt/huanyuan2/data/image/Calibrate/Chessboard/BM1448/"
     args.chessboard_img_dir = os.path.join(args.file_dir, "chessboard_img/" )
     args.output_chessboard_corners_img_dir = os.path.join(args.file_dir, "chessboard_corners_img/")
     args.output_calibrate_img_dir = os.path.join(args.file_dir, "calibrate_img/")
+    args.output_solvePnP_img_dir = os.path.join(args.file_dir, "solvePnP_img/")
     args.suffix = ".jpg"
 
     args.mtx_file = os.path.join(args.file_dir, "mtx.xml" )
@@ -347,16 +386,16 @@ if __name__ == '__main__':
 
     args.test_img_path = os.path.join(args.file_dir, "test.jpg")
 
-    # # 标定相机参数
-    # calibrate(args)
+    # 标定相机参数
+    calibrate(args)
 
-    # # solvePnP
-    # solvePnP(args)
+    # solvePnP
+    solvePnP(args)
 
-    # # 3D -> 2D
-    # threeD_to_twoD(args)
+    # 3D -> 2D
+    threeD_to_twoD(args)
 
-    # 去畸变
+    # # 去畸变
     undistort(args)
 
 

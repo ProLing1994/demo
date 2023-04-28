@@ -47,6 +47,14 @@ def json_2_platform_json(args):
             type = track['shape_type']
             assert type == "polygon"
 
+            # # special
+            # if len(points) > 10:
+            #     interval = int(len(points) / 10)
+            #     points = points[::interval]
+            
+            # if len(track['points']) < 10 or len(points) < 5:
+            #     continue
+
             points_list = []
             for idy in range(len(points)):
                 point_idx = points[idy]
@@ -61,7 +69,7 @@ def json_2_platform_json(args):
         platform_json_writer.write_json(img_width, img_height, jpg_name, out_json_path, frame_num=idx, polygon_dict=json_bboxes)
     
     out_meta_json_path = os.path.join(args.platform_json_dir, 'meta.json')
-    platform_json_writer.write_meta_json(out_meta_json_path, task_name="lpr_20220826_76174", label_list=args.label_list)
+    platform_json_writer.write_meta_json(out_meta_json_path, task_name=args.task_name, label_list=args.label_list)
 
 
 if __name__ == '__main__':
@@ -69,18 +77,30 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.jpg_dir = "/mnt/huanyuan/model/image/lpr/zd/seg_city_refine/"
-    args.json_dir = "/mnt/huanyuan/model/image/lpr/zd/seg_city_refine/"
-    args.platform_json_dir = "/mnt/huanyuan/model/image/lpr/zd/seg_city_refine_platform_json/"
+    # zd plate
+    # args.jpg_dir = "/mnt/huanyuan/model/image/lpr/zd/seg_city_refine/"
+    # args.json_dir = "/mnt/huanyuan/model/image/lpr/zd/seg_city_refine/"
+    # args.platform_json_dir = "/mnt/huanyuan/model/image/lpr/zd/seg_city_refine_platform_json/"
+    
+    # args.label_list = [
+    #                     "kind", "num", 
+    #                     "UAE", "UAE_f", 
+    #                     "AD", "ABUDHABI", "DUBAI", "AJMAN", "SHARJAH", "SHJ", "RAK", "UMMALQAIWAIN", "FUJAIRAH",
+    #                     "AD_f", "ABUDHABI_f", "DUBAI_f", "AJMAN_f", "SHARJAH_f", "SHJ_f", "RAK_f", "UMMALQAIWAIN_f", "FUJAIRAH_f",
+    #                     "TAXI", "POLICE", "PUBLIC", "TRP", "PROTOCOL", "PTR", 
+    #                     "TAXI_f", "POLICE_f", "PUBLIC_f", "TRP_f", "PROTOCOL_f", "PTR_f",
+    #                     "YELLOW", "RED", "GREEN", "BULE", "ORANGE", "BROWN"
+    #                     ]
+    # args.task_name = "lpr_20220826_76174"
+    # json_2_platform_json(args)
+
+    # safeisland
+    args.jpg_dir = "/mnt/huanyuan2/data/image/ZD_SafeIsland/original/base/JPEGImages/"
+    args.json_dir = "/mnt/huanyuan2/data/image/ZD_SafeIsland/original/base/Json_road_boundary/"
+    args.platform_json_dir = "/mnt/huanyuan2/data/image/ZD_SafeIsland/original/base/Platform_json_road_boundary/"
     
     args.label_list = [
-                        "kind", "num", 
-                        "UAE", "UAE_f", 
-                        "AD", "ABUDHABI", "DUBAI", "AJMAN", "SHARJAH", "SHJ", "RAK", "UMMALQAIWAIN", "FUJAIRAH",
-                        "AD_f", "ABUDHABI_f", "DUBAI_f", "AJMAN_f", "SHARJAH_f", "SHJ_f", "RAK_f", "UMMALQAIWAIN_f", "FUJAIRAH_f",
-                        "TAXI", "POLICE", "PUBLIC", "TRP", "PROTOCOL", "PTR", 
-                        "TAXI_f", "POLICE_f", "PUBLIC_f", "TRP_f", "PROTOCOL_f", "PTR_f",
-                        "YELLOW", "RED", "GREEN", "BULE", "ORANGE", "BROWN"
+                        "road_boundary"
                         ]
-    
+    args.task_name = "schbus_safeislande_20230426"
     json_2_platform_json(args)

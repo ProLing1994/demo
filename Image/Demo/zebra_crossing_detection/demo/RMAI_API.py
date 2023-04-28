@@ -4,6 +4,7 @@ import numpy as np
 import os
 import sys 
 import random
+import xml.etree.ElementTree as ET
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
@@ -43,8 +44,7 @@ class CaptureApi():
         self.image_height = 1080
         
         # detector
-
-        # ssd 
+        # ssd
         # self.ssd_bool = True
         self.ssd_bool = False
         # pytorch
@@ -102,7 +102,7 @@ class CaptureApi():
         self.param_init()
 
         
-    def run(self, img, frame_idx):
+    def run(self, img, load_xml_bool, load_xml_dir, img_name):
 
         # info 
         image_width = img.shape[1]
@@ -112,7 +112,11 @@ class CaptureApi():
         assert self.image_height == image_height
 
         # detector
-        bboxes = self.detector.detect( img, with_score=True )
+        if load_xml_bool:
+            # 'car_bus_truck', 'non_motorized', 'person'
+            bboxes = self.load_xml(load_xml_dir, img_name)
+        else:
+            bboxes = self.detector.detect( img, with_score=True )
 
         # tracker 
         tracker_bboxes = self.update_tracker_bboxes( bboxes )
@@ -123,6 +127,45 @@ class CaptureApi():
         return tracker_bboxes, bbox_info_list
 
 
+    def load_xml(self, load_xml_dir, img_name):
+        bboxes = {}
+
+        # read xml
+        xml_name = img_name.replace('.jpg', '.xml')
+        xml_path = os.path.join(load_xml_dir, xml_name)
+        tree = ET.parse(xml_path)  # ET是一个 xml 文件解析库，ET.parse（）打开 xml 文件，parse--"解析"
+        root = tree.getroot()   # 获取根节点
+
+        for object in root.findall('object'):
+            # name
+            classname = str(object.find('name').text)
+
+            # bbox
+            bbox = object.find('bndbox')
+            pts = ['xmin', 'ymin', 'xmax', 'ymax']
+            bndbox = []
+            for i, pt in enumerate(pts):
+                cur_pt = int(float(bbox.find(pt).text)) - 1
+                bndbox.append(cur_pt)
+            bndbox.append(1.0)
+
+            if classname == 'car' or classname == 'bus' or classname == 'truck':
+                if 'car_bus_truck' not in bboxes:
+                    bboxes['car_bus_truck'] = []
+                bboxes['car_bus_truck'].append(bndbox)
+            elif classname == 'bicyclist' or classname == 'motorcyclist' :
+                if 'non_motorized' not in bboxes:
+                    bboxes['non_motorized'] = []
+                bboxes['non_motorized'].append(bndbox)
+            elif classname == 'person':
+                if 'person' not in bboxes:
+                    bboxes['person'] = []
+                bboxes['person'].append(bndbox)
+            else:
+                print()
+
+        return bboxes
+    
     def update_tracker_bboxes(self, bboxes):
 
         # tracker

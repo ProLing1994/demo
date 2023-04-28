@@ -9,6 +9,7 @@ import sys
 from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
+# sys.path.insert(0, 'E:\\project\\demo')
 from Image.Basic.utils.folder_tools import *
 from Image.Demo.Capture.video_capture_license_plate_zd.demo.VideoCapture_API import *
 
@@ -85,7 +86,7 @@ def video_capture_csv(in_params):
 
 
 def vidio_capture_merge(args, video_name):
-    
+
     video_path = os.path.join(args.video_dir, video_name)
     capture_csv_path = os.path.join(args.output_video_dir, video_name.replace(args.suffix, '.csv'))
 
@@ -183,10 +184,10 @@ def vidio_capture_crop_merge(in_params):
 
 
 def main():
-    
+
     parser = argparse.ArgumentParser()
-    parser.add_argument('--video_dir', type=str, default="/mnt/huanyuan/temp/data/avi/") 
-    parser.add_argument('--output_video_dir', type=str, default="/mnt/huanyuan/temp/data/avi_video_capture") 
+    parser.add_argument('--video_dir', type=str, default="/mnt/huanyuan/temp/pc_demo/test_zd/avi/") 
+    parser.add_argument('--output_video_dir', type=str, default="/mnt/huanyuan/temp/pc_demo/test_zd/avi_video_capture") 
     parser.add_argument('--suffix', type=str, default='.avi') 
     parser.add_argument('--steps', type=str, default='1,2')
     parser.add_argument('--model_prototxt', type=str, default=None) 
@@ -195,7 +196,7 @@ def main():
 
     # args = parser.parse_args()
     args, unparsed = parser.parse_known_args() 
-
+    
     # option
     args.step_frame = 2
 
@@ -224,20 +225,20 @@ def main():
     if '1' in step_list:
         # step 1: 
         # 车辆抓取
-        import torch
-        ctx = torch.multiprocessing.get_context("spawn")
-        p = ctx.Pool(2)
-        out = p.map(video_capture_csv, in_params)
-        p.close()
-        p.join()
+        # import torch
+        # ctx = torch.multiprocessing.get_context("spawn")
+        # p = ctx.Pool(2)
+        # out = p.map(video_capture_csv, in_params)
+        # p.close()
+        # p.join()
 
         # p = multiprocessing.Pool(2)
         # out = p.map(video_capture_csv, in_params)
         # p.close()
         # p.join()
 
-        # for idx in range(len(in_params)):
-        #     video_capture_csv(in_params[idx])
+        for idx in range(len(in_params)):
+            video_capture_csv(in_params[idx])
 
     if '2' in step_list:
         # step 2: 

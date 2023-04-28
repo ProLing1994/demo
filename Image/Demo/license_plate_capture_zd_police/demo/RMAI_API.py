@@ -40,8 +40,8 @@ class CaptureApi():
         # self.image_width = 1920
         # self.image_height = 1080
 
-        # self.gpu_bool = True
-        self.gpu_bool = False
+        self.gpu_bool = True
+        # self.gpu_bool = False
 
         # detector
         # ssd
@@ -83,8 +83,8 @@ class CaptureApi():
                                 'light_share0', 'light_share', 'bridge', 'zebra_crossing', 'license_plate']
         self.yolov6_threshold_list = [0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3]
 
-        # self.detect_class_name = ['license_plate']
-        self.detect_class_name = ['total_license_plate']
+        self.detect_class_name = ['license_plate']
+        # self.detect_class_name = ['total_license_plate']
 
         # 是否将 car\bus\truck 合并为一类输出
         # self.merge_class_bool = True
@@ -109,9 +109,12 @@ class CaptureApi():
         # seg: zd seg_city_color_class_zd_1210
         # self.lpr_seg_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1210/LaneNetNovaHeadColorClass_class_17.prototxt"
         # self.lpr_seg_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1210/LaneNetNova_seg_city_color_class_zd_1210.caffemodel"
-        # seg: zd seg_city_color_class_zd_1216
-        self.lpr_seg_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1216/LaneNetNovaHeadColorClass_class_17.prototxt"
-        self.lpr_seg_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1216/LaneNetNova_seg_city_color_class_zd_1216.caffemodel"
+        # # seg: zd seg_city_color_class_zd_1216
+        # self.lpr_seg_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1216/LaneNetNovaHeadColorClass_class_17.prototxt"
+        # self.lpr_seg_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1216/LaneNetNova_seg_city_color_class_zd_1216.caffemodel"
+        # seg: zd seg_city_color_class_zd_20230217
+        self.lpr_seg_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_20230217/zd_seg_city_class_color_20230217.prototxt"
+        self.lpr_seg_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_20230217/zd_seg_city_class_color_20230217.caffemodel"
 
         # # ocr: zd 0901
         # self.lpr_ocr_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_all_UAE_0901/cnn_256x64_38.prototxt"
@@ -128,9 +131,12 @@ class CaptureApi():
         # paddle_ocr: v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_gray_64_320_1215_all
         # self.lpr_ocr_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_gray_64_320_1215_all/inference/caffe/model-sim.clip.rename.prototxt"
         # self.lpr_ocr_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_gray_64_320_1215_all/inference/caffe/model-sim.clip.rename.caffemodel"
-        # paddle_ocr: v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug
-        self.lpr_ocr_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug/inference/caffe/model-sim.clip.rename.prototxt"
-        self.lpr_ocr_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug/inference/caffe/model-sim.clip.rename.caffemodel"
+        # # paddle_ocr: v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug
+        # self.lpr_ocr_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug/inference/caffe/model-sim.clip.rename.prototxt"
+        # self.lpr_ocr_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug/inference/caffe/model-sim.clip.rename.caffemodel"
+        # ocr: ocr_zd_mask_pad_20230301
+        self.lpr_ocr_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_pad_20230301/cnn_256x64_38.prototxt"
+        self.lpr_ocr_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_pad_20230301/ocr_zd_mask_pad_20230301.caffemodel"
 
         # lpr params
         self.lpr_ocr_width_expand_ratio = 0.05
@@ -812,6 +818,13 @@ class CaptureApi():
             capture_dict = {}                                                   # 抓拍
             capture_dict['id'] = bbox_state_idy['id']                           # 抓拍id
             capture_dict['flage'] = ''                                          # 抓拍标志信息
+            capture_dict['kind'] = 'None'                                       # 车牌号码结果
+            capture_dict['num'] = 'None'                                        # 车牌号码结果
+            capture_dict['country'] = 'None'                                    # 车牌国家
+            capture_dict['city'] = 'None'                                       # 车牌城市
+            capture_dict['car_type'] = 'None'                                   # 车牌车型
+            capture_dict['color'] = 'None'                                      # 车牌颜色
+            capture_dict['column'] = 'None'                                     # 车牌单双行
             capture_dict['capture_frame_num'] = 0                               # 抓拍帧数
             capture_dict['capture_bool'] = False                                # 抓拍成功标志
 
@@ -966,6 +979,14 @@ class CaptureApi():
 
                                 if capture_res_dict['num'] not in self.params_dict['capture_res_container']:
     
+                                    capture_dict_idy['kind'] = capture_res_dict['kind']
+                                    capture_dict_idy['num'] = capture_res_dict['num']
+                                    capture_dict_idy['country'] = capture_res_dict['country']
+                                    capture_dict_idy['city'] = capture_res_dict['city']
+                                    capture_dict_idy['car_type'] = capture_res_dict['car_type']
+                                    capture_dict_idy['color'] = capture_res_dict['color']
+                                    capture_dict_idy['column'] = capture_res_dict['column']
+
                                     self.params_dict['capture_res_container'][capture_res_dict['num']] = capture_res_dict
 
         return 

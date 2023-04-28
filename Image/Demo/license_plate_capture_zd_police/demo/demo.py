@@ -72,8 +72,8 @@ def inference_video(args):
 
             if args.write_result_per_frame_bool or args.write_result_video_bool:
                 img = draw_bbox_info(img, bbox_info_list, capture_list=capture_list, mode='ltrb')
-                img = draw_bbox_state(img, bbox_state_map)
-                img = draw_capture_line(img, capture_line_up_down, capture_line_left_right, mode='ltrb')
+                # img = draw_bbox_state(img, bbox_state_map)
+                # img = draw_capture_line(img, capture_line_up_down, capture_line_left_right, mode='ltrb')
 
             # 是否保存每一帧结果
             if args.write_result_per_frame_bool:
@@ -186,7 +186,9 @@ def main():
     args = parser.parse_args()
 
     # zd, ZD_DUBAI
-    args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_DUBAI/avi文件//5M_白天_侧向_0615/截取视频/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_DUBAI/avi文件//5M_白天_侧向_0615/截取视频/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_白天_侧向_0615/截取视频/"
+    args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_DUBAI/avi文件//test//"
     args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_白天_侧向_0615/截取视频/"
     # args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_DUBAI/avi文件//5M_夜晚_侧向_0615/截取视频/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_夜晚_侧向_0615/截取视频/"

@@ -37,7 +37,8 @@ def avi_to_jpg(args):
                 break         
 
             if frame_idx % args.frame_strp == 0:
-                output_img_path = os.path.join(args.output_video_dir, video_list[idx].replace(args.suffix, ''), video_list[idx].replace(args.suffix, '_{:0>5d}.jpg'.format(frame_idx)))
+                # output_img_path = os.path.join(args.output_video_dir, video_list[idx].replace(args.suffix, ''), video_list[idx].replace(args.suffix, '_{:0>5d}.jpg'.format(frame_idx)))
+                output_img_path = os.path.join(args.output_video_dir, video_list[idx].replace(args.suffix, '_{:0>5d}.jpg'.format(frame_idx)))
                 create_folder(os.path.dirname(output_img_path))
                 cv2.imwrite(output_img_path, img)
 
@@ -49,12 +50,20 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.video_dir = "/mnt/huanyuan2/data/image/test/"
-    args.output_video_dir = "/mnt/huanyuan2/data/image/test/jpg/"
+    args.video_dir = "/mnt/huanyuan2/data/image/ZD_SafeIsland/original/ZD_new/avi/2021_1024_1025/前向C28/"
+    args.output_video_dir = "/mnt/huanyuan2/data/image/ZD_SafeIsland/original/ZD_new/jpg/JPEGImages_2021_1024_1025/"
     # args.suffix = '.mp4'
     args.suffix = '.avi'
-    # args.frame_strp = 25
+    args.frame_strp = 25
     # args.frame_strp = 10
-    args.frame_strp = 1
+    # args.frame_strp = 1
+
+    # args.video_dir = "/mnt/huanyuan2/data/image/Calibrate/Chessboard/BM1448/棋盘格数据/avi/"
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/Calibrate/Chessboard/BM1448/棋盘格数据/jpg/"
+    # # args.suffix = '.mp4'
+    # args.suffix = '.avi'
+    # args.frame_strp = 25
+    # # args.frame_strp = 10
+    # # args.frame_strp = 1
 
     avi_to_jpg(args)

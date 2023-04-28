@@ -65,7 +65,22 @@ def draw_bbox_info(img, bbox_info, mode='xywh'):
                             cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 2)
         img = cv2.putText(img, "{}_{}_{}_{}".format( int(bbox_info_idx['left_in_alarm_flage']), int(bbox_info_idx['left_out_alarm_flage']), int(bbox_info_idx['right_in_alarm_flage']), int(bbox_info_idx['right_out_alarm_flage'])), (bbox_info_idx['loc'][0], bbox_info_idx['loc'][1] + 40), 
                             cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 2)
+        img = cv2.putText(img, "{}_{}".format( int(bbox_info_idx['lane_line_state']), int(bbox_info_idx['lane_line_state_frame_num'])), (bbox_info_idx['loc'][0], bbox_info_idx['loc'][1] + 60), 
+                            cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 2)
         
+        # 与报警线的交线
+        for idy in range(len(bbox_info_idx['lane_line_info'])):
+            
+            # 车辆在区域内，输出交线
+            if (bbox_info_idx['loc'][3] > bbox_info_idx['lane_line_info'][0][-1][1]) and (bbox_info_idx['loc'][3] < bbox_info_idx['lane_line_info'][-1][-1][1]):
+                point_1 = tuple( bbox_info_idx['lane_line_info'][idy][4] )
+                if idy == len(bbox_info_idx['lane_line_info'])-1 :
+                    point_2 = tuple( bbox_info_idx['lane_line_info'][0][4] ) 
+                else:
+                    point_2 = tuple( bbox_info_idx['lane_line_info'][idy+1][4] ) 
+
+                cv2.line(img, point_1, point_2, color_dict["car"], 2)
+
     return img
 
 
@@ -99,5 +114,5 @@ def draw_capture_line(img, capture_points):
 
         img = cv2.putText(img, "{}".format( idx ), (point_1[0] + 10, point_1[1] - 10), 
                             cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["roi_capture_area"], 2)
-        
+
     return img

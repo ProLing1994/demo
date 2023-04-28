@@ -10,6 +10,7 @@ sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.Basic.utils.folder_tools import *
 from Image.Demo.license_plate_capture_china_vehicle_scene.demo.RMAI_API import *
 from Image.Demo.license_plate_capture_china_vehicle_scene.utils.draw_tools import draw_bbox_tracker, draw_bbox_info, draw_bbox_state, draw_capture_line
+from Image.Basic.script.xml.xml_write import write_xml
 
 
 def inference_video(args):
@@ -60,19 +61,20 @@ def inference_video(args):
             #     print()
 
             # capture api
-            tracker_bboxes, bbox_info_list, bbox_state_map, capture_line, capture_dict, capture_result = capture_api.run(img, frame_idx)
+            load_xml_dir = os.path.join(args.load_xml_dir, video_list[idx].replace(args.suffix, ''))
+            tracker_bboxes, bbox_info_list, bbox_state_map, capture_line, capture_dict, capture_result = capture_api.run(img, frame_idx, args.load_xml_bool, load_xml_dir, video_list[idx].replace(args.suffix, '_{:0>5d}.jpg'.format(frame_idx)), args.load_pkl_bool, args.load_pkl_dir, video_list[idx].replace(args.suffix, '.pkl'))
 
             if args.write_result_per_frame_bool or args.write_result_video_bool:
                 # draw bbox
                 # img = draw_bbox_tracker(img, tracker_bboxes)
                 # img = draw_bbox_info(img, bbox_info_list, mode='ltrb')
                 img = draw_bbox_info(img, bbox_info_list, capture_dict=capture_dict, mode='ltrb')
-                img = draw_bbox_state(img, bbox_state_map)
-                img = draw_capture_line(img, capture_line, mode='ltrb')
+                # img = draw_bbox_state(img, bbox_state_map)
+                # img = draw_capture_line(img, capture_line, mode='ltrb')
 
             # 是否保存每一帧结果
             if args.write_result_per_frame_bool:
-                output_img_path = os.path.join(args.output_video_dir, video_list[idx].replace(args.suffix, ''), video_list[idx].replace(args.suffix, '_{}.jpg'.format(frame_idx)))
+                output_img_path = os.path.join(args.output_video_dir, video_list[idx].replace(args.suffix, ''), video_list[idx].replace(args.suffix, '_{:0>5d}.jpg'.format(frame_idx)))
                 create_folder(os.path.dirname(output_img_path))
                 cv2.imwrite(output_img_path, img)
 
@@ -116,6 +118,50 @@ def inference_video(args):
 
                     csv_list.append(csv_dict)
 
+            # 是否保存xml标签
+            if args.write_xml_bool:
+                # xml 
+                xml_name = video_list[idx].replace(args.suffix, '_{:0>5d}.xml'.format(frame_idx))
+                jpg_name = video_list[idx].replace(args.suffix, '_{:0>5d}.jpg'.format(frame_idx))
+                xml_path = os.path.join(args.output_video_dir, video_list[idx].replace(args.suffix, ''), xml_name)
+                jpg_path = os.path.join(args.output_video_dir, video_list[idx].replace(args.suffix, ''), jpg_name)
+
+                img_shape = img.shape
+
+                if not args.refine_xml_bool:
+                    xml_bboxes = {} 
+                    for idy in range(len(bbox_info_list)):
+                        bbox_info_idx = bbox_info_list[idy]
+
+                        if '{}_{}_{}'.format(bbox_info_idx['id'], 'car', bbox_info_idx['attri']) not in xml_bboxes:
+                            xml_bboxes['{}_{}_{}'.format(bbox_info_idx['id'], 'car', bbox_info_idx['attri'])] = []     
+
+                        xml_bboxes['{}_{}_{}'.format(bbox_info_idx['id'], 'car', bbox_info_idx['attri'])].append([bbox_info_idx['loc'][0], bbox_info_idx['loc'][1], bbox_info_idx['loc'][2], bbox_info_idx['loc'][3]])
+
+                        if len(bbox_info_idx['plate_loc']):
+                            if '{}_{}'.format(bbox_info_idx['id'], 'plate') not in xml_bboxes:
+                                xml_bboxes['{}_{}'.format(bbox_info_idx['id'], 'plate')] = [] 
+
+                            xml_bboxes['{}_{}'.format(bbox_info_idx['id'], 'plate')].append([bbox_info_idx['plate_loc'][0], bbox_info_idx['plate_loc'][1], bbox_info_idx['plate_loc'][2], bbox_info_idx['plate_loc'][3]])
+                else:
+                    xml_bboxes = {} 
+                    for idy in range(len(bbox_info_list)):
+                        bbox_info_idx = bbox_info_list[idy]
+
+                        if '{}'.format( bbox_info_idx['attri']) not in xml_bboxes:
+                            xml_bboxes['{}'.format(bbox_info_idx['attri'])] = []     
+
+                        xml_bboxes['{}'.format(bbox_info_idx['attri'])].append([bbox_info_idx['loc'][0], bbox_info_idx['loc'][1], bbox_info_idx['loc'][2], bbox_info_idx['loc'][3]])
+
+                        if len(bbox_info_idx['plate_loc']):
+                            if '{}_{}'.format('plate', bbox_info_idx['plate_ocr']) not in xml_bboxes:
+                                xml_bboxes['{}_{}'.format('plate', bbox_info_idx['plate_ocr'])] = [] 
+
+                            xml_bboxes['{}_{}'.format('plate', bbox_info_idx['plate_ocr'])].append([bbox_info_idx['plate_loc'][0], bbox_info_idx['plate_loc'][1], bbox_info_idx['plate_loc'][2], bbox_info_idx['plate_loc'][3]])
+
+                write_xml(xml_path, jpg_path, xml_bboxes, img_shape)
+
+            
             frame_idx += 1
 
             tqdm.write("{}: {}".format(video_path, str(frame_idx)))
@@ -138,8 +184,10 @@ def main():
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/Distance_detection/5M_12mm_0723_白_前/"
     # args.video_dir = "/mnt/huanyuan2/data/image/ZG_HCZP/test_video/avi视频/test/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test/"
-    args.video_dir = "/mnt/huanyuan2/data/image/Distance_detection/Distance_detection_plate/avi/"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/Distance_detection/"
+    args.video_dir = "/mnt/huanyuan2/data/image/Distance_detection/Distance_detection_plate/new/"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/Distance_detection/new"
+    # args.video_dir = "/mnt/huanyuan/temp/智观数据/展会/demo_plate/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/智观数据/展会/demo_plate/"
 
     # args.video_dir = "/mnt/huanyuan2/data/image/ZD_anpr/test_video/BM_Brazil/test/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZG_GDZP/test_video/BM_Brazil/"
@@ -156,6 +204,16 @@ def main():
     args.write_capture_crop_bool = True
     # 是否保存日志
     args.write_csv_bool = True
+    # 是否保存xml标签
+    args.write_xml_bool = False
+    args.refine_xml_bool = False
+
+    # load xml dir
+    args.load_xml_bool = False
+    args.load_xml_dir = "/mnt/huanyuan/temp/智观数据/展会/demo_plate/refine_xml"
+    # load pkl dir
+    args.load_pkl_bool = False
+    args.load_pkl_dir = "/mnt/huanyuan/temp/智观数据/展会/demo_plate/"
 
     inference_video(args)
 
