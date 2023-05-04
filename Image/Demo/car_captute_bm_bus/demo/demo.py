@@ -141,8 +141,8 @@ def main():
     # 是否保存视频结果
     args.write_result_video_bool = True
     # 是否保存每一帧结果
-    args.write_result_per_frame_bool = True
-    # args.write_result_per_frame_bool = False
+    # args.write_result_per_frame_bool = True
+    args.write_result_per_frame_bool = False
     # 是否保存抓拍结果
     args.write_capture_crop_bool = True
     # 是否保存日志

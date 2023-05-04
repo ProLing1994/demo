@@ -78,7 +78,7 @@ class CaptureApi():
         self.alarm_left_threshold = [10, 200]
         self.alarm_right_threshold = [10, 200]
         self.alarm_top_threshold = [25, 200]
-        self.alarm_lane_line_autio = 0.05
+        self.alarm_lane_line_autio = 0.25
 
     def param_init(self):
         self.params_dict = {}
@@ -449,17 +449,28 @@ class CaptureApi():
                             point_intersect_bottom = bbox_state_idy['lane_line_info'][lane_line_idx + 1][4]
 
                             if (car_bottom_y > point_intersect_top[1] and car_bottom_y <= point_intersect_bottom[1]):
-                                # 如果 （车辆底边位置 y 到 车道线上沿 长度）/ 车道线长度 > 0.95，则认为是下一个车道
-                                # 如果 （车辆底边位置 y 到 车道线上沿 长度）/ 车道线长度 <= 0.95，则认为是当前车道
-                                if ((car_bottom_y - point_intersect_top[1]) / (point_intersect_bottom[1] - point_intersect_top[1])) > (1 - self.alarm_lane_line_autio):
-                                    bbox_lane_line = max(1, lane_line_num - 1)
-                                else:
+                                # # 如果 （车辆底边位置 y 到 车道线上沿 长度）/ 车道线长度 > 0.95，则认为是下一个车道
+                                # # 如果 （车辆底边位置 y 到 车道线上沿 长度）/ 车道线长度 <= 0.95，则认为是当前车道
+                                # if ((car_bottom_y - point_intersect_top[1]) / (point_intersect_bottom[1] - point_intersect_top[1])) > (1 - self.alarm_lane_line_autio):
+                                #     bbox_lane_line = max(1, lane_line_num - 1)
+                                # else:
+                                #     bbox_lane_line = lane_line_num
+
+                                # 如果 （车辆底边位置 y 到 车道线上沿 长度）/ 车道线长度 > 0.25，则认为是当前车道
+                                # 如果 （车辆底边位置 y 到 车道线上沿 长度）/ 车道线长度 <= 0.25，则认为是上一个车道
+                                if ((car_bottom_y - point_intersect_top[1]) / (point_intersect_bottom[1] - point_intersect_top[1])) > self.alarm_lane_line_autio:
                                     bbox_lane_line = lane_line_num
+                                else:
+                                    bbox_lane_line = min((len(bbox_state_idy['lane_line_info']) - 1), lane_line_num + 1)
 
                             # 边缘车道特殊处理，防止出界
-                            if lane_line_num == (len(bbox_state_idy['lane_line_info']) - 1) and car_bottom_y <= point_intersect_top[1]:
+                            elif lane_line_num == (len(bbox_state_idy['lane_line_info']) - 1) and car_bottom_y <= point_intersect_top[1]:
                                 if (-1 * (car_bottom_y - point_intersect_top[1])) / (point_intersect_bottom[1] - point_intersect_top[1]) < self.alarm_lane_line_autio:
                                     bbox_lane_line = lane_line_num
+                            
+                            # 边缘车道特殊处理，防止出界
+                            elif lane_line_num == 1 and car_bottom_y > point_intersect_bottom[1]:
+                                bbox_lane_line = lane_line_num
 
                         # 更新车道状态
                         if bbox_state_idy['lane_line_state'] != bbox_lane_line:
