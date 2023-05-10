@@ -6,8 +6,8 @@ import os
 import sys 
 from tqdm import tqdm
 
-# sys.path.insert(0, '/home/huanyuan/code/demo/Image')
-sys.path.insert(0, '/yuanhuan/code/demo/Image')
+sys.path.insert(0, '/home/huanyuan/code/demo/Image')
+# sys.path.insert(0, '/yuanhuan/code/demo/Image')
 from Basic.utils.folder_tools import *
 from Basic.script.xml.xml_write import write_xml
 
@@ -135,7 +135,7 @@ def platform_json_2_xml_empty(args):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input_dir', type=str, default="/yuanhuan/data/image/LicensePlate_ocr/original/Brazil/Brazil/Brazil_all/") 
+    parser.add_argument('--input_dir', type=str, default="/mnt/huanyuan2/data/image/LicensePlate_ocr/SHATE/2023-02-09/") 
     args = parser.parse_args()
     
     print("1、platform json to xml.")

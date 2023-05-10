@@ -5,7 +5,8 @@ import sys
 from tqdm import tqdm
 import xml.etree.ElementTree as ET
 
-sys.path.insert(0, '/yuanhuan/code/demo/Image')
+sys.path.insert(0, '/home/huanyuan/code/demo/Image/')
+# sys.path.insert(0, '/yuanhuan/code/demo/Image')
 from Basic.utils.folder_tools import *
 from Basic.script.json.platform_json_write import PlatformJsonWriter
 
@@ -47,6 +48,11 @@ def xml_2_platform_json(args):
             # name
             classname = str(object.find('name').text)
 
+            # change name
+            if classname in args.change_label_dict.keys():
+                classname = args.change_label_dict[classname]   
+            assert classname in args.label_list 
+
             # bbox
             bbox = object.find('bndbox')
             pts = ['xmin', 'ymin', 'xmax', 'ymax']
@@ -71,6 +77,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
+    args.change_label_dict = {"motorcyclist": "motorcycle", "license_plate": "license"}
+
     # anpr
     # # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE_crop/check_crop_0804_0809/"
     # # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/UAE_crop/check_crop_0810_0811/"
@@ -91,13 +99,20 @@ if __name__ == '__main__':
     #                     "YELLOW", "RED", "GREEN", "BULE", "ORANGE", "BROWN"
     #                     ]
     
-    # BM_ANPR_c27
-    args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/Brazil/Brazil/Brazil_src2/groundTruth/"
+    # C27
+    args.input_dir = "/mnt/huanyuan2/data/image/LicensePlate_ocr/SHATE/2023-02-08/"
+    # args.input_dir = "/mnt/huanyuan2/data/image/LicensePlate_ocr/SHATE/2023-02-09/"
     args.jpg_dir = os.path.join(args.input_dir, "JPEGImages/")
-    args.xml_dir = os.path.join(args.input_dir, "Annotations/")
-    args.platform_json_dir = os.path.join(args.input_dir, "Annotations_Json/")
-    args.task_name = "BM_ANPR_c27"
-    args.label_list =  ['car','truck','bus','motorcyclist']
+
+    args.xml_dir = os.path.join(args.input_dir, "Annotations_car/")
+    args.platform_json_dir = os.path.join(args.input_dir, "Annotations_Json_car/")
+    args.task_name = "C27"
+    args.label_list =  ['car','truck','bus','motorcycle']
+
+    # args.xml_dir = os.path.join(args.input_dir, "Annotations_plate/")
+    # args.platform_json_dir = os.path.join(args.input_dir, "Annotations_Json_plate/")
+    # args.task_name = "C27"
+    # args.label_list =  ['license']
 
     xml_2_platform_json(args)
 

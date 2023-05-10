@@ -78,7 +78,7 @@ class CaptureApi():
         self.alarm_left_threshold = [10, 200]
         self.alarm_right_threshold = [10, 200]
         self.alarm_top_threshold = [25, 200]
-        self.alarm_lane_line_autio = 0.25
+        self.alarm_lane_line_autio = 0.10
 
     def param_init(self):
         self.params_dict = {}
@@ -428,16 +428,21 @@ class CaptureApi():
                     if ( bbox_state_idy['dist_capture_line_right'] < 0 and bbox_state_idy['dist_capture_line_left'] > 0 ):
 
                         # 更新车道线交点坐标
-                        ## 获得平行线(capture_line_right_k, b_intersect)
-                        b_intersect = car_bottom_y - (capture_line_right_k * car_center_x)
+                        ## 获得平行线(k_intersect, b_intersect)
+                        if abs(bbox_state_idy['dist_capture_line_right']) < abs(bbox_state_idy['dist_capture_line_left']):
+                            k_intersect = capture_line_right_k
+                            b_intersect = car_bottom_y - (capture_line_right_k * car_center_x)
+                        else:
+                            k_intersect = capture_line_left_k
+                            b_intersect = car_bottom_y - (capture_line_left_k * car_center_x)
 
                         ## 获得交点坐标
                         for lane_line_idx in range(len(bbox_state_idy['lane_line_info'])):
                             point_k = bbox_state_idy['lane_line_info'][lane_line_idx][2]
                             point_b = bbox_state_idy['lane_line_info'][lane_line_idx][3]
 
-                            point_intersect_x = (point_b - b_intersect)/(capture_line_right_k - point_k)
-                            point_intersect_y = capture_line_right_k * point_intersect_x + b_intersect
+                            point_intersect_x = (point_b - b_intersect)/(k_intersect - point_k)
+                            point_intersect_y = k_intersect * point_intersect_x + b_intersect
 
                             bbox_state_idy['lane_line_info'][lane_line_idx][4] = [int(point_intersect_x + 0.5), int(point_intersect_y + 0.5)]
                         
@@ -456,8 +461,8 @@ class CaptureApi():
                                 # else:
                                 #     bbox_lane_line = lane_line_num
 
-                                # 如果 （车辆底边位置 y 到 车道线上沿 长度）/ 车道线长度 > 0.25，则认为是当前车道
-                                # 如果 （车辆底边位置 y 到 车道线上沿 长度）/ 车道线长度 <= 0.25，则认为是上一个车道
+                                # 如果 （车辆底边位置 y 到 车道线上沿 长度）/ 车道线长度 > 0.1，则认为是当前车道
+                                # 如果 （车辆底边位置 y 到 车道线上沿 长度）/ 车道线长度 <= 0.1，则认为是上一个车道
                                 if ((car_bottom_y - point_intersect_top[1]) / (point_intersect_bottom[1] - point_intersect_top[1])) > self.alarm_lane_line_autio:
                                     bbox_lane_line = lane_line_num
                                 else:
