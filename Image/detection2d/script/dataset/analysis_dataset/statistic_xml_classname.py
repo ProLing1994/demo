@@ -102,10 +102,14 @@ if __name__ == "__main__":
     # 数据集: Mexico：car 机动车，license_plate 清晰车牌，{'car': 47367, 'license_plate': 17805}
 
     # 数据集: RM_C27_detection
-    # args.input_dir = "/yuanhuan/data/image/RM_C27_detection/zd_c27_2020_0209_1125/"
-    args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/Brazil/Brazil/Brazil_all/"
-    # 数据集: zd_c27_2020_0209_1125，[('car', 251234), ('license_plate', 163165)]
-    # 数据集: Brazil_all, [('bus', 3996), ('car', 127817), ('cover-motorplate', 1605), ('cover-plaet', 8082), ('fuzzy-motorplate', 11308), ('fuzzy-plate', 19169), ('kind', 1), ('lince-motorplate', 8577), ('lince-plate', 21691), ('motorcycle', 26156), ('num', 1), ('truck', 7751)]
+    # args.input_dir = "/yuanhuan/data/image/RM_C27_detection/zd_c27_20200209_20201125/"
+    # args.input_dir = "/yuanhuan/data/image/RM_C27_detection/zd_c27_20200217_20200324_car/"
+    args.input_dir = "/yuanhuan/data/image/RM_C27_detection/zd_c27_20190713_20200301_plate/"
+    # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/Brazil/Brazil/Brazil_all/"
+    # 数据集: zd_c27_20200209_20201125, [('car', 251234), ('license_plate', 163165)]
+    # 数据集: zd_c27_20200217_20200324_car, [('car', 18443), ('license_plate', 620)]
+    # 数据集: zd_c27_20190713_20200301_plate, 
+    # 数据集: Brazil_all, [('bicyclist', 38), ('bus', 15165), ('car', 433038), ('cover-motorplate', 2905), ('cover-plaet', 37229), ('fuzzy-motorplate', 22150), ('fuzzy-plate', 84662), ('kind', 1), ('lince-motorplate', 19846), ('lince-plate', 113262), ('motorcycle', 27374), ('motorcyclist', 31297), ('num', 3), ('truck', 34930)]
     
     # 数据集: RM_BSD
     # args.input_dir = "/yuanhuan/data/image/RM_BSD/wideangle_2022_2023/"
@@ -206,8 +210,8 @@ if __name__ == "__main__":
     args.statistic_dict = {'trainval': args.trainval_file, 'test': args.test_file }
 
     args.jpg_dir =  args.input_dir + "JPEGImages/"
-    args.xml_dir =  args.input_dir + "Annotations/"
-    # args.xml_dir =  args.input_dir + "XML/"
+    # args.xml_dir =  args.input_dir + "Annotations/"
+    args.xml_dir =  args.input_dir + "XML/"
     # args.xml_dir =  args.input_dir + "Annotations_CarBusTruckLicenseplate_w_fuzzy/"
     # args.xml_dir =  args.input_dir + "Annotations_CarBusTruckBicyclistMotorcyclistPerson_filter/"
     # args.xml_dir =  args.input_dir + "Annotations_HeadHelmet/"
