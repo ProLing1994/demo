@@ -1,3 +1,15 @@
 [submodule "Image/recognition2d/lpr"]
 	path = Image/recognition2d/lpr
 	url = https://gitlab.com/YuanHuan_Pro/lpr.git
+[submodule "Image/recognition2d/PaddleOCR"]
+	path = Image/recognition2d/PaddleOCR
+	url = https://gitlab.com/YuanHuan_Pro/PaddleOCR.git
+[submodule "Image/detection2d/mmdetection"]
+	path = Image/detection2d/mmdetection
+	url = https://gitlab.com/YuanHuan_Pro/mmdetection.git
+[submodule "Image/detection2d/ssd_rfb_crossdatatraining"]
+	path = Image/detection2d/ssd_rfb_crossdatatraining
+	url = https://gitlab.com/YuanHuan_Pro/ssd_rfb_crossdatatraining.git
+[submodule "Image/segmentation2d/mmsegmentation"]
+	path = Image/segmentation2d/mmsegmentation
+	url = https://gitlab.com/YuanHuan_Pro/mmsegmentation.git
