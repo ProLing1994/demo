@@ -1,0 +1,3 @@
+[submodule "Image/recognition2d/lpr"]
+	path = Image/recognition2d/lpr
+	url = https://gitlab.com/YuanHuan_Pro/lpr.git
