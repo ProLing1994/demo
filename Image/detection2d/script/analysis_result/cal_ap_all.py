@@ -440,7 +440,7 @@ if __name__ == "__main__":
     # args.from_dataset_bool = False
 
     ######################################
-    # Nonmotorized_Car_Person
+    # C28_Car
     ######################################
     args.data_dir = "/yuanhuan/data/image/"
 
@@ -451,7 +451,8 @@ if __name__ == "__main__":
 
     # yolov6
     # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_c28_car_0214/eval_epoches_240_0.4/"
-    args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_c28_car_0312/eval_epoches_300_0.4/"
+    # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_c28_car_0312/eval_epoches_300_0.4/"
+    args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_c28_car_0320/eval_epoches_340_0.4/"
 
     args.anno_name = 'Annotations_Car'  # 车
 
@@ -486,9 +487,9 @@ if __name__ == "__main__":
     args.write_bool = True
 
     # 是否保存漏检结果
-    args.write_unmatched_bool = True
+    args.write_unmatched_bool = False
 
     # 是否保存假阳结果
-    args.write_false_positive_bool = True
+    args.write_false_positive_bool = False
 
     calculate_ap_all(args)

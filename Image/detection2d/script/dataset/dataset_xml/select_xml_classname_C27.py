@@ -201,8 +201,8 @@ if __name__ == "__main__":
     
     # RM_C27_detection
     args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/Brazil/Brazil/Brazil_all/"
-    args.select_name_list = ["car", "bus", "truck", "motorcycle", "lince-plate", "fuzzy-plate", "lince-motorplate", "fuzzy-motorplate"]
-    args.set_name_list = ["car", "bus", "truck", "motorcyclist", "license_plate", "license_plate", "moto_license_plate", "moto_license_plate"]
+    args.select_name_list = ["car", "bus", "truck", "motorcycle", "motorcyclist", "lince-plate", "fuzzy-plate", "lince-motorplate", "fuzzy-motorplate"]
+    args.set_name_list = ["car", "bus", "truck", "motorcyclist", "motorcyclist", "license_plate", "license_plate", "moto_license_plate", "moto_license_plate"]
     args.finnal_name_list = ["car", "bus", "truck", "motorcyclist", "license_plate", "moto_license_plate", "neg"]
     args.jpg_dir = args.input_dir + "JPEGImages/"  
     args.xml_dir = args.input_dir + "Annotations/"
