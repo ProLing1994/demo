@@ -12,6 +12,9 @@ color_dict = {
                 "plate": (0, 255, 0), 
                 "plate_capture": (0, 0, 255), 
                 "plate_capture_reverse": (255, 0, 0), 
+                "face": (0, 255, 0), 
+                "face_capture": (0, 0, 255), 
+                "face_capture_reverse": (255, 0, 0), 
                 "roi_capture_area": (255, 255, 255),
             }
 
@@ -81,133 +84,200 @@ def cv_plot_rectangle(img, bbox, mode='xywh', color=(255, 255, 255), thickness=2
     return cv2.rectangle(img_p, (xmin, ymin), (xmax, ymax), color=color, thickness=thickness)
 
 
-def draw_bbox_tracker(img, tracker_bboxes, mode='ltrb'):
-    
-    for idx in range(len(tracker_bboxes)):
-        tracker_bbox = tracker_bboxes[idx]
+class DrawApi():
+    """
+    DrawApi
+    """
 
-        id = tracker_bbox[-1]
-        loc = tracker_bbox[0:4]
-        color = get_color(abs(id))
-
-        img = cv_plot_rectangle(img, loc, mode=mode, color=color)
-        img = cv2.putText(img, "id: {}".format(int(id)), (int(loc[0]), int(loc[1])), cv2.FONT_HERSHEY_COMPLEX, 1, color, 2)
-        
-    return img
+    def __init__(self, demo_type):
+        self.demo_type = demo_type
 
 
-def draw_bbox_info(img, bbox_info, capture_container=None, capture_res_container=None, mode='xywh'):
+    def draw_bbox_info(self, img, bbox_info, capture_container=None, capture_res_container=None, mode='xywh'):
 
 
-    # 绘制报警信息
-    x, y = 50, 50 
-    for _, capture_draw_idy in capture_res_container.items():
+        # 绘制报警信息
+        x, y = 50, 50 
+        for _, capture_res_idy in capture_res_container.items():
 
-        if capture_draw_idy['capture']['capture_frame_num'] >= draw_frame_num_threshold:
-            continue
+            if capture_res_idy['capture']['capture_frame_num'] >= draw_frame_num_threshold:
+                continue
 
-        # 报警状态
-        capture_bool = False
-        if capture_draw_idy['capture']['capture_frame_num'] < draw_alarm_frame_num_threshold:
-            capture_bool = True
-
-        text = "抓拍结果：{}_{}".format( capture_draw_idy['plate_info']['num'], capture_draw_idy['plate_info']['color'] )
-        text_size = cv2.getTextSize(text, 0, 3, 2)
-        cv2.rectangle(img, (x, y), (x + int(text_size[0][0] * 0.8), y + text_size[0][1] + text_size[1]), (255,255,255), -1)
-        # img = NiceBox(img, (x, y, x + text_size[0][0] + 1 * text_size[1], y + text_size[0][1] + text_size[1]), (255,255,255), thickness=5)
-        
-        if not capture_bool:
-            # img = cv2.putText(img, text, (x, y + text_size[0][1]), cv2.FONT_HERSHEY_COMPLEX, 3, color_dict["plate"], 2)
-            img = cv2ImgAddText(img, text, x, y, textColor=color_dict["plate"], textSize=100)
-        else:
-            # img = cv2.putText(img, text, (x, y + text_size[0][1]), cv2.FONT_HERSHEY_COMPLEX, 3, color_dict["plate_capture"], 2)
-            img = cv2ImgAddText(img, text, x, y, textColor=color_dict["plate_capture_reverse"], textSize=100)
-
-        y += 100
-
-    # draw
-    for idx in range(len(bbox_info)):
-        bbox_info_idx = bbox_info[idx]
-        
-        # 报警状态
-        capture_bool = False
-        for _, capture_draw_idy in capture_res_container.items():
-            if bbox_info_idx['track_id'] == capture_draw_idy['track_id'] and capture_draw_idy['capture']['capture_frame_num'] < draw_alarm_frame_num_threshold:
+            # 报警状态
+            capture_bool = False
+            if capture_res_idy['capture']['capture_frame_num'] < draw_alarm_frame_num_threshold:
                 capture_bool = True
 
-        # car
-        bbox_info_idx['car_info']['roi'] = [int(b + 0.5) for b in bbox_info_idx['car_info']['roi'][:4]]
-        if not capture_bool:
-            img = cv_plot_rectangle(img, bbox_info_idx['car_info']['roi'], mode=mode, color=color_dict["car"])
-            # img = NiceBox(img, bbox_info_idx['car_info']['roi'], color_dict["car"], thickness=3, mask=False)
-        else:
-            img = cv_plot_rectangle(img, bbox_info_idx['car_info']['roi'], mode=mode, color=color_dict["car_capture"])
-            # img = NiceBox(img, bbox_info_idx['car_info']['roi'], color_dict["car_capture"], thickness=3, mask=False)
+            if self.demo_type == "lpr":
 
-        img = cv2.putText(img, "{}_{}_{}".format( bbox_info_idx['track_id'], bbox_info_idx['state']['frame_num'], bbox_info_idx['car_info']['attri']), (bbox_info_idx['car_info']['roi'][0], bbox_info_idx['car_info']['roi'][1] - 10), 
-                            cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 2)
+                text = "抓拍结果：{}_{}".format( capture_res_idy['plate_info']['num'], capture_res_idy['plate_info']['color'] )
+                text_size = cv2.getTextSize(text, 0, 3, 2)
+                cv2.rectangle(img, (x, y), (x + int(text_size[0][0] * 0.8), y + text_size[0][1] + text_size[1]), (255,255,255), -1)
+                # img = NiceBox(img, (x, y, x + text_size[0][0] + 1 * text_size[1], y + text_size[0][1] + text_size[1]), (255,255,255), thickness=5)
+                
+                if not capture_bool:
+                    # img = cv2.putText(img, text, (x, y + text_size[0][1]), cv2.FONT_HERSHEY_COMPLEX, 3, color_dict["plate"], 2)
+                    img = cv2ImgAddText(img, text, x, y, textColor=color_dict["plate"], textSize=100)
+                else:
+                    # img = cv2.putText(img, text, (x, y + text_size[0][1]), cv2.FONT_HERSHEY_COMPLEX, 3, color_dict["plate_capture"], 2)
+                    img = cv2ImgAddText(img, text, x, y, textColor=color_dict["plate_capture_reverse"], textSize=100)
 
-        img = cv2.putText(img, "{}_{}_{}_{}_{:.2f}_{:.2f}".format( bbox_info_idx['state']['up_down_state'], bbox_info_idx['state']['up_down_state_frame_num'], bbox_info_idx['state']['left_right_state'], bbox_info_idx['state']['left_right_state_frame_num'], bbox_info_idx['state']['up_down_speed'], bbox_info_idx['state']['left_right_speed'] ), (bbox_info_idx['car_info']['roi'][0], bbox_info_idx['car_info']['roi'][3] - 10), 
-                            cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 2)
-
-        # license_plate
-        if len(bbox_info_idx['plate_info']['roi']):
+                y += 100
             
-            bbox_info_idx['plate_info']['roi'] = [int(b + 0.5) for b in bbox_info_idx['plate_info']['roi'][:4]]
-            text = "{}_{}_{}_{:.2f}".format( bbox_info_idx['state']['lpr_num'], bbox_info_idx['plate_info']['num'], bbox_info_idx['plate_info']['color'], bbox_info_idx['plate_info']['score'])
-            text_size = cv2.getTextSize(text, 0, 3, 2)
-            if not capture_bool:
-                img = cv_plot_rectangle(img, bbox_info_idx['plate_info']['roi'], mode=mode, color=color_dict["plate"], thickness=3)
-                # img = NiceBox(img, bbox_info_idx['plate_info']['roi'], color_dict["plate"], thickness=3, mask=False)
+            elif self.demo_type == "face":
+              
+                # text
+                text = "face: ".format( )
+                text_size = cv2.getTextSize(text, 0, 3, 2)
+                # cv2.rectangle(img, (x, y), (x + int(text_size[0][0] + 200), y + 200), (255,255,255), -1)
+                img = NiceBox(img, (x, y, x + text_size[0][0] + 200, y + 200), (255,255,255), thickness=5)
 
-                # img = cv2.putText(img, "{}".format( bbox_info_idx['plate_info']['num']), \
-                #                     (bbox_info_idx['plate_info']['roi'][0], bbox_info_idx['plate_info']['roi'][1] - 15), 
-                #                     cv2.FONT_HERSHEY_COMPLEX, 3, color_dict["plate"], 2)
-                img = cv2ImgAddText(img, text, bbox_info_idx['plate_info']['roi'][0], bbox_info_idx['plate_info']['roi'][1] - 15 - text_size[0][1], textColor=color_dict["plate"], textSize=60)
-            else:
-                img = cv_plot_rectangle(img, bbox_info_idx['plate_info']['roi'], mode=mode, color=color_dict["plate_capture"], thickness=3)
-                # img = NiceBox(img, bbox_info_idx['plate_info']['roi'], color_dict["plate_capture"], thickness=3, mask=False)
+                if not capture_bool:
+                    # img = cv2.putText(img, text, (x, y + text_size[0][1]), cv2.FONT_HERSHEY_COMPLEX, 3, color_dict["face"], 2)
+                    img = cv2ImgAddText(img, text, x, y, textColor=color_dict["face"], textSize=100)
+                else:
+                    # img = cv2.putText(img, text, (x, y + text_size[0][1]), cv2.FONT_HERSHEY_COMPLEX, 3, color_dict["face_capture"], 2)
+                    img = cv2ImgAddText(img, text, x, y, textColor=color_dict["face_capture_reverse"], textSize=100)
 
-                # img = cv2.putText(img, "{}".format( bbox_info_idx['plate_info']['num']), \
-                #                     (bbox_info_idx['plate_info']['roi'][0], bbox_info_idx['plate_info']['roi'][1] - 15), 
-                #                     cv2.FONT_HERSHEY_COMPLEX, 3, color_dict["plate_capture"], 2)
-                img = cv2ImgAddText(img, text, bbox_info_idx['plate_info']['roi'][0], bbox_info_idx['plate_info']['roi'][1] - 15 - text_size[0][1], textColor=color_dict["plate_capture_reverse"], textSize=60)
-                                
-    return img
+                # img
+                track_id = capture_res_idy['track_id']
+                img_bbox_info = capture_res_idy['capture']['img_bbox_info_list'][0]
+                img_crop = img_bbox_info['img']
+                bbox_info_crop = img_bbox_info['bbox_info']
+                bbox_loc = [bbox_info_crop['face_info']['roi'] for bbox_info_crop in bbox_info_crop if bbox_info_crop['track_id'] == track_id][0]
+                bbox_crop = img_crop[max( 0, int(bbox_loc[1]) ): min( int(img_crop.shape[0]), int(bbox_loc[3]) ), max( 0,int( bbox_loc[0]) ): min( int(img_crop.shape[1]), int(bbox_loc[2]) )]
+                bbox_crop = cv2.resize(bbox_crop, (200, 200))
+                img[y : y + bbox_crop.shape[0], x + int(text_size[0][0]) : x + int(text_size[0][0]) + bbox_crop.shape[1]] = bbox_crop
+
+                y += 250
+
+        # draw
+        for idx in range(len(bbox_info)):
+            bbox_info_idx = bbox_info[idx]
+            
+            # 报警状态
+            capture_bool = False
+            for _, capture_res_idy in capture_res_container.items():
+                if bbox_info_idx['track_id'] == capture_res_idy['track_id'] and capture_res_idy['capture']['capture_frame_num'] < draw_alarm_frame_num_threshold:
+                    capture_bool = True
+
+            if self.demo_type == "lpr":
+                # car
+                bbox_info_idx['car_info']['roi'] = [int(b + 0.5) for b in bbox_info_idx['car_info']['roi'][:4]]
+                if not capture_bool:
+                    img = cv_plot_rectangle(img, bbox_info_idx['car_info']['roi'], mode=mode, color=color_dict["car"])
+                    # img = NiceBox(img, bbox_info_idx['car_info']['roi'], color_dict["car"], thickness=3, mask=False)
+
+                    img = cv2.putText(img, "{}_{}_{}".format( bbox_info_idx['track_id'], bbox_info_idx['state']['frame_num'], bbox_info_idx['car_info']['attri']), (bbox_info_idx['car_info']['roi'][0], bbox_info_idx['car_info']['roi'][1] - 10), 
+                                        cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["car"], 2)
+
+                    img = cv2.putText(img, "{}_{}_{}_{}_{:.2f}_{:.2f}".format( bbox_info_idx['state']['up_down_state'], bbox_info_idx['state']['up_down_state_frame_num'], bbox_info_idx['state']['left_right_state'], bbox_info_idx['state']['left_right_state_frame_num'], bbox_info_idx['state']['up_down_speed'], bbox_info_idx['state']['left_right_speed'] ), (bbox_info_idx['car_info']['roi'][0], bbox_info_idx['car_info']['roi'][3] - 10), 
+                                        cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["car"], 2)
+                else:
+                    img = cv_plot_rectangle(img, bbox_info_idx['car_info']['roi'], mode=mode, color=color_dict["car_capture"])
+                    # img = NiceBox(img, bbox_info_idx['car_info']['roi'], color_dict["car_capture"], thickness=3, mask=False)
+
+                    img = cv2.putText(img, "{}_{}_{}".format( bbox_info_idx['track_id'], bbox_info_idx['state']['frame_num'], bbox_info_idx['car_info']['attri']), (bbox_info_idx['car_info']['roi'][0], bbox_info_idx['car_info']['roi'][1] - 10), 
+                                        cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["car_capture"], 2)
+
+                    img = cv2.putText(img, "{}_{}_{}_{}_{:.2f}_{:.2f}".format( bbox_info_idx['state']['up_down_state'], bbox_info_idx['state']['up_down_state_frame_num'], bbox_info_idx['state']['left_right_state'], bbox_info_idx['state']['left_right_state_frame_num'], bbox_info_idx['state']['up_down_speed'], bbox_info_idx['state']['left_right_speed'] ), (bbox_info_idx['car_info']['roi'][0], bbox_info_idx['car_info']['roi'][3] - 10), 
+                                        cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["car_capture"], 2)
+
+                # license_plate
+                if len(bbox_info_idx['plate_info']['roi']):
+                    
+                    bbox_info_idx['plate_info']['roi'] = [int(b + 0.5) for b in bbox_info_idx['plate_info']['roi'][:4]]
+                    text = "{}_{}_{}_{:.2f}".format( bbox_info_idx['state']['lpr_num'], bbox_info_idx['plate_info']['num'], bbox_info_idx['plate_info']['color'], bbox_info_idx['plate_info']['score'])
+                    text_size = cv2.getTextSize(text, 0, 3, 2)
+                    if not capture_bool:
+                        img = cv_plot_rectangle(img, bbox_info_idx['plate_info']['roi'], mode=mode, color=color_dict["plate"], thickness=3)
+                        # img = NiceBox(img, bbox_info_idx['plate_info']['roi'], color_dict["plate"], thickness=3, mask=False)
+
+                        # img = cv2.putText(img, "{}".format( bbox_info_idx['plate_info']['num']), \
+                        #                     (bbox_info_idx['plate_info']['roi'][0], bbox_info_idx['plate_info']['roi'][1] - 15), 
+                        #                     cv2.FONT_HERSHEY_COMPLEX, 3, color_dict["plate"], 2)
+                        img = cv2ImgAddText(img, text, bbox_info_idx['plate_info']['roi'][0], bbox_info_idx['plate_info']['roi'][1] - 15 - text_size[0][1], textColor=color_dict["plate"], textSize=60)
+                    else:
+                        img = cv_plot_rectangle(img, bbox_info_idx['plate_info']['roi'], mode=mode, color=color_dict["plate_capture"], thickness=3)
+                        # img = NiceBox(img, bbox_info_idx['plate_info']['roi'], color_dict["plate_capture"], thickness=3, mask=False)
+
+                        # img = cv2.putText(img, "{}".format( bbox_info_idx['plate_info']['num']), \
+                        #                     (bbox_info_idx['plate_info']['roi'][0], bbox_info_idx['plate_info']['roi'][1] - 15), 
+                        #                     cv2.FONT_HERSHEY_COMPLEX, 3, color_dict["plate_capture"], 2)
+                        img = cv2ImgAddText(img, text, bbox_info_idx['plate_info']['roi'][0], bbox_info_idx['plate_info']['roi'][1] - 15 - text_size[0][1], textColor=color_dict["plate_capture_reverse"], textSize=60)
+            
+            elif self.demo_type == "face":
+                # face
+                bbox_info_idx['face_info']['roi'] = [int(b + 0.5) for b in bbox_info_idx['face_info']['roi'][:4]]
+                if not capture_bool:
+                    # img = cv_plot_rectangle(img, bbox_info_idx['face_info']['roi'], mode=mode, color=color_dict["face"])
+                    img = NiceBox(img, bbox_info_idx['face_info']['roi'], color_dict["face"], thickness=3, mask=False)
+
+                    # img = cv2.putText(img, "{}_{}_{:.2f}".format( bbox_info_idx['track_id'], bbox_info_idx['state']['frame_num'], bbox_info_idx['plate_info']['score']), (bbox_info_idx['face_info']['roi'][0], bbox_info_idx['face_info']['roi'][1] - 10), 
+                    #                     cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["face"], 2)
+
+                    # img = cv2.putText(img, "{}_{}_{}_{}_{:.2f}_{:.2f}".format( bbox_info_idx['state']['up_down_state'], bbox_info_idx['state']['up_down_state_frame_num'], bbox_info_idx['state']['left_right_state'], bbox_info_idx['state']['left_right_state_frame_num'], bbox_info_idx['state']['up_down_speed'], bbox_info_idx['state']['left_right_speed'] ), (bbox_info_idx['face_info']['roi'][0], bbox_info_idx['face_info']['roi'][3] - 10), 
+                    #                     cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["face"], 2)
+                else:
+                    # img = cv_plot_rectangle(img, bbox_info_idx['face_info']['roi'], mode=mode, color=color_dict["face_capture"])
+                    img = NiceBox(img, bbox_info_idx['face_info']['roi'], color_dict["face_capture"], thickness=3, mask=False)
+                    
+                    # img = cv2.putText(img, "{}_{}_{:.2f}".format( bbox_info_idx['track_id'], bbox_info_idx['state']['frame_num'], bbox_info_idx['plate_info']['score']), (bbox_info_idx['face_info']['roi'][0], bbox_info_idx['face_info']['roi'][1] - 10), 
+                    #                     cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["face_capture"], 2)
+
+                    # img = cv2.putText(img, "{}_{}_{}_{}_{:.2f}_{:.2f}".format( bbox_info_idx['state']['up_down_state'], bbox_info_idx['state']['up_down_state_frame_num'], bbox_info_idx['state']['left_right_state'], bbox_info_idx['state']['left_right_state_frame_num'], bbox_info_idx['state']['up_down_speed'], bbox_info_idx['state']['left_right_speed'] ), (bbox_info_idx['face_info']['roi'][0], bbox_info_idx['face_info']['roi'][3] - 10), 
+                    #                     cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["face_capture"], 2)
+
+        return img
 
 
-def draw_bbox_state(img, bbox_state_container):
-    
-    for _, bbox_state_idy in bbox_state_container.items():
+    def draw_bbox_tracker(self, img, tracker_bboxes, mode='ltrb'):
         
-        color = get_color(abs(bbox_state_idy['track_id']))
+        for idx in range(len(tracker_bboxes)):
+            tracker_bbox = tracker_bboxes[idx]
+
+            id = tracker_bbox[-1]
+            loc = tracker_bbox[0:4]
+            color = get_color(abs(id))
+
+            img = cv_plot_rectangle(img, loc, mode=mode, color=color)
+            img = cv2.putText(img, "id: {}".format(int(id)), (int(loc[0]), int(loc[1])), cv2.FONT_HERSHEY_COMPLEX, 1, color, 2)
+            
+        return img
+    
+
+    def draw_bbox_state(self, img, bbox_state_container):
         
-        for idx in range(len( bbox_state_idy['state']['center_point_list'] )):
-            x = int( bbox_state_idy['state']['center_point_list'][idx][0] + 0.5 )
-            y = int( bbox_state_idy['state']['center_point_list'][idx][1] + 0.5 )
+        for _, bbox_state_idy in bbox_state_container.items():
+            
+            color = get_color(abs(bbox_state_idy['track_id']))
+            
+            for idx in range(len( bbox_state_idy['state']['center_point_list'] )):
+                x = int( bbox_state_idy['state']['center_point_list'][idx][0] + 0.5 )
+                y = int( bbox_state_idy['state']['center_point_list'][idx][1] + 0.5 )
 
-            cv2.circle(img, (x, y), 1, color, 2)
+                cv2.circle(img, (x, y), 1, color, 2)
 
-    return img
+        return img
 
 
-def draw_capture_line(img, capture_line_up_down, capture_line_left_right, mode='xywh'):
-    
-    image_width = img.shape[1]
-    image_height = img.shape[0]
+    def draw_capture_line(self, img, capture_line_up_down, capture_line_left_right, mode='xywh'):
+        
+        image_width = img.shape[1]
+        image_height = img.shape[0]
 
-    for idx in range(len(capture_line_up_down)):
+        for idx in range(len(capture_line_up_down)):
 
-        capture_line_idx = int(capture_line_up_down[idx])
+            capture_line_idx = int(capture_line_up_down[idx])
 
-        # line
-        cv2.line(img, (0, capture_line_idx), (image_width, capture_line_idx), color_dict["roi_capture_area"], 2)
+            # line
+            cv2.line(img, (0, capture_line_idx), (image_width, capture_line_idx), color_dict["roi_capture_area"], 2)
 
-    for idx in range(len(capture_line_left_right)):
-    
-        capture_line_idx = int(capture_line_left_right[idx])
+        for idx in range(len(capture_line_left_right)):
+        
+            capture_line_idx = int(capture_line_left_right[idx])
 
-        # line
-        cv2.line(img, (capture_line_idx, 0), (capture_line_idx, image_height), color_dict["roi_capture_area"], 2)
+            # line
+            cv2.line(img, (capture_line_idx, 0), (capture_line_idx, image_height), color_dict["roi_capture_area"], 2)
 
-    return img
+        return img

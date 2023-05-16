@@ -16,7 +16,10 @@ def load_objectinfo():
     objectinfo['plate_info']['num'] = ''
     objectinfo['plate_info']['color'] = 'none'
     objectinfo['plate_info']['score'] = 0.0
-    objectinfo['plate_info']['disappear_frame_num'] = 0                     # 消失画面帧数
+
+    # face_info
+    objectinfo['face_info'] = {}
+    objectinfo['face_info']['roi'] = []
 
     # state
     objectinfo['state'] = {}
@@ -33,7 +36,8 @@ def load_objectinfo():
     objectinfo['state']['left_right_state'] = 'Stop'                        # 车辆状态（左右行）
     objectinfo['state']['left_right_state_frame_num'] = 0                   # 车辆状态（左右行）帧数
 
-    objectinfo['state']['lpr_num'] = 0                                      # 车牌识别帧数
+    objectinfo['state']['obj_num'] = 0                                      # 车牌识别帧数
+    objectinfo['state']['obj_disappear_num'] = 0                            # 车牌消失帧数
     objectinfo['state']['lpr_num_list'] = []                                # 车牌识别结果（多帧）
     objectinfo['state']['lpr_score_list'] = []                              # 车牌识别结果得分（多帧）
     objectinfo['state']['lpr_color_list'] = []                              # 车牌识别结果得分（多帧）
