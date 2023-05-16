@@ -135,7 +135,8 @@ def main():
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    # zg, demo
+    # zg, license plate demo
+    # 
     args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_CN_ZG_HCZP/5M_230416/avi/"
     args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_CN_ZG_HCZP/5M_230416/avi/"
     # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_CN_ZG_HCZP/5M_12mm_0723_白_前/avi/"

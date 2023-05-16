@@ -7,11 +7,11 @@ from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.Basic.utils.folder_tools import *
-from Image.Demo.face_capture.demo.RMAI_FACE_API import *
-from Image.Demo.face_capture.demo.RMAI_P3D_API import *
-from Image.Demo.face_capture.demo.RMAI_Match_API import *
-from Image.Demo.face_capture.utils.draw_tools import *
-from Image.Demo.face_capture.utils.xml_tools import *
+from Image.Demo.bus_face_capture.demo.RMAI_FACE_API import *
+from Image.Demo.bus_face_capture.demo.RMAI_P3D_API import *
+from Image.Demo.bus_face_capture.demo.RMAI_Match_API import *
+from Image.Demo.bus_face_capture.utils.draw_tools import *
+from Image.Demo.bus_face_capture.utils.xml_tools import *
 
 
 def inference_video(args):

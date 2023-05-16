@@ -7,8 +7,8 @@ sys.path.insert(0, caffe_root+'python')
 import caffe
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
-from Image.Demo.face_capture.p3d.mdoel.nms import *
-from Image.Demo.face_capture.p3d.mdoel.prior_box_cpu import *
+from Image.Demo.bus_face_capture.p3d.mdoel.nms import *
+from Image.Demo.bus_face_capture.p3d.mdoel.prior_box_cpu import *
 
 
 class SSDDetector(object):

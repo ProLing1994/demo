@@ -9,7 +9,7 @@ from mmcv.ops import DeformConv2dPack
 
 import sys
 sys.path.insert(0, '/home/huanyuan/code/demo')
-from Image.Demo.face_capture.face.model.spp_neck import SPP_Neck
+from Image.Demo.bus_face_capture.face.model.spp_neck import SPP_Neck
 
 
 class FPNDcnLconv3Dcn(nn.Module):
