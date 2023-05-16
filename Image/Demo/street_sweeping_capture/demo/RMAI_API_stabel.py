@@ -10,11 +10,11 @@ from Image.detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
 # from Image.detection2d.mmdetection.demo.detector.yolov6_detector import YOLOV6Detector
 from Image.recognition2d.lpr.infer.lpr import LPRCaffe, LPRPytorch
 from Image.recognition2d.lpr.infer.lpr_seg import LPRSegColorClassCaffe
-from Image.Demo.license_plate_capture.sort.mot_sort import Sort
+from Image.Demo.street_sweeping_capture.sort.mot_sort import Sort
 
-from Image.Demo.license_plate_capture.options import *
-from Image.Demo.license_plate_capture.param import *
-from Image.Demo.license_plate_capture.utils.iou import *
+from Image.Demo.street_sweeping_capture.options import *
+from Image.Demo.street_sweeping_capture.param import *
+from Image.Demo.street_sweeping_capture.utils.iou import *
 
 
 class CaptureApi():

@@ -8,8 +8,8 @@ from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.Basic.utils.folder_tools import *
-from Image.Demo.license_plate_capture.demo.RMAI_API_stabel import *
-from Image.Demo.license_plate_capture.utils.draw_tools import draw_bbox_tracker, draw_bbox_info, draw_bbox_state, draw_capture_line
+from Image.Demo.street_sweeping_capture.demo.RMAI_API_stabel import *
+from Image.Demo.street_sweeping_capture.utils.draw_tools import draw_bbox_tracker, draw_bbox_info, draw_bbox_state, draw_capture_line
 from Image.Basic.script.xml.xml_write import write_xml
 
 
