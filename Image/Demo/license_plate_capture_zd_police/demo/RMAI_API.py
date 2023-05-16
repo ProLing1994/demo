@@ -1,5 +1,4 @@
 from collections import Counter
-import cv2
 import copy
 import numpy as np
 import sys 

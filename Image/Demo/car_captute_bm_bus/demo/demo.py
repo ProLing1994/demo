@@ -130,10 +130,8 @@ def main():
     # # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/1448/difficult_sample/"
 
     # bm, 3928，demo
-    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/BM_C28/avi文件/2M_正报数据_四车道_20221026_20221115/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/3928/2M_正报数据_四车道_20221026_20221115/"
-    args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/BM_C28/avi文件/2M_正报数据_20221026_20221115/"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/3928/2M_正报数据_20221026_20221115/"
+    args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/BM_C28/avi文件/2M_正报数据_HSBF723_HSBF9201_20221026_1115/"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/3928/2M_正报数据_HSBF723_HSBF9201_20221026_1115/"
 
     args.suffix = '.avi'
     # args.suffix = '.mp4'
@@ -141,8 +139,8 @@ def main():
     # 是否保存视频结果
     args.write_result_video_bool = True
     # 是否保存每一帧结果
-    # args.write_result_per_frame_bool = True
-    args.write_result_per_frame_bool = False
+    args.write_result_per_frame_bool = True
+    # args.write_result_per_frame_bool = False
     # 是否保存抓拍结果
     args.write_capture_crop_bool = True
     # 是否保存日志

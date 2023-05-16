@@ -53,7 +53,7 @@ def calibrate(args):
             cv2.imwrite(output_img_path, img)
         else:
             print(img_name)
-            # os.remove(img_path)
+            os.remove(img_path)
 
     # calibrate the camera
     ret, cameraMatrix, distCoeffs, rvecs, tvecs = cv2.calibrateCamera(obj_points, img_points, gray_img.shape[::-1], None, None)
@@ -506,11 +506,11 @@ if __name__ == '__main__':
     args.output_solvePnP_img_dir = os.path.join(args.file_dir, "solvePnP_img/")
     args.suffix = ".jpg"
 
-    # 标定相机参数（棋盘格标定板）
-    calibrate(args)
+    # # 标定相机参数（棋盘格标定板）
+    # calibrate(args)
 
-    # solvePnP
-    solvePnP(args)
+    # # solvePnP
+    # solvePnP(args)
 
 
     ##########################################################
@@ -539,8 +539,8 @@ if __name__ == '__main__':
     # test undistort 去畸变
     test_undistort(args)
 
-    # 单点求俯仰角
-    test_rotation_z(args)
+    # # 单点求俯仰角
+    # test_rotation_z(args)
 
-    # 已知俯仰角，映射结果
-    test_project_points(args)
+    # # 已知俯仰角，映射结果
+    # test_project_points(args)

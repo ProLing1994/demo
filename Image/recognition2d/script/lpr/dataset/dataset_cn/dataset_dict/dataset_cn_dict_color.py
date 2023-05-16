@@ -74,3 +74,18 @@ id_2_mask_color_dict = {
 class_seg_label = ['none', 'green', 'yellow', 'blue', 'white', 'black']
 class_seg_weight = [0.1, 1, 1, 1, 1, 1]
 add_mask_order = ['green', 'yellow', 'blue', 'white', 'black']
+
+
+color_mask_id_list = [1, 2, 3, 4, 5]
+color_mask_name_list = ['green', 'yellow', 'blue', 'white', 'black']
+
+class_seg_label_group = ['color']
+class_seg_label_group_threh_map = {
+                                'color': 500, 
+                            }
+class_seg_label_group_2_id_map = {
+                                'color': color_mask_id_list, 
+                            }
+class_seg_label_group_2_name_map = {
+                                'color': color_mask_name_list, 
+                            }
