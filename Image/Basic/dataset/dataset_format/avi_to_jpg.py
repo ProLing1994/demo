@@ -59,8 +59,8 @@ if __name__ == "__main__":
     # # args.frame_strp = 10
     # # args.frame_strp = 1
 
-    args.video_dir = "/mnt/huanyuan2/data/image/Calibrate/Chessboard/BM1448/原始数据/棋盘格数据/2023-05-06/avi/"
-    args.output_video_dir = "/mnt/huanyuan2/data/image/Calibrate/Chessboard/BM1448/原始数据/棋盘格数据/2023-05-06/jpg/"
+    args.video_dir = "/mnt/huanyuan2/data/image/Calibrate/Chessboard/BM1448/原始数据/实际采集数据/2023-05-12/avi/"
+    args.output_video_dir = "/mnt/huanyuan2/data/image/Calibrate/Chessboard/BM1448/原始数据/实际采集数据/2023-05-12/jpg/"
     # args.suffix = '.mp4'
     args.suffix = '.avi'
     args.frame_strp = 25
