@@ -50,21 +50,21 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_safeisland/原始素材/BM_C28/2M_安全岛_0510/avi/"
-    args.output_video_dir = "/mnt/huanyuan2/data/image/RM_C28_safeisland/original/BM/jpg/JPEGImages/2M_安全岛_0510/"
-    # args.suffix = '.mp4'
-    args.suffix = '.avi'
-    # args.frame_strp = 125
-    args.frame_strp = 25
-    # args.frame_strp = 10
-    # args.frame_strp = 1
-
-    # args.video_dir = "/mnt/huanyuan2/data/image/Calibrate/Chessboard/BM1448/棋盘格数据/avi/"
-    # args.output_video_dir = "/mnt/huanyuan2/data/image/Calibrate/Chessboard/BM1448/棋盘格数据/jpg/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_safeisland/原始素材/BM_C28/2M_安全岛_0510/avi/"
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/RM_C28_safeisland/original/BM/jpg/JPEGImages/2M_安全岛_0510/"
     # # args.suffix = '.mp4'
     # args.suffix = '.avi'
+    # # args.frame_strp = 125
     # args.frame_strp = 25
     # # args.frame_strp = 10
     # # args.frame_strp = 1
+
+    args.video_dir = "/mnt/huanyuan2/data/image/Calibrate/Chessboard/BM1448/原始数据/实际采集数据/2023-05-12/avi/"
+    args.output_video_dir = "/mnt/huanyuan2/data/image/Calibrate/Chessboard/BM1448/原始数据/实际采集数据/2023-05-12/jpg/"
+    # args.suffix = '.mp4'
+    args.suffix = '.avi'
+    args.frame_strp = 25
+    # args.frame_strp = 10
+    # args.frame_strp = 1
 
     avi_to_jpg(args)

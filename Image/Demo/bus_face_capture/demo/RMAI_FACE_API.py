@@ -5,8 +5,8 @@ from pyrsistent import v
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.Basic.utils.folder_tools import *
-from Image.Demo.face_capture.face.model.detector import FairMot
-from Image.Demo.face_capture.face.tracker.multitracker import JDETracker
+from Image.Demo.bus_face_capture.face.model.detector import FairMot
+from Image.Demo.bus_face_capture.face.tracker.multitracker import JDETracker
 
 class FaceCaptureApi():
     """

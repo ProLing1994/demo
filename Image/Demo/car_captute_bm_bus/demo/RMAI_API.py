@@ -47,10 +47,12 @@ class CaptureApi():
         # self.yolov6_class_name = ['car']
         # self.yolov6_threshold_list = [0.3]
 
-        # yolov6_c28_car_0214
+        # yolov6_c28_car_0320
         self.yolov6_bool = True
-        self.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_c28_car_0320/yolov6_rm_c28.py"
-        self.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_c28_car_0320/epoch_340.pth"
+        # self.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_c28_car_0320/yolov6_rm_c28.py"
+        # self.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_c28_car_0320/epoch_340.pth"
+        self.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_c28_car_0320/yolov6_rm_c28_deploy.py"
+        self.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_c28_car_0320/epoch_340_deploy.pth"
         self.yolov6_class_name = ['car']
         self.yolov6_threshold_list = [0.3]
 

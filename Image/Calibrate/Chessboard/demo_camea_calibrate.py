@@ -4,6 +4,7 @@ Homework: Calibrate the Camera with ZhangZhengyou Method.
 import argparse
 import cv2
 import numpy as np
+import json
 import os
 from tqdm import tqdm
 import math
@@ -53,7 +54,7 @@ def calibrate(args):
             cv2.imwrite(output_img_path, img)
         else:
             print(img_name)
-            # os.remove(img_path)
+            os.remove(img_path)
 
     # calibrate the camera
     ret, cameraMatrix, distCoeffs, rvecs, tvecs = cv2.calibrateCamera(obj_points, img_points, gray_img.shape[::-1], None, None)
@@ -235,9 +236,22 @@ def test_solvePnP(args):
 
     # img
     img = cv2.imread(args.test_chessboard_img_path)
-    gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # # json
+    # json_path = args.test_chessboard_json_path
+    # with open(json_path, 'r', encoding='UTF-8') as fr:
+    #     annotation = json.load(fr)
+    # for track in annotation['shapes']:
+    #     label = track['label']
+    #     points = np.array(track['points'])
+    #     cv2.fillConvexPoly(img, points, (213, 196, 193))
+
+    gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)   
+    # cv2.imwrite(args.output_test_chessboard_corners_img_path, gray_img)
 
     # findChessboardCorners
+    # ret, cp_img = cv2.findChessboardCorners(gray_img, (w, h), cv2.CALIB_CB_ADAPTIVE_THRESH + cv2.CALIB_CB_NORMALIZE_IMAGE + cv2.CALIB_CB_FILTER_QUADS + cv2.CALIB_CB_FAST_CHECK )
+    # ret, cp_img = cv2.findChessboardCorners(gray_img, (w, h), cv2.CALIB_CB_ADAPTIVE_THRESH + cv2.CALIB_CB_NORMALIZE_IMAGE + cv2.CALIB_CB_FILTER_QUADS)
     ret, cp_img = cv2.findChessboardCorners(gray_img, (w, h), cv2.CALIB_CB_ADAPTIVE_THRESH + cv2.CALIB_CB_NORMALIZE_IMAGE + cv2.CALIB_CB_FILTER_QUADS)
 
     # output img
@@ -246,9 +260,9 @@ def test_solvePnP(args):
 
     # PnP 算法获取旋转矩阵和平移向量
     # 计算外参：所有棋盘格点
-    # _, rvecs, tvecs = cv2.solvePnP(cp_world, cp_img, cameraMatrix, distCoeffs)
+    _, rvecs, tvecs = cv2.solvePnP(cp_world, cp_img, cameraMatrix, distCoeffs)
     # 计算外参：4个棋盘格点
-    _, rvecs, tvecs = cv2.solvePnP(np.array(cp_world[[27,28,29,38,39,40,49,50,51], :]), np.array(cp_img[[27,28,29,38,39,40,49,50,51], :]), cameraMatrix, distCoeffs)
+    # _, rvecs, tvecs = cv2.solvePnP(np.array(cp_world[[27,28,29,38,39,40,49,50,51], :]), np.array(cp_img[[27,28,29,38,39,40,49,50,51], :]), cameraMatrix, distCoeffs)
     # 计算外参：4个棋盘格点
     # _, rvecs, tvecs = cv2.solvePnP(np.array(cp_world[[11,23,30,47], :]), np.array(cp_img[[11,23,30,47], :]), cameraMatrix, distCoeffs)
     # 计算外参：4个棋盘格点 P3P
@@ -302,7 +316,8 @@ def test_undistort(args):
 
     # 去畸变
     img = cv2.undistort(img, cameraMatrix, distCoeffs)
-    cp_img_undistort = cv2.undistortPoints(cp_img[[27,28,29,38,39,40,49,50,51]], cameraMatrix, distCoeffs, P=cameraMatrix)
+    cp_img_undistort = cv2.undistortPoints(cp_img, cameraMatrix, distCoeffs, P=cameraMatrix)
+    # cp_img_undistort = cv2.undistortPoints(cp_img[[27,28,29,38,39,40,49,50,51]], cameraMatrix, distCoeffs, P=cameraMatrix)
     # cp_img_undistort = cv2.undistortPoints(cp_img[[11,23,30,47]], cameraMatrix, distCoeffs, P=cameraMatrix)
     for idy in range(len(cp_img_undistort)):
         cv2.circle(img, (int(cp_img_undistort[idy][0][0]), int(cp_img_undistort[idy][0][1])), 5, (0, 0, 255), 10)
@@ -314,7 +329,8 @@ def test_undistort(args):
     # test 畸变系数归零 -> 推算外参（与带畸变，外参一致）
     ##########################################################
     wo_dist = np.array([0.0, 0.0, 0.0, 0.0, 0.0]).reshape(1,5)
-    _, wo_dist_rvecs, wo_dist_tvecs = cv2.solvePnP(np.array(cp_world[[27,28,29,38,39,40,49,50,51], :]), np.array(cp_img_undistort), cameraMatrix, wo_dist)
+    _, wo_dist_rvecs, wo_dist_tvecs = cv2.solvePnP(np.array(cp_world), np.array(cp_img_undistort), cameraMatrix, wo_dist)
+    # _, wo_dist_rvecs, wo_dist_tvecs = cv2.solvePnP(np.array(cp_world[[27,28,29,38,39,40,49,50,51], :]), np.array(cp_img_undistort), cameraMatrix, wo_dist)
     # _, wo_dist_rvecs, wo_dist_tvecs = cv2.solvePnP(np.array(cp_world[[11,23,30,47], :]), np.array(cp_img_undistort), cameraMatrix, wo_dist)
     print(wo_dist_rvecs)
     print(wo_dist_tvecs)
@@ -506,11 +522,11 @@ if __name__ == '__main__':
     args.output_solvePnP_img_dir = os.path.join(args.file_dir, "solvePnP_img/")
     args.suffix = ".jpg"
 
-    # 标定相机参数（棋盘格标定板）
-    calibrate(args)
+    # # 标定相机参数（棋盘格标定板）
+    # calibrate(args)
 
-    # solvePnP
-    solvePnP(args)
+    # # solvePnP
+    # solvePnP(args)
 
 
     ##########################################################
@@ -521,11 +537,17 @@ if __name__ == '__main__':
     # args.chessboard_corner_shape = (8, 6)
     # args.chessboard_size_per_grid = 0.021
 
-    # 公司棋盘格标定板
-    args.chessboard_corner_shape = (11, 8)
-    args.chessboard_size_per_grid = 0.025
+    # # 公司棋盘格标定板
+    # args.chessboard_corner_shape = (11, 8)
+    # args.chessboard_size_per_grid = 0.025
 
-    args.test_chessboard_img_path = os.path.join(args.file_dir, "test_chessboard_img.jpg")
+    # 公司棋盘格标定板
+    # 注：必须是长方形，用于适配方向
+    args.chessboard_corner_shape = (5, 3)
+    args.chessboard_size_per_grid = 1.0
+
+    # args.test_chessboard_img_path = os.path.join(args.file_dir, "test_chessboard_img.jpg")
+    args.test_chessboard_img_path = os.path.join(args.file_dir, "test_jpg/chessboard_img/c28_250_high_angle.jpg")
     args.output_test_chessboard_corners_img_path = os.path.join(args.file_dir, "test_chessboard_corners_img.jpg")
     args.output_test_solvePnP_img_path = os.path.join(args.file_dir, "test_solvePnP_img.jpg")
     args.output_test_undistort_img_path = os.path.join(args.file_dir, "test_undistort_img.jpg")
@@ -539,8 +561,8 @@ if __name__ == '__main__':
     # test undistort 去畸变
     test_undistort(args)
 
-    # 单点求俯仰角
-    test_rotation_z(args)
+    # # 单点求俯仰角
+    # test_rotation_z(args)
 
-    # 已知俯仰角，映射结果
-    test_project_points(args)
+    # # 已知俯仰角，映射结果
+    # test_project_points(args)

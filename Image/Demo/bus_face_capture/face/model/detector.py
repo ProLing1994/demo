@@ -3,8 +3,8 @@ import numpy as np
 import sys 
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
-from Image.Demo.face_capture.face.model.decode import mot_decode, _tranpose_and_gather_feat
-from Image.Demo.face_capture.face.model.vgg import *
+from Image.Demo.bus_face_capture.face.model.decode import mot_decode, _tranpose_and_gather_feat
+from Image.Demo.bus_face_capture.face.model.vgg import *
 
 class FairMot(object):
     def __init__(self, model_path, image_width, image_height):

@@ -2,8 +2,8 @@ import sys
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.Basic.utils.folder_tools import *
-from Image.Demo.face_capture.p3d.mdoel.detector import *
-from Image.Demo.face_capture.p3d.tracker.sort import *
+from Image.Demo.bus_face_capture.p3d.mdoel.detector import *
+from Image.Demo.bus_face_capture.p3d.tracker.sort import *
 
 
 class P3DCaptureApi():

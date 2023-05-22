@@ -7,7 +7,7 @@ import random
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
 from Image.recognition2d.license_plate_ocr.infer.lpr import LPR
-from Image.Demo.license_plate_capture_china_vehicle_scene.sort.mot_sort import Sort
+from Image.Demo.street_sweeping_capture.sort.mot_sort import Sort
 
 
 def intersect(box_a, box_b):

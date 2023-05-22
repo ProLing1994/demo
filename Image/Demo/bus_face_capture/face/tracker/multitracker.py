@@ -2,9 +2,9 @@ from collections import deque
 import sys 
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
-from Image.Demo.face_capture.face.tracker.basetrack import *
-from Image.Demo.face_capture.face.tracking_utils.kalman_filter import *
-from Image.Demo.face_capture.face.tracker import matching
+from Image.Demo.bus_face_capture.face.tracker.basetrack import *
+from Image.Demo.bus_face_capture.face.tracking_utils.kalman_filter import *
+from Image.Demo.bus_face_capture.face.tracker import matching
 
 
 class STrack(BaseTrack):
