@@ -88,6 +88,7 @@ def tranform(args):
             output_path = os.path.join(output_folder, str(image['file_name']).replace('.png', '.jpg'))
             cv2.imwrite(output_path, img)
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
