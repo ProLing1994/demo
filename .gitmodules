@@ -13,3 +13,6 @@
 [submodule "Image/segmentation2d/mmsegmentation"]
 	path = Image/segmentation2d/mmsegmentation
 	url = https://gitlab.com/YuanHuan_Pro/mmsegmentation.git
+[submodule "Image/detection2d/yolov5-face"]
+	path = Image/detection2d/yolov5-face
+	url = https://gitlab.com/YuanHuan_Pro/yolov5-face.git
