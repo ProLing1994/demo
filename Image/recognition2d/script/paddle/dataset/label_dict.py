@@ -10,12 +10,12 @@ sys.path.insert(0, '/yuanhuan/code/demo')
 # sys.path.insert(0, '/yuanhuan/demo')
 from Image.Basic.utils.folder_tools import *
 
-sys.path.insert(0, '/yuanhuan/code/demo/Image/recognition2d/lpr')
+sys.path.insert(0, '/yuanhuan/code/demo/Image/recognition2d/')
 
 def gen_label_dict(args):
 
     # dataset_zd_dict
-    dataset_dict = importlib.import_module('script.dataset.dataset_seg_zd.dataset_dict.' + args.seg_dict_name) 
+    dataset_dict = importlib.import_module( 'script.lpr.dataset.dataset_cn.dataset_dict.' + args.data_dict_name ) 
     ocr_labels = dataset_dict.kind_num_labels
 
     # run
@@ -28,12 +28,11 @@ def gen_label_dict(args):
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser() 
+    parser.add_argument('--output_dir', type=str, default="/yuanhuan/model/image/lpr/paddle_dict/plate_cn_202305") 
+    parser.add_argument('--output_name', type=str, default="cn_dict.txt") 
+    parser.add_argument('--data_dict_name', type=str, default="dataset_cn_dict_normal") 
+
     args = parser.parse_args()
-
-    args.seg_dict_name = "dataset_zd_dict_nomal"
-
-    args.output_dir = "/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask_paddle_ocr"
-    args.output_name = "zd_dict.txt"
 
     gen_label_dict(args)

@@ -3,7 +3,7 @@ import sys
 import xml.etree.ElementTree as ET
 
 sys.path.insert(0, '/yuanhuan/code/demo/Image/recognition2d/')
-from Image.recognition2d.script.lpr.dataset.dataset_cn.dataset_dict.dataset_cn_dict_normal import *
+from script.lpr.dataset.dataset_cn.dataset_dict.dataset_cn_dict_normal import *
 
 
 name_2_id_dict = {   

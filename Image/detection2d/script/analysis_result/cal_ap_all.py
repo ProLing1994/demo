@@ -33,6 +33,7 @@ def calculate_ap_all(args):
                                 'non_motorized': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_' + test_name, 'results/det_test_non_motorized.txt'), 
                                 'non_motorized_person': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_' + test_name, 'results/det_test_non_motorized_person.txt'), 
                                 'person': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_' + test_name, 'results/det_test_person.txt'), 
+                                'face': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')) + '_' + test_name, 'results/det_test_face.txt'), 
                                 } 
 
             anno_path = os.path.join(args.anno_dir, '%s.xml')
@@ -53,6 +54,7 @@ def calculate_ap_all(args):
                                 'non_motorized': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')), 'results/det_test_non_motorized.txt'), 
                                 'non_motorized_person': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')), 'results/det_test_non_motorized_person.txt'), 
                                 'person': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')), 'results/det_test_person.txt'), 
+                                'face': os.path.join(args.model_dir, '_'.join(str(data_name_idx).split('/')), 'results/det_test_face.txt'), 
                                 } 
 
             anno_path = os.path.join(args.anno_dir, '%s.xml')
@@ -439,22 +441,42 @@ if __name__ == "__main__":
 
     # args.from_dataset_bool = False
 
+    # ######################################
+    # # C28_Car
+    # ######################################
+    # args.data_dir = "/yuanhuan/data/image/"
+
+    # # yolov6
+    # args.data_list = ['RM_C28_detection/america_new']
+                        
+    # args.cal_ap_dict = { 'car': ['car'] }
+
+    # # yolov6
+    # # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_c28_car_0214/eval_epoches_240_0.4/"
+    # # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_c28_car_0312/eval_epoches_300_0.4/"
+    # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_c28_car_0320/eval_epoches_340_0.4/"
+
+    # args.anno_name = 'Annotations_Car'  # 车
+
+    # args.from_dataset_bool = True
+
     ######################################
-    # C28_Car
+    # ZG_Face
     ######################################
     args.data_dir = "/yuanhuan/data/image/"
 
     # yolov6
-    args.data_list = ['RM_C28_detection/america_new']
+    args.data_list = ['Open_Source/Wider_Face/training']
                         
-    args.cal_ap_dict = { 'car': ['car'] }
+    args.cal_ap_dict = { 'face': ['face'] }
 
-    # yolov6
-    # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_c28_car_0214/eval_epoches_240_0.4/"
-    # args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_c28_car_0312/eval_epoches_300_0.4/"
-    args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_c28_car_0320/eval_epoches_340_0.4/"
+    # # ssd
+    # args.model_dir = "/yuanhuan/model/image/ssd_rfb/weights/SSD_VGG_FPN_RFB_2023-05-12-08_focalloss_1class_wider_face/eval_epoches_299"
 
-    args.anno_name = 'Annotations_Car'  # 车
+    # # yolov6
+    args.model_dir = "/yuanhuan/model/image/yolov6/yolov6_zg_face_20230515/eval_epoches_300_0.4/"
+
+    args.anno_name = 'Annotations'
 
     args.from_dataset_bool = True
 
@@ -463,8 +485,8 @@ if __name__ == "__main__":
     #####################################
 
     # test_name = "trainval"
-    # test_name = "val"
-    test_name = "test"
+    test_name = "val"
+    # test_name = "test"
 
     args.over_thresh = 0.5
     args.use_07_metric = False
