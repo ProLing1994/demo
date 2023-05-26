@@ -20,7 +20,7 @@ def test_solvePnP(args):
     cv_file.release()
 
     # json
-    json_path = args.test_chessboard_json_path
+    json_path = args.test_point_json_path
     with open(json_path, 'r', encoding='UTF-8') as fr:
         annotation = json.load(fr)
 
@@ -64,7 +64,7 @@ def test_solvePnP(args):
     print("translation vectors:", tvecs)
 
     # img
-    img = cv2.imread(args.test_chessboard_img_path)
+    img = cv2.imread(args.test_point_img_path)
 
     # 投影
     img_point, _ = cv2.projectPoints(cp_world, rvecs, tvecs, cameraMatrix, distCoeffs)
@@ -84,7 +84,7 @@ def test_solvePnP(args):
 def projectPoints(args, corner_name_list, img, rvecs, tvecs, cameraMatrix, distCoeffs):
 
     # json
-    json_path = args.test_chessboard_json_path
+    json_path = args.test_point_json_path
     with open(json_path, 'r', encoding='UTF-8') as fr:
         annotation = json.load(fr)
 
@@ -162,8 +162,8 @@ if __name__ == '__main__':
     # args.image_name = "c28_250_low_angle"
     # args.image_name = "c28_290_high_angle"
     # args.image_name = "c28_290_low_angle"
-    args.test_chessboard_img_path = os.path.join(args.file_dir, "test_jpg/point_img/{}.jpg".format(args.image_name))
-    args.test_chessboard_json_path = os.path.join(args.file_dir, "test_jpg/point_img/{}.json".format(args.image_name))
+    args.test_point_img_path = os.path.join(args.file_dir, "test_jpg/point_img/{}.jpg".format(args.image_name))
+    args.test_point_json_path = os.path.join(args.file_dir, "test_jpg/point_img/{}.json".format(args.image_name))
 
     # 利用棋盘格标定板，推到外参
     img, rvecs, tvecs, cameraMatrix, distCoeffs = test_solvePnP(args)
@@ -177,7 +177,6 @@ if __name__ == '__main__':
 
     # 投影
     for idx in range(len(args.feet_corner_name_list)):
-
         feet_corner_img, error = projectPoints(args, args.feet_corner_name_list[idx], img.copy(), rvecs, tvecs, cameraMatrix, distCoeffs)
         output_test_solvePnP_feet_corner_img_path = os.path.join(args.file_dir, "test_jpg/4point_img_res/{}_solvePnP_feet_corner_{}_{:.2f}.jpg".format(args.image_name, idx, error))
         cv2.imwrite(output_test_solvePnP_feet_corner_img_path, feet_corner_img)
