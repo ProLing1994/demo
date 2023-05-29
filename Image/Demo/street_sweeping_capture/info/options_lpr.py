@@ -9,37 +9,37 @@ lpr = edict()
 
 # ssd
 # 2022-07-22-00
-# pytorch 
+# # pytorch 
 # lpr.ssd_prototxt = None
 # lpr.ssd_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-07-22-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
 # caffe
 # lpr.ssd_prototxt = "/mnt/huanyuan/model_final/image_model/zg/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-07-22-00/FPN_RFB_3class_3attri_noDilation_prior.prototxt"
 # lpr.ssd_model_path = "/mnt/huanyuan/model_final/image_model/zg/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-07-22-00/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-07-22-00.caffemodel"
-# openvino
+# # openvino
 # lpr.ssd_prototxt = None
 # lpr.ssd_model_path = "/mnt/huanyuan/model_final/image_model/zg/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-07-22-00/openvino_model/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-07-22-00.xml"
 
-# 2022-08-10-00
-# pytorch 
+# # 2022-08-10-00
+# # pytorch 
 # lpr.ssd_prototxt = None
-# lpr.ssd_model_path = "/mnt/huanyuan/model/image/ssd_rfb/SSD_VGG_FPN_RFB_2022-08-10-00_focalloss_4class_car_bus_truck_licenseplate_softmax_zg_zf_w_fuzzy_plate/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
-# caffe
-# lpr.ssd_prototxt = ""
-# lpr.ssd_model_path = ""
-# openvino
+# lpr.ssd_model_path = "/mnt/huanyuan/model_final/image_model/zg/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-08-10-00/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
+# # caffe
+lpr.ssd_prototxt = "/mnt/huanyuan/model_final/image_model/zg/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-08-10-00/FPN_RFB_3class_3attri_noDilation_prior.prototxt"
+lpr.ssd_model_path = "/mnt/huanyuan/model_final/image_model/zg/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-08-10-00/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-08-10-00.caffemodel"
+# # openvino
 # lpr.ssd_prototxt = None
 # lpr.ssd_model_path = ""
 
-## car_bus_truck_motorcyclist_licenseplate_motolicenseplate_softmax
-# pytorch 
-# lpr.ssd_prototxt = None
-# lpr.ssd_model_path = ""
-# caffe
-lpr.ssd_prototxt = "/mnt/huanyuan/model_final/image_model/schoolbus/ssd_rfb/car_bus_truck_motorcyclist_licenseplate_motolicenseplate_softmax/FPN_RFB_4class_3attri_noDilation_prior.prototxt"
-lpr.ssd_model_path = "/mnt/huanyuan/model_final/image_model/schoolbus/ssd_rfb/car_bus_truck_motorcyclist_licenseplate_motolicenseplate_softmax/SSD_VGG_FPN_RFB_VOC_car_bus_truck_motorcyclist_licenseplate_motolicenseplate_2023_03_06.caffemodel"
-# openvino
-# lpr.ssd_prototxt = None
-# lpr.ssd_model_path = ""
+# ## car_bus_truck_motorcyclist_licenseplate_motolicenseplate_softmax
+# # pytorch 
+# # lpr.ssd_prototxt = None
+# # lpr.ssd_model_path = ""
+# # caffe
+# lpr.ssd_prototxt = "/mnt/huanyuan/model_final/image_model/schoolbus/ssd_rfb/car_bus_truck_motorcyclist_licenseplate_motolicenseplate_softmax/FPN_RFB_4class_3attri_noDilation_prior.prototxt"
+# lpr.ssd_model_path = "/mnt/huanyuan/model_final/image_model/schoolbus/ssd_rfb/car_bus_truck_motorcyclist_licenseplate_motolicenseplate_softmax/SSD_VGG_FPN_RFB_VOC_car_bus_truck_motorcyclist_licenseplate_motolicenseplate_2023_03_06.caffemodel"
+# # openvino
+# # lpr.ssd_prototxt = None
+# # lpr.ssd_model_path = ""
 
 # yolov6
 lpr.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_jpf/yolov6.py"
@@ -129,7 +129,9 @@ lpr.china.seg_city_bool = False
 lpr.china.seg_color_bool = True
 
 # 车牌长宽阈值
-lpr.plate_height = [20, 250]
+# lpr.plate_height = [20, 250]
+# lpr.plate_height = [25, 250]
+lpr.plate_height = [30, 250]
 lpr.plate_width = [65, 500]
 
 lpr.lpr_ocr_width_expand_ratio = 0.08
