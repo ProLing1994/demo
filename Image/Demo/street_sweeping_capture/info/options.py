@@ -23,8 +23,8 @@ options.image_height = 1520
 ###########################################
 # gpu
 ###########################################
-# options.gpu_bool = True
-options.gpu_bool = False
+options.gpu_bool = True
+# options.gpu_bool = False
 # options.device = 'cpu'
 options.device = 'cuda:0'
 
@@ -32,10 +32,10 @@ options.device = 'cuda:0'
 ###########################################
 # detector
 ###########################################
-options.ssd_bool = False
-options.yolov6_bool = True
+options.ssd_bool = True
+options.yolov6_bool = False
 
-options.ssd_caffe_bool = False
+options.ssd_caffe_bool = True
 options.ssd_openvino_bool = False
 
 
@@ -95,6 +95,9 @@ options.capture_plate_left_right_distance_far_boundary_threshold = 400
 options.capture_lpr_score_threshold = 0.8
 options.capture_lpr_num_frame_threshold = 4
 options.capture_lpr_color_frame_threshold = 3
+
+options.capture_face_landmark_degree_threshold = 0.5
+
 
 ###########################################
 # roi

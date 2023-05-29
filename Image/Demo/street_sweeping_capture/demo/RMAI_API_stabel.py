@@ -9,6 +9,8 @@ import xml.etree.ElementTree as ET
 sys.path.insert(0, '/home/huanyuan/code/demo')
 from Image.detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
 from Image.detection2d.mmdetection.demo.detector.yolov6_detector import YOLOV6Detector
+from Image.detection2d.mmdetection.demo.detector.yolov6_landmark_degree_detector import YOLOV6LandmarkDegreeDetector
+from Image.detection2d.mmdetection.demo.detector.yolov6_landmark_detector import YOLOV6LandmarkDetector
 from Image.recognition2d.lpr.infer.lpr import LPRCaffe, LPRPytorch
 from Image.recognition2d.lpr.infer.lpr_seg import LPRSegColorClassCaffe
 from Image.Demo.street_sweeping_capture.sort.mot_sort import Sort
@@ -16,6 +18,9 @@ from Image.Demo.street_sweeping_capture.sort.mot_sort import Sort
 from Image.Demo.street_sweeping_capture.info.options import *
 from Image.Demo.street_sweeping_capture.info.param import *
 from Image.Demo.street_sweeping_capture.utils.iou import *
+from Image.Demo.street_sweeping_capture.utils.landmark2degree import landmark2degree
+
+import Image.recognition2d.script.paddle.infer.lpr as paddle_lpr
 
 
 class CaptureApi():
@@ -64,11 +69,18 @@ class CaptureApi():
             # lincense plate reader
             if self.country_type == "china":
                 if options.lpr.lpr_caffe_bool:
-                    self.lpr = LPRCaffe(options.lpr.china.ocr_caffe_prototxt, options.lpr.china.ocr_caffe_model_path, input_shape=options.lpr.china.input_shape, ocr_labels=options.lpr.china.ocr_labels, prefix_beam_search_bool=options.lpr.china.ocr_prefix_beam_search_bool, gpu_bool=options.gpu_bool)
-                    self.lpr_seg = LPRSegColorClassCaffe(options.lpr.china.seg_caffe_prototxt, options.lpr.china.seg_caffe_model_path, options.lpr.china.seg_city_dict_name, options.lpr.china.seg_color_dict_name, input_shape=options.lpr.china.seg_input_shape, city_bool=options.lpr.china.seg_city_bool, color_bool=options.lpr.china.seg_color_bool, gpu_bool=options.gpu_bool)
+                    if lpr.lpr_paddle_bool: 
+                        self.lpr = paddle_lpr.LPRCaffe(options.lpr.china.ocr_caffe_model_path, options.lpr.china.ocr_caffe_prototxt, options.lpr.china.ocr_labels_dict_path, img_shape=options.lpr.china.input_shape, gpu_bool=False)
+                    else:
+                        self.lpr = LPRCaffe(options.lpr.china.ocr_caffe_prototxt, options.lpr.china.ocr_caffe_model_path, input_shape=options.lpr.china.input_shape, ocr_labels=options.lpr.china.ocr_labels, prefix_beam_search_bool=options.lpr.china.ocr_prefix_beam_search_bool, gpu_bool=False)
+                    self.lpr_seg = LPRSegColorClassCaffe(options.lpr.china.seg_caffe_prototxt, options.lpr.china.seg_caffe_model_path, options.lpr.china.seg_city_dict_name, options.lpr.china.seg_color_dict_name, input_shape=options.lpr.china.seg_input_shape, city_bool=options.lpr.china.seg_city_bool, color_bool=options.lpr.china.seg_color_bool, gpu_bool=False)
 
                 elif options.lpr.lpr_pytorch_bool:
-                    self.lpr = LPRPytorch(options.lpr.china.ocr_pth_path, input_shape=options.lpr.china.input_shape, ocr_labels=options.lpr.china.ocr_labels, prefix_beam_search_bool=options.lpr.china.ocr_prefix_beam_search_bool)
+                    if lpr.lpr_paddle_bool: 
+                        self.lpr = None
+                    else:
+                        self.lpr = LPRPytorch(options.lpr.china.ocr_pth_path, input_shape=options.lpr.china.input_shape, ocr_labels=options.lpr.china.ocr_labels, prefix_beam_search_bool=options.lpr.china.ocr_prefix_beam_search_bool)
+                    self.lpr_seg = None
 
             # tracker
             if options.lpr.sort_type == "car":
@@ -79,7 +91,11 @@ class CaptureApi():
             if options.ssd_bool:
                 self.detector = SSDDetector(prototxt=options.face.ssd_prototxt, model_path=options.face.ssd_model_path, ssd_caffe_bool=options.ssd_caffe_bool, gpu_bool=options.gpu_bool)
             elif options.yolov6_bool:
-                self.detector = YOLOV6Detector(options.face.yolov6_config, options.face.yolov6_checkpoint, class_name=options.face.yolov6_class_name, threshold_list=options.face.yolov6_threshold_list, device=options.device)
+                # self.detector = YOLOV6Detector(options.face.yolov6_config, options.face.yolov6_checkpoint, class_name=options.face.yolov6_class_name, threshold_list=options.face.yolov6_threshold_list, device=options.device)
+                if face.landmark_bool:
+                    self.detector = YOLOV6LandmarkDetector(options.face.yolov6_config, options.face.yolov6_checkpoint, class_name=options.face.yolov6_class_name, threshold_list=options.face.yolov6_threshold_list, device=options.device)
+                elif face.landmark_degree_bool:
+                    self.detector = YOLOV6LandmarkDegreeDetector(options.face.yolov6_config, options.face.yolov6_checkpoint, class_name=options.face.yolov6_class_name, threshold_list=options.face.yolov6_threshold_list, device=options.device)                    
             
             # tracker
             self.mot_tracker = Sort(max_age=options.face.max_age, min_hits=options.face.min_hits, iou_threshold=options.face.iou_threshold)
@@ -172,11 +188,10 @@ class CaptureApi():
 
                     # face
                     # 由于车牌面积太小，跟踪不上，需要增大面积
-                    bboxes_class_list = copy.deepcopy(bboxes[sort_class_name])
-                    # bboxes_class_list = bboxes[sort_class_name]
+                    bboxes_class_list = []
                     
-                    for idy in range(len(bboxes_class_list)):
-                        bboxes_idx = bboxes_class_list[idy]
+                    for idy in range(len(bboxes[sort_class_name])):
+                        bboxes_idx = bboxes[sort_class_name][idy]
                         
                         bboxes_idx_width = ( bboxes_idx[2] - bboxes_idx[0] ) * options.face.sort_expand_ratio
                         bboxes_idx_height = ( bboxes_idx[3] - bboxes_idx[1] ) * options.face.sort_expand_ratio
@@ -184,12 +199,13 @@ class CaptureApi():
                         bboxes_idx[2] = bboxes_idx[2] + bboxes_idx_width
                         bboxes_idx[1] = bboxes_idx[1] - bboxes_idx_height
                         bboxes_idx[3] = bboxes_idx[3] + bboxes_idx_height
+                        bboxes_class_list.append([bboxes_idx[0], bboxes_idx[1], bboxes_idx[2], bboxes_idx[3], bboxes_idx[-1]])
 
                     dets = np.concatenate((dets, np.array(bboxes_class_list)), axis=0)
             
             tracker_bboxes = self.mot_tracker.update(dets)
 
-            # license_plate
+            # face
             # 由于增加了面积，需要减少面积，获得精确坐标
             for idx in range(len(tracker_bboxes)):
                 bboxes_idx = tracker_bboxes[idx]
@@ -285,11 +301,17 @@ class CaptureApi():
                             # crop_img = img[bbox_info_idx['plate_info']['roi'][1]:bbox_info_idx['plate_info']['roi'][3], bbox_info_idx['plate_info']['roi'][0]:bbox_info_idx['plate_info']['roi'][2]]
                             crop_img = img[y1: y2, x1: x2]
 
-                            # gray_img
-                            gray_crop_img = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
-
-                            plate_ocr, plate_scors_list = self.lpr.run(gray_crop_img)
+                            # seg
                             seg_bbox, seg_info = self.lpr_seg.run(crop_img)
+
+                            # ocr
+                            # gray_img
+                            if lpr.lpr_paddle_bool: 
+                                plate_ocr, plate_scors_list = self.lpr.run(crop_img)
+                            else:
+                                gray_crop_img = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
+                                plate_ocr, plate_scors_list = self.lpr.run(gray_crop_img)
+                            
 
                             bbox_info_idx['plate_info']['num'] = plate_ocr
                             bbox_info_idx['plate_info']['score'] = np.array(plate_scors_list).mean()
@@ -312,11 +334,15 @@ class CaptureApi():
                         for idy in range(len(bboxes[sort_class_name])):
                             face_bbox_list.append([*bboxes[sort_class_name][idy], sort_class_name])
 
-                # 求交集最大的车辆框
+                # 求交集最大的框
                 match_car_roi = match_bbox_iou(bbox_info_idx['face_info']['roi'], face_bbox_list)
                 if len(match_car_roi):
                     bbox_info_idx['face_info']['roi'] = np.array(match_car_roi[0][0:4])
-        
+                    if face.landmark_bool:
+                        bbox_info_idx['face_info']['landmark'] = np.array(match_car_roi[0][4:14])
+                        bbox_info_idx['face_info']['landmark_degree'] = landmark2degree(copy.deepcopy(bbox_info_idx['face_info']['landmark']))
+                    elif face.landmark_degree_bool:
+                        bbox_info_idx['face_info']['landmark_degree'] = np.array(match_car_roi[0][5])
         return bbox_info_list
 
     def update_cache_container(self, img, frame_idx, bbox_info_list):
@@ -448,6 +474,7 @@ class CaptureApi():
                         if bool_add_face:
                             bbox_state_idy['state']['obj_num'] += 1
                             bbox_state_idy['state']['obj_disappear_num'] = 0
+                            bbox_state_idy['state']['face_landmark_degree_list'] = bbox_info_idx['face_info']['landmark_degree']
                         else:
                             bbox_state_idy['state']['obj_disappear_num'] += 1
 
@@ -512,6 +539,7 @@ class CaptureApi():
                     if bool_add_face:
                         bbox_state_idy['state']['obj_num'] += 1
                         bbox_state_idy['state']['obj_disappear_num'] = 0
+                        bbox_state_idy['state']['face_landmark_degree_list'] = bbox_info_idx['face_info']['landmark_degree']
                     else:
                         bbox_state_idy['state']['obj_disappear_num'] += 1
                     
@@ -777,10 +805,17 @@ class CaptureApi():
                 bbox_info_idx = bbox_info_list[idx]
 
                 # 容器中存在追踪对象
-                if bbox_info_idx['track_id'] == captute_id:
-                    capture_from_container_list.append(self.params_dict['bbox_info_container'][idy])
+                if bbox_info_idx['track_id'] == captute_id and bbox_info_idx['face_info']['landmark_degree'] < options.capture_face_landmark_degree_threshold:
+                    capture_res_info = copy.deepcopy(self.params_dict['bbox_info_container'][idy])
+                    capture_res_info['bbox_info'] = [bbox_info_idx]
+                    capture_from_container_list.append(capture_res_info)
         
         if len(capture_from_container_list) > 3:
-            capture_from_container_list = random.sample(capture_from_container_list, 3)
+
+            def sort_func(x):
+                return x['bbox_info'][0]['face_info']['landmark_degree']
+
+            capture_from_container_list = sorted(capture_from_container_list, key=sort_func)
+            capture_from_container_list = capture_from_container_list[:3]
         
         return capture_from_container_list
