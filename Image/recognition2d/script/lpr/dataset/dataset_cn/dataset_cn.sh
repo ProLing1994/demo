@@ -24,7 +24,7 @@ training_data_dir=/yuanhuan/data/image/RM_ANPR/training/
 
 #     # normal
 #     # python /yuanhuan/code/demo/Image/recognition2d/script/lpr/dataset/dataset_cn/dataset_check/dataset_csv.py --date_name=$date_name --input_dir=$data_dir --output_csv_dir=$data_csv_dir --output_crop_data_dir=$data_crop_dir --output_error_data_dir=$error_data_dir --bool_write_error_data
-#     python /yuanhuan/code/demo/Image/recognition2d/script/lpr/dataset/dataset_cn/dataset_check/dataset_csv.py --date_name=$date_name --input_dir=$data_dir --output_csv_dir=$data_csv_dir --output_crop_data_dir=$data_crop_dir --output_error_data_dir=$error_data_dir --bool_write_error_data --bool_check_img
+#     python /yuanhuan/code/demo/Image/recognition2d/script/lpr/dataset/dataset_cn/dataset_check/dataset_csv.py --date_name=$date_name --input_dir=$data_dir --output_csv_dir=$data_csv_dir --output_crop_data_dir=$data_crop_dir --output_error_data_dir=$error_data_dir --bool_write_error_data --bool_write_crop_data --bool_check_img
 #     python /yuanhuan/code/demo/Image/recognition2d/script/lpr/dataset/dataset_cn/dataset_analysis/analysis_dataset_label_num.py --date_name=$date_name --input_csv_dir=$data_csv_dir --output_analysis_dir=$analysis_dir
 
 # done
