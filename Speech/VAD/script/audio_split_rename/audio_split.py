@@ -4,18 +4,30 @@ import os
 import pandas as pd
 
 parser = argparse.ArgumentParser(description="Audio Split Using Auditok")
-parser.add_argument('--audio_path', type=str, default="/mnt/huanyuan/data/speech/Recording/RM_QingEnglish/car/danbing_ori_16k/danbing_ori_qingenglish_record_001.wav")
-parser.add_argument('--output_dir', type=str, default="/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/QingEnglish_07162021/QingEnglish/")
-# parser.add_argument('--output_format', type=str, default="RM_KWS_XIAORUI_{}_S{:0>3d}M{:0>1d}D{:0>2d}T{:0>3d}.wav")
+parser.add_argument('--audio_path', type=str, default="/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/collect/20230531/Alex2.mpeg")
+parser.add_argument('--output_dir', type=str, default="/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/wav/")
+# parser.add_argument('--output_format', type=str, default="RM_KWS_{}_S{:0>3d}M{:0>1d}D{:0>2d}T{:0>3d}.wav")
+parser.add_argument('--output_format', type=str, default="RM_KWS_{}_S{:0>3d}M{:0>1d}T{:0>3d}.wav")
 # parser.add_argument('--output_format', type=str, default="RM_MOVIE_{}_S{:0>4d}T{:0>3d}.wav")
 # parser.add_argument('--output_format', type=str, default="RM_PlatformAlarm_adpro0420_S{:0>4d}T{:0>4d}.wav")
-parser.add_argument('--output_format', type=str, default="RM_QingEnglish_S{:0>4d}T{:0>4d}.wav")
-parser.add_argument('--min_dur', type=float, default=3.5)
-parser.add_argument('--max_dur', type=float, default=12)
-parser.add_argument('--max_silence', type=float, default=2.3)
-parser.add_argument('--energy_threshold', type=int, default=48)
-parser.add_argument('--text', type=str, default="xiaorui")
-parser.add_argument('--speaker', type=int, default=6)
+# parser.add_argument('--output_format', type=str, default="RM_QingEnglish_S{:0>4d}T{:0>4d}.wav")
+
+# parser.add_argument('--min_dur', type=float, default=0.8)
+# parser.add_argument('--max_dur', type=float, default=3.5)
+# parser.add_argument('--max_silence', type=float, default=1)
+# parser.add_argument('--energy_threshold', type=int, default=45)
+# parser.add_argument('--text', type=str, default="Gorila")
+# parser.add_argument('--speaker', type=int, default=1)
+# parser.add_argument('--sex', type=int, default=0, choices=[0, 1])
+# parser.add_argument('--distance', type=int, default=0, choices=[0, 1, 2])
+# parser.add_argument('--idx', type=int, default=1)
+
+parser.add_argument('--min_dur', type=float, default=0.6)
+parser.add_argument('--max_dur', type=float, default=1.5)
+parser.add_argument('--max_silence', type=float, default=0.2)
+parser.add_argument('--energy_threshold', type=int, default=46)
+parser.add_argument('--text', type=str, default="Gorila")
+parser.add_argument('--speaker', type=int, default=1)
 parser.add_argument('--sex', type=int, default=0, choices=[0, 1])
 parser.add_argument('--distance', type=int, default=0, choices=[0, 1, 2])
 parser.add_argument('--idx', type=int, default=1)
@@ -23,7 +35,7 @@ args = parser.parse_args()
 
 if __name__ == "__main__":
     audio_path = args.audio_path
-    assert audio_path.endswith('.wav'), "[ERROR:] Only support wav data"
+    assert audio_path.endswith('.wav') or audio_path.endswith('.mpeg'), "[ERROR:] Only support wav&&mpeg data"
 
     output_path = os.path.join(
         args.output_dir, os.path.basename(audio_path).split('.')[0])
@@ -37,14 +49,15 @@ if __name__ == "__main__":
     idx = args.idx
     audio_region_list = []
 
-    audio_regions = split(audio_path, args.min_dur, args.max_dur, args.max_silence, False, True, energy_threshold=args.energy_threshold)
+    audio_regions = split(audio_path, args.min_dur, args.max_dur, args.max_silence, True, True, energy_threshold=args.energy_threshold)
 
     for region in audio_regions:
         audio_region_dict = {}
         # output_name = args.output_format.format(args.speaker, args.sex, idx)
         # output_name = args.output_format.format(args.text, args.speaker, args.sex, args.distance, idx)
+        output_name = args.output_format.format(args.text, args.speaker, args.sex, idx)
         # output_name = args.output_format.format(os.path.basename(audio_path).split('.')[0], args.speaker, idx)
-        output_name = args.output_format.format(args.speaker, idx)
+        # output_name = args.output_format.format(args.speaker, idx)
         filename = region.save(os.path.join(output_path, output_name))
         audio_region_dict['audio_region'] = output_name.split('.')[0]
         audio_region_dict['state'] = 'N'

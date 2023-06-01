@@ -19,12 +19,16 @@ options = edict()
 options.image_width = 2592
 options.image_height = 1520
 
+# # 2M
+# options.image_width = 1920
+# options.image_height = 1080
+
 
 ###########################################
 # gpu
 ###########################################
-# options.gpu_bool = True
-options.gpu_bool = False
+options.gpu_bool = True
+# options.gpu_bool = False
 # options.device = 'cpu'
 options.device = 'cuda:0'
 
@@ -95,6 +99,9 @@ options.capture_plate_left_right_distance_far_boundary_threshold = 400
 options.capture_lpr_score_threshold = 0.8
 options.capture_lpr_num_frame_threshold = 4
 options.capture_lpr_color_frame_threshold = 3
+
+options.capture_face_landmark_degree_threshold = 0.5
+
 
 ###########################################
 # roi

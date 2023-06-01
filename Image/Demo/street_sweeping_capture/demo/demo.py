@@ -104,8 +104,9 @@ def inference_video(args):
                             bbox_loc = [bbox_info['car_info']['roi'] for bbox_info in bbox_info if bbox_info['track_id'] == track_id][0]
                             output_capture_path = os.path.join(args.output_video_dir, 'capture', video_list[idx].replace(args.suffix, ''), '{}_{}_{}_{}_{}.jpg'.format(frame_idx, num, color, flage, idz))
                         elif args.demo_type == "face":
+                            landmark_degree = bbox_info[0]['face_info']['landmark_degree']
                             bbox_loc = [bbox_info['face_info']['roi'] for bbox_info in bbox_info if bbox_info['track_id'] == track_id][0]
-                            output_capture_path = os.path.join(args.output_video_dir, 'capture', video_list[idx].replace(args.suffix, ''), '{}_{}_{}.jpg'.format(frame_idx, flage, idz))
+                            output_capture_path = os.path.join(args.output_video_dir, 'capture', video_list[idx].replace(args.suffix, ''), '{}_{}_{}_{:.2f}.jpg'.format(frame_idx, flage, idz, landmark_degree))
 
                         bbox_crop = img_crop[max( 0, int(bbox_loc[1]) ): min( int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)), int(bbox_loc[3]) ), max( 0, int(bbox_loc[0]) ): min( int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(bbox_loc[2]) )]
 
@@ -128,6 +129,7 @@ def main():
     # args.country_type = "china"
     # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_CN_ZG_HCZP/5M_230416/avi/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_CN_ZG_HCZP/5M_230416/lpr_avi/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_CN_ZG_HCZP/5M_230416/lpr_avi_paddle/"
     # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_CN_ZG_HCZP/5M_12mm_0723_白_前/avi/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_CN_ZG_HCZP/5M_12mm_0723_白_前/lpr_avi/"
     
@@ -135,7 +137,14 @@ def main():
     args.demo_type = "face"
     args.country_type = "none"
     args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_CN_ZG_HCZP/5M_230416/avi/"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_CN_ZG_HCZP/5M_230416/face_avi/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_CN_ZG_HCZP/5M_230416/test/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_CN_ZG_HCZP/5M_230416/face_avi/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_CN_ZG_HCZP/5M_230416/face_avi_landmark/"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_CN_ZG_HCZP/5M_230416/face_avi_landmark_center_offset/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_CN_ZG_HCZP/5M_230416/face_avi_landmark_degree/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_CN_ZG_HCZP/5M_230416/test/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_ZD_DUBAI_C27/5M_2M_全_多方向_人脸_1024_1115/avi/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_ZD_DUBAI_C27/5M_2M_全_多方向_人脸_1024_1115/face_avi/"
 
     args.suffix = '.avi'
     # args.suffix = '.mp4'

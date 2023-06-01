@@ -337,7 +337,7 @@ class LPROnnx(object):
 
 class LPRCaffe(object):
     
-    def __init__(self, model_path, prototxt_path, dict_path, gpu_bool=False):
+    def __init__(self, model_path, prototxt_path, dict_path, img_shape=(1, 64, 256), gpu_bool=False):
 
         self.model_path = model_path
         self.prototxt_path = prototxt_path
@@ -345,7 +345,7 @@ class LPRCaffe(object):
         self.gpu_bool = gpu_bool
         self.white_bool = True
         self.padding_bool = True
-        self.img_shape = (1, 64, 256)
+        self.img_shape = img_shape
 
         self.model_init()
         self.ocr_labels_init()
@@ -368,6 +368,7 @@ class LPRCaffe(object):
     def ocr_labels_init(self):
         
         self.character_str = []
+        self.character_str.append(" ")
         with open(self.dict_path, "rb") as fin:
             lines = fin.readlines()
             for line in lines:
@@ -430,6 +431,9 @@ class LPRCaffe(object):
         else:
             resized_image = cv2.resize(img, (imgW, imgH))
 
+        # output_img_path = "/home/huanyuan/share/huanyuan/Brazil_ANPR_5M_NOVT_ST/huanyuan/novt/rmai/crop.jpg";
+        # cv2.imwrite(output_img_path, resized_image);
+            
         resized_image.astype(np.float32)
         resized_image = resized_image.transpose((2, 0, 1)) / 255.0
 
@@ -539,7 +543,7 @@ if __name__ == '__main__':
 
     # model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug/inference/caffe/model-sim.clip.rename.caffemodel"
     # prototxt_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug/inference/caffe/model-sim.clip.rename.prototxt"
-    # dict_path = "/yuanhuan/data/image/LicensePlate_ocr/original/zd/UAE/type/zd_dict.txt"
+    # dict_path = "/yuanhuan/data/image/RM_ANPR/original/zd/UAE/type/zd_dict.txt"
 
     # # img_path = "/yuanhuan/data/image/ZD_anpr/test_video/ZD_DUBAI/jpg文件/特殊车牌_crop/test/0000000000000000-220804-131737-131833-00000D000150_26.56_43.63-sn00070-00_none_none_none_Double_J#18886@.jpg"
     # img_path = "/yuanhuan/data/image/ZD_anpr/test_video/ZD_DUBAI/jpg文件/特殊车牌_crop/test/#6167.jpg"

@@ -10,7 +10,7 @@ sys.path.insert(0, '/yuanhuan/code/demo')
 from Image.Basic.utils.folder_tools import *
 
 sys.path.insert(0, '/yuanhuan/code/demo/Image/recognition2d/')
-from script.paddle.infer.lpy import LPRPaddle, LPROnnx, LPRCaffe
+from script.paddle.infer.lpr import LPRPaddle, LPROnnx, LPRCaffe
 
 
 def model_test(args, from_jpg_dir=False, bool_onnx=False, bool_caffe=False):

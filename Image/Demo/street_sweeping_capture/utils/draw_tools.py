@@ -187,7 +187,7 @@ class DrawApi():
                 if len(bbox_info_idx['plate_info']['roi']):
                     
                     bbox_info_idx['plate_info']['roi'] = [int(b + 0.5) for b in bbox_info_idx['plate_info']['roi'][:4]]
-                    text = "{}_{}_{}_{:.2f}".format( bbox_info_idx['state']['lpr_num'], bbox_info_idx['plate_info']['num'], bbox_info_idx['plate_info']['color'], bbox_info_idx['plate_info']['score'])
+                    text = "{}_{}_{:.2f}".format( bbox_info_idx['plate_info']['num'], bbox_info_idx['plate_info']['color'], bbox_info_idx['plate_info']['score'])
                     text_size = cv2.getTextSize(text, 0, 3, 2)
                     if not capture_bool:
                         img = cv_plot_rectangle(img, bbox_info_idx['plate_info']['roi'], mode=mode, color=color_dict["plate"], thickness=3)
@@ -213,8 +213,8 @@ class DrawApi():
                     # img = cv_plot_rectangle(img, bbox_info_idx['face_info']['roi'], mode=mode, color=color_dict["face"])
                     img = NiceBox(img, bbox_info_idx['face_info']['roi'], color_dict["face"], thickness=3, mask=False)
 
-                    # img = cv2.putText(img, "{}_{}_{:.2f}".format( bbox_info_idx['track_id'], bbox_info_idx['state']['frame_num'], bbox_info_idx['plate_info']['score']), (bbox_info_idx['face_info']['roi'][0], bbox_info_idx['face_info']['roi'][1] - 10), 
-                    #                     cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["face"], 2)
+                    img = cv2.putText(img, "{}_{}_{:.2f}".format( bbox_info_idx['track_id'], bbox_info_idx['state']['frame_num'], bbox_info_idx['face_info']['landmark_degree']), (bbox_info_idx['face_info']['roi'][0], bbox_info_idx['face_info']['roi'][1] - 10), 
+                                        cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["face"], 2)
 
                     # img = cv2.putText(img, "{}_{}_{}_{}_{:.2f}_{:.2f}".format( bbox_info_idx['state']['up_down_state'], bbox_info_idx['state']['up_down_state_frame_num'], bbox_info_idx['state']['left_right_state'], bbox_info_idx['state']['left_right_state_frame_num'], bbox_info_idx['state']['up_down_speed'], bbox_info_idx['state']['left_right_speed'] ), (bbox_info_idx['face_info']['roi'][0], bbox_info_idx['face_info']['roi'][3] - 10), 
                     #                     cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["face"], 2)
@@ -222,11 +222,18 @@ class DrawApi():
                     # img = cv_plot_rectangle(img, bbox_info_idx['face_info']['roi'], mode=mode, color=color_dict["face_capture"])
                     img = NiceBox(img, bbox_info_idx['face_info']['roi'], color_dict["face_capture"], thickness=3, mask=False)
                     
-                    # img = cv2.putText(img, "{}_{}_{:.2f}".format( bbox_info_idx['track_id'], bbox_info_idx['state']['frame_num'], bbox_info_idx['plate_info']['score']), (bbox_info_idx['face_info']['roi'][0], bbox_info_idx['face_info']['roi'][1] - 10), 
-                    #                     cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["face_capture"], 2)
+                    img = cv2.putText(img, "{}_{}_{:.2f}".format( bbox_info_idx['track_id'], bbox_info_idx['state']['frame_num'], bbox_info_idx['face_info']['landmark_degree']), (bbox_info_idx['face_info']['roi'][0], bbox_info_idx['face_info']['roi'][1] - 10), 
+                                        cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["face_capture"], 2)
 
                     # img = cv2.putText(img, "{}_{}_{}_{}_{:.2f}_{:.2f}".format( bbox_info_idx['state']['up_down_state'], bbox_info_idx['state']['up_down_state_frame_num'], bbox_info_idx['state']['left_right_state'], bbox_info_idx['state']['left_right_state_frame_num'], bbox_info_idx['state']['up_down_speed'], bbox_info_idx['state']['left_right_speed'] ), (bbox_info_idx['face_info']['roi'][0], bbox_info_idx['face_info']['roi'][3] - 10), 
                     #                     cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["face_capture"], 2)
+
+                if len(bbox_info_idx['face_info']['landmark']):
+                    cv2.circle(img, (int(bbox_info_idx['face_info']['landmark'][0] + 0.5), int(bbox_info_idx['face_info']['landmark'][1] + 0.5)), 3, color_dict["face"], 2)
+                    cv2.circle(img, (int(bbox_info_idx['face_info']['landmark'][2] + 0.5), int(bbox_info_idx['face_info']['landmark'][3] + 0.5)), 3, color_dict["face"], 2)
+                    cv2.circle(img, (int(bbox_info_idx['face_info']['landmark'][4] + 0.5), int(bbox_info_idx['face_info']['landmark'][5] + 0.5)), 3, color_dict["face"], 2)
+                    cv2.circle(img, (int(bbox_info_idx['face_info']['landmark'][6] + 0.5), int(bbox_info_idx['face_info']['landmark'][7] + 0.5)), 3, color_dict["face"], 2)
+                    cv2.circle(img, (int(bbox_info_idx['face_info']['landmark'][8] + 0.5), int(bbox_info_idx['face_info']['landmark'][9] + 0.5)), 3, color_dict["face"], 2)
 
         return img
 

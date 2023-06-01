@@ -188,8 +188,8 @@ def main():
     # zd, ZD_DUBAI
     # args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_DUBAI/avi文件//5M_白天_侧向_0615/截取视频/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_白天_侧向_0615/截取视频/"
-    args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_DUBAI/avi文件//test//"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_白天_侧向_0615/截取视频/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_DUBAI/avi文件//test//"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_白天_侧向_0615/截取视频/"
     # args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_DUBAI/avi文件//5M_夜晚_侧向_0615/截取视频/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_夜晚_侧向_0615/截取视频/"
     # args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_DUBAI/avi文件//5M_白天_后向_0615/截取视频/"
@@ -198,6 +198,12 @@ def main():
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_夜晚_后向_0615/00000G000170/截取视频/"
     # args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_DUBAI/avi文件//5M_夜晚_后向_0615/00000G000171/截取视频/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_夜晚_后向_0615/00000G000171/截取视频/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_ZD_DUBAI_C27/5M_白天_侧向_0615/avi/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_白天_侧向_0615/截取视频/"
+    
+    # zd, ZD_SCH_BUS
+    args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/SchBus_ZD_AD_C27_C28/POLICE_ZD_C27/test/avi/"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/SchBus_ZD_AD_C27_C28/POLICE_ZD_C27/test/"
 
     # # zd, car type
     # args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_DUBAI/avi文件//车牌车型/PUBLIC/"
@@ -243,8 +249,8 @@ def main():
     # args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_DUBAI/avi文件//test"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/test/"
 
-    args.suffix = '.avi'
-    # args.suffix = '.mp4'
+    # args.suffix = '.avi'
+    args.suffix = '.mp4'
 
     # 是否保存视频结果
     args.write_result_video_bool = True

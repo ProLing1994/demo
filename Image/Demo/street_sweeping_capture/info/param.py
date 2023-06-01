@@ -20,6 +20,8 @@ def load_objectinfo():
     # face_info
     objectinfo['face_info'] = {}
     objectinfo['face_info']['roi'] = []
+    objectinfo['face_info']['landmark'] = []
+    objectinfo['face_info']['landmark_degree'] = []
 
     # state
     objectinfo['state'] = {}
@@ -41,6 +43,7 @@ def load_objectinfo():
     objectinfo['state']['lpr_num_list'] = []                                # 车牌识别结果（多帧）
     objectinfo['state']['lpr_score_list'] = []                              # 车牌识别结果得分（多帧）
     objectinfo['state']['lpr_color_list'] = []                              # 车牌识别结果得分（多帧）
+    objectinfo['state']['face_landmark_degree_list'] = []                   # 人脸角度识别结果得分（多帧）
 
     # capture
     objectinfo['capture'] = {}

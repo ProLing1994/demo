@@ -59,12 +59,21 @@ if __name__ == "__main__":
     # # args.frame_strp = 10
     # # args.frame_strp = 1
 
-    args.video_dir = "/mnt/huanyuan2/data/image/Calibrate/Chessboard/BM1448/原始数据/实际采集数据/2023-05-12/avi/"
-    args.output_video_dir = "/mnt/huanyuan2/data/image/Calibrate/Chessboard/BM1448/原始数据/实际采集数据/2023-05-12/jpg/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/Calibrate/Chessboard/BM1448/原始数据/实际采集数据/2023-05-12/avi/"
+    # args.output_video_dir = "/mnt/huanyuan2/data/image/Calibrate/Chessboard/BM1448/原始数据/实际采集数据/2023-05-12/jpg/"
+    # # args.suffix = '.mp4'
+    # args.suffix = '.avi'
+    # args.frame_strp = 25
+    # # args.frame_strp = 10
+    # # args.frame_strp = 1
+
+    args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_CN_ZG_HCZP/5M_230416/test/"
+    args.output_video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_CN_ZG_HCZP/5M_230416/test_jpg/"
     # args.suffix = '.mp4'
     args.suffix = '.avi'
-    args.frame_strp = 25
+    # args.frame_strp = 25
     # args.frame_strp = 10
+    args.frame_strp = 5
     # args.frame_strp = 1
 
     avi_to_jpg(args)

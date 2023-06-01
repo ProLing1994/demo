@@ -20,7 +20,7 @@ def test_rotation_z(args):
     cv_file.release()
 
     # json
-    json_path = args.test_chessboard_json_path
+    json_path = args.test_point_json_path
     with open(json_path, 'r', encoding='UTF-8') as fr:
         annotation = json.load(fr)
 
@@ -97,7 +97,7 @@ def test_rotation_z(args):
     print("translation vectors:", wo_dist_tvecs)
 
     # img
-    img = cv2.imread(args.test_chessboard_img_path)
+    img = cv2.imread(args.test_point_img_path)
 
     # 投影
     img_point, _ = cv2.projectPoints(cp_world, wo_dist_rvecs, wo_dist_tvecs, cameraMatrix, distCoeffs)
@@ -117,7 +117,7 @@ def test_rotation_z(args):
 def projectPoints(args, corner_name_list, img, rvecs, tvecs, cameraMatrix, distCoeffs):
 
     # json
-    json_path = args.test_chessboard_json_path
+    json_path = args.test_point_json_path
     with open(json_path, 'r', encoding='UTF-8') as fr:
         annotation = json.load(fr)
 
@@ -200,8 +200,8 @@ if __name__ == '__main__':
     # args.image_name = "c28_250_low_angle"
     # args.image_name = "c28_290_high_angle"
     args.image_name = "c28_290_low_angle"
-    args.test_chessboard_img_path = os.path.join(args.file_dir, "test_jpg/point_img/{}.jpg".format(args.image_name))
-    args.test_chessboard_json_path = os.path.join(args.file_dir, "test_jpg/point_img/{}.json".format(args.image_name))
+    args.test_point_img_path = os.path.join(args.file_dir, "test_jpg/point_img/{}.jpg".format(args.image_name))
+    args.test_point_json_path = os.path.join(args.file_dir, "test_jpg/point_img/{}.json".format(args.image_name))
 
     # 利用棋盘格标定板，推到外参
     img, rvecs, tvecs, cameraMatrix, distCoeffs = test_rotation_z(args)

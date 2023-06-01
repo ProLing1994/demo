@@ -19,10 +19,20 @@
 # NAME=yolov6_rm_c28
 # OUTPUT_DIR=/mnt/huanyuan/model/image/yolov6/yolov6_c28_car_0327
 
-CONFIG=/mnt/huanyuan/model/image/yolov6/yolov6_c28_car_0320/yolov6_rm_c28_deploy.py
-CHECKPOINT=/mnt/huanyuan/model/image/yolov6/yolov6_c28_car_0320/epoch_340_deploy.pth
-NAME=yolov6_rm_c28
-OUTPUT_DIR=/mnt/huanyuan/model/image/yolov6/yolov6_c28_car_0320
+# CONFIG=/mnt/huanyuan/model/image/yolov6/yolov6_c28_car_0320/yolov6_rm_c28_deploy.py
+# CHECKPOINT=/mnt/huanyuan/model/image/yolov6/yolov6_c28_car_0320/epoch_340_deploy.pth
+# NAME=yolov6_rm_c28
+# OUTPUT_DIR=/mnt/huanyuan/model/image/yolov6/yolov6_c28_car_0320
+
+# CONFIG=/mnt/huanyuan/model/image/yolov6/yolov6_landmark_wider_face_20230526/yolov6_face_wider_face_deploy.py
+# CHECKPOINT=/mnt/huanyuan/model/image/yolov6/yolov6_landmark_wider_face_20230526/epoch_400_deploy.pth
+# NAME=yolov6_face
+# OUTPUT_DIR=/mnt/huanyuan/model/image/yolov6/yolov6_landmark_wider_face_20230526
+
+CONFIG=/mnt/huanyuan/model/image/yolov6/yolov6_landmark_wider_face_center_offset_20230525/yolov6_face_wider_face_deploy.py
+CHECKPOINT=/mnt/huanyuan/model/image/yolov6/yolov6_landmark_wider_face_center_offset_20230525/epoch_400_deploy.pth
+NAME=yolov6_face_center_offset
+OUTPUT_DIR=/mnt/huanyuan/model/image/yolov6/yolov6_landmark_wider_face_center_offset_20230525
 
 python deployment/pytorch2caffe/mmdet2caffe.py \
    --config-file $CONFIG \
