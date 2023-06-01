@@ -5,9 +5,10 @@ import shutil
 import re
 
 parser = argparse.ArgumentParser(description="Audio Rename")
-parser.add_argument('--dir', type=str, default='D:\\data\\test\\1_1')
+parser.add_argument('--dir', type=str, default="/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/wav/Alex2")
 # parser.add_argument('--state_format', type=str, default=r'^S\d*[MT]\d*D\d*T\d*')
-parser.add_argument('--state_format', type=str, default=r'^S\d*T\d*P\d*')
+parser.add_argument('--state_format', type=str, default=r'^S\d*M\d*T\d*')
+# parser.add_argument('--state_format', type=str, default=r'^S\d*T\d*P\d*')
 args = parser.parse_args()
 
 if __name__ == "__main__":
@@ -64,6 +65,7 @@ if __name__ == "__main__":
 
     print("Rename")
     # rename 
+    # tmp 用于暂存 wav 数据
     tmp_rename_files = []
     for idx, row in csv_pd.iterrows():
         if re.match(args.state_format, str(row.state).strip().split('_')[-1]):

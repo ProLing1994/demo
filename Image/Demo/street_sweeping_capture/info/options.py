@@ -19,6 +19,10 @@ options = edict()
 options.image_width = 2592
 options.image_height = 1520
 
+# # 2M
+# options.image_width = 1920
+# options.image_height = 1080
+
 
 ###########################################
 # gpu
@@ -32,10 +36,10 @@ options.device = 'cuda:0'
 ###########################################
 # detector
 ###########################################
-options.ssd_bool = True
-options.yolov6_bool = False
+options.ssd_bool = False
+options.yolov6_bool = True
 
-options.ssd_caffe_bool = True
+options.ssd_caffe_bool = False
 options.ssd_openvino_bool = False
 
 

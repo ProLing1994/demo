@@ -431,6 +431,9 @@ class LPRCaffe(object):
         else:
             resized_image = cv2.resize(img, (imgW, imgH))
 
+        # output_img_path = "/home/huanyuan/share/huanyuan/Brazil_ANPR_5M_NOVT_ST/huanyuan/novt/rmai/crop.jpg";
+        # cv2.imwrite(output_img_path, resized_image);
+            
         resized_image.astype(np.float32)
         resized_image = resized_image.transpose((2, 0, 1)) / 255.0
 
