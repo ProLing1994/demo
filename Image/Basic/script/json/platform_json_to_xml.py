@@ -135,10 +135,10 @@ def platform_json_2_xml_empty(args):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input_dir', type=str, default="/mnt/huanyuan2/data/image/LicensePlate_ocr/SHATE/2023-02-09/") 
+    parser.add_argument('--input_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_new_style/shate_20230308/") 
     parser.add_argument('--jpg_name', type=str, default="JPEGImages/") 
     parser.add_argument('--json_name', type=str, default="Json/") 
-    parser.add_argument('--xml_name', type=str, default="xml/") 
+    parser.add_argument('--xml_name', type=str, default="Annotations/") 
     args = parser.parse_args()
     
     print("1、platform json to xml.")
