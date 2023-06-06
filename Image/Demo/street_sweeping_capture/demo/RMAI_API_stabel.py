@@ -70,7 +70,7 @@ class CaptureApi():
             if self.country_type == "china":
                 if options.lpr.lpr_caffe_bool:
                     if lpr.lpr_paddle_bool: 
-                        self.lpr = paddle_lpr.LPRCaffe(options.lpr.china.ocr_caffe_model_path, options.lpr.china.ocr_caffe_prototxt, options.lpr.china.ocr_labels_dict_path, img_shape=options.lpr.china.input_shape, gpu_bool=False)
+                        self.lpr = paddle_lpr.LPRCaffe(options.lpr.china.ocr_caffe_model_path, options.lpr.china.ocr_caffe_prototxt, options.lpr.china.ocr_labels_dict_path, img_shape=options.lpr.china.input_shape, padding_bool=options.lpr.china.padding_bool, gpu_bool=False)
                     else:
                         self.lpr = LPRCaffe(options.lpr.china.ocr_caffe_prototxt, options.lpr.china.ocr_caffe_model_path, input_shape=options.lpr.china.input_shape, ocr_labels=options.lpr.china.ocr_labels, padding_bool=options.lpr.china.padding_bool, prefix_beam_search_bool=options.lpr.china.ocr_prefix_beam_search_bool, gpu_bool=False)
                     self.lpr_seg = LPRSegColorClassCaffe(options.lpr.china.seg_caffe_prototxt, options.lpr.china.seg_caffe_model_path, options.lpr.china.seg_city_dict_name, options.lpr.china.seg_color_dict_name, input_shape=options.lpr.china.seg_input_shape, city_bool=options.lpr.china.seg_city_bool, color_bool=options.lpr.china.seg_color_bool, gpu_bool=False)
