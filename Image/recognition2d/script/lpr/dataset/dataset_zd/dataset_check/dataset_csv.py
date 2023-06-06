@@ -15,7 +15,7 @@ from Image.Basic.script.json.platform_json_write import PlatformJsonWriter
 
 # sys.path.insert(0, '/home/huanyuan/code/demo/Image/recognition2d/')
 sys.path.insert(0, '/yuanhuan/code/demo/Image/recognition2d/')
-from Image.recognition2d.script.lpr.dataset.dataset_cn.dataset_dict.dataset_cn_dict_normal import *
+from Image.recognition2d.script.lpr.dataset.dataset_zd.dataset_dict.dataset_zd_dict_normal import *
 
 
 def dataset_csv(args):
@@ -30,7 +30,7 @@ def dataset_csv(args):
     print(len(img_list))
 
     # init 
-    csv_list = []           # [{"img_path": "", "json_path": "", "id": "", "name": "", "roi": "", "color": "", "column": "", "num": ""}]
+    csv_list = []           # [{"img_path": "", "json_path": "", "id": "", "name": "", "roi": "", "country": "", "city": "", "color": "", "column": "", "num": ""}]
     error_list = []         # [{"img_path": "", "json_path": "", "type": "", "value": ""}]
 
     for idx in tqdm(range(len(img_list))):
@@ -77,7 +77,7 @@ def dataset_csv(args):
             
             # plate status
             plate_status = json_load_object_plate_status(cell)
-            if plate_status != status_name_list[0]:
+            if plate_status == status_name_list[0] or plate_status == status_name_list[2] or plate_status == status_name_list[3]:
                 continue
 
             # plate color
@@ -95,42 +95,36 @@ def dataset_csv(args):
                 # print('"img_path": {}, "json_path": {},"type": "plate_column", "value": {}'.format(img_path, json_path, load_plate_column))
                 # raise Exception()
                 continue
-
-            # plate num
-            plate_num = json_load_object_plate_num(cell)
-            if plate_num == 'none':
-                continue
-
-            # plate num check
-            # 普通车牌：7
-            # 新能源车牌：8-绿牌
-            # 货车车牌：5-黄牌
-            # 公交车车牌：8-白牌
-            # 警车车牌：6-白牌
-            # 港澳台车牌：3\4\5\6\7\8-白牌\黄牌\黑牌
-            if not ((len(plate_num) == 7) or \
-                    (len(plate_num) == 8 and plate_color == color_name_list[2]) or \
-                    (len(plate_num) == 5 and plate_color == color_name_list[3]) or \
-                    (len(plate_num) == 8 and plate_color == color_name_list[5]) or \
-                    (len(plate_num) == 6 and plate_color == color_name_list[5]) or \
-                    (args.date_name == "xianggangaomen" and (len(plate_num) in [3,4,5,6,7,8]) and (plate_color in [color_name_list[3], color_name_list[5], color_name_list[7]]))
-                    ):
-                error_list.append({"img_path": img_path, "json_path": json_path, "type": "plate_num", "value": plate_num})
-                # print('"img_path": {}, "json_path": {},"type": "plate_num", "value": {}'.format(img_path, json_path, plate_num))
+            
+            # plate country & city
+            plate_country, plate_city, load_plate_country, load_plate_city = json_load_object_plate_country_city(cell)
+            if plate_country == country_name_list[0] and plate_city == country_name_list[0] and load_plate_city != country_name_list[0]:
+                error_list.append({"img_path": img_path, "json_path": json_path, "type": "plate_city", "value": load_plate_city})
+                # print('"img_path": {}, "json_path": {},"type": "plate_city", "value": {}'.format(img_path, json_path, load_plate_city))
                 # raise Exception()
                 continue
 
+            # plate num
+            plate_num = json_load_object_plate_num(cell)
+            if 'none' in plate_num.lower() or plate_num.lower() == '':
+                error_list.append({"img_path": img_path, "json_path": json_path, "type": "plate_num", "value": plate_num})
+                # print('"img_path": {}, "json_path": {},"type": "plate_num", "value": {}'.format(img_path, json_path, plate_num))
+                continue
+
+            # plate num check
             bool_error_plate_num = np.array([True if str_num not in kind_num_labels else False for str_num in plate_num]).sum()
             if bool_error_plate_num:
                 
                 error_list.append({"img_path": img_path, "json_path": json_path, "type": "plate_num", "value": plate_num})
                 # print('"img_path": {}, "json_path": {},"type": "plate_num", "value": {}'.format(img_path, json_path, plate_num))
                 continue  
-
-            plate_name = args.data_format.format(img_name, plate_id, plate_color, plate_column, plate_num)
+            
+            # "{}-{:0>2d}_{}_{}_{}_{}_{}"
+            # name-id_国家_城市_颜色_单双行_车牌号
+            plate_name = args.data_format.format(img_name, plate_id, plate_country, plate_city, plate_color, plate_column, plate_num)
             plate_id += 1
 
-            csv_list.append({"img_path": img_path, "json_path": json_path, "id": plate_id, "name": plate_name, "roi": plate_roi, "color": plate_color, "column": plate_column, "num": plate_num})
+            csv_list.append({"img_path": img_path, "json_path": json_path, "id": plate_id, "name": plate_name, "roi": plate_roi, "country": plate_country, "city": plate_city, "color": plate_color, "column": plate_column, "num": plate_num})
 
     # out csv
     csv_pd = pd.DataFrame(csv_list)
@@ -170,7 +164,10 @@ def write_crop_data(args):
         y2 = int(plate_roi_list[3])
         plate_img = img[y1:y2, x1:x2]
 
-        cv2.imwrite(os.path.join(args.output_crop_data_img_dir, plate_name + ".jpg"), plate_img)
+        try:
+            cv2.imwrite(os.path.join(args.output_crop_data_img_dir, plate_name + ".jpg"), plate_img)
+        except:
+            continue
 
 
 def write_error_data(args):
@@ -240,7 +237,6 @@ def write_error_data(args):
                 plate_num = json_load_object_plate_num(cell)
             except:
                 continue
-
             
             rect_list.append([x1, y1, x2, y2, "license", [{"name": "number", "value": plate_num}, {"name": "color", "value": plate_color}, {"name": "column", "value": plate_column}, {"name": "type", "value": "car"}, {"name": "status", "value": "n"}]])
 
@@ -255,17 +251,18 @@ def write_error_data(args):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--date_name', type=str, default="liaoning") 
-    parser.add_argument('--input_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/cn/china/") 
-    parser.add_argument('--output_csv_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/cn/china_csv/") 
-    parser.add_argument('--output_crop_data_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/cn/china_crop/") 
-    parser.add_argument('--output_error_data_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/cn/china_error_data/") 
+    parser.add_argument('--date_name', type=str, default="shate_20230308") 
+    parser.add_argument('--input_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE/") 
+    parser.add_argument('--output_csv_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_csv/") 
+    parser.add_argument('--output_crop_data_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_crop_new/") 
+    parser.add_argument('--output_error_data_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_error_data/") 
     parser.add_argument('--bool_write_crop_data', action='store_true', default=False) 
     parser.add_argument('--bool_write_error_data', action='store_true', default=False) 
     parser.add_argument('--bool_check_img', action='store_true', default=False) 
     args = parser.parse_args()
 
-    args.data_format = "{}-{:0>2d}_{}_{}_{}"        # name-id_颜色_单双行_车牌号
+    # args.data_format = "{}-{:0>2d}_{}_{}_{}"          # name-id_颜色_单双行_车牌号
+    args.data_format = "{}-{:0>2d}_{}_{}_{}_{}_{}"        # name-id_国家_城市_颜色_单双行_车牌号
     args.input_dir = os.path.join(args.input_dir, args.date_name)
     args.output_csv_path = os.path.join(args.output_csv_dir, args.date_name + '.csv')
     args.output_crop_data_dir = os.path.join(args.output_crop_data_dir, args.date_name)
@@ -276,8 +273,8 @@ if __name__ == "__main__":
     print("input_dir: {}".format(args.input_dir))
     print("output_csv_path: {}".format(args.output_csv_path))
 
-    # 生成 dataset csv
-    dataset_csv(args)
+    # # 生成 dataset csv
+    # dataset_csv(args)
 
     # 保存 crop data
     args.output_crop_data_img_dir = os.path.join(args.output_crop_data_dir, "Images")
