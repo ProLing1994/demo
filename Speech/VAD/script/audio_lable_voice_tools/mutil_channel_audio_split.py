@@ -79,8 +79,8 @@ def mutil_channel_audio_split(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input_folder', type=str, default="/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/collect/20230605/temp/")
-    parser.add_argument('--output_folder', type=str, default="/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/collect/20230605/test_out/")
+    parser.add_argument('--input_folder', type=str, default="/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/collect/20230605/YH/")
+    parser.add_argument('--output_folder', type=str, default="/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/collect/20230605/YH_temp/")
     parser.add_argument('--sample_rate', type=int, default=16000)
     parser.add_argument('--name_list', type=str, default="mic_130cm,phone,adplus1_0_normal,adplus1_0_70cm,adplus1_0_100cm,adplus2_0_normal,adplus2_0_70cm,adplus2_0_100cm")
     args = parser.parse_args()
