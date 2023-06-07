@@ -9,8 +9,8 @@ column_name_list = ['none', 'double', 'single']
 color_name_list = ['none', 'red', 'green', 'yellow', 'blue', 'infrared', 'black', 'orange', 'brown']
 country_name_list = ['none', 'uae', 'ksa', 'oman', 'qatar', 'bahrain', 'kuwait']
 country_f_name_list = ['none', 'uae_f', 'ksa_f', 'oman_f', 'qatar_f', 'bahrain_F', 'kuwait_f']
-city_name_list = ['none', 'ad', 'adudhabi', 'dubal', 'ajman', 'sharjah', 'shj', 'rak', 'ummalqaiwain', 'fujairah']   
-city_f_name_list = ['none', 'ad_f', 'adudhabi_f', 'dubal_f', 'ajman_f', 'sharjah_f', 'shj_f', 'rak_f', 'ummalqaiwain_f', 'fujairah_f']
+city_name_list = ['none', 'ad', 'adudhabi', 'dubai', 'ajman', 'sharjah', 'shj', 'rak', 'ummalqaiwain', 'fujairah']   
+city_f_name_list = ['none', 'ad_f', 'adudhabi_f', 'dubai_f', 'ajman_f', 'sharjah_f', 'shj_f', 'rak_f', 'ummalqaiwain_f', 'fujairah_f']
 car_type_name_list = ['none', 'taxi', 'police', 'public', 'trp', 'protocol', 'ptr', 'trade', 'trailer', 'consulate', 'learning', "diplomat", "classic", "export", "military", 'commercial']     # EXP learning
 car_type_f_name_list = ['none', 'taxi_f', 'police_f', 'public_f', 'trp_f', 'protocol_f', 'ptr_f', 'trade_f', 'trailer_f', 'consulate_f', 'learning_f', "diplomat_f", "classic_f", "export_f", "military_f", 'commercial_f']
 
