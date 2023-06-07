@@ -69,30 +69,17 @@ lpr.lpr_pytorch_bool = False
 ################
 lpr.china = edict()
 # 0628
-lpr.lpr_paddle_bool = False
-lpr.china.ocr_caffe_prototxt = "/mnt/huanyuan/model_final/image_model/lpr/lpr_zg/china/0628/china_double_softmax.prototxt"
-lpr.china.ocr_caffe_model_path = "/mnt/huanyuan/model_final/image_model/lpr/lpr_zg/china/0628/china_double.caffemodel"
-lpr.china.input_shape = (256, 64)
-lpr.china.ocr_labels = ["-","皖", "沪", "津", "渝", "冀", "晋", "蒙", "辽", "吉", "黑", "苏", "浙",
-                            "京", "闽", "赣", "鲁", "豫", "鄂", "湘", "粤", "桂", "琼", "川", "贵", "云", "藏",
-                            "陕", "甘", "青", "宁", "新", "警", "学", 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
-                            'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-                            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '挂']
-lpr.china.ocr_prefix_beam_search_bool = False
-lpr.china.padding_bool = False
-
-# # ocr_cn_20230512
-# lpr.china.ocr_pth_path = "/mnt/huanyuan/model_final/image_model/lpr/lpr_zg/china/ocr_cn_20230512/crnn_best.pth"
-# lpr.china.ocr_caffe_prototxt = "/mnt/huanyuan/model_final/image_model/lpr/lpr_zg/china/ocr_cn_20230512/cnn_256x64_73.prototxt"
-# lpr.china.ocr_caffe_model_path = "/mnt/huanyuan/model_final/image_model/lpr/lpr_zg/china/ocr_cn_20230512/ocr_cn_20230512.caffemodel"
+# lpr.lpr_paddle_bool = False
+# lpr.china.ocr_caffe_prototxt = "/mnt/huanyuan/model_final/image_model/lpr/lpr_zg/china/0628/china_double_softmax.prototxt"
+# lpr.china.ocr_caffe_model_path = "/mnt/huanyuan/model_final/image_model/lpr/lpr_zg/china/0628/china_double.caffemodel"
 # lpr.china.input_shape = (256, 64)
-# lpr.china.ocr_labels = ["皖", "沪", "津", "渝", "冀", "晋", "蒙", "辽", "吉", "黑", "苏", "浙",
+# lpr.china.ocr_labels = ["-","皖", "沪", "津", "渝", "冀", "晋", "蒙", "辽", "吉", "黑", "苏", "浙",
 #                             "京", "闽", "赣", "鲁", "豫", "鄂", "湘", "粤", "桂", "琼", "川", "贵", "云", "藏",
-#                             "陕", "甘", "青", "宁", "新", "警", "学", '挂', '领', '空', '港', '澳', 
-#                             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 
-#                             'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 
-#                             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-']
+#                             "陕", "甘", "青", "宁", "新", "警", "学", 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+#                             'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+#                             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '挂']
 # lpr.china.ocr_prefix_beam_search_bool = False
+# lpr.china.padding_bool = False
 
 # # ocr_cn_20230519
 # lpr.china.ocr_pth_path = "/mnt/huanyuan/model_final/image_model/lpr/lpr_zg/china/ocr_cn_20230519/crnn_best.pth"
@@ -107,6 +94,7 @@ lpr.china.padding_bool = False
 #                         'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 
 #                         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ]
 # lpr.china.ocr_prefix_beam_search_bool = False
+# lpr.china.padding_bool = True
 
 # # paddle_ocr_20230516_cn
 # lpr.lpr_paddle_bool = True
@@ -116,14 +104,28 @@ lpr.china.padding_bool = False
 # lpr.china.input_shape = (1, 64, 320)
 # lpr.china.ocr_labels_dict_path = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_20230516_cn/inference/cn_dict.txt"
 # lpr.china.ocr_prefix_beam_search_bool = False
+# lpr.china.padding_bool = True
+
+# paddle_ocr_20230530_cn
+lpr.lpr_paddle_bool = True
+lpr.china.ocr_pth_path = ""
+lpr.china.ocr_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230530_cn/inference/caffe/model.prototxt"
+lpr.china.ocr_caffe_model_path = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230530_cn/inference/caffe/model.caffemodel"
+lpr.china.input_shape = (1, 64, 256)
+lpr.china.ocr_labels_dict_path = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230530_cn/inference/cn_dict.txt"
+lpr.china.ocr_prefix_beam_search_bool = False
+lpr.china.padding_bool = False
 
 # color
 # # seg_color_cn_20230512
 # lpr.china.seg_caffe_prototxt = "/mnt/huanyuan/model_final/image_model/lpr/lpr_zg/china/seg_color_cn_20230512/seg_color_cn_20230512.prototxt"
 # lpr.china.seg_caffe_model_path = "/mnt/huanyuan/model_final/image_model/lpr/lpr_zg/china/seg_color_cn_20230512/seg_color_cn_20230512.caffemodel"
 # seg_color_cn_20230516
-lpr.china.seg_caffe_prototxt = "/mnt/huanyuan/model_final/image_model/lpr/lpr_zg/china/seg_color_cn_20230516/seg_color_cn_20230516.prototxt"
-lpr.china.seg_caffe_model_path = "/mnt/huanyuan/model_final/image_model/lpr/lpr_zg/china/seg_color_cn_20230516/seg_color_cn_20230516.caffemodel"
+# lpr.china.seg_caffe_prototxt = "/mnt/huanyuan/model_final/image_model/lpr/lpr_zg/china/seg_color_cn_20230516/seg_color_cn_20230516.prototxt"
+# lpr.china.seg_caffe_model_path = "/mnt/huanyuan/model_final/image_model/lpr/lpr_zg/china/seg_color_cn_20230516/seg_color_cn_20230516.caffemodel"
+# seg_color_cn_20230530
+lpr.china.seg_caffe_prototxt = "/mnt/huanyuan/model_final/image_model/lpr/lpr_zg/china/seg_color_cn_20230530/seg_color_cn_20230530.prototxt"
+lpr.china.seg_caffe_model_path = "/mnt/huanyuan/model_final/image_model/lpr/lpr_zg/china/seg_color_cn_20230530/seg_color_cn_20230530.caffemodel"
 lpr.china.seg_city_dict_name = None
 lpr.china.seg_color_dict_name = "script.lpr.dataset.dataset_cn.dataset_dict.dataset_cn_dict_color"
 lpr.china.seg_input_shape = (128, 64)
@@ -131,9 +133,9 @@ lpr.china.seg_city_bool = False
 lpr.china.seg_color_bool = True
 
 # 车牌长宽阈值
-# lpr.plate_height = [20, 250]
+# lpr.plate_height = [20, 250]    # test
 # lpr.plate_height = [25, 250]
-lpr.plate_height = [30, 250]
+lpr.plate_height = [30, 250]  # zg chn
 lpr.plate_width = [65, 500]
 
 lpr.lpr_ocr_width_expand_ratio = 0.08

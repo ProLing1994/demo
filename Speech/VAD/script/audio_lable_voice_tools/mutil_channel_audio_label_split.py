@@ -2,212 +2,129 @@ import argparse
 import librosa
 import os
 import pandas as pd
-import sys
+import soundfile as sf
 
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-from Basic.dataset import audio
-from Basic.utils.folder_tools import *
+def save_wav(wav, path, sampling_rate): 
+    sf.write(path, wav, sampling_rate)
 
 
-def find_time_id(args, speaker_id):
-    # init 
-    time_id = 0
-
-    # find_path:
-    find_path_list = []
-    for folder_idx in range(len(args.find_folder_list)):
-        find_folder_path = args.find_folder_list[folder_idx]
-        find_path_list += get_sub_filepaths_suffix(find_folder_path, ".wav")
-
-    for equipment_idx in range(len(args.equipment_name_list)):
-        equipment_id = args.equipment_id_list[equipment_idx]
-        equipment_location = args.equipment_location_list[equipment_idx]
-
-        output_format_split = args.output_format.format(speaker_id, equipment_id, equipment_location, 0).split("_")
-        find_match_name = "_".join(output_format_split[:-1]) + "_" + output_format_split[-1].split("T")[0]
-        temp_time_id = 0
-        for find_path in find_path_list:
-            if find_match_name in find_path:
-                find_path_time = int(os.path.basename(find_path).split("_")[-1].split("T")[1].split(".")[0])
-                if find_path_time > temp_time_id:
-                    temp_time_id = find_path_time
-        if temp_time_id > time_id:
-            time_id = temp_time_id
-    return time_id + 1
+def get_sub_filepaths(folder):
+    paths = []
+    for root, dirs, files in os.walk(folder):
+        for name in files:
+            path = os.path.join(root, name)
+            paths.append(path)
+    return paths
 
 
 def audio_lable_split(args):
-    # id_name_list
-    id_name_pd = pd.read_csv(args.id_name_csv, encoding='utf_8_sig')
-    name_list = id_name_pd["name"].to_list()
-    id_name_list = []                               # [{'id':(), 'name':()}]
-    for idx, row in id_name_pd.iterrows(): 
-        id_name_list.append({'id': row['id'], 'name': row['name']}) 
-
-    # id_name_test_list
-    id_name_test_pd = pd.read_csv(args.id_name_test_csv, encoding='utf_8_sig')
-    name_test_list = id_name_test_pd["name"].to_list()
 
     # file list 
     file_list = get_sub_filepaths(args.input_folder)
     file_list.sort()
 
     for idx in tqdm(range(len(file_list))):
-        if not file_list[idx].endswith('.txt'):
-            continue
 
-        # id_name
-        audio_name = os.path.basename(file_list[idx]).split('.')[0]
-        if audio_name in name_test_list:
-            continue
-        
-        if audio_name in name_list:
-            speaker_id = id_name_pd[id_name_pd["name"] == audio_name]["id"].to_list()[0]
-            time_id = find_time_id(args, speaker_id)
+        # txt 文件
+        if file_list[idx].endswith('.txt'):
 
-        else:
-            speaker_id = len(id_name_list) + 1
+            # label path
+            label_path = file_list[idx]
+
+            # speaker_name
+            speaker_name = os.path.basename(label_path).split('.')[0]
+            
+            # speaker_id
+            speaker_id = args.speaker_id
+
+            # init
             time_id = 0
-            id_name_list.append({'id': speaker_id, 'name': audio_name}) 
+            
+            # 遍历标签名字
+            for segment_label_idx in range(len(args.segment_label_list)):
 
-        # label path
-        label_path = file_list[idx]
+                # 标签名字
+                segment_label = args.segment_label_list[segment_label_idx]
 
-        for segment_label_idx in range(len(args.segment_label_list)):
-            segment_label = args.segment_label_list[segment_label_idx]
+                for equipment_idx in range(len(args.equipment_name_list)):
 
-            for equipment_idx in range(len(args.equipment_name_list)):
-                equipment_name = args.equipment_name_list[equipment_idx]
-                equipment_id = args.equipment_id_list[equipment_idx]
-                equipment_location = args.equipment_location_list[equipment_idx]
-                expansion_rate_front = args.expansion_rate_front_list[equipment_idx]
-                expansion_rate_back = args.expansion_rate_back_list[equipment_idx]
-                segment_sample_rate = args.segment_sample_rate_list[0] if audio_name in args.segment_sample_rate_8k_name_list else args.segment_sample_rate_list[1]
-                expansion_fixed_samples = int(segment_sample_rate * args.expansion_fixed_length_s)
+                    segment_sample_rate = args.sample_rate
+                    expansion_rate_front = args.expansion_rate_front_list[equipment_idx]
+                    expansion_rate_back = args.expansion_rate_back_list[equipment_idx]
 
-                audio_path = label_path.split('.')[0] + '_' + equipment_name + args.audio_suffix
-                if not os.path.exists(audio_path):
-                    continue
-                
-                # audio segments
-                audio_segments = []
-                f = open(label_path, 'r', encoding='utf-8')
-                lines = f.readlines()
-                for line_idx in range(len(lines)):
-                    line = lines[line_idx]
-                    if line.split(':')[-1].strip() == segment_label:
-                        if args.bool_expansion_fixed_length:
-                            data_length = int(line.split(':')[0].split('~')[1]) - int(line.split(':')[0].split('~')[0])
-                            data_offset_front = (expansion_fixed_samples - data_length) // 2
-                            data_offset_back = (expansion_fixed_samples - data_length) // 2 + (expansion_fixed_samples - data_length) % 2
-                            audio_segments.append([max(0, int(line.split(':')[0].split('~')[0]) - data_offset_front), int(line.split(':')[0].split('~')[1]) + data_offset_back, time_id + line_idx])
-                        else:
-                            audio_segments.append([max(0, int(line.split(':')[0].split('~')[0]) + expansion_rate_front * segment_sample_rate), int(line.split(':')[0].split('~')[1]) + expansion_rate_back * segment_sample_rate, time_id + line_idx])
-                f.close()
+                    # equipment info
+                    equipment_name = args.equipment_name_list[equipment_idx]
+                    equipment_id = args.equipment_id_list[equipment_idx]
+                    equipment_location = args.equipment_location_list[equipment_idx]
 
-                # output audio_segment
-                audio_data = librosa.core.load(audio_path, sr=args.sample_rate)[0]
-                for segment_idx in range(len(audio_segments)):
-                    audio_segment = audio_segments[segment_idx]
-                    audio_segment_data = audio_data[int(audio_segment[0] * (args.sample_rate / segment_sample_rate)) : int(audio_segment[1] * (args.sample_rate / segment_sample_rate))]
+                    # audio path
+                    label_name = os.path.basename(label_path).split('_')[0]
+                    audio_path = os.path.join(os.path.dirname(label_path), label_name + '_' + equipment_name + args.audio_suffix) 
 
-                    if not len(audio_segment_data):
+                    # 音频不存在，则不进行截取
+                    if not os.path.exists(audio_path):
                         continue
+                    
+                    # audio segments
+                    # 加载标签文件，添加音频分割列表
+                    audio_segments = []         # [起点， 终点， 序号]
+                    f = open(label_path, 'r', encoding='utf-8')
+                    lines = f.readlines()
+                    for line_idx in range(len(lines)):
+                        line = lines[line_idx]
+                        if line.split(':')[-1].strip() == segment_label:
+                            audio_segments.append([max(0, int(line.split(':')[0].split('~')[0]) + expansion_rate_front * segment_sample_rate), int(line.split(':')[0].split('~')[1]) + expansion_rate_back * segment_sample_rate, time_id + line_idx])
+                    f.close()
 
-                    # output 
-                    output_dir = os.path.join(args.output_folder, segment_label, equipment_name)
-                    if not os.path.exists(output_dir):
-                        os.makedirs(output_dir)
+                    # output audio_segment
+                    audio_data = librosa.core.load(audio_path, sr=args.sample_rate)[0]
+                    for segment_idx in range(len(audio_segments)):
+                        audio_segment = audio_segments[segment_idx]
 
-                    output_path = os.path.join(output_dir, args.output_format.format(speaker_id, equipment_id, equipment_location, audio_segment[2]))
-                    temp_path = os.path.join(args.output_folder, '{}{}'.format('temp', args.audio_suffix))
-                    audio.save_wav(audio_segment_data.copy(), temp_path, args.sample_rate)
-                    os.system('sox {} -b 16 -e signed-integer {}'.format(temp_path, output_path))
+                        # 音频数据
+                        audio_segment_data = audio_data[int(audio_segment[0] * (args.sample_rate / segment_sample_rate)) : int(audio_segment[1] * (args.sample_rate / segment_sample_rate))]
 
-    id_name_pd = pd.DataFrame(id_name_list)
-    id_name_pd.to_csv(args.id_name_csv, index=False, encoding="utf_8_sig")
+                        if not len(audio_segment_data):
+                            continue
+
+                        # output 
+                        output_dir = os.path.join(args.output_folder, "_".join(segment_label.split(' ')), equipment_name)
+                        if not os.path.exists(output_dir):
+                            os.makedirs(output_dir)
+
+                        # 保存音频
+                        output_path = os.path.join(output_dir, args.output_format.format("_".join(segment_label.split(' ')), speaker_id, args.male, equipment_id, equipment_location, audio_segment[2]))
+                        temp_path = os.path.join(args.output_folder, '{}{}'.format('temp', args.audio_suffix))
+                        save_wav(audio_segment_data.copy(), temp_path, args.sample_rate)
+                        os.system('sox {} -b 16 -e signed-integer {}'.format(temp_path, output_path))
 
         
-def main():
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="")
+    parser.add_argument('--input_folder', type=str, default="/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/collect/20230605/YH_temp/")
+    parser.add_argument('--output_folder', type=str, default="/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/collect/20230605/YH_res/")       # 每个人保存在不同文件路径下：如：YH
+    parser.add_argument('--output_format', type=str, default="RM_KWS_GORLIA_{}_S{:0>3d}M{}D{}{}T{:0>3d}.wav")
+    parser.add_argument('--speaker_id', type=int, default=0)  # 说话人 id（不同人应该有不同的 speaker_id，不然保存结果会被覆盖）
+    parser.add_argument('--male', type=int, default=0)  # 女 0   男 1
+    parser.add_argument('--equipment_name_list', type=str, default="mic_130cm,phone,adplus1_0_normal,adplus1_0_70cm,adplus1_0_100cm,adplus2_0_normal,adplus2_0_70cm,adplus2_0_100cm")
+    parser.add_argument('--equipment_id_list', type=str, default="1,5,4,4,4,8,8,8")
+    parser.add_argument('--equipment_location_list', type=str, default="4,0,5,3,4,5,3,4")
+    parser.add_argument('--segment_label_list', type=str, default="gorila_gorila")
+    parser.add_argument('--sample_rate', type=int, default=16000)
     args = parser.parse_args()
 
-    # xiaoanxiaoan 
-    # args.output_format = "RM_KWS_XIAOAN_xiaoan_S{:0>3d}M0D{}{}T{:0>3d}.wav"
-    # args.output_format = "RM_KWS_XIAOAN_test_S{:0>3d}M0D{}{}T{:0>3d}.wav"
-
-    args.input_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_10182021/处理音频_0425/"
-    args.output_folder = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/XiaoAnXiaoAn_10182021/out_0425/"
-    args.output_format = "RM_KWS_XIAOAN_xiaoan_S{:0>3d}M0D{}{}T{:0>3d}.wav"
-    args.id_name_csv = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/唤醒词记录.csv"
-    args.id_name_test_csv = "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/original_dataset/唤醒词记录_测试人员.csv"
-
-    # 寻找相同说话人音频，记录末尾编号，新增数据向后延续
-    args.find_folder_list = [
-                                "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_8k/",
-                                "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_8k_once/",
-                                "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_8k_over_long/",
-                                "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_8k_small_voice/",
-                                "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_16k/",
-                                "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_16k_once/",
-                                "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_16k_over_long/",
-                                "/mnt/huanyuan/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_16k_small_voice/",
-                            ]
-
     # params
-    args.equipment_name_list = ['adpro', 'mic', 'danbin_ori', 'danbin_asr']
-    args.equipment_id_list = [4, 6, 0, 7]
-    args.equipment_location_list = [2, 1, 1, 1]
+    args.equipment_name_list = args.equipment_name_list.split(',')
+    args.equipment_id_list = args.equipment_id_list.split(',')
+    args.equipment_location_list = args.equipment_location_list.split(',')
 
-    # xiaoan\xiaoan1\error\error1
-    args.segment_label_list = ["xiaoan", "xiaoan1", "error", "error1"]
-    args.segment_sample_rate_list = [8000, 16000]
-    args.segment_sample_rate_8k_name_list = ["钟国胜", "梁昊", "林日丹", "李文达", "雍洪", "章钰雯", "陈彦芸", "黄凯龙", "张莹莹", "颜苑婷", "杨莹丽", "黄俊斌", "赵春海", "陈泽敏", "叶智豪", "梁嘉冠", "黄丽琼", "杨章林", "冯晓欣", "赵验", "吴玉如"]
-    args.sample_rate = 16000
+    # 标签名字
+    args.segment_label_list = args.segment_label_list.split(',')
     
-    # 是否将音频扩展为固定的长度
-    # args.bool_expansion_fixed_length = True
-    args.bool_expansion_fixed_length = False
-    args.expansion_fixed_length_s = 3.0
-
-    # 若 args.expansion_fixed_length = True，下述无效
-    args.expansion_rate_front_list = [-0.2, -0.2, -0.2, -0.2]
-    args.expansion_rate_back_list = [0.1, 0.1, 0.1, 0.1]
+    args.expansion_rate_front_list = [-0.2, -0.2, -0.2, -0.2, -0.2, -0.2, -0.2, -0.2]
+    args.expansion_rate_back_list = [ 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 ]
     args.audio_suffix = ".wav"
 
-    # # activate bwc
-    # args.input_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/ActivateBWC_07162021/activatebwc/数据处理/"
-    # args.output_folder = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/ActivateBWC_07162021/activatebwc/数据处理结果/"
-    # args.output_format = "RM_KWS_ACTIVATEBWC_activatebwc_S{:0>3d}M0D{}{}T{:0>3d}.wav"
-    # args.id_name_csv = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/唤醒词记录.csv"
-    # args.id_name_test_csv = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/唤醒词记录_测试人员.csv"
-
-    # # 寻找相同说话人音频，记录末尾编号，新增数据向后延续
-    # args.find_folder_list = ["/mnt/huanyuan/data/speech/kws/english_kws_dataset/original_dataset/ActivateBWC_07162021/activatebwc/数据处理结果/",
-    #                             "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/activatebwc/"]
-
-    # params
-    # args.equipment_name_list = ['danbin_asr', 'danbin_ori']
-    # args.equipment_id_list = [7, 0]
-    # args.equipment_location_list = [1, 1]
-
-    # args.segment_label_list = ["bwc1"]
-    # args.segment_sample_rate_list = [8000, 16000]
-    # args.segment_sample_rate_8k_name_list = []
-    # args.sample_rate = 16000
-
-    # # 是否将音频扩展为固定的长度
-    # args.bool_expansion_fixed_length = True
-    # args.expansion_fixed_length_s = 3
-
-    # # 若 args.expansion_fixed_length = True，下述无效
-    # args.expansion_rate_front_list = [-0.2, -0.2]
-    # args.expansion_rate_back_list = [0.1, 0.1]
-    # args.audio_suffix = ".wav"
-
     audio_lable_split(args)
-
-if __name__ == "__main__":
-    main()

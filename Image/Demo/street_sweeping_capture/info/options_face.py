@@ -31,13 +31,13 @@ face = edict()
 # face.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_landmark_wider_face_20230526/epoch_400.pth"
 # face.yolov6_class_name = ['face']
 # face.yolov6_threshold_list = [0.4]
-# yolov6 landmark center offset
-face.landmark_bool = True
-face.landmark_degree_bool = False
-face.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_landmark_wider_face_center_offset_20230525/yolov6_face_wider_face.py"
-face.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_landmark_wider_face_center_offset_20230525/epoch_400.pth"
-face.yolov6_class_name = ['face']
-face.yolov6_threshold_list = [0.4]
+# # yolov6 landmark center offset
+# face.landmark_bool = True
+# face.landmark_degree_bool = False
+# face.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_landmark_wider_face_center_offset_20230525/yolov6_face_wider_face.py"
+# face.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_landmark_wider_face_center_offset_20230525/epoch_400.pth"
+# face.yolov6_class_name = ['face']
+# face.yolov6_threshold_list = [0.4]
 # # yolov6 landmark degree
 # face.landmark_bool = False
 # face.landmark_degree_bool = True
@@ -45,6 +45,20 @@ face.yolov6_threshold_list = [0.4]
 # face.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_landmark_degree_wider_face_20230525/epoch_260.pth"
 # face.yolov6_class_name = ['face']
 # face.yolov6_threshold_list = [0.4]
+# # yolov6 landmark qa
+# face.landmark_bool = True
+# face.landmark_degree_bool = False
+# face.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_landmark_qa_wider_face_20230602/yolov6_qa_face_wider_face.py"
+# face.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_landmark_qa_wider_face_20230602/epoch_300.pth"
+# face.yolov6_class_name = ['face']
+# face.yolov6_threshold_list = [0.3]
+# yolov6 landmark qa
+face.landmark_bool = True
+face.landmark_degree_bool = False
+face.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_landmark_qa_wider_face_20230604/yolov6_qa_face_wider_face.py"
+face.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_landmark_qa_wider_face_20230604/epoch_200.pth"
+face.yolov6_class_name = ['face']
+face.yolov6_threshold_list = [0.4]
 
 ###########################################
 # sort

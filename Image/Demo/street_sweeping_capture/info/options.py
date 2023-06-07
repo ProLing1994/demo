@@ -23,6 +23,10 @@ options.image_height = 1520
 # options.image_width = 1920
 # options.image_height = 1080
 
+# # 720p
+# options.image_width = 1280
+# options.image_height = 720
+
 
 ###########################################
 # gpu
@@ -36,9 +40,15 @@ options.device = 'cuda:0'
 ###########################################
 # detector
 ###########################################
+# # lpr
+# options.ssd_bool = True
+# options.yolov6_bool =False
+# options.ssd_caffe_bool = True
+# options.ssd_openvino_bool = False
+
+# face
 options.ssd_bool = False
 options.yolov6_bool = True
-
 options.ssd_caffe_bool = False
 options.ssd_openvino_bool = False
 

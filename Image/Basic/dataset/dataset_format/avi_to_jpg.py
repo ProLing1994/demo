@@ -73,7 +73,7 @@ if __name__ == "__main__":
     args.suffix = '.avi'
     # args.frame_strp = 25
     # args.frame_strp = 10
-    args.frame_strp = 5
-    # args.frame_strp = 1
+    # args.frame_strp = 5
+    args.frame_strp = 1
 
     avi_to_jpg(args)

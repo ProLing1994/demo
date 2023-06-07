@@ -337,15 +337,15 @@ class LPROnnx(object):
 
 class LPRCaffe(object):
     
-    def __init__(self, model_path, prototxt_path, dict_path, img_shape=(1, 64, 256), gpu_bool=False):
+    def __init__(self, model_path, prototxt_path, dict_path, img_shape=(1, 64, 256), padding_bool=True, gpu_bool=False):
 
         self.model_path = model_path
         self.prototxt_path = prototxt_path
         self.dict_path = dict_path
         self.gpu_bool = gpu_bool
-        self.white_bool = True
-        self.padding_bool = True
+        self.padding_bool = padding_bool
         self.img_shape = img_shape
+        self.white_bool = True
 
         self.model_init()
         self.ocr_labels_init()
@@ -391,6 +391,9 @@ class LPRCaffe(object):
         else:
             resized_image = cv2.resize(img, (imgW, imgH))
 
+        # output_img_path = "/home/huanyuan/share/huanyuan/Brazil_ANPR_5M_NOVT_ST/huanyuan/novt/rmai/crop.jpg";
+        # cv2.imwrite(output_img_path, resized_image);
+        
         resized_image = resized_image.transpose((2, 0, 1)) / 255.0
         return resized_image
 
