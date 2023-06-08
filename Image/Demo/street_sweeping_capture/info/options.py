@@ -81,6 +81,7 @@ options.cache_container_length = 8
 options.bbox_state_container_length = 10       # 车辆框连续丢失上报，从容器中清除该车辆信息
 options.lpr_ocr_state_container_length = 20    # 车牌状态长度阈值
 options.lpr_city_state_container_length = 10   # 车牌状态长度阈值
+options.lpr_face_state_container_length = 10   # 人脸状态长度阈值
 
 # 更新车辆行驶状态
 options.update_state_num_threshold = 5         # 车辆行驶状态计数最大值，用于记录车辆处于同一行驶状态的帧数
@@ -111,6 +112,7 @@ options.capture_lpr_num_frame_threshold = 4
 options.capture_lpr_color_frame_threshold = 3
 
 options.capture_face_landmark_degree_threshold = 0.5
+options.face_landmark_degree_frame_threshold  = 4
 
 
 ###########################################

@@ -95,7 +95,9 @@ class CaptureApi():
                 if face.landmark_bool:
                     self.detector = YOLOV6LandmarkDetector(options.face.yolov6_config, options.face.yolov6_checkpoint, class_name=options.face.yolov6_class_name, threshold_list=options.face.yolov6_threshold_list, device=options.device)
                 elif face.landmark_degree_bool:
-                    self.detector = YOLOV6LandmarkDegreeDetector(options.face.yolov6_config, options.face.yolov6_checkpoint, class_name=options.face.yolov6_class_name, threshold_list=options.face.yolov6_threshold_list, device=options.device)                    
+                    self.detector = YOLOV6LandmarkDegreeDetector(options.face.yolov6_config, options.face.yolov6_checkpoint, class_name=options.face.yolov6_class_name, threshold_list=options.face.yolov6_threshold_list, device=options.device)
+                elif face.landmark_degree_cls_bool:
+                    self.detector = YOLOV6LandmarkDegreeDetector(options.face.yolov6_config, options.face.yolov6_checkpoint, class_name=options.face.yolov6_class_name, threshold_list=options.face.yolov6_threshold_list, device=options.device)
             
             # tracker
             self.mot_tracker = Sort(max_age=options.face.max_age, min_hits=options.face.min_hits, iou_threshold=options.face.iou_threshold)
@@ -343,6 +345,8 @@ class CaptureApi():
                         bbox_info_idx['face_info']['landmark_degree'] = landmark2degree(copy.deepcopy(bbox_info_idx['face_info']['landmark']))
                     elif face.landmark_degree_bool:
                         bbox_info_idx['face_info']['landmark_degree'] = np.array(match_car_roi[0][5])
+                    elif face.landmark_degree_cls_bool:
+                        bbox_info_idx['face_info']['landmark_positive_cls'] = "1" if match_car_roi[0][5] > 0.5 else "0"
         return bbox_info_list
 
     def update_cache_container(self, img, frame_idx, bbox_info_list):
@@ -474,7 +478,8 @@ class CaptureApi():
                         if bool_add_face:
                             bbox_state_idy['state']['obj_num'] += 1
                             bbox_state_idy['state']['obj_disappear_num'] = 0
-                            bbox_state_idy['state']['face_landmark_degree_list'] = bbox_info_idx['face_info']['landmark_degree']
+                            bbox_state_idy['state']['face_landmark_degree_list'].append(bbox_info_idx['face_info']['landmark_degree'])
+                            bbox_state_idy['state']['face_landmark_positive_cls_list'].append(bbox_info_idx['face_info']['landmark_positive_cls'])
                         else:
                             bbox_state_idy['state']['obj_disappear_num'] += 1
 
@@ -518,9 +523,9 @@ class CaptureApi():
                         bbox_state_idy['state']['lpr_score_list'].append(bbox_info_idx['plate_info']['score'])
                         bbox_state_idy['state']['lpr_color_list'].append(bbox_info_idx['plate_info']['color'])
 
-                        if len( bbox_state_idy['state']['lpr_num_list'] ) > options.lpr_ocr_state_container_length:
+                        if len( bbox_state_idy['state']['lpr_num_list'] ) > options.lpr_face_state_container_length:
                             bbox_state_idy['state']['lpr_num_list'].pop(0)
-                        if len( bbox_state_idy['state']['lpr_color_list'] ) > options.lpr_city_state_container_length:
+                        if len( bbox_state_idy['state']['lpr_color_list'] ) > options.lpr_face_state_container_length:
                             bbox_state_idy['state']['lpr_color_list'].pop(0)
 
                     else:
@@ -539,7 +544,14 @@ class CaptureApi():
                     if bool_add_face:
                         bbox_state_idy['state']['obj_num'] += 1
                         bbox_state_idy['state']['obj_disappear_num'] = 0
-                        bbox_state_idy['state']['face_landmark_degree_list'] = bbox_info_idx['face_info']['landmark_degree']
+                        bbox_state_idy['state']['face_landmark_degree_list'].append(bbox_info_idx['face_info']['landmark_degree'])
+                        bbox_state_idy['state']['face_landmark_positive_cls_list'].append(bbox_info_idx['face_info']['landmark_positive_cls'])
+
+                        if len( bbox_state_idy['state']['face_landmark_degree_list'] ) > options.lpr_ocr_state_container_length:
+                            bbox_state_idy['state']['face_landmark_degree_list'].pop(0)
+                        if len( bbox_state_idy['state']['face_landmark_positive_cls_list'] ) > options.lpr_city_state_container_length:
+                            bbox_state_idy['state']['face_landmark_positive_cls_list'].pop(0)
+
                     else:
                         bbox_state_idy['state']['obj_disappear_num'] += 1
                     
@@ -756,21 +768,55 @@ class CaptureApi():
                                 capture_dict_idy['plate_info']['color'] = capture_res_dict['plate_info']['color']
 
                     elif self.demo_type == "face":
-                        # 获得抓拍序列
-                        capture_from_container_list = self.find_capture_face(bbox_state_idy['track_id'])
 
-                        if len(capture_from_container_list) and \
-                            capture_id_idx not in self.params_dict['capture_res_container']:
+                        if face.landmark_bool or face.landmark_degree_bool:
+                            
+                            # capture_flage
+                            face_landmark_degree_np = np.array(bbox_state_idy['state']['face_landmark_degree_list'])
 
-                            capture_res_dict['track_id'] = capture_id_idx
-                            capture_res_dict['capture']['flage'] = capture_dict_idy['capture']['flage']
-                            capture_res_dict['capture']['img_bbox_info_list'] = capture_from_container_list
-                            capture_res_dict['capture']['capture_bool'] = True
+                            # 获得抓拍序列
+                            if len(list(face_landmark_degree_np)):
+                                capture_face_landmark_degree_frame = (face_landmark_degree_np < options.capture_face_landmark_degree_threshold).sum()
+                                capture_from_container_list = self.find_capture_face(bbox_state_idy['track_id'])
 
-                            self.params_dict['capture_res_container'][capture_res_dict['track_id']] = capture_res_dict
+                                if capture_face_landmark_degree_frame >= options.face_landmark_degree_frame_threshold  and \
+                                    len(capture_from_container_list) and \
+                                    capture_id_idx not in self.params_dict['capture_res_container']:
 
-                            # 信息同步
-                            capture_dict_idy['capture']['capture_bool'] = capture_res_dict['capture']['capture_bool']
+                                    capture_res_dict['track_id'] = capture_id_idx
+                                    capture_res_dict['capture']['flage'] = capture_dict_idy['capture']['flage']
+                                    capture_res_dict['capture']['img_bbox_info_list'] = capture_from_container_list
+                                    capture_res_dict['capture']['capture_bool'] = True
+
+                                    self.params_dict['capture_res_container'][capture_res_dict['track_id']] = capture_res_dict
+
+                                    # 信息同步
+                                    capture_dict_idy['capture']['capture_bool'] = capture_res_dict['capture']['capture_bool']
+
+                        elif face.landmark_degree_cls_bool:
+
+                            # capture_flage
+                            face_landmark_positive_cls_np = np.array(bbox_state_idy['state']['face_landmark_positive_cls_list'])
+                            
+                            # 获得抓拍序列
+                            if len(list(face_landmark_positive_cls_np)):
+                                capture_face_landmark_positive_cls, capture_face_landmark_positive_cls_frame = Counter(list(face_landmark_positive_cls_np)).most_common(1)[0]
+                                capture_from_container_list = self.find_capture_face_cls(bbox_state_idy['track_id'], capture_face_landmark_positive_cls)
+
+                            if capture_face_landmark_positive_cls == "1" and \
+                                capture_face_landmark_positive_cls_frame >= options.face_landmark_degree_frame_threshold  and \
+                                len(capture_from_container_list) and \
+                                capture_id_idx not in self.params_dict['capture_res_container']:
+
+                                capture_res_dict['track_id'] = capture_id_idx
+                                capture_res_dict['capture']['flage'] = capture_dict_idy['capture']['flage']
+                                capture_res_dict['capture']['img_bbox_info_list'] = capture_from_container_list
+                                capture_res_dict['capture']['capture_bool'] = True
+
+                                self.params_dict['capture_res_container'][capture_res_dict['track_id']] = capture_res_dict
+
+                                # 信息同步
+                                capture_dict_idy['capture']['capture_bool'] = capture_res_dict['capture']['capture_bool']
         return
 
 
@@ -817,5 +863,25 @@ class CaptureApi():
 
             capture_from_container_list = sorted(capture_from_container_list, key=sort_func)
             capture_from_container_list = capture_from_container_list[:3]
+        
+        return capture_from_container_list
+
+
+    def find_capture_face_cls(self, captute_id, capture_face_landmark_positive_cls):
+        
+        capture_from_container_list = []
+
+        for idy in range(len(self.params_dict['bbox_info_container'])):
+            bbox_info_list = self.params_dict['bbox_info_container'][idy]['bbox_info']
+
+            for idx in range(len(bbox_info_list)):
+                bbox_info_idx = bbox_info_list[idx]
+
+                # 容器中存在追踪对象
+                if bbox_info_idx['track_id'] == captute_id and bbox_info_idx['face_info']['landmark_positive_cls'] == capture_face_landmark_positive_cls:
+                    capture_from_container_list.append(self.params_dict['bbox_info_container'][idy])
+        
+        if len(capture_from_container_list) > 3:
+            capture_from_container_list = random.sample(capture_from_container_list, 3)
         
         return capture_from_container_list

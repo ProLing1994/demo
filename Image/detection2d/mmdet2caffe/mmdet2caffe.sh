@@ -34,10 +34,10 @@
 # NAME=yolov6_face_center_offset
 # OUTPUT_DIR=/mnt/huanyuan/model/image/yolov6/yolov6_landmark_wider_face_center_offset_20230525
 
-CONFIG=/mnt/huanyuan/model/image/yolov6/yolov6_landmark_qa_wider_face_20230604/yolov6_qa_face_wider_face_deploy.py
-CHECKPOINT=/mnt/huanyuan/model/image/yolov6/yolov6_landmark_qa_wider_face_20230604/epoch_200_deploy.pth
-NAME=yolov6_face_landmark_qa
-OUTPUT_DIR=/mnt/huanyuan/model/image/yolov6/yolov6_landmark_qa_wider_face_20230604
+CONFIG=/mnt/huanyuan/model/image/yolov6/yolov6_landmark_qa_wider_face_20230605/yolov6_qa_face_wider_face_deploy.py
+CHECKPOINT=/mnt/huanyuan/model/image/yolov6/yolov6_landmark_qa_wider_face_20230605/epoch_800_deploy.pth
+NAME=yolov6_face_landmark_qa_20230605_800
+OUTPUT_DIR=/mnt/huanyuan/model/image/yolov6/yolov6_landmark_qa_wider_face_20230605
 
 python deployment/pytorch2caffe/mmdet2caffe.py \
    --config-file $CONFIG \
