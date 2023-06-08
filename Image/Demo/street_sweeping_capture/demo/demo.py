@@ -124,19 +124,19 @@ def main():
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
+    # #######################################
+    # # license plate
+    # #######################################
     # # zg, license plate demo
     # args.demo_type = "lpr"
     # args.country_type = "china"
     # # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_CN_ZG_HCZP/5M_230416/avi/"
-    # # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_CN_ZG_HCZP/5M_230416/lpr_avi/"
-    # # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_CN_ZG_HCZP/5M_230416/lpr_avi_paddle_0601/"
-    # # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_CN_ZG_HCZP/5M_12mm_0723_白_前/avi/"
-    # # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_CN_ZG_HCZP/5M_12mm_0723_白_前/lpr_avi/"
-    # # args.video_dir = "/mnt/huanyuan2/data/image/Distance_detection/Distance_detection_plate/avi/200W/"
-    # # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/Distance_detection_plate/200W/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/Distance_detection/Distance_detection_plate/avi/720p/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/Distance_detection_plate/720p/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_CN_ZG_HCZP/5M_230416/test/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_CN_ZG_HCZP/5M_230416/lpr_test/"
     
+    ######################################
+    # face
+    ######################################
     # zg, face demo
     args.demo_type = "face"
     args.country_type = "none"
@@ -147,10 +147,8 @@ def main():
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_CN_ZG_HCZP/5M_230416/face_avi_landmark_center_offset/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_CN_ZG_HCZP/5M_230416/face_avi_landmark_sigmoid_center_offset_qa_0605/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_CN_ZG_HCZP/5M_230416/face_avi_landmark_degree/"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_CN_ZG_HCZP/5M_230416/face_avi_landmark_degree_cls/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_CN_ZG_HCZP/5M_230416/test/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_ZD_DUBAI_C27/5M_2M_全_多方向_人脸_1024_1115/avi/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_ZD_DUBAI_C27/5M_2M_全_多方向_人脸_1024_1115/face_avi/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_CN_ZG_HCZP/5M_230416/face_avi_landmark_degree_cls/"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_CN_ZG_HCZP/5M_230416/test/"
 
     args.suffix = '.avi'
     # args.suffix = '.mp4'
