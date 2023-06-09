@@ -11,12 +11,16 @@ from Image.detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
 from Image.detection2d.mmdetection.demo.detector.yolov6_detector import YOLOV6Detector
 from Image.detection2d.mmdetection.demo.detector.yolov6_landmark_degree_detector import YOLOV6LandmarkDegreeDetector
 from Image.detection2d.mmdetection.demo.detector.yolov6_landmark_detector import YOLOV6LandmarkDetector
+from Image.Demo.street_sweeping_capture.model.LPR_detect import LPRDetectCaffe, LPRDetectOpenVINO
+
 from Image.recognition2d.lpr.infer.lpr import LPRCaffe, LPRPytorch
 from Image.recognition2d.lpr.infer.lpr_seg import LPRSegColorClassCaffe
+
 from Image.Demo.street_sweeping_capture.sort.mot_sort import Sort
 
-# from Image.Demo.street_sweeping_capture.info.options_lpr import options
-from Image.Demo.street_sweeping_capture.info.options_face import options
+from Image.Demo.street_sweeping_capture.info.options_lpr_brazil import options
+# from Image.Demo.street_sweeping_capture.info.options_lpr_china_zg import options
+# from Image.Demo.street_sweeping_capture.info.options_face import options
 from Image.Demo.street_sweeping_capture.info.param import *
 from Image.Demo.street_sweeping_capture.utils.iou import *
 from Image.Demo.street_sweeping_capture.utils.landmark2degree import landmark2degree
@@ -63,7 +67,10 @@ class CaptureApi():
         if self.demo_type == "lpr":
             # detector
             if options.ssd_bool:
-                self.detector = SSDDetector(prototxt=options.ssd_prototxt, model_path=options.ssd_model_path, ssd_caffe_bool=options.ssd_caffe_bool, ssd_openvino_bool=options.ssd_openvino_bool, merge_class_bool=options.car_attri_merge_bool, gpu_bool=options.gpu_bool)
+                if self.country_type == "china":
+                    self.detector = SSDDetector(prototxt=options.ssd_prototxt, model_path=options.ssd_model_path, ssd_caffe_bool=options.ssd_caffe_bool, ssd_openvino_bool=options.ssd_openvino_bool, merge_class_bool=options.car_attri_merge_bool, gpu_bool=options.gpu_bool)
+                elif self.country_type == "brazil":
+                    self.detector = LPRDetectCaffe(options.ssd_prototxt, options.ssd_model_path, class_name=options.ssd_class_name, gpu_bool=options.gpu_bool, conf_thres=options.ssd_conf_thres)
             elif options.yolov6_bool:
                 self.detector = YOLOV6Detector(options.yolov6_config, options.yolov6_checkpoint, class_name=options.yolov6_class_name, threshold_list=options.yolov6_threshold_list, device=options.device)
 
@@ -82,10 +89,19 @@ class CaptureApi():
                     else:
                         self.lpr = LPRPytorch(options.china.ocr_pth_path, input_shape=options.china.input_shape, ocr_labels=options.china.ocr_labels, prefix_beam_search_bool=options.china.ocr_prefix_beam_search_bool)
                     self.lpr_seg = None
+            elif self.country_type == "brazil":
+                if options.lpr_caffe_bool:
+                    self.lpr = LPRCaffe(options.brazil.ocr_caffe_prototxt, options.brazil.ocr_caffe_model_path, input_shape=options.brazil.input_shape, ocr_labels=options.brazil.ocr_labels, padding_bool=options.brazil.padding_bool, prefix_beam_search_bool=options.brazil.ocr_prefix_beam_search_bool, gpu_bool=options.gpu_bool)
+                    self.lpr_first_line = LPRCaffe(options.brazil.ocr_first_line_caffe_prototxt, options.brazil.ocr_first_line_caffe_model_path, input_shape=options.brazil.ocr_first_line_caffe_shape, ocr_labels=options.brazil.ocr_labels, padding_bool=options.brazil.padding_bool, prefix_beam_search_bool=options.brazil.ocr_prefix_beam_search_bool, gpu_bool=options.gpu_bool)
+                    self.lpr_second_line = LPRCaffe(options.brazil.ocr_second_line_caffe_prototxt, options.brazil.ocr_second_line_caffe_model_path, input_shape=options.brazil.ocr_second_line_caffe_shape, ocr_labels=options.brazil.ocr_labels, padding_bool=options.brazil.padding_bool, prefix_beam_search_bool=options.brazil.ocr_prefix_beam_search_bool, gpu_bool=options.gpu_bool)
+
+                elif options.lpr_pytorch_bool:         
+                    self.lpr = None
+                    self.lpr_first_line = None
+                    self.lpr_second_line = None
 
             # tracker
-            if options.sort_type == "car":
-                self.mot_tracker = Sort(max_age=options.max_age, min_hits=options.min_hits, iou_threshold=options.iou_threshold)
+            self.mot_tracker = Sort(max_age=options.max_age, min_hits=options.min_hits, iou_threshold=options.iou_threshold)
 
         elif self.demo_type == "face":
             # detector
@@ -162,35 +178,33 @@ class CaptureApi():
 
     def update_tracker_bboxes(self, bboxes):
 
-        if self.demo_type == "lpr":
-            if options.sort_type == "car":
-                if options.car_attri_merge_bool:
-                    # tracker
-                    if options.car_attri_merge_name in bboxes:
-                        dets = np.array(bboxes[options.car_attri_merge_name])
-                    else:
-                        dets = np.empty((0, 5))
-                    tracker_bboxes = self.mot_tracker.update(dets)
-
+        if self.demo_type == "lpr" and options.sort_type == "car":
+            if options.car_attri_merge_bool:
+                # tracker
+                if options.car_attri_merge_name in bboxes:
+                    dets = np.array(bboxes[options.car_attri_merge_name])
                 else:
-                    # tracker
                     dets = np.empty((0, 5))
-                    for idx in range(len(options.car_attri_name_list)):
-                        car_attri_name_idx = options.car_attri_name_list[idx]
-                        if car_attri_name_idx in bboxes:
-                            dets = np.concatenate((dets, np.array(bboxes[car_attri_name_idx])), axis=0)
-                            
-                    tracker_bboxes = self.mot_tracker.update(dets)
+                tracker_bboxes = self.mot_tracker.update(dets)
 
-        elif self.demo_type == "face":
+            else:
+                # tracker
+                dets = np.empty((0, 5))
+                for idx in range(len(options.car_attri_name_list)):
+                    car_attri_name_idx = options.car_attri_name_list[idx]
+                    if car_attri_name_idx in bboxes:
+                        dets = np.concatenate((dets, np.array(bboxes[car_attri_name_idx])), axis=0)
+                        
+                tracker_bboxes = self.mot_tracker.update(dets)
+
+        elif (self.demo_type == "lpr" and options.sort_type == "plate" or self.demo_type == "face"):
             # tracker
             dets = np.empty((0, 5))
             for idx in range(len(options.sort_class_name)):
                 sort_class_name = options.sort_class_name[idx]
                 if sort_class_name in bboxes:
 
-                    # face
-                    # 由于车牌面积太小，跟踪不上，需要增大面积
+                    # 由于面积太小，跟踪不上，需要增大面积
                     bboxes_class_list = []
                     
                     for idy in range(len(bboxes[sort_class_name])):
@@ -208,7 +222,6 @@ class CaptureApi():
             
             tracker_bboxes = self.mot_tracker.update(dets)
 
-            # face
             # 由于增加了面积，需要减少面积，获得精确坐标
             for idx in range(len(tracker_bboxes)):
                 bboxes_idx = tracker_bboxes[idx]
@@ -230,12 +243,17 @@ class CaptureApi():
             # init 
             bbox_info_dict = load_objectinfo()
 
-            if self.demo_type == "lpr":
-                if options.sort_type == "car":
-                    tracker_bbox = tracker_bboxes[idx]
-                    bbox_info_dict['track_id'] = tracker_bbox[-1]
-                    bbox_info_dict['car_info']['roi'] = tracker_bbox[0:4]
-                    bbox_info_list.append(bbox_info_dict)
+            if self.demo_type == "lpr" and options.sort_type == "car":
+                tracker_bbox = tracker_bboxes[idx]
+                bbox_info_dict['track_id'] = tracker_bbox[-1]
+                bbox_info_dict['car_info']['roi'] = tracker_bbox[0:4]
+                bbox_info_list.append(bbox_info_dict)
+
+            elif self.demo_type == "lpr" and options.sort_type == "plate":
+                tracker_bbox = tracker_bboxes[idx]
+                bbox_info_dict['track_id'] = tracker_bbox[-1]
+                bbox_info_dict['plate_info']['roi'] = tracker_bbox[0:4]
+                bbox_info_list.append(bbox_info_dict)
 
             elif self.demo_type == "face":
                 bbox_info_dict['track_id'] = tracker_bboxes[idx][-1]
@@ -247,12 +265,12 @@ class CaptureApi():
 
     def update_car_info( self, img, bboxes, bbox_info_list ):
 
-        # 遍历单帧结果
+        # 更新 car info
         for idx in range(len(bbox_info_list)):
             bbox_info_idx = bbox_info_list[idx]
 
-            if self.demo_type == "lpr":
-                # 车辆属性更新
+            if self.demo_type == "lpr" and options.sort_type == "car":
+
                 if options.car_attri_merge_bool:
                     bbox_info_idx['car_info']['attri'] = 'none'
                 else:
@@ -273,11 +291,12 @@ class CaptureApi():
 
     def update_plate_info( self, img, bboxes, bbox_info_list ):
 
-        # 遍历单帧结果
+        # 更新 plate info
         for idx in range(len(bbox_info_list)):
             bbox_info_idx = bbox_info_list[idx]
 
-            if self.demo_type == "lpr":
+            if self.demo_type == "lpr" and options.sort_type == "car":
+
                 # license plate
                 if options.license_plate_name in bboxes:
                     license_plate_roi_list = bboxes[options.license_plate_name]
@@ -287,44 +306,79 @@ class CaptureApi():
                     if len(match_license_plate_roi):
                         Latent_plate = match_license_plate_roi[0][0:4]
 
-                        # 按照车牌宽高过滤车牌
-                        if (Latent_plate[3] - Latent_plate[1] > options.plate_height[0]) and \
-                            (Latent_plate[3] - Latent_plate[1] < options.plate_height[1]) and \
-                            (Latent_plate[2] - Latent_plate[0] > options.plate_width[0]) and \
-                            (Latent_plate[2] - Latent_plate[0] < options.plate_width[1]):
+                        bbox_info_idx['plate_info']['roi'] = Latent_plate
 
-                            bbox_info_idx['plate_info']['roi'] = Latent_plate
-                            
-                            # lincense plate reader
-                            # crop
-                            x1 = min(max(0, int(bbox_info_idx['plate_info']['roi'][0] - options.lpr_ocr_width_expand_ratio * (bbox_info_idx['plate_info']['roi'][2] - bbox_info_idx['plate_info']['roi'][0]))), options.image_width)
-                            x2 = min(max(0, int(bbox_info_idx['plate_info']['roi'][2] + options.lpr_ocr_width_expand_ratio * (bbox_info_idx['plate_info']['roi'][2] - bbox_info_idx['plate_info']['roi'][0]))), options.image_width)
-                            y1 = min(max(0, int(bbox_info_idx['plate_info']['roi'][1])), options.image_height)
-                            y2 = min(max(0, int(bbox_info_idx['plate_info']['roi'][3])), options.image_height)
-                            # crop_img = img[bbox_info_idx['plate_info']['roi'][1]:bbox_info_idx['plate_info']['roi'][3], bbox_info_idx['plate_info']['roi'][0]:bbox_info_idx['plate_info']['roi'][2]]
-                            crop_img = img[y1: y2, x1: x2]
+        # 更新 plate info
+        for idx in range(len(bbox_info_list)):
+            bbox_info_idx = bbox_info_list[idx]
 
-                            # seg
-                            seg_bbox, seg_info = self.lpr_seg.run(crop_img)
+            if self.demo_type == "lpr":
+                if self.country_type == "china":
+                    
+                    # lincense plate reader
+                    # crop
+                    x1 = min(max(0, int(bbox_info_idx['plate_info']['roi'][0] - options.lpr_ocr_width_expand_ratio * (bbox_info_idx['plate_info']['roi'][2] - bbox_info_idx['plate_info']['roi'][0]))), options.image_width)
+                    x2 = min(max(0, int(bbox_info_idx['plate_info']['roi'][2] + options.lpr_ocr_width_expand_ratio * (bbox_info_idx['plate_info']['roi'][2] - bbox_info_idx['plate_info']['roi'][0]))), options.image_width)
+                    y1 = min(max(0, int(bbox_info_idx['plate_info']['roi'][1])), options.image_height)
+                    y2 = min(max(0, int(bbox_info_idx['plate_info']['roi'][3])), options.image_height)
+                    crop_img = img[y1: y2, x1: x2]
 
-                            # ocr
-                            # gray_img
-                            if options.lpr_paddle_bool: 
-                                plate_ocr, plate_scors_list = self.lpr.run(crop_img)
-                            else:
-                                gray_crop_img = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
-                                plate_ocr, plate_scors_list = self.lpr.run(gray_crop_img)
-                            
+                    # seg
+                    seg_bbox, seg_info = self.lpr_seg.run(crop_img)
 
-                            bbox_info_idx['plate_info']['num'] = plate_ocr
-                            bbox_info_idx['plate_info']['score'] = np.array(plate_scors_list).mean()
-                            bbox_info_idx['plate_info']['color'] = seg_info['color']
+                    # ocr
+                    # gray_img
+                    if options.lpr_paddle_bool: 
+                        plate_ocr, plate_scors_list = self.lpr.run(crop_img)
+                    else:
+                        gray_crop_img = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
+                        plate_ocr, plate_scors_list = self.lpr.run(gray_crop_img)
+                    
+                    bbox_info_idx['plate_info']['num'] = plate_ocr
+                    bbox_info_idx['plate_info']['score'] = np.array(plate_scors_list).mean()
+                    bbox_info_idx['plate_info']['color'] = seg_info['color']
+                
+                elif self.country_type == "brazil":
+
+                    # lincense plate reader
+                    # crop
+                    x1 = min(max(0, int(bbox_info_idx['plate_info']['roi'][0] - options.lpr_ocr_width_expand_ratio * (bbox_info_idx['plate_info']['roi'][2] - bbox_info_idx['plate_info']['roi'][0]))), options.image_width)
+                    x2 = min(max(0, int(bbox_info_idx['plate_info']['roi'][2] + options.lpr_ocr_width_expand_ratio * (bbox_info_idx['plate_info']['roi'][2] - bbox_info_idx['plate_info']['roi'][0]))), options.image_width)
+                    y1 = min(max(0, int(bbox_info_idx['plate_info']['roi'][1])), options.image_height)
+                    y2 = min(max(0, int(bbox_info_idx['plate_info']['roi'][3])), options.image_height)
+                    crop_img = img[y1: y2, x1: x2]
+                    crop_img_aspect = crop_img.shape[1] / crop_img.shape[0]
+
+                    # 'Single'
+                    if crop_img_aspect > options.lpr_ocr_column_threshold:
+                        
+                        gray_crop_img = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
+
+                        ocr_kind = ""
+                        ocr_num, ocr_score = self.lpr.run(gray_crop_img)
+
+                    # 'Double'
+                    else:
+                        gray_crop_img = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
+                        img_h = gray_crop_img.shape[0]
+
+                        ocr_kind, ocr_score_kind = self.lpr_first_line.run(gray_crop_img)
+                        ocr_id, ocr_score_id = self.lpr_second_line.run(gray_crop_img)
+
+                        ocr_num = ocr_id
+                        ocr_score = ocr_score_kind
+                        ocr_score.extend(ocr_score_id)
+
+                    bbox_info_idx['plate_info']['kind'] = ocr_kind
+                    bbox_info_idx['plate_info']['num'] = ocr_num
+                    bbox_info_idx['plate_info']['column'] = 'Single' if crop_img_aspect > options.lpr_ocr_column_threshold else 'Double'
+                    bbox_info_idx['plate_info']['score'] = np.array(ocr_score).mean() if len(ocr_score) else 0.0
 
         return bbox_info_list
 
     def update_face_info( self, img, bboxes, bbox_info_list ):
 
-        # 遍历单帧结果
+        # 更新 face info
         for idx in range(len(bbox_info_list)):
             bbox_info_idx = bbox_info_list[idx]
 
@@ -363,11 +417,9 @@ class CaptureApi():
         # update
         pop_key_list = []
         for key, bbox_state_idy in self.params_dict['bbox_state_container'].items():
-          
             # pop
             if bbox_state_idy['state']['disappear_frame_num'] > options.bbox_state_container_length:
                 pop_key_list.append(key)
-            
             bbox_state_idy['state']['disappear_frame_num'] += 1
         
         # pop
@@ -395,6 +447,8 @@ class CaptureApi():
                         bbox_state_idy['plate_info']['roi'] = bbox_info_idx['plate_info']['roi'] 
                         if options.sort_type == "car":
                             new_stable_loc = options.update_state_stable_loc_alpha * bbox_state_idy['state']['stable_loc'] +  (1 - options.update_state_stable_loc_alpha) * bbox_info_idx['car_info']['roi']
+                        elif options.sort_type == "plate":
+                            new_stable_loc = options.update_state_stable_loc_alpha * bbox_state_idy['state']['stable_loc'] +  (1 - options.update_state_stable_loc_alpha) * bbox_info_idx['plate_info']['roi']
                     elif self.demo_type == "face":
                         bbox_state_idy['face_info']['roi'] = bbox_info_idx['face_info']['roi'] 
                         new_stable_loc = options.update_state_stable_loc_alpha * bbox_state_idy['state']['stable_loc'] +  (1 - options.update_state_stable_loc_alpha) * bbox_info_idx['face_info']['roi']
@@ -445,24 +499,59 @@ class CaptureApi():
 
                     if self.demo_type == "lpr":
                         # 更新车牌识别有效帧数
+                        lpr_width =  bbox_state_idy['plate_info']['roi'][2] - bbox_state_idy['plate_info']['roi'][0]
+                        lpr_height =  bbox_state_idy['plate_info']['roi'][3] - bbox_state_idy['plate_info']['roi'][1]
+
                         bool_add_lpr = False
                         if bbox_info_idx['plate_info']['num'] != '' and \
                             bbox_state_idy['plate_info']['roi'][0] > options.ROI_Left_threshold and bbox_state_idy['plate_info']['roi'][2] < options.ROI_Right_threshold and \
                             bbox_state_idy['plate_info']['roi'][1] > options.ROI_Up_threshold and bbox_state_idy['plate_info']['roi'][3] < options.ROI_Down_threshold:
-                            bool_add_lpr = True
-                        
+
+                            if self.country_type == "china":
+
+                                # 按照车牌宽高过滤车牌
+                                if (lpr_height > options.plate_height[0]) and \
+                                    (lpr_height < options.plate_height[1]) and \
+                                    (lpr_width > options.plate_width[0]) and \
+                                    (lpr_width < options.plate_width[1]):
+                                    bool_add_lpr = True
+
+                            elif self.country_type == "brazil":
+
+                                if bbox_info_idx['plate_info']['column'] == 'Single' and \
+                                    lpr_width >= options.plate_signel_width[0] and \
+                                    lpr_width < options.plate_signel_width[1] and \
+                                    lpr_height >= options.plate_signel_height[0] and \
+                                    lpr_height < options.plate_signel_height[1]:
+                                    bool_add_lpr = True
+
+                                if bbox_info_idx['plate_info']['column'] == 'Double' and \
+                                    lpr_width >= options.plate_double_width[0] and \
+                                    lpr_width < options.plate_double_width[1] and \
+                                    lpr_height >= options.plate_double_height[0] and \
+                                    lpr_height < options.plate_double_height[1]:
+                                    bool_add_lpr = True
+
                         if bool_add_lpr:
                             bbox_state_idy['state']['obj_num'] += 1                   
                             bbox_state_idy['state']['obj_disappear_num'] = 0
+                            bbox_state_idy['state']['lpr_kind_list'].append(bbox_info_idx['plate_info']['kind'])
                             bbox_state_idy['state']['lpr_num_list'].append(bbox_info_idx['plate_info']['num'])
                             bbox_state_idy['state']['lpr_score_list'].append(bbox_info_idx['plate_info']['score'])
+                            bbox_state_idy['state']['lpr_column_list'].append(bbox_info_idx['plate_info']['column'])
                             bbox_state_idy['state']['lpr_color_list'].append(bbox_info_idx['plate_info']['color'])
 
                             if len( bbox_state_idy['state']['lpr_num_list'] ) > options.lpr_ocr_state_container_length:
                                 bbox_state_idy['state']['lpr_num_list'].pop(0)
 
+                            if len( bbox_state_idy['state']['lpr_kind_list'] ) > options.lpr_ocr_state_container_length:
+                                bbox_state_idy['state']['lpr_kind_list'].pop(0)
+
                             if len( bbox_state_idy['state']['lpr_score_list'] ) > options.lpr_ocr_state_container_length:
                                 bbox_state_idy['state']['lpr_score_list'].pop(0)
+
+                            if len( bbox_state_idy['state']['lpr_column_list'] ) > options.lpr_city_state_container_length:
+                                bbox_state_idy['state']['lpr_column_list'].pop(0)
 
                             if len( bbox_state_idy['state']['lpr_color_list'] ) > options.lpr_city_state_container_length:
                                 bbox_state_idy['state']['lpr_color_list'].pop(0)
@@ -509,26 +598,52 @@ class CaptureApi():
                     bbox_state_idy['plate_info']['roi'] = bbox_info_idx['plate_info']['roi']
                     if options.sort_type == "car":
                         bbox_state_idy['state']['stable_loc'] = bbox_info_idx['car_info']['roi']
+                    elif options.sort_type == "plate":
+                        bbox_state_idy['state']['stable_loc'] = bbox_info_idx['plate_info']['roi']
 
                     # 更新车牌识别有效帧数
+                    lpr_width =  bbox_state_idy['plate_info']['roi'][2] - bbox_state_idy['plate_info']['roi'][0]
+                    lpr_height =  bbox_state_idy['plate_info']['roi'][3] - bbox_state_idy['plate_info']['roi'][1]
+
                     bool_add_lpr = False
                     if bbox_info_idx['plate_info']['num'] != '' and \
                         bbox_state_idy['plate_info']['roi'][0] > options.ROI_Left_threshold and bbox_state_idy['plate_info']['roi'][2] < options.ROI_Right_threshold and \
                         bbox_state_idy['plate_info']['roi'][1] > options.ROI_Up_threshold and bbox_state_idy['plate_info']['roi'][3] < options.ROI_Down_threshold:
-                        bool_add_lpr = True
+    
+                        if self.country_type == "china":
+
+                            # 按照车牌宽高过滤车牌
+                            if (lpr_height > options.plate_height[0]) and \
+                                (lpr_height < options.plate_height[1]) and \
+                                (lpr_width > options.plate_width[0]) and \
+                                (lpr_width < options.plate_width[1]):
+                                bool_add_lpr = True
+
+                        elif self.country_type == "brazil":
+
+                            if bbox_info_idx['plate_info']['column'] == 'Single' and \
+                                lpr_width >= options.plate_signel_width[0] and \
+                                lpr_width < options.plate_signel_width[1] and \
+                                lpr_height >= options.plate_signel_height[0] and \
+                                lpr_height < options.plate_signel_height[1]:
+                                bool_add_lpr = True
+
+                            if bbox_info_idx['plate_info']['column'] == 'Double' and \
+                                lpr_width >= options.plate_double_width[0] and \
+                                lpr_width < options.plate_double_width[1] and \
+                                lpr_height >= options.plate_double_height[0] and \
+                                lpr_height < options.plate_double_height[1]:
+                                bool_add_lpr = True
                     
                     if bool_add_lpr:
                         bbox_state_idy['state']['obj_num'] += 1
                         bbox_state_idy['state']['obj_disappear_num'] = 0
+                        bbox_state_idy['state']['lpr_kind_list'].append(bbox_info_idx['plate_info']['kind'])
                         bbox_state_idy['state']['lpr_num_list'].append(bbox_info_idx['plate_info']['num'])
                         bbox_state_idy['state']['lpr_score_list'].append(bbox_info_idx['plate_info']['score'])
+                        bbox_state_idy['state']['lpr_column_list'].append(bbox_info_idx['plate_info']['column'])
                         bbox_state_idy['state']['lpr_color_list'].append(bbox_info_idx['plate_info']['color'])
-
-                        if len( bbox_state_idy['state']['lpr_num_list'] ) > options.lpr_face_state_container_length:
-                            bbox_state_idy['state']['lpr_num_list'].pop(0)
-                        if len( bbox_state_idy['state']['lpr_color_list'] ) > options.lpr_face_state_container_length:
-                            bbox_state_idy['state']['lpr_color_list'].pop(0)
-
+                        
                     else:
                         bbox_state_idy['state']['obj_disappear_num'] += 1
 
@@ -608,7 +723,8 @@ class CaptureApi():
             outtime_flage_01 = False
             outtime_flage_02 = False
             report_flage = False
-            
+            outtime_flage_double_01 = False
+
             if bbox_state_idy['state']['obj_disappear_num'] == 0:
                 
                 if self.demo_type == "lpr":
@@ -648,14 +764,19 @@ class CaptureApi():
                         bbox_state_idy['state']['obj_num'] > options.capture_info_frame_threshold:
                         right_flage = True
 
-                # 如果车辆在视野内，超过 50 帧
+                # 如果车辆在视野内，超过 25 帧
                 if bbox_state_idy['state']['obj_num'] > options.capture_outtime_frame_threshold_01:
                     outtime_flage_01 = True
 
                 # 如果车辆在视野内，超过 150 帧
                 if bbox_state_idy['state']['obj_num'] > options.capture_outtime_frame_threshold_02:
                     outtime_flage_02 = True
-                         
+
+                # 如果摩托车在视野内，超过 7 帧
+                if self.country_type == "brazil" and bbox_state_idy['state']['obj_num'] > options.capture_outtime_frame_threshold_double_01 and \
+                    sum(np.array(bbox_state_idy['state']['lpr_column_list'])== 'Double') >= int(options.capture_outtime_frame_threshold_double_01 / 2.0) :
+                    outtime_flage_double_01 = True
+
             # 更新 capture_dict 抓拍字典
             capture_dict = load_objectinfo()
             capture_dict['track_id'] = bbox_state_idy['track_id']
@@ -689,6 +810,11 @@ class CaptureApi():
                 bbox_state_idy['capture']['outtime_flage_02'] = True
                 report_flage = True
                 capture_dict['capture']['flage'] = 'outtime_flage_02'
+
+            if outtime_flage_double_01 and not bbox_state_idy['capture']['outtime_flage_double_01']:
+                bbox_state_idy['capture']['outtime_flage_double_01'] = True
+                report_flage = True
+                capture_dict['capture']['flage'] = 'outtime_flage_double_01'
 
             if report_flage:
                 
@@ -728,45 +854,99 @@ class CaptureApi():
                 if bbox_state_idy['track_id'] == capture_id_idx:
                     
                     if self.demo_type == "lpr":
-                        # capture_flage
+                        
+                        lpr_kind_np = np.array(bbox_state_idy['state']['lpr_kind_list'])
                         lpr_num_np = np.array(bbox_state_idy['state']['lpr_num_list'])
                         lpr_score_np = np.array(bbox_state_idy['state']['lpr_score_list'])
                         lpr_color_np = np.array(bbox_state_idy['state']['lpr_color_list'])
+                        lpr_column_np = np.array(bbox_state_idy['state']['lpr_column_list'])
                         lpr_color_np = lpr_color_np[lpr_color_np != "none"]
 
                         # 获得抓拍序列
                         if len(lpr_num_np[lpr_score_np > options.capture_lpr_score_threshold]):
-                            capture_lpr_num, capture_lpr_num_frame = Counter(list(lpr_num_np[lpr_score_np > options.capture_lpr_score_threshold])).most_common(1)[0]
+                            
+                            if len(list(lpr_kind_np)):
+                                capture_lpr_kind, capture_lpr_kind_frame = Counter(list(lpr_kind_np[lpr_score_np > options.capture_lpr_score_threshold])).most_common(1)[0]
+                            if len(list(lpr_num_np)):
+                                capture_lpr_num, capture_lpr_num_frame = Counter(list(lpr_num_np[lpr_score_np > options.capture_lpr_score_threshold])).most_common(1)[0]
+                            if len(list(lpr_color_np)):
+                                capture_lpr_color, capture_lpr_color_frame = Counter(list(lpr_color_np)).most_common(1)[0]
+                            if len(list(lpr_column_np)):
+                                capture_lpr_column, capture_lpr_column_frame = Counter(list(lpr_column_np)).most_common(1)[0]
+
                             capture_from_container_list = self.find_capture_plate(bbox_state_idy['track_id'], capture_lpr_num)
 
-                            if capture_lpr_num_frame >= options.capture_lpr_num_frame_threshold and \
-                                len(capture_from_container_list) and \
-                                capture_lpr_num not in self.params_dict['capture_res_container']:
+                            if self.country_type == "china":
+                                if capture_lpr_num_frame >= options.capture_lpr_num_frame_threshold and \
+                                    len(capture_from_container_list) and \
+                                    capture_lpr_num not in self.params_dict['capture_res_container']:
 
-                                capture_res_dict['track_id'] = capture_id_idx
-                                capture_res_dict['capture']['flage'] = capture_dict_idy['capture']['flage']
-                                capture_res_dict['capture']['img_bbox_info_list'] = capture_from_container_list
-                                capture_res_dict['capture']['capture_bool'] = True
-
-                                # num
-                                capture_res_dict['plate_info']['num'] = capture_lpr_num
-                                
-                                # color
-                                if lpr_color_np.shape[0]:
-                                    capture_lpr_color, capture_lpr_color_frame = Counter(list(lpr_color_np)).most_common(1)[0]
+                                    capture_res_dict['track_id'] = capture_id_idx
+                                    capture_res_dict['capture']['flage'] = capture_dict_idy['capture']['flage']
+                                    capture_res_dict['capture']['img_bbox_info_list'] = capture_from_container_list
+                                    capture_res_dict['capture']['capture_bool'] = True
+                                    capture_res_dict['plate_info']['num'] = capture_lpr_num
+                                    
+                                    # color
+                                    capture_res_dict['plate_info']['color'] = "none"
                                     if capture_lpr_color_frame >= options.capture_lpr_color_frame_threshold:
                                         capture_res_dict['plate_info']['color'] = capture_lpr_color
-                                    else:
-                                        capture_res_dict['plate_info']['color'] = "none"
-                                else:
-                                    capture_res_dict['plate_info']['color'] = "none"                           
-                                
-                                self.params_dict['capture_res_container'][capture_res_dict['plate_info']['num']] = capture_res_dict
+                                               
+                                    self.params_dict['capture_res_container'][capture_res_dict['plate_info']['num']] = capture_res_dict
 
-                                # 信息同步
-                                capture_dict_idy['capture']['capture_bool'] = capture_res_dict['capture']['capture_bool']
-                                capture_dict_idy['plate_info']['num'] = capture_res_dict['plate_info']['num']
-                                capture_dict_idy['plate_info']['color'] = capture_res_dict['plate_info']['color']
+                                    # 信息同步
+                                    capture_dict_idy['capture']['capture_bool'] = capture_res_dict['capture']['capture_bool']
+                                    capture_dict_idy['plate_info']['num'] = capture_res_dict['plate_info']['num']
+                                    capture_dict_idy['plate_info']['color'] = capture_res_dict['plate_info']['color']
+
+                            elif self.country_type == "brazil":
+
+                                # 普通车牌抓拍
+                                if capture_lpr_column == 'Single':
+                                    if capture_lpr_num_frame >= options.capture_lpr_num_frame_threshold and \
+                                        len(capture_from_container_list) and \
+                                        capture_lpr_num not in self.params_dict['capture_res_container'] and \
+                                        capture_lpr_num != "none":
+
+                                        capture_res_dict['track_id'] = capture_id_idx
+                                        capture_res_dict['capture']['flage'] = capture_dict_idy['capture']['flage']
+                                        capture_res_dict['capture']['img_bbox_info_list'] = capture_from_container_list
+                                        capture_res_dict['capture']['capture_bool'] = True
+                                        capture_res_dict['plate_info']['num'] = capture_lpr_num
+                                        capture_res_dict['plate_info']['column'] = capture_lpr_column
+                                        
+                                        self.params_dict['capture_res_container'][capture_res_dict['plate_info']['num']] = capture_res_dict
+
+                                        # 信息同步
+                                        capture_dict_idy['capture']['capture_bool'] = capture_res_dict['capture']['capture_bool']
+                                        capture_dict_idy['plate_info']['kind'] = capture_res_dict['plate_info']['kind']
+                                        capture_dict_idy['plate_info']['num'] = capture_res_dict['plate_info']['num']
+                                        capture_dict_idy['plate_info']['color'] = capture_res_dict['plate_info']['color']
+                                        capture_dict_idy['plate_info']['column'] = capture_res_dict['plate_info']['column']
+                                # 摩托车牌抓拍
+                                else:
+                                    if capture_lpr_kind_frame >= options.capture_lpr_num_frame_threshold and \
+                                        capture_lpr_num_frame >= options.capture_lpr_num_frame_threshold and \
+                                        len(capture_from_container_list) and \
+                                        capture_lpr_num not in self.params_dict['capture_res_container'] and \
+                                        len(capture_lpr_kind) == 3 and len(capture_lpr_num) == 4 and \
+                                        capture_lpr_num != "none":
+
+                                        capture_res_dict['track_id'] = capture_id_idx
+                                        capture_res_dict['capture']['flage'] = capture_dict_idy['capture']['flage']
+                                        capture_res_dict['capture']['img_bbox_info_list'] = capture_from_container_list
+                                        capture_res_dict['capture']['capture_bool'] = True
+                                        capture_res_dict['plate_info']['num'] = capture_lpr_kind + capture_lpr_num
+                                        capture_res_dict['plate_info']['column'] = capture_lpr_column
+
+                                        self.params_dict['capture_res_container'][capture_res_dict['plate_info']['num']] = capture_res_dict
+
+                                        # 信息同步
+                                        capture_dict_idy['capture']['capture_bool'] = capture_res_dict['capture']['capture_bool']
+                                        capture_dict_idy['plate_info']['kind'] = capture_res_dict['plate_info']['kind']
+                                        capture_dict_idy['plate_info']['num'] = capture_res_dict['plate_info']['num']
+                                        capture_dict_idy['plate_info']['color'] = capture_res_dict['plate_info']['color']
+                                        capture_dict_idy['plate_info']['column'] = capture_res_dict['plate_info']['column']
 
                     elif self.demo_type == "face":
 
