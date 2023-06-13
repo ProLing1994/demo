@@ -6,7 +6,7 @@ kind_num_labels = ['-', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'A', '
 
 status_name_list = ['none', 'n', 'f', 'o']              # n 表示车牌能看清, f 表示车牌因反光或太小等因素模糊而不能识别文字, o 表示车牌遮挡车牌不全的情况
 column_name_list = ['none', 'double', 'single']
-color_name_list = ['none', 'red', 'green', 'yellow', 'blue', 'infrared', 'black', 'orange', 'brown']
+color_name_list = ['none', 'red', 'green', 'yellow', 'blue', 'white', 'infrared', 'black', 'orange', 'brown']
 country_name_list = ['none', 'uae', 'ksa', 'oman', 'qatar', 'bahrain', 'kuwait']
 country_f_name_list = ['none', 'uae_f', 'ksa_f', 'oman_f', 'qatar_f', 'bahrain_F', 'kuwait_f']
 city_name_list = ['none', 'ad', 'adudhabi', 'dubai', 'ajman', 'sharjah', 'shj', 'rak', 'ummalqaiwain', 'fujairah']   
@@ -128,9 +128,10 @@ def json_load_object_plate_color(cell):
         elif load_plate_color == 'orange':
             plate_color = color_name_list[8]
         elif load_plate_color == 'brown':
-            plate_color = color_name_list[8]
+            plate_color = color_name_list[9]
+        # plate_color == 'unknown'：默认为白色
         elif load_plate_color == 'unknown':
-            plate_color = color_name_list[0]
+            plate_color = color_name_list[5]
         else:
             print()
     
@@ -227,6 +228,8 @@ def json_load_object_plate_num(cell):
     elif 'attributes' in cell and len(cell["attributes"]):
         for json_attributes in cell["attributes"]:
             if json_attributes["name"] == "number":
+                plate_num = json_attributes["value"]
+            elif json_attributes["name"] == "id":
                 plate_num = json_attributes["value"]
     else:
         pass

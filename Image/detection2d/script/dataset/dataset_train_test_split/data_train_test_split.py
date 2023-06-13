@@ -81,7 +81,32 @@ if __name__ == "__main__":
     # 数据集: RM_C27_detection
     # args.input_dir = "/yuanhuan/data/image/RM_C27_detection/zd_c27_2020_0209_1125/"   # trainval: 133923, train: 120530, val: 13393, test: 14881, all: 148804
     # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/Brazil/Brazil/Brazil_all/"     # trainval: 73503, train: 66152, val: 7351, test: 8167, all: 81670
-    args.input_dir = "/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_new_style/shate_20230308/"     # trainval: 12188, train: 10969, val: 1219, test: 1355, all: 13543
+    # args.input_dir = "/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_new_style/shate_20230308/"     # trainval: 12188, train: 10969, val: 1219, test: 1355, all: 13543
+
+    # 数据集: RM_R151_detection
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53_AB_WA_20230426_FN_detline_merge_test/"    # trainval: 360, train: 324, val: 36, test: 40, all: 400
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53_ITA_WA_20230324_detonly_merge/"    # trainval: 323, train: 290, val: 33, test: 36, all: 359
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53_NLD_WA_20230307_detonly_merge/"    # trainval: 2053, train: 1847, val: 206, test: 229, all: 2282
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53AB_WA_20221215_detonly_merge_plate/"    # trainval: 8763, train: 7886, val: 877, test: 974, all: 9737
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53AB_WA_20221216_detonly_merge/"    # trainval: 4325, train: 3892, val: 433, test: 481, all: 4806
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53AB_WA_20221227_detonly_merge/"    # trainval: 1865, train: 1678, val: 187, test: 208, all: 2073
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53_20220630_WA/"    # trainval: 1053, train: 947, val: 106, test: 117, all: 1170
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53_20220701_WA/"    # trainval: 243, train: 218, val: 25, test: 28, all: 271
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53_20220707_WA/"    # trainval: 550, train: 495, val: 55, test: 62, all: 612
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53_20220729_WA/"    # trainval: 1242, train: 1117, val: 125, test: 138, all: 1380
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53_AB_WA_20230412_FP_detonly_merge/"    # trainval: 962, train: 865, val: 97, test: 107, all: 1069
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53_AB_WA_20230426_FN_detline_merge/"    # trainval: 949, train: 854, val: 95, test: 106, all: 1055
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53_AB_WA_20230525_detline_merge/"    # trainval: 1195, train: 1075, val: 120, test: 133, all: 1328
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53_CHN_FW_20230426_FN_detline_merge/"    # trainval: 2509, train: 2258, val: 251, test: 279, all: 2788
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53_CHN_WA_20230426_FN_detline_merge/"    # trainval: 2019, train: 1817, val: 202, test: 225, all: 2244
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53_CHN_WA_20230525_detline_merge/"    # trainval: 1548, train: 1393, val: 155, test: 173, all: 1721
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53_GBR_WA_20230324_polyline_merge/"    # trainval: 980, train: 882, val: 98, test: 109, all: 1089
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53_NLD_WA_20230324_daetonly_merge/"    # trainval: 47, train: 42, val: 5, test: 6, all: 53
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53AB_20221214_WA/"    # trainval: 1053, train: 947, val: 106, test: 117, all: 1170
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53AB_WA_20221214_detonly_merge_extra_p/"    # trainval: 1580, train: 1422, val: 158, test: 176, all: 1756
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53AB_WA_20221214_detonly_merge_extra_p0/"    # trainval: 1082, train: 973, val: 109, test: 121, all: 1203
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53AB_WA_20221227_detonly_empty_merge/"    # trainval: 206, train: 185, val: 21, test: 23, all: 229
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53Germany_WA_20230124_detonly_merge_p/"    # trainval: 1466, train: 1319, val: 147, test: 163, all: 1629
 
     # 数据集: RM_BSD
     # args.input_dir = "/yuanhuan/data/image/RM_BSD/bsd_20220425_20220512/"   # trainval: 13317, train: 11985, val: 1332, test: 1480, all: 14797

@@ -33,7 +33,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/Brazil/Brazil/Brazil_all/"
+    args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53AB_WA_20221216_detonly_merge/"
     args.test_file = args.input_dir + "/ImageSets/Main/test.txt"
 
     args.jpg_dir =  args.input_dir + "JPEGImages/"

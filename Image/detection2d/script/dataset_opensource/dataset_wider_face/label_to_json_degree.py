@@ -129,7 +129,7 @@ def tranform(args):
                         cv2.line(img, (int(left_intersect_x), int(left_intersect_y)), (int(up_donw_intersect_x), int(up_donw_intersect_y)), (0, 0, 255), 2)
                         cv2.line(img, (int(right_intersect_x), int(right_intersect_y)), (int(up_donw_intersect_x), int(up_donw_intersect_y)), (0, 0, 255), 2)
                         cv2.circle(img, (int(landmark_list[4]), int(landmark_list[5])), 3, (0, 0, 255), 4)
-                        img = cv2.putText(img, "{:.2f}".format( degree ), (int(landmark_list[4] + 10), int(landmark_list[5] - 10)), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 2)
+                        img = cv2.putText(img, "{:.2f}_{}".format( degree, int(bool(degree < 0.4)) ), (int(landmark_list[4] + 10), int(landmark_list[5] - 10)), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 2)
             else:
 
                 w = label[2]
