@@ -14,6 +14,7 @@ def load_objectinfo():
     objectinfo['plate_info']['roi'] = []
     objectinfo['plate_info']['kind'] = ''
     objectinfo['plate_info']['num'] = ''
+    objectinfo['plate_info']['column'] = 'none'
     objectinfo['plate_info']['color'] = 'none'
     objectinfo['plate_info']['score'] = 0.0
 
@@ -21,7 +22,8 @@ def load_objectinfo():
     objectinfo['face_info'] = {}
     objectinfo['face_info']['roi'] = []
     objectinfo['face_info']['landmark'] = []
-    objectinfo['face_info']['landmark_degree'] = []
+    objectinfo['face_info']['landmark_degree'] = 0.0
+    objectinfo['face_info']['landmark_positive_cls'] = 0
 
     # state
     objectinfo['state'] = {}
@@ -40,10 +42,13 @@ def load_objectinfo():
 
     objectinfo['state']['obj_num'] = 0                                      # 车牌识别帧数
     objectinfo['state']['obj_disappear_num'] = 0                            # 车牌消失帧数
+    objectinfo['state']['lpr_kind_list'] = []                               # 车牌识别结果（多帧）
     objectinfo['state']['lpr_num_list'] = []                                # 车牌识别结果（多帧）
     objectinfo['state']['lpr_score_list'] = []                              # 车牌识别结果得分（多帧）
+    objectinfo['state']['lpr_column_list'] = []                             # 车牌识别结果得分（多帧）
     objectinfo['state']['lpr_color_list'] = []                              # 车牌识别结果得分（多帧）
     objectinfo['state']['face_landmark_degree_list'] = []                   # 人脸角度识别结果得分（多帧）
+    objectinfo['state']['face_landmark_positive_cls_list'] = []             # 人脸角度识别结果得分（多帧）
 
     # capture
     objectinfo['capture'] = {}
@@ -53,6 +58,7 @@ def load_objectinfo():
     objectinfo['capture']['right_report_flage'] = False                      # 抓拍标志位
     objectinfo['capture']['outtime_flage_01'] = False                        # 抓拍标志位
     objectinfo['capture']['outtime_flage_02'] = False                        # 抓拍标志位
+    objectinfo['capture']['outtime_flage_double_01'] = False                 # 抓拍标志位
 
     objectinfo['capture']['flage'] = ''                                      # 抓拍标志信息
     objectinfo['capture']['capture_frame_num'] = 0                           # 抓拍帧数

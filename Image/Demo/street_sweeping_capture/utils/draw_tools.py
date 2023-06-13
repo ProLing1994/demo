@@ -110,7 +110,7 @@ class DrawApi():
 
             if self.demo_type == "lpr":
 
-                text = "抓拍结果：{}_{}".format( capture_res_idy['plate_info']['num'], capture_res_idy['plate_info']['color'] )
+                text = "抓拍结果：{}_{}_{}".format( capture_res_idy['plate_info']['num'], capture_res_idy['plate_info']['column'], capture_res_idy['plate_info']['color'] )
                 text_size = cv2.getTextSize(text, 0, 3, 2)
                 cv2.rectangle(img, (x, y), (x + int(text_size[0][0] * 0.8), y + text_size[0][1] + text_size[1]), (255,255,255), -1)
                 # img = NiceBox(img, (x, y, x + text_size[0][0] + 1 * text_size[1], y + text_size[0][1] + text_size[1]), (255,255,255), thickness=5)
@@ -164,7 +164,7 @@ class DrawApi():
             if self.demo_type == "lpr":
                 # car
                 bbox_info_idx['car_info']['roi'] = [int(b + 0.5) for b in bbox_info_idx['car_info']['roi'][:4]]
-                if not capture_bool:
+                if not capture_bool and len(bbox_info_idx['car_info']['roi']):
                     img = cv_plot_rectangle(img, bbox_info_idx['car_info']['roi'], mode=mode, color=color_dict["car"])
                     # img = NiceBox(img, bbox_info_idx['car_info']['roi'], color_dict["car"], thickness=3, mask=False)
 
@@ -173,7 +173,7 @@ class DrawApi():
 
                     img = cv2.putText(img, "{}_{}_{}_{}_{:.2f}_{:.2f}".format( bbox_info_idx['state']['up_down_state'], bbox_info_idx['state']['up_down_state_frame_num'], bbox_info_idx['state']['left_right_state'], bbox_info_idx['state']['left_right_state_frame_num'], bbox_info_idx['state']['up_down_speed'], bbox_info_idx['state']['left_right_speed'] ), (bbox_info_idx['car_info']['roi'][0], bbox_info_idx['car_info']['roi'][3] - 10), 
                                         cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["car"], 2)
-                else:
+                elif len(bbox_info_idx['car_info']['roi']):
                     img = cv_plot_rectangle(img, bbox_info_idx['car_info']['roi'], mode=mode, color=color_dict["car_capture"])
                     # img = NiceBox(img, bbox_info_idx['car_info']['roi'], color_dict["car_capture"], thickness=3, mask=False)
 
@@ -187,7 +187,7 @@ class DrawApi():
                 if len(bbox_info_idx['plate_info']['roi']):
                     
                     bbox_info_idx['plate_info']['roi'] = [int(b + 0.5) for b in bbox_info_idx['plate_info']['roi'][:4]]
-                    text = "{}_{}_{:.2f}".format( bbox_info_idx['plate_info']['num'], bbox_info_idx['plate_info']['color'], bbox_info_idx['plate_info']['score'])
+                    text = "{}{}_{}_{}_{:.2f}".format( bbox_info_idx['plate_info']['kind'], bbox_info_idx['plate_info']['num'], bbox_info_idx['plate_info']['column'], bbox_info_idx['plate_info']['color'], bbox_info_idx['plate_info']['score'])
                     text_size = cv2.getTextSize(text, 0, 3, 2)
                     if not capture_bool:
                         img = cv_plot_rectangle(img, bbox_info_idx['plate_info']['roi'], mode=mode, color=color_dict["plate"], thickness=3)
@@ -213,7 +213,7 @@ class DrawApi():
                     # img = cv_plot_rectangle(img, bbox_info_idx['face_info']['roi'], mode=mode, color=color_dict["face"])
                     img = NiceBox(img, bbox_info_idx['face_info']['roi'], color_dict["face"], thickness=3, mask=False)
 
-                    img = cv2.putText(img, "{}_{}_{:.2f}".format( bbox_info_idx['track_id'], bbox_info_idx['state']['frame_num'], bbox_info_idx['face_info']['landmark_degree']), (bbox_info_idx['face_info']['roi'][0], bbox_info_idx['face_info']['roi'][1] - 10), 
+                    img = cv2.putText(img, "{}_{}_{:.2f}_{}".format( bbox_info_idx['track_id'], bbox_info_idx['state']['frame_num'], bbox_info_idx['face_info']['landmark_degree'], bbox_info_idx['face_info']['landmark_positive_cls']), (bbox_info_idx['face_info']['roi'][0], bbox_info_idx['face_info']['roi'][1] - 10), 
                                         cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["face"], 2)
 
                     # img = cv2.putText(img, "{}_{}_{}_{}_{:.2f}_{:.2f}".format( bbox_info_idx['state']['up_down_state'], bbox_info_idx['state']['up_down_state_frame_num'], bbox_info_idx['state']['left_right_state'], bbox_info_idx['state']['left_right_state_frame_num'], bbox_info_idx['state']['up_down_speed'], bbox_info_idx['state']['left_right_speed'] ), (bbox_info_idx['face_info']['roi'][0], bbox_info_idx['face_info']['roi'][3] - 10), 
@@ -222,9 +222,9 @@ class DrawApi():
                     # img = cv_plot_rectangle(img, bbox_info_idx['face_info']['roi'], mode=mode, color=color_dict["face_capture"])
                     img = NiceBox(img, bbox_info_idx['face_info']['roi'], color_dict["face_capture"], thickness=3, mask=False)
                     
-                    img = cv2.putText(img, "{}_{}_{:.2f}".format( bbox_info_idx['track_id'], bbox_info_idx['state']['frame_num'], bbox_info_idx['face_info']['landmark_degree']), (bbox_info_idx['face_info']['roi'][0], bbox_info_idx['face_info']['roi'][1] - 10), 
+                    img = cv2.putText(img, "{}_{}_{:.2f}_{}".format( bbox_info_idx['track_id'], bbox_info_idx['state']['frame_num'], bbox_info_idx['face_info']['landmark_degree'], bbox_info_idx['face_info']['landmark_positive_cls']), (bbox_info_idx['face_info']['roi'][0], bbox_info_idx['face_info']['roi'][1] - 10), 
                                         cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["face_capture"], 2)
-
+                    
                     # img = cv2.putText(img, "{}_{}_{}_{}_{:.2f}_{:.2f}".format( bbox_info_idx['state']['up_down_state'], bbox_info_idx['state']['up_down_state_frame_num'], bbox_info_idx['state']['left_right_state'], bbox_info_idx['state']['left_right_state_frame_num'], bbox_info_idx['state']['up_down_speed'], bbox_info_idx['state']['left_right_speed'] ), (bbox_info_idx['face_info']['roi'][0], bbox_info_idx['face_info']['roi'][3] - 10), 
                     #                     cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["face_capture"], 2)
 
