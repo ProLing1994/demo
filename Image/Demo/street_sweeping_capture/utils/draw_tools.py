@@ -151,6 +151,10 @@ class DrawApi():
 
                 y += 250
 
+                if y + 200 > img.shape[0]:
+                    y = 50 
+                    x += 300
+
         # draw
         for idx in range(len(bbox_info)):
             bbox_info_idx = bbox_info[idx]

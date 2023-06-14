@@ -13,6 +13,8 @@ options = edict()
 # other
 options.image_width = 2592
 options.image_height = 1520
+# options.image_width = 2688
+# options.image_height = 1520
 
 # # 2M
 # options.image_width = 1920
@@ -26,8 +28,8 @@ options.image_height = 1520
 ###########################################
 # gpu
 ###########################################
-options.gpu_bool = True
-# options.gpu_bool = False
+# options.gpu_bool = True
+options.gpu_bool = False
 # options.device = 'cpu'
 options.device = 'cuda:0'
 
@@ -167,8 +169,6 @@ options.china.seg_city_bool = False
 options.china.seg_color_bool = True
 
 # 车牌长宽阈值
-# options.plate_height = [20, 250]    # test
-# options.plate_height = [25, 250]
 options.plate_height = [30, 250]  # zg chn
 options.plate_width = [65, 500]
 

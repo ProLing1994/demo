@@ -34,10 +34,20 @@
 # NAME=yolov6_face_center_offset
 # OUTPUT_DIR=/mnt/huanyuan/model/image/yolov6/yolov6_landmark_wider_face_center_offset_20230525
 
-CONFIG=/mnt/huanyuan/model/image/yolov6/yolov6_landmark_qa_wider_face_20230605/yolov6_qa_face_wider_face_deploy.py
-CHECKPOINT=/mnt/huanyuan/model/image/yolov6/yolov6_landmark_qa_wider_face_20230605/epoch_800_deploy.pth
-NAME=yolov6_face_landmark_qa_20230605_800
-OUTPUT_DIR=/mnt/huanyuan/model/image/yolov6/yolov6_landmark_qa_wider_face_20230605
+# CONFIG=/mnt/huanyuan/model/image/yolov6/yolov6_landmark_qa_wider_face_20230605/yolov6_qa_face_wider_face_deploy.py
+# CHECKPOINT=/mnt/huanyuan/model/image/yolov6/yolov6_landmark_qa_wider_face_20230605/epoch_800_deploy.pth
+# NAME=yolov6_face_landmark_qa_20230605_800
+# OUTPUT_DIR=/mnt/huanyuan/model/image/yolov6/yolov6_landmark_qa_wider_face_20230605
+
+# CONFIG=/mnt/huanyuan/model/image/yolov6/yolov6_landmark_degree_wider_face_20230607/yolov6_face_wider_face_deploy.py
+# CHECKPOINT=/mnt/huanyuan/model/image/yolov6/yolov6_landmark_degree_wider_face_20230607/epoch_300_deploy.pth
+# NAME=yolov6_landmark_degree_wider_face_20230607
+# OUTPUT_DIR=/mnt/huanyuan/model/image/yolov6/yolov6_landmark_degree_wider_face_20230607
+
+CONFIG=/mnt/huanyuan/model/image/yolov6/yolox_landmark_wider_face_20230612/yolox_face_wider_face.py
+CHECKPOINT=/mnt/huanyuan/model/image/yolov6/yolox_landmark_wider_face_20230612/epoch_300_deploy.pth
+NAME=yolox_landmark_wider_face_20230612_deploy
+OUTPUT_DIR=/mnt/huanyuan/model/image/yolov6/yolox_landmark_wider_face_20230612
 
 python deployment/pytorch2caffe/mmdet2caffe.py \
    --config-file $CONFIG \

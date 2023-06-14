@@ -5,13 +5,15 @@ options = edict()
 ###########################################
 # resolution
 ###########################################
-# # 5M
-# options.image_width = 2592
-# options.image_height = 1920
+# 5M
+options.image_width = 2592
+options.image_height = 1920
 
 # other
-options.image_width = 2592
-options.image_height = 1520
+# options.image_width = 2592
+# options.image_height = 1520
+# options.image_width = 2688
+# options.image_height = 1520
 
 # # 2M
 # options.image_width = 1920
@@ -72,12 +74,20 @@ options.ssd_openvino_bool = False
 # options.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_landmark_wider_face_center_offset_20230525/epoch_400.pth"
 # options.yolov6_class_name = ['face']
 # options.yolov6_threshold_list = [0.4]
-# yolov6 landmark sigmoid center offset qa
+# # yolov6 landmark sigmoid center offset qa
+# options.landmark_bool = True
+# options.landmark_degree_bool = False
+# options.landmark_degree_cls_bool = False
+# options.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_landmark_qa_wider_face_20230605/yolov6_qa_face_wider_face.py"
+# options.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_landmark_qa_wider_face_20230605/epoch_400.pth"
+# options.yolov6_class_name = ['face']
+# options.yolov6_threshold_list = [0.4]
+# yolox landmark sigmoid center offset
 options.landmark_bool = True
 options.landmark_degree_bool = False
 options.landmark_degree_cls_bool = False
-options.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_landmark_qa_wider_face_20230605/yolov6_qa_face_wider_face.py"
-options.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_landmark_qa_wider_face_20230605/epoch_400.pth"
+options.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolox_landmark_wider_face_20230612/yolox_face_wider_face.py"
+options.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolox_landmark_wider_face_20230612/epoch_300.pth"
 options.yolov6_class_name = ['face']
 options.yolov6_threshold_list = [0.4]
 # # yolov6 landmark degree cls
@@ -85,7 +95,7 @@ options.yolov6_threshold_list = [0.4]
 # options.landmark_degree_bool = False
 # options.landmark_degree_cls_bool = True
 # options.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_landmark_degree_wider_face_20230607/yolov6_face_wider_face.py"
-# options.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_landmark_degree_wider_face_20230607/epoch_20.pth"
+# options.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_landmark_degree_wider_face_20230607/epoch_300.pth"
 # options.yolov6_class_name = ['face']
 # options.yolov6_threshold_list = [0.4]
 
