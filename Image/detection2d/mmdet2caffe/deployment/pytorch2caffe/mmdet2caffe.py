@@ -38,6 +38,11 @@ if __name__ == "__main__":
 
     args = get_parser().parse_args()
 
+    # args.config_file = "/mnt/huanyuan/model/image/yolov6/yolox_landmark_wider_face_20230609/yolovx_face_wider_face.py"
+    # args.model_path = "/mnt/huanyuan/model/image/yolov6/yolox_landmark_wider_face_20230609/epoch_300.pth"
+    # args.name = "yolox_landmark_wider_face_20230609"
+    # args.output = "/mnt/huanyuan/model/image/yolov6/yolox_landmark_wider_face_20230609"
+
     config = mmcv.Config.fromfile(args.config_file)
 
     # build the model from a config file and a checkpoint file

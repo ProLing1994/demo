@@ -18,8 +18,8 @@ from Image.recognition2d.lpr.infer.lpr_seg import LPRSegColorClassCaffe
 
 from Image.Demo.street_sweeping_capture.sort.mot_sort import Sort
 
-from Image.Demo.street_sweeping_capture.info.options_lpr_brazil import options
-# from Image.Demo.street_sweeping_capture.info.options_lpr_china_zg import options
+# from Image.Demo.street_sweeping_capture.info.options_lpr_brazil import options
+from Image.Demo.street_sweeping_capture.info.options_lpr_china_zg import options
 # from Image.Demo.street_sweeping_capture.info.options_face import options
 from Image.Demo.street_sweeping_capture.info.param import *
 from Image.Demo.street_sweeping_capture.utils.iou import *
@@ -78,10 +78,10 @@ class CaptureApi():
             if self.country_type == "china":
                 if options.lpr_caffe_bool:
                     if options.lpr_paddle_bool: 
-                        self.lpr = paddle_lpr.LPRCaffe(options.china.ocr_caffe_model_path, options.china.ocr_caffe_prototxt, options.china.ocr_labels_dict_path, img_shape=options.china.input_shape, padding_bool=options.china.padding_bool, gpu_bool=False)
+                        self.lpr = paddle_lpr.LPRCaffe(options.china.ocr_caffe_model_path, options.china.ocr_caffe_prototxt, options.china.ocr_labels_dict_path, img_shape=options.china.input_shape, padding_bool=options.china.padding_bool, gpu_bool=options.gpu_bool)
                     else:
-                        self.lpr = LPRCaffe(options.china.ocr_caffe_prototxt, options.china.ocr_caffe_model_path, input_shape=options.china.input_shape, ocr_labels=options.china.ocr_labels, padding_bool=options.china.padding_bool, prefix_beam_search_bool=options.china.ocr_prefix_beam_search_bool, gpu_bool=False)
-                    self.lpr_seg = LPRSegColorClassCaffe(options.china.seg_caffe_prototxt, options.china.seg_caffe_model_path, options.china.seg_city_dict_name, options.china.seg_color_dict_name, input_shape=options.china.seg_input_shape, city_bool=options.china.seg_city_bool, color_bool=options.china.seg_color_bool, gpu_bool=False)
+                        self.lpr = LPRCaffe(options.china.ocr_caffe_prototxt, options.china.ocr_caffe_model_path, input_shape=options.china.input_shape, ocr_labels=options.china.ocr_labels, padding_bool=options.china.padding_bool, prefix_beam_search_bool=options.china.ocr_prefix_beam_search_bool, gpu_bool=options.gpu_bool)
+                    self.lpr_seg = LPRSegColorClassCaffe(options.china.seg_caffe_prototxt, options.china.seg_caffe_model_path, options.china.seg_city_dict_name, options.china.seg_color_dict_name, input_shape=options.china.seg_input_shape, city_bool=options.china.seg_city_bool, color_bool=options.china.seg_color_bool, gpu_bool=options.gpu_bool)
 
                 elif options.lpr_pytorch_bool:
                     if options.lpr_paddle_bool: 
@@ -313,6 +313,10 @@ class CaptureApi():
             bbox_info_idx = bbox_info_list[idx]
 
             if self.demo_type == "lpr":
+                
+                if not len(bbox_info_idx['plate_info']['roi']):
+                    continue
+
                 if self.country_type == "china":
                     
                     # lincense plate reader
@@ -498,14 +502,15 @@ class CaptureApi():
 
 
                     if self.demo_type == "lpr":
-                        # 更新车牌识别有效帧数
-                        lpr_width =  bbox_state_idy['plate_info']['roi'][2] - bbox_state_idy['plate_info']['roi'][0]
-                        lpr_height =  bbox_state_idy['plate_info']['roi'][3] - bbox_state_idy['plate_info']['roi'][1]
-
+                        
                         bool_add_lpr = False
                         if bbox_info_idx['plate_info']['num'] != '' and \
                             bbox_state_idy['plate_info']['roi'][0] > options.ROI_Left_threshold and bbox_state_idy['plate_info']['roi'][2] < options.ROI_Right_threshold and \
                             bbox_state_idy['plate_info']['roi'][1] > options.ROI_Up_threshold and bbox_state_idy['plate_info']['roi'][3] < options.ROI_Down_threshold:
+
+                            # 更新车牌识别有效帧数
+                            lpr_width =  bbox_state_idy['plate_info']['roi'][2] - bbox_state_idy['plate_info']['roi'][0]
+                            lpr_height =  bbox_state_idy['plate_info']['roi'][3] - bbox_state_idy['plate_info']['roi'][1]
 
                             if self.country_type == "china":
 
@@ -601,15 +606,16 @@ class CaptureApi():
                     elif options.sort_type == "plate":
                         bbox_state_idy['state']['stable_loc'] = bbox_info_idx['plate_info']['roi']
 
-                    # 更新车牌识别有效帧数
-                    lpr_width =  bbox_state_idy['plate_info']['roi'][2] - bbox_state_idy['plate_info']['roi'][0]
-                    lpr_height =  bbox_state_idy['plate_info']['roi'][3] - bbox_state_idy['plate_info']['roi'][1]
-
                     bool_add_lpr = False
                     if bbox_info_idx['plate_info']['num'] != '' and \
                         bbox_state_idy['plate_info']['roi'][0] > options.ROI_Left_threshold and bbox_state_idy['plate_info']['roi'][2] < options.ROI_Right_threshold and \
                         bbox_state_idy['plate_info']['roi'][1] > options.ROI_Up_threshold and bbox_state_idy['plate_info']['roi'][3] < options.ROI_Down_threshold:
-    
+
+
+                        # 更新车牌识别有效帧数
+                        lpr_width =  bbox_state_idy['plate_info']['roi'][2] - bbox_state_idy['plate_info']['roi'][0]
+                        lpr_height =  bbox_state_idy['plate_info']['roi'][3] - bbox_state_idy['plate_info']['roi'][1]
+
                         if self.country_type == "china":
 
                             # 按照车牌宽高过滤车牌
@@ -914,7 +920,7 @@ class CaptureApi():
                                         capture_res_dict['capture']['capture_bool'] = True
                                         capture_res_dict['plate_info']['num'] = capture_lpr_num
                                         capture_res_dict['plate_info']['column'] = capture_lpr_column
-                                        
+
                                         self.params_dict['capture_res_container'][capture_res_dict['plate_info']['num']] = capture_res_dict
 
                                         # 信息同步
