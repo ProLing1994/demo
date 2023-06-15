@@ -83,21 +83,21 @@ options.ssd_openvino_bool = False
 # options.yolov6_class_name = ['face']
 # options.yolov6_threshold_list = [0.4]
 # yolox landmark sigmoid center offset
-options.landmark_bool = True
-options.landmark_degree_bool = False
-options.landmark_degree_cls_bool = False
-options.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolox_landmark_wider_face_20230612/yolox_face_wider_face.py"
-options.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolox_landmark_wider_face_20230612/epoch_300.pth"
-options.yolov6_class_name = ['face']
-options.yolov6_threshold_list = [0.4]
-# # yolov6 landmark degree cls
-# options.landmark_bool = False
+# options.landmark_bool = True
 # options.landmark_degree_bool = False
-# options.landmark_degree_cls_bool = True
-# options.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_landmark_degree_wider_face_20230607/yolov6_face_wider_face.py"
-# options.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_landmark_degree_wider_face_20230607/epoch_300.pth"
+# options.landmark_degree_cls_bool = False
+# options.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolox_landmark_wider_face_20230612/yolox_face_wider_face.py"
+# options.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolox_landmark_wider_face_20230612/epoch_300.pth"
 # options.yolov6_class_name = ['face']
 # options.yolov6_threshold_list = [0.4]
+# yolov6 landmark degree cls
+options.landmark_bool = False
+options.landmark_degree_bool = False
+options.landmark_degree_cls_bool = True
+options.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_landmark_degree_wider_face_20230607/yolov6_face_wider_face.py"
+options.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_landmark_degree_wider_face_20230607/epoch_300.pth"
+options.yolov6_class_name = ['face']
+options.yolov6_threshold_list = [0.4]
 
 ###########################################
 # sort
