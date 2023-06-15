@@ -16,3 +16,6 @@
 [submodule "Image/detection2d/yolov5-face"]
 	path = Image/detection2d/yolov5-face
 	url = https://gitlab.com/YuanHuan_Pro/yolov5-face.git
+[submodule "Image/detection2d/ori_mmdetection/mmdetection"]
+	path = Image/detection2d/ori_mmdetection/mmdetection
+	url = https://github.com/ProLing1994/mmdetection.git
