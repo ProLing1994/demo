@@ -120,7 +120,7 @@ if __name__ == "__main__":
 
     # 数据集: RM_R151_detection
     # 数据集：仅标注车牌，清晰、模糊车牌均统一标注
-    args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53Germany_WA_20230124_detonly_merge_p/"
+    args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/FW_230612_p1_383/"
     # 数据集: C53_AB_WA_20230426_FN_detline_merge_test, [('license', 184)]
     # 数据集: C53_ITA_WA_20230324_detonly_merge, [('license', 823)]
     # 数据集: C53_NLD_WA_20230307_detonly_merge, [('license', 4475)]
@@ -144,6 +144,10 @@ if __name__ == "__main__":
     # 数据集: C53AB_WA_20221214_detonly_merge_extra_p0, [('license', 1871)]
     # 数据集: C53AB_WA_20221227_detonly_empty_merge, [('license', 280)]
     # 数据集: C53Germany_WA_20230124_detonly_merge_p, [('license', 4696)]
+    # 数据集: C53AB_LF_20221214_detonly_merge_extra_p1_p2_2_389, [('license', 1813)]
+    # 数据集: C53AB_LF_20221214_detonly_merge_extra_p1_p2_388, [('license', 565)]
+    # 数据集: C53AB_LF_20221215_16_pla_386, [('license', 22048)]
+    # 数据集: FW_230612_p1_383, [('license', 8596)]
 
     # 数据集: RM_BSD
     # args.input_dir = "/yuanhuan/data/image/RM_BSD/wideangle_2022_2023/"

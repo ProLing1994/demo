@@ -107,6 +107,10 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53AB_WA_20221214_detonly_merge_extra_p0/"    # trainval: 1082, train: 973, val: 109, test: 121, all: 1203
     # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53AB_WA_20221227_detonly_empty_merge/"    # trainval: 206, train: 185, val: 21, test: 23, all: 229
     # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53Germany_WA_20230124_detonly_merge_p/"    # trainval: 1466, train: 1319, val: 147, test: 163, all: 1629
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53AB_LF_20221214_detonly_merge_extra_p1_p2_2_389/"    # trainval: 666, train: 599, val: 67, test: 75, all: 741
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53AB_LF_20221214_detonly_merge_extra_p1_p2_388/"    # trainval: 275, train: 247, val: 28, test: 31, all: 306
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53AB_LF_20221215_16_pla_386/"    # trainval: 8004, train: 7203, val: 801, test: 890, all: 8894
+    args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/FW_230612_p1_383/"    # trainval: 2852, train: 2566, val: 286, test: 317, all: 3169
 
     # 数据集: RM_BSD
     # args.input_dir = "/yuanhuan/data/image/RM_BSD/bsd_20220425_20220512/"   # trainval: 13317, train: 11985, val: 1332, test: 1480, all: 14797
