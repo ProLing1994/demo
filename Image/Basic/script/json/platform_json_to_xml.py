@@ -135,7 +135,7 @@ def platform_json_2_xml_empty(args):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input_dir', type=str, default="/yuanhuan/data/image/RM_R151_detection/original/temp/FW_230612_p1_383/") 
+    parser.add_argument('--input_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_crop/shate_20230308") 
     parser.add_argument('--jpg_name', type=str, default="JPEGImages/") 
     parser.add_argument('--json_name', type=str, default="Json/") 
     parser.add_argument('--xml_name', type=str, default="Annotations/") 

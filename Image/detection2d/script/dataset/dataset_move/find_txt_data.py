@@ -8,8 +8,8 @@ def copy_dataset(args):
     if not os.path.exists(args.jpg_output_dir):
         os.makedirs(args.jpg_output_dir)
 
-    # with open(args.test_file, "r") as f:
-    with open(args.val_file, "r") as f:
+    with open(args.test_file, "r") as f:
+    # with open(args.val_file, "r") as f:
         lines = f.readlines()
         for line in tqdm(lines):
             jpg_name = line.strip() + ".jpg"
@@ -25,7 +25,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.input_dir = "/yuanhuan/data/image/Open_Source/Wider_Face/training_landmark/"
+    args.input_dir = "/yuanhuan/data/image/temp/Char_dec_dataset/"
 
     args.trainval_file = args.input_dir + "ImageSets/Main/trainval.txt"
     args.train_file = args.input_dir + "ImageSets/Main/train.txt"
@@ -33,7 +33,7 @@ if __name__ == "__main__":
     args.test_file = args.input_dir + "ImageSets/Main/test.txt"
 
     args.jpg_dir = os.path.join(args.input_dir, "JPEGImages")
-    # args.jpg_output_dir = os.path.join(args.input_dir, "JPEGImages_test")
-    args.jpg_output_dir = os.path.join(args.input_dir, "JPEGImages_val")
+    args.jpg_output_dir = os.path.join(args.input_dir, "JPEGImages_test")
+    # args.jpg_output_dir = os.path.join(args.input_dir, "JPEGImages_val")
 
     copy_dataset(args)

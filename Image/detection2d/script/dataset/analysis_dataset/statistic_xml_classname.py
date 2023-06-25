@@ -120,7 +120,7 @@ if __name__ == "__main__":
 
     # 数据集: RM_R151_detection
     # 数据集：仅标注车牌，清晰、模糊车牌均统一标注
-    args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/FW_230612_p1_383/"
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/FW_230612_p1_383/"
     # 数据集: C53_AB_WA_20230426_FN_detline_merge_test, [('license', 184)]
     # 数据集: C53_ITA_WA_20230324_detonly_merge, [('license', 823)]
     # 数据集: C53_NLD_WA_20230307_detonly_merge, [('license', 4475)]
@@ -242,6 +242,10 @@ if __name__ == "__main__":
     # NightOwls: [('neg', 2481), ('person', 21876), ('person_o', 3121)]
     # Cityscapes: [('bicyclist', 1266), ('bicyclist_o', 640), ('bus', 572), ('bus_o', 105), ('car', 21190), ('car_o', 10701), ('motorcyclist', 164), ('motorcyclist_o', 90), ('neg', 3), ('person', 8113), ('person_o', 13300), ('truck', 530), ('truck_o', 141)]
 
+    # 数据集: other
+    args.input_dir = "/yuanhuan/data/image/temp/Char_dec_dataset/"
+    # Char_dec_dataset: [('char', 1900), ('char_ch', 300)]
+
     args.trainval_file = args.input_dir + "ImageSets/Main/trainval.txt"
     args.train_file = args.input_dir + "ImageSets/Main/train.txt"
     args.val_file = args.input_dir + "ImageSets/Main/val.txt"
@@ -249,10 +253,10 @@ if __name__ == "__main__":
     args.statistic_dict = {'trainval': args.trainval_file, 'test': args.test_file }
 
     args.jpg_dir =  args.input_dir + "JPEGImages/"
-    # args.xml_dir =  args.input_dir + "Annotations/"
+    args.xml_dir =  args.input_dir + "Annotations/"
     # args.xml_dir =  args.input_dir + "XML/"
     # args.xml_dir =  args.input_dir + "Annotations_CarBusTruckMotorcyclePlateMotoplate_w_fuzzy/"
-    args.xml_dir =  args.input_dir + "Annotations_License/"
+    # args.xml_dir =  args.input_dir + "Annotations_License/"
 
     statistic_classname(args)
     # statistic_classname_train_val_test(args)

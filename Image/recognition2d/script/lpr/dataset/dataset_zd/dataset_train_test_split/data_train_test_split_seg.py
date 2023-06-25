@@ -18,7 +18,7 @@ def split(args):
     create_folder(os.path.dirname(args.trainval_file))
 
     # init
-    csv_list = []           # [{"img_path": "", "json_path": "", "roi_img_path": "", "roi_mask_path": "", "id": "", "name": "", "roi": "", "country": "", "city": "", "color": "", "column": "", "num": "", "crop_img": "", "crop_xml": "", "split_type": ""}]
+    csv_list = []           # [{"img_path": "", "json_path": "", "roi_img_path": "", "roi_mask_path": "", "id": "", "name": "", "roi": "", "country": "", "city": "", "color": "", "column": "", "num": "", "crop_img": "", "crop_xml": "", "crop_json": "", "split_type": ""}]
     file_list = []          # ["num"]
 
     # pd
@@ -81,7 +81,7 @@ def split(args):
 
     # out csv
     csv_pd = pd.DataFrame(csv_list)
-    csv_pd.to_csv(args.input_csv_path, columns=["img_path", "json_path", "roi_img_path", "roi_mask_path", "id", "name", "roi", "country", "city", "color", "column", "num", "crop_img", "crop_xml", "split_type"], index=False, encoding="utf_8_sig")
+    csv_pd.to_csv(args.input_csv_path, columns=["img_path", "json_path", "roi_img_path", "roi_mask_path", "id", "name", "roi", "country", "city", "color", "column", "num", "crop_img", "crop_xml", "crop_json", "split_type"], index=False, encoding="utf_8_sig")
 
 
 def split_2_softmax(args):
@@ -90,7 +90,7 @@ def split_2_softmax(args):
     create_folder(os.path.dirname(args.trainval_file))
 
     # init
-    csv_list = []           # [{"img_path": "", "json_path": "", "roi_img_path": "", "roi_mask_path": "", "id": "", "name": "", "roi": "", "country": "", "city": "", "color": "", "column": "", "num": "", "crop_img": "", "crop_xml": "", "split_type": ""}]
+    csv_list = []           # [{"img_path": "", "json_path": "", "roi_img_path": "", "roi_mask_path": "", "id": "", "name": "", "roi": "", "country": "", "city": "", "color": "", "column": "", "num": "", "crop_img": "", "crop_xml": "", "crop_json": "", "split_type": ""}]
     file_list = []          # ["num"]
 
     # pd
@@ -165,7 +165,7 @@ def split_2_softmax(args):
 
     # out csv
     csv_pd = pd.DataFrame(csv_list) 
-    csv_pd.to_csv(args.input_csv_path, columns=["img_path", "json_path", "roi_img_path", "roi_mask_path", "id", "name", "roi", "country", "city", "color", "column", "num", "crop_img", "crop_xml", "split_type"], index=False, encoding="utf_8_sig")
+    csv_pd.to_csv(args.input_csv_path, columns=["img_path", "json_path", "roi_img_path", "roi_mask_path", "id", "name", "roi", "country", "city", "color", "column", "num", "crop_img", "crop_xml", "crop_json", "split_type"], index=False, encoding="utf_8_sig")
 
 if __name__ == "__main__":
     

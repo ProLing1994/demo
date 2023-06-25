@@ -255,3 +255,16 @@ def json_load_object_plate_num(cell):
             plate_num = plate_num.replace(replace_name, replace_name_dict[replace_name])
 
     return plate_num
+
+
+# def json_load_object_plate_license_num(cell):
+    
+#     # plate_license_num
+#     if 'label' in cell and cell["label"] == "license_num":
+
+#     if 'attributes' in cell and len(cell["attributes"]):
+#         for json_attributes in cell["attributes"]:
+#             if json_attributes["name"] == "status":
+#                 plate_status = json_attributes["value"]
+
+#     return plate_status

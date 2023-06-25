@@ -179,10 +179,10 @@ def kind_num_roi_to_bbox(roi_list, kind_min_size_threh, num_min_size_threh):
 def gen_img(args, dataset_dict):
 
     # init 
-    csv_list = []           # [{"img_path": "", "json_path": "", "roi_img_path": "", "id": "", "name": "", "roi": "", "country": "", "city": "", "color": "", "column": "", "kind": "", "num": "", "crop_img": "", "crop_xml": ""}]
+    csv_list = []           # [{"img_path": "", "json_path": "", "roi_img_path": "", "id": "", "name": "", "roi": "", "country": "", "city": "", "color": "", "column": "", "kind": "", "num": "", "crop_img": "", "crop_xml": ", "crop_json": "}]
 
     # error init 
-    error_list = []         # [{"img_path": "", "json_path": "", "crop_img": "", "crop_xml": "", "type": "", "value": ""}]
+    error_list = []         # [{"img_path": "", "json_path": "", "crop_img": "", "crop_xml": "", "crop_json": "", "type": "", "value": ""}]
 
     for idx, row in tqdm(args.data_pd.iterrows(), total=len(args.data_pd)):
     
@@ -201,6 +201,8 @@ def gen_img(args, dataset_dict):
         plate_num = row['num'] 
         crop_img_path = row['crop_img'] 
         crop_xml_path = row['crop_xml'] 
+        # crop_json_path = row['crop_json']
+        crop_json_path = crop_xml_path.replace('.xml', '.json').replace('/xml', '/Json')
         split_type = row['split_type']
 
         # 方案一：加载 xml 文件，得到 kind 和 num 的 bbox
@@ -236,16 +238,16 @@ def gen_img(args, dataset_dict):
         # check 
         if not ('kind' in seg_bbox and len(kind_id)) and \
             not ('num' in seg_bbox and len(num_id)):
-            print('"img_path": {}, "json_path": {}, "crop_img": {}, "crop_xml": {}, "type": "kind_num"'.format(img_path, json_path, crop_img_path, crop_xml_path))
-            error_list.append({"img_path": img_path, "json_path": json_path, "crop_img": crop_img_path, "crop_xml": crop_xml_path, "type": "kind_num", "value": ""})
+            print('"img_path": {}, "json_path": {}, "crop_img": {}, "crop_xml": {}, "crop_json": {}, "type": "kind_num"'.format(img_path, json_path, crop_img_path, crop_xml_path, crop_json_path))
+            error_list.append({"img_path": img_path, "json_path": json_path, "crop_img": crop_img_path, "crop_xml": crop_xml_path, "crop_json": crop_json_path, "type": "kind_num", "value": ""})
             continue
         
         # check 
         if len(num_id):
             error_num_bool = np.array([num not in dataset_dict.num_labels for num in num_id]).sum()
             if error_num_bool:
-                print('"img_path": {}, "json_path": {}, "crop_img": {}, "crop_xml": {}, "type": "num"'.format(img_path, json_path, crop_img_path, crop_xml_path))
-                error_list.append({"img_path": img_path, "json_path": json_path, "crop_img": crop_img_path, "crop_xml": crop_xml_path, "type": "num", "value": ""})
+                print('"img_path": {}, "json_path": {}, "crop_img": {}, "crop_xml": {}, "crop_json": {}, "type": "num"'.format(img_path, json_path, crop_img_path, crop_xml_path, crop_json_path))
+                error_list.append({"img_path": img_path, "json_path": json_path, "crop_img": crop_img_path, "crop_xml": crop_xml_path, "crop_json": crop_json_path, "type": "num", "value": ""})
                 continue
 
         # kind
@@ -325,15 +327,15 @@ def gen_img(args, dataset_dict):
                 concate_img = cv2.hconcat([interval_img_copy, num_img]) 
                 # concate_img = cv2.hconcat([interval_img_copy, num_img, end_img_copy]) 
         except:
-            print('"img_path": {}, "json_path": {}, "crop_img": {}, "crop_xml": {}, "type": "resize"'.format(img_path, json_path, crop_img_path, crop_xml_path))
-            error_list.append({"img_path": img_path, "json_path": json_path, "crop_img": crop_img_path, "crop_xml": crop_xml_path, "type": "resize", "value": ""})
+            print('"img_path": {}, "json_path": {}, "crop_img": {}, "crop_xml": {}, "crop_json": {}, "type": "resize"'.format(img_path, json_path, crop_img_path, crop_xml_path, crop_json_path))
+            error_list.append({"img_path": img_path, "json_path": json_path, "crop_img": crop_img_path, "crop_xml": crop_xml_path, "crop_json": crop_json_path, "type": "resize", "value": ""})
             continue
 
         plate_img_name = "{}_{}#{}.jpg".format(os.path.basename(roi_img_path).replace(".jpg", ""), kind_id, num_id)
         output_img_path = os.path.join(args.output_img_dir, plate_img_name)
         cv2.imwrite(output_img_path, concate_img)
 
-        csv_list.append({"img_path": img_path, "json_path": json_path, "roi_img_path": output_img_path, "id": plate_id, "name": plate_name, "roi": plate_roi, "country": plate_country, "city": plate_city, "color": plate_color, "column": plate_column, "kind": kind_id, "num": num_id, "crop_img": crop_img_path, "crop_xml": crop_xml_path, "split_type": split_type})
+        csv_list.append({"img_path": img_path, "json_path": json_path, "roi_img_path": output_img_path, "id": plate_id, "name": plate_name, "roi": plate_roi, "country": plate_country, "city": plate_city, "color": plate_color, "column": plate_column, "kind": kind_id, "num": num_id, "crop_img": crop_img_path, "crop_xml": crop_xml_path, "crop_json": crop_json_path, "split_type": split_type})
 
     # out csv
     csv_pd = pd.DataFrame(csv_list)
@@ -366,11 +368,14 @@ def gen_ocr_img(args):
 if __name__ == "__main__":
     
     parser = argparse.ArgumentParser()
-    parser.add_argument('--date_name', type=str, default="uae_20220804_0809")
+    parser.add_argument('--date_name', type=str, default="shate_20230308")
     parser.add_argument('--seg_name', type=str, default="seg_zd_202306")
     parser.add_argument('--ocr_name', type=str, default="plate_zd_mask_202306")
     parser.add_argument('--output_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/training/") 
+    parser.add_argument('--new_style', action='store_true', default=False) 
     args = parser.parse_args()
+
+    args.new_style = True
 
     args.seg_dir = os.path.join(args.output_dir, args.seg_name, args.date_name)
     args.output_dir = os.path.join(args.output_dir, args.ocr_name, args.date_name)

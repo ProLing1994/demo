@@ -27,7 +27,7 @@ def gen_seg_mask(args):
     create_folder(args.output_bbox_img_dir)
 
     # init 
-    csv_list = []           # [{"img_path": "", "json_path": "", "roi_img_path": "", "roi_mask_path": "", "id": "", "name": "", "roi": "", "country": "", "city": "", "color": "", "column": "", "num": "", "crop_img": "", "crop_xml": ""}]
+    csv_list = []           # [{"img_path": "", "json_path": "", "roi_img_path": "", "roi_mask_path": "", "id": "", "name": "", "roi": "", "country": "", "city": "", "color": "", "column": "", "num": "", "crop_img": "", "crop_xml": "", "crop_json": ""}]
 
     # pd
     data_pd = pd.read_csv(args.input_csv_path)
@@ -47,6 +47,7 @@ def gen_seg_mask(args):
         plate_num = row['num'] 
         crop_img_path = row['crop_img'] 
         crop_xml_path = row['crop_xml'] 
+        crop_json_path = row['crop_json']
 
         plate_img_name = plate_name + '.jpg'
         plate_mask_name = plate_name + '.png'
@@ -59,12 +60,12 @@ def gen_seg_mask(args):
         plate_img = cv2.imread(crop_img_path)
 
         # load object_roi_list
-        object_roi_list = dataset_dict.load_object_roi(crop_xml_path)
+        object_roi_list = dataset_dict.load_object_roi(crop_xml_path, crop_json_path, args.new_style)
 
         # draw_mask
         draw_mask(dataset_dict, plate_img, object_roi_list, output_img_path, output_mask_path, output_mask_img_path, output_bbox_img_path)
 
-        csv_list.append({"img_path": img_path, "json_path": json_path, "roi_img_path": output_img_path, "roi_mask_path": output_mask_path, "id": plate_id, "name": plate_name, "roi": plate_roi, "country": plate_country, "city": plate_city, "color": plate_color, "column": plate_column, "num": plate_num, "crop_img": crop_img_path, "crop_xml": crop_xml_path})            
+        csv_list.append({"img_path": img_path, "json_path": json_path, "roi_img_path": output_img_path, "roi_mask_path": output_mask_path, "id": plate_id, "name": plate_name, "roi": plate_roi, "country": plate_country, "city": plate_city, "color": plate_color, "column": plate_column, "num": plate_num, "crop_img": crop_img_path, "crop_xml": crop_xml_path, "crop_json": crop_json_path})
 
     # out csv
     csv_pd = pd.DataFrame(csv_list)
@@ -74,10 +75,11 @@ def gen_seg_mask(args):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--date_name', type=str, default="uae_20220804_0809") 
+    parser.add_argument('--date_name', type=str, default="shate_20230308") 
     parser.add_argument('--seg_name', type=str, default="seg_zd_202306") 
     parser.add_argument('--input_csv_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_crop_csv/") 
     parser.add_argument('--output_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/training/") 
+    parser.add_argument('--new_style', action='store_true', default=False) 
     args = parser.parse_args()
 
     args.input_csv_path = os.path.join(args.input_csv_dir, args.date_name + '.csv')

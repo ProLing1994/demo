@@ -63,6 +63,8 @@ if __name__ == "__main__":
     print("input_dir: {}".format(args.input_dir))
 
     args.ignore_list = [
+                        'ImageSetsLabelNoAug',
+                        'ImageSetsLabel',
                         'ImageSetsColorLabelNoAug',
                         'ImageSetsColorLabel',
                         ]
@@ -87,7 +89,7 @@ if __name__ == "__main__":
     ###############################################
     args.label_name = "city_label"
     args.bool_aug = False
-    args.to_input_dir = os.path.join(args.input_dir, "ImageSetsColorLabelNoAug", args.label_name)
+    args.to_input_dir = os.path.join(args.input_dir, "ImageSetsLabelNoAug", args.label_name)
 
     split(args)
 
@@ -96,7 +98,7 @@ if __name__ == "__main__":
     ###############################################
     args.label_name = "city_label"
     args.bool_aug = True
-    args.to_input_dir = os.path.join(args.input_dir, "ImageSetsColorLabel", args.label_name)
+    args.to_input_dir = os.path.join(args.input_dir, "ImageSetsLabel", args.label_name)
 
     split(args)
 
@@ -107,7 +109,7 @@ if __name__ == "__main__":
     ###############################################
     args.label_name = "color_label"
     args.bool_aug = False
-    args.to_input_dir = os.path.join(args.input_dir, "ImageSetsColorLabelNoAug", args.label_name)
+    args.to_input_dir = os.path.join(args.input_dir, "ImageSetsLabelNoAug", args.label_name)
 
     split(args)
 
@@ -116,7 +118,7 @@ if __name__ == "__main__":
     ###############################################
     args.label_name = "color_label"
     args.bool_aug = True
-    args.to_input_dir = os.path.join(args.input_dir, "ImageSetsColorLabel", args.label_name)
+    args.to_input_dir = os.path.join(args.input_dir, "ImageSetsLabel", args.label_name)
 
     split(args)
 
@@ -128,7 +130,7 @@ if __name__ == "__main__":
     ###############################################
     args.label_name = "city_color_label"
     args.bool_aug = False
-    args.to_input_dir = os.path.join(args.input_dir, "ImageSetsColorLabelNoAug", args.label_name)
+    args.to_input_dir = os.path.join(args.input_dir, "ImageSetsLabelNoAug", args.label_name)
 
     split(args)
 
@@ -137,6 +139,6 @@ if __name__ == "__main__":
     ###############################################
     args.label_name = "city_color_label"
     args.bool_aug = True
-    args.to_input_dir = os.path.join(args.input_dir, "ImageSetsColorLabel", args.label_name)
+    args.to_input_dir = os.path.join(args.input_dir, "ImageSetsLabel", args.label_name)
 
     split(args)
