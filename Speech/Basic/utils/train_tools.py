@@ -8,8 +8,8 @@ import sys
 import shutil
 import torch
 
-sys.path.insert(0, '/home/huanyuan/code/demo/common')
-# sys.path.insert(0, '/yuanhuan/code/demo/common')
+# sys.path.insert(0, '/home/huanyuan/code/demo/common')
+sys.path.insert(0, '/yuanhuan/code/demo/common')
 from common.utils.python.file_tools import load_module_from_disk
 
 is_pytorch_17plus = LooseVersion(torch.__version__) >= LooseVersion("1.7")

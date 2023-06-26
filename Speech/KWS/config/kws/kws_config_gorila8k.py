@@ -47,7 +47,7 @@ __C.general.load_mode_type = 0
 
 # 方式一：模型加载，根据文件目录查找
 __C.general.finetune_model_dir = ""
-__C.general.finetune_epoch_num = 0
+__C.general.finetune_epoch_num = -1
 __C.general.finetune_sub_folder_name = 'checkpoints'
 # 方式二：模型加载，指定文件路径
 __C.general.finetune_model_path = ""
@@ -64,6 +64,7 @@ __C.general.resume_epoch_num = -1
 # the number of GPUs used in training
 # __C.general.num_gpus = 4
 __C.general.num_gpus = 1
+# __C.general.num_gpus = 1
 
 # the GPUs' id used in training
 # __C.general.gpu_ids = '0, 1, 2, 3'
@@ -315,6 +316,7 @@ __C.regularization = {}
 __C.regularization.label_smoothing = {}
 
 # regularization: label smoothing on
+# __C.regularization.label_smoothing.on = True
 __C.regularization.label_smoothing.on = False
 
 # regularization: label smoothing epsilon 
@@ -360,8 +362,8 @@ __C.loss.ema_alpha = 0.995
 __C.net = {}
 
 # the network name
-__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/res15.py"
-# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-hisi-novt-144-142.py"
+__C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/res15.py"
+# __C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/tc-resnet14-amba-hisi-novt-144-142.py"
 __C.net.class_name = "SpeechResModel"
 
 
@@ -372,7 +374,8 @@ __C.net.class_name = "SpeechResModel"
 __C.train = {}
 
 # the number of training epochs
-__C.train.num_epochs = 2000
+# __C.train.num_epochs = 2000
+__C.train.num_epochs = 1000
 # __C.train.num_epochs = 500
 # __C.train.num_epochs = 1
 
@@ -380,7 +383,8 @@ __C.train.num_epochs = 2000
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 1024
 # __C.train.batch_size = 512
-__C.train.batch_size = 128
+__C.train.batch_size = 256
+# __C.train.batch_size = 128
 # __C.train.batch_size = 64
 # __C.train.batch_size = 16
 # __C.train.batch_size = 1
@@ -397,7 +401,7 @@ __C.train.show_log = 5
 __C.train.plot_snapshot = 5
 
 # the number of epochs to save model
-__C.train.save_epochs = 25
+__C.train.save_epochs = 100
 # __C.train.save_epochs = 1
 
 

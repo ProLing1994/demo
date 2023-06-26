@@ -164,9 +164,9 @@ def write_crop_data(args):
         x2 = int(plate_roi_list[1])
         y1 = int(plate_roi_list[2])
         y2 = int(plate_roi_list[3])
-        plate_img = img[y1:y2, x1:x2]
 
         try:
+            plate_img = img[y1:y2, x1:x2]
             cv2.imwrite(os.path.join(args.output_crop_data_img_dir, plate_name + ".jpg"), plate_img)
         except:
             continue
@@ -262,8 +262,8 @@ def write_error_data(args):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--date_name', type=str, default="shate_20230308") 
-    parser.add_argument('--input_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_new_style/") 
+    parser.add_argument('--date_name', type=str, default="uae_2022_old") 
+    parser.add_argument('--input_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_old_style/") 
     parser.add_argument('--output_csv_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_csv/") 
     parser.add_argument('--output_crop_data_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_crop/") 
     parser.add_argument('--output_error_data_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_error_data/") 
@@ -289,14 +289,14 @@ if __name__ == "__main__":
     print("img_dir: {}".format(args.img_dir))
     print("output_csv_path: {}".format(args.output_csv_path))
 
-    # 生成 dataset csv
-    dataset_csv(args)
+    # # 生成 dataset csv
+    # dataset_csv(args)
 
     # 保存 crop data
     args.output_crop_data_img_dir = os.path.join(args.output_crop_data_dir, "Images")
     write_crop_data(args)
 
-    # 保存 error data
-    args.output_error_data_img_dir = os.path.join(args.output_error_data_dir, "Images")
-    args.output_error_data_json_dir = os.path.join(args.output_error_data_dir, "Json")
-    write_error_data(args)
+    # # 保存 error data
+    # args.output_error_data_img_dir = os.path.join(args.output_error_data_dir, "Images")
+    # args.output_error_data_json_dir = os.path.join(args.output_error_data_dir, "Json")
+    # write_error_data(args)
