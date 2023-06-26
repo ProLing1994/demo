@@ -262,8 +262,8 @@ def write_error_data(args):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--date_name', type=str, default="shate_20230308") 
-    parser.add_argument('--input_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_new_style/") 
+    parser.add_argument('--date_name', type=str, default="uae_2022_old") 
+    parser.add_argument('--input_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_old_style/") 
     parser.add_argument('--output_csv_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_csv/") 
     parser.add_argument('--output_crop_data_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_crop/") 
     parser.add_argument('--output_error_data_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_error_data/") 
