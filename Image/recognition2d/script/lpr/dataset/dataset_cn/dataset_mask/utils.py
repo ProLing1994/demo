@@ -26,7 +26,6 @@ def draw_mask(dataset_dict, img_crop, object_roi, output_img_path, output_mask_p
                 contours.append([bndbox[0], bndbox[3]])
                 contours = [np.array(contours).reshape(-1, 1, 2)]
 
-                # color
                 mask = cv2.drawContours(mask, contours, -1, dataset_dict.name_2_mask_id_dict[classname], cv2.FILLED)
                 mask_img = cv2.drawContours(mask_img, contours, -1, dataset_dict.name_2_mask_color_dict[classname], cv2.FILLED)
                 bbox_img = cv2.rectangle(bbox_img, (bndbox[0], bndbox[1]), (bndbox[2], bndbox[3]), color=dataset_dict.name_2_mask_color_dict[classname], thickness=2)

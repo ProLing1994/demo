@@ -233,6 +233,10 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53AB_WA_20221214_detonly_merge_extra_p0/"
     # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53AB_WA_20221227_detonly_empty_merge/"
     # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53Germany_WA_20230124_detonly_merge_p/"
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/temp/C53AB_LF_20221214_detonly_merge_extra_p1_p2_2_389/"
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/temp/C53AB_LF_20221214_detonly_merge_extra_p1_p2_388/"
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/temp/C53AB_LF_20221215_16_pla_386/"
+    # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/temp/FW_230612_p1_383/"
     # args.select_name_list = [ "license"]
     # args.set_name_list = [ "license"]
     # args.finnal_name_list = [ "license", "neg"]
@@ -261,6 +265,10 @@ if __name__ == "__main__":
     # C53AB_WA_20221214_detonly_merge_extra_p0, [('license', 1610), ('license_ignore', 261)]
     # C53AB_WA_20221227_detonly_empty_merge, [('license', 209), ('license_ignore', 71)]
     # C53Germany_WA_20230124_detonly_merge_p, [('license', 4146), ('license_ignore', 550)]
+    # C53AB_LF_20221214_detonly_merge_extra_p1_p2_2_389, [('license', 1270), ('license_ignore', 543)
+    # C53AB_LF_20221214_detonly_merge_extra_p1_p2_388, [('license', 472), ('license_ignore', 93)]
+    # C53AB_LF_20221215_16_pla_386, [('license', 15939), ('license_ignore', 6109)]
+    # FW_230612_p1_383, [('license', 5243), ('license_ignore', 3353)]
     
     args.output_xml_dir =  args.input_dir + "Annotations_License/"
 

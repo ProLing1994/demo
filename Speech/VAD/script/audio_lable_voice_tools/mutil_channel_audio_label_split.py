@@ -60,7 +60,7 @@ def audio_lable_split(args):
                     equipment_location = args.equipment_location_list[equipment_idx]
 
                     # audio path
-                    label_name = os.path.basename(label_path).split('_')[0]
+                    label_name = os.path.basename(label_path).split('_')[0].split('.')[0]
                     audio_path = os.path.join(os.path.dirname(label_path), label_name + '_' + equipment_name + args.audio_suffix) 
 
                     # 音频不存在，则不进行截取
@@ -95,7 +95,7 @@ def audio_lable_split(args):
                             os.makedirs(output_dir)
 
                         # 保存音频
-                        output_path = os.path.join(output_dir, args.output_format.format("_".join(segment_label.split(' ')), speaker_id, args.male, equipment_id, equipment_location, audio_segment[2]))
+                        output_path = os.path.join(output_dir, args.output_format.format("_".join(segment_label.split(' ')), speaker_id, args.male, args.foreign, equipment_id, equipment_location, audio_segment[2]))
                         temp_path = os.path.join(args.output_folder, '{}{}'.format('temp', args.audio_suffix))
                         save_wav(audio_segment_data.copy(), temp_path, args.sample_rate)
                         os.system('sox {} -b 16 -e signed-integer {}'.format(temp_path, output_path))
@@ -105,9 +105,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="")
     parser.add_argument('--input_folder', type=str, default="/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/collect/20230605/YH_temp/")
     parser.add_argument('--output_folder', type=str, default="/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/collect/20230605/YH_res/")       # 每个人保存在不同文件路径下：如：YH
-    parser.add_argument('--output_format', type=str, default="RM_KWS_GORLIA_{}_S{:0>3d}M{}D{}{}T{:0>3d}.wav")
+    parser.add_argument('--output_format', type=str, default="RM_KWS_GORLIA_{}_S{:0>3d}M{}F{}D{}{}T{:0>3d}.wav")
     parser.add_argument('--speaker_id', type=int, default=0)  # 说话人 id（不同人应该有不同的 speaker_id，不然保存结果会被覆盖）
     parser.add_argument('--male', type=int, default=0)  # 女 0   男 1
+    parser.add_argument('--foreign', type=int, default=1)  # 中国人 0   外国人 1
     parser.add_argument('--equipment_name_list', type=str, default="mic_130cm,phone,adplus1_0_normal,adplus1_0_70cm,adplus1_0_100cm,adplus2_0_normal,adplus2_0_70cm,adplus2_0_100cm")
     parser.add_argument('--equipment_id_list', type=str, default="1,5,4,4,4,8,8,8")
     parser.add_argument('--equipment_location_list', type=str, default="4,0,5,3,4,5,3,4")

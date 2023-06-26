@@ -1,6 +1,7 @@
 import numpy as np
 import xml.etree.ElementTree as ET
 
+num_labels = [ '1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
 kind_num_labels = ['-', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
                     'J', 'K', 'L', 'M', 'N', 'P', 'O', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z','#']
 
@@ -8,11 +9,13 @@ status_name_list = ['none', 'n', 'f', 'o']              # n 表示车牌能看�
 column_name_list = ['none', 'double', 'single']
 color_name_list = ['none', 'red', 'green', 'yellow', 'blue', 'white', 'infrared', 'black', 'orange', 'brown']
 country_name_list = ['none', 'uae', 'ksa', 'oman', 'qatar', 'bahrain', 'kuwait']
-country_f_name_list = ['none', 'uae_f', 'ksa_f', 'oman_f', 'qatar_f', 'bahrain_F', 'kuwait_f']
-city_name_list = ['none', 'ad', 'adudhabi', 'dubai', 'ajman', 'sharjah', 'shj', 'rak', 'ummalqaiwain', 'fujairah']   
-city_f_name_list = ['none', 'ad_f', 'adudhabi_f', 'dubai_f', 'ajman_f', 'sharjah_f', 'shj_f', 'rak_f', 'ummalqaiwain_f', 'fujairah_f']
-car_type_name_list = ['none', 'taxi', 'police', 'public', 'trp', 'protocol', 'ptr', 'trade', 'trailer', 'consulate', 'learning', "diplomat", "classic", "export", "military", 'commercial']     # EXP learning
-car_type_f_name_list = ['none', 'taxi_f', 'police_f', 'public_f', 'trp_f', 'protocol_f', 'ptr_f', 'trade_f', 'trailer_f', 'consulate_f', 'learning_f', "diplomat_f", "classic_f", "export_f", "military_f", 'commercial_f']
+country_f_name_list = ['none', 'uae_f', 'ksa_f', 'oman_f', 'qatar_f', 'bahrain_f', 'kuwait_f']
+city_name_list = ['none', 'ad', 'abudhabi', 'dubai', 'ajman', 'sharjah', 'shj', 'rak', 'ummalqaiwain', 'fujairah']   
+city_f_name_list = ['none', 'ad_f', 'abudhabi_f', 'dubai_f', 'ajman_f', 'sharjah_f', 'shj_f', 'rak_f', 'ummalqaiwain_f', 'fujairah_f']
+car_type_name_list = ['none', 'taxi', 'police', 'public', 'trp', 'protocol', 'ptr', 'trade', 'trailer', 'consulate', 'learning', "diplomat", "classic", "export", "military", 'commercial', 'rtp']     # EXP
+car_type_f_name_list = ['none', 'taxi_f', 'police_f', 'public_f', 'trp_f', 'protocol_f', 'ptr_f', 'trade_f', 'trailer_f', 'consulate_f', 'learning_f', "diplomat_f", "classic_f", "export_f", "military_f", 'commercial_f', 'rtp_f']
+kind_name_list = ['none', 'kind']
+num_name_list = ['none', 'num']
 
 # 无用标签修正
 replace_name_list = ['.', ' ', '　', '"', '”',
@@ -20,7 +23,16 @@ replace_name_list = ['.', ' ', '　', '"', '”',
                      '#DUBAI', '#POLICE', '#POICE',  '#POLCE', '#TXAI', '#TAXU', 
                      'TAXI', 'DUBAI', 'POLICE', 'POICE', ' POLCE', 'TXAI', 'TAXU']
 # 错误标注修正
-replace_name_dict = {}
+replace_name_dict = {
+                        'uar': 'uae',
+                        '3\tdubai': 'dubai',
+                        'poplice': 'police',
+                        'kuwait-f': 'kuwait_f',
+                        'bule': 'blue',
+                    }
+
+# 跳过位置标签
+ignore_unknown_label = ['2020', '5 - 5', 'license_plate', 'unknown', 'unknown_f']
 
 analysis_label_columns = {
                             'num': kind_num_labels,
@@ -243,3 +255,16 @@ def json_load_object_plate_num(cell):
             plate_num = plate_num.replace(replace_name, replace_name_dict[replace_name])
 
     return plate_num
+
+
+# def json_load_object_plate_license_num(cell):
+    
+#     # plate_license_num
+#     if 'label' in cell and cell["label"] == "license_num":
+
+#     if 'attributes' in cell and len(cell["attributes"]):
+#         for json_attributes in cell["attributes"]:
+#             if json_attributes["name"] == "status":
+#                 plate_status = json_attributes["value"]
+
+#     return plate_status
