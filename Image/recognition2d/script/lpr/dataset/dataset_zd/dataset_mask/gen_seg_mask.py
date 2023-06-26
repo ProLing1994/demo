@@ -47,7 +47,8 @@ def gen_seg_mask(args):
         plate_num = row['num'] 
         crop_img_path = row['crop_img'] 
         crop_xml_path = row['crop_xml'] 
-        crop_json_path = row['crop_json']
+        if 'crop_json' not in row:
+            crop_json_path = ""
 
         plate_img_name = plate_name + '.jpg'
         plate_mask_name = plate_name + '.png'

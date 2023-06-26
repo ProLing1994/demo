@@ -2,16 +2,16 @@ import argparse
 import sys
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-# sys.path.insert(0, '/yuanhuan/code/demo/Speech')
+# sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+sys.path.insert(0, '/yuanhuan/code/demo/Speech')
 from Basic.utils.loss_tools import *
 from Basic.utils.profiler_tools import Profiler
 from Basic.utils.train_tools import *
 
 from KWS.utils.train_tools import *
 
-sys.path.insert(0, '/home/huanyuan/code/demo/common')
-# sys.path.insert(0, '/yuanhuan/code/demo/common')
+# sys.path.insert(0, '/home/huanyuan/code/demo/common')
+sys.path.insert(0, '/yuanhuan/code/demo/common')
 from common.utils.python.logging_helpers import setup_logger
 
 
@@ -303,7 +303,7 @@ def main():
     # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_2_label_xiaoyu.py", nargs='?', help='config file')
     # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py", nargs='?', help='config file')
     # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_heybodycam.py", nargs='?', help='config file')
-    parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_gorila8k.py", nargs='?', help='config file')
+    parser.add_argument('-i', '--config_file', type=str, default="/yuanhuan/code/demo/Speech/KWS/config/kws/kws_config_gorila8k.py", nargs='?', help='config file')
 
     # training_mode = 1
     # parser.add_argument('-i', '--config_file', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaoyu.py", nargs='?', help='config file')

@@ -10,6 +10,7 @@ error_crop_data_dir=/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_error_crop_
 analysis_dir=/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_analysis/
 
 seg_name=seg_zd_202306
+seg_lmdb_name=seg_zd_lmdb_202306
 ocr_name=plate_zd_mask_202306
 training_data_dir=/yuanhuan/data/image/RM_ANPR/training/
 
@@ -78,7 +79,7 @@ done
 #     echo $date_name
 
 #     # old style 
-#     python /yuanhuan/code/demo/Image/recognition2d/script/lpr/dataset/dataset_zd/dataset_check/dataset_crop_csv.py --date_name=$date_name --input_csv_dir=$data_csv_dir --input_crop_data_dir=$data_crop_dir --output_csv_dir=$data_crop_csv_dir --output_error_crop_data_dir=$error_crop_data_dir --bool_write_error_data
+#     # python /yuanhuan/code/demo/Image/recognition2d/script/lpr/dataset/dataset_zd/dataset_check/dataset_crop_csv.py --date_name=$date_name --input_csv_dir=$data_csv_dir --input_crop_data_dir=$data_crop_dir --output_csv_dir=$data_crop_csv_dir --output_error_crop_data_dir=$error_crop_data_dir --bool_write_error_data
 #     # new style
 #     python /yuanhuan/code/demo/Image/recognition2d/script/lpr/dataset/dataset_zd/dataset_check/dataset_crop_csv.py --date_name=$date_name --input_csv_dir=$data_csv_dir --input_crop_data_dir=$data_crop_dir --output_csv_dir=$data_crop_csv_dir --output_error_crop_data_dir=$error_crop_data_dir --new_style --bool_write_error_data
     
@@ -97,6 +98,8 @@ done
 
 #     python /yuanhuan/code/demo/Image/recognition2d/script/lpr/dataset/dataset_zd/dataset_train_test_split/data_train_test_split_seg_augment.py --date_name=$date_name --seg_name=$seg_name --input_dir=$training_data_dir
 
+#     # lmdb
+#     python /yuanhuan/code/demo/Image/recognition2d/script/lpr/dataset/dataset_zd/dataset_lmdb/gen_seg_lmdb.py --date_name=$date_name --seg_name=$seg_name --seg_lmdb_name=$seg_lmdb_name --input_dir=$training_data_dir
 # done
 
 # python /yuanhuan/code/demo/Image/recognition2d/script/lpr/dataset/dataset_zd/dataset_train_test_split/data_train_test_split_seg_merge.py --seg_name=$seg_name --input_dir=$training_data_dir
