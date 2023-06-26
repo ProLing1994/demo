@@ -77,12 +77,12 @@ if __name__ == "__main__":
     # default_threshold = '2.5'
 
     # Gorila
-    default_input_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/TruckIdling_test/"
-    default_output_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/TruckIdling_test_over_long/"
-    # default_input_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/office_test/"
-    # default_output_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/office_test_over_long/"
+    default_input_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/original/TruckIdling/"
+    default_output_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/original/TruckIdling_over_long/"
+    # default_input_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/original/office/"
+    # default_output_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/original/office_over_long/"
     default_sample_rate = 16000
-    default_threshold = '2.5'
+    default_threshold = '2.3'
 
     parser = argparse.ArgumentParser(description='Streamax KWS Engine')
     parser.add_argument('--input_dir', type=str, default=default_input_dir)

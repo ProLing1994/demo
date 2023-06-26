@@ -17,18 +17,16 @@ __C.general.sub_data_dir = ["/mnt/huanyuan2/data/speech/kws/xiaoyu_dataset/exper
                             "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/",]
 
 # data version
-# __C.general.version = "1.1"     # 成都录制唤醒词 + 深圳录制唤醒词 + 客户录制唤醒词 + 负样本
 __C.general.version = "1.2"     # 成都录制唤醒词 + 深圳录制唤醒词 + 客户录制唤醒词 + 负样本 + 数据清洗
 
 # data date
-# __C.general.date = "06252023"
 __C.general.date = "06262023"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_1_5s_1_2_06262023/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_2_0s_1_2_06262023/total_data_files.csv"
 
 # background noise path
-__C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_1_5s_1_2_06262023/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_2_0s_1_2_06262023/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -36,8 +34,8 @@ __C.general.is_test = True
 
 # the output of training models and logging files
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/test"
-__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_1_1_5s_res15_fbankcpu_06252023/"
-# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_1_1_5s_tc_resnet14_fbankcpu_06252023/"
+__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_res15_fbankcpu_06252023/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_tc_resnet14_fbankcpu_06252023/"
 
 # finetune model
 __C.general.finetune_on = False
@@ -129,7 +127,7 @@ __C.dataset.input_channel = 1
 __C.dataset.sampling_rate = 8000
 
 # Length of each audio clip to be analyzed
-__C.dataset.clip_duration_ms = 1500
+__C.dataset.clip_duration_ms = 2000         # 2s
 
 # FFT size.
 __C.dataset.fft_size = 256
@@ -149,12 +147,12 @@ __C.dataset.num_mels = 48
 # How many nfilt to use for the Mel feature, only support preprocess ["fbank_cpu"]
 __C.dataset.num_filts = 48
 
-# fmin, only support preprocess ["fbank_log", "fbank_preemphasis_log_manual"]
-# Set this to 55 if your speaker is male! if female, 95 should help taking off noise. (To 
+# Minimum freq in mel basis calculation, only support preprocess ["fbank_log", "fbank_nopreemphasis_log_manual", "fbank_preemphasis_log_manual"]
+# Set this to 55 if your speaker is male! if female, 95 should help taking off noise. (To
 # test depending on dataset. Pitch info: male~[65, 260], female~[100, 525])
 __C.dataset.fmin = None
 
-# fmax, only support preprocess ["fbank_log", "fbank_preemphasis_log_manual"]
+# Maximum frequency in mel basis calculation, only support preprocess ["fbank_log", "fbank_nopreemphasis_log_manual", "fbank_preemphasis_log_manual"]
 # To be increased/reduced depending on data.
 __C.dataset.fmax = None
 
@@ -181,7 +179,7 @@ __C.dataset.w_alignment = False
 __C.dataset.h_alignment = False
 
 # input size of training data (w, h), unit: voxel
-__C.dataset.data_size = [48, 146]
+__C.dataset.data_size = [48, 196]
 
 # allow_cache
 __C.dataset.allow_cache = True
@@ -253,9 +251,11 @@ __C.dataset.augmentation.synthetic_scale = 0.001
 __C.dataset.augmentation.synthetic_prob = 0.001
 
 # Range to randomly shift the training audio by in time(ms).
+# __C.dataset.augmentation.time_shift_ms = 500.0
 __C.dataset.augmentation.time_shift_ms = 100.0
 
 # Time shift enhancement multiple of negative samples, which is effective for advanced prediction and lag prediction
+# __C.dataset.augmentation.time_shift_multiple = 1
 __C.dataset.augmentation.time_shift_multiple = 10
 
 # based on audio waveform: on.
@@ -315,7 +315,8 @@ __C.regularization = {}
 __C.regularization.label_smoothing = {}
 
 # regularization: label smoothing on
-__C.regularization.label_smoothing.on = False
+__C.regularization.label_smoothing.on = True
+# __C.regularization.label_smoothing.on = False
 
 # regularization: label smoothing epsilon 
 __C.regularization.label_smoothing.epsilon = 0.1
@@ -329,10 +330,21 @@ __C.loss = {}
 
 # the loss method, support ['classification', 'embedding', 'classification & embedding']
 __C.loss.method = 'classification'
+# __C.loss.method = 'embedding'
+# __C.loss.method = 'classification & embedding'
 
-# the loss name, support ['softmax','focal']
+# the size of embedding in embedding method orclassification & embedding classification & embedding method
+__C.loss.embedding_size = 128
+
+# the size of embedding in embedding method orclassification & embedding classification & embedding method
+__C.loss.embedding_weight = 0.01
+
+# the loss name, support ['softmax', 'focal']
 # __C.loss.name = 'softmax'
 __C.loss.name = 'focal'
+
+# the embedding loss name, support ['AmSoftmax']
+__C.loss.embedding_loss_name = 'AmSoftmax'
 
 # the number of class
 __C.loss.num_classes =  __C.dataset.label.num_classes
@@ -343,6 +355,12 @@ __C.loss.obj_weight = np.array([[1/9, 0], [0, 8/9]])
 
 # the gamma parameter in focal loss
 __C.loss.focal_gamma = 2
+
+# the parameter in AmSoftmax
+__C.loss.AmSoftmax_m = 0.3
+
+# the parameter in AmSoftmax
+__C.loss.AmSoftmax_s = 15
 
 # EMA: expontential moving average on
 # EMA: https://github.com/ProLing1994/pytorch-loss/blob/master/ema.py
@@ -361,9 +379,9 @@ __C.net = {}
 
 # the network name
 __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/res15.py"
-# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-hisi-novt-144-142.py"
+# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-296.py"
+# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-196.py"
 __C.net.class_name = "SpeechResModel"
-
 
 ######################################
 # training parameters
@@ -372,6 +390,9 @@ __C.net.class_name = "SpeechResModel"
 __C.train = {}
 
 # the number of training epochs
+# __C.train.num_epochs = 16000
+# __C.train.num_epochs = 8000
+# __C.train.num_epochs = 4000
 __C.train.num_epochs = 2000
 # __C.train.num_epochs = 500
 # __C.train.num_epochs = 1
@@ -392,13 +413,13 @@ __C.train.num_threads = 16
 
 # the number of batches to show log
 __C.train.show_log = 5
+# __C.train.show_log = 1
 
 # the number of batches to update loss curve
 __C.train.plot_snapshot = 5
 
 # the number of epochs to save model
 __C.train.save_epochs = 25
-# __C.train.save_epochs = 1
 
 
 ######################################

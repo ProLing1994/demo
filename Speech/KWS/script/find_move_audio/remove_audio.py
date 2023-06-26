@@ -47,15 +47,15 @@ def remove_audio_speaker():
 
 if __name__ == "__main__":
 
-    # # 方法：删除同名文件
-    # parser = argparse.ArgumentParser(description='Streamax KWS Engine')
-    # args = parser.parse_args()
-    # # args.input_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/TruckIdling_test_over_long/"
-    # # args.output_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/TruckIdling_test/"
-    # args.input_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/office_test_over_long/"
-    # args.output_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/office_test/"
+    # 方法：删除同名文件
+    parser = argparse.ArgumentParser(description='Streamax KWS Engine')
+    args = parser.parse_args()
+    args.input_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/original/TruckIdling_over_long/"
+    args.output_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/original/TruckIdling/"
+    # args.input_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/original/office_over_long/"
+    # args.output_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/original/office/"
 
-    # remove_audio_samename()
+    remove_audio_samename()
 
     # # 方法：删除指定后缀
     # parser = argparse.ArgumentParser(description='Streamax KWS Engine')
@@ -65,11 +65,11 @@ if __name__ == "__main__":
 
     # remove_audio_suffix()
 
-    # 方法：删除指定说话人
-    parser = argparse.ArgumentParser(description='Streamax KWS Engine')
-    args = parser.parse_args()
-    # args.input_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/TruckIdling_test/"
-    args.input_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/office_test/"
-    args.spk_list = ['S043', 'S076', 'S047', 'S050', 'S084', 'S069', 'S080', 'S046', 'S013']
+    # # 方法：删除指定说话人
+    # parser = argparse.ArgumentParser(description='Streamax KWS Engine')
+    # args = parser.parse_args()
+    # # args.input_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/TruckIdling_test/"
+    # args.input_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/office_test/"
+    # args.spk_list = ['S043', 'S076', 'S047', 'S050', 'S084', 'S069', 'S080', 'S046', 'S013']
 
-    remove_audio_speaker()
+    # remove_audio_speaker()

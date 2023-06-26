@@ -12,8 +12,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.input_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/audio/客户采集音频/20230612/"
-    args.output_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/office/"
+    args.input_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/audio/成都采集音频/"
+    args.output_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/original/office/"
 
     file_list = get_sub_filepaths_suffix(args.input_dir, '.wav')
 

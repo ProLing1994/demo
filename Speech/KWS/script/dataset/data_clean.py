@@ -50,11 +50,11 @@ def data_clean(args):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--input_dir', type=str,
-                        # default="/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/TruckIdling")
-                        default="/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/office")
+                        default="/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/original/TruckIdling")
+                        # default="/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/original/office")
     parser.add_argument('--output_dir', type=str,
-                        # default="/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/TruckIdling_test")
-                        default="/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/office_test")
+                        default="/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/original/TruckIdling_test")
+                        # default="/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/original/office_test")
     args = parser.parse_args()
     data_clean(args)
 
