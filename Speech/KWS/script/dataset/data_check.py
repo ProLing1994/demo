@@ -21,7 +21,7 @@ def data_check(args):
     
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input_dir', type=str, default="/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/truck_platform_alarm_8k/2021-2022/")
+    parser.add_argument('--input_dir', type=str, default="/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/TruckIdling/gorila_gorila/adplus1_0_70cm/")
     parser.add_argument('--sample_rate', type=int, default=8000)
     args = parser.parse_args()
     data_check(args)

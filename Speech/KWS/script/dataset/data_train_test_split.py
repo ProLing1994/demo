@@ -65,9 +65,9 @@ def which_set(filename, validation_percentage, testing_percentage, get_hash_name
                             (MAX_NUM_WAVS_PER_CLASS + 1)) *
                             (100.0 / MAX_NUM_WAVS_PER_CLASS))
 
-    # owner, should be validation:
-    if hash_name == "S015M1":
-        return 'validation'
+    # # owner, should be validation:
+    # if hash_name == "S015M1":
+    #     return 'validation'
 
     if percentage_hash < testing_percentage:
         result = 'testing'
@@ -132,7 +132,7 @@ def data_split(config_file):
 
         all_labels_set.add(word)
         # Divide training, test and verification set
-        dataset_module = importlib.import_module('prepare_dataset_{}'.format(os.path.basename(config_file).split('.')[0].split('_')[-1]))
+        dataset_module = importlib.import_module('KWS.script.dataset.prepare_dataset_{}'.format(os.path.basename(config_file).split('.')[0].split('_')[-1]))
         set_index = which_set(wav_path, validation_percentage, testing_percentage, dataset_module.get_hash_name)
         # If it's a known class, store its detail, otherwise add it to the list
         # we'll use to train the unknown label. 
@@ -202,10 +202,11 @@ def main():
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py", help='config file')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_2_label_xiaoyu.py", help='config file')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaole.py", help='config file')
-    parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py", help='config file')
+    # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py", help='config file')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_pretrain.py", help='config file')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_align_xiaorui.py", help='config file')
     # parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_activatebwc.py", help='config file')
+    parser.add_argument('-i', '--input', type=str, default="/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_gorila8k.py", help='config file')
     args = parser.parse_args()
 
     print("[Begin] Train test dataset split")
