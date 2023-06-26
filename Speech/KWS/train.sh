@@ -9,7 +9,10 @@ stage=2
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaorui.py
 
 # xiaoyu
-config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py
+# config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoyu.py
+
+# gorila
+config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_gorila8k.py
 
 echo "train.sh"
 

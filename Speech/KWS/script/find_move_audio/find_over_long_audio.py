@@ -64,18 +64,26 @@ def find_over_short_audio():
 
 if __name__ == "__main__":
     # find_over_long_audio
-    # xiaoan 8k
-    default_input_dir = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_16k_small_voice/"
-    default_output_dir = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/over_long/"
-    default_sample_rate = 16000
-    default_threshold = '1.8'
+    # # xiaoan 8k
+    # default_input_dir = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/xiaoanxiaoan_16k_small_voice/"
+    # default_output_dir = "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/over_long/"
+    # default_sample_rate = 16000
+    # default_threshold = '1.8'
 
-    # # # activate bwc
-    # # default_input_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/tts/sv2tts/LibriSpeech/train-other-500_check_vad/activatebwc/"
-    # # default_output_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/tts/sv2tts/LibriSpeech/over_long/"
-    # # default_sample_rate = 16000
-    # # default_threshold = '2.5'
-    
+    # activate bwc
+    # default_input_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/tts/sv2tts/LibriSpeech/train-other-500_check_vad/activatebwc/"
+    # default_output_dir = "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/tts/sv2tts/LibriSpeech/over_long/"
+    # default_sample_rate = 16000
+    # default_threshold = '2.5'
+
+    # Gorila
+    default_input_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/TruckIdling_test/"
+    default_output_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/TruckIdling_test_over_long/"
+    # default_input_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/office_test/"
+    # default_output_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/office_test_over_long/"
+    default_sample_rate = 16000
+    default_threshold = '2.5'
+
     parser = argparse.ArgumentParser(description='Streamax KWS Engine')
     parser.add_argument('--input_dir', type=str, default=default_input_dir)
     parser.add_argument('--output_dir', type=str, default=default_output_dir)
