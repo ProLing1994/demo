@@ -14,19 +14,20 @@ import ASR.impl.asr_data_loader_pyimpl as WaveLoader_Python
 # cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_bpe_phoneme.py"
 
 ## Chinese
-cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_16k_64dim.py"
+# cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_16k_64dim.py"
 # cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_8k_56dim.py"
 # cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MTA_XIAOAN.py"
 # cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_XIAORUI.py"
 # cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_CQ_TAXI_3s.py"
+cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MTA_GORILA.py"
 
 
 def KWS_ASR_offine():
     # init 
     # kws_asr_api = KwsAsrApi(cfg_path = cfg_path, bool_do_kws_weakup=True, bool_do_asr=True, bool_gpu=True)
     # kws_asr_api = KwsAsrApi(cfg_path = cfg_path, bool_do_kws_weakup=False, bool_do_asr=True, bool_gpu=True)
-    # kws_asr_api = KwsAsrApi(cfg_path = cfg_path, bool_do_kws_weakup=True, bool_do_asr=False, bool_gpu=True)
-    kws_asr_api = KwsAsrApi(cfg_path = cfg_path, bool_do_kws_weakup=True, bool_do_asr=False, bool_do_sv=True, bool_gpu=True)
+    kws_asr_api = KwsAsrApi(cfg_path = cfg_path, bool_do_kws_weakup=True, bool_do_asr=False, bool_gpu=True)
+    # kws_asr_api = KwsAsrApi(cfg_path = cfg_path, bool_do_kws_weakup=True, bool_do_asr=False, bool_do_sv=True, bool_gpu=True)
 
     # load wave
     # wave_loader = WaveLoader_C.WaveLoader(kws_asr_api.sample_rate())

@@ -1,18 +1,20 @@
 import argparse
 import cv2
-import copy
 import numpy as np
 import os
-import pandas as pd
 import sys
 import time 
 from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
-from Image.Basic.utils.folder_tools import *
-from Image.detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
+# from Image.Basic.utils.folder_tools import *
+# from Image.detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
 from Image.detection2d.mmdetection.demo.detector.yolov6_detector import YOLOV6Detector
-from Image.detection2d.mmdetection.demo.detector.yolov6_landmark_detector import YOLOV6LandmarkDetector
+
+
+def create_folder(folder):
+    if not os.path.exists(folder):
+        os.makedirs(folder)
 
 
 def inference_video(args):
@@ -79,16 +81,16 @@ def main():
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    # args.video_dir = "/mnt/huanyuan2/data/image/test_R151_detect/car_avi_select/车前/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test_R151_detect/yolox_95/车前/"
+    args.video_dir = "/mnt/huanyuan2/data/image/test_R151_detect/car_avi_select/车前/"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test_R151_detect/yolox_140/车前/"
     # args.video_dir = "/mnt/huanyuan2/data/image/test_R151_detect/car_avi_select/右侧/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test_R151_detect/yolox_95/右侧/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test_R151_detect/yolox_140/右侧/"
     # args.video_dir = "/mnt/huanyuan2/data/image/test_R151_detect/car_avi_select/右俯视/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test_R151_detect/yolox_95/右俯视/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test_R151_detect/yolox_140/右俯视/"
     # args.video_dir = "/mnt/huanyuan2/data/image/test_R151_detect/car_avi_select/左侧/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test_R151_detect/yolox_95/左侧/"
-    args.video_dir = "/mnt/huanyuan2/data/image/test_R151_detect/car_avi_select/左俯视/"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test_R151_detect/yolox_95/左俯视/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test_R151_detect/yolox_140/左侧/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/test_R151_detect/car_avi_select/左俯视/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test_R151_detect/yolox_140/左俯视/"
 
     # ssd caffe
     # args.ssd_prototxt = "/mnt/huanyuan/model_final/image_model/zg/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-08-10-00/FPN_RFB_3class_3attri_noDilation_prior.prototxt"
@@ -96,7 +98,7 @@ def main():
 
     # yolox pth
     args.yolox_config = "/mnt/huanyuan/model/image/yolox/yolovx_l_license_0601/yolox_l_license.py"
-    args.yolox_checkpoint =  "/mnt/huanyuan/model/image/yolox/yolovx_l_license_0601/epoch_95.pth"
+    args.yolox_checkpoint =  "/mnt/huanyuan/model/image/yolox/yolovx_l_license_0601/epoch_140.pth"
     args.yolox_class_name = ['license_plate']
     args.yolox_threshold_list = [0.4]
 

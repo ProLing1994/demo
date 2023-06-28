@@ -241,24 +241,24 @@ if __name__ == "__main__":
     #             "xiaole",
     #             bool_write_audio)
 
-    # xiaoan8k
-    # cal_fpr_tpr("/mnt/huanyuan/model_final/test_straming_wav/xiaoan8k_1_3_04152021_validation.csv",
-    #             "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_7_2s_tc_resnet14_fbankcpu_kd_04192022/test_straming_wav/xiaoan8k_1_3_04152021_validation_threshold_0_5/found_words.csv",
-    #             ["xiaoanxiaoan_8k", "xiaoanxiaoan_16k"],
-    #             bool_write_audio)
-    cal_fpr_tpr_per_folder("/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/更新漏标注数据处理/",
-                            "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_7_2s_tc_resnet14_fbankcpu_kd_04192022/test_straming_wav/实车录制_0427_pytorch/阈值_05_05/货车怠速场景/",
-                            # "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_7_2s_tc_resnet14_fbankcpu_kd_04192022/test_straming_wav/实车录制_0427_pytorch/阈值_09_05/货车怠速场景/",
-                            ["_adpro"],
-                            # ["_mic"],
-                            # ["danbin_ori"],
-                            # ["danbin_asr"],
-                            ["xiaoanxiaoan_8k", "xiaoan8k", "Weakup"],
-                            bool_write_audio)
-    # cal_fpr_tpr("/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/更新漏标注数据处理/李煜_danbin_ori.csv",
-    #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_8_res15_fbankcpu_041262021/test_straming_wav/实车录制_0427_pytorch/阈值_05_03/货车怠速场景/李煜_danbin_ori/found_words.csv",
-    #             ["xiaoanxiaoan_8k", "xiaoan8k"],
-    #             bool_write_audio)
+    # # xiaoan8k
+    # # cal_fpr_tpr("/mnt/huanyuan/model_final/test_straming_wav/xiaoan8k_1_3_04152021_validation.csv",
+    # #             "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_7_2s_tc_resnet14_fbankcpu_kd_04192022/test_straming_wav/xiaoan8k_1_3_04152021_validation_threshold_0_5/found_words.csv",
+    # #             ["xiaoanxiaoan_8k", "xiaoanxiaoan_16k"],
+    # #             bool_write_audio)
+    # cal_fpr_tpr_per_folder("/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/更新漏标注数据处理/",
+    #                         "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_7_2s_tc_resnet14_fbankcpu_kd_04192022/test_straming_wav/实车录制_0427_pytorch/阈值_05_05/货车怠速场景/",
+    #                         # "/mnt/huanyuan/model/kws/kws_xiaoan/kws_xiaoan8k_6_7_2s_tc_resnet14_fbankcpu_kd_04192022/test_straming_wav/实车录制_0427_pytorch/阈值_09_05/货车怠速场景/",
+    #                         ["_adpro"],
+    #                         # ["_mic"],
+    #                         # ["danbin_ori"],
+    #                         # ["danbin_asr"],
+    #                         ["xiaoanxiaoan_8k", "xiaoan8k", "Weakup"],
+    #                         bool_write_audio)
+    # # cal_fpr_tpr("/mnt/huanyuan/data/speech/kws/xiaoan_dataset/test_dataset/实车录制_0427/货车怠速场景/更新漏标注数据处理/李煜_danbin_ori.csv",
+    # #             "/mnt/huanyuan/model/model_10_30_25_21/model/kws_xiaoan8k_1_8_res15_fbankcpu_041262021/test_straming_wav/实车录制_0427_pytorch/阈值_05_03/货车怠速场景/李煜_danbin_ori/found_words.csv",
+    # #             ["xiaoanxiaoan_8k", "xiaoan8k"],
+    # #             bool_write_audio)
 
     # # activatebwc
     # cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/activatebwc_1_5_03312021_validation.csv",
@@ -275,6 +275,16 @@ if __name__ == "__main__":
     #                         ["RM_KWS_ACTIVATEBWC_ovweseas_asr_"],
     #                         "activatebwc",
     #                         bool_write_audio)
+
+    # gorila8k
+    # cal_fpr_tpr("/mnt/huanyuan/model_final/test_straming_wav/gorila8k_1_2_06262023_validation.csv",
+    #             "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_1_5s_tc_resnet14_fbankcpu_06252023/test_straming_wav/gorila8k_1_2_06262023_validation_threshold_0_9/found_words.csv",
+    #             ["gorila_gorila"],
+    #             bool_write_audio)
+    cal_fpr_tpr("/mnt/huanyuan/model_final/test_straming_wav/weiboyulu_test_3600_001.csv",
+                "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_1_5s_tc_resnet14_fbankcpu_06252023/test_straming_wav/weiboyulu_test_3600_001_threshold_0_9/found_words.csv",
+                ["gorila_gorila"],
+                bool_write_audio)
 
     # # positive
     # cal_fpr_tpr("/mnt/huanyuan/model/test_straming_wav/pretrain_1_1_12212020_validation_3600_001.csv",
