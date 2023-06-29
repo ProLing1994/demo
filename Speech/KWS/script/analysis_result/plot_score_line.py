@@ -400,8 +400,8 @@ if __name__ == "__main__":
     #                 ["heybodycam"], positive_label_idx=positive_label_idx)
 
     # gorila8k
-    model_name = "kws_gorila8k_1_2_1_5s_tc_resnet14_fbankcpu_06252023"
-    threshold = "0.5"
+    model_name = "kws_gorila8k_1_2_1_5s_res15_fbankcpu_06252023"
+    threshold = "0.9"
     positive_label_idx = "1"
     show_score_line("/mnt/huanyuan/model_final/test_straming_wav/gorila8k_1_2_06262023_training_60.csv",
                     "/mnt/huanyuan/model/kws/kws_gorila/{}/test_straming_wav/gorila8k_1_2_06262023_training_60_threshold_{}/final_scores.csv".format(model_name, "_".join(threshold.split('.'))),

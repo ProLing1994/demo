@@ -36,7 +36,8 @@ __C.general.is_test = True
 
 # the output of training models and logging files
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/test"
-__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_1_5s_tc_resnet14_fbankcpu_06252023/"
+__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_1_5s_res15_fbankcpu_06252023/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_1_5s_tc_resnet14_fbankcpu_06252023/"
 
 # finetune model
 __C.general.finetune_on = False
