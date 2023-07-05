@@ -278,11 +278,11 @@ if __name__ == "__main__":
 
     # gorila8k
     cal_fpr_tpr("/mnt/huanyuan/model_final/test_straming_wav/gorila8k_1_2_06262023_validation.csv",
-                "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_1_5s_res15_fbankcpu_06252023/test_straming_wav/gorila8k_1_2_06262023_validation_threshold_0_9/found_words.csv",
+                "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_tc_resnet14_fbankcpu_novad_06252029/test_straming_wav/gorila8k_1_2_06262023_validation_threshold_0_9/found_words.csv",
                 ["gorila_gorila"],
                 bool_write_audio)
     # cal_fpr_tpr("/mnt/huanyuan/model_final/test_straming_wav/weiboyulu_test_3600_001.csv",
-    #             "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_1_5s_res15_fbankcpu_06252023/test_straming_wav/weiboyulu_test_3600_001_threshold_0_9/found_words.csv",
+    #             "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_tc_resnet14_fbankcpu_novad_06252029/test_straming_wav/weiboyulu_test_3600_001_threshold_0_9/found_words.csv",
     #             ["gorila_gorila"],
     #             bool_write_audio)
 

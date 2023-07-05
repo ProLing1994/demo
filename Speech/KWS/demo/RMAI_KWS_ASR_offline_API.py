@@ -48,7 +48,7 @@ def KWS_ASR_offine():
 
 
 if __name__ == "__main__":
-    # 实现功能：语音唤醒 weakup 和关键词检索 asr 共同工作，目的是共用一套特征，节约资源
-    # 方案一：实现 weakup + asr 
-    # 方案二：在无 weakup 的情况下，实现 asr
+    # 实现功能：语音唤醒 wakeup 和关键词检索 asr 共同工作，目的是共用一套特征，节约资源
+    # 方案一：实现 wakeup + asr 
+    # 方案二：在无 wakeup 的情况下，实现 asr
     KWS_ASR_offine()       

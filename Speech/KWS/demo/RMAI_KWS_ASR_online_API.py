@@ -16,11 +16,12 @@ from RMAI_KWS_ASR_API import KwsAsrApi
 # cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_BWC_bpe_phoneme.py"
 
 ## Chinese
-cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_16k_64dim.py"
+# cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_16k_64dim.py"
 # cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MANDARIN_TAXI_8k_56dim.py"
 # cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MTA_XIAOAN.py"
 # cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_XIAORUI.py"
 # cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_CQ_TAXI_3s.py"
+cfg_path = "/home/huanyuan/code/demo/Speech/KWS/demo/RMAI_KWS_ASR_options_MTA_GORILA.py"
 
 def term(sig_num, addtion):
     """
@@ -69,7 +70,8 @@ class OnlineAudio:
         进程：监听本地音乐
         """
         print("[Init:] Listen")
-        wave_path = "/home/huanyuan/code/demo/Speech/API/Kws_weakup_Asr/audio/test-kws-xiaorui-asr-mandarin-taxi_001.wav"
+        # wave_path = "/home/huanyuan/share/huanyuan/audio_data/wakeup/wakeup_xiaoan8k/自测音频/xiaoan8k_1_1_04082021_validation_60.wav"
+        wave_path = "/mnt/huanyuan/model_final/test_straming_wav/gorila8k_1_2_06262023_validation_60.wav"
     
         # 打开音频流，output=True 表示音频输出
         pyaudio_play = pyaudio.PyAudio()
@@ -146,7 +148,8 @@ class OnlineAudio:
         print("[Information:] If you want to kill the main-process and sub-process, type: kill {}".format(os.getpid()))
 
         # # 监听
-        # listen_process_play = Process(target=self.listen, args=(self.event, self.audio_queue_play))
+        # # listen_process_play = Process(target=self.listen, args=(self.event, self.audio_queue_play))
+        # listen_process_play = Process(target=self.listen_file, args=(self.event, self.audio_queue_play))
         # listen_process_play.start()
 
         # # 播放
@@ -170,5 +173,6 @@ class OnlineAudio:
 
 if __name__ == '__main__':
     freeze_support()
-    online_audio = OnlineAudio()
+    # online_audio = OnlineAudio(chunk=1600, format=pyaudio.paInt16, channels=1, rate=16000)
+    online_audio = OnlineAudio(chunk=1600, format=pyaudio.paInt16, channels=1, rate=8000)
     online_audio.start()

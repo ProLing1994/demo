@@ -17,16 +17,20 @@ __C.general.sub_data_dir = ["/mnt/huanyuan2/data/speech/kws/xiaoyu_dataset/exper
                             "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/",]
 
 # data version
-__C.general.version = "1.2"     # 成都录制唤醒词 + 深圳录制唤醒词 + 客户录制唤醒词 + 负样本 + 数据清洗
+# __C.general.version = "1.2"     # 成都录制唤醒词 + 深圳录制唤醒词 + 客户录制唤醒词 + 负样本 + 数据清洗
+__C.general.version = "1.3"     # 成都录制唤醒词 + 深圳录制唤醒词 + 客户录制唤醒词 + 负样本 + 数据清洗（实习生）+ 小声样本剔除
 
 # data date
-__C.general.date = "06262023"
+# __C.general.date = "06262023"
+__C.general.date = "07042023"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_2_0s_1_2_06262023/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_2_0s_1_2_06262023/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_2_0s_1_3_07042023/total_data_files.csv"
 
 # background noise path
-__C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_2_0s_1_2_06262023/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_2_0s_1_2_06262023/background_noise_files.csv"
+__C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_2_0s_1_3_07042023/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -34,8 +38,10 @@ __C.general.is_test = True
 
 # the output of training models and logging files
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/test"
-__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_res15_fbankcpu_06252023/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_res15_fbankcpu_06252023/"
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_tc_resnet14_fbankcpu_06252023/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_res15_fbankcpu_06252023/"
+__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_tc_resnet14_fbankcpu_novad_06252029/"
 
 # finetune model
 __C.general.finetune_on = False
@@ -277,8 +283,8 @@ __C.dataset.augmentation.pitch_on = False
 __C.dataset.augmentation.pitch = [-5, 5]
 
 # based on audio waveform: on.
-__C.dataset.augmentation.vad_on = True
-# __C.dataset.augmentation.vad_on = False
+# __C.dataset.augmentation.vad_on = True
+__C.dataset.augmentation.vad_on = False
 
 # How many of the training samples have vad augmentation.
 __C.dataset.augmentation.vad_frequency = 0.1
@@ -378,9 +384,9 @@ __C.loss.ema_alpha = 0.995
 __C.net = {}
 
 # the network name
-__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/res15.py"
+# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/res15.py"
 # __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-296.py"
-# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-196.py"
+__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-196.py"
 __C.net.class_name = "SpeechResModel"
 
 ######################################
