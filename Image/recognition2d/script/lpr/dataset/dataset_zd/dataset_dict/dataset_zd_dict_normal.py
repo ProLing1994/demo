@@ -1,4 +1,7 @@
 import numpy as np
+import io
+import json
+import os
 import xml.etree.ElementTree as ET
 
 num_labels = [ '1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
@@ -40,6 +43,16 @@ analysis_label_columns = {
                             'color': color_name_list,
                             'country': country_name_list,
                             'city': city_name_list,
+                        }
+
+analysis_crop_label_columns = {
+                            'country': country_name_list,
+                            'country_f': country_f_name_list,
+                            'city': city_name_list, 
+                            'city_f': city_f_name_list, 
+                            'car_type': car_type_name_list,
+                            'car_type_f': car_type_f_name_list,
+                            'color': color_name_list,
                         }
 
 # method 
@@ -268,3 +281,85 @@ def json_load_object_plate_num(cell):
 #                 plate_status = json_attributes["value"]
 
 #     return plate_status
+
+
+def load_ori_object_roi(xml_path, json_path, new_style):
+    
+    object_roi_list = []
+
+    if not new_style:
+        if not os.path.exists(xml_path):
+            return object_roi_list
+        
+        # xml
+        tree = ET.parse(xml_path)  # ET是一个 xml 文件解析库，ET.parse（）打开 xml 文件，parse--"解析"
+        root = tree.getroot()   # 获取根节点
+
+        for object in root.findall('object'):
+            # name
+            classname = str(object.find('name').text)
+
+            # bbox
+            bbox = object.find('bndbox')
+            pts = ['xmin', 'ymin', 'xmax', 'ymax']
+            bndbox = []
+            for i, pt in enumerate(pts):
+                cur_pt = int(float(bbox.find(pt).text)) - 1
+                bndbox.append(cur_pt)
+
+            classname = classname.lower()
+
+            if classname in replace_name_dict:
+                classname = replace_name_dict[classname]        
+
+            if classname in ignore_unknown_label:
+                continue
+            
+            object_roi_list.append({"classname": classname, "bndbox":bndbox})
+    
+    else:
+        if not os.path.exists(json_path):
+            return object_roi_list
+        
+        # json
+        with io.open(json_path, "r", encoding="UTF-8") as f:
+            data_json = json.load(f, encoding='utf-8')
+            f.close()
+
+        for cell in data_json['shapes']:
+            
+            if cell["label"] == "license_kind" or \
+                cell["label"] ==  "license_num":
+
+                # name
+                classname = str(cell["label"]).replace("license_", "")
+
+            elif cell["label"] == "license_country" or \
+                cell["label"] == "license_country_f" or \
+                cell["label"] == "license_city" or \
+                cell["label"] == "license_city_f" or \
+                cell["label"] == "license_car_type" or \
+                cell["label"] == "license_car_type_f" or \
+                cell["label"] == "license_color" :
+
+                # name
+                classname = str(cell["attributes"][0]["value"])
+
+            # bbox
+            pts = np.array(cell["points"], np.int32)
+            pts = pts.reshape((-1, 1, 2))
+
+            x1 = np.min((pts[0][0][0], pts[1][0][0]))
+            x2 = np.max((pts[0][0][0], pts[1][0][0]))
+            y1 = np.min((pts[0][0][1], pts[1][0][1]))
+            y2 = np.max((pts[0][0][1], pts[1][0][1]))
+
+            # bbox
+            bndbox = [x1, y1, x2, y2]
+
+            if classname in ignore_unknown_label:
+                continue
+
+            object_roi_list.append({"classname": classname, "bndbox":bndbox})
+            
+    return object_roi_list
