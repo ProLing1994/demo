@@ -25,19 +25,19 @@ __C.general.version = "1.2"     # 成都录制唤醒词 + 深圳录制唤醒词 
 __C.general.date = "06262023"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_1_5s_1_2_06262023/total_data_files.csv"
+__C.general.data_csv_path = "/root/dataset_gorila_1_5s_1_2_06262023/total_data_files.csv"
 
 # background noise path
-__C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_1_5s_1_2_06262023/background_noise_files.csv"
+__C.general.background_data_path = "/root/dataset_gorila_1_5s_1_2_06262023/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 # __C.general.is_test = False
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/test"
-__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_1_5s_res15_fbankcpu_06252023/"
-# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_1_5s_tc_resnet14_fbankcpu_06252023/"
+# __C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/test"
+# __C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/kws_gorila8k_1_2_1_5s_res15_fbankcpu_06252023/"
+__C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/kws_gorila8k_1_2_1_5s_tc_resnet14_fbankcpu_06252023/"
 
 # finetune model
 __C.general.finetune_on = False
@@ -362,8 +362,8 @@ __C.loss.ema_alpha = 0.995
 __C.net = {}
 
 # the network name
-# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/res15.py"
-__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-hisi-novt-144-142.py"
+# __C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/res15.py"
+__C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/tc-resnet14-amba-hisi-novt-144-142.py"
 __C.net.class_name = "SpeechResModel"
 
 

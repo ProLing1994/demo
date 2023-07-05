@@ -31,7 +31,11 @@ def split(args):
             
             if args.bool_aug:
                 input_merge_file_idy = os.path.join(merge_dir_idx, args.label_name, 'ImageSets_aug', merge_file_idy)
-
+                
+                if not os.path.exists(input_merge_file_idy):
+                    print("[ERROR] Unknown: {}".format(input_merge_file_idy))
+                    continue
+                
                 with open(input_merge_file_idy, "r") as f:
                     for line in f:
                         merge_list[idy].append(line.strip())

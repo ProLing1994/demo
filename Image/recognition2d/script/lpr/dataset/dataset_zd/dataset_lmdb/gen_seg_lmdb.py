@@ -1,5 +1,6 @@
 import argparse
 import cv2
+import io
 import lmdb
 import numpy as np
 import os
@@ -35,17 +36,29 @@ def general_lmdb(lmdb_path, txt_file, txt_aug_file):
     city_mask_path = line.split(".jpg ")[1].split(".png")[0] + '.png'
     color_mask_path = line.split(".jpg ")[1].split(".png ")[1]
     img = cv2.imread(img_path)
-    city_mask = cv2.imread(city_mask_path)[:, :, :1]
-    color_mask = cv2.imread(color_mask_path)[:, :, :1]
-    img_mask = np.concatenate((img, city_mask, color_mask), axis=2)
-    data_size_img_mask = img_mask.nbytes
+    city_mask = cv2.imread(city_mask_path)
+    color_mask = cv2.imread(color_mask_path)
+
+    img_bytes = io.BytesIO()
+    np.save(img_bytes, img)
+    img_bytes = img_bytes.getvalue()
+
+    city_mask_bytes = io.BytesIO()
+    np.save(city_mask_bytes, city_mask)
+    city_mask_bytes = city_mask_bytes.getvalue()
+    
+    color_mask_bytes = io.BytesIO()
+    np.save(color_mask_bytes, color_mask)
+    color_mask_bytes = color_mask_bytes.getvalue()
+    
+    data_size_img_mask = len(img_bytes) + len(city_mask_bytes) + len(color_mask_bytes)
     print('[Information] data size per load is: ', data_size_img_mask)
     data_size = data_size_img_mask * len(txt_lines)
 
     # map_size：
     # Maximum size database may grow to; used to size the memory mapping. If database grows larger
     # than map_size, an exception will be raised and the user must close and reopen Environment.
-    env = lmdb.open(lmdb_path, map_size=data_size * 10)
+    env = lmdb.open(lmdb_path, map_size=data_size * 100)
     txn = env.begin(write=True)
 
     for idx in tqdm(range(len(txt_lines))):
@@ -53,24 +66,30 @@ def general_lmdb(lmdb_path, txt_file, txt_aug_file):
         img_path = line.split(".jpg")[0] + '.jpg'
         city_mask_path = line.split(".jpg ")[1].split(".png")[0] + '.png'
         color_mask_path = line.split(".jpg ")[1].split(".png ")[1]
-
-        # key 
-        key_byte = img_path.encode()
         
         # value
-        try:
-            img = cv2.imread(img_path)
-            city_mask = cv2.imread(city_mask_path)[:, :, :1]
-            color_mask = cv2.imread(color_mask_path)[:, :, :1]
-            img_mask = np.concatenate((img, city_mask, color_mask), axis=2)
-        except:
-            print(img_path)
-            print(city_mask_path)
-            print(color_mask_path)
-            raise Exception
+        img = cv2.imread(img_path)
+        city_mask = cv2.imread(city_mask_path)
+        color_mask = cv2.imread(color_mask_path)
 
         # put
-        txn.put(key_byte, img_mask)
+        img_bytes = io.BytesIO()
+        np.save(img_bytes, img)
+        img_bytes = img_bytes.getvalue()
+        txn.put(img_path.encode(), img_bytes)
+
+        city_mask_bytes = io.BytesIO()
+        np.save(city_mask_bytes, city_mask)
+        city_mask_bytes = city_mask_bytes.getvalue()
+        txn.put(city_mask_path.encode(), city_mask_bytes)
+
+        color_mask_bytes = io.BytesIO()
+        np.save(color_mask_bytes, color_mask)
+        color_mask_bytes = color_mask_bytes.getvalue()
+        txn.put(color_mask_path.encode(), color_mask_bytes)
+        
+        # load_bytes = io.BytesIO(img_bytes)
+        # img_loads = np.load(load_bytes)
 
         if (idx + 1) % commit_interval == 0:
             txn.commit()
@@ -101,8 +120,8 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--date_name', type=str, default="uae_20220804_0809") 
-    parser.add_argument('--seg_name', type=str, default="seg_zd_202306") 
-    parser.add_argument('--seg_lmdb_name', type=str, default="seg_zd_lmdb_202306") 
+    parser.add_argument('--seg_name', type=str, default="seg_zd_202307") 
+    parser.add_argument('--seg_lmdb_name', type=str, default="seg_zd_lmdb_202307") 
     parser.add_argument('--input_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/training/") 
     args = parser.parse_args()
 

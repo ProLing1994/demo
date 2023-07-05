@@ -111,17 +111,19 @@ def gen_seg_mask_augument(args):
     csv_pd = pd.DataFrame(csv_city_list)
     csv_pd.to_csv(args.output_city_csv_path, index=False, encoding="utf_8_sig")
 
+    # out csv
+    csv_pd = pd.DataFrame(csv_color_list)
+    csv_pd.to_csv(args.output_color_csv_path, index=False, encoding="utf_8_sig")
+
 
 if __name__ == "__main__":
     
     parser = argparse.ArgumentParser()
-    parser.add_argument('--date_name', type=str, default="shate_20230308") 
-    parser.add_argument('--seg_name', type=str, default="seg_zd_202306") 
+    parser.add_argument('--date_name', type=str, default="uae_20220804_0809") 
+    parser.add_argument('--seg_name', type=str, default="seg_zd_202307") 
     parser.add_argument('--output_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/training/") 
     parser.add_argument('--new_style', action='store_true', default=False) 
     args = parser.parse_args()
-    
-    args.new_style = True
 
     args.output_dir = os.path.join(args.output_dir, args.seg_name, args.date_name)
 

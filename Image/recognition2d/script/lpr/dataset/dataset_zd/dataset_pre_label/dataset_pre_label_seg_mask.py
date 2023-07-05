@@ -81,7 +81,7 @@ if __name__ == "__main__":
     args.city_seg_caffe_prototxt = ""
     args.city_seg_caffe_model_path = ""
     args.city_seg_pth_path = "/yuanhuan/model/image/lpr/zd/seg_city_cartype_kind_num_zd_1220/LaneNetNova.pth"
-    args.city_seg_dict_name = "script.lpr.dataset.dataset_zd.dataset_dict.dataset_zd_dict_city"
+    args.city_seg_dict_name = "script.lpr.dataset.dataset_zd.dataset_dict.dataset_zd_dict_city_2022"
 
     # zd: seg_color_zd_1220
     args.color_seg_caffe_prototxt = ""

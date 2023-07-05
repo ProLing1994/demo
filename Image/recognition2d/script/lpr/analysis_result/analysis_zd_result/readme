@@ -1,0 +1,10 @@
+# city seg analysis
+Image/recognition2d/script/lpr/analysis_result/analysis_zd_result/infer_seg.py                          # 测试模型
+Image/recognition2d/script/lpr/analysis_result/analysis_zd_result/analysis_resullt_seg_event.py         # 统计结果，以 事件 为单位
+Image/recognition2d/script/lpr/analysis_result/analysis_zd_result/analysis_resullt_seg_error_data.py    # 绘制图像，分析错误分类结果
+Image/recognition2d/script/lpr/analysis_result/analysis_zd_result/analysis_resullt_seg_mask.py          # 统计结果，以分割结果 mask 为单位 'mIoU', 'mDice', 'mFscore'
+
+# zd ocr
+Image/recognition2d/script/lpr/analysis_result/analysis_zd_result/infer_ocr.py                          # 测试模型
+Image/recognition2d/script/lpr/analysis_result/analysis_zd_result/analysis_result_ocr.py                # 多角度分析结果
+Image/recognition2d/script/lpr/analysis_result/analysis_zd_result/analusis_result_ocr_error_data.py     # 绘制图像，分析错误分类结果
