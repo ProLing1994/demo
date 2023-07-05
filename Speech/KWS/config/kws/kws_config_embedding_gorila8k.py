@@ -403,15 +403,9 @@ __C.loss.ema_alpha = 0.995
 __C.net = {}
 
 # the network name
-<<<<<<< HEAD
-# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/res15.py"
-# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-296.py"
-__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-196.py"
-=======
 __C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/res15.py"
 # __C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-296.py"
 # __C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-196.py"
->>>>>>> 40b773a63341a53f18889487b4e5d9ef5644912d
 __C.net.class_name = "SpeechResModel"
 
 ######################################
