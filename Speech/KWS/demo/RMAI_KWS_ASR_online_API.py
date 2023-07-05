@@ -115,7 +115,8 @@ class OnlineAudio:
         
         # init
         # kws_asr_api = KwsAsrApi(cfg_path = cfg_path, bool_do_kws_weakup=True, bool_do_asr=True, bool_gpu=True)
-        kws_asr_api = KwsAsrApi(cfg_path = cfg_path, bool_do_kws_weakup=True, bool_do_asr=False, bool_do_sv=True, bool_gpu=True)
+        kws_asr_api = KwsAsrApi(cfg_path = cfg_path, bool_do_kws_weakup=True, bool_do_asr=False, bool_gpu=True)
+        # kws_asr_api = KwsAsrApi(cfg_path = cfg_path, bool_do_kws_weakup=True, bool_do_asr=False, bool_do_sv=True, bool_gpu=True)
 
         audio_data_list = []
         while True:
