@@ -373,27 +373,27 @@ def write_error_data(args):
             to_img_path = os.path.join(args.output_error_data_img_dir, img_name)
             shutil.copy(crop_img_path, to_img_path)
         except:
-            continue
+            pass
         
         # xml
         try:
             to_xml_path = os.path.join(args.output_error_data_xml_dir, xml_name)
             shutil.copy(crop_xml_path, to_xml_path)
         except:
-            continue
+            pass
 
         # json
         try:
             to_json_path = os.path.join(args.output_error_data_json_dir, json_name)
             shutil.copy(crop_json_path, to_json_path)
         except:
-            continue
+            pass
 
 
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--date_name', type=str, default="shate_20230308") 
+    parser.add_argument('--date_name', type=str, default="uae_2022_old") 
     parser.add_argument('--input_csv_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_csv/") 
     parser.add_argument('--input_crop_data_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_crop/") 
     parser.add_argument('--output_csv_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_crop_csv/") 

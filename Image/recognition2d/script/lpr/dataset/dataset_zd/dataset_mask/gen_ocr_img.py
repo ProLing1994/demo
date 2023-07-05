@@ -368,14 +368,12 @@ def gen_ocr_img(args):
 if __name__ == "__main__":
     
     parser = argparse.ArgumentParser()
-    parser.add_argument('--date_name', type=str, default="shate_20230308")
-    parser.add_argument('--seg_name', type=str, default="seg_zd_202306")
-    parser.add_argument('--ocr_name', type=str, default="plate_zd_mask_202306")
+    parser.add_argument('--date_name', type=str, default="uae_2022_old")
+    parser.add_argument('--seg_name', type=str, default="seg_zd_202307")
+    parser.add_argument('--ocr_name', type=str, default="plate_zd_mask_202307")
     parser.add_argument('--output_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/training/") 
     parser.add_argument('--new_style', action='store_true', default=False) 
     args = parser.parse_args()
-
-    args.new_style = True
 
     args.seg_dir = os.path.join(args.output_dir, args.seg_name, args.date_name)
     args.output_dir = os.path.join(args.output_dir, args.ocr_name, args.date_name)

@@ -23,19 +23,21 @@ __C.general.version = "1.2"     # 成都录制唤醒词 + 深圳录制唤醒词 
 __C.general.date = "06262023"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_2_0s_1_2_06262023/total_data_files.csv"
+__C.general.data_csv_path = "/root/dataset_gorila_2_0s_1_2_06262023/total_data_files.csv"
 
 # background noise path
-__C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_2_0s_1_2_06262023/background_noise_files.csv"
+__C.general.background_data_path = "/root/dataset_gorila_2_0s_1_2_06262023/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 # __C.general.is_test = False
 
 # the output of training models and logging files
-# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/test"
-__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_res15_fbankcpu_06252023/"
-# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_tc_resnet14_fbankcpu_06252023/"
+# __C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/test"
+# __C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_res15_fbankcpu_06252023/"
+# __C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_tc_resnet14_fbankcpu_06252023/"
+__C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_res15_fbankcpu_novad_06252029/"
+# __C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_tc_resnet14_fbankcpu_novad_06252029/"
 
 # finetune model
 __C.general.finetune_on = False
@@ -315,8 +317,8 @@ __C.regularization = {}
 __C.regularization.label_smoothing = {}
 
 # regularization: label smoothing on
-__C.regularization.label_smoothing.on = True
-# __C.regularization.label_smoothing.on = False
+# __C.regularization.label_smoothing.on = True
+__C.regularization.label_smoothing.on = False
 
 # regularization: label smoothing epsilon 
 __C.regularization.label_smoothing.epsilon = 0.1
@@ -378,9 +380,9 @@ __C.loss.ema_alpha = 0.995
 __C.net = {}
 
 # the network name
-__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/res15.py"
-# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-296.py"
-# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-196.py"
+__C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/res15.py"
+# __C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-296.py"
+# __C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-196.py"
 __C.net.class_name = "SpeechResModel"
 
 ######################################
@@ -390,10 +392,8 @@ __C.net.class_name = "SpeechResModel"
 __C.train = {}
 
 # the number of training epochs
-# __C.train.num_epochs = 16000
-# __C.train.num_epochs = 8000
-# __C.train.num_epochs = 4000
 __C.train.num_epochs = 2000
+# __C.train.num_epochs = 1000
 # __C.train.num_epochs = 500
 # __C.train.num_epochs = 1
 
@@ -401,7 +401,8 @@ __C.train.num_epochs = 2000
 # __C.train.batch_size = 2048
 # __C.train.batch_size = 1024
 # __C.train.batch_size = 512
-__C.train.batch_size = 128
+__C.train.batch_size = 256
+# __C.train.batch_size = 128
 # __C.train.batch_size = 64
 # __C.train.batch_size = 16
 # __C.train.batch_size = 1
@@ -413,14 +414,13 @@ __C.train.num_threads = 16
 
 # the number of batches to show log
 __C.train.show_log = 5
-# __C.train.show_log = 1
 
 # the number of batches to update loss curve
 __C.train.plot_snapshot = 5
 
 # the number of epochs to save model
-__C.train.save_epochs = 25
-
+__C.train.save_epochs = 100
+# __C.train.save_epochs = 1
 
 ######################################
 # learning rate parameters

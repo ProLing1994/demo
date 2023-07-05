@@ -49,6 +49,8 @@ def gen_seg_mask(args):
         crop_xml_path = row['crop_xml'] 
         if 'crop_json' not in row:
             crop_json_path = ""
+        else:
+            crop_json_path = row['crop_json'] 
 
         plate_img_name = plate_name + '.jpg'
         plate_mask_name = plate_name + '.png'
@@ -76,8 +78,8 @@ def gen_seg_mask(args):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--date_name', type=str, default="shate_20230308") 
-    parser.add_argument('--seg_name', type=str, default="seg_zd_202306") 
+    parser.add_argument('--date_name', type=str, default="uae_20220804_0809") 
+    parser.add_argument('--seg_name', type=str, default="seg_zd_202307") 
     parser.add_argument('--input_csv_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_crop_csv/") 
     parser.add_argument('--output_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/training/") 
     parser.add_argument('--new_style', action='store_true', default=False) 

@@ -67,6 +67,7 @@ if __name__ == "__main__":
                         'ImageSetsLabel',
                         'ImageSetsColorLabelNoAug',
                         'ImageSetsColorLabel',
+                        'uae_2022_old',
                         ]
 
     args.merge_file_list = [
