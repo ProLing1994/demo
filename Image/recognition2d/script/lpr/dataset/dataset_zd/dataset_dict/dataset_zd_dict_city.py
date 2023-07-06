@@ -4,7 +4,8 @@ import os
 import sys
 import xml.etree.ElementTree as ET
 
-sys.path.insert(0, '/yuanhuan/code/demo/')
+sys.path.insert(0, '/home/huanyuan/code/demo/')
+# sys.path.insert(0, '/yuanhuan/code/demo/')
 from Image.recognition2d.script.lpr.dataset.dataset_zd.dataset_dict.dataset_zd_dict_normal import *
 
 ##############################################
@@ -249,8 +250,7 @@ id_2_mask_color_dict = {
 
 
 class_seg_label = ['bkg','uae','oman','ksa','abudhabi','dubai','ajman','sharjah','rak','ummalqaiwain','fujairah','taxi','police','trp','ptr','trade', 'kind','num']
-# class_seg_weight = [0.1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.5]
-class_seg_weight = [0.1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1.5, 0.5]
+class_seg_weight = [0.1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 add_mask_order = ['num','kind','uae','oman','ksa','ad','abudhabi','dubai','ajman','sharjah','shj','rak','ummalqaiwain','fujairah','taxi','police','trp','ptr','trade']
 
 country_mask_id_list = [1, 2, 3]

@@ -48,23 +48,23 @@ class CaptureApi():
         self.ssd_caffe_bool = True
         self.ssd_openvino_bool = False
 
-        # # pytorch 
-        # # self.ssd_plate_prototxt = None
-        # # self.ssd_plate_model_path = ""
-        # # caffe
-        # # zd_ssd_rfb_wmr
-        # self.ssd_plate_prototxt = "/mnt/huanyuan/model_final/image_model/zd_ssd_rfb_wmr/ssd_mbv2_2class/caffe_model/ssd_mobilenetv2_fpn.prototxt"
-        # self.ssd_plate_model_path = "/mnt/huanyuan/model_final/image_model/zd_ssd_rfb_wmr/ssd_mbv2_2class/caffe_model/ssd_mobilenetv2_0421.caffemodel"
-        # # openvino
-        # # self.ssd_plate_model_path = "/mnt/huanyuan/model_final/image_model/zd_ssd_rfb_wmr/ssd_mbv2_2class/openvino_model/ssd_mobilenetv2_fpn.xml"
+        # pytorch 
+        # self.ssd_plate_prototxt = None
+        # self.ssd_plate_model_path = ""
+        # caffe
+        # zd_ssd_rfb_wmr
+        self.ssd_plate_prototxt = "/mnt/huanyuan/model_final/image_model/schoolbus/zd_ssd_rfb_wmr/ssd_mbv2_2class/caffe_model/ssd_mobilenetv2_fpn.prototxt"
+        self.ssd_plate_model_path = "/mnt/huanyuan/model_final/image_model/schoolbus/zd_ssd_rfb_wmr/ssd_mbv2_2class/caffe_model/ssd_mobilenetv2_0421.caffemodel"
+        # openvino
+        # self.ssd_plate_model_path = "/mnt/huanyuan/model_final/image_model/schoolbus/zd_ssd_rfb_wmr/ssd_mbv2_2class/openvino_model/ssd_mobilenetv2_fpn.xml"
 
         # # 2022-08-10-00
         # self.ssd_car_plate_prototxt = "/mnt/huanyuan/model_final/image_model/zg/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-08-10-00/FPN_RFB_3class_3attri_noDilation_prior.prototxt"
         # self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/zg/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-08-10-00/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-08-10-00.caffemodel"
 
-        ## car_bus_truck_motorcyclist_licenseplate_motolicenseplate_softmax
-        self.ssd_car_plate_prototxt = "/mnt/huanyuan/model_final/image_model/schoolbus/ssd_rfb/car_bus_truck_motorcyclist_licenseplate_motolicenseplate_softmax/FPN_RFB_4class_3attri_noDilation_prior.prototxt"
-        self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/schoolbus/ssd_rfb/car_bus_truck_motorcyclist_licenseplate_motolicenseplate_softmax/SSD_VGG_FPN_RFB_VOC_car_bus_truck_motorcyclist_licenseplate_motolicenseplate_2023_03_06.caffemodel"
+        # # SSD_VGG_FPN_RFB_2023-06-09_focalloss_5class_car_bus_truck_motorcyclist_licenseplate_softmax（检测不到）
+        # self.ssd_car_plate_prototxt = "/mnt/huanyuan/model_final/image_model/schoolbus/ssd_rfb/SSD_VGG_FPN_RFB_2023-06-09_focalloss_5class_car_bus_truck_motorcyclist_licenseplate_softmax/FPN_RFB_4class_3attri_noDilation_prior.prototxt"
+        # self.ssd_car_plate_model_path = "/mnt/huanyuan/model_final/image_model/schoolbus/ssd_rfb/SSD_VGG_FPN_RFB_2023-06-09_focalloss_5class_car_bus_truck_motorcyclist_licenseplate_softmax/SSD_VGG_FPN_RFB_VOC_car_bus_truck_motorcyclist_licenseplate_2023_06_09_70.caffemodel"
 
         # yolov6
         self.yolov6_bool = False
@@ -111,9 +111,15 @@ class CaptureApi():
         # # seg: zd seg_city_color_class_zd_1216
         # self.lpr_seg_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1216/LaneNetNovaHeadColorClass_class_17.prototxt"
         # self.lpr_seg_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_1216/LaneNetNova_seg_city_color_class_zd_1216.caffemodel"
-        # seg: zd seg_city_color_class_zd_20230217
-        self.lpr_seg_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_20230217/zd_seg_city_class_color_20230217.prototxt"
-        self.lpr_seg_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_20230217/zd_seg_city_class_color_20230217.caffemodel"
+        # # seg: zd seg_city_color_class_zd_20230217 script.lpr.dataset.dataset_zd.dataset_dict.dataset_zd_dict_city_2022
+        # self.lpr_seg_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_20230217/zd_seg_city_class_color_20230217.prototxt"
+        # self.lpr_seg_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_20230217/zd_seg_city_class_color_20230217.caffemodel"
+        # seg: zd seg_city_color_class_zd_20230629 script.lpr.dataset.dataset_zd.dataset_dict.dataset_zd_dict_city（效果不好）
+        self.lpr_seg_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_20230629/zd_seg_city_class_color_20230629.prototxt"
+        self.lpr_seg_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_20230629/zd_seg_city_class_color_20230629.caffemodel"
+        # seg: zd seg_city_color_class_zd_20230703 script.lpr.dataset.dataset_zd.dataset_dict.dataset_zd_dict_city（效果不好）
+        # self.lpr_seg_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_20230703/zd_seg_city_class_color_20230703.prototxt"
+        # self.lpr_seg_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/seg_city_color_class_zd_20230703/zd_seg_city_class_color_20230703.caffemodel"
 
         # # ocr: zd 0901
         # self.lpr_ocr_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_all_UAE_0901/cnn_256x64_38.prototxt"
@@ -133,9 +139,16 @@ class CaptureApi():
         # # paddle_ocr: v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug
         # self.lpr_ocr_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug/inference/caffe/model-sim.clip.rename.prototxt"
         # self.lpr_ocr_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_1219_all_aug/inference/caffe/model-sim.clip.rename.caffemodel"
-        # ocr: ocr_zd_mask_pad_20230301
-        self.lpr_ocr_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_pad_20230301/cnn_256x64_38.prototxt"
-        self.lpr_ocr_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_pad_20230301/ocr_zd_mask_pad_20230301.caffemodel"
+        # # ocr: ocr_zd_mask_pad_20230301
+        # self.lpr_ocr_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_pad_20230301/cnn_256x64_38.prototxt"
+        # self.lpr_ocr_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_pad_20230301/ocr_zd_mask_pad_20230301.caffemodel"
+        # ocr: ocr_zd_mask_pad_20230630（效果不好）
+        self.lpr_ocr_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_pad_20230630/cnn_256x64_38.prototxt"
+        self.lpr_ocr_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_pad_20230630/ocr_zd_mask_pad_20230630.caffemodel"
+        # # ocr: ocr_zd_mask_pad_20230703（效果不好）
+        # self.lpr_ocr_zd_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_pad_20230703/cnn_256x64_38.prototxt"
+        # self.lpr_ocr_zd_caffe_model_path = "/mnt/huanyuan/model/image/lpr/zd/ocr_zd_mask_pad_20230703/ocr_zd_mask_pad_20230703.caffemodel"
+        self.dict_path = "/mnt/huanyuan/model/image/lpr/zd/type/zd_dict_1222.txt"
 
         # lpr params
         self.lpr_ocr_width_expand_ratio = 0.05
@@ -312,8 +325,8 @@ class CaptureApi():
         # detector
         if self.ssd_bool:
             if self.ssd_caffe_bool:
-                # self.detector = LPRDetectCaffe(self.ssd_plate_prototxt, self.ssd_plate_model_path, class_name=self.detect_class_name, gpu_bool=self.gpu_bool)
-                self.detector = SSDDetector(prototxt=self.ssd_car_plate_prototxt, model_path=self.ssd_car_plate_model_path, ssd_caffe_bool=self.ssd_caffe_bool, ssd_openvino_bool=self.ssd_openvino_bool, merge_class_bool=self.merge_class_bool, gpu_bool=False)
+                self.detector = LPRDetectCaffe(self.ssd_plate_prototxt, self.ssd_plate_model_path, class_name=self.detect_class_name, gpu_bool=self.gpu_bool)
+                # self.detector = SSDDetector(prototxt=self.ssd_car_plate_prototxt, model_path=self.ssd_car_plate_model_path, ssd_caffe_bool=self.ssd_caffe_bool, ssd_openvino_bool=self.ssd_openvino_bool, merge_class_bool=self.merge_class_bool, gpu_bool=False)
             elif self.ssd_openvino_bool:
                 self.detector = LPRDetectOpenVINO(self.ssd_plate_model_path)
 
@@ -324,7 +337,7 @@ class CaptureApi():
         self.mot_tracker = Sort(max_age=self.max_age, min_hits=self.min_hits, iou_threshold=self.iou_threshold)
 
         # lincense plate seg & ocr
-        self.lpr_seg_ocr = LPRSegOcrcffe(self.lpr_seg_zd_caffe_prototxt, self.lpr_seg_zd_caffe_model_path, self.lpr_ocr_zd_caffe_prototxt, self.lpr_ocr_zd_caffe_model_path, gpu_bool=self.gpu_bool)
+        self.lpr_seg_ocr = LPRSegOcrcffe(self.lpr_seg_zd_caffe_prototxt, self.lpr_seg_zd_caffe_model_path, self.lpr_ocr_zd_caffe_prototxt, self.lpr_ocr_zd_caffe_model_path, gpu_bool=self.gpu_bool, dict_path=self.dict_path)
 
 
     def clear(self):
@@ -344,7 +357,7 @@ class CaptureApi():
 
         # detector
         bboxes = self.detector.detect( img, with_score=True )
-    
+
         # tracker 
         tracker_bboxes = self.update_tracker_bboxes( copy.deepcopy(bboxes) )
 
