@@ -6,8 +6,11 @@ analysis_dir=/yuanhuan/data/image/RM_ANPR/original/cn/china_analysis/
 
 seg_name=seg_cn_202305
 ocr_name=plate_cn_202305
+
 training_data_dir=/yuanhuan/data/image/RM_ANPR/training/
 
+data_diffste_dir=/yuanhuan/data/image/RM_ANPR/original/cn/DIFFSTE/
+ocr_diffste_name=plate_cn_diffste_202307
 
 # #################################
 # # step 1：处理标注数据
@@ -56,15 +59,16 @@ training_data_dir=/yuanhuan/data/image/RM_ANPR/training/
 # python /yuanhuan/code/demo/Image/recognition2d/script/lpr/dataset/dataset_cn/dataset_train_test_split/data_train_test_split_seg_merge.py --seg_name=$seg_name --input_dir=$training_data_dir
 
 
-# #################################
-# # step 3：生成训练数据 ocr
-# #################################
+#################################
+# step 3：生成训练数据 ocr
+#################################
 
 # # done
 # # date_name_list=(jilin liaoning neimenggu ningxia qinghai shandong shanghai shanxi shanxi_jin sichuan tianjin xianggangaomen xinjiang yunnan zhejiang yellow_license_plate 特殊车牌 ZG)
+# # date_name_list=(diffste_248_111600)
 
 # # todo
-# date_name_list=()
+# date_name_list=(diffste_248_111600)
 
 # for date_name in ${date_name_list[@]}; do 
 #     echo $date_name
@@ -75,17 +79,27 @@ training_data_dir=/yuanhuan/data/image/RM_ANPR/training/
 
 #     python /yuanhuan/code/demo/Image/recognition2d/script/lpr/dataset/dataset_cn/dataset_mask/gen_ocr_img_augment.py --date_name=$date_name --ocr_name=$ocr_name --output_dir=$training_data_dir
 #     python /yuanhuan/code/demo/Image/recognition2d/script/lpr/dataset/dataset_cn/dataset_train_test_split/data_train_test_split_ocr_augment.py --date_name=$date_name --ocr_name=$ocr_name --input_dir=$training_data_dir
-    
-# # done
 
+#     # diffste ocr
+#     python /yuanhuan/code/demo/Image/recognition2d/script/lpr/dataset/dataset_cn/dataset_mask/gen_ocr_img_diffste.py --date_name=$date_name --ocr_name=$ocr_diffste_name --input_dir=$data_diffste_dir --output_dir=$training_data_dir
+#     python /yuanhuan/code/demo/Image/recognition2d/script/lpr/dataset/dataset_cn/dataset_train_test_split/data_train_test_split_ocr.py --date_name=$date_name --ocr_name=$ocr_diffste_name --input_dir=$training_data_dir
+    
+    
+# done
+
+# ocr
 # python /yuanhuan/code/demo/Image/recognition2d/script/lpr/dataset/dataset_cn/dataset_train_test_split/data_train_test_split_ocr_merge.py --ocr_name=$ocr_name --input_dir=$training_data_dir
 
+# diffste ocr
+# python /yuanhuan/code/demo/Image/recognition2d/script/lpr/dataset/dataset_cn/dataset_train_test_split/data_train_test_split_ocr_merge.py --ocr_name=$ocr_diffste_name --input_dir=$training_data_dir
 
-# # #################################
-# # # step 4：2 paddleocr label
-# # #################################
-# # 2 paddleocr label
+
+# #################################
+# # step 4：2 paddleocr label
+# #################################
+# 2 paddleocr label
 # paddle_ocr_name=$ocr_name
+# paddle_ocr_name=$ocr_diffste_name
 # paddle_ocr_data_dir=/yuanhuan/model/image/lpr/paddle_dict/$paddle_ocr_name
-# python /yuanhuan/code/demo/Image/recognition2d/script/paddle/dataset/lpr_to_paddleocr_label.py --input_dir=$training_data_dir/$ocr_name --output_dir=$paddle_ocr_data_dir
+# python /yuanhuan/code/demo/Image/recognition2d/script/paddle/dataset/lpr_to_paddleocr_label.py --input_dir=$training_data_dir/$paddle_ocr_name --output_dir=$paddle_ocr_data_dir
 # python /yuanhuan/code/demo/Image/recognition2d/script/paddle/dataset/label_dict.py --output_dir=$paddle_ocr_data_dir --output_name=cn_dict.txt --data_dict_name=dataset_cn_dict_normal

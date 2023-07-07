@@ -249,8 +249,7 @@ id_2_mask_color_dict = {
 
 
 class_seg_label = ['bkg','uae','oman','ksa','abudhabi','dubai','ajman','sharjah','rak','ummalqaiwain','fujairah','taxi','police','trp','ptr','trade', 'kind','num']
-# class_seg_weight = [0.1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.5]
-class_seg_weight = [0.1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1.5, 0.5]
+class_seg_weight = [0.1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 add_mask_order = ['num','kind','uae','oman','ksa','ad','abudhabi','dubai','ajman','sharjah','shj','rak','ummalqaiwain','fujairah','taxi','police','trp','ptr','trade']
 
 country_mask_id_list = [1, 2, 3]
