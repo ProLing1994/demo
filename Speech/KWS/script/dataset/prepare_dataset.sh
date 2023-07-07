@@ -26,8 +26,8 @@ stage=1
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_xiaoan16k.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_nihaoxiaoan8k.py
 # config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_nihaoxiaoan16k.py
-config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_gorila8k.py
-# config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_embedding_gorila8k.py
+# config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_gorila8k.py
+config_file=/home/huanyuan/code/demo/Speech/KWS/config/kws/kws_config_embedding_gorila8k.py
 
 echo "script/dataset/prepare_dataset.sh"
 

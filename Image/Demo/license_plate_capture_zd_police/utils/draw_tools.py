@@ -110,25 +110,34 @@ def draw_bbox_info(img, bbox_info, capture_list=None, mode='xywh'):
             img = cv_plot_rectangle(img, bbox_info_idx['kind_loc'], mode=mode, color=color_dict["plate"])
             img = cv_plot_rectangle(img, bbox_info_idx['num_loc'], mode=mode, color=color_dict["plate"])
 
-            img = cv2.putText(img, "{}#{}".format( bbox_info_idx['kind'], bbox_info_idx['num']), \
-                                (bbox_info_idx['loc'][0], bbox_info_idx['loc'][1] - 15), 
-                                cv2.FONT_HERSHEY_COMPLEX, 3, color_dict["plate"], 2)
+            # img = cv2.putText(img, "{}#{}".format( bbox_info_idx['kind'], bbox_info_idx['num']), \
+            #                     (bbox_info_idx['loc'][0], bbox_info_idx['loc'][1] - 15), 
+            #                     cv2.FONT_HERSHEY_COMPLEX, 3, color_dict["plate"], 2)
+
+            img = cv2.putText(img, "{}_{}_{}_{}_{}_{}_{}_{}_{:.2f}".format( bbox_info_idx['id'], bbox_info_idx['country'], bbox_info_idx['city'], bbox_info_idx['car_type'], bbox_info_idx['color'], bbox_info_idx['column'], bbox_info_idx['kind'], bbox_info_idx['num'], bbox_info_idx['score'] ), \
+                                (bbox_info_idx['loc'][0], bbox_info_idx['loc'][1] - 10), \
+                                cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["plate"], 2)
+
+            img = cv2.putText(img, "{}_{}_{}_{}_{}_{}_{:.2f}_{:.2f}".format( bbox_info_idx['frame_num'], bbox_info_idx['lpr_num'], bbox_info_idx['up_down_state'], bbox_info_idx['up_down_state_frame_num'], bbox_info_idx['left_right_state'], bbox_info_idx['left_right_state_frame_num'], bbox_info_idx['up_down_speed'], bbox_info_idx['left_right_speed']), \
+                                (bbox_info_idx['loc'][0], bbox_info_idx['loc'][3] + 10), \
+                                cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["plate"], 2)
+                
         else:
             img = cv_plot_rectangle(img, bbox_info_idx['loc'], mode=mode, color=color_dict["plate_capture"])
             img = cv_plot_rectangle(img, bbox_info_idx['kind_loc'], mode=mode, color=color_dict["plate_capture"])
             img = cv_plot_rectangle(img, bbox_info_idx['num_loc'], mode=mode, color=color_dict["plate_capture"])
 
-            img = cv2.putText(img, "{}#{}".format( bbox_info_idx['kind'], bbox_info_idx['num'] ), \
-                                (bbox_info_idx['loc'][0], bbox_info_idx['loc'][1] - 15), 
-                                cv2.FONT_HERSHEY_COMPLEX, 3, color_dict["plate_capture"], 2)
+            # img = cv2.putText(img, "{}#{}".format( bbox_info_idx['kind'], bbox_info_idx['num'] ), \
+            #                     (bbox_info_idx['loc'][0], bbox_info_idx['loc'][1] - 15), 
+            #                     cv2.FONT_HERSHEY_COMPLEX, 3, color_dict["plate_capture"], 2)
             
-        # img = cv2.putText(img, "{}_{}_{}_{}_{}_{}_{}_{}_{:.2f}".format( bbox_info_idx['id'], bbox_info_idx['country'], bbox_info_idx['city'], bbox_info_idx['car_type'], bbox_info_idx['color'], bbox_info_idx['column'], bbox_info_idx['kind'], bbox_info_idx['num'], bbox_info_idx['score'] ), \
-        #                     (bbox_info_idx['loc'][0], bbox_info_idx['loc'][1] - 10), 
-        #                     cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 2)
+            img = cv2.putText(img, "{}_{}_{}_{}_{}_{}_{}_{}_{:.2f}".format( bbox_info_idx['id'], bbox_info_idx['country'], bbox_info_idx['city'], bbox_info_idx['car_type'], bbox_info_idx['color'], bbox_info_idx['column'], bbox_info_idx['kind'], bbox_info_idx['num'], bbox_info_idx['score'] ), \
+                                (bbox_info_idx['loc'][0], bbox_info_idx['loc'][1] - 10), \
+                                cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["plate_capture"], 2)
 
-        # img = cv2.putText(img, "{}_{}_{}_{}_{}_{}_{:.2f}_{:.2f}".format( bbox_info_idx['frame_num'], bbox_info_idx['lpr_num'], bbox_info_idx['up_down_state'], bbox_info_idx['up_down_state_frame_num'], bbox_info_idx['left_right_state'], bbox_info_idx['left_right_state_frame_num'], bbox_info_idx['up_down_speed'], bbox_info_idx['left_right_speed']), \
-        #                     (bbox_info_idx['loc'][0], bbox_info_idx['loc'][3] + 10), 
-        #                     cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 2)
+            img = cv2.putText(img, "{}_{}_{}_{}_{}_{}_{:.2f}_{:.2f}".format( bbox_info_idx['frame_num'], bbox_info_idx['lpr_num'], bbox_info_idx['up_down_state'], bbox_info_idx['up_down_state_frame_num'], bbox_info_idx['left_right_state'], bbox_info_idx['left_right_state_frame_num'], bbox_info_idx['up_down_speed'], bbox_info_idx['left_right_speed']), \
+                                (bbox_info_idx['loc'][0], bbox_info_idx['loc'][3] + 10), \
+                                cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["plate_capture"], 2)
 
         # car
         if 'car_loc' in bbox_info_idx and len(bbox_info_idx['car_loc']):

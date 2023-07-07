@@ -8,13 +8,13 @@ import torch
 
 from tqdm import tqdm
 
-# sys.path.insert(0, '/home/huanyuan/code/demo')
-sys.path.insert(0, '/yuanhuan/code/demo')
+sys.path.insert(0, '/home/huanyuan/code/demo')
+# sys.path.insert(0, '/yuanhuan/code/demo')
 from common.common.utils.python.train_tools import EpochConcateSampler
 from common.common.utils.python.plotly_tools import plot_loss4d, plot_loss2d, plot_loss
 
-# sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
-sys.path.insert(0, '/yuanhuan/code/demo/Speech')
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+# sys.path.insert(0, '/yuanhuan/code/demo/Speech')
 from KWS.config.kws import hparams
 # from KWS.dataset.kws.kws_dataset_align_preload_audio import SpeechDatasetAlign
 from KWS.dataset.kws.kws_dataset_preload_audio_lmdb import SpeechDataset

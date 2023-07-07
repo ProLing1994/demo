@@ -55,27 +55,27 @@ options.ssd_openvino_bool = False
 # options.ssd_prototxt = None
 # options.ssd_model_path = "/mnt/huanyuan/model_final/image_model/zg/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-07-22-00/openvino_model/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-07-22-00.xml"
 
-# # 2022-08-10-00
-# # pytorch 
-# options.ssd_prototxt = None
-# options.ssd_model_path = "/mnt/huanyuan/model_final/image_model/zg/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-08-10-00/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
-# # caffe
-options.ssd_prototxt = "/mnt/huanyuan/model_final/image_model/zg/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-08-10-00/FPN_RFB_3class_3attri_noDilation_prior.prototxt"
-options.ssd_model_path = "/mnt/huanyuan/model_final/image_model/zg/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-08-10-00/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-08-10-00.caffemodel"
-# # openvino
+# # # 2022-08-10-00
+# # # pytorch 
+# # options.ssd_prototxt = None
+# # options.ssd_model_path = "/mnt/huanyuan/model_final/image_model/zg/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-08-10-00/SSD_VGG_FPN_RFB_VOC_epoches_299.pth"
+# # # caffe
+# options.ssd_prototxt = "/mnt/huanyuan/model_final/image_model/zg/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-08-10-00/FPN_RFB_3class_3attri_noDilation_prior.prototxt"
+# options.ssd_model_path = "/mnt/huanyuan/model_final/image_model/zg/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-08-10-00/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-08-10-00.caffemodel"
+# # # openvino
+# # options.ssd_prototxt = None
+# # options.ssd_model_path = ""
+
+# SSD_VGG_FPN_RFB_2023-06-09_focalloss_5class_car_bus_truck_motorcyclist_licenseplate_softmax
+# pytorch 
 # options.ssd_prototxt = None
 # options.ssd_model_path = ""
-
-# ## car_bus_truck_motorcyclist_licenseplate_motolicenseplate_softmax
-# # pytorch 
-# # options.ssd_prototxt = None
-# # options.ssd_model_path = ""
-# # caffe
-# options.ssd_prototxt = "/mnt/huanyuan/model_final/image_model/schoolbus/ssd_rfb/car_bus_truck_motorcyclist_licenseplate_motolicenseplate_softmax/FPN_RFB_4class_3attri_noDilation_prior.prototxt"
-# options.ssd_model_path = "/mnt/huanyuan/model_final/image_model/schoolbus/ssd_rfb/car_bus_truck_motorcyclist_licenseplate_motolicenseplate_softmax/SSD_VGG_FPN_RFB_VOC_car_bus_truck_motorcyclist_licenseplate_motolicenseplate_2023_03_06.caffemodel"
-# # openvino
-# # options.ssd_prototxt = None
-# # options.ssd_model_path = ""
+# caffe
+options.ssd_prototxt = "/mnt/huanyuan/model_final/image_model/schoolbus/ssd_rfb/SSD_VGG_FPN_RFB_2023-06-09_focalloss_5class_car_bus_truck_motorcyclist_licenseplate_softmax/FPN_RFB_4class_3attri_noDilation_prior.prototxt"
+options.ssd_model_path = "/mnt/huanyuan/model_final/image_model/schoolbus/ssd_rfb/SSD_VGG_FPN_RFB_2023-06-09_focalloss_5class_car_bus_truck_motorcyclist_licenseplate_softmax/SSD_VGG_FPN_RFB_VOC_car_bus_truck_motorcyclist_licenseplate_2023_06_09_70.caffemodel"
+# openvino
+# options.ssd_prototxt = None
+# options.ssd_model_path = ""
 
 # yolov6
 options.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_jpf/yolov6.py"

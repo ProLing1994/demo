@@ -37,19 +37,30 @@ options.yolov6_bool =False
 options.ssd_caffe_bool = True
 options.ssd_openvino_bool = False
 
-# ssd
-# zd_ssd_rfb_wmr
+# # ssd
+# # zd_ssd_rfb_wmr
+# # pytorch 
+# # options.ssd_prototxt = None
+# # options.ssd_model_path = ""
+# # caffe
+# options.ssd_prototxt = "/mnt/huanyuan/model_final/image_model/schoolbus/zd_ssd_rfb_wmr/ssd_mbv2_2class/caffe_model/ssd_mobilenetv2_fpn.prototxt"
+# options.ssd_model_path = "/mnt/huanyuan/model_final/image_model/schoolbus/zd_ssd_rfb_wmr/ssd_mbv2_2class/caffe_model/ssd_mobilenetv2_0421.caffemodel"
+# # openvino
+# # options.ssd_prototxt = None
+# # options.ssd_model_path = ""
+# options.ssd_class_name = ['license_plate']
+# options.ssd_conf_thres = 0.25
+
+# SSD_VGG_FPN_RFB_2023-06-09_focalloss_5class_car_bus_truck_motorcyclist_licenseplate_softmax
 # pytorch 
 # options.ssd_prototxt = None
 # options.ssd_model_path = ""
 # caffe
-options.ssd_prototxt = "/mnt/huanyuan/model_final/image_model/schoolbus/zd_ssd_rfb_wmr/ssd_mbv2_2class/caffe_model/ssd_mobilenetv2_fpn.prototxt"
-options.ssd_model_path = "/mnt/huanyuan/model_final/image_model/schoolbus/zd_ssd_rfb_wmr/ssd_mbv2_2class/caffe_model/ssd_mobilenetv2_0421.caffemodel"
+options.ssd_prototxt = "/mnt/huanyuan/model_final/image_model/schoolbus/ssd_rfb/SSD_VGG_FPN_RFB_2023-06-09_focalloss_5class_car_bus_truck_motorcyclist_licenseplate_softmax/FPN_RFB_4class_3attri_noDilation_prior.prototxt"
+options.ssd_model_path = "/mnt/huanyuan/model_final/image_model/schoolbus/ssd_rfb/SSD_VGG_FPN_RFB_2023-06-09_focalloss_5class_car_bus_truck_motorcyclist_licenseplate_softmax/SSD_VGG_FPN_RFB_VOC_car_bus_truck_motorcyclist_licenseplate_2023_06_09_70.caffemodel"
 # openvino
 # options.ssd_prototxt = None
 # options.ssd_model_path = ""
-options.ssd_class_name = ['license_plate']
-options.ssd_conf_thres = 0.25
 
 # yolov6
 options.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_jpf/yolov6.py"

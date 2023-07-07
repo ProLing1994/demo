@@ -77,10 +77,8 @@ if __name__ == "__main__":
     # default_threshold = '2.5'
 
     # Gorila
-    default_input_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/original/TruckIdling/"
-    default_output_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/original/TruckIdling_over_long/"
-    # default_input_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/original/office/"
-    # default_output_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/original/office_over_long/"
+    default_input_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/original/office_TruckIdling/"
+    default_output_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Gorila/original/office_TruckIdling_over_long/"
     default_sample_rate = 16000
     default_threshold = '2.3'
 

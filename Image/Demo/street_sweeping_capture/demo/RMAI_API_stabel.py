@@ -18,8 +18,8 @@ from Image.recognition2d.lpr.infer.lpr_seg import LPRSegColorClassCaffe
 
 from Image.Demo.street_sweeping_capture.sort.mot_sort import Sort
 
-# from Image.Demo.street_sweeping_capture.info.options_lpr_brazil import options
-from Image.Demo.street_sweeping_capture.info.options_lpr_china_zg import options
+from Image.Demo.street_sweeping_capture.info.options_lpr_brazil import options
+# from Image.Demo.street_sweeping_capture.info.options_lpr_china_zg import options
 # from Image.Demo.street_sweeping_capture.info.options_face import options
 from Image.Demo.street_sweeping_capture.info.param import *
 from Image.Demo.street_sweeping_capture.utils.iou import *
@@ -70,7 +70,8 @@ class CaptureApi():
                 if self.country_type == "china":
                     self.detector = SSDDetector(prototxt=options.ssd_prototxt, model_path=options.ssd_model_path, ssd_caffe_bool=options.ssd_caffe_bool, ssd_openvino_bool=options.ssd_openvino_bool, merge_class_bool=options.car_attri_merge_bool, gpu_bool=options.gpu_bool)
                 elif self.country_type == "brazil":
-                    self.detector = LPRDetectCaffe(options.ssd_prototxt, options.ssd_model_path, class_name=options.ssd_class_name, gpu_bool=options.gpu_bool, conf_thres=options.ssd_conf_thres)
+                    # self.detector = LPRDetectCaffe(options.ssd_prototxt, options.ssd_model_path, class_name=options.ssd_class_name, gpu_bool=options.gpu_bool, conf_thres=options.ssd_conf_thres)
+                    self.detector = SSDDetector(prototxt=options.ssd_prototxt, model_path=options.ssd_model_path, ssd_caffe_bool=options.ssd_caffe_bool, ssd_openvino_bool=options.ssd_openvino_bool, merge_class_bool=options.car_attri_merge_bool, gpu_bool=options.gpu_bool)
             elif options.yolov6_bool:
                 self.detector = YOLOV6Detector(options.yolov6_config, options.yolov6_checkpoint, class_name=options.yolov6_class_name, threshold_list=options.yolov6_threshold_list, device=options.device)
 

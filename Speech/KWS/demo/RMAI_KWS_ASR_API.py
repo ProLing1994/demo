@@ -91,18 +91,18 @@ class KwsAsrApi():
                 print("\n===============!!!!!!!!!!!!!!===============")
                 print("********************************************")
                 print("** ")
-                print("** [Information:] Device Weakup:", "Weakup")
+                print("** [Information:] Device Wakeup:", "Wakeup")
                 print("** ")
                 print("********************************************\n")
 
                 self.params_dict['bool_weakup'] = True
-                output_str += "Weakup "
+                output_str += "Wakeup "
 
                 # sv
                 self.run_sv()
 
                 # save audio
-                self.output_wave("Weakup")
+                self.output_wave("Wakeup")
         else:
             self.params_dict['counter_weakup'] += 1
             if self.params_dict['counter_weakup'] >= self.cfg.general.kws_suppression_counter:
@@ -320,7 +320,7 @@ class KwsAsrApi():
         for kws_weakup_time in range(kws_weakup_times):
             end_feature_time = self.params_dict['feature_data_container_np'].shape[0] - (kws_weakup_times - kws_weakup_time) * self.cfg.general.kws_stride_feature_time
             start_feature_time = end_feature_time - int(self.cfg.general.kws_feature_time)
-            assert start_feature_time >= 0, "kws weakup model 特征时间维度太大， 处理音频数据无法获得 {} 次滑窗结果".format(kws_weakup_times)
+            assert start_feature_time >= 0, "kws Wakeup model 特征时间维度太大， 处理音频数据无法获得 {} 次滑窗结果".format(kws_weakup_times)
 
             feature_data_kws = self.params_dict['feature_data_container_np'][start_feature_time: end_feature_time,:]
             feature_data_kws = feature_data_kws.astype(np.float32)

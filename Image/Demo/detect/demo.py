@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
 # from Image.Basic.utils.folder_tools import *
-# from Image.detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
+from Image.detection2d.ssd_rfb_crossdatatraining.test_tools import SSDDetector
 from Image.detection2d.mmdetection.demo.detector.yolov6_detector import YOLOV6Detector
 
 
@@ -23,8 +23,8 @@ def inference_video(args):
     create_folder(args.output_video_dir)
 
     # model init 
-    # detector = SSDDetector(prototxt=args.ssd_prototxt, model_path=args.ssd_model_path, ssd_caffe_bool=True, ssd_openvino_bool=False, merge_class_bool=False, gpu_bool=True)
-    detector = YOLOV6Detector(args.yolox_config, args.yolox_checkpoint, class_name=args.yolox_class_name, threshold_list=args.yolox_threshold_list, device='cuda:0')
+    detector = SSDDetector(prototxt=args.ssd_prototxt, model_path=args.ssd_model_path, ssd_caffe_bool=True, ssd_openvino_bool=False, merge_class_bool=False, gpu_bool=True)
+    # detector = YOLOV6Detector(args.yolox_config, args.yolox_checkpoint, class_name=args.yolox_class_name, threshold_list=args.yolox_threshold_list, device='cuda:0')
 
     # video init 
     video_list = np.array(os.listdir(args.video_dir))
@@ -46,7 +46,7 @@ def inference_video(args):
         frame_idx = 0
 
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        output_video = cv2.VideoWriter(output_video_path, fourcc, 20.0, (1920, 1080), True)
+        output_video = cv2.VideoWriter(output_video_path, fourcc, 20.0, (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))), True)
 
         while True:
             ret, img = cap.read()
@@ -60,13 +60,13 @@ def inference_video(args):
             end = time.time()
             print('Running time: %s Seconds'%(end-start))
 
-            if args.detect_class_name in bboxes:
-                for idx in range(len(bboxes[args.detect_class_name])):
-                    roi_idx = bboxes[args.detect_class_name][idx][0:4]
-                    score_idx = bboxes[args.detect_class_name][idx][-1]
+            for key in bboxes:
+                for idx in range(len(bboxes[key])):
+                    roi_idx = bboxes[key][idx][0:4]
+                    score_idx = bboxes[key][idx][-1]
 
-                    cv2.rectangle(img, (roi_idx[0], roi_idx[1]), (roi_idx[2], roi_idx[3]), color=(0, 0, 255), thickness=2)
-                    img = cv2.putText(img, "{:.2f}".format( score_idx), (roi_idx[0], roi_idx[3] + 30), 
+                    cv2.rectangle(img, (int(roi_idx[0]), int(roi_idx[1])), (int(roi_idx[2]), int(roi_idx[3])), color=(0, 0, 255), thickness=2)
+                    img = cv2.putText(img, "{}_{:.2f}".format( key, score_idx), (int(roi_idx[0]), int(roi_idx[3]) + 30), 
                                         cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 2)
                     
             output_video.write(img)
@@ -81,8 +81,9 @@ def main():
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.video_dir = "/mnt/huanyuan2/data/image/test_R151_detect/car_avi_select/车前/"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test_R151_detect/yolox_140/车前/"
+    # r151
+    # args.video_dir = "/mnt/huanyuan2/data/image/test_R151_detect/car_avi_select/车前/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test_R151_detect/yolox_140/车前/"
     # args.video_dir = "/mnt/huanyuan2/data/image/test_R151_detect/car_avi_select/右侧/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test_R151_detect/yolox_140/右侧/"
     # args.video_dir = "/mnt/huanyuan2/data/image/test_R151_detect/car_avi_select/右俯视/"
@@ -91,19 +92,34 @@ def main():
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test_R151_detect/yolox_140/左侧/"
     # args.video_dir = "/mnt/huanyuan2/data/image/test_R151_detect/car_avi_select/左俯视/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test_R151_detect/yolox_140/左俯视/"
+    
+    # Brazil
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_BM_Brazil_C27/5M_白天_2022_1026/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_BM_Brazil_C27/5M_白天_2022_1026_ssd_rfb_0609/"
+
+    # # ZD_DUBAI
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_ZD_DUBAI_C27/5M_白天_侧向_0615/avi/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_白天_侧向_0615/yolox_0609/"
+
+    # zg
+    args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_CN_ZG_HCZP/5M_230416/avi/"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_CN_ZG_HCZP/5M_230416/ssd_rfb_0609/"
 
     # ssd caffe
     # args.ssd_prototxt = "/mnt/huanyuan/model_final/image_model/zg/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-08-10-00/FPN_RFB_3class_3attri_noDilation_prior.prototxt"
     # args.ssd_model_path = "/mnt/huanyuan/model_final/image_model/zg/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-08-10-00/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-08-10-00.caffemodel"
 
-    # yolox pth
-    args.yolox_config = "/mnt/huanyuan/model/image/yolox/yolovx_l_license_0601/yolox_l_license.py"
-    args.yolox_checkpoint =  "/mnt/huanyuan/model/image/yolox/yolovx_l_license_0601/epoch_140.pth"
-    args.yolox_class_name = ['license_plate']
-    args.yolox_threshold_list = [0.4]
+    # SSD_VGG_FPN_RFB_2023-06-09_focalloss_5class_car_bus_truck_motorcyclist_licenseplate_softmax
+    args.ssd_prototxt = "/mnt/huanyuan/model_final/image_model/schoolbus/ssd_rfb/SSD_VGG_FPN_RFB_2023-06-09_focalloss_5class_car_bus_truck_motorcyclist_licenseplate_softmax/FPN_RFB_4class_3attri_noDilation_prior.prototxt"
+    args.ssd_model_path = "/mnt/huanyuan/model_final/image_model/schoolbus/ssd_rfb/SSD_VGG_FPN_RFB_2023-06-09_focalloss_5class_car_bus_truck_motorcyclist_licenseplate_softmax/SSD_VGG_FPN_RFB_VOC_car_bus_truck_motorcyclist_licenseplate_2023_06_09_70.caffemodel"
+
+    # # yolox pth
+    # args.yolox_config = "/mnt/huanyuan/model/image/yolox/yolovx_l_license_0601/yolox_l_license.py"
+    # args.yolox_checkpoint =  "/mnt/huanyuan/model/image/yolox/yolovx_l_license_0601/epoch_140.pth"
+    # args.yolox_class_name = ['license_plate']
+    # args.yolox_threshold_list = [0.4]
 
     args.suffix = '.avi'
-    args.detect_class_name = 'license_plate'
     inference_video(args)
 
 
