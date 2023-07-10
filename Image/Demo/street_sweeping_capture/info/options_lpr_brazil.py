@@ -6,13 +6,13 @@ options = edict()
 ###########################################
 # resolution
 ###########################################
-# 5M
-options.image_width = 2592
-options.image_height = 1920
+# # 5M
+# options.image_width = 2592
+# options.image_height = 1920
 
-# # 2M
-# options.image_width = 1920
-# options.image_height = 1080
+# 2M
+options.image_width = 1920
+options.image_height = 1080
 
 # # 720p
 # options.image_width = 1280
@@ -126,7 +126,8 @@ options.lpr_ocr_column_threshold = 2.0
 ###########################################
 # sort
 ###########################################
-options.sort_type = "plate"
+options.sort_type = "car"
+# options.sort_type = "plate"
 
 # car
 options.max_age = 10

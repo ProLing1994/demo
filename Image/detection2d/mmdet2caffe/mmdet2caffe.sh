@@ -14,6 +14,11 @@
 # NAME=yolov6_zg_bmx_deploy_0824
 # OUTPUT_DIR=/home/huanyuan/code/demo/Image/detection2d/mmdet2caffe/caffe_model
 
+CONFIG=/mnt/huanyuan/model/image/yolov6/yolov6_zg_bmx_crop_moto_head_helmet_20230708/yolov6_zg_bmx_crop_moto_head_helmet_deploy.py
+CHECKPOINT=/mnt/huanyuan/model/image/yolov6/yolov6_zg_bmx_crop_moto_head_helmet_20230708/epoch_300_deploy.pth
+NAME=yolov6_zg_bmx_crop_moto_head_helmet_deploy_20230708
+OUTPUT_DIR=/mnt/huanyuan/model/image/yolov6/yolov6_zg_bmx_crop_moto_head_helmet_20230708/
+
 # CONFIG=/mnt/huanyuan/model/image/yolov6/yolov6_c28_car_0327/yolov6_rm_c28_deploy.py
 # CHECKPOINT="/mnt/huanyuan/model/image/yolov6/yolov6_c28_car_0327/epoch_1_deploy.pth"
 # NAME=yolov6_rm_c28
@@ -24,10 +29,10 @@
 # NAME=yolov6_rm_c28
 # OUTPUT_DIR=/mnt/huanyuan/model/image/yolov6/yolov6_c28_car_0320
 
-CONFIG=/mnt/huanyuan/model/image/yolov6/yolov6_zg_face_20230515/yolov6_zg_face_deploy.py
-CHECKPOINT=/mnt/huanyuan/model/image/yolov6/yolov6_zg_face_20230515/epoch_300_deploy.pth
-NAME=yolov6_face_20230515
-OUTPUT_DIR=/mnt/huanyuan/model/image/yolov6/yolov6_zg_face_20230515
+# CONFIG=/mnt/huanyuan/model/image/yolov6/yolov6_zg_face_20230515/yolov6_zg_face_deploy.py
+# CHECKPOINT=/mnt/huanyuan/model/image/yolov6/yolov6_zg_face_20230515/epoch_300_deploy.pth
+# NAME=yolov6_face_20230515
+# OUTPUT_DIR=/mnt/huanyuan/model/image/yolov6/yolov6_zg_face_20230515
 
 # CONFIG=/mnt/huanyuan/model/image/yolov6/yolov6_landmark_wider_face_20230526/yolov6_face_wider_face_deploy.py
 # CHECKPOINT=/mnt/huanyuan/model/image/yolov6/yolov6_landmark_wider_face_20230526/epoch_400_deploy.pth

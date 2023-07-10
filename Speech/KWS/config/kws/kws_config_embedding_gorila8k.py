@@ -25,42 +25,25 @@ __C.general.version = "1.3"     # 成都录制唤醒词 + 深圳录制唤醒词 
 __C.general.date = "07042023"
 
 # data path
-<<<<<<< HEAD
 # __C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_2_0s_1_2_06262023/total_data_files.csv"
 __C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_2_0s_1_3_07042023/total_data_files.csv"
 
 # background noise path
 # __C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_2_0s_1_2_06262023/background_noise_files.csv"
 __C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_2_0s_1_3_07042023/background_noise_files.csv"
-=======
-# __C.general.data_csv_path = "/root/dataset_gorila_2_0s_1_2_06262023/total_data_files.csv"
-__C.general.data_csv_path = "/root/dataset_gorila_2_0s_1_3_07042023/total_data_files.csv"
-
-# background noise path
-# __C.general.background_data_path = "/root/dataset_gorila_2_0s_1_2_06262023/background_noise_files.csv"
-__C.general.background_data_path = "/root/dataset_gorila_2_0s_1_3_07042023/background_noise_files.csv"
->>>>>>> 40b773a63341a53f18889487b4e5d9ef5644912d
 
 # test after save pytorch model
 __C.general.is_test = True
 # __C.general.is_test = False
 
 # the output of training models and logging files
-<<<<<<< HEAD
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/test"
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_res15_fbankcpu_06252023/"
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_tc_resnet14_fbankcpu_06252023/"
-# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_res15_fbankcpu_06252023/"
-__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_tc_resnet14_fbankcpu_novad_06252029/"
-=======
-# __C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/test"
-# __C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_res15_fbankcpu_06252023/"
-# __C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_tc_resnet14_fbankcpu_06252023/"
-# __C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_res15_fbankcpu_novad_06252029/"
-# __C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_tc_resnet14_fbankcpu_novad_06252029/"
-__C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/kws_gorila8k_1_3_2s_res15_fbankcpu_novad_07042023/"
-# __C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/kws_gorila8k_1_3_2s_tc_resnet14_fbankcpu_novad_07042023/"
->>>>>>> 40b773a63341a53f18889487b4e5d9ef5644912d
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_res15_fbankcpu_novad_06252029/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_tc_resnet14_fbankcpu_novad_06252029/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_3_2s_res15_fbankcpu_novad_07042023/"
+__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_3_2s_tc_resnet14_fbankcpu_novad_07042023/"
 
 # finetune model
 __C.general.finetune_on = False
@@ -403,9 +386,9 @@ __C.loss.ema_alpha = 0.995
 __C.net = {}
 
 # the network name
-__C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/res15.py"
-# __C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-296.py"
-# __C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-196.py"
+# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/res15.py"
+# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-296.py"
+__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-196.py"
 __C.net.class_name = "SpeechResModel"
 
 ######################################

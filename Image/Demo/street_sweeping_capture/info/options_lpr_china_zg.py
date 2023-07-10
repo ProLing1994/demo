@@ -132,16 +132,6 @@ options.china = edict()
 # options.china.ocr_prefix_beam_search_bool = False
 # options.china.padding_bool = True
 
-# # paddle_ocr_20230516_cn
-# options.lpr_paddle_bool = True
-# options.china.ocr_pth_path = ""
-# options.china.ocr_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_20230516_cn/inference/caffe/model.prototxt"
-# options.china.ocr_caffe_model_path = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_20230516_cn/inference/caffe/model.caffemodel"
-# options.china.input_shape = (1, 64, 320)
-# options.china.ocr_labels_dict_path = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_ratio_white_gray_64_320_20230516_cn/inference/cn_dict.txt"
-# options.china.ocr_prefix_beam_search_bool = False
-# options.china.padding_bool = True
-
 # paddle_ocr_20230530_cn
 options.lpr_paddle_bool = True
 options.china.ocr_pth_path = ""

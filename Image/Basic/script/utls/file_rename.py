@@ -3,7 +3,7 @@ import os
 import random
 
 if __name__ == '__main__':
-    input_dir = "/mnt/huanyuan/model_final/image_model/zg/yolov6_landmark/image_5M/"
+    input_dir = "/mnt/huanyuan/model_final/image_model/schoolbus/ssd_rfb/image_2M/"
     file_format = 'pic_'
     file_type = ".jpg"
     start_id = 1
