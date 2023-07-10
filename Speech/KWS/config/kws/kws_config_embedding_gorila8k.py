@@ -398,8 +398,8 @@ __C.net.class_name = "SpeechResModel"
 __C.train = {}
 
 # the number of training epochs
-# __C.train.num_epochs = 2000
-__C.train.num_epochs = 1000
+__C.train.num_epochs = 2000
+# __C.train.num_epochs = 1000
 # __C.train.num_epochs = 500
 # __C.train.num_epochs = 1
 
