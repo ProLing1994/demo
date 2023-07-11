@@ -104,15 +104,38 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.input_dir = "/yuanhuan/model/image/lpr/zd/ocr_zd_mask_pad_20230703/"
+    # #######################################
+    # ## zd
+    # #######################################
+    # args.input_dir = "/yuanhuan/model/image/lpr/zd/ocr_zd_mask_pad_20230703/"
+    # # ocr_merge_test
+    # args.input_csv_path = os.path.join(args.input_dir, 'test/ocr_merge_test_result.csv')
+    # args.out_csv_path = os.path.join(args.input_dir, "test/analysis_ocr_merge_test_result.csv")
+    # # args.input_csv_path = os.path.join(args.input_dir, 'test_onnx/ocr_merge_test_result.csv')
+    # # args.out_csv_path = os.path.join(args.input_dir, "test_onnx/analysis_ocr_merge_test_result.csv")
+    # # args.input_csv_path = os.path.join(args.input_dir, 'test_caffe/ocr_merge_test_result.csv')
+    # # args.out_csv_path = os.path.join(args.input_dir, "test_caffe/analysis_ocr_merge_test_result.csv")
+    # analysis_result(args)
 
+    ######################################
+    # chn
+    ######################################
+    # args.input_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230530_cn"
+    args.input_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_chn_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230707"
+    
     # ocr_merge_test
-    args.input_csv_path = os.path.join(args.input_dir, 'test/ocr_merge_test_result.csv')
-    args.out_csv_path = os.path.join(args.input_dir, "test/analysis_ocr_merge_test_result.csv")
-    # args.input_csv_path = os.path.join(args.input_dir, 'test_onnx/ocr_merge_test_result.csv')
-    # args.out_csv_path = os.path.join(args.input_dir, "test_onnx/analysis_ocr_merge_test_result.csv")
-    # args.input_csv_path = os.path.join(args.input_dir, 'test_caffe/ocr_merge_test_result.csv')
-    # args.out_csv_path = os.path.join(args.input_dir, "test_caffe/analysis_ocr_merge_test_result.csv")
+    # args.input_csv_path = os.path.join(args.input_dir, 'best_accuracy/test_caffe/data_original_248_52_train_result.csv')
+    # args.out_csv_path = os.path.join(args.input_dir, "best_accuracy/test_caffe/analysis_data_original_248_52_train_result.csv")
+    # args.input_csv_path = os.path.join(args.input_dir, 'best_accuracy/test_caffe/data_original_248_52_val_result.csv')
+    # args.out_csv_path = os.path.join(args.input_dir, "best_accuracy/test_caffe/analysis_data_original_248_52_val_result.csv")
+    # args.input_csv_path = os.path.join(args.input_dir, 'best_accuracy/test_caffe/data_sichuan_result.csv')
+    # args.out_csv_path = os.path.join(args.input_dir, "best_accuracy/test_caffe/analysis_data_sichuan_result.csv")
+    args.input_csv_path = os.path.join(args.input_dir, 'best_accuracy/test_caffe/data_sichuan_result_no_char.csv')
+    args.out_csv_path = os.path.join(args.input_dir, "best_accuracy/test_caffe/analysis_data_sichuan_result_no_char.csv")
+    # args.input_csv_path = os.path.join(args.input_dir, 'best_accuracy/test_caffe/data_sichuan_train_result.csv')
+    # args.out_csv_path = os.path.join(args.input_dir, "best_accuracy/test_caffe/analysis_data_sichuan_train_result.csv")
+    # args.input_csv_path = os.path.join(args.input_dir, 'best_accuracy/test_caffe/data_sichuan_test_result.csv')
+    # args.out_csv_path = os.path.join(args.input_dir, "best_accuracy/test_caffe/analysis_data_sichuan_test_result.csv")
 
     analysis_result(args)
 

@@ -13,7 +13,7 @@ def crop_image(args):
     jpg_list.sort()
 
     for idx in tqdm(range(len(jpg_list))):
-        jpg_apth = os.path.join(args.jpg_dir, jpg_list[idx])
+        jpg_path = os.path.join(args.jpg_dir, jpg_list[idx])
         xml_path = os.path.join(args.xml_dir, jpg_list[idx].replace(".jpg", ".xml"))
 
         tree = ET.parse(xml_path)  # ET是一个 xml 文件解析库，ET.parse（）打开 xml 文件，parse--"解析"
@@ -36,7 +36,7 @@ def crop_image(args):
             if name in args.select_name_list:
                 
                 # 读取图像
-                img = cv2.imread(jpg_apth, cv2.IMREAD_COLOR)
+                img = cv2.imread(jpg_path, cv2.IMREAD_COLOR)
 
                 x1, x2 = bndbox[0], bndbox[2]
                 y1, y2 = bndbox[1], bndbox[3]

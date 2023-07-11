@@ -40,10 +40,17 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
     
-    args.input_dir = "/yuanhuan/model/image/lpr/zd/ocr_zd_mask_pad_20230703"
+    # args.input_dir = "/yuanhuan/model/image/lpr/zd/ocr_zd_mask_pad_20230703"
     
-    args.input_error_data_csv = os.path.join(args.input_dir, "test", "ocr_merge_test_result.csv")
-    args.output_error_data_dir = os.path.join(args.input_dir, "test", "error_data", "ocr_merge_test")
+    # args.input_error_data_csv = os.path.join(args.input_dir, "test", "ocr_merge_test_result.csv")
+    # args.output_error_data_dir = os.path.join(args.input_dir, "test", "error_data", "ocr_merge_test")
+    
+    # args.find_dict = {'res': 0}
+
+    args.input_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_chn_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230707"
+    
+    args.input_error_data_csv = os.path.join(args.input_dir, "best_accuracy", "test_caffe", "data_sichuan_result.csv")
+    args.output_error_data_dir = os.path.join(args.input_dir, "best_accuracy", "error_data", "data_sichuan_result")
     
     args.find_dict = {'res': 0}
     

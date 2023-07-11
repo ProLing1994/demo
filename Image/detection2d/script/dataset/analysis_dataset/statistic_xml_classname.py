@@ -164,13 +164,15 @@ if __name__ == "__main__":
     # america_new：[('bus', 2758), ('car', 29962), ('truck', 1130)]
 
     # 数据集: ZG_ZHJYZ_detection, 包含 car\bus\truck\plate\fuzzy_plate, 龙门架视角 
-    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/original/anhuihuaibeigaosu/"
+    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/original/shenzhentiaoqiao/"
     # 数据集: jiayouzhan, [('bicyclist', 13), ('bus', 685), ('car', 12295), ('fuzzy_plate', 1792), ('motorcyclist', 44), ('plate', 9800), ('roi_ignore_plate', 227), ('tricycle', 17), ('truck', 180)]
     # 数据集: jiayouzhan_5M, [('bicyclist', 8), ('bus', 489), ('car', 7774), ('fuzzy_plate', 1158), ('motorcyclist', 52), ('painted_plate', 175), ('plate', 4014), ('truck', 22)]
     # 数据集: sandaofangxian, [('bus', 1784), ('car', 9226), ('fuzzy_plate', 4421), ('painted_plate', 449), ('plate', 5534), ('truck', 13267)]
-    # 数据集: shenzhentiaoqiao, [('bicyclist', 50), ('bus', 5450), ('car', 29446), ('fuzzy_plate', 16626), ('motorcyclist', 343), ('plate', 7620), ('tricycle', 3), ('truck', 781)]
+    # 数据集: shenzhentiaoqiao, [('bicyclist', 50), ('bus', 12175), ('car', 42484), ('fuzzy_plate', 26624), ('motorcyclist', 343), ('planted_plate', 2149), ('plate', 14239), ('tricycle', 3), ('truck', 3097)]
     # 数据集: anhuihuaibeigaosu, [('bus', 2783), ('car', 231859), ('fuzzy_plate', 90631), ('painted_plate', 448), ('plate', 17824), ('truck', 46680)]
+    # 数据集: anhuihuaibeigaosu, XML_w_tank_van, [('bus', 2814), ('car', 217373), ('fuzzy_plate', 90140), ('painted_plate', 383), ('plate', 18424), ('tank', 7883), ('truck', 41283), ('van', 14174)]
     # 数据集: anhuihuaibeigaosu_night_diguangzhao, [('bus', 3629), ('car', 80339), ('fuzzy_plate', 21505), ('plate', 8605), ('truck', 11480)]
+    # 数据集: paosa, [('bus', 326), ('car', 4846), ('fuzzy_plate', 6123), ('planted_plate', 15), ('plate', 1736), ('truck', 5190)]
     # 无车牌标注:
     # 数据集: shaobing（无车牌标注）, [('bicycle', 4510), ('bicyclist', 1587), ('bus', 74), ('car', 34502), ('motorcycle', 6232), ('motorcyclist', 16909), ('person', 15417), ('tank', 274), ('tricycle', 710), ('truck', 3518)]
     
@@ -201,7 +203,7 @@ if __name__ == "__main__":
     # TXSDFX_c: [('car', 34), ('fuzzy_plate', 4), ('plate', 157), ('truck', 138)]
     # SZTQ: [('bus', 226), ('car', 1414), ('fuzzy_plate', 431), ('painted_plate', 63), ('plate', 462), ('truck', 18)]
 
-    # # 数据集: ZG_BMX_detection 智观斑马线数据集
+    # 数据集: ZG_BMX_detection 智观斑马线数据集
     # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/original/rongheng_night_hongwai/"
     # daminghu: [('bicycle', 5479), ('bicyclist', 8946), ('bus', 2911), ('car', 26364), ('head', 139209), ('helmet', 11468), ('motorcycle', 12987), ('motorcyclist', 18471), ('person', 110263), ('tricycle', 145), ('truck', 193)]
     # daminghu_night: [('bicycle', 1267), ('bicyclist', 654), ('bus', 159), ('car', 2112), ('head', 17237), ('helmet', 1046), ('motorcycle', 3795), ('motorcyclist', 3827), ('person', 16402), ('tricycle', 1108), ('truck', 18)]
@@ -213,6 +215,13 @@ if __name__ == "__main__":
     # shenzhenlukou_night_diguangzhao: [('bicyclist', 36), ('bus', 148), ('car', 10717), ('motorcyclist', 405), ('person', 930), ('truck', 269)]
     # rongheng: [('bicycle', 2240), ('bicyclist', 3214), ('bus', 1663), ('car', 40147), ('head', 40575), ('helmet', 3714), ('motorcycle', 1911), ('motorcyclist', 5577), ('person', 41595), ('tricycle', 21), ('truck', 675)]
     # rongheng_night_hongwai: [('bicycle', 1207), ('bicyclist', 2161), ('bus', 714), ('car', 36140), ('head', 36075), ('helmet', 2170), ('motorcycle', 2473), ('motorcyclist', 3984), ('person', 39228), ('tricycle', 2), ('truck', 343)]
+
+    # 数据集: ZG_BMX_detection 智观斑马线数据集，非机动车裁剪
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/original_crop_moto/rongheng_night_hongwai/"
+    # daminghu: [('head', 46623), ('helmet', 10424)]
+    # daminghu_night: [('head', 7625), ('helmet', 1191)]
+    # rongheng: [('head', 9846), ('helmet', 4103)]
+    # rongheng_night_hongwai: [('head', 6675), ('helmet', 2359)]
 
     # 数据集: ZG_BMX_detection 斑马线测试样本
     # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/banmaxian_test_image/"
@@ -243,7 +252,7 @@ if __name__ == "__main__":
     # Cityscapes: [('bicyclist', 1266), ('bicyclist_o', 640), ('bus', 572), ('bus_o', 105), ('car', 21190), ('car_o', 10701), ('motorcyclist', 164), ('motorcyclist_o', 90), ('neg', 3), ('person', 8113), ('person_o', 13300), ('truck', 530), ('truck_o', 141)]
 
     # 数据集: other
-    args.input_dir = "/yuanhuan/data/image/temp/Char_dec_dataset/"
+    # args.input_dir = "/yuanhuan/data/image/temp/Char_dec_dataset/"
     # Char_dec_dataset: [('char', 1900), ('char_ch', 300)]
 
     args.trainval_file = args.input_dir + "ImageSets/Main/trainval.txt"
@@ -253,8 +262,9 @@ if __name__ == "__main__":
     args.statistic_dict = {'trainval': args.trainval_file, 'test': args.test_file }
 
     args.jpg_dir =  args.input_dir + "JPEGImages/"
-    args.xml_dir =  args.input_dir + "Annotations/"
-    # args.xml_dir =  args.input_dir + "XML/"
+    # args.xml_dir =  args.input_dir + "Annotations/"
+    args.xml_dir =  args.input_dir + "XML/"
+    # args.xml_dir =  args.input_dir + "refine_xml/"
     # args.xml_dir =  args.input_dir + "Annotations_CarBusTruckMotorcyclePlateMotoplate_w_fuzzy/"
     # args.xml_dir =  args.input_dir + "Annotations_License/"
 
