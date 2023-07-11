@@ -64,3 +64,25 @@ def match_car_license_plate(car_roi, license_plate_list):
     matched_roi_list.sort(key=sort_key, reverse=True)
 
     return matched_roi_list
+
+
+def match_car_list_license_plate(car_roi_list, license_plate):
+    # sort_key
+    def sort_key(data):
+        return data[-1]
+
+    # init
+    matched_roi_list = []
+
+    for idx in range(len(car_roi_list)):
+        match_roi_idx = car_roi_list[idx][0:4]
+
+        # 方案二：计算车牌框完全位于车框内
+        bool_in = bool_box_in_roi(license_plate, match_roi_idx)
+        if bool_in:
+            # 默认车牌均是在车辆的下沿
+            matched_roi_list.append(car_roi_list[idx])
+
+    matched_roi_list.sort(key=sort_key, reverse=True)
+
+    return matched_roi_list

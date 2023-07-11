@@ -40,8 +40,10 @@ __C.general.is_test = True
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/test"
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_res15_fbankcpu_06252023/"
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_tc_resnet14_fbankcpu_06252023/"
-# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_res15_fbankcpu_06252023/"
-__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_tc_resnet14_fbankcpu_novad_06252029/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_res15_fbankcpu_novad_06252029/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_tc_resnet14_fbankcpu_novad_06252029/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_3_2s_res15_fbankcpu_novad_07042023/"
+__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_3_2s_tc_resnet14_fbankcpu_novad_07042023/"
 
 # finetune model
 __C.general.finetune_on = False
@@ -384,9 +386,9 @@ __C.loss.ema_alpha = 0.995
 __C.net = {}
 
 # the network name
-# __C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/res15.py"
-# __C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-296.py"
-__C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-196.py"
+# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/res15.py"
+# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-296.py"
+__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-196.py"
 __C.net.class_name = "SpeechResModel"
 
 ######################################

@@ -286,7 +286,7 @@ class CaptureApi():
                     match_car_roi = match_bbox_iou(bbox_info_idx['car_info']['roi'], car_bbox_list)
                     if len(match_car_roi):
                         bbox_info_idx['car_info']['attri'] = match_car_roi[0][-1]
-        
+
         return bbox_info_list
 
 
@@ -317,6 +317,31 @@ class CaptureApi():
                 
                 if not len(bbox_info_idx['plate_info']['roi']):
                     continue
+                
+                if self.demo_type == "lpr" and options.sort_type == "plate":
+    
+                    # car
+                    if options.car_attri_merge_name in bboxes:
+                        car_roi_list = bboxes[options.car_attri_merge_name]
+                        # 求相交同时置信度最高的车牌框
+                        match_car_roi = match_car_list_license_plate(car_roi_list, bbox_info_idx['plate_info']['roi'])
+
+                        if len(match_car_roi):
+                            car_roi = match_car_roi[0][0:4]
+
+                            bbox_info_idx['car_info']['roi'] = car_roi
+
+                    for car_attri_idx in range(len(options.car_attri_name_list)):
+                        car_attri_name = options.car_attri_name_list[car_attri_idx]
+                        if car_attri_name in bboxes:
+                            car_roi_list = bboxes[car_attri_name]
+                            # 求相交同时置信度最高的车牌框
+                            match_car_roi = match_car_list_license_plate(car_roi_list, bbox_info_idx['plate_info']['roi'])
+
+                            if len(match_car_roi):
+                                car_roi = match_car_roi[0][0:4]
+
+                                bbox_info_idx['car_info']['roi'] = car_roi
 
                 if self.country_type == "china":
                     
