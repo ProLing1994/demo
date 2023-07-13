@@ -289,14 +289,14 @@ if __name__ == "__main__":
     print("img_dir: {}".format(args.img_dir))
     print("output_csv_path: {}".format(args.output_csv_path))
 
-    # # 生成 dataset csv
-    # dataset_csv(args)
+    # 生成 dataset csv
+    dataset_csv(args)
 
     # 保存 crop data
     args.output_crop_data_img_dir = os.path.join(args.output_crop_data_dir, "Images")
     write_crop_data(args)
 
-    # # 保存 error data
-    # args.output_error_data_img_dir = os.path.join(args.output_error_data_dir, "Images")
-    # args.output_error_data_json_dir = os.path.join(args.output_error_data_dir, "Json")
-    # write_error_data(args)
+    # 保存 error data
+    args.output_error_data_img_dir = os.path.join(args.output_error_data_dir, "Images")
+    args.output_error_data_json_dir = os.path.join(args.output_error_data_dir, "Json")
+    write_error_data(args)

@@ -5,9 +5,10 @@ import os
 import sys 
 from tqdm import tqdm
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Image')
-from Basic.utils.folder_tools import *
-from Basic.script.json.json_write import write_json
+# sys.path.insert(0, '/home/huanyuan/code/demo')
+sys.path.insert(0, '/yuanhuan/code/demo')
+from Image.Basic.utils.folder_tools import *
+from Image.Basic.script.json.json_write import write_json
 
 
 def platform_json_2_json(args):
@@ -66,9 +67,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.jpg_dir = "/mnt/huanyuan/temp/safeisland/data_safeisland/JPEGImages/"
-    args.platform_json_dir = "/mnt/huanyuan/temp/safeisland/data_safeisland/Platform_Json/"
-    args.json_dir = "/mnt/huanyuan/temp/safeisland/data_safeisland/Json_polyline/"
-    # args.type = "polygon"
-    args.type = "polyline"
+    args.jpg_dir = "/yuanhuan/data/image/RM_C28_safeisland/original/america/2M_安全岛_0410_269/images/"
+    args.platform_json_dir = "/yuanhuan/data/image/RM_C28_safeisland/original/america/2M_安全岛_0410_269/json_v0/"
+    args.json_dir = "/yuanhuan/data/image/RM_C28_safeisland/original/america/2M_安全岛_0410_269/Json/"
+    args.type = "polygon"
+    # args.type = "polyline"
     platform_json_2_json(args)
