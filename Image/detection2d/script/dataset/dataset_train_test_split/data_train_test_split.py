@@ -113,7 +113,7 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/FW_230612_p1_383/"    # trainval: 2852, train: 2566, val: 286, test: 317, all: 3169
     
     # 数据集: other
-    args.input_dir = "/yuanhuan/data/image/temp/Char_dec_dataset/"    # trainval: 2852, train: 2566, val: 286, test: 317, all: 3169
+    # args.input_dir = "/yuanhuan/data/image/temp/Char_dec_dataset/"    # trainval: 2852, train: 2566, val: 286, test: 317, all: 3169
 
     # 数据集: RM_BSD
     # args.input_dir = "/yuanhuan/data/image/RM_BSD/bsd_20220425_20220512/"   # trainval: 13317, train: 11985, val: 1332, test: 1480, all: 14797
@@ -128,29 +128,36 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/RM_C28_detection/america_new/"     # trainval: 32863, train: 29576, val: 3287, test: 3652, all: 36515
 
     # 数据集: ZG_ZHJYZ_detection，包含 car\bus\truck\plate\fuzzy_plate，龙门架视角 
-    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan/"    # trainval: 5846, train: 5261, val: 585, test: 650, all: 6496
-    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/jiayouzhan_5M/"    # trainval: 1445, train: 1300, val: 145, test: 161, all: 1606
-    # args.input_dir =  "/yuanhuan/data/image/ZG_ZHJYZ_detection/sandaofangxian/"    # trainval: 5060, train: 4553, val: 507, test: 563, all: 5623
-    # args.input_dir =  "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu/"    # trainval: 18045, train: 16239, val: 1806, test: 2007, all: 20052
-    # args.input_dir =  "/yuanhuan/data/image/ZG_ZHJYZ_detection/shenzhentiaoqiao/"    # trainval: 4538, train: 4084, val: 454, test: 505, all: 5043
-    # args.input_dir =  "/yuanhuan/data/image/ZG_ZHJYZ_detection/anhuihuaibeigaosu_night_diguangzhao/"    # trainval: 23315, train: 20983, val: 2332, test: 2591, all: 25906
-    # args.input_dir =  "/yuanhuan/data/image/ZG_ZHJYZ_detection/shaobing/"    # trainval: 10063, train: 9056, val: 1007, test: 1119, all: 11182
+    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/original/jiayouzhan/"    # trainval: 5846, train: 5261, val: 585, test: 650, all: 6496
+    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/original/jiayouzhan_5M/"    # trainval: 1445, train: 1300, val: 145, test: 161, all: 1606
+    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/original/sandaofangxian/"    # trainval: 5060, train: 4553, val: 507, test: 563, all: 5623
+    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/original/anhuihuaibeigaosu/"    # trainval: 18045, train: 16239, val: 1806, test: 2007, all: 20052
+    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/original/shenzhentiaoqiao/"    # trainval: 9298, train: 8368, val: 930, test: 1034, all: 10332（新增数据）
+    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/original/anhuihuaibeigaosu_night_diguangzhao/"    # trainval: 23315, train: 20983, val: 2332, test: 2591, all: 25906
+    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/original/paosa/"    #  trainval: 4617, train: 4155, val: 462, test: 514, all: 5131（新增数据）
+    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/original/shaobing/"    # trainval: 10063, train: 9056, val: 1007, test: 1119, all: 11182
 
-    # # 数据集: ZG_BMX_detection 智观斑马线数据集
-    # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/daminghu/"    # trainval: 9218, train: 8296, val: 922, test: 1025, all: 10243
-    # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/daminghu_night/"    # trainval: 2360, train: 2124, val: 236, test: 263, all: 2623
-    # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/shandongyingzikou/"    # trainval: 1970, train: 1773, val: 197, test: 219, all: 2189
-    # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/shandongyingzikou_night_hongwai/"    # trainval: 613, train: 551, val: 62, test: 69, all: 682
-    # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/yongzou_night_hongwai/"    # trainval: 2681, train: 2412, val: 269, test: 298, all: 2979
-    # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/shenzhenlukou/"    # trainval: 1264, train: 1137, val: 127, test: 141, all: 1405
-    # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/shenzhenlukou_night_hongwai/"    # trainval: 3427, train: 3084, val: 343, test: 381, all: 3808
-    # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/shenzhenlukou_night_diguangzhao/"    # trainval: 2295, train: 2065, val: 230, test: 256, all: 2551
-    # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/rongheng/"    # trainval: 9119, train: 8207, val: 912, test: 1014, all: 10133
-    # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/rongheng_night_hongwai/"    # trainval: 8860, train: 7973, val: 887, test: 985, all: 9845
-    # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/daminghu/crop_720p/"    # trainval: 9218, train: 8296, val: 922, test: 1025, all: 10243
-    # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/daminghu_night/crop_720p/"    # trainval: 2360, train: 2124, val: 236, test: 263, all: 2623
-    # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/rongheng/crop_720p/"    # trainval: 4619, train: 4157, val: 462, test: 514, all: 5133
-    # args.input_dir =  "/yuanhuan/data/image/ZG_BMX_detection/rongheng_night_hongwai/crop_720p/"    # trainval: 4499, train: 4049, val: 450, test: 500, all: 4999
+    # 数据集: ZG_BMX_detection 智观斑马线数据集
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/original/daminghu/"    # trainval: 9184, train: 8265, val: 919, test: 1021, all: 10205（误删39例数据）
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/original/daminghu_night/"    # trainval: 2360, train: 2124, val: 236, test: 263, all: 2623
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/original/shandongyingzikou/"    # trainval: 1970, train: 1773, val: 197, test: 219, all: 2189
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/original/shandongyingzikou_night_hongwai/"    # trainval: 613, train: 551, val: 62, test: 69, all: 682
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/original/yongzou_night_hongwai/"    # trainval: 2681, train: 2412, val: 269, test: 298, all: 2979
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/original/shenzhenlukou/"    # trainval: 1264, train: 1137, val: 127, test: 141, all: 1405
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/original/shenzhenlukou_night_hongwai/"    # trainval: 3427, train: 3084, val: 343, test: 381, all: 3808
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/original/shenzhenlukou_night_diguangzhao/"    # trainval: 2295, train: 2065, val: 230, test: 256, all: 2551
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/original/rongheng/"    # trainval: 9119, train: 8207, val: 912, test: 1014, all: 10133
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/original/rongheng_night_hongwai/"    # trainval: 8860, train: 7973, val: 887, test: 985, all: 9845
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/original/daminghu/crop_720p/"    # trainval: 9218, train: 8296, val: 922, test: 1025, all: 10243
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/original/daminghu_night/crop_720p/"    # trainval: 2360, train: 2124, val: 236, test: 263, all: 2623
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/original/rongheng/crop_720p/"    # trainval: 4619, train: 4157, val: 462, test: 514, all: 5133
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/original/rongheng_night_hongwai/crop_720p/"    # trainval: 4499, train: 4049, val: 450, test: 500, all: 4999
+
+    # 数据集: ZG_BMX_detection 智观斑马线数据集，非机动车裁剪
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/original_crop_moto/daminghu/"       # trainval: 24594, train: 22134, val: 2460, test: 2733, all: 27327
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/original_crop_moto/daminghu_night/"       # trainval: 4032, train: 3628, val: 404, test: 449, all: 4481
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/original_crop_moto/rongheng/"       # trainval: 7911, train: 7119, val: 792, test: 880, all: 8791
+    # args.input_dir = "/yuanhuan/data/image/ZG_BMX_detection/original_crop_moto/rongheng_night_hongwai/"       # trainval: 5530, train: 4977, val: 553, test: 615, all: 6145
 
     # 开源数据集: MOT17\MOT20\HT21\NightOwls\Cityscapes\Safety_helmet\VOC2028
     # args.input_dir = "/yuanhuan/data/image/Open_Source/MOT/MOT17/"    # trainval: 4784, train: 4305, val: 479, test: 532, all: 5316
@@ -170,7 +177,7 @@ if __name__ == "__main__":
     args.val_size = 0.1
 
     args.jpg_dir =  args.input_dir + "JPEGImages/"
-    # args.xml_dir =  args.input_dir + "XML/"
-    args.xml_dir =  args.input_dir + "Annotations/"
+    args.xml_dir =  args.input_dir + "XML/"
+    # args.xml_dir =  args.input_dir + "Annotations/"
 
     split(args)

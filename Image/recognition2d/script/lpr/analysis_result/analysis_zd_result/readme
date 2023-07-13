@@ -6,5 +6,6 @@ Image/recognition2d/script/lpr/analysis_result/analysis_zd_result/analysis_resul
 
 # zd ocr
 Image/recognition2d/script/lpr/analysis_result/analysis_zd_result/infer_ocr.py                          # 测试模型
+Image/recognition2d/script/lpr/analysis_result/analysis_zd_result/infer_paddle_ocr.py                   # 测试模型    
 Image/recognition2d/script/lpr/analysis_result/analysis_zd_result/analysis_result_ocr.py                # 多角度分析结果
 Image/recognition2d/script/lpr/analysis_result/analysis_zd_result/analusis_result_ocr_error_data.py     # 绘制图像，分析错误分类结果
