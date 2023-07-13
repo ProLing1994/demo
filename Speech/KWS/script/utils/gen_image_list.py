@@ -5,11 +5,11 @@ import os
 import pandas as pd
 import sys
 
-sys.path.insert(0, '/home/huanyuan/code/demo/Speech/ASR')
-from impl.asr_data_loader_pyimpl import WaveLoader_Librosa as WaveLoader
-from impl.asr_feature_cimpl import Feature
-# from impl.asr_feature_pyimpl import Feature
-from impl.asr_decode_cimpl import Decode
+sys.path.insert(0, '/home/huanyuan/code/demo/Speech')
+from ASR.impl.asr_data_loader_pyimpl import WaveLoader_Librosa as WaveLoader
+# from impl.asr_feature_cimpl import Feature
+from ASR.impl.asr_feature_pyimpl import Feature
+# from impl.asr_decode_cimpl import Decode
 
 
 def gen_image_list(args):
@@ -52,7 +52,8 @@ def gen_image_list(args):
             audio_data = np.array(audio_data_list)
             
             # cal feature
-            feature = Feature(sample_rate, window_size_samples/sample_rate, args.feature_freq, args.nfilt)
+            # feature = Feature(sample_rate, window_size_samples/sample_rate, args.feature_freq, args.nfilt)
+            feature = Feature(sample_rate, args.feature_freq, args.nfilt)
             feature.get_mel_int_feature(audio_data, len(audio_data))
             feature_data = feature.copy_mfsc_feature_int_to()
             feature_data = feature_data[: args.feature_time, : args.feature_freq]
@@ -68,12 +69,12 @@ def gen_image_list(args):
             cv2.imwrite(output_path, feature_data)
 
 if __name__ == "__main__":
-    # asr mandarin:
-    default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/mandarin_wav/安静场景/wav/"
-    default_output_folder = "/home/huanyuan/share/huanyuan/audio_data/mandarin_wav/安静场景/image_596_16k_64"
-    # default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/mandarin_wav/闹市场景/wav/"
-    # default_output_folder = "/home/huanyuan/share/huanyuan/audio_data/mandarin_wav/闹市场景/image_596_16k_64"
-    default_transpose = False
+    # # asr mandarin:
+    # default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/mandarin_wav/安静场景/wav/"
+    # default_output_folder = "/home/huanyuan/share/huanyuan/audio_data/mandarin_wav/安静场景/image_596_16k_64"
+    # # default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/mandarin_wav/闹市场景/wav/"
+    # # default_output_folder = "/home/huanyuan/share/huanyuan/audio_data/mandarin_wav/闹市场景/image_596_16k_64"
+    # default_transpose = False
     
     # default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/mandarin_wav/安静场景/"
     # default_output_folder = "/home/huanyuan/share/huanyuan/audio_data/mandarin_wav/安静场景/image_296_56"
@@ -108,6 +109,11 @@ if __name__ == "__main__":
     # default_output_folder = "/home/huanyuan/share/huanyuan/audio_data/weakup/weakup_xiaoan8k/image_48_196/"
     # default_transpose = True
 
+    # kws: gorila8k
+    default_audio_folder = "/mnt/huanyuan/model_final/audio_model/novt_model/kws_gorila8k_tc_resnet14/wav_stream/"
+    default_output_folder = "/mnt/huanyuan/model_final/audio_model/novt_model/kws_gorila8k_tc_resnet14/image_48_196_stream/"
+    default_transpose = True
+
     # # weakup & asr:
     # default_audio_folder = "/home/huanyuan/share/huanyuan/audio_data/kws_weakup_asr/test/"
     # default_output_folder = "/home/huanyuan/share/huanyuan/audio_data/kws_weakup_asr/test/"
@@ -119,13 +125,13 @@ if __name__ == "__main__":
     args.output_folder = default_output_folder
     args.transpose = default_transpose
 
-    # 8k & 6s
-    args.sample_rate = 16000
-    args.window_size_ms = 6000
-    args.window_stride_ms = 3000
-    args.nfilt = 64
-    args.feature_freq = 64
-    args.feature_time = 596
+    # # 8k & 6s
+    # args.sample_rate = 16000
+    # args.window_size_ms = 6000
+    # args.window_stride_ms = 3000
+    # args.nfilt = 64
+    # args.feature_freq = 64
+    # args.feature_time = 596
 
     # # 16k & 4s
     # args.sample_rate = 16000
@@ -170,15 +176,15 @@ if __name__ == "__main__":
     # args.feature_freq = 64
     # args.feature_time = 396
 
-    # # 8k & 2s
-    # args.sample_rate = 8000
-    # args.window_size_ms = 2000
-    # args.window_stride_ms = 2000
-    # # args.nfilt = 48
-    # # args.feature_freq = 48
+    # 8k & 2s
+    args.sample_rate = 8000
+    args.window_size_ms = 2000
+    args.window_stride_ms = 2000
+    args.nfilt = 48
+    args.feature_freq = 48
     # args.nfilt = 64
     # args.feature_freq = 64
-    # args.feature_time = 196
+    args.feature_time = 196
 
     # # 8k & 1.5s
     # args.sample_rate = 8000

@@ -18,8 +18,8 @@ from Image.recognition2d.lpr.infer.lpr_seg import LPRSegColorClassCaffe
 
 from Image.Demo.street_sweeping_capture.sort.mot_sort import Sort
 
-from Image.Demo.street_sweeping_capture.info.options_lpr_brazil import options
-# from Image.Demo.street_sweeping_capture.info.options_lpr_china_zg import options
+# from Image.Demo.street_sweeping_capture.info.options_lpr_brazil import options
+from Image.Demo.street_sweeping_capture.info.options_lpr_china_zg import options
 # from Image.Demo.street_sweeping_capture.info.options_face import options
 from Image.Demo.street_sweeping_capture.info.param import *
 from Image.Demo.street_sweeping_capture.utils.iou import *

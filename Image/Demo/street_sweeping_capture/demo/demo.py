@@ -127,20 +127,22 @@ def main():
     #######################################
     # license plate
     #######################################
-    # # zg, license plate demo
-    # args.demo_type = "lpr"
-    # args.country_type = "china"
+    # zg, license plate demo
+    args.demo_type = "lpr"
+    args.country_type = "china"
     # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_CN_ZG_HCZP/5M_230416/avi/"
-    # # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_CN_ZG_HCZP/5M_230416/test/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_CN_ZG_HCZP/5M_230416/test/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_CN_ZG_HCZP/5M_230416/lpr_paddle_ocr/"
-    # # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230606/C27_16mm_2592_1920_avi/"
-    # # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230606/lpr_paddle_ocr/C27_16mm_2592_1920_avi/"
-    # # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230606/黑光C27_16mm_2592_1520_avi/"
-    # # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230606/lpr_paddle_ocr/黑光C27_2592_1520_avi/"
-    # # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230606/C40W_8mm_2688_1520_avi/"
-    # # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230606/lpr_paddle_ocr/C40W_8mm_2688_1520_avi/"
-    # # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230614/C27_16mm_2592_1920_avi/"
-    # # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230614/lpr_paddle_ocr/C27_16mm_2592_1920_avi/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230606/C27_16mm_2592_1920_avi/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230606/lpr_paddle_ocr/C27_16mm_2592_1920_avi/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230606/黑光C27_16mm_2592_1520_avi/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230606/lpr_paddle_ocr/黑光C27_2592_1520_avi/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230606/C40W_8mm_2688_1520_avi/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230606/lpr_paddle_ocr/C40W_8mm_2688_1520_avi/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230614/C27_16mm_2592_1920_avi/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230614/lpr_paddle_ocr/C27_16mm_2592_1920_avi/"
+    args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_C37/2M_白天_16mm_2023_0330/"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_C37/2M_白天_16mm_2023_0330/"
 
     # # Brazil, license plate demo
     # args.demo_type = "lpr"
@@ -150,11 +152,11 @@ def main():
     # # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/RoadCap_BM_Brazil_C27/avi_test/CH12/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_BM_Brazil_C27/5M_白天_2022_1026_ssd_rfb_0609/"
 
-    # C37, license plate demo
-    args.demo_type = "lpr"
-    args.country_type = "brazil"
-    args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_C37/2M_白天_2_6mm_8mm_2023_0706/"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_C37/2M_白天_2_6mm_8mm_2023_0706/"
+    # # C37, license plate demo
+    # args.demo_type = "lpr"
+    # args.country_type = "brazil"
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_C37/2M_白天_2_6mm_8mm_2023_0706/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_C37/2M_白天_2_6mm_8mm_2023_0706/"
     
     # ######################################
     # # face
