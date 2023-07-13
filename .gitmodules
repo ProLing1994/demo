@@ -19,3 +19,6 @@
 [submodule "Image/detection2d/ori_mmdetection/mmdetection"]
 	path = Image/detection2d/ori_mmdetection/mmdetection
 	url = https://github.com/ProLing1994/mmdetection.git
+[submodule "Image/segmentation2d/rm_ai_mmseg"]
+	path = Image/segmentation2d/rm_ai_mmseg
+	url = git@gitlab.visionlab.com:mawenguang/rm_ai_mmseg.git
