@@ -37,11 +37,12 @@ if __name__ == '__main__':
     # input_dir = "/home/huanyuan/share/audio_data/weakup_xiaorui/image_196_64/"
     # input_dir = "/home/huanyuan/share/audio_data/weakup_xiaorui/image_64_196/"
     # input_dir = "/mnt/huanyuan2/model/audio_model/novt_model/kws_xiaoan8k_tc_resnet14/image_48_196/"
+    input_dir = "/mnt/huanyuan/model_final/audio_model/novt_model/kws_gorila8k_tc_resnet14/image_48_196/"
     # input_dir = "/mnt/huanyuan2/model/audio_model/novt_model/asr_mandarin_taxi_8k/image_596_8k_56/"
     # input_dir = "/mnt/huanyuan2/model/audio_model/novt_model/asr_mandarin_canbin_8k/image_396_8k_64/"
     # input_dir = "/mnt/huanyuan2/model/audio_model/novt_model/asr_mandarin_canbin_8k/image_596_8k_64/"
     # input_dir = "/mnt/huanyuan2/model/audio_model/novt_model/asr_mandarin_canbin_16k/image_396_16k_64/"
-    input_dir = "/mnt/huanyuan2/model/audio_model/novt_model/asr_mandarin_canbin_16k/image_596_16k_64/"
+    # input_dir = "/mnt/huanyuan2/model/audio_model/novt_model/asr_mandarin_canbin_16k/image_596_16k_64/"
     # input_dir = "/mnt/huanyuan2/model/audio_model/novt_model/kws_xiaorui8k_tc_resnet14/image_8k_64_196/"
     file_format = 'pic_'
     file_type = ".jpg"

@@ -6,9 +6,9 @@ options = edict()
 ###########################################
 # resolution
 ###########################################
-# 5M
-options.image_width = 2592
-options.image_height = 1920
+# # 5M
+# options.image_width = 2592
+# options.image_height = 1920
 
 # # other
 # options.image_width = 2592
@@ -16,9 +16,9 @@ options.image_height = 1920
 # options.image_width = 2688
 # options.image_height = 1520
 
-# # 2M
-# options.image_width = 1920
-# options.image_height = 1080
+# 2M
+options.image_width = 1920
+options.image_height = 1080
 
 # # 720p
 # options.image_width = 1280

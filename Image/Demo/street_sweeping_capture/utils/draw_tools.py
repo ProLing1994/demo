@@ -172,20 +172,20 @@ class DrawApi():
                     img = cv_plot_rectangle(img, bbox_info_idx['car_info']['roi'], mode=mode, color=color_dict["car"])
                     # img = NiceBox(img, bbox_info_idx['car_info']['roi'], color_dict["car"], thickness=3, mask=False)
 
-                    img = cv2.putText(img, "{}_{}_{}".format( bbox_info_idx['track_id'], bbox_info_idx['state']['frame_num'], bbox_info_idx['car_info']['attri']), (bbox_info_idx['car_info']['roi'][0], bbox_info_idx['car_info']['roi'][1] - 10), 
-                                        cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["car"], 2)
+                    # img = cv2.putText(img, "{}_{}_{}".format( bbox_info_idx['track_id'], bbox_info_idx['state']['frame_num'], bbox_info_idx['car_info']['attri']), (bbox_info_idx['car_info']['roi'][0], bbox_info_idx['car_info']['roi'][1] - 10), 
+                    #                     cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["car"], 2)
 
-                    img = cv2.putText(img, "{}_{}_{}_{}_{:.2f}_{:.2f}".format( bbox_info_idx['state']['up_down_state'], bbox_info_idx['state']['up_down_state_frame_num'], bbox_info_idx['state']['left_right_state'], bbox_info_idx['state']['left_right_state_frame_num'], bbox_info_idx['state']['up_down_speed'], bbox_info_idx['state']['left_right_speed'] ), (bbox_info_idx['car_info']['roi'][0], bbox_info_idx['car_info']['roi'][3] - 10), 
-                                        cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["car"], 2)
+                    # img = cv2.putText(img, "{}_{}_{}_{}_{:.2f}_{:.2f}".format( bbox_info_idx['state']['up_down_state'], bbox_info_idx['state']['up_down_state_frame_num'], bbox_info_idx['state']['left_right_state'], bbox_info_idx['state']['left_right_state_frame_num'], bbox_info_idx['state']['up_down_speed'], bbox_info_idx['state']['left_right_speed'] ), (bbox_info_idx['car_info']['roi'][0], bbox_info_idx['car_info']['roi'][3] - 10), 
+                    #                     cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["car"], 2)
                 elif len(bbox_info_idx['car_info']['roi']):
                     img = cv_plot_rectangle(img, bbox_info_idx['car_info']['roi'], mode=mode, color=color_dict["car_capture"])
                     # img = NiceBox(img, bbox_info_idx['car_info']['roi'], color_dict["car_capture"], thickness=3, mask=False)
 
-                    img = cv2.putText(img, "{}_{}_{}".format( bbox_info_idx['track_id'], bbox_info_idx['state']['frame_num'], bbox_info_idx['car_info']['attri']), (bbox_info_idx['car_info']['roi'][0], bbox_info_idx['car_info']['roi'][1] - 10), 
-                                        cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["car_capture"], 2)
+                    # img = cv2.putText(img, "{}_{}_{}".format( bbox_info_idx['track_id'], bbox_info_idx['state']['frame_num'], bbox_info_idx['car_info']['attri']), (bbox_info_idx['car_info']['roi'][0], bbox_info_idx['car_info']['roi'][1] - 10), 
+                    #                     cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["car_capture"], 2)
 
-                    img = cv2.putText(img, "{}_{}_{}_{}_{:.2f}_{:.2f}".format( bbox_info_idx['state']['up_down_state'], bbox_info_idx['state']['up_down_state_frame_num'], bbox_info_idx['state']['left_right_state'], bbox_info_idx['state']['left_right_state_frame_num'], bbox_info_idx['state']['up_down_speed'], bbox_info_idx['state']['left_right_speed'] ), (bbox_info_idx['car_info']['roi'][0], bbox_info_idx['car_info']['roi'][3] - 10), 
-                                        cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["car_capture"], 2)
+                    # img = cv2.putText(img, "{}_{}_{}_{}_{:.2f}_{:.2f}".format( bbox_info_idx['state']['up_down_state'], bbox_info_idx['state']['up_down_state_frame_num'], bbox_info_idx['state']['left_right_state'], bbox_info_idx['state']['left_right_state_frame_num'], bbox_info_idx['state']['up_down_speed'], bbox_info_idx['state']['left_right_speed'] ), (bbox_info_idx['car_info']['roi'][0], bbox_info_idx['car_info']['roi'][3] - 10), 
+                    #                     cv2.FONT_HERSHEY_COMPLEX, 1, color_dict["car_capture"], 2)
 
                 # license_plate
                 if len(bbox_info_idx['plate_info']['roi']):
