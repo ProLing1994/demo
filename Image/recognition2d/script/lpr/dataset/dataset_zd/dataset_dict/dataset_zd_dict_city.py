@@ -4,8 +4,8 @@ import os
 import sys
 import xml.etree.ElementTree as ET
 
-sys.path.insert(0, '/home/huanyuan/code/demo/')
-# sys.path.insert(0, '/yuanhuan/code/demo/')
+# sys.path.insert(0, '/home/huanyuan/code/demo/')
+sys.path.insert(0, '/yuanhuan/code/demo/')
 from Image.recognition2d.script.lpr.dataset.dataset_zd.dataset_dict.dataset_zd_dict_normal import *
 
 ##############################################

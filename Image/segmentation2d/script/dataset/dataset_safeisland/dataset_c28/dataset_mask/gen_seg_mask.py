@@ -43,6 +43,15 @@ def drow_mask(annotation, mask, mask_img):
         # mask_img = cv2.drawContours(mask_img, contours, -1, mask_color_dict[label], cv2.FILLED)
 
         pts = np.array(points, np.int32)
+        pts = pts.reshape((-1, 2))
+
+        # sort，防止乱序，导致绘图错误
+        pts_list = pts.tolist()
+        def sort_key(data):
+            return data[0]
+        pts_list.sort(key=sort_key)
+
+        pts = np.array(pts_list, np.int32)
         pts = pts.reshape((-1, 1, 2))
         cv2.polylines(mask, [pts], False, mask_label_dict[label], 11)
         cv2.polylines(mask_img, [pts], False, mask_color_dict[label], 11)
@@ -76,7 +85,7 @@ def gen_seg_mask(args):
         img = cv2.imread(img_path)
 
         # mask
-        mask = np.zeros(img.shape, dtype=img.dtype)
+        mask = np.zeros((img.shape[0], img.shape[1]), dtype=np.uint8)
         mask_img = np.zeros(img.shape, dtype=img.dtype)
 
         # read json

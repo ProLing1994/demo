@@ -67,9 +67,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.jpg_dir = "/yuanhuan/data/image/RM_C28_safeisland/original/america/2M_安全岛_0410_269/images/"
-    args.platform_json_dir = "/yuanhuan/data/image/RM_C28_safeisland/original/america/2M_安全岛_0410_269/json_v0/"
-    args.json_dir = "/yuanhuan/data/image/RM_C28_safeisland/original/america/2M_安全岛_0410_269/Json/"
+    args.jpg_dir = "/yuanhuan/data/image/RM_C28_safeisland/original/test/JPEGImages/"
+    args.platform_json_dir = "/yuanhuan/data/image/RM_C28_safeisland/original/test/Jsons/"
+    args.json_dir = "/yuanhuan/data/image/RM_C28_safeisland/original/test/Json/"
     args.type = "polygon"
     # args.type = "polyline"
     platform_json_2_json(args)

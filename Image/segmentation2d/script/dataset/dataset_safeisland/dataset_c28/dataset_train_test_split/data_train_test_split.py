@@ -1,9 +1,7 @@
 import argparse
 import numpy as np
 import os
-import pandas as pd
 import sys
-from tqdm import tqdm
 
 from sklearn.model_selection import train_test_split
 
