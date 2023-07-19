@@ -22,6 +22,6 @@
 [submodule "Image/segmentation2d/rm_ai_mmseg"]
 	path = Image/segmentation2d/rm_ai_mmseg
 	url = https://gitlab.com/YuanHuan_Pro/rm_ai_mmseg.git
-[submodule "Image/sd/Paint-by-Example"]
-	path = Image/sd/Paint-by-Example
-	url = git@gitlab.com:YuanHuan_Pro/Paint-by-Example.git
+[submodule "Image/sd/paint_by_example"]
+	path = Image/sd/paint_by_example
+	url = https://gitlab.com/YuanHuan_Pro/Paint-by-Example.git
