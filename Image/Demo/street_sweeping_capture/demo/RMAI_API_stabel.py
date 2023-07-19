@@ -15,11 +15,13 @@ from Image.Demo.street_sweeping_capture.model.LPR_detect import LPRDetectCaffe, 
 
 from Image.recognition2d.lpr.infer.lpr import LPRCaffe, LPRPytorch
 from Image.recognition2d.lpr.infer.lpr_seg import LPRSegColorClassCaffe
+from Image.recognition2d.lpr.infer.lpr_seg_ocr import LPRSegOcrcffe
 
 from Image.Demo.street_sweeping_capture.sort.mot_sort import Sort
 
 # from Image.Demo.street_sweeping_capture.info.options_lpr_brazil import options
-from Image.Demo.street_sweeping_capture.info.options_lpr_china_zg import options
+# from Image.Demo.street_sweeping_capture.info.options_lpr_china_zg import options
+from Image.Demo.street_sweeping_capture.info.options_lpr_zd_police import options
 # from Image.Demo.street_sweeping_capture.info.options_face import options
 from Image.Demo.street_sweeping_capture.info.param import *
 from Image.Demo.street_sweeping_capture.utils.iou import *
@@ -72,6 +74,8 @@ class CaptureApi():
                 elif self.country_type == "brazil":
                     # self.detector = LPRDetectCaffe(options.ssd_prototxt, options.ssd_model_path, class_name=options.ssd_class_name, gpu_bool=options.gpu_bool, conf_thres=options.ssd_conf_thres)
                     self.detector = SSDDetector(prototxt=options.ssd_prototxt, model_path=options.ssd_model_path, ssd_caffe_bool=options.ssd_caffe_bool, ssd_openvino_bool=options.ssd_openvino_bool, merge_class_bool=options.car_attri_merge_bool, gpu_bool=options.gpu_bool)
+                elif self.country_type == "zd":
+                    self.detector = LPRDetectCaffe(options.ssd_prototxt, options.ssd_model_path, class_name=options.ssd_class_name, gpu_bool=options.gpu_bool, conf_thres=options.ssd_conf_thres)
             elif options.yolov6_bool:
                 self.detector = YOLOV6Detector(options.yolov6_config, options.yolov6_checkpoint, class_name=options.yolov6_class_name, threshold_list=options.yolov6_threshold_list, device=options.device)
 
@@ -95,6 +99,14 @@ class CaptureApi():
                     self.lpr = LPRCaffe(options.brazil.ocr_caffe_prototxt, options.brazil.ocr_caffe_model_path, input_shape=options.brazil.input_shape, ocr_labels=options.brazil.ocr_labels, padding_bool=options.brazil.padding_bool, prefix_beam_search_bool=options.brazil.ocr_prefix_beam_search_bool, gpu_bool=options.gpu_bool)
                     self.lpr_first_line = LPRCaffe(options.brazil.ocr_first_line_caffe_prototxt, options.brazil.ocr_first_line_caffe_model_path, input_shape=options.brazil.ocr_first_line_caffe_shape, ocr_labels=options.brazil.ocr_labels, padding_bool=options.brazil.padding_bool, prefix_beam_search_bool=options.brazil.ocr_prefix_beam_search_bool, gpu_bool=options.gpu_bool)
                     self.lpr_second_line = LPRCaffe(options.brazil.ocr_second_line_caffe_prototxt, options.brazil.ocr_second_line_caffe_model_path, input_shape=options.brazil.ocr_second_line_caffe_shape, ocr_labels=options.brazil.ocr_labels, padding_bool=options.brazil.padding_bool, prefix_beam_search_bool=options.brazil.ocr_prefix_beam_search_bool, gpu_bool=options.gpu_bool)
+
+                elif options.lpr_pytorch_bool:         
+                    self.lpr = None
+                    self.lpr_first_line = None
+                    self.lpr_second_line = None
+            elif self.country_type == "zd":
+                if options.lpr_caffe_bool:
+                    self.lpr_seg_ocr = LPRSegOcrcffe(options.zd.seg_caffe_prototxt, options.zd.seg_caffe_model_path, options.zd.ocr_caffe_prototxt, options.zd.ocr_caffe_model_path, gpu_bool=options.gpu_bool, dict_path=options.zd.dict_path)
 
                 elif options.lpr_pytorch_bool:         
                     self.lpr = None
@@ -369,7 +381,7 @@ class CaptureApi():
                     bbox_info_idx['plate_info']['color'] = seg_info['color']
                 
                 elif self.country_type == "brazil":
-
+    
                     # lincense plate reader
                     # crop
                     x1 = min(max(0, int(bbox_info_idx['plate_info']['roi'][0] - options.lpr_ocr_width_expand_ratio * (bbox_info_idx['plate_info']['roi'][2] - bbox_info_idx['plate_info']['roi'][0]))), options.image_width)
@@ -403,6 +415,53 @@ class CaptureApi():
                     bbox_info_idx['plate_info']['num'] = ocr_num
                     bbox_info_idx['plate_info']['column'] = 'Single' if crop_img_aspect > options.lpr_ocr_column_threshold else 'Double'
                     bbox_info_idx['plate_info']['score'] = np.array(ocr_score).mean() if len(ocr_score) else 0.0
+
+                elif self.country_type == "zd":
+
+                    # lincense plate reader
+                    # crop
+                    x1 = min(max(0, int(bbox_info_idx['plate_info']['roi'][0] - options.lpr_ocr_width_expand_ratio * (bbox_info_idx['plate_info']['roi'][2] - bbox_info_idx['plate_info']['roi'][0]))), options.image_width)
+                    x2 = min(max(0, int(bbox_info_idx['plate_info']['roi'][2] + options.lpr_ocr_width_expand_ratio * (bbox_info_idx['plate_info']['roi'][2] - bbox_info_idx['plate_info']['roi'][0]))), options.image_width)
+                    y1 = min(max(0, int(bbox_info_idx['plate_info']['roi'][1])), options.image_height)
+                    y2 = min(max(0, int(bbox_info_idx['plate_info']['roi'][3])), options.image_height)
+                    crop_img = img[y1: y2, x1: x2]
+                    crop_img_aspect = crop_img.shape[1] / crop_img.shape[0]
+
+                    seg_bbox, seg_info, ocr, ocr_score, ocr_ignore = self.lpr_seg_ocr.run(crop_img)
+
+                    if 'kind' in seg_bbox:
+                        bbox_info_idx['plate_info']['kind_roi'] = [0, 0, 0, 0]
+                        bbox_info_idx['plate_info']['kind_roi'][0] = x1 + seg_bbox['kind'][0][0]
+                        bbox_info_idx['plate_info']['kind_roi'][1] = y1 + seg_bbox['kind'][0][1]
+                        bbox_info_idx['plate_info']['kind_roi'][2] = x1 + seg_bbox['kind'][0][0] + seg_bbox['kind'][0][2]
+                        bbox_info_idx['plate_info']['kind_roi'][3] = y1 + seg_bbox['kind'][0][1] + seg_bbox['kind'][0][3]
+
+                    if 'num' in seg_bbox:
+                        bbox_info_idx['plate_info']['num_roi'] = [0, 0, 0, 0]
+                        bbox_info_idx['plate_info']['num_roi'][0] = x1 + seg_bbox['num'][0][0]
+                        bbox_info_idx['plate_info']['num_roi'][1] = y1 + seg_bbox['num'][0][1]
+                        bbox_info_idx['plate_info']['num_roi'][2] = x1 + seg_bbox['num'][0][0] + seg_bbox['num'][0][2]
+                        bbox_info_idx['plate_info']['num_roi'][3] = y1 + seg_bbox['num'][0][1] + seg_bbox['num'][0][3]
+
+                    bbox_info_idx['plate_info']['country'] = seg_info['country']
+                    bbox_info_idx['plate_info']['city'] = seg_info['city']
+                    bbox_info_idx['plate_info']['car_type'] = seg_info['car_type']
+                    bbox_info_idx['plate_info']['color'] = seg_info['color']
+                    bbox_info_idx['plate_info']['kind'] = seg_info['kind']
+                    bbox_info_idx['plate_info']['num'] = seg_info['num']
+                    bbox_info_idx['plate_info']['column'] = 'Single' if crop_img_aspect > options.lpr_ocr_column_threshold else 'Double'
+                    bbox_info_idx['plate_info']['score'] = np.array(ocr_score).mean() if len(ocr_score) else 0.0
+                    bbox_info_idx['plate_info']['ignore'] = ocr_ignore
+
+                    if seg_info['kind'] == 'kind':
+                        kind = ocr.split('#')[0] 
+                        if kind != "#":
+                            bbox_info_idx['plate_info']['kind'] = kind
+                        
+                    if seg_info['num'] == 'num':  
+                        num = ocr.split('#')[-1] 
+                        if num != "#":
+                            bbox_info_idx['plate_info']['num'] = num
 
         return bbox_info_list
 
@@ -548,7 +607,7 @@ class CaptureApi():
                                     bool_add_lpr = True
 
                             elif self.country_type == "brazil":
-
+    
                                 if bbox_info_idx['plate_info']['column'] == 'Single' and \
                                     lpr_width >= options.plate_signel_width[0] and \
                                     lpr_width < options.plate_signel_width[1] and \
@@ -563,6 +622,24 @@ class CaptureApi():
                                     lpr_height < options.plate_double_height[1]:
                                     bool_add_lpr = True
 
+                            elif self.country_type == "zd":
+
+                                if bbox_info_idx['plate_info']['column'] == 'Single' and \
+                                    lpr_width >= options.plate_signel_width[0] and \
+                                    lpr_width < options.plate_signel_width[1] and \
+                                    lpr_height >= options.plate_signel_height[0] and \
+                                    lpr_height < options.plate_signel_height[1] and \
+                                    bbox_info_idx['plate_info']['ignore'] == False:
+                                    bool_add_lpr = True
+
+                                if bbox_info_idx['plate_info']['column'] == 'Double' and \
+                                    lpr_width >= options.plate_double_width[0] and \
+                                    lpr_width < options.plate_double_width[1] and \
+                                    lpr_height >= options.plate_double_height[0] and \
+                                    lpr_height < options.plate_double_height[1] and \
+                                    bbox_info_idx['plate_info']['ignore'] == False:
+                                    bool_add_lpr = True
+
                         if bool_add_lpr:
                             bbox_state_idy['state']['obj_num'] += 1                   
                             bbox_state_idy['state']['obj_disappear_num'] = 0
@@ -571,6 +648,9 @@ class CaptureApi():
                             bbox_state_idy['state']['lpr_score_list'].append(bbox_info_idx['plate_info']['score'])
                             bbox_state_idy['state']['lpr_column_list'].append(bbox_info_idx['plate_info']['column'])
                             bbox_state_idy['state']['lpr_color_list'].append(bbox_info_idx['plate_info']['color'])
+                            bbox_state_idy['state']['lpr_country_list'].append(bbox_info_idx['plate_info']['country'])
+                            bbox_state_idy['state']['lpr_city_list'].append(bbox_info_idx['plate_info']['city'])
+                            bbox_state_idy['state']['lpr_car_type_list'].append(bbox_info_idx['plate_info']['car_type'])
 
                             if len( bbox_state_idy['state']['lpr_num_list'] ) > options.lpr_ocr_state_container_length:
                                 bbox_state_idy['state']['lpr_num_list'].pop(0)
@@ -586,6 +666,16 @@ class CaptureApi():
 
                             if len( bbox_state_idy['state']['lpr_color_list'] ) > options.lpr_city_state_container_length:
                                 bbox_state_idy['state']['lpr_color_list'].pop(0)
+
+                            if len( bbox_state_idy['state']['lpr_country_list'] ) > options.lpr_city_state_container_length:
+                                bbox_state_idy['state']['lpr_country_list'].pop(0)
+
+                            if len( bbox_state_idy['state']['lpr_city_list'] ) > options.lpr_city_state_container_length:
+                                bbox_state_idy['state']['lpr_city_list'].pop(0)
+
+                            if len( bbox_state_idy['state']['lpr_car_type_list'] ) > options.lpr_city_state_container_length:
+                                bbox_state_idy['state']['lpr_car_type_list'].pop(0)
+
                         else:
                             bbox_state_idy['state']['obj_disappear_num'] += 1
 
@@ -652,7 +742,7 @@ class CaptureApi():
                                 bool_add_lpr = True
 
                         elif self.country_type == "brazil":
-
+    
                             if bbox_info_idx['plate_info']['column'] == 'Single' and \
                                 lpr_width >= options.plate_signel_width[0] and \
                                 lpr_width < options.plate_signel_width[1] and \
@@ -666,6 +756,24 @@ class CaptureApi():
                                 lpr_height >= options.plate_double_height[0] and \
                                 lpr_height < options.plate_double_height[1]:
                                 bool_add_lpr = True
+
+                        elif self.country_type == "zd":
+
+                            if bbox_info_idx['plate_info']['column'] == 'Single' and \
+                                lpr_width >= options.plate_signel_width[0] and \
+                                lpr_width < options.plate_signel_width[1] and \
+                                lpr_height >= options.plate_signel_height[0] and \
+                                lpr_height < options.plate_signel_height[1] and \
+                                bbox_info_idx['plate_info']['ignore'] == False:
+                                bool_add_lpr = True
+
+                            if bbox_info_idx['plate_info']['column'] == 'Double' and \
+                                lpr_width >= options.plate_double_width[0] and \
+                                lpr_width < options.plate_double_width[1] and \
+                                lpr_height >= options.plate_double_height[0] and \
+                                lpr_height < options.plate_double_height[1] and \
+                                bbox_info_idx['plate_info']['ignore']== False:
+                                bool_add_lpr = True
                     
                     if bool_add_lpr:
                         bbox_state_idy['state']['obj_num'] += 1
@@ -675,6 +783,9 @@ class CaptureApi():
                         bbox_state_idy['state']['lpr_score_list'].append(bbox_info_idx['plate_info']['score'])
                         bbox_state_idy['state']['lpr_column_list'].append(bbox_info_idx['plate_info']['column'])
                         bbox_state_idy['state']['lpr_color_list'].append(bbox_info_idx['plate_info']['color'])
+                        bbox_state_idy['state']['lpr_country_list'].append(bbox_info_idx['plate_info']['country'])
+                        bbox_state_idy['state']['lpr_city_list'].append(bbox_info_idx['plate_info']['city'])
+                        bbox_state_idy['state']['lpr_car_type_list'].append(bbox_info_idx['plate_info']['car_type'])
                         
                     else:
                         bbox_state_idy['state']['obj_disappear_num'] += 1
@@ -891,6 +1002,9 @@ class CaptureApi():
                         lpr_num_np = np.array(bbox_state_idy['state']['lpr_num_list'])
                         lpr_score_np = np.array(bbox_state_idy['state']['lpr_score_list'])
                         lpr_color_np = np.array(bbox_state_idy['state']['lpr_color_list'])
+                        lpr_country_np = np.array(bbox_state_idy['state']['lpr_country_list'])
+                        lpr_city_np = np.array(bbox_state_idy['state']['lpr_city_list'])
+                        lpr_car_type_np = np.array(bbox_state_idy['state']['lpr_car_type_list'])
                         lpr_column_np = np.array(bbox_state_idy['state']['lpr_column_list'])
                         lpr_color_np = lpr_color_np[lpr_color_np != "none"]
 
@@ -903,6 +1017,12 @@ class CaptureApi():
                                 capture_lpr_num, capture_lpr_num_frame = Counter(list(lpr_num_np[lpr_score_np > options.capture_lpr_score_threshold])).most_common(1)[0]
                             if len(list(lpr_color_np)):
                                 capture_lpr_color, capture_lpr_color_frame = Counter(list(lpr_color_np)).most_common(1)[0]
+                            if len(list(lpr_country_np)):
+                                capture_lpr_country, capture_lpr_country_frame = Counter(list(lpr_country_np)).most_common(1)[0]
+                            if len(list(lpr_city_np)):
+                                capture_lpr_city, capture_lpr_city_frame = Counter(list(lpr_city_np)).most_common(1)[0]
+                            if len(list(lpr_car_type_np)):
+                                capture_lpr_car_type, capture_lpr_car_type_frame = Counter(list(lpr_car_type_np)).most_common(1)[0]
                             if len(list(lpr_column_np)):
                                 capture_lpr_column, capture_lpr_column_frame = Counter(list(lpr_column_np)).most_common(1)[0]
 
@@ -921,7 +1041,7 @@ class CaptureApi():
                                     
                                     # color
                                     capture_res_dict['plate_info']['color'] = "none"
-                                    if capture_lpr_color_frame >= options.capture_lpr_color_frame_threshold:
+                                    if len(list(lpr_color_np)) and capture_lpr_color_frame >= options.capture_lpr_color_frame_threshold:
                                         capture_res_dict['plate_info']['color'] = capture_lpr_color
                                                
                                     self.params_dict['capture_res_container'][capture_res_dict['plate_info']['num']] = capture_res_dict
@@ -932,7 +1052,7 @@ class CaptureApi():
                                     capture_dict_idy['plate_info']['color'] = capture_res_dict['plate_info']['color']
 
                             elif self.country_type == "brazil":
-
+    
                                 # 普通车牌抓拍
                                 if capture_lpr_column == 'Single':
                                     if capture_lpr_num_frame >= options.capture_lpr_num_frame_threshold and \
@@ -979,6 +1099,43 @@ class CaptureApi():
                                         capture_dict_idy['plate_info']['num'] = capture_res_dict['plate_info']['num']
                                         capture_dict_idy['plate_info']['color'] = capture_res_dict['plate_info']['color']
                                         capture_dict_idy['plate_info']['column'] = capture_res_dict['plate_info']['column']
+
+                            elif self.country_type == "zd":
+
+                                # 普通车牌抓拍
+                                if capture_lpr_kind_frame >= options.capture_lpr_kind_frame_threshold and \
+                                    capture_lpr_num_frame >= options.capture_lpr_num_frame_threshold and \
+                                    len(capture_from_container_list) and \
+                                    capture_lpr_num not in self.params_dict['capture_res_container'] and \
+                                    capture_lpr_num != "none":
+
+                                    capture_res_dict['track_id'] = capture_id_idx
+                                    capture_res_dict['capture']['flage'] = capture_dict_idy['capture']['flage']
+                                    capture_res_dict['capture']['img_bbox_info_list'] = capture_from_container_list
+                                    capture_res_dict['capture']['capture_bool'] = True
+                                    capture_res_dict['plate_info']['kind'] = capture_lpr_kind
+                                    capture_res_dict['plate_info']['num'] = capture_lpr_num
+                                    capture_res_dict['plate_info']['column'] = capture_lpr_column
+                                    if capture_lpr_country_frame >= options.capture_lpr_contry_frame_threshold:
+                                        capture_res_dict['plate_info']['country'] = capture_lpr_country
+                                    if capture_lpr_city_frame >= options.capture_lpr_city_frame_threshold:
+                                        capture_res_dict['plate_info']['city'] = capture_lpr_city
+                                    if capture_lpr_car_type_frame >= options.capture_lpr_car_type_frame_threshold:
+                                        capture_res_dict['plate_info']['car_type'] = capture_lpr_car_type
+                                    if len(list(lpr_color_np)) and capture_lpr_color_frame >= options.capture_lpr_color_frame_threshold:
+                                        capture_res_dict['plate_info']['color'] = capture_lpr_color
+
+                                    self.params_dict['capture_res_container'][capture_res_dict['plate_info']['num']] = capture_res_dict
+
+                                    # 信息同步
+                                    capture_dict_idy['capture']['capture_bool'] = capture_res_dict['capture']['capture_bool']
+                                    capture_dict_idy['plate_info']['kind'] = capture_res_dict['plate_info']['kind']
+                                    capture_dict_idy['plate_info']['num'] = capture_res_dict['plate_info']['num']
+                                    capture_dict_idy['plate_info']['color'] = capture_res_dict['plate_info']['color']
+                                    capture_dict_idy['plate_info']['column'] = capture_res_dict['plate_info']['column']
+                                    capture_dict_idy['plate_info']['country'] = capture_res_dict['plate_info']['country']
+                                    capture_dict_idy['plate_info']['city'] = capture_res_dict['plate_info']['city']
+                                    capture_dict_idy['plate_info']['car_type'] = capture_res_dict['plate_info']['car_type']
 
                     elif self.demo_type == "face":
 

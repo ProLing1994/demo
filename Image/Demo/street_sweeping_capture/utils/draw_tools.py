@@ -89,8 +89,9 @@ class DrawApi():
     DrawApi
     """
 
-    def __init__(self, demo_type):
+    def __init__(self, demo_type, country_type):
         self.demo_type = demo_type
+        self.country_type = country_type
 
 
     def draw_bbox_info(self, img, bbox_info, capture_container=None, capture_res_container=None, mode='xywh'):
@@ -109,8 +110,12 @@ class DrawApi():
                 capture_bool = True
 
             if self.demo_type == "lpr":
-
-                text = "抓拍结果：{}_{}_{}".format( capture_res_idy['plate_info']['num'], capture_res_idy['plate_info']['column'], capture_res_idy['plate_info']['color'] )
+                
+                if self.country_type == "zd":
+                    text = "抓拍结果：{}_{}_{}_{}_{}_{}_{}".format( capture_res_idy['plate_info']['kind'], capture_res_idy['plate_info']['num'], capture_res_idy['plate_info']['country'], capture_res_idy['plate_info']['city'], capture_res_idy['plate_info']['car_type'], capture_res_idy['plate_info']['color'], capture_res_idy['plate_info']['column'] )
+                else:
+                    text = "抓拍结果：{}_{}_{}".format( capture_res_idy['plate_info']['num'], capture_res_idy['plate_info']['column'], capture_res_idy['plate_info']['color'] )
+                
                 text_size = cv2.getTextSize(text, 0, 3, 2)
                 cv2.rectangle(img, (x, y), (x + int(text_size[0][0] * 0.8), y + text_size[0][1] + text_size[1]), (255,255,255), -1)
                 # img = NiceBox(img, (x, y, x + text_size[0][0] + 1 * text_size[1], y + text_size[0][1] + text_size[1]), (255,255,255), thickness=5)
@@ -191,7 +196,11 @@ class DrawApi():
                 if len(bbox_info_idx['plate_info']['roi']):
                     
                     bbox_info_idx['plate_info']['roi'] = [int(b + 0.5) for b in bbox_info_idx['plate_info']['roi'][:4]]
-                    text = "{}{}_{}_{}_{:.2f}".format( bbox_info_idx['plate_info']['kind'], bbox_info_idx['plate_info']['num'], bbox_info_idx['plate_info']['column'], bbox_info_idx['plate_info']['color'], bbox_info_idx['plate_info']['score'])
+                    if self.country_type == "zd":
+                        text = "{}#{}_{}_{}_{}_{}_{}_{:.2f}".format( bbox_info_idx['plate_info']['kind'], bbox_info_idx['plate_info']['num'], bbox_info_idx['plate_info']['country'], bbox_info_idx['plate_info']['city'], bbox_info_idx['plate_info']['car_type'], bbox_info_idx['plate_info']['color'], bbox_info_idx['plate_info']['column'], bbox_info_idx['plate_info']['score'])
+                    else:                        
+                        text = "{}{}_{}_{}_{:.2f}".format( bbox_info_idx['plate_info']['kind'], bbox_info_idx['plate_info']['num'], bbox_info_idx['plate_info']['column'], bbox_info_idx['plate_info']['color'], bbox_info_idx['plate_info']['score'])
+
                     text_size = cv2.getTextSize(text, 0, 3, 2)
                     if not capture_bool:
                         img = cv_plot_rectangle(img, bbox_info_idx['plate_info']['roi'], mode=mode, color=color_dict["plate"], thickness=3)
@@ -209,7 +218,12 @@ class DrawApi():
                         #                     (bbox_info_idx['plate_info']['roi'][0], bbox_info_idx['plate_info']['roi'][1] - 15), 
                         #                     cv2.FONT_HERSHEY_COMPLEX, 3, color_dict["plate_capture"], 2)
                         img = cv2ImgAddText(img, text, bbox_info_idx['plate_info']['roi'][0], bbox_info_idx['plate_info']['roi'][1] - 15 - text_size[0][1], textColor=color_dict["plate_capture_reverse"], textSize=60)
-            
+
+                    if len(bbox_info_idx['plate_info']['kind_roi']):
+                        img = cv_plot_rectangle(img, bbox_info_idx['plate_info']['kind_roi'], mode=mode, color=color_dict["plate"], thickness=3)
+                    if len(bbox_info_idx['plate_info']['num_roi']):
+                        img = cv_plot_rectangle(img, bbox_info_idx['plate_info']['num_roi'], mode=mode, color=color_dict["plate"], thickness=3)
+
             elif self.demo_type == "face":
                 # face
                 bbox_info_idx['face_info']['roi'] = [int(b + 0.5) for b in bbox_info_idx['face_info']['roi'][:4]]
