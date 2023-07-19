@@ -164,7 +164,7 @@ if __name__ == "__main__":
     # america_new：[('bus', 2758), ('car', 29962), ('truck', 1130)]
 
     # 数据集: ZG_ZHJYZ_detection, 包含 car\bus\truck\plate\fuzzy_plate, 龙门架视角 
-    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/original/shenzhentiaoqiao/"
+    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/original/shenzhentiaoqiao/"
     # 数据集: jiayouzhan, [('bicyclist', 13), ('bus', 685), ('car', 12295), ('fuzzy_plate', 1792), ('motorcyclist', 44), ('plate', 9800), ('roi_ignore_plate', 227), ('tricycle', 17), ('truck', 180)]
     # 数据集: jiayouzhan_5M, [('bicyclist', 8), ('bus', 489), ('car', 7774), ('fuzzy_plate', 1158), ('motorcyclist', 52), ('painted_plate', 175), ('plate', 4014), ('truck', 22)]
     # 数据集: sandaofangxian, [('bus', 1784), ('car', 9226), ('fuzzy_plate', 4421), ('painted_plate', 449), ('plate', 5534), ('truck', 13267)]
@@ -255,6 +255,12 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/temp/Char_dec_dataset/"
     # Char_dec_dataset: [('char', 1900), ('char_ch', 300)]
 
+    # 数据集: RM_upspeed
+    # args.input_dir = "/yuanhuan/data/image/RM_upspeed/original/Europe/"
+    args.input_dir = "/yuanhuan/data/image/RM_upspeed/original/China/"
+    # Europe: [('car', 3707), ('motorcyclist', 10), ('person', 22), ('trafficlight_green_n', 79), ('trafficlight_off', 5), ('trafficlight_yellow_n', 6), ('truck', 64), ('upspeed_spain_100', 189), ('upspeed_spain_120', 56), ('upspeed_spain_30', 28), ('upspeed_spain_40', 413), ('upspeed_spain_50', 2), ('upspeed_spain_60', 440), ('upspeed_spain_70', 85), ('upspeed_spain_80', 165), ('upspeed_spain_90', 90), ('zebra_crossing', 27)]
+    # China: [('car', 782), ('person', 288), ('person_o', 33), ('sign_hand_c', 17), ('sign_handb_c', 5), ('sign_height_c', 10), ('sign_upspeed_c', 285), ('trafficlight', 304), ('zebra_crossing', 159)]
+
     args.trainval_file = args.input_dir + "ImageSets/Main/trainval.txt"
     args.train_file = args.input_dir + "ImageSets/Main/train.txt"
     args.val_file = args.input_dir + "ImageSets/Main/val.txt"
@@ -262,8 +268,8 @@ if __name__ == "__main__":
     args.statistic_dict = {'trainval': args.trainval_file, 'test': args.test_file }
 
     args.jpg_dir =  args.input_dir + "JPEGImages/"
-    # args.xml_dir =  args.input_dir + "Annotations/"
-    args.xml_dir =  args.input_dir + "XML/"
+    args.xml_dir =  args.input_dir + "Annotations/"
+    # args.xml_dir =  args.input_dir + "XML/"
     # args.xml_dir =  args.input_dir + "refine_xml/"
     # args.xml_dir =  args.input_dir + "Annotations_CarBusTruckMotorcyclePlateMotoplate_w_fuzzy/"
     # args.xml_dir =  args.input_dir + "Annotations_License/"

@@ -62,8 +62,8 @@ def model_test(args, from_jpg_dir=False, bool_onnx=False, bool_caffe=False):
         
         results_dict['ocr'] = ocr
         results_dict['ocr_score'] = np.array(ocr_score).mean()
-        # results_dict['res'] = int( results_dict['label'] == results_dict['ocr'] )
-        results_dict['res'] = int( results_dict['label'][1:] == results_dict['ocr'][1:] )
+        results_dict['res'] = int( results_dict['label'] == results_dict['ocr'] )
+        # results_dict['res'] = int( results_dict['label'][1:] == results_dict['ocr'][1:] )
 
         tqdm_write = '{} {} {}'.format( results_dict['label'], results_dict['ocr'], results_dict['res'] )
         tqdm.write(tqdm_write)
@@ -121,6 +121,11 @@ if __name__ == '__main__':
     args.dict_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_chn_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230707/inference/cn_dict.txt"
     args.output_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_chn_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230707/best_accuracy/"
 
+    # args.model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_chn_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230707_original_248/inference/caffe/model.caffemodel"
+    # args.prototxt_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_chn_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230707_original_248/inference/caffe/model.prototxt"
+    # args.dict_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_chn_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230707_original_248/inference/cn_dict.txt"
+    # args.output_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_chn_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230707_original_248/best_accuracy/"
+
     # ocr_merge_test
     # args.img_list = "/yuanhuan/data/image/RM_ANPR/training/plate_cn_202305/sichuan/ImageSets/Main/train.txt"
     # args.output_csv_path = os.path.join(args.output_dir, 'test_caffe/data_sichuan_train_result.csv')
@@ -134,5 +139,7 @@ if __name__ == '__main__':
     # args.input_jpg_path = "/yuanhuan/data/image/RM_ANPR/original/cn/DIFFSTE/original_248_52/val"
     # args.output_csv_path = os.path.join(args.output_dir, 'test_caffe/data_original_248_52_val_result.csv')
     args.input_jpg_path = "/yuanhuan/data/image/RM_ANPR/training/plate_cn_202305/sichuan/Images/"
-    args.output_csv_path = os.path.join(args.output_dir, 'test_caffe/data_sichuan_result_no_char.csv')
+    args.output_csv_path = os.path.join(args.output_dir, 'test_caffe/data_sichuan_result.csv')
+    # args.input_jpg_path = "/yuanhuan/data/image/RM_ANPR/training/plate_cn_202305/sichuan/Images/"
+    # args.output_csv_path = os.path.join(args.output_dir, 'test_caffe/data_sichuan_result_no_char.csv')
     model_test(args, from_jpg_dir=True, bool_caffe=True)
