@@ -107,11 +107,13 @@ if __name__ == '__main__':
     args.output_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_en_number_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230530_cn/best_accuracy/"
 
     args.lpr_prefix_beam_search_bool = False
-    args.gpu_bool = False
+    args.gpu_bool = True
 
-    # ocr_merge_test
+    # ocr_test
     # args.img_list = "/yuanhuan/data/image/RM_ANPR/training/plate_cn_202305/sichuan/ImageSets/Main/train.txt"
     # args.output_csv_path = os.path.join(args.output_dir, 'test_caffe/data_sichuan_train_result.csv')
-    args.img_list = "/yuanhuan/data/image/RM_ANPR/training/plate_cn_202305/sichuan/ImageSets/Main/test.txt"
-    args.output_csv_path = os.path.join(args.output_dir, 'test_caffe/data_sichuan_test_result.csv')
+    # args.img_list = "/yuanhuan/data/image/RM_ANPR/training/plate_cn_202305/sichuan/ImageSets/Main/test.txt"
+    # args.output_csv_path = os.path.join(args.output_dir, 'test_caffe/data_sichuan_test_result.csv')
+    args.img_list = "/yuanhuan/data/image/RM_ANPR/training/plate_cn_202305/ImageSetsOcrLabelNoAugWoXianggangaomenDoubleyellow/ImageSets/Main/test.txt"
+    args.output_csv_path = os.path.join(args.output_dir, 'test_caffe/data_all_no_xianggangaomen_doubleyellow_test_result.csv')
     model_test(args)

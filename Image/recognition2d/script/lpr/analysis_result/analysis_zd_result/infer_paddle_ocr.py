@@ -116,30 +116,42 @@ if __name__ == '__main__':
     # caffe
     ###############################
 
-    args.model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_chn_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230707/inference/caffe/model.caffemodel"
-    args.prototxt_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_chn_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230707/inference/caffe/model.prototxt"
-    args.dict_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_chn_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230707/inference/cn_dict.txt"
-    args.output_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_chn_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230707/best_accuracy/"
-
+    # diffste_248_111600
+    # args.model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_chn_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230707/inference/caffe/model.caffemodel"
+    # args.prototxt_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_chn_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230707/inference/caffe/model.prototxt"
+    # args.dict_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_chn_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230707/inference/cn_dict.txt"
+    # args.output_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_chn_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230707/best_accuracy/"
+    
+    # # original_248_52
     # args.model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_chn_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230707_original_248/inference/caffe/model.caffemodel"
     # args.prototxt_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_chn_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230707_original_248/inference/caffe/model.prototxt"
     # args.dict_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_chn_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230707_original_248/inference/cn_dict.txt"
     # args.output_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_chn_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230707_original_248/best_accuracy/"
 
-    # ocr_merge_test
+    # diffste_1_7M(diffste_2141_yellow/diffste_2189_green/diffste_3859_blue)
+    args.model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_chn_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230727_diffste_1_7M/inference_iter_epoch_175/caffe/model.caffemodel"
+    args.prototxt_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_chn_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230727_diffste_1_7M/inference_iter_epoch_175/caffe/model.prototxt"
+    args.dict_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_chn_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230727_diffste_1_7M/inference_iter_epoch_175/cn_dict.txt"
+    args.output_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_chn_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230727_diffste_1_7M/inference_iter_epoch_175/"
+
+    # ocr_test
     # args.img_list = "/yuanhuan/data/image/RM_ANPR/training/plate_cn_202305/sichuan/ImageSets/Main/train.txt"
     # args.output_csv_path = os.path.join(args.output_dir, 'test_caffe/data_sichuan_train_result.csv')
     # args.img_list = "/yuanhuan/data/image/RM_ANPR/training/plate_cn_202305/sichuan/ImageSets/Main/test.txt"
     # args.output_csv_path = os.path.join(args.output_dir, 'test_caffe/data_sichuan_test_result.csv')
-    # model_test(args, bool_caffe=True)
+    args.img_list = "/yuanhuan/data/image/RM_ANPR/training/plate_cn_202305/ImageSetsOcrLabelNoAugWoXianggangaomenDoubleyellow/ImageSets/Main/train.txt"
+    args.output_csv_path = os.path.join(args.output_dir, 'test_caffe/data_all_no_xianggangaomen_doubleyellow_train_result.csv')
+    # args.img_list = "/yuanhuan/data/image/RM_ANPR/training/plate_cn_202305/ImageSetsOcrLabelNoAugWoXianggangaomenDoubleyellow/ImageSets/Main/test.txt"
+    # args.output_csv_path = os.path.join(args.output_dir, 'test_caffe/data_all_no_xianggangaomen_doubleyellow_test_result.csv')
+    model_test(args, bool_caffe=True)
 
     # from_jpg_dir
     # args.input_jpg_path = "/yuanhuan/data/image/RM_ANPR/original/cn/DIFFSTE/original_248_52/train"
     # args.output_csv_path = os.path.join(args.output_dir, 'test_caffe/data_original_248_52_train_result.csv')
     # args.input_jpg_path = "/yuanhuan/data/image/RM_ANPR/original/cn/DIFFSTE/original_248_52/val"
     # args.output_csv_path = os.path.join(args.output_dir, 'test_caffe/data_original_248_52_val_result.csv')
-    args.input_jpg_path = "/yuanhuan/data/image/RM_ANPR/training/plate_cn_202305/sichuan/Images/"
-    args.output_csv_path = os.path.join(args.output_dir, 'test_caffe/data_sichuan_result.csv')
+    # args.input_jpg_path = "/yuanhuan/data/image/RM_ANPR/training/plate_cn_202305/sichuan/Images/"
+    # args.output_csv_path = os.path.join(args.output_dir, 'test_caffe/data_sichuan_result.csv')
     # args.input_jpg_path = "/yuanhuan/data/image/RM_ANPR/training/plate_cn_202305/sichuan/Images/"
     # args.output_csv_path = os.path.join(args.output_dir, 'test_caffe/data_sichuan_result_no_char.csv')
-    model_test(args, from_jpg_dir=True, bool_caffe=True)
+    # model_test(args, from_jpg_dir=True, bool_caffe=True)

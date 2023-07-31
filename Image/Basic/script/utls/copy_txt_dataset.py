@@ -11,16 +11,16 @@ def copy_dataset(args):
     with open(args.test_file, "r") as f:
         lines = f.readlines()
         for line in tqdm(lines):
-            # normal
-            jpg_path = os.path.join(args.jpg_dir, line.strip() + '.jpg')
-            output_jpg_path = os.path.join(args.jpg_output_dir, line.strip() + '.jpg')
-            shutil.copy(jpg_path, output_jpg_path)
-            
-            # # seg plate
-            # jpg_name = os.path.basename(line.strip().split(' ')[0])
-            # jpg_path = os.path.join(args.jpg_dir, jpg_name)
-            # output_jpg_path = os.path.join(args.jpg_output_dir, jpg_name)
+            # # normal
+            # jpg_path = os.path.join(args.jpg_dir, line.strip() + '.jpg')
+            # output_jpg_path = os.path.join(args.jpg_output_dir, line.strip() + '.jpg')
             # shutil.copy(jpg_path, output_jpg_path)
+            
+            # seg
+            jpg_name = os.path.basename(line.strip().split(' ')[0])
+            jpg_path = os.path.join(args.jpg_dir, jpg_name)
+            output_jpg_path = os.path.join(args.jpg_output_dir, jpg_name)
+            shutil.copy(jpg_path, output_jpg_path)
 
             # jpg_name = os.path.basename(line.strip())
             # jpg_path = line.strip()
@@ -33,7 +33,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53AB_WA_20221216_detonly_merge/"
+    args.input_dir = "/yuanhuan/data/image/RM_C28_safeisland/original/zhongdong/"
     args.test_file = args.input_dir + "/ImageSets/Main/test.txt"
 
     args.jpg_dir =  args.input_dir + "JPEGImages/"
