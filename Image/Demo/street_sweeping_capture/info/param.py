@@ -12,11 +12,17 @@ def load_objectinfo():
     # plate_info
     objectinfo['plate_info'] = {}
     objectinfo['plate_info']['roi'] = []
+    objectinfo['plate_info']['kind_roi'] = []
+    objectinfo['plate_info']['num_roi'] = []
     objectinfo['plate_info']['kind'] = ''
     objectinfo['plate_info']['num'] = ''
     objectinfo['plate_info']['column'] = 'none'
+    objectinfo['plate_info']['country'] = 'none'
+    objectinfo['plate_info']['city'] = 'none'
+    objectinfo['plate_info']['car_type'] = 'none'
     objectinfo['plate_info']['color'] = 'none'
     objectinfo['plate_info']['score'] = 0.0
+    objectinfo['plate_info']['ignore'] = False
 
     # face_info
     objectinfo['face_info'] = {}
@@ -47,6 +53,9 @@ def load_objectinfo():
     objectinfo['state']['lpr_score_list'] = []                              # 车牌识别结果得分（多帧）
     objectinfo['state']['lpr_column_list'] = []                             # 车牌识别结果得分（多帧）
     objectinfo['state']['lpr_color_list'] = []                              # 车牌识别结果得分（多帧）
+    objectinfo['state']['lpr_country_list'] = []                            # 车牌识别结果得分（多帧）
+    objectinfo['state']['lpr_city_list'] = []                               # 车牌识别结果得分（多帧）
+    objectinfo['state']['lpr_car_type_list'] = []                           # 车牌识别结果得分（多帧）
     objectinfo['state']['face_landmark_degree_list'] = []                   # 人脸角度识别结果得分（多帧）
     objectinfo['state']['face_landmark_positive_cls_list'] = []             # 人脸角度识别结果得分（多帧）
 

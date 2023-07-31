@@ -4,7 +4,7 @@ import os
 from PIL import Image
 import re
 
-def draw_gif(folder_dir, image_jpgs, gif_path, duration):
+def draw_gif(folder_dir, image_jpgs, gif_size, gif_path, duration):
     """
     draw gif graph according to image_jpgs
     :param folder_drr:  image dir
@@ -17,18 +17,17 @@ def draw_gif(folder_dir, image_jpgs, gif_path, duration):
     for jpg in image_jpgs:
         fpath = os.path.join(folder_dir, jpg)
         im = Image.open(fpath)
-        # im = im.resize([im.size[0] * 2 // 3, im.size[1] * 2 // 3])
-        im = im.resize([im.size[0] * 2 // 6, im.size[1] * 2 // 6])
-        # im = im.resize([im.size[0] * 2 // 12, im.size[1] * 2 // 12])
+        im = im.resize([gif_size[0], gif_size[1]])
         images.append(np.array(im))
     imageio.mimsave(gif_path, images, duration=duration)
 
 if __name__ == '__main__':
-    input_path = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/test_old/gif/349286_20221028093143_20221028093842/res/"
-    gif_name = '/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/test_old/gif/349286_20221028093143_20221028093842/res.gif'
+    input_path = "/mnt/huanyuan/temp/test/gif/h/"
+    gif_name = '/mnt/huanyuan/temp/test/gif/h.gif'
+    gif_size = (680, 512)
     duration = 0.15
 
     image_list = os.listdir(input_path)
     image_list.sort()
 
-    draw_gif(input_path, image_list, gif_name, duration)
+    draw_gif(input_path, image_list, gif_size, gif_name, duration)

@@ -22,7 +22,7 @@ def inference_video(args):
     capture_api = CaptureApi(args.demo_type, args.country_type)
 
     # draw api
-    draw_api = DrawApi(args.demo_type,)
+    draw_api = DrawApi(args.demo_type, args.country_type)
 
     # video init 
     video_list = np.array(os.listdir(args.video_dir))
@@ -99,10 +99,18 @@ def inference_video(args):
                         bbox_info = img_bbox_info['bbox_info']
 
                         if args.demo_type == "lpr":
+                            kind = capture_res_idy['plate_info']['kind']
                             num = capture_res_idy['plate_info']['num']
                             color = capture_res_idy['plate_info']['color']
+                            country = capture_res_idy['plate_info']['country']
+                            city = capture_res_idy['plate_info']['city']
+                            car_type = capture_res_idy['plate_info']['car_type']
                             bbox_loc = [bbox_info['car_info']['roi'] if len(bbox_info['car_info']['roi']) else bbox_info['plate_info']['roi'] for bbox_info in bbox_info if bbox_info['track_id'] == track_id][0]
-                            output_capture_path = os.path.join(args.output_video_dir, 'capture', video_list[idx].replace(args.suffix, ''), '{}_{}_{}_{}_{}.jpg'.format(frame_idx, num, color, flage, idz))
+
+                            if args.country_type == "zd":
+                                output_capture_path = os.path.join(args.output_video_dir, 'capture', video_list[idx].replace(args.suffix, ''), '{}_{}_{}_{}_{}_{}_{}_{}_{}.jpg'.format(frame_idx, kind, num, country, city, car_type, color, flage, idz))
+                            else:
+                                output_capture_path = os.path.join(args.output_video_dir, 'capture', video_list[idx].replace(args.suffix, ''), '{}_{}_{}_{}_{}.jpg'.format(frame_idx, num, color, flage, idz))
                         elif args.demo_type == "face":
                             landmark_degree = bbox_info[0]['face_info']['landmark_degree']
                             bbox_loc = [bbox_info['face_info']['roi'] for bbox_info in bbox_info if bbox_info['track_id'] == track_id][0]
@@ -127,22 +135,24 @@ def main():
     #######################################
     # license plate
     #######################################
-    # zg, license plate demo
-    args.demo_type = "lpr"
-    args.country_type = "china"
-    # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_CN_ZG_HCZP/5M_230416/avi/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_CN_ZG_HCZP/5M_230416/test/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_CN_ZG_HCZP/5M_230416/lpr_paddle_ocr/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230606/C27_16mm_2592_1920_avi/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230606/lpr_paddle_ocr/C27_16mm_2592_1920_avi/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230606/黑光C27_16mm_2592_1520_avi/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230606/lpr_paddle_ocr/黑光C27_2592_1520_avi/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230606/C40W_8mm_2688_1520_avi/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230606/lpr_paddle_ocr/C40W_8mm_2688_1520_avi/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230614/C27_16mm_2592_1920_avi/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230614/lpr_paddle_ocr/C27_16mm_2592_1920_avi/"
-    args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_C37/2M_白天_16mm_2023_0330/"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_C37/2M_白天_16mm_2023_0330/"
+    # # zg, license plate demo
+    # args.demo_type = "lpr"
+    # args.country_type = "china"
+    # # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_CN_ZG_HCZP/5M_230416/avi/"
+    # # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_CN_ZG_HCZP/5M_230416/test/"
+    # # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_CN_ZG_HCZP/5M_230416/lpr_paddle_ocr/"
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_CN_ZG_HCZP/2M_8mm_16mm_211103/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_CN_ZG_HCZP/2M_8mm_16mm_211103/lpr_paddle_ocr/"
+    # # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230606/C27_16mm_2592_1920_avi/"
+    # # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230606/lpr_paddle_ocr/C27_16mm_2592_1920_avi/"
+    # # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230606/黑光C27_16mm_2592_1520_avi/"
+    # # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230606/lpr_paddle_ocr/黑光C27_2592_1520_avi/"
+    # # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230606/C40W_8mm_2688_1520_avi/"
+    # # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230606/lpr_paddle_ocr/C40W_8mm_2688_1520_avi/"
+    # # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230614/C27_16mm_2592_1920_avi/"
+    # # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230614/lpr_paddle_ocr/C27_16mm_2592_1920_avi/"
+    # # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_C37/2M_白天_16mm_2023_0330/"
+    # # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_C37/2M_白天_16mm_2023_0330/"
 
     # # Brazil, license plate demo
     # args.demo_type = "lpr"
@@ -157,6 +167,14 @@ def main():
     # args.country_type = "brazil"
     # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_C37/2M_白天_2_6mm_8mm_2023_0706/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_C37/2M_白天_2_6mm_8mm_2023_0706/"
+
+    # zd, license plate demo
+    args.demo_type = "lpr"
+    args.country_type = "zd"
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_ZD_DUBAI_C27/5M_白天_侧向_0615/avi/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_白天_侧向_0615/20230714/"
+    args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_ZD_SHATE_C27/5M_白天_前向_20230208/avi/"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_SHATE/5M_白天_前向_20230208/20230714/"
     
     # ######################################
     # # face
@@ -182,8 +200,8 @@ def main():
     # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230614/C27_16mm_2592_1920_avi/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_ZD_DUBAI_C27/5M_前方反馈_20230614/yolov6_landmark_degree_cls/C27_16mm_2592_1920_avi/"
 
-    args.suffix = '.avi'
-    # args.suffix = '.mp4'
+    # args.suffix = '.avi'
+    args.suffix = '.mp4'
 
     # 是否保存视频结果
     args.write_result_video_bool = True
