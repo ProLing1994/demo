@@ -28,6 +28,13 @@ if __name__ == "__main__":
     args.ignore_list = [
                         'ImageSetsOcrLabelNoAug', 
                         'ImageSetsOcrLabel', 
+                        'ImageSetsOcrLabelNoAugWoXianggangaomen',
+                        'ImageSetsOcrLabelWoXianggangaomen',
+                        'ImageSetsOcrLabelNoAugWoXianggangaomenDoubleyellow',
+                        'ImageSetsOcrLabelWoXianggangaomenDoubleyellow',
+                        # 'xianggangaomen',
+                        # 'yellow_license_plate',
+                        # '特殊车牌',
                         ]
     
     args.merge_file_list = [
@@ -50,6 +57,8 @@ if __name__ == "__main__":
     args.label_name = ""
     args.bool_aug = False
     args.to_input_dir = os.path.join(args.input_dir, "ImageSetsOcrLabelNoAug")
+    # args.to_input_dir = os.path.join(args.input_dir, "ImageSetsOcrLabelNoAugWoXianggangaomen")
+    # args.to_input_dir = os.path.join(args.input_dir, "ImageSetsOcrLabelNoAugWoXianggangaomenDoubleyellow")
 
     split(args)
 
@@ -59,5 +68,7 @@ if __name__ == "__main__":
     args.label_name = ""
     args.bool_aug = True
     args.to_input_dir = os.path.join(args.input_dir, "ImageSetsOcrLabel")
+    # args.to_input_dir = os.path.join(args.input_dir, "ImageSetsOcrLabelWoXianggangaomen")
+    # args.to_input_dir = os.path.join(args.input_dir, "ImageSetsOcrLabelWoXianggangaomenDoubleyellow")
 
     split(args)

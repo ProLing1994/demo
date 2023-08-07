@@ -94,6 +94,11 @@ if __name__ == "__main__":
     parser.add_argument('--date_name', type=str, default="Europe") 
     parser.add_argument('--input_dir', type=str, default="/yuanhuan/data/image/RM_upspeed/crop/") 
     parser.add_argument('--output_dir', type=str, default="/yuanhuan/data/image/RM_upspeed/training/") 
+    # parser.add_argument('--crop_key_list', type=list, default=['upspeed_spain_100', 'upspeed_spain_120', 'upspeed_spain_30', 'upspeed_spain_40', 'upspeed_spain_50', 'upspeed_spain_60', 'upspeed_spain_70', 'upspeed_spain_80', 'upspeed_spain_90', ]) 
+    # parser.add_argument('--crop_key_list', type=list, default=['sign_upspeed_c', 'sign_height_c', 'sign_hand_c', 'sign_handb_c', ]) 
+    # parser.add_argument('--crop_key_list', type=list, default=['sign_stop',]) 
+    parser.add_argument('--crop_key_list', type=list, default=['sign_15', 'sign_20', 'sign_25', 'sign_25_m', 'sign_30', 'sign_30_m', 'sign_30_special', 'sign_35', 'sign_35_m',  'sign_35_special', 'sign_35_special_m', 'sign_40', 'sign_40_m', 'sign_40_special', 'sign_45', 'sign_45_m', 'sign_45_special', 'sign_5', 'sign_50', 'sign_55', 'sign_60', 'sign_65', 'sign_70', 'sign_99_neg', 'upspeed_10', 'upspeed_15', 'upspeed_20', 'upspeed_25', 'upspeed_30', 'upspeed_35', 'upspeed_40', 'upspeed_45', 'upspeed_5', 'upspeed_50', 'upspeed_55', 'upspeed_60', 'upspeed_65', 'upspeed_70', 'upspeedy_15', 'upspeedy_20', 'upspeedy_25', 'upspeedy_35', 'upspeedy_40', 'upspeedy_45',]) 
+    # parser.add_argument('--crop_key_list', type=list, default=['downspeed_45', 'upspeedneg_252', 'upspeedtruck_65', 'upspeedy_203', 'upspeedy_25', 'upspeedy_40', 'upspeedy_45', 'upspeedy_70',]) 
     args = parser.parse_args()
 
     args.input_dir = os.path.join(args.input_dir, args.date_name)
@@ -110,10 +115,5 @@ if __name__ == "__main__":
     args.output_bbox_dir = os.path.join(args.output_dir, 'bboxes')
     args.output_mask_img_dir = os.path.join(args.output_dir, 'mask_imgs')
 
-    args.crop_key_list = ['upspeed_spain_100', 'upspeed_spain_120', 'upspeed_spain_30', 'upspeed_spain_40', 'upspeed_spain_50', 'upspeed_spain_60', 'upspeed_spain_70', 'upspeed_spain_80', 'upspeed_spain_90', 
-                          'sign_upspeed_c', 
-                          'sign_height_c',
-                          'sign_hand_c',
-                          'sign_handb_c']
-
+    print(args.crop_key_list)
     read_bbox(args)
