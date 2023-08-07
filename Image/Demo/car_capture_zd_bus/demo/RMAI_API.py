@@ -69,8 +69,8 @@ class CaptureApi():
         self.alarm_horizontal_left_threshold = [1, 500]
         self.alarm_horizontal_right_threshold = [10, 500]
         self.alarm_lane_line_autio = 0.25
-        self.direction_type = "Forward"
-        # self.direction_type = "Backward"
+        # self.direction_type = "Forward"
+        self.direction_type = "Backward"
         if self.direction_type == "Forward":
             # self.capture_points = [(1084, 148),
             #                 (1377, 145), (1428, 173), (1532, 232), (1661, 303), (1822, 390), (1883, 426),

@@ -125,11 +125,11 @@ def main():
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    # bm, demo
+    # zd, demo
     # args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/ZD_C28/avi文件/后向C28/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/90038/后向C28/"
-    args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_AD_BUS/avi/20210220_20210419/C28_mini/BL2-BL3/"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/90038/BL2-BL3/"
+    args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/SchBus_ZD_AD_C27_C28/normal/20210220_20210419/C28_mini/BL2-BL3/"
+    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/90038/BL2-BL3-202307/"
     # args.video_dir = "/mnt/huanyuan2/data/image/RM_C27_anpr/test_video/ZD/ZD_AD_BUS/avi/20210220_20210419/C28_mini/BL4-BL5/"
     # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/90038/BL4-BL5/"
     # args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_video/ZD_C28/avi文件/前向C28/"
