@@ -21,8 +21,8 @@ from Image.Demo.street_sweeping_capture.sort.mot_sort import Sort
 
 # from Image.Demo.street_sweeping_capture.info.options_lpr_brazil import options
 # from Image.Demo.street_sweeping_capture.info.options_lpr_china_zg import options
-from Image.Demo.street_sweeping_capture.info.options_lpr_zd_police import options
-# from Image.Demo.street_sweeping_capture.info.options_face import options
+# from Image.Demo.street_sweeping_capture.info.options_lpr_zd_police import options
+from Image.Demo.street_sweeping_capture.info.options_face import options
 from Image.Demo.street_sweeping_capture.info.param import *
 from Image.Demo.street_sweeping_capture.utils.iou import *
 from Image.Demo.street_sweeping_capture.utils.landmark2degree import landmark2degree
@@ -681,10 +681,11 @@ class CaptureApi():
 
                     elif self.demo_type == "face":
                         # 更新人脸识别有效帧数
-                        bool_add_face = False
-                        if bbox_state_idy['face_info']['roi'][0] > options.ROI_Left_threshold and bbox_state_idy['face_info']['roi'][2] < options.ROI_Right_threshold and \
-                            bbox_state_idy['face_info']['roi'][1] > options.ROI_Up_threshold and bbox_state_idy['face_info']['roi'][3] < options.ROI_Down_threshold:
-                            bool_add_face = True
+                        bool_add_face = True
+                        # bool_add_face = False
+                        # if bbox_state_idy['face_info']['roi'][0] > options.ROI_Left_threshold and bbox_state_idy['face_info']['roi'][2] < options.ROI_Right_threshold and \
+                        #     bbox_state_idy['face_info']['roi'][1] > options.ROI_Up_threshold and bbox_state_idy['face_info']['roi'][3] < options.ROI_Down_threshold:
+                        #     bool_add_face = True
                         
                         if bool_add_face:
                             bbox_state_idy['state']['obj_num'] += 1
@@ -795,10 +796,11 @@ class CaptureApi():
                     bbox_state_idy['state']['stable_loc'] = bbox_info_idx['face_info']['roi']
 
                     # 更新人脸识别有效帧数
-                    bool_add_face = False
-                    if bbox_state_idy['face_info']['roi'][0] > options.ROI_Left_threshold and bbox_state_idy['face_info']['roi'][2] < options.ROI_Right_threshold and \
-                        bbox_state_idy['face_info']['roi'][1] > options.ROI_Up_threshold and bbox_state_idy['face_info']['roi'][3] < options.ROI_Down_threshold:
-                        bool_add_face = True
+                    bool_add_face = True
+                    # bool_add_face = False
+                    # if bbox_state_idy['face_info']['roi'][0] > options.ROI_Left_threshold and bbox_state_idy['face_info']['roi'][2] < options.ROI_Right_threshold and \
+                    #     bbox_state_idy['face_info']['roi'][1] > options.ROI_Up_threshold and bbox_state_idy['face_info']['roi'][3] < options.ROI_Down_threshold:
+                    #     bool_add_face = True
                     
                     if bool_add_face:
                         bbox_state_idy['state']['obj_num'] += 1

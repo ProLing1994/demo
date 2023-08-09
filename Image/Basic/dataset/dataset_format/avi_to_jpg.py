@@ -37,8 +37,8 @@ def avi_to_jpg(args):
                 break         
 
             if frame_idx % args.frame_strp == 0:
-                # output_img_path = os.path.join(args.output_video_dir, video_list[idx].replace(args.suffix, ''), video_list[idx].replace(args.suffix, '_{:0>5d}.jpg'.format(frame_idx)))
-                output_img_path = os.path.join(args.output_video_dir, video_list[idx].replace(args.suffix, '_{:0>5d}.jpg'.format(frame_idx)))
+                output_img_path = os.path.join(args.output_video_dir, video_list[idx].replace(args.suffix, ''), video_list[idx].replace(args.suffix, '_{:0>5d}.jpg'.format(frame_idx)))
+                # output_img_path = os.path.join(args.output_video_dir, video_list[idx].replace(args.suffix, '_{:0>5d}.jpg'.format(frame_idx)))
                 create_folder(os.path.dirname(output_img_path))
                 cv2.imwrite(output_img_path, img)
 
@@ -50,30 +50,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    # args.video_dir = "/mnt/huanyuan2/data/image/RM_C28_safeisland/original/ZD_new/jpg/avi/前向C28/"
-    # args.output_video_dir = "/mnt/huanyuan2/data/image/RM_C28_safeisland/original/ZD_new/jpg/JPEGImages/2023_0215_0412_01/"
-    # args.suffix = '.mp4'
-    # # args.suffix = '.avi'
-    # # args.frame_strp = 125
-    # args.frame_strp = 25
-    # # args.frame_strp = 10
-    # # args.frame_strp = 1
-
-    # args.video_dir = "/mnt/huanyuan2/data/image/Calibrate/Chessboard/BM1448/原始数据/实际采集数据/2023-05-12/avi/"
-    # args.output_video_dir = "/mnt/huanyuan2/data/image/Calibrate/Chessboard/BM1448/原始数据/实际采集数据/2023-05-12/jpg/"
-    # # args.suffix = '.mp4'
+    args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/SchBus_ZD_AD_C27_C28/safeisland/2023_0215/2M_前向_2023_0215/"
+    args.output_video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/SchBus_ZD_AD_C27_C28/safeisland/2023_0215/2M_前向_2023_0215_jpg"
+    args.suffix = '.mp4'
     # args.suffix = '.avi'
     # args.frame_strp = 25
-    # # args.frame_strp = 10
-    # # args.frame_strp = 1
-
-    args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_CN_ZG_HCZP/5M_230416/test/"
-    args.output_video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_CN_ZG_HCZP/5M_230416/test_jpg/"
-    # args.suffix = '.mp4'
-    args.suffix = '.avi'
-    # args.frame_strp = 25
-    # args.frame_strp = 10
+    args.frame_strp = 10
     # args.frame_strp = 5
-    args.frame_strp = 1
+    # args.frame_strp = 1
 
     avi_to_jpg(args)
