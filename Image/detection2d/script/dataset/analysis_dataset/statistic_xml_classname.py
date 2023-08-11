@@ -112,7 +112,7 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/RM_C27_detection/original/zd_c27_20190713_20200301_plate/"
     # args.input_dir = "/yuanhuan/data/image/RM_ANPR/original/Brazil/Brazil/Brazil_all/"
     # args.input_dir = "/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_new_style/shate_20230308/"
-    args.input_dir = "/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_new_style/shate_20230309/"
+    # args.input_dir = "/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_new_style/shate_20230309/"
     # 数据集: zd_c27_20200209_20201125, license_plate 清晰车牌, [('car', 251234), ('license_plate', 163165)]
     # 数据集: zd_c27_20200217_20200324_car, license_plate 清晰车牌, [('car', 18443), ('license_plate', 620)]
     # 数据集: zd_c27_20190713_20200301_plate, license_plate 清晰车牌, 
@@ -266,18 +266,49 @@ if __name__ == "__main__":
     # America_500w: [('downspeed_45', 46), ('upspeedneg_252', 43), ('upspeedtruck_65', 73), ('upspeedy_203', 58), ('upspeedy_25', 24), ('upspeedy_40', 64), ('upspeedy_45', 135), ('upspeedy_70', 156)]
     # America_200w: [('arrow_l', 10), ('arrow_r', 15), ('arrow_u', 32), ('arrow_ur', 2), ('car', 1010), ('person', 35), ('person_o', 4), ('sign_15', 16), ('sign_20', 24), ('sign_25', 11), ('sign_25_m', 2), ('sign_30', 25), ('sign_30_m', 2), ('sign_30_special', 4), ('sign_35', 21), ('sign_35_m', 1), ('sign_35_special', 2), ('sign_35_special_m', 1), ('sign_40', 22), ('sign_40_m', 4), ('sign_40_special', 4), ('sign_45', 21), ('sign_45_m', 1), ('sign_45_special', 1), ('sign_5', 10), ('sign_50', 10), ('sign_55', 18), ('sign_60', 21), ('sign_65', 15), ('sign_70', 7), ('sign_99_neg', 5), ('sign_stop', 237), ('trafficlight_2', 40), ('trafficlight_4_1_l_2_l', 2), ('trafficlight_4_1_x', 1), ('trafficlight_4_1_x_2_x', 2), ('trafficlight_5', 2), ('trafficlight_share0_green_l', 1), ('trafficlight_share0_green_n', 92), ('trafficlight_share0_green_u', 1), ('trafficlight_share0_green_x', 2), ('trafficlight_share0_off', 4), ('trafficlight_share0_red_l', 1), ('trafficlight_share0_red_n', 31), ('trafficlight_share0_red_x', 1), ('trafficlight_share0_yellow_n', 3), ('trafficlight_share1_green_l_green_n', 2), ('trafficlight_share1_off', 1), ('trafficlight_share1_off_green_n', 8), ('trafficlight_share1_off_yellow_n', 1), ('trafficlight_share1_red_n', 11), ('upspeed_10', 5), ('upspeed_15', 3), ('upspeed_20', 15), ('upspeed_25', 26), ('upspeed_30', 55), ('upspeed_35', 63), ('upspeed_40', 52), ('upspeed_45', 64), ('upspeed_5', 5), ('upspeed_50', 36), ('upspeed_55', 18), ('upspeed_60', 33), ('upspeed_65', 57), ('upspeed_70', 14), ('upspeedy_15', 10), ('upspeedy_20', 10), ('upspeedy_25', 17), ('upspeedy_30', 2), ('upspeedy_35', 2), ('upspeedy_40', 7), ('upspeedy_45', 1), ('zebra_crossing', 51)]
 
+    # 数据集: Taxi_remnant
+    # args.input_dir = "/yuanhuan/data/image/Taxi_remnant/original/shenzhen/20230616/"
+    # args.input_dir = "/yuanhuan/data/image/Taxi_remnant/original/shenzhen/20230626/"
+    # args.input_dir = "/yuanhuan/data/image/Taxi_remnant/original/shenzhen/20230628/"
+    # args.input_dir = "/yuanhuan/data/image/Taxi_remnant/original/shenzhen/20230702/"
+    # args.input_dir = "/yuanhuan/data/image/Taxi_remnant/original/shenzhen/20230703/"
+    # args.input_dir = "/yuanhuan/data/image/Taxi_remnant/original/shenzhen/20230704/"
+    # args.input_dir = "/yuanhuan/data/image/Taxi_remnant/original/shenzhen/BYDe6_middle_20230720/"
+    # args.input_dir = "/yuanhuan/data/image/Taxi_remnant/original/shenzhen/BYDe6_side_20230720/"
+    # args.input_dir = "/yuanhuan/data/image/Taxi_remnant/original/shenzhen/Camry_middle_20230719/"
+    # args.input_dir = "/yuanhuan/data/image/Taxi_remnant/original/shenzhen/Camry_middle_20230720/"
+    # args.input_dir = "/yuanhuan/data/image/Taxi_remnant/original/shenzhen/Camry_side_20230719/"
+    # args.input_dir = "/yuanhuan/data/image/Taxi_remnant/original/shenzhen/MKZ_middle_20230721/"
+    # args.input_dir = "/yuanhuan/data/image/Taxi_remnant/original/shenzhen/MKZ_side_20230721/"
+    args.input_dir = "/yuanhuan/data/image/Taxi_remnant/original/shenzhen/Pickup_middle_20230721/"
+    # shenzhen/20230616: [('remnants', 271)]
+    # shenzhen/20230626: [('remnants', 1191)]
+    # shenzhen/20230628: [('remnants', 10237)]
+    # shenzhen/20230702: [('remnants', 7317)]
+    # shenzhen/20230703]: [('remnants', 7241)]
+    # shenzhen/20230704: [('remnants', 14123)]
+    # shenzhen/BYDe6_middle_20230720: [('remnants', 8140)]
+    # shenzhen/BYDe6_side_20230720: [('remnants', 6899)]
+    # shenzhen/Camry_middle_20230719: [('remnants', 6155)]
+    # shenzhen/Camry_middle_20230720: [('remnants', 4131)]
+    # shenzhen/Camry_side_20230719: [('remnants', 9024)]
+    # shenzhen/MKZ_middle_20230721: [('remnants', 7187)]
+    # shenzhen/MKZ_side_20230721: [('remnants', 5385)]
+    # shenzhen/Pickup_middle_20230721: [('remnants', 11198)]
+
     args.trainval_file = args.input_dir + "ImageSets/Main/trainval.txt"
     args.train_file = args.input_dir + "ImageSets/Main/train.txt"
     args.val_file = args.input_dir + "ImageSets/Main/val.txt"
     args.test_file = args.input_dir + "ImageSets/Main/test.txt"
     args.statistic_dict = {'trainval': args.trainval_file, 'test': args.test_file }
 
-    args.jpg_dir =  args.input_dir + "JPEGImages/"
+    # args.jpg_dir =  args.input_dir + "JPEGImages/"
+    args.jpg_dir =  args.input_dir + "image/"
     # args.xml_dir =  args.input_dir + "Annotations/"
-    # args.xml_dir =  args.input_dir + "XML/"
+    args.xml_dir =  args.input_dir + "xml/"
     # args.xml_dir =  args.input_dir + "refine_xml/"
     # args.xml_dir =  args.input_dir + "Annotations_CarBusTruckMotorcyclePlateMotoplate_w_fuzzy/"
-    args.xml_dir =  args.input_dir + "Annotations_CarBusTruckMotorcyclePlate_MMDetect/"
+    # args.xml_dir =  args.input_dir + "Annotations_CarBusTruckMotorcyclePlate_MMDetect/"
     # args.xml_dir =  args.input_dir + "Annotations_License/"
 
     statistic_classname(args)
