@@ -47,10 +47,11 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser()
     parser.add_argument('--input_dir', type=str, default="/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask_202301/") 
+    parser.add_argument('--image_set_name', type=str, default="ImageSetsOcrLabel/") 
     parser.add_argument('--output_dir', type=str, default="/yuanhuan/data/image/LicensePlate_ocr/training/plate_zd_mask_202301/ImageSetsPaddle/") 
     args = parser.parse_args()
 
-    args.input_dir = os.path.join(args.input_dir, "ImageSetsOcrLabel")
+    args.input_dir = os.path.join(args.input_dir, args.image_set_name)
 
     args.format_list = [
                         "ImageSets/Main/trainval.txt", 

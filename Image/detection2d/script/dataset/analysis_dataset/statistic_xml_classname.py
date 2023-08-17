@@ -110,13 +110,13 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/RM_C27_detection/original/zd_c27_20200209_20201125/"
     # args.input_dir = "/yuanhuan/data/image/RM_C27_detection/original/zd_c27_20200217_20200324_car/"
     # args.input_dir = "/yuanhuan/data/image/RM_C27_detection/original/zd_c27_20190713_20200301_plate/"
-    # args.input_dir = "/yuanhuan/data/image/RM_ANPR/original/Brazil/Brazil/Brazil_all/"
+    # args.input_dir = "/yuanhuan/data/image/RM_ANPR/original/Brazil/Brazil/Brazil_new_style/"
     # args.input_dir = "/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_new_style/shate_20230308/"
     # args.input_dir = "/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_new_style/shate_20230309/"
     # 数据集: zd_c27_20200209_20201125, license_plate 清晰车牌, [('car', 251234), ('license_plate', 163165)]
     # 数据集: zd_c27_20200217_20200324_car, license_plate 清晰车牌, [('car', 18443), ('license_plate', 620)]
     # 数据集: zd_c27_20190713_20200301_plate, license_plate 清晰车牌, 
-    # 数据集: Brazil_all, [('bicyclist', 38), ('bus', 15165), ('car', 433038), ('cover-motorplate', 2905), ('cover-plaet', 37229), ('fuzzy-motorplate', 22150), ('fuzzy-plate', 84662), ('kind', 1), ('lince-motorplate', 19846), ('lince-plate', 113262), ('motorcycle', 27374), ('motorcyclist', 31297), ('num', 3), ('truck', 34930)]
+    # 数据集: Brazil_new_style, [('bicyclist', 38), ('bus', 15165), ('car', 433038), ('cover-motorplate', 2905), ('cover-plaet', 37229), ('fuzzy-motorplate', 22150), ('fuzzy-plate', 84662), ('kind', 1), ('lince-motorplate', 19846), ('lince-plate', 113262), ('motorcycle', 27374), ('motorcyclist', 31297), ('num', 3), ('truck', 34930)]
     # 数据集: shate_20230308, [('bicycle', 7), ('bus', 1205), ('car', 89410), ('car_big', 5), ('license', 40107), ('motorcycle', 98), ('tricycle', 1), ('truck', 7082)]
 
     # 数据集: RM_R151_detection
