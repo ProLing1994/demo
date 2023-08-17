@@ -105,7 +105,7 @@ if __name__ == "__main__":
     parser.add_argument('--date_name', type=str, default="20230616") 
     parser.add_argument('--input_dir', type=str, default="/yuanhuan/data/image/Taxi_remnant/sd_crop_0810/shenzhen/") 
     parser.add_argument('--output_dir', type=str, default="/yuanhuan/data/image/Taxi_remnant/sd_training_0810/shenzhen/") 
-    parser.add_argument('--crop_key_list', type=list, default=['remnants',]) 
+    parser.add_argument('--crop_key_list', type=list, default=['bottle',]) 
     args = parser.parse_args()
 
     args.input_dir = os.path.join(args.input_dir, args.date_name)
