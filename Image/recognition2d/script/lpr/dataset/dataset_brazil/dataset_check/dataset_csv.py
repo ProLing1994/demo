@@ -234,6 +234,11 @@ def write_error_data(args):
         for cell in data_json['shapes']:
 
             try:
+                # plate num
+                plate_num = json_load_object_plate_num(cell)
+                if 'none' in plate_num.lower() or plate_num.lower() == '':
+                    continue
+
                 # plate points
                 x1, x2, y1, y2, w, h = json_load_object_plate_points(cell)
 
@@ -245,17 +250,15 @@ def write_error_data(args):
                 # plate column
                 plate_column, _ = json_load_object_plate_column(cell, w, h)
 
-                # plate num
-                plate_num = json_load_object_plate_num(cell)
             except:
                 continue
-
             
             rect_list.append([x1, y1, x2, y2, "license", [{"name": "number", "value": plate_num}, {"name": "color", "value": plate_color}, {"name": "column", "value": plate_column}, {"name": "type", "value": "car"}, {"name": "status", "value": "n"}]])
 
         try:
             out_json_path = os.path.join(args.output_error_data_json_dir, json_name)
-            platform_json_writer.write_json(img.shape[1], img.shape[0], img_name, out_json_path, frame_num=idx, rect_list=rect_list)
+            # platform_json_writer.write_json(img.shape[1], img.shape[0], img_name, out_json_path, frame_num=idx, rect_list=rect_list)
+            platform_json_writer.write_json(2592, 1920, img_name, out_json_path, frame_num=idx, rect_list=rect_list)
         except:
             continue
 
