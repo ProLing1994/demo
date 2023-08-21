@@ -96,6 +96,4 @@ if __name__ == "__main__":
     args.output_reference_dir = os.path.join(args.input_dir, 'references')
     
     args.crop_expand_pixel = 30
-    
-    print(args.crop_key_list)
     gen_inpaint_mask(args)

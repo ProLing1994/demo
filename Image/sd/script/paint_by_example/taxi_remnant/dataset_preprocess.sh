@@ -32,7 +32,7 @@ for date_name in ${date_name_list[@]}; do
     # 根据 taxi_remnant 位置，裁剪图像区域（bottle）
     python /yuanhuan/code/demo/Image/sd/script/paint_by_example/taxi_remnant/dataset/crop_image_xml_clip.py --date_name=$date_name --input_dir=$data_dir --output_dir=$crop_data_dir
     # 生成重绘用到的 mask 和 refeneren 图像
-    python /yuanhuan/code/demo/Image/sd/script/paint_by_example/taxi_remnant/dataset/gen_inpaint_mask.py --date_name=$date_name --input_dir=$crop_data_dir
+    python /yuanhuan/code/demo/Image/sd/script/paint_by_example/taxi_remnant/dataset/gen_inpaint_mask.py --date_name=$date_name --input_dir=$crop_data_dir --ref_name=bottle
     # 生成 Fintune 模型需要用到的 bbox
     python /yuanhuan/code/demo/Image/sd/script/paint_by_example/taxi_remnant/dataset/read_bbox.py --date_name=$date_name --input_dir=$crop_data_dir --output_dir=$train_data_dir
     # 训练集测试集划分

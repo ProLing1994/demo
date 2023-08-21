@@ -183,6 +183,10 @@ if __name__ == "__main__":
     args.crop_size_list = [(64, 64), (128, 128), (256, 256), (512, 512), (720, 720)]
 
     args.reg_class_list = ['flask', 'bottle', 'cup', 'cigarette', 'phone', 'wallet', 'power', 'umbrella', 'bag', 'cloth']
-    args.clip_class_list = ['flask', 'bottle', 'cup']
+
+    if args.ref_name == "bottle":
+        args.clip_class_list = ['flask', 'bottle', 'cup']
+    else:
+        raise Exception
 
     crop_image_xml_clip(args)

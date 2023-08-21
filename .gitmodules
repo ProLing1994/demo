@@ -25,3 +25,6 @@
 [submodule "Image/sd/paint_by_example"]
 	path = Image/sd/paint_by_example
 	url = https://gitlab.com/YuanHuan_Pro/Paint-by-Example.git
+[submodule "Image/segmentation2d/segment-anything"]
+	path = Image/segmentation2d/segment-anything
+	url = https://gitlab.com/YuanHuan_Pro/segment-anything.git
