@@ -40,9 +40,9 @@ def data_reference(args):
 if __name__ == "__main__":
     
     parser = argparse.ArgumentParser()
-    parser.add_argument('--date_name', type=str, default="20230616") 
-    parser.add_argument('--input_dir', type=str, default="/yuanhuan/data/image/Taxi_remnant/sd_crop_0810/shenzhen/") 
-    parser.add_argument('--output_dir', type=str, default="/yuanhuan/data/image/Taxi_remnant/sd_crop_0810/shenzhen/") 
+    parser.add_argument('--date_name', type=str, default="Pickup_middle_20230721") 
+    parser.add_argument('--input_dir', type=str, default="/yuanhuan/data/image/Taxi_remnant/training/sd_crop_clip_sam_bottle_0821/shenzhen") 
+    parser.add_argument('--output_dir', type=str, default="/yuanhuan/data/image/Taxi_remnant/training/sd_crop_clip_sam_bottle_0821/shenzhen") 
     args = parser.parse_args()
 
     args.img_suffix = ".jpg"
