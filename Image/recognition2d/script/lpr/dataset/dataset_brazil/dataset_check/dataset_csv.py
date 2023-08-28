@@ -276,7 +276,8 @@ if __name__ == "__main__":
     parser.add_argument('--bool_write_error_data', action='store_true', default=False) 
     parser.add_argument('--bool_check_img', action='store_true', default=False) 
     parser.add_argument('--img_folder', type=str, default="JPEGImages") 
-    parser.add_argument('--json_folder', type=str, default="Json") 
+    # parser.add_argument('--json_folder', type=str, default="Json") 
+    parser.add_argument('--json_folder', type=str, default="Json_refine") 
     args = parser.parse_args()
 
     args.data_format = "{}-{:0>2d}_{}_{}_{}"        # name-id_颜色_单双行_车牌号

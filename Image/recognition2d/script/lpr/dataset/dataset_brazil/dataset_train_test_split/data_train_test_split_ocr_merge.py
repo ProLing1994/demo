@@ -16,7 +16,7 @@ from script.lpr.dataset.dataset_cn.dataset_train_test_split.data_train_test_spli
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--ocr_name', type=str, default="plate_brazil_202308") 
+    parser.add_argument('--ocr_name', type=str, default="plate_brazil_202309") 
     parser.add_argument('--input_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/training/")   
     args = parser.parse_args()
     
@@ -34,6 +34,10 @@ if __name__ == "__main__":
                         'ImageSetsOcrLabel_double_1st_line', 
                         'ImageSetsOcrLabel_double_2nd_line', 
                         'ImageSetsOcrLabel_single_line', 
+                        'ImageSetsBrazilnewstyleNoAug', 
+                        'ImageSetsBrazilnewstyleNoAug_double_2nd_line', 
+                        'ImageSetsBrazilnewstyleNoAug_double_1st_line', 
+                        'ImageSetsBrazilnewstyleNoAug_single_line', 
                         ]
     
     args.merge_file_list = [
@@ -56,6 +60,7 @@ if __name__ == "__main__":
     args.label_name = ""
     args.bool_aug = False
     args.to_input_dir = os.path.join(args.input_dir, "ImageSetsOcrLabelNoAug")
+    # args.to_input_dir = os.path.join(args.input_dir, "ImageSetsBrazilnewstyleNoAug")
 
     split(args)
 

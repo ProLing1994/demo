@@ -62,7 +62,7 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser()
     parser.add_argument('--date_name', type=str, default="Brazil_new_style") 
-    parser.add_argument('--ocr_name', type=str, default="plate_brazil_202308") 
+    parser.add_argument('--ocr_name', type=str, default="plate_brazil_202309") 
     parser.add_argument('--input_csv_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/Brazil/Brazil_csv/") 
     parser.add_argument('--output_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/training/") 
     args = parser.parse_args()

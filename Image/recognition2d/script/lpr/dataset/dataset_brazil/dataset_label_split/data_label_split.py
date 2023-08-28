@@ -84,7 +84,7 @@ if __name__ == "__main__":
     ###
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--ocr_name', type=str, default="plate_brazil_202308") 
+    parser.add_argument('--ocr_name', type=str, default="plate_brazil_202309") 
     parser.add_argument('--input_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/training/")   
     args = parser.parse_args()
 

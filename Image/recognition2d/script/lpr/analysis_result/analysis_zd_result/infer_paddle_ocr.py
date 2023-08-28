@@ -159,17 +159,19 @@ if __name__ == '__main__':
 
     # brazil
     # data + diffste(200,000)
-    args.model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_brazil_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230818_wdiffste/inference/caffe/model.caffemodel"
-    args.prototxt_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_brazil_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230818_wdiffste/inference/caffe/model.prototxt"
-    args.dict_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_brazil_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230818_wdiffste/inference/brazil_dict.txt"
-    args.output_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_brazil_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230818_wdiffste/inference/"
+    args.model_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_brazil_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230824_wdiffste_NoAug_202309/inference/caffe/model.caffemodel"
+    args.prototxt_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_brazil_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230824_wdiffste_NoAug_202309/inference/caffe/model.prototxt"
+    args.dict_path = "/yuanhuan/model/image/lpr/paddle_ocr/v1_brazil_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230824_wdiffste_NoAug_202309/inference/brazil_dict.txt"
+    args.output_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_brazil_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230824_wdiffste_NoAug_202309/inference/"
 
     # ocr_test
-    args.img_list = "/yuanhuan/data/image/RM_ANPR/training/plate_brazil_202308/ImageSetsOcrLabelNoAug_single_line/ImageSets/Main/test.txt"
+    args.img_list = "/yuanhuan/data/image/RM_ANPR/training/plate_brazil_202309/ImageSetsBrazilnewstyleNoAug_single_line/ImageSets/Main/test.txt"
     args.output_csv_path = os.path.join(args.output_dir, 'test_caffe/data_brazil_test_result.csv')
+    # args.img_list = "/yuanhuan/data/image/RM_ANPR/training/plate_brazil_202309/ImageSetsBrazilnewstyleNoAug_single_line/ImageSets/Main/trainval.txt"
+    # args.output_csv_path = os.path.join(args.output_dir, 'test_caffe/data_brazil_trainval_result.csv')
     model_test(args, bool_caffe=True)
 
-    # from_jpg_dir
-    # args.input_jpg_path = "/yuanhuan/data/image/RM_ANPR/original/cn/DIFFSTE/original_248_52/train"
-    # args.output_csv_path = os.path.join(args.output_dir, 'test_caffe/data_original_248_52_train_result.csv')
+    # # from_jpg_dir
+    # args.input_jpg_path = "/yuanhuan/data/image/RM_ANPR/original/Brazil/Brazil_crop/Brazil_new_style/Images"
+    # args.output_csv_path = os.path.join(args.output_dir, 'test_caffe/data_brazil_original_result.csv')
     # model_test(args, from_jpg_dir=True, bool_caffe=True)
