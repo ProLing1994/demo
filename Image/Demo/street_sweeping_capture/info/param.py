@@ -22,6 +22,8 @@ def load_objectinfo():
     objectinfo['plate_info']['car_type'] = 'none'
     objectinfo['plate_info']['color'] = 'none'
     objectinfo['plate_info']['score'] = 0.0
+    objectinfo['plate_info']['dist_left_lane_line'] = 0.0
+    objectinfo['plate_info']['dist_right_lane_line'] = 0.0
     objectinfo['plate_info']['ignore'] = False
 
     # face_info

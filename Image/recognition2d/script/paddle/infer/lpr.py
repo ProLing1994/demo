@@ -12,9 +12,9 @@ import yaml
 # from ppocr.utils.save_load import load_model
 # from tools.program import load_config, merge_config
 
-# # caffe_root = '/home/huanyuan/code/caffe_ssd-ssd/'
-# caffe_root = '/home/huanyuan/code/caffe_ssd-ssd-gpu/'
-# sys.path.insert(0, caffe_root + 'python')
+# caffe_root = '/home/huanyuan/code/caffe_ssd-ssd/'
+caffe_root = '/home/huanyuan/code/caffe_ssd-ssd-gpu/'
+sys.path.insert(0, caffe_root + 'python')
 import caffe
 
 
@@ -189,25 +189,17 @@ class LPRPaddle(object):
 
 class LPROnnx(object):
     
-    def __init__(self, config_path, model_path, padding_bool=True, gpu_bool=False):
-    
-        self.config_path = config_path
-        self.model_path = model_path
-        self.gpu_bool = gpu_bool
-        self.white_bool = True
-        self.padding_bool = padding_bool
-        self.img_shape = (1, 64, 256)
+    def __init__(self, model_path, dict_path, img_shape=(1, 64, 256), padding_bool=False, gpu_bool=False):
 
-        self.config_init()
+        self.model_path = model_path
+        self.dict_path = dict_path
+        self.gpu_bool = gpu_bool
+        self.padding_bool = padding_bool
+        self.img_shape = img_shape
+        self.white_bool = True
+
         self.model_init()
         self.ocr_labels_init()
-    
-
-    def config_init(self):
-
-        self.config = load_config(self.config_path)
-        self.config = merge_config(self.config, {"Global.pretrained_model": yaml.load(self.model_path, Loader=yaml.Loader)})
-        self.global_config = self.config['Global']
 
 
     def model_init(self):
@@ -221,12 +213,11 @@ class LPROnnx(object):
         
         self.character_str = []
         self.character_str.append(" ")
-        with open(self.global_config['character_dict_path'], "rb") as fin:
+        with open(self.dict_path, "rb") as fin:
             lines = fin.readlines()
             for line in lines:
                 line = line.decode('utf-8').strip("\n").strip("\r\n")
                 self.character_str.append(line)
-        if self.global_config['use_space_char']:
             self.character_str.append(" ")
         self.ocr_labels = list(self.character_str)
 
@@ -269,6 +260,9 @@ class LPROnnx(object):
             resized_image = resized_image[:, :, np.newaxis]
         else:
             resized_image = cv2.resize(img, (imgW, imgH))
+
+        # output_img_path = "/mnt/huanyuan/temp/pc_demo/POLICE_BM_Brazil_C27/5M_白天_2022_1026_yolov6_paddle/crop.jpg";
+        # cv2.imwrite(output_img_path, resized_image);
 
         resized_image = resized_image.transpose((2, 0, 1)) / 255.0
         return resized_image

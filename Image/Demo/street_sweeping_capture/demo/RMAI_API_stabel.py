@@ -20,9 +20,9 @@ from Image.recognition2d.lpr.infer.lpr_seg_ocr import LPRSegOcrcffe
 from Image.Demo.street_sweeping_capture.sort.mot_sort import Sort
 
 # from Image.Demo.street_sweeping_capture.info.options_lpr_brazil import options
-# from Image.Demo.street_sweeping_capture.info.options_lpr_china_zg import options
+from Image.Demo.street_sweeping_capture.info.options_lpr_china_zg import options
 # from Image.Demo.street_sweeping_capture.info.options_lpr_zd_police import options
-from Image.Demo.street_sweeping_capture.info.options_face import options
+# from Image.Demo.street_sweeping_capture.info.options_face import options
 from Image.Demo.street_sweeping_capture.info.param import *
 from Image.Demo.street_sweeping_capture.utils.iou import *
 from Image.Demo.street_sweeping_capture.utils.landmark2degree import landmark2degree
@@ -70,7 +70,7 @@ class CaptureApi():
             # detector
             if options.ssd_bool:
                 if self.country_type == "china":
-                    self.detector = SSDDetector(prototxt=options.ssd_prototxt, model_path=options.ssd_model_path, ssd_caffe_bool=options.ssd_caffe_bool, ssd_openvino_bool=options.ssd_openvino_bool, merge_class_bool=options.car_attri_merge_bool, gpu_bool=options.gpu_bool)
+                    self.detector = SSDDetector(prototxt=options.ssd_prototxt, model_path=options.ssd_model_path, ssd_caffe_bool=options.ssd_caffe_bool, ssd_openvino_bool=options.ssd_openvino_bool, merge_class_bool=options.car_attri_merge_bool, gpu_bool=True)
                 elif self.country_type == "brazil":
                     # self.detector = LPRDetectCaffe(options.ssd_prototxt, options.ssd_model_path, class_name=options.ssd_class_name, gpu_bool=options.gpu_bool, conf_thres=options.ssd_conf_thres)
                     self.detector = SSDDetector(prototxt=options.ssd_prototxt, model_path=options.ssd_model_path, ssd_caffe_bool=options.ssd_caffe_bool, ssd_openvino_bool=options.ssd_openvino_bool, merge_class_bool=options.car_attri_merge_bool, gpu_bool=options.gpu_bool)
@@ -94,16 +94,41 @@ class CaptureApi():
                     else:
                         self.lpr = LPRPytorch(options.china.ocr_pth_path, input_shape=options.china.input_shape, ocr_labels=options.china.ocr_labels, prefix_beam_search_bool=options.china.ocr_prefix_beam_search_bool)
                     self.lpr_seg = None
+
+                elif options.lpr_onnx_bool:
+                    if options.lpr_paddle_bool: 
+                        self.lpr = paddle_lpr.LPROnnx(options.china.ocr_onnx_model_path, options.china.ocr_labels_dict_path, img_shape=options.china.input_shape, padding_bool=options.china.padding_bool, gpu_bool=options.gpu_bool)
+                    else:
+                        self.lpr = None
+                    self.lpr_seg = LPRSegColorClassCaffe(options.china.seg_caffe_prototxt, options.china.seg_caffe_model_path, options.china.seg_city_dict_name, options.china.seg_color_dict_name, input_shape=options.china.seg_input_shape, city_bool=options.china.seg_city_bool, color_bool=options.china.seg_color_bool, gpu_bool=options.gpu_bool)
+
             elif self.country_type == "brazil":
                 if options.lpr_caffe_bool:
-                    self.lpr = LPRCaffe(options.brazil.ocr_caffe_prototxt, options.brazil.ocr_caffe_model_path, input_shape=options.brazil.input_shape, ocr_labels=options.brazil.ocr_labels, padding_bool=options.brazil.padding_bool, prefix_beam_search_bool=options.brazil.ocr_prefix_beam_search_bool, gpu_bool=options.gpu_bool)
+                    if options.lpr_paddle_bool: 
+                        self.lpr = None
+                    else:
+                        self.lpr = LPRCaffe(options.brazil.ocr_caffe_prototxt, options.brazil.ocr_caffe_model_path, input_shape=options.brazil.input_shape, ocr_labels=options.brazil.ocr_labels, padding_bool=options.brazil.padding_bool, prefix_beam_search_bool=options.brazil.ocr_prefix_beam_search_bool, gpu_bool=options.gpu_bool)
+
                     self.lpr_first_line = LPRCaffe(options.brazil.ocr_first_line_caffe_prototxt, options.brazil.ocr_first_line_caffe_model_path, input_shape=options.brazil.ocr_first_line_caffe_shape, ocr_labels=options.brazil.ocr_labels, padding_bool=options.brazil.padding_bool, prefix_beam_search_bool=options.brazil.ocr_prefix_beam_search_bool, gpu_bool=options.gpu_bool)
                     self.lpr_second_line = LPRCaffe(options.brazil.ocr_second_line_caffe_prototxt, options.brazil.ocr_second_line_caffe_model_path, input_shape=options.brazil.ocr_second_line_caffe_shape, ocr_labels=options.brazil.ocr_labels, padding_bool=options.brazil.padding_bool, prefix_beam_search_bool=options.brazil.ocr_prefix_beam_search_bool, gpu_bool=options.gpu_bool)
 
-                elif options.lpr_pytorch_bool:         
-                    self.lpr = None
-                    self.lpr_first_line = None
-                    self.lpr_second_line = None
+                elif options.lpr_pytorch_bool:       
+                    if options.lpr_paddle_bool: 
+                        self.lpr = paddle_lpr.LPRCaffe(options.brazil.ocr_caffe_model_path, options.brazil.ocr_caffe_prototxt, options.brazil.ocr_labels_dict_path, img_shape=options.brazil.input_shape, padding_bool=options.brazil.padding_bool, gpu_bool=options.gpu_bool)
+                    else:
+                        self.lpr = LPRCaffe(options.brazil.ocr_caffe_prototxt, options.brazil.ocr_caffe_model_path, input_shape=options.brazil.input_shape, ocr_labels=options.brazil.ocr_labels, padding_bool=options.brazil.padding_bool, prefix_beam_search_bool=options.brazil.ocr_prefix_beam_search_bool, gpu_bool=options.gpu_bool)
+                    self.lpr_first_line = LPRPytorch(options.brazil.ocr_first_line_pth_path, input_shape=options.brazil.ocr_first_line_caffe_shape, ocr_labels=options.brazil.ocr_labels, padding_bool=options.brazil.padding_bool, prefix_beam_search_bool=options.brazil.ocr_prefix_beam_search_bool)
+                    self.lpr_second_line = LPRPytorch(options.brazil.ocr_second_line_pth_path, input_shape=options.brazil.ocr_second_line_caffe_shape, ocr_labels=options.brazil.ocr_labels, padding_bool=options.brazil.padding_bool, prefix_beam_search_bool=options.brazil.ocr_prefix_beam_search_bool)
+
+                elif options.lpr_onnx_bool:
+                    if options.lpr_paddle_bool: 
+                        self.lpr = paddle_lpr.LPROnnx(options.brazil.ocr_onnx_model_path, options.brazil.ocr_labels_dict_path, img_shape=options.brazil.input_shape, padding_bool=options.brazil.padding_bool, gpu_bool=options.gpu_bool)
+                    else:
+                        self.lpr = None
+                    
+                    self.lpr_first_line = LPRPytorch(options.brazil.ocr_first_line_pth_path, input_shape=options.brazil.ocr_first_line_caffe_shape, ocr_labels=options.brazil.ocr_labels, padding_bool=options.brazil.padding_bool, prefix_beam_search_bool=options.brazil.ocr_prefix_beam_search_bool)
+                    self.lpr_second_line = LPRPytorch(options.brazil.ocr_second_line_pth_path, input_shape=options.brazil.ocr_second_line_caffe_shape, ocr_labels=options.brazil.ocr_labels, padding_bool=options.brazil.padding_bool, prefix_beam_search_bool=options.brazil.ocr_prefix_beam_search_bool)
+
             elif self.country_type == "zd":
                 if options.lpr_caffe_bool:
                     self.lpr_seg_ocr = LPRSegOcrcffe(options.zd.seg_caffe_prototxt, options.zd.seg_caffe_model_path, options.zd.ocr_caffe_prototxt, options.zd.ocr_caffe_model_path, gpu_bool=options.gpu_bool, dict_path=options.zd.dict_path)
@@ -179,14 +204,18 @@ class CaptureApi():
         capture_res_container = self.params_dict['capture_res_container']
 
         ## capture_line
-        if options.roi_bool:
-            capture_line_up_down = [ options.roi_area[1] + ( options.roi_area[3] - options.roi_area[1] ) * ratio for ratio in options.capture_line_up_down_ratio ]
-            capture_line_left_right = [ options.roi_area[0] + ( options.roi_area[2] - options.roi_area[0] ) * ratio for ratio in options.capture_line_left_right_ratio ]
+        if not options.roi_lane_line_bool:
+            capture_line_points = [(0, options.Up_threshold), (options.image_width, options.Up_threshold), 
+                                    (0, options.Down_threshold), (options.image_width, options.Down_threshold),
+                                    (options.Left_threshold, 0), (options.Left_threshold, options.image_height),
+                                    (options.Right_threshold, 0), (options.Right_threshold, options.image_height)]
         else:
-            capture_line_up_down = [ options.image_height * ratio for ratio in options.capture_line_up_down_ratio ]
-            capture_line_left_right = [ options.image_width * ratio for ratio in options.capture_line_left_right_ratio ]
+            capture_line_points = [options.roi_lane_line_points[0], options.roi_lane_line_points[1],
+                                    options.roi_lane_line_points[1], options.roi_lane_line_points[2],
+                                    options.roi_lane_line_points[2], options.roi_lane_line_points[3],
+                                    options.roi_lane_line_points[3], options.roi_lane_line_points[0]]
 
-        return tracker_bboxes, bbox_info_list, bbox_state_container, capture_line_up_down, capture_line_left_right, capture_container, capture_res_container
+        return tracker_bboxes, bbox_info_list, bbox_state_container, capture_line_points, capture_container, capture_res_container
     
 
     def update_tracker_bboxes(self, bboxes):
@@ -394,10 +423,10 @@ class CaptureApi():
                     # 'Single'
                     if crop_img_aspect > options.lpr_ocr_column_threshold:
                         
-                        gray_crop_img = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
-
                         ocr_kind = ""
-                        ocr_num, ocr_score = self.lpr.run(gray_crop_img)
+                        # gray_crop_img = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
+                        # ocr_num, ocr_score = self.lpr.run(gray_crop_img)
+                        ocr_num, ocr_score = self.lpr.run(crop_img)
 
                     # 'Double'
                     else:
@@ -589,9 +618,24 @@ class CaptureApi():
                     if self.demo_type == "lpr":
                         
                         bool_add_lpr = False
-                        if bbox_info_idx['plate_info']['num'] != '' and \
-                            bbox_state_idy['plate_info']['roi'][0] > options.ROI_Left_threshold and bbox_state_idy['plate_info']['roi'][2] < options.ROI_Right_threshold and \
-                            bbox_state_idy['plate_info']['roi'][1] > options.ROI_Up_threshold and bbox_state_idy['plate_info']['roi'][3] < options.ROI_Down_threshold:
+                        bool_roi_lpr = False
+
+                        if not options.roi_lane_line_bool:
+                            if bbox_info_idx['plate_info']['num'] != '' and \
+                                bbox_state_idy['plate_info']['roi'][1] > options.ROI_Up_threshold and bbox_state_idy['plate_info']['roi'][3] < options.ROI_Down_threshold and \
+                                bbox_state_idy['plate_info']['roi'][0] > options.ROI_Left_threshold and bbox_state_idy['plate_info']['roi'][2] < options.ROI_Right_threshold:
+                                bool_roi_lpr = True
+                        else:
+                            if bbox_info_idx['plate_info']['num'] != '':
+                                bbox_info_idx['plate_info']['dist_left_lane_line'] = ((bbox_state_idy['plate_info']['roi'][3] - options.Left_line_b) / (options.Left_line_k + 1e-5) - bbox_state_idy['plate_info']['roi'][2])
+                                bbox_info_idx['plate_info']['dist_left_lane_line'] = bbox_info_idx['plate_info']['dist_left_lane_line'] * (-1) if (options.Left_line_k < 0) else bbox_info_idx['plate_info']['dist_left_lane_line']
+                                bbox_info_idx['plate_info']['dist_right_lane_line'] = ((bbox_state_idy['plate_info']['roi'][3] - options.Right_line_b) / (options.Right_line_k + 1e-5) - bbox_state_idy['plate_info']['roi'][0])
+                                bbox_info_idx['plate_info']['dist_right_lane_line'] = bbox_info_idx['plate_info']['dist_right_lane_line'] * (-1) if (options.Right_line_k > 0) else bbox_info_idx['plate_info']['dist_right_lane_line']
+                                if bbox_state_idy['plate_info']['roi'][3] > options.ROI_Up_threshold and bbox_state_idy['plate_info']['roi'][1] < options.ROI_Down_threshold and \
+                                    bbox_info_idx['plate_info']['dist_left_lane_line'] > 0 and bbox_info_idx['plate_info']['dist_right_lane_line'] < 0:
+                                    bool_roi_lpr = True
+                            
+                        if bool_roi_lpr:
 
                             # 更新车牌识别有效帧数
                             lpr_width =  bbox_state_idy['plate_info']['roi'][2] - bbox_state_idy['plate_info']['roi'][0]
@@ -724,11 +768,24 @@ class CaptureApi():
                         bbox_state_idy['state']['stable_loc'] = bbox_info_idx['plate_info']['roi']
 
                     bool_add_lpr = False
-                    if bbox_info_idx['plate_info']['num'] != '' and \
-                        bbox_state_idy['plate_info']['roi'][0] > options.ROI_Left_threshold and bbox_state_idy['plate_info']['roi'][2] < options.ROI_Right_threshold and \
-                        bbox_state_idy['plate_info']['roi'][1] > options.ROI_Up_threshold and bbox_state_idy['plate_info']['roi'][3] < options.ROI_Down_threshold:
+                    bool_roi_lpr = False
 
-
+                    if not options.roi_lane_line_bool:
+                        if bbox_info_idx['plate_info']['num'] != '' and \
+                            bbox_state_idy['plate_info']['roi'][1] > options.ROI_Up_threshold and bbox_state_idy['plate_info']['roi'][3] < options.ROI_Down_threshold and \
+                            bbox_state_idy['plate_info']['roi'][0] > options.ROI_Left_threshold and bbox_state_idy['plate_info']['roi'][2] < options.ROI_Right_threshold:
+                            bool_roi_lpr = True
+                    else:
+                        if bbox_info_idx['plate_info']['num'] != '':
+                            bbox_info_idx['plate_info']['dist_left_lane_line'] = ((bbox_state_idy['plate_info']['roi'][3] - options.Left_line_b) / (options.Left_line_k + 1e-5) - bbox_state_idy['plate_info']['roi'][2])
+                            bbox_info_idx['plate_info']['dist_left_lane_line'] = bbox_info_idx['plate_info']['dist_left_lane_line'] * (-1) if (options.Left_line_k < 0) else bbox_info_idx['plate_info']['dist_left_lane_line']
+                            bbox_info_idx['plate_info']['dist_right_lane_line'] = ((bbox_state_idy['plate_info']['roi'][3] - options.Right_line_b) / (options.Right_line_k + 1e-5) - bbox_state_idy['plate_info']['roi'][0])
+                            bbox_info_idx['plate_info']['dist_right_lane_line'] = bbox_info_idx['plate_info']['dist_right_lane_line'] * (-1) if (options.Right_line_k > 0) else bbox_info_idx['plate_info']['dist_right_lane_line']
+                            if bbox_state_idy['plate_info']['roi'][3] > options.ROI_Up_threshold and bbox_state_idy['plate_info']['roi'][1] < options.ROI_Down_threshold and \
+                                bbox_info_idx['plate_info']['dist_left_lane_line'] > 0 and bbox_info_idx['plate_info']['dist_right_lane_line'] < 0:
+                                bool_roi_lpr = True
+                        
+                    if bool_roi_lpr:
                         # 更新车牌识别有效帧数
                         lpr_width =  bbox_state_idy['plate_info']['roi'][2] - bbox_state_idy['plate_info']['roi'][0]
                         lpr_height =  bbox_state_idy['plate_info']['roi'][3] - bbox_state_idy['plate_info']['roi'][1]
@@ -775,7 +832,7 @@ class CaptureApi():
                                 lpr_height < options.plate_double_height[1] and \
                                 bbox_info_idx['plate_info']['ignore']== False:
                                 bool_add_lpr = True
-                    
+                
                     if bool_add_lpr:
                         bbox_state_idy['state']['obj_num'] += 1
                         bbox_state_idy['state']['obj_disappear_num'] = 0
@@ -893,21 +950,41 @@ class CaptureApi():
 
                 # 如果车辆向左边行驶
                 if bbox_state_idy['state']['left_right_state'] == 'Left' and bbox_state_idy['state']['left_right_state_frame_num'] >= 3:
-                    if (( loc_center_x - options.Left_threshold > 0 and \
-                        loc_center_x - options.Left_threshold < options.capture_left_right_distance_near_boundary_threshold ) or \
-                        ( options.Left_threshold - loc_center_x > 0 and \
-                        options.Left_threshold - loc_center_x < options.capture_left_right_distance_far_boundary_threshold )) and \
-                        bbox_state_idy['state']['obj_num'] > options.capture_info_frame_threshold:
-                        left_flage = True
-                
+                    if not options.roi_lane_line_bool:
+                        if (( loc_center_x - options.Left_threshold > 0 and \
+                            loc_center_x - options.Left_threshold < options.capture_left_right_distance_near_boundary_threshold ) or \
+                            ( options.Left_threshold - loc_center_x > 0 and \
+                            options.Left_threshold - loc_center_x < options.capture_left_right_distance_far_boundary_threshold )) and \
+                            bbox_state_idy['state']['obj_num'] > options.capture_info_frame_threshold:
+                            left_flage = True
+                    else:
+                        dist_left_lane_line = ((loc_center_y - options.Left_line_b) / (options.Left_line_k + 1e-5) - loc_center_x)
+                        dist_left_lane_line = (-1) * dist_left_lane_line if (options.Left_line_k < 0) else dist_left_lane_line
+                        if (( dist_left_lane_line > 0 and \
+                            dist_left_lane_line < options.capture_left_right_distance_near_boundary_threshold ) or \
+                            ( dist_left_lane_line < 0 and \
+                            (-1) * dist_left_lane_line < options.capture_left_right_distance_far_boundary_threshold )) and \
+                            bbox_state_idy['state']['obj_num'] > options.capture_info_frame_threshold:
+                            left_flage = True
+
                 # 如果车辆向右边行驶
                 if bbox_state_idy['state']['left_right_state'] == 'Right' and bbox_state_idy['state']['left_right_state_frame_num'] >= 3:
-                    if (( loc_center_x - options.Right_threshold > 0 and \
-                        loc_center_x - options.Right_threshold < options.capture_left_right_distance_far_boundary_threshold ) or \
-                        ( options.Right_threshold - loc_center_x > 0 and \
-                        options.Right_threshold - loc_center_x < options.capture_left_right_distance_near_boundary_threshold )) and \
-                        bbox_state_idy['state']['obj_num'] > options.capture_info_frame_threshold:
-                        right_flage = True
+                    if not options.roi_lane_line_bool:
+                        if (( loc_center_x - options.Right_threshold > 0 and \
+                            loc_center_x - options.Right_threshold < options.capture_left_right_distance_far_boundary_threshold ) or \
+                            ( options.Right_threshold - loc_center_x > 0 and \
+                            options.Right_threshold - loc_center_x < options.capture_left_right_distance_near_boundary_threshold )) and \
+                            bbox_state_idy['state']['obj_num'] > options.capture_info_frame_threshold:
+                            right_flage = True
+                    else:
+                        dist_right_lane_line = ((loc_center_y - options.Right_line_b) / (options.Right_line_k + 1e-5) - loc_center_x)
+                        dist_right_lane_line = (-1) * dist_right_lane_line if (options.Right_line_k > 0) else dist_right_lane_line
+                        if (( dist_right_lane_line > 0 and \
+                            dist_right_lane_line < options.capture_left_right_distance_far_boundary_threshold ) or \
+                            ( dist_right_lane_line < 0 and \
+                            (-1) * dist_right_lane_line < options.capture_left_right_distance_near_boundary_threshold )) and \
+                            bbox_state_idy['state']['obj_num'] > options.capture_info_frame_threshold:
+                            right_flage = True
 
                 # 如果车辆在视野内，超过 25 帧
                 if bbox_state_idy['state']['obj_num'] > options.capture_outtime_frame_threshold_01:
@@ -1082,7 +1159,7 @@ class CaptureApi():
                                     if capture_lpr_kind_frame >= options.capture_lpr_num_frame_threshold and \
                                         capture_lpr_num_frame >= options.capture_lpr_num_frame_threshold and \
                                         len(capture_from_container_list) and \
-                                        capture_lpr_num not in self.params_dict['capture_res_container'] and \
+                                        (capture_lpr_kind + capture_lpr_num) not in self.params_dict['capture_res_container'] and \
                                         len(capture_lpr_kind) == 3 and len(capture_lpr_num) == 4 and \
                                         capture_lpr_num != "none":
 

@@ -38,35 +38,38 @@ def RGBToNV12(image):
 
 
 def test():
-    # image_path = "/mnt/huanyuan2/data/image/HY_Tanker/test_video/test/test_side_00000.jpg"
-    # image_path = "/mnt/huanyuan2/data/image/HY_Tanker/test_video/test/test_side_00010.jpg"
-    # image_path = "/mnt/huanyuan2/data/image/HY_Tanker/算法误报_1121/jpg/top/7118000000000000-221117-073418-073438-01p014000000/7118000000000000-221117-073418-073438-01p014000000_00000.jpg"
-    # image_path = "/mnt/huanyuan2/data/image/HY_Tanker/算法误报_1121/jpg/top/7118000000000000-221117-073418-073438-01p014000000/7118000000000000-221117-073418-073438-01p014000000_00010.jpg"
-    # image_path = "/mnt/huanyuan2/data/image/HY_Tanker/算法误报_1121/jpg/side/7118000000000000-221116-225400-225420-01p013000000/7118000000000000-221116-225400-225420-01p013000000_00000.jpg"
-    # image_path = "/mnt/huanyuan2/data/image/HY_Tanker/算法误报_1121/jpg/side/7118000000000000-221116-225400-225420-01p013000000/7118000000000000-221116-225400-225420-01p013000000_00010.jpg"
-    # image_path = "/mnt/huanyuan2/data/image/HY_Tanker/算法误报_1121/jpg/side/0927000000000000-221117-073200-073220-01p013000000/0927000000000000-221117-073200-073220-01p013000000_00240.jpg"
-    # image_path = "/mnt/huanyuan2/data/image/HY_Tanker/算法误报_1121/jpg/side/0927000000000000-221117-073200-073220-01p013000000/0927000000000000-221117-073200-073220-01p013000000_00250.jpg"
-    # image_path = "/mnt/huanyuan2/data/image/HY_Tanker/算法误报_1121/jpg/side/0927000000000000-221117-073200-073220-01p013000000/0927000000000000-221117-073200-073220-01p013000000_00260.jpg"
-    # image_path = "/mnt/huanyuan2/data/image/HY_Tanker/算法误报_1222/jpg/皖AH711800000000-221222-140157-140257-01p013000079/皖AH711800000000-221222-140157-140257-01p013000079_00160.jpg"
-    image_path = "/mnt/huanyuan2/data/image/HY_Tanker/算法误报_20230101/jpg/img_01500.jpg"
+    image_path = "/mnt/huanyuan2/data/image/HY_Tanker/test_video/误报漏报/算法误报_20230101/jpg/img_01500.jpg"
 
-    caffe_model = "/home/huanyuan/share/huanyuan/GAF/huanyuan/novt/Tanker/Tanker/tanker_1209.caffemodel"
-    prototxt_file = "/home/huanyuan/share/huanyuan/GAF/huanyuan/novt/Tanker/Tanker/deploy.prototxt"
+    # # rgb
+    # caffe_model = "/home/huanyuan/share/huanyuan/GAF/huanyuan/novt/Tanker/Tanker/tanker_1209.caffemodel"
+    # prototxt_file = "/home/huanyuan/share/huanyuan/GAF/huanyuan/novt/Tanker/Tanker/deploy.prototxt"
+    # size = (256, 144)
+
+    # gray
+    caffe_model = "/home/huanyuan/share/huanyuan/GAF/huanyuan/novt/Tanker/Tanker/vm_seg_tanker_0220_1chn/deploy.caffemodel"
+    prototxt_file = "/home/huanyuan/share/huanyuan/GAF/huanyuan/novt/Tanker/Tanker/vm_seg_tanker_0220_1chn/deploy.prototxt"
     size = (256, 144)
 
     # caffe.set_device(0)
     # caffe.set_mode_gpu()
     caffe.set_mode_cpu()
     net = caffe.Net(prototxt_file, caffe_model, caffe.TEST)
-    net.blobs['data'].reshape(1, 3, size[1], size[0])   # N C H W
+    # rgb
+    # net.blobs['data'].reshape(1, 3, size[1], size[0])   # N C H W
+    # gray
+    net.blobs['data'].reshape(1, 1, size[1], size[0])   # N C H W
 
-    img_origin = cv2.imread(image_path)
+    # img_origin = cv2.imread(image_path)
+    img_origin = cv2.imread(image_path, 0)
 
     # resize
     img_resize = cv2.resize(img_origin, size, interpolation=cv2.INTER_LINEAR)
 
     img = img_resize.astype(np.float32)
-    img = img.transpose((2, 0, 1))
+    # rgb
+    # img = img.transpose((2, 0, 1))
+    # gray
+    pass
     net.blobs['data'].data[...] = img
     
     output = net.forward()['decon6_out'][0][0]
@@ -77,7 +80,10 @@ def test():
     element = cv2.getStructuringElement(cv2.MORPH_RECT, (7, 7))  # 形态学去噪
     output = cv2.morphologyEx(output, cv2.MORPH_OPEN, element)  # 闭运算去噪
 
-    img_resize[:,:,2][np.where(output == 1)] = 255
+    # rgb
+    # img_resize[:,:,2][np.where(output == 1)] = 255
+    # gray
+    img_resize[:,:][np.where(output == 1)] = 255
     output_path = os.path.join("/mnt/huanyuan2/data/image/HY_Tanker/test/", "caffe_{}.jpg".format(os.path.basename(image_path)[:-4]))
     cv2.imwrite(output_path, img_resize)
 

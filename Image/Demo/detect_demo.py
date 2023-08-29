@@ -16,6 +16,44 @@ def create_folder(folder):
     if not os.path.exists(folder):
         os.makedirs(folder)
 
+def inference_img(args):
+    
+    # mkdir 
+    create_folder(args.output_img_dir)
+
+    # model init 
+    detector = YOLOV6Detector(args.yolov6_config, args.yolov6_checkpoint, class_name=args.yolov6_class_name, threshold_list=args.yolov6_threshold_list, device='cuda:0')
+
+    # img init 
+    img_list = np.array(os.listdir(args.img_dir))
+    img_list = img_list[[img.endswith(args.suffix) for img in img_list]]
+    img_list.sort()
+
+    for idx in tqdm(range(len(img_list))):
+
+        img_path = os.path.join(args.img_dir, img_list[idx])
+        output_img_path = os.path.join(args.output_img_dir, img_list[idx])
+
+        # img
+        img = cv2.imread(img_path)
+
+        # segmentor
+        start = time.time()
+        bboxes = detector.detect( img, with_score=True )
+        end = time.time()
+        print('Running time: %s Seconds'%(end-start))
+
+        for key in bboxes:
+            for idx in range(len(bboxes[key])):
+                roi_idx = bboxes[key][idx][0:4]
+                score_idx = bboxes[key][idx][-1]
+
+                cv2.rectangle(img, (int(roi_idx[0]), int(roi_idx[1])), (int(roi_idx[2]), int(roi_idx[3])), color=(0, 0, 255), thickness=2)
+                img = cv2.putText(img, "{}_{:.2f}".format( key, score_idx), (int(roi_idx[0]), int(roi_idx[3]) + 30), 
+                                    cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 2)
+        cv2.imwrite(output_img_path, img)
+
+
 
 def inference_video(args):
 
@@ -81,46 +119,58 @@ def main():
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    # r151
-    # args.video_dir = "/mnt/huanyuan2/data/image/test_R151_detect/car_avi_select/车前/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test_R151_detect/yolox_140/车前/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/test_R151_detect/car_avi_select/右侧/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test_R151_detect/yolox_140/右侧/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/test_R151_detect/car_avi_select/右俯视/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test_R151_detect/yolox_140/右俯视/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/test_R151_detect/car_avi_select/左侧/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test_R151_detect/yolox_140/左侧/"
-    # args.video_dir = "/mnt/huanyuan2/data/image/test_R151_detect/car_avi_select/左俯视/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test_R151_detect/yolox_140/左俯视/"
+    # bm car
+    args.img_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_img/"
+    args.output_img_dir = "/mnt/huanyuan2/data/image/RM_C28_detection/test_img_res/"
+
+    args.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_c28_car_0320/yolov6_rm_c28_deploy.py"
+    args.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_c28_car_0320/epoch_340_deploy.pth"
+    args.yolov6_class_name = ['car']
+    args.yolov6_threshold_list = [0.3]
     
-    # Brazil
-    # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_BM_Brazil_C27/5M_白天_2022_1026/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_BM_Brazil_C27/5M_白天_2022_1026_ssd_rfb_0609/"
+    args.suffix = '.jpg'
+    inference_img(args)
 
-    # # ZD_DUBAI
-    # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_ZD_DUBAI_C27/5M_白天_侧向_0615/avi/"
-    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_白天_侧向_0615/yolox_0609/"
+    # # r151
+    # # args.video_dir = "/mnt/huanyuan2/data/image/test_R151_detect/car_avi_select/车前/"
+    # # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test_R151_detect/yolox_140/车前/"
+    # # args.video_dir = "/mnt/huanyuan2/data/image/test_R151_detect/car_avi_select/右侧/"
+    # # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test_R151_detect/yolox_140/右侧/"
+    # # args.video_dir = "/mnt/huanyuan2/data/image/test_R151_detect/car_avi_select/右俯视/"
+    # # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test_R151_detect/yolox_140/右俯视/"
+    # # args.video_dir = "/mnt/huanyuan2/data/image/test_R151_detect/car_avi_select/左侧/"
+    # # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test_R151_detect/yolox_140/左侧/"
+    # # args.video_dir = "/mnt/huanyuan2/data/image/test_R151_detect/car_avi_select/左俯视/"
+    # # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/test_R151_detect/yolox_140/左俯视/"
+    
+    # # Brazil
+    # # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_BM_Brazil_C27/5M_白天_2022_1026/"
+    # # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_BM_Brazil_C27/5M_白天_2022_1026_ssd_rfb_0609/"
 
-    # zg
-    args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_CN_ZG_HCZP/5M_230416/avi/"
-    args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_CN_ZG_HCZP/5M_230416/ssd_rfb_0609/"
+    # # # ZD_DUBAI
+    # # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_ZD_DUBAI_C27/5M_白天_侧向_0615/avi/"
+    # # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/ZD_DUBAI/5M_白天_侧向_0615/yolox_0609/"
 
-    # ssd caffe
-    # args.ssd_prototxt = "/mnt/huanyuan/model_final/image_model/zg/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-08-10-00/FPN_RFB_3class_3attri_noDilation_prior.prototxt"
-    # args.ssd_model_path = "/mnt/huanyuan/model_final/image_model/zg/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-08-10-00/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-08-10-00.caffemodel"
+    # # zg
+    # args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_CN_ZG_HCZP/5M_230416/avi/"
+    # args.output_video_dir = "/mnt/huanyuan/temp/pc_demo/POLICE_CN_ZG_HCZP/5M_230416/ssd_rfb_0609/"
 
-    # SSD_VGG_FPN_RFB_2023-06-09_focalloss_5class_car_bus_truck_motorcyclist_licenseplate_softmax
-    args.ssd_prototxt = "/mnt/huanyuan/model_final/image_model/schoolbus/ssd_rfb/SSD_VGG_FPN_RFB_2023-06-09_focalloss_5class_car_bus_truck_motorcyclist_licenseplate_softmax/FPN_RFB_4class_3attri_noDilation_prior.prototxt"
-    args.ssd_model_path = "/mnt/huanyuan/model_final/image_model/schoolbus/ssd_rfb/SSD_VGG_FPN_RFB_2023-06-09_focalloss_5class_car_bus_truck_motorcyclist_licenseplate_softmax/SSD_VGG_FPN_RFB_VOC_car_bus_truck_motorcyclist_licenseplate_2023_06_09_70.caffemodel"
+    # # ssd caffe
+    # # args.ssd_prototxt = "/mnt/huanyuan/model_final/image_model/zg/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-08-10-00/FPN_RFB_3class_3attri_noDilation_prior.prototxt"
+    # # args.ssd_model_path = "/mnt/huanyuan/model_final/image_model/zg/gvd_ssd_rfb_zg/car_bus_truck_licenseplate_softmax_zg_2022-08-10-00/SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-08-10-00.caffemodel"
 
-    # # yolox pth
-    # args.yolox_config = "/mnt/huanyuan/model/image/yolox/yolovx_l_license_0601/yolox_l_license.py"
-    # args.yolox_checkpoint =  "/mnt/huanyuan/model/image/yolox/yolovx_l_license_0601/epoch_140.pth"
-    # args.yolox_class_name = ['license_plate']
-    # args.yolox_threshold_list = [0.4]
+    # # SSD_VGG_FPN_RFB_2023-06-09_focalloss_5class_car_bus_truck_motorcyclist_licenseplate_softmax
+    # args.ssd_prototxt = "/mnt/huanyuan/model_final/image_model/schoolbus/ssd_rfb/SSD_VGG_FPN_RFB_2023-06-09_focalloss_5class_car_bus_truck_motorcyclist_licenseplate_softmax/FPN_RFB_4class_3attri_noDilation_prior.prototxt"
+    # args.ssd_model_path = "/mnt/huanyuan/model_final/image_model/schoolbus/ssd_rfb/SSD_VGG_FPN_RFB_2023-06-09_focalloss_5class_car_bus_truck_motorcyclist_licenseplate_softmax/SSD_VGG_FPN_RFB_VOC_car_bus_truck_motorcyclist_licenseplate_2023_06_09_70.caffemodel"
 
-    args.suffix = '.avi'
-    inference_video(args)
+    # # # yolox pth
+    # # args.yolox_config = "/mnt/huanyuan/model/image/yolox/yolovx_l_license_0601/yolox_l_license.py"
+    # # args.yolox_checkpoint =  "/mnt/huanyuan/model/image/yolox/yolovx_l_license_0601/epoch_140.pth"
+    # # args.yolox_class_name = ['license_plate']
+    # # args.yolox_threshold_list = [0.4]
+
+    # args.suffix = '.avi'
+    # inference_video(args)
 
 
 if __name__ == '__main__':
