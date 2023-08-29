@@ -82,6 +82,7 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/RM_C27_detection/zd_c27_2020_0209_1125/"   # trainval: 133923, train: 120530, val: 13393, test: 14881, all: 148804
     # args.input_dir = "/yuanhuan/data/image/LicensePlate_ocr/original/Brazil/Brazil/Brazil_all/"     # trainval: 73503, train: 66152, val: 7351, test: 8167, all: 81670
     # args.input_dir = "/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_new_style/shate_20230308/"     # trainval: 12188, train: 10969, val: 1219, test: 1355, all: 13543
+    args.input_dir = "/yuanhuan/data/image/RM_ANPR/original/zd/UAE/UAE_new_style/shate_20230309/"     # trainval: 6250, train: 5625, val: 625, test: 695, all: 6945
 
     # 数据集: RM_R151_detection
     # args.input_dir = "/yuanhuan/data/image/RM_R151_detection/original/C53_AB_WA_20230426_FN_detline_merge_test/"    # trainval: 360, train: 324, val: 36, test: 40, all: 400
@@ -132,7 +133,7 @@ if __name__ == "__main__":
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/original/jiayouzhan_5M/"    # trainval: 1445, train: 1300, val: 145, test: 161, all: 1606
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/original/sandaofangxian/"    # trainval: 5060, train: 4553, val: 507, test: 563, all: 5623
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/original/anhuihuaibeigaosu/"    # trainval: 18045, train: 16239, val: 1806, test: 2007, all: 20052
-    args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/original/shenzhentiaoqiao/"    # trainval: 9298, train: 8368, val: 930, test: 1034, all: 10332（新增数据）
+    # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/original/shenzhentiaoqiao/"    # trainval: 9298, train: 8368, val: 930, test: 1034, all: 10332（新增数据）
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/original/anhuihuaibeigaosu_night_diguangzhao/"    # trainval: 23315, train: 20983, val: 2332, test: 2591, all: 25906
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/original/paosa/"    #  trainval: 4617, train: 4155, val: 462, test: 514, all: 5131（新增数据）
     # args.input_dir = "/yuanhuan/data/image/ZG_ZHJYZ_detection/original/shaobing/"    # trainval: 10063, train: 9056, val: 1007, test: 1119, all: 11182
@@ -177,7 +178,7 @@ if __name__ == "__main__":
     args.val_size = 0.1
 
     args.jpg_dir =  args.input_dir + "JPEGImages/"
-    args.xml_dir =  args.input_dir + "XML/"
-    # args.xml_dir =  args.input_dir + "Annotations/"
+    # args.xml_dir =  args.input_dir + "XML/"
+    args.xml_dir =  args.input_dir + "Annotations/"
 
     split(args)

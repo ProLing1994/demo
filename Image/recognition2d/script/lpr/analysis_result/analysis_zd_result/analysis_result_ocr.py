@@ -124,25 +124,45 @@ if __name__ == '__main__':
     # args.input_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_chn_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230707"                    # diffste_248_111600 
     # args.input_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_chn_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230707_original_248"       # original_248_52
     # args.input_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_chn_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230727_diffste_1_7M"       # diffste_1_7M(diffste_2141_yellow/diffste_2189_green/diffste_3859_blue)
-    args.input_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_chn_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230727_diffste_1_7M"       # diffste_1_7M(diffste_2141_yellow/diffste_2189_green/diffste_3859_blue)
-    
+    # args.input_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_chn_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230727_diffste_1_7M"       # diffste_1_7M(diffste_2141_yellow/diffste_2189_green/diffste_3859_blue)
+
+    ######################################
+    # brazil
+    ######################################
+    args.input_dir = "/yuanhuan/model/image/lpr/brazil/lpr_bm_lxn/mexico_1201/"       # lxn
+    # args.input_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_brazil_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230818_wdiffste"       # data + diffste(200,000)
+    # args.input_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_brazil_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230822_only_diffste"     # diffste_refine(160,000)
+    # args.input_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_brazil_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230822_wdiffste_NoAug"     # data + diffste_refine(160,000)
+    # args.input_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_brazil_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230822_wdiffste"     # data + aug + diffste_refine(160,000)
+    # args.input_dir = "/yuanhuan/model/image/lpr/paddle_ocr/v1_brazil_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230824_wdiffste_NoAug_202309"     # data_refine + diffste_refine(160,000)
+
     # ocr_merge_test
     # args.input_csv_path = os.path.join(args.input_dir, 'best_accuracy/test_caffe/data_original_248_52_train_result.csv')
     # args.out_csv_path = os.path.join(args.input_dir, "best_accuracy/test_caffe/analysis_data_original_248_52_train_result.csv")
     # args.input_csv_path = os.path.join(args.input_dir, 'best_accuracy/test_caffe/data_original_248_52_val_result.csv')
     # args.out_csv_path = os.path.join(args.input_dir, "best_accuracy/test_caffe/analysis_data_original_248_52_val_result.csv")
+    
+    # cn
     # args.input_csv_path = os.path.join(args.input_dir, 'best_accuracy/test_caffe/data_sichuan_result.csv')
     # args.out_csv_path = os.path.join(args.input_dir, "best_accuracy/test_caffe/analysis_data_sichuan_result.csv")
     # args.input_csv_path = os.path.join(args.input_dir, 'best_accuracy/test_caffe/data_sichuan_result_no_char.csv')
     # args.out_csv_path = os.path.join(args.input_dir, "best_accuracy/test_caffe/analysis_data_sichuan_result_no_char.csv")
-    # args.input_csv_path = os.path.join(args.input_dir, 'inference_iter_epoch_175/test_caffe/data_sichuan_train_result.csv')
-    # args.out_csv_path = os.path.join(args.input_dir, "inference_iter_epoch_175/test_caffe/analysis_data_sichuan_train_result.csv")
-    # args.input_csv_path = os.path.join(args.input_dir, 'inference_iter_epoch_175/test_caffe/data_sichuan_test_result.csv')
-    # args.out_csv_path = os.path.join(args.input_dir, "inference_iter_epoch_175/test_caffe/analysis_data_sichuan_test_result.csv")
-    args.input_csv_path = os.path.join(args.input_dir, 'inference_iter_epoch_175/test_caffe/data_all_no_xianggangaomen_doubleyellow_train_result.csv')
-    args.out_csv_path = os.path.join(args.input_dir, "inference_iter_epoch_175/test_caffe/analysis_data_all_no_xianggangaomen_doubleyellow_train_result.csv")
-    # args.input_csv_path = os.path.join(args.input_dir, 'inference_iter_epoch_175/test_caffe/data_all_no_xianggangaomen_doubleyellow_test_result.csv')
-    # args.out_csv_path = os.path.join(args.input_dir, "inference_iter_epoch_175/test_caffe/analysis_data_all_no_xianggangaomen_doubleyellow_test_result.csv")
+    # args.input_csv_path = os.path.join(args.input_dir, 'inference/test_caffe/data_sichuan_train_result.csv')
+    # args.out_csv_path = os.path.join(args.input_dir, "inference/test_caffe/analysis_data_sichuan_train_result.csv")
+    # args.input_csv_path = os.path.join(args.input_dir, 'inference/test_caffe/data_sichuan_test_result.csv')
+    # args.out_csv_path = os.path.join(args.input_dir, "inference/test_caffe/analysis_data_sichuan_test_result.csv")
+    # args.input_csv_path = os.path.join(args.input_dir, 'inference/test_caffe/data_all_no_xianggangaomen_doubleyellow_train_result.csv')
+    # args.out_csv_path = os.path.join(args.input_dir, "inference/test_caffe/analysis_data_all_no_xianggangaomen_doubleyellow_train_result.csv")
+    # args.input_csv_path = os.path.join(args.input_dir, 'inference/test_caffe/data_all_no_xianggangaomen_doubleyellow_test_result.csv')
+    # args.out_csv_path = os.path.join(args.input_dir, "inference/test_caffe/analysis_data_all_no_xianggangaomen_doubleyellow_test_result.csv")
+
+    # brazil
+    args.input_csv_path = os.path.join(args.input_dir, 'inference/test_caffe/data_brazil_test_result.csv')
+    args.out_csv_path = os.path.join(args.input_dir, "inference/test_caffe/analysis_data_brazil_test_result.csv")
+    # args.input_csv_path = os.path.join(args.input_dir, 'inference/test_caffe/data_brazil_trainval_result.csv')
+    # args.out_csv_path = os.path.join(args.input_dir, "inference/test_caffe/analysis_data_brazil_trainval_result.csv")
+    # args.input_csv_path = os.path.join(args.input_dir, 'inference/test_caffe/data_brazil_original_result.csv')
+    # args.out_csv_path = os.path.join(args.input_dir, "inference/test_caffe/analysis_data_brazil_original_result.csv")
 
     analysis_result(args)
 

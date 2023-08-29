@@ -1,3 +1,5 @@
+#!/bin/bash
+
 data_dir=/yuanhuan/data/image/RM_ANPR/original/cn/china/
 data_csv_dir=/yuanhuan/data/image/RM_ANPR/original/cn/china_csv/
 data_crop_dir=/yuanhuan/data/image/RM_ANPR/original/cn/china_crop/
@@ -6,7 +8,6 @@ analysis_dir=/yuanhuan/data/image/RM_ANPR/original/cn/china_analysis/
 
 seg_name=seg_cn_202305
 ocr_name=plate_cn_202305
-
 training_data_dir=/yuanhuan/data/image/RM_ANPR/training/
 
 data_diffste_dir=/yuanhuan/data/image/RM_ANPR/original/cn/DIFFSTE/
@@ -104,4 +105,4 @@ python /yuanhuan/code/demo/Image/recognition2d/script/lpr/dataset/dataset_cn/dat
 paddle_ocr_name=$ocr_diffste_name
 paddle_ocr_data_dir=/yuanhuan/model/image/lpr/paddle_dict/$paddle_ocr_name
 python /yuanhuan/code/demo/Image/recognition2d/script/paddle/dataset/lpr_to_paddleocr_label.py --input_dir=$training_data_dir/$paddle_ocr_name --output_dir=$paddle_ocr_data_dir
-python /yuanhuan/code/demo/Image/recognition2d/script/paddle/dataset/label_dict.py --output_dir=$paddle_ocr_data_dir --output_name=cn_dict.txt --data_dict_name=dataset_cn_dict_normal
+python /yuanhuan/code/demo/Image/recognition2d/script/paddle/dataset/label_dict.py --output_dir=$paddle_ocr_data_dir --output_name=cn_dict.txt --data_dict_name=script.lpr.dataset.dataset_cn.dataset_dict.dataset_cn_dict_normal
