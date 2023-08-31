@@ -62,7 +62,7 @@ def center_crop(args, img, bndbox):
     roi_crop[2] = int(roi_crop[2] + 0.5)
     roi_crop[3] = int(roi_crop[3] + 0.5)
 
-    return roi_crop
+    return roi_crop, crop_size
 
 
 def clip_init(args):
@@ -230,7 +230,7 @@ def prepare_dataset(args):
 
             if args.crop_bool:
                 # center_crop
-                roi_crop = center_crop(args, img, bndbox)
+                roi_crop, _ = center_crop(args, img, bndbox)
                 img_crop = img[roi_crop[1]:roi_crop[3], roi_crop[0]:roi_crop[2]]
 
                 if args.clip_bool:
@@ -483,6 +483,8 @@ if __name__ == "__main__":
         args.clip_ref_class_list = ['wallet']
     elif args.clip_ref_class == "umbrella":
         args.clip_ref_class_list = ['umbrella']
+    elif args.clip_ref_class == "all":
+        args.clip_ref_class_list = args.clip_class_list
     else:
         raise Exception
 
