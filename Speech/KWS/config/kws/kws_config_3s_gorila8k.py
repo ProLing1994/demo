@@ -17,60 +17,33 @@ __C.general.sub_data_dir = ["/mnt/huanyuan2/data/speech/kws/xiaoyu_dataset/exper
                             "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/",]
 
 # data version
-# __C.general.version = "1.2"     # 唤醒词(成都+深圳+客户+数据清洗) + 负样本 
-# __C.general.version = "1.3"     # 唤醒词(成都+深圳+客户+数据清洗+小声样本剔除) + 负样本 
-__C.general.version = "1.4"     # 唤醒词(成都+深圳+客户+数据清洗+小声样本剔除) + 负样本(平台误报数据+gorila一遍音频)
+__C.general.version = "2.4"     # 唤醒词(成都+深圳+客户+数据清洗+小声样本剔除) + 负样本(平台误报数据+gorila一遍音频)
 
 # data date
-# __C.general.date = "06262023"
-# __C.general.date = "07042023"
 __C.general.date = "08292023"
 
 # data path
-<<<<<<< HEAD
-# __C.general.data_csv_path = "/yuanhuan/data/speech/kws/gorila_dataset/dataset_gorila_2_0s_1_2_06262023/total_data_files.csv"
-# __C.general.data_csv_path = "/yuanhuan/data/speech/kws/gorila_dataset/dataset_gorila_2_0s_1_3_07042023/total_data_files.csv"
-__C.general.data_csv_path = "/yuanhuan/data/speech/kws/gorila_dataset/dataset_gorila_2_0s_1_4_08292023/total_data_files.csv"
+__C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_3_0s_1_4_08292023/total_data_files.csv"
 
 # background noise path
-# __C.general.background_data_path = "/yuanhuan/data/speech/kws/gorila_dataset/dataset_gorila_2_0s_1_2_06262023/background_noise_files.csv"
-# __C.general.background_data_path = "/yuanhuan/data/speech/kws/gorila_dataset/dataset_gorila_2_0s_1_3_07042023/background_noise_files.csv"
-__C.general.background_data_path = "/yuanhuan/data/speech/kws/gorila_dataset/dataset_gorila_2_0s_1_4_08292023/background_noise_files.csv"
-=======
-# __C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_2_0s_1_2_06262023/total_data_files.csv"
-# __C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_2_0s_1_3_07042023/total_data_files.csv"
-__C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_2_0s_1_4_08292023/total_data_files.csv"
-
-# background noise path
-# __C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_2_0s_1_2_06262023/background_noise_files.csv"
-# __C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_2_0s_1_3_07042023/background_noise_files.csv"
-__C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_2_0s_1_4_08292023/background_noise_files.csv"
->>>>>>> b50e126faabaf9a2a6a8891b597ede127c985dc6
+__C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_3_0s_1_4_08292023/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 # __C.general.is_test = False
 
 # the output of training models and logging files
-# __C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/test"
-# __C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_res15_fbankcpu_06252023/"
-# __C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_tc_resnet14_fbankcpu_06252023/"
-# __C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_res15_fbankcpu_novad_06252029/"
-# __C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_tc_resnet14_fbankcpu_novad_06252029/"
-# __C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/kws_gorila8k_1_3_2s_res15_fbankcpu_novad_07042023/"
-# __C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/kws_gorila8k_1_3_2s_tc_resnet14_fbankcpu_novad_07042023/"
-# __C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/kws_gorila8k_1_4_2s_res15_fbankcpu_novad_08302023/"
-__C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/kws_gorila8k_1_4_2s_tc_resnet14_fbankcpu_novad_08302023/"
+__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/test"
 
 # finetune model
-__C.general.finetune_on = True
+__C.general.finetune_on = False
 
 # 模型加载方式，[0: 根据文件目录查找, 1: 模型加载，指定文件路径]
 __C.general.load_mode_type = 0
 
 # 方式一：模型加载，根据文件目录查找
-__C.general.finetune_model_dir = "/yuanhuan/model/kws/kws_gorila/kws_gorila8k_1_3_2s_tc_resnet14_fbankcpu_novad_07042023/"
-__C.general.finetune_epoch_num = 1999
+__C.general.finetune_model_dir = ""
+__C.general.finetune_epoch_num = 0
 __C.general.finetune_sub_folder_name = 'checkpoints'
 # 方式二：模型加载，指定文件路径
 __C.general.finetune_model_path = ""
@@ -152,7 +125,7 @@ __C.dataset.input_channel = 1
 __C.dataset.sampling_rate = 8000
 
 # Length of each audio clip to be analyzed
-__C.dataset.clip_duration_ms = 2000         # 2s
+__C.dataset.clip_duration_ms = 3000         # 3s
 
 # FFT size.
 __C.dataset.fft_size = 256
@@ -204,7 +177,7 @@ __C.dataset.w_alignment = False
 __C.dataset.h_alignment = False
 
 # input size of training data (w, h), unit: voxel
-__C.dataset.data_size = [48, 196]
+__C.dataset.data_size = [48, 296]
 
 # allow_cache
 __C.dataset.allow_cache = True
@@ -403,9 +376,8 @@ __C.loss.ema_alpha = 0.995
 __C.net = {}
 
 # the network name
-# __C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/res15.py"
-# __C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-296.py"
-__C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-196.py"
+# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/res15.py"
+__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-296.py"
 __C.net.class_name = "SpeechResModel"
 
 ######################################
@@ -415,9 +387,9 @@ __C.net.class_name = "SpeechResModel"
 __C.train = {}
 
 # the number of training epochs
-# __C.train.num_epochs = 2000
+__C.train.num_epochs = 2000
 # __C.train.num_epochs = 1000
-__C.train.num_epochs = 500
+# __C.train.num_epochs = 500
 # __C.train.num_epochs = 1
 
 # the number of samples in a batch

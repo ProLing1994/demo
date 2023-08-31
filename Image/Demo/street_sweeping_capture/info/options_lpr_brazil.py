@@ -22,8 +22,8 @@ options.image_height = 1080
 ###########################################
 # gpu
 ###########################################
-# options.gpu_bool = True
-options.gpu_bool = False
+options.gpu_bool = True
+# options.gpu_bool = False
 # options.device = 'cpu'
 options.device = 'cuda:0'
 
@@ -32,9 +32,9 @@ options.device = 'cuda:0'
 # detector
 ###########################################
 # lpr
-options.ssd_bool = True
-options.yolov6_bool =False
-options.ssd_caffe_bool = True
+options.ssd_bool = False
+options.yolov6_bool =True
+options.ssd_caffe_bool = False
 options.ssd_openvino_bool = False
 
 # # ssd
@@ -51,25 +51,31 @@ options.ssd_openvino_bool = False
 # options.ssd_class_name = ['license_plate']
 # options.ssd_conf_thres = 0.25
 
-# SSD_VGG_FPN_RFB_2023-06-09_focalloss_5class_car_bus_truck_motorcyclist_licenseplate_softmax
-# pytorch 
-# options.ssd_prototxt = None
-# options.ssd_model_path = ""
-# caffe
-options.ssd_prototxt = "/mnt/huanyuan/model_final/image_model/schoolbus/ssd_rfb/SSD_VGG_FPN_RFB_2023-06-09_focalloss_5class_car_bus_truck_motorcyclist_licenseplate_softmax/FPN_RFB_4class_3attri_noDilation_prior.prototxt"
-options.ssd_model_path = "/mnt/huanyuan/model_final/image_model/schoolbus/ssd_rfb/SSD_VGG_FPN_RFB_2023-06-09_focalloss_5class_car_bus_truck_motorcyclist_licenseplate_softmax/SSD_VGG_FPN_RFB_VOC_car_bus_truck_motorcyclist_licenseplate_2023_06_09_70.caffemodel"
-# openvino
-# options.ssd_prototxt = None
-# options.ssd_model_path = ""
+# # SSD_VGG_FPN_RFB_2023-06-09_focalloss_5class_car_bus_truck_motorcyclist_licenseplate_softmax
+# # pytorch 
+# # options.ssd_prototxt = None
+# # options.ssd_model_path = ""
+# # caffe
+# options.ssd_prototxt = "/mnt/huanyuan/model_final/image_model/schoolbus/ssd_rfb/SSD_VGG_FPN_RFB_2023-06-09_focalloss_5class_car_bus_truck_motorcyclist_licenseplate_softmax/FPN_RFB_4class_3attri_noDilation_prior.prototxt"
+# options.ssd_model_path = "/mnt/huanyuan/model_final/image_model/schoolbus/ssd_rfb/SSD_VGG_FPN_RFB_2023-06-09_focalloss_5class_car_bus_truck_motorcyclist_licenseplate_softmax/SSD_VGG_FPN_RFB_VOC_car_bus_truck_motorcyclist_licenseplate_2023_06_09_70.caffemodel"
+# # openvino
+# # options.ssd_prototxt = None
+# # options.ssd_model_path = ""
 
-# yolov6
-options.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_jpf/yolov6.py"
-options.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_jpf/epoch_260.pth"
-options.yolov6_class_name = ['car', 'bus', 'truck', 'car_reg', 'car_big_reg', 'car_front',
-                        'car_big_front', 'person', 'motorcyclist', 'bicyclist',
-                        'sign_upspeed_round', 'sign_upspeed_square', 'sign_stop', 'sign_height',
-                        'light_share0', 'light_share', 'bridge', 'zebra_crossing', 'license_plate']
-options.yolov6_threshold_list = [0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3]
+# # yolov6
+# options.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_jpf/yolov6.py"
+# options.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_jpf/epoch_260.pth"
+# options.yolov6_class_name = ['car', 'bus', 'truck', 'car_reg', 'car_big_reg', 'car_front',
+#                         'car_big_front', 'person', 'motorcyclist', 'bicyclist',
+#                         'sign_upspeed_round', 'sign_upspeed_square', 'sign_stop', 'sign_height',
+#                         'light_share0', 'light_share', 'bridge', 'zebra_crossing', 'license_plate']
+# options.yolov6_threshold_list = [0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3]
+
+# yolov6_c27_car_bus_truck_moto_plate_0731
+options.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_c27_car_bus_truck_moto_plate_0731/yolov6_rm_c27_deploy.py"
+options.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_c27_car_bus_truck_moto_plate_0731/epoch_300_deploy.pth"
+options.yolov6_class_name = ["car", "bus", "truck", "motorcyclist", "license_plate"]
+options.yolov6_threshold_list = [0.3, 0.3, 0.3, 0.3, 0.3]
 
 # # 是否将 car\bus\truck 合并为一类输出
 options.car_attri_merge_bool = True
@@ -82,26 +88,40 @@ options.license_plate_name = 'license_plate'
 ###########################################
 # options
 ###########################################
-options.lpr_caffe_bool = True
+options.lpr_caffe_bool = False
 options.lpr_pytorch_bool = False
+options.lpr_onnx_bool = True
 
 ################
 # brazil
 ################
 options.brazil = edict()
 
-# mexico_1201_lxn
+# # mexico_1201_lxn
+# options.brazil.ocr_pth_path = ""
+# options.brazil.ocr_caffe_prototxt = "/mnt/huanyuan/model_final/image_model/lpr/lpr_bm_lxn/mexico_1201/cnn_turkey.prototxt"
+# options.brazil.ocr_caffe_model_path = "/mnt/huanyuan/model_final/image_model/lpr/lpr_bm_lxn/mexico_1201/mexico_1201.caffemodel"
+# options.brazil.input_shape = (256, 32)
+
+# lpr single line paddle
+options.lpr_paddle_bool = True
 options.brazil.ocr_pth_path = ""
-options.brazil.ocr_caffe_prototxt = "/mnt/huanyuan/model_final/image_model/lpr/lpr_bm_lxn/mexico_1201/cnn_turkey.prototxt"
-options.brazil.ocr_caffe_model_path = "/mnt/huanyuan/model_final/image_model/lpr/lpr_bm_lxn/mexico_1201/mexico_1201.caffemodel"
-options.brazil.input_shape = (256, 32)
+options.brazil.ocr_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_brazil_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230824_wdiffste_NoAug_202309/inference/caffe/model.prototxt"
+options.brazil.ocr_caffe_model_path = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_brazil_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230824_wdiffste_NoAug_202309/inference/caffe/model.caffemodel"
+options.brazil.ocr_onnx_model_path = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_brazil_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230824_wdiffste_NoAug_202309/inference/onnx/model.onnx"
+options.brazil.input_shape = (1, 64, 256)
+options.brazil.ocr_labels_dict_path = "/mnt/huanyuan/model/image/lpr/paddle_ocr/v1_brazil_mobilenet_v1_rm_cnn_tc_res_mobile_rmresize_gray_64_256_20230824_wdiffste_NoAug_202309/inference/brazil_dict.txt"
+options.brazil.ocr_prefix_beam_search_bool = False
+options.brazil.padding_bool = False
 
 # lpr first line
+options.brazil.ocr_first_line_pth_path = "/mnt/huanyuan/model/image/lpr/brazil/ocr_brazil_first_line_20230116/crnn_best.pth"
 options.brazil.ocr_first_line_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/brazil/ocr_brazil_first_line_20230116/cnn_256x64_38.prototxt"
 options.brazil.ocr_first_line_caffe_model_path = "/mnt/huanyuan/model/image/lpr/brazil/ocr_brazil_first_line_20230116/ocr_brazil_first_line_20230116.caffemodel"
 options.brazil.ocr_first_line_caffe_shape = (256, 64)
 
 # lpr second line
+options.brazil.ocr_second_line_pth_path = "/mnt/huanyuan/model/image/lpr/brazil/ocr_brazil_second_line_20230116/crnn_best.pth"
 options.brazil.ocr_second_line_caffe_prototxt = "/mnt/huanyuan/model/image/lpr/brazil/ocr_brazil_second_line_20230116/cnn_256x64_38.prototxt"
 options.brazil.ocr_second_line_caffe_model_path = "/mnt/huanyuan/model/image/lpr/brazil/ocr_brazil_second_line_20230116/ocr_brazil_second_line_20230116.caffemodel"
 options.brazil.ocr_second_line_caffe_shape = (256, 64)
@@ -126,8 +146,8 @@ options.lpr_ocr_column_threshold = 2.0
 ###########################################
 # sort
 ###########################################
-options.sort_type = "car"
-# options.sort_type = "plate"
+# options.sort_type = "car"
+options.sort_type = "plate"
 
 # car
 options.max_age = 10

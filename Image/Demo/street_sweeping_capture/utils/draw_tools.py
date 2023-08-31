@@ -199,7 +199,8 @@ class DrawApi():
                     if self.country_type == "zd":
                         text = "{}#{}_{}_{}_{}_{}_{}_{:.2f}".format( bbox_info_idx['plate_info']['kind'], bbox_info_idx['plate_info']['num'], bbox_info_idx['plate_info']['country'], bbox_info_idx['plate_info']['city'], bbox_info_idx['plate_info']['car_type'], bbox_info_idx['plate_info']['color'], bbox_info_idx['plate_info']['column'], bbox_info_idx['plate_info']['score'])
                     else:                        
-                        text = "{}{}_{}_{}_{:.2f}".format( bbox_info_idx['plate_info']['kind'], bbox_info_idx['plate_info']['num'], bbox_info_idx['plate_info']['column'], bbox_info_idx['plate_info']['color'], bbox_info_idx['plate_info']['score'])
+                        # text = "{}{}_{}_{}_{:.2f}".format( bbox_info_idx['plate_info']['kind'], bbox_info_idx['plate_info']['num'], bbox_info_idx['plate_info']['column'], bbox_info_idx['plate_info']['color'], bbox_info_idx['plate_info']['score'])
+                        text = "{}{}_{}_{}_{}_{}".format( bbox_info_idx['plate_info']['kind'], bbox_info_idx['plate_info']['num'], bbox_info_idx['plate_info']['color'], int(bbox_info_idx['plate_info']['dist_left_lane_line']), int(bbox_info_idx['plate_info']['dist_right_lane_line']), bbox_info_idx['state']['obj_num'])
 
                     text_size = cv2.getTextSize(text, 0, 3, 2)
                     if not capture_bool:
@@ -286,23 +287,13 @@ class DrawApi():
         return img
 
 
-    def draw_capture_line(self, img, capture_line_up_down, capture_line_left_right, mode='xywh'):
+    def draw_capture_line(self, img, capture_line_points, mode='xywh'):
         
-        image_width = img.shape[1]
-        image_height = img.shape[0]
+        for idx in range(len(capture_line_points)):
 
-        for idx in range(len(capture_line_up_down)):
+            if idx % 2 == 0:
 
-            capture_line_idx = int(capture_line_up_down[idx])
-
-            # line
-            cv2.line(img, (0, capture_line_idx), (image_width, capture_line_idx), color_dict["roi_capture_area"], 2)
-
-        for idx in range(len(capture_line_left_right)):
-        
-            capture_line_idx = int(capture_line_left_right[idx])
-
-            # line
-            cv2.line(img, (capture_line_idx, 0), (capture_line_idx, image_height), color_dict["roi_capture_area"], 2)
+                # line
+                cv2.line(img, capture_line_points[idx], capture_line_points[idx + 1], color_dict["roi_capture_area"], 2)
 
         return img
