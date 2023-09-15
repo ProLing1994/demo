@@ -36,7 +36,7 @@ def gen_ocr_img(args):
         plate_color = ''
         plate_column = ''
         plate_num = str(img_name).split('.')[0].split('_')[-1]
-        print(plate_num)
+        # print(plate_num)
 
         plate_img_name = plate_name + '.jpg'
         output_img_path = os.path.join(args.output_img_dir, plate_img_name)
