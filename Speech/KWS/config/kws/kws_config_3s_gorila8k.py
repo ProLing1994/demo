@@ -14,7 +14,7 @@ __C.general.data_dir = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experiment
 __C.general.sub_data_dir = ["/mnt/huanyuan2/data/speech/kws/xiaoyu_dataset/experimental_dataset/XiaoYuDataset/",
                             "/mnt/huanyuan2/data/speech/kws/xiaorui_dataset/experimental_dataset/XiaoRuiDataset/",
                             "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/",
-                            "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/",]
+                            "/mnt/huanyuan2/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/",]
 
 # data version
 __C.general.version = "2.4"     # 唤醒词(成都+深圳+客户+数据清洗+小声样本剔除) + 负样本(平台误报数据+gorila一遍音频)
@@ -23,17 +23,19 @@ __C.general.version = "2.4"     # 唤醒词(成都+深圳+客户+数据清洗+�
 __C.general.date = "08292023"
 
 # data path
-__C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_3_0s_1_4_08292023/total_data_files.csv"
+__C.general.data_csv_path = "/yuanhuan/data/speech/kws/gorila_dataset/dataset_gorila_3_0s_1_4_08292023/total_data_files.csv"
 
 # background noise path
-__C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_3_0s_1_4_08292023/background_noise_files.csv"
+__C.general.background_data_path = "/yuanhuan/data/speech/kws/gorila_dataset/dataset_gorila_3_0s_1_4_08292023/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
 # __C.general.is_test = False
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/test"
+__C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/test"
+__C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/kws_gorila8k_2_4_3s_res15_fbankcpu_novad_08292023/"
+# __C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/kws_gorila8k_2_4_3s_tc_resnet14_fbankcpu_novad_08292023/"
 
 # finetune model
 __C.general.finetune_on = False
@@ -376,8 +378,8 @@ __C.loss.ema_alpha = 0.995
 __C.net = {}
 
 # the network name
-# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/res15.py"
-__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-296.py"
+__C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/res15.py"
+# __C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-296.py"
 __C.net.class_name = "SpeechResModel"
 
 ######################################
