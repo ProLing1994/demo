@@ -19,17 +19,28 @@ sys.path.insert(0, '/yuanhuan/code/demo/Image/segmentation2d/segment-anything/')
 from segment_anything import SamPredictor, sam_model_registry, SamAutomaticMaskGenerator
 
 
-def center_crop(args, img, bndbox):
+
+def mask_erode_dilate(mask):
+    # 膨胀和腐蚀，获得更加平滑的边界 mask
+    kernel = np.ones((5, 5), np.uint8) 
+    mask = cv2.erode(mask, kernel, iterations = 5)
+    mask = cv2.dilate(mask, kernel, iterations = 5)
+    mask = cv2.dilate(mask, kernel, iterations = 5)
+    mask = cv2.erode(mask, kernel, iterations = 5)
+    return mask
+
+
+def center_crop(args, img, bndbox, scale_rate=0.6):
     
     crop_width = bndbox[2] - bndbox[0]
     crop_height = bndbox[3] - bndbox[1]
     crop_cener_x = (bndbox[0] + bndbox[2]) / 2
     crop_cener_y = (bndbox[1] + bndbox[3]) / 2
     
-    crop_size = (720, 720)
+    crop_size = args.crop_size_list[-1]
     for idy in range(len(args.crop_size_list)):
         
-        if crop_width < args.crop_size_list[idy][0] * 0.6 and crop_height < args.crop_size_list[idy][1] * 0.6 :
+        if crop_width < args.crop_size_list[idy][0] * scale_rate and crop_height < args.crop_size_list[idy][1] * scale_rate :
             crop_size = args.crop_size_list[idy]
             break
 
@@ -154,7 +165,7 @@ def prepare_dataset(args):
     create_folder(args.output_mask_img_dir)
     create_folder(args.output_reference_dir)
     create_folder(args.output_img_resize_dir)
-    create_folder(args.output_reference_resize_dir)
+    create_folder(args.output_reference_img_resize_dir)
     create_folder(args.output_mask_resize_dir)
     create_folder(args.output_mask_img_resize_dir)
     create_folder(args.output_mask_sam_dir)
@@ -214,7 +225,7 @@ def prepare_dataset(args):
             output_mask_path = os.path.join(args.output_mask_dir, img_name + '_' + classname+ '_' + str(id) + '.jpg')
             output_mask_img_path = os.path.join(args.output_mask_img_dir, img_name + '_' + classname+ '_' + str(id) + '.jpg')
             output_img_resize_path = os.path.join(args.output_img_resize_dir, img_name + '_' + classname+ '_' + str(id) + '.jpg')
-            output_reference_resize_path = os.path.join(args.output_reference_resize_dir, img_name + '_' + classname+ '_' + str(id) + '.jpg')
+            output_reference_img_resize_path = os.path.join(args.output_reference_img_resize_dir, img_name + '_' + classname+ '_' + str(id) + '.jpg')
             output_mask_resize_path = os.path.join(args.output_mask_resize_dir, img_name + '_' + classname+ '_' + str(id) + '.jpg')
             output_mask_img_resize_path = os.path.join(args.output_mask_img_resize_dir, img_name + '_' + classname+ '_' + str(id) + '.jpg')
             output_mask_sam_path = os.path.join(args.output_mask_sam_dir, img_name + '_' + classname+ '_' + str(id) + '.jpg')
@@ -223,10 +234,6 @@ def prepare_dataset(args):
             output_mask_img_sam_resize_path = os.path.join(args.output_mask_img_sam_resize_dir, img_name + '_' + classname+ '_' + str(id) + '.jpg')
             output_mask_sam_padding_resize_path = os.path.join(args.output_mask_sam_padding_resize_dir, img_name + '_' + classname+ '_' + str(id) + '.jpg')
             output_mask_img_sam_padding_resize_path = os.path.join(args.output_mask_img_sam_padding_resize_dir, img_name + '_' + classname+ '_' + str(id) + '.jpg')
-
-            # # test
-            # if img_name != "remnant_pickup_middle_shenzhen_20230721_8183":
-            #     continue
 
             if args.crop_bool:
                 # center_crop
@@ -237,11 +244,7 @@ def prepare_dataset(args):
                     # clip_ref_value
                     ref_value = clip_ref_value(args, img_crop, output_tmp_img_path)
 
-                    # # test
-                    # if img_name == "remnant_pickup_middle_shenzhen_20230721_8183":
-                    #     ref_value = 0.5
-
-                    if ref_value > 0.3:
+                    if ref_value > 0.4:
                         
                         # img_crop
                         cv2.imwrite(output_img_path, img_crop)
@@ -280,11 +283,11 @@ def prepare_dataset(args):
 
                         # reference_img_crop
                         reference_img_crop = img_crop[max(0, bndbox_crop[1]-args.reference_crop_expand_pixel):min(bndbox_crop[3]+args.reference_crop_expand_pixel, img_crop.shape[0]), max(0, bndbox_crop[0]-args.reference_crop_expand_pixel):min(bndbox_crop[2]+args.reference_crop_expand_pixel, img_crop.shape[1])]
-                        output_reference_path = os.path.join(args.output_reference_dir, '{}_{}'.format(img_crop.shape[0], img_crop.shape[1]), img_name + '_' + classname+ '_' + str(id) + '.jpg')
-                        create_folder(os.path.dirname(output_reference_path))
-                        cv2.imwrite(output_reference_path, reference_img_crop)
+                        output_reference_img_path = os.path.join(args.output_reference_dir, '{}_{}'.format(img_crop.shape[0], img_crop.shape[1]), img_name + '_' + classname+ '_' + str(id) + '.jpg')
+                        create_folder(os.path.dirname(output_reference_img_path))
+                        cv2.imwrite(output_reference_img_path, reference_img_crop)
 
-                        # img_crop_resize
+                        # img_resize_crop
                         bndbox_crop_width = bndbox_crop[2] - bndbox_crop[0]
                         bndbox_crop_height = bndbox_crop[3] - bndbox_crop[1]
                         bndbox_crop_size = bndbox_crop_width * bndbox_crop_height
@@ -292,8 +295,8 @@ def prepare_dataset(args):
                         # 参考官方处理代码
                         if bndbox_crop_size_ratio > 0.8 or bndbox_crop_size_ratio < 0.02:
                             continue
-                        img_crop_resize = cv2.resize(img_crop, (args.resize_data_size[0], args.resize_data_size[1]), interpolation=cv2.INTER_CUBIC)
-                        cv2.imwrite(output_img_resize_path, img_crop_resize)
+                        img_resize_crop = cv2.resize(img_crop, (args.resize_data_size[0], args.resize_data_size[1]), interpolation=cv2.INTER_CUBIC)
+                        cv2.imwrite(output_img_resize_path, img_resize_crop)
 
                         # bndbox_crop_resize
                         bndbox_crop_resize = []
@@ -311,20 +314,20 @@ def prepare_dataset(args):
                         contour_crop_resize.append([bndbox_crop_resize[0], bndbox_crop_resize[3]])
                         contour_crop_resize = [np.array(contour_crop_resize).reshape(-1, 1, 2)]
 
-                        # mask_crop_resize
-                        mask_crop_resize = np.zeros(img_crop_resize.shape, dtype=img_crop_resize.dtype)
-                        mask_crop_resize = cv2.drawContours(mask_crop_resize, contour_crop_resize, -1, (255, 255, 255), cv2.FILLED)
-                        cv2.imwrite(output_mask_resize_path, mask_crop_resize)
+                        # mask_resize_crop
+                        mask_resize_crop = np.zeros(img_resize_crop.shape, dtype=img_resize_crop.dtype)
+                        mask_resize_crop = cv2.drawContours(mask_resize_crop, contour_crop_resize, -1, (255, 255, 255), cv2.FILLED)
+                        cv2.imwrite(output_mask_resize_path, mask_resize_crop)
 
-                        # mask_img_crop_resize
-                        mask_img_crop_resize = np.zeros(img_crop_resize.shape, dtype=img_crop_resize.dtype)
-                        mask_img_crop_resize = cv2.drawContours(mask_img_crop_resize, contour_crop_resize, -1, (0, 0, 255), cv2.FILLED)
-                        mask_img_crop_resize = cv2.addWeighted(src1=img_crop_resize, alpha=0.8, src2=mask_img_crop_resize, beta=0.3, gamma=0.)
-                        cv2.imwrite(output_mask_img_resize_path, mask_img_crop)
+                        # mask_img_resize_crop
+                        mask_img_resize_crop = np.zeros(img_resize_crop.shape, dtype=img_resize_crop.dtype)
+                        mask_img_resize_crop = cv2.drawContours(mask_img_resize_crop, contour_crop_resize, -1, (0, 0, 255), cv2.FILLED)
+                        mask_img_resize_crop = cv2.addWeighted(src1=img_resize_crop, alpha=0.8, src2=mask_img_resize_crop, beta=0.3, gamma=0.)
+                        cv2.imwrite(output_mask_img_resize_path, mask_img_resize_crop)
 
                         # reference_img_resize_crop
-                        reference_img_resize_crop = img_crop_resize[max(0, bndbox_crop_resize[1]-args.reference_crop_expand_pixel):min(bndbox_crop_resize[3]+args.reference_crop_expand_pixel, img_crop_resize.shape[0]), max(0, bndbox_crop_resize[0]-args.reference_crop_expand_pixel):min(bndbox_crop_resize[2]+args.reference_crop_expand_pixel, img_crop_resize.shape[1])]
-                        cv2.imwrite(output_reference_resize_path, reference_img_resize_crop)
+                        reference_img_resize_crop = img_resize_crop[max(0, bndbox_crop_resize[1]-args.reference_crop_expand_pixel):min(bndbox_crop_resize[3]+args.reference_crop_expand_pixel, img_resize_crop.shape[0]), max(0, bndbox_crop_resize[0]-args.reference_crop_expand_pixel):min(bndbox_crop_resize[2]+args.reference_crop_expand_pixel, img_resize_crop.shape[1])]
+                        cv2.imwrite(output_reference_img_resize_path, reference_img_resize_crop)
 
                         # sam
                         if args.sam_bool:
@@ -333,23 +336,33 @@ def prepare_dataset(args):
                             sam_mask = sam_predict(args, img, bndbox)
                             sam_mask = np.squeeze(sam_mask.astype(np.uint8))
                             contours, hierarchy = cv2.findContours(sam_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                            contour_id = 0
+                            contour_max = 0
+                            for contours_idx in range(len(contours)):
+                                if contours[contours_idx].shape[0] > contour_max:
+                                    contour_id = contours_idx
+                                    contour_max = contours[contours_idx].shape[0]
 
                             # contour_crop
                             contour_crop = []
-                            contour_crop.append(contours[0])
+                            contour_crop.append(contours[contour_id])
                             contour_crop[0][:, :, 0] = contour_crop[0][:, :, 0] - roi_crop[0]
                             contour_crop[0][:, :, 1] = contour_crop[0][:, :, 1] - roi_crop[1]
 
-                            # mask_crop
-                            mask_crop = np.zeros(img_crop.shape, dtype=img_crop.dtype)
-                            mask_crop = cv2.drawContours(mask_crop, contour_crop, -1, (255, 255, 255), cv2.FILLED)
-                            cv2.imwrite(output_mask_sam_path, mask_crop)
+                            # mask_sam_crop
+                            mask_sam_crop = np.zeros(img_crop.shape, dtype=img_crop.dtype)
+                            mask_sam_crop = cv2.drawContours(mask_sam_crop, contour_crop, -1, (255, 255, 255), cv2.FILLED)
+                            # 膨胀和腐蚀，获得更加平滑的边界 mask
+                            mask_sam_crop = mask_erode_dilate(mask_sam_crop)
+                            cv2.imwrite(output_mask_sam_path, mask_sam_crop)
 
-                            # mask_img_crop
-                            mask_img_crop = np.zeros(img_crop.shape, dtype=img_crop.dtype)
-                            mask_img_crop = cv2.drawContours(mask_img_crop, contour_crop, -1, (0, 0, 255), cv2.FILLED)
-                            mask_img_crop = cv2.addWeighted(src1=img_crop, alpha=0.8, src2=mask_img_crop, beta=0.3, gamma=0.)
-                            cv2.imwrite(output_mask_img_sam_path, mask_img_crop)
+                            # mask_img_sam_crop
+                            mask_img_sam_crop = np.zeros(img_crop.shape, dtype=img_crop.dtype)
+                            mask_img_sam_crop = cv2.drawContours(mask_img_sam_crop, contour_crop, -1, (0, 0, 255), cv2.FILLED)
+                            # 膨胀和腐蚀，获得更加平滑的边界 mask
+                            mask_img_sam_crop = mask_erode_dilate(mask_img_sam_crop)
+                            mask_img_sam_crop = cv2.addWeighted(src1=img_crop, alpha=0.8, src2=mask_img_sam_crop, beta=0.3, gamma=0.)
+                            cv2.imwrite(output_mask_img_sam_path, mask_img_sam_crop)
 
                             # contour_crop_resize
                             contour_crop_resize = []
@@ -358,28 +371,32 @@ def prepare_dataset(args):
                             contour_crop_resize[0][:, :, 1] = contour_crop_resize[0][:, :, 1] * crop_reszie_ratio[1]
                             contour_crop_resize[0] = contour_crop_resize[0].astype(np.int32)
                         
-                            # mask_sam_resize
-                            mask_sam_resize = np.zeros(img_crop_resize.shape, dtype=img_crop_resize.dtype)
-                            mask_sam_resize = cv2.drawContours(mask_sam_resize, contour_crop_resize, -1, (255, 255, 255), cv2.FILLED)
-                            cv2.imwrite(output_mask_sam_resize_path, mask_sam_resize)
+                            # mask_sam_resize_crop
+                            mask_sam_resize_crop = np.zeros(img_resize_crop.shape, dtype=img_resize_crop.dtype)
+                            mask_sam_resize_crop = cv2.drawContours(mask_sam_resize_crop, contour_crop_resize, -1, (255, 255, 255), cv2.FILLED)
+                            # 膨胀和腐蚀，获得更加平滑的边界 mask
+                            mask_sam_resize_crop = mask_erode_dilate(mask_sam_resize_crop)
+                            cv2.imwrite(output_mask_sam_resize_path, mask_sam_resize_crop)
 
-                            # mask_img_sam_resize
-                            mask_img_sam_resize = np.zeros(img_crop_resize.shape, dtype=img_crop_resize.dtype)
-                            mask_img_sam_resize = cv2.drawContours(mask_img_sam_resize, contour_crop_resize, -1, (0, 0, 255), cv2.FILLED)
-                            mask_img_sam_resize_out = cv2.addWeighted(src1=img_crop_resize, alpha=0.8, src2=mask_img_sam_resize, beta=0.3, gamma=0.)
+                            # mask_img_sam_resize_crop
+                            mask_img_sam_resize_crop = np.zeros(img_resize_crop.shape, dtype=img_resize_crop.dtype)
+                            mask_img_sam_resize_crop = cv2.drawContours(mask_img_sam_resize_crop, contour_crop_resize, -1, (0, 0, 255), cv2.FILLED)
+                            # 膨胀和腐蚀，获得更加平滑的边界 mask
+                            mask_img_sam_resize_crop = mask_erode_dilate(mask_img_sam_resize_crop)
+                            mask_img_sam_resize_out = cv2.addWeighted(src1=img_resize_crop, alpha=0.8, src2=mask_img_sam_resize_crop, beta=0.3, gamma=0.)
                             cv2.imwrite(output_mask_img_sam_resize_path, mask_img_sam_resize_out)
 
                             # mask_sam_padding_resize
                             kernel = np.ones((5, 5), np.uint8) 
-                            # mask_sam_padding_resize = cv2.dilate(mask_sam_resize, kernel, iterations = 10)
-                            mask_sam_padding_resize = cv2.dilate(mask_sam_resize, kernel, iterations = 5)
+                            # mask_sam_padding_resize = cv2.dilate(mask_sam_resize_crop, kernel, iterations = 10)
+                            mask_sam_padding_resize = cv2.dilate(mask_sam_resize_crop, kernel, iterations = 5)
                             cv2.imwrite(output_mask_sam_padding_resize_path, mask_sam_padding_resize)
 
-                            # mask_sam_padding_resize
+                            # mask_img_sam_padding_resize
                             kernel = np.ones((5, 5), np.uint8) 
-                            # mask_img_sam_padding_resize = cv2.dilate(mask_img_sam_resize, kernel, iterations = 10)
-                            mask_img_sam_padding_resize = cv2.dilate(mask_img_sam_resize, kernel, iterations = 5)
-                            mask_img_sam_padding_resize = cv2.addWeighted(src1=img_crop_resize, alpha=0.8, src2=mask_img_sam_padding_resize, beta=0.3, gamma=0.)
+                            # mask_img_sam_padding_resize = cv2.dilate(mask_img_sam_resize_crop, kernel, iterations = 10)
+                            mask_img_sam_padding_resize = cv2.dilate(mask_img_sam_resize_crop, kernel, iterations = 5)
+                            mask_img_sam_padding_resize = cv2.addWeighted(src1=img_resize_crop, alpha=0.8, src2=mask_img_sam_padding_resize, beta=0.3, gamma=0.)
                             cv2.imwrite(output_mask_img_sam_padding_resize_path, mask_img_sam_padding_resize)
 
                         id += 1
@@ -433,10 +450,10 @@ def check_dataset(args):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--date_name', type=str, default="Pickup_middle_20230721") 
-    parser.add_argument('--input_dir', type=str, default="/yuanhuan/data/image/Taxi_remnant/original/shenzhen") 
-    parser.add_argument('--output_dir', type=str, default="/yuanhuan/data/image/Taxi_remnant/training/sd_crop_clip_sam_bottle_all_0825/shenzhen") 
-    parser.add_argument('--clip_ref_class', type=str, default='bottle') 
+    parser.add_argument('--date_name', type=str, default="wallet") 
+    parser.add_argument('--input_dir', type=str, default="/yuanhuan/data/image/Taxi_remnant/original_sd") 
+    parser.add_argument('--output_dir', type=str, default="/yuanhuan/data/image/Taxi_remnant/training/sd_crop_sd_sam_0915") 
+    parser.add_argument('--clip_ref_class', type=str, default='all') 
     args = parser.parse_args()
 
     args.input_dir = os.path.join(args.input_dir, args.date_name)
@@ -457,22 +474,22 @@ if __name__ == "__main__":
     args.output_mask_img_dir = os.path.join(args.output_dir, 'mask_imgs')
     args.output_mask_sam_dir = os.path.join(args.output_dir, 'masks_sam')
     args.output_mask_img_sam_dir = os.path.join(args.output_dir, 'mask_imgs_sam')
-    args.output_reference_resize_dir = os.path.join(args.output_dir, 'references_resize')
+    args.output_reference_img_resize_dir = os.path.join(args.output_dir, 'references_resize')
     args.output_mask_resize_dir = os.path.join(args.output_dir, 'masks_resize')
     args.output_mask_img_resize_dir = os.path.join(args.output_dir, 'mask_imgs_resize')
     args.output_mask_sam_resize_dir = os.path.join(args.output_dir, 'masks_sam_resize')
     args.output_mask_img_sam_resize_dir = os.path.join(args.output_dir, 'mask_imgs_sam_resize')
-    # args.output_mask_sam_padding_resize_dir = os.path.join(args.output_dir, 'masks_sam_resize_padding')
-    # args.output_mask_img_sam_padding_resize_dir = os.path.join(args.output_dir, 'mask_imgs_sam_resize_padding')
     args.output_mask_sam_padding_resize_dir = os.path.join(args.output_dir, 'masks_sam_resize_padding_5')
     args.output_mask_img_sam_padding_resize_dir = os.path.join(args.output_dir, 'mask_imgs_sam_resize_padding_5')
 
     # select
     args.select_key_list = ['remnants']
+    # args.select_key_list = ['wallet']
 
     # crop
     args.crop_bool = True
-    args.crop_size_list = [(64, 64), (128, 128), (256, 256), (512, 512), (720, 720)]    # w, h
+    # args.crop_size_list = [(64, 64), (128, 128), (256, 256), (512, 512), (720, 720)]    # w, h
+    args.crop_size_list = [(64, 64), (128, 128), (256, 256), (512, 512)]    # w, h
     
     # clip
     args.clip_bool = True

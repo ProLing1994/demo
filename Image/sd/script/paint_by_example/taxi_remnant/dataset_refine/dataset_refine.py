@@ -29,7 +29,7 @@ def dataset_refine(args):
     jpg_list.sort()
 
     # refine grid list
-    refine_grid_select_no_bottle_list = os.listdir(os.path.join(args.refine_grid_select_dir, 'no_bottle'))
+    refine_grid_select_no_bottle_list = os.listdir(os.path.join(args.refine_grid_select_dir, 'no'))
     refine_grid_select_success_list = os.listdir(os.path.join(args.refine_grid_select_dir, 'success'))
     refine_grid_select_fail_list = os.listdir(os.path.join(args.refine_grid_select_dir, 'fail'))
 
@@ -127,7 +127,15 @@ def dataset_refine(args):
                 xml_bboxes[classname].append([bndbox[0], bndbox[1], bndbox[2], bndbox[3]])
             
             else:
-                raise Exception
+                # xml
+                if classname not in xml_refine_bboxes:
+                    xml_refine_bboxes[classname] = []   
+                xml_refine_bboxes[classname].append([bndbox[0], bndbox[1], bndbox[2], bndbox[3]])
+
+                # xml
+                if classname not in xml_bboxes:
+                    xml_bboxes[classname] = []   
+                xml_bboxes[classname].append([bndbox[0], bndbox[1], bndbox[2], bndbox[3]])
             
             id += 1
 
@@ -145,9 +153,9 @@ def dataset_refine(args):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--date_name', type=str, default="bottle") 
+    parser.add_argument('--date_name', type=str, default="umbrella") 
     parser.add_argument('--input_dir', type=str, default="/yuanhuan/data/image/Taxi_remnant/original_select/") 
-    parser.add_argument('--output_dir', type=str, default="/yuanhuan/data/image/Taxi_remnant/sd/paint_by_example/select_sam_bottle_02/") 
+    parser.add_argument('--output_dir', type=str, default="/yuanhuan/data/image/Taxi_remnant/sd/paint_by_example/select_sam_umbrella_02/") 
     args = parser.parse_args()
 
     args.input_dir = os.path.join(args.input_dir, args.date_name)

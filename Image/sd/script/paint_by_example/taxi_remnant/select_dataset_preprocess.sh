@@ -1,19 +1,19 @@
 find_dir=/yuanhuan/data/image/Taxi_remnant/original/shenzhen
 
-# data_dir=/yuanhuan/data/image/Taxi_remnant/original_select
+data_dir=/yuanhuan/data/image/Taxi_remnant/original_select
+crop_data_dir=/yuanhuan/data/image/Taxi_remnant/training/sd_crop_sd_sam_0915/
 # crop_data_dir=/yuanhuan/data/image/Taxi_remnant/training/sd_crop_select_sam_0828/
-data_dir=/yuanhuan/data/image/Taxi_remnant/original_select_example
-crop_data_dir=/yuanhuan/data/image/Taxi_remnant/training/sd_crop_select_example_sam_0828/
+# data_dir=/yuanhuan/data/image/Taxi_remnant/original_sd
 clip_ref_class=all
 
 #################################
 # step 1：处理标注数据（增加 mask SAM 自动分割，训练脚本修改）
 #################################
 # done
-# date_name_list=(bottle umbrella wallet)
+# date_name_list=(bottle umbrella wallet book handbag)
 
 # todo
-date_name_list=(bottle umbrella wallet)
+date_name_list=(wallet)
 
 for date_name in ${date_name_list[@]}; do 
     echo $date_name
