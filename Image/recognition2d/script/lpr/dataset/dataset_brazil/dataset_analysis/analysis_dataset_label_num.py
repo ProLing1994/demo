@@ -93,7 +93,7 @@ def analysis_dataset_label(args):
 if __name__ == "__main__":
     
     parser = argparse.ArgumentParser()
-    parser.add_argument('--date_name', type=str, default="Brazil_new_style") 
+    parser.add_argument('--date_name', type=str, default="brazil_02210_202301") 
     parser.add_argument('--input_csv_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/Brazil/Brazil_csv/") 
     parser.add_argument('--output_analysis_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/Brazil/Brazil_analysis/") 
     args = parser.parse_args()

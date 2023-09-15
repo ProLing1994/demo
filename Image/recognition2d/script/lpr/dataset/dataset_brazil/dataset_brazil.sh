@@ -7,8 +7,8 @@ error_data_dir=/yuanhuan/data/image/RM_ANPR/original/Brazil/Brazil_error_data/
 analysis_dir=/yuanhuan/data/image/RM_ANPR/original/Brazil/Brazil_analysis/
 data_diffste_dir=/yuanhuan/data/image/RM_ANPR/original/Brazil/DIFFSTE/
 
-ocr_name=plate_brazil_202309
-ocr_diffste_name=plate_brazil_202309
+ocr_name=plate_brazil_202310
+ocr_diffste_name=plate_brazil_202310
 training_data_dir=/yuanhuan/data/image/RM_ANPR/training/
 
 
@@ -17,10 +17,10 @@ training_data_dir=/yuanhuan/data/image/RM_ANPR/training/
 # #################################
 
 # # done
-# # date_name_list=(Brazil_new_style)
+# # date_name_list=(brazil_02210_202301)
 
 # # todo
-# date_name_list=(Brazil_new_style)
+# date_name_list=(brazil_02210_202301)
 
 # for date_name in ${date_name_list[@]}; do 
 #     echo $date_name
@@ -39,11 +39,11 @@ training_data_dir=/yuanhuan/data/image/RM_ANPR/training/
 # #################################
 
 # # done
-# # date_name_list=(Brazil_new_style)
+# # date_name_list=(brazil_02210_202301)
 # # date_name_list=(diffste_963_old_new_style_refine original_400_old_style_refine original_563_new_style_refine diffste_271_inclined original_271_inclined)
 
 # # todo
-# date_name_list=(original_271_inclined diffste_271_inclined)
+# date_name_list=(diffste_963_old_new_style_refine original_400_old_style_refine original_563_new_style_refine diffste_271_inclined original_271_inclined)
 
 # for date_name in ${date_name_list[@]}; do 
 #     echo $date_name
@@ -68,13 +68,14 @@ training_data_dir=/yuanhuan/data/image/RM_ANPR/training/
 # python /yuanhuan/code/demo/Image/recognition2d/script/lpr/dataset/dataset_brazil/dataset_label_split/data_label_split.py --ocr_name=$ocr_name --input_dir=$training_data_dir
 
 
-# #################################
-# # step 3：2 paddleocr label
-# #################################
-# # 2 paddleocr label
-# # paddle_ocr_name=$ocr_name
-# paddle_ocr_name=$ocr_diffste_name
-# image_set_name=ImageSetsOcrLabelNoAug_single_line
-# paddle_ocr_data_dir=/yuanhuan/model/image/lpr/paddle_dict/plate_brazil_202309
-# python /yuanhuan/code/demo/Image/recognition2d/script/paddle/dataset/lpr_to_paddleocr_label.py --input_dir=$training_data_dir/$paddle_ocr_name --image_set_name=$image_set_name --output_dir=$paddle_ocr_data_dir
-# python /yuanhuan/code/demo/Image/recognition2d/script/paddle/dataset/label_dict.py --output_dir=$paddle_ocr_data_dir --output_name=brazil_dict.txt --data_dict_name=script.lpr.dataset.dataset_brazil.dataset_dict.dataset_brazil_dict_normal
+#################################
+# step 3：2 paddleocr label
+#################################
+# 2 paddleocr label
+# paddle_ocr_name=$ocr_name
+paddle_ocr_name=$ocr_diffste_name
+# image_set_name=ImageSetsOcrLabel_single_line
+image_set_name=ImageSetsOcrLabelNoAug_single_line
+paddle_ocr_data_dir=/yuanhuan/model/image/lpr/paddle_dict/plate_brazil_202310_noaug
+python /yuanhuan/code/demo/Image/recognition2d/script/paddle/dataset/lpr_to_paddleocr_label.py --input_dir=$training_data_dir/$paddle_ocr_name --image_set_name=$image_set_name --output_dir=$paddle_ocr_data_dir
+python /yuanhuan/code/demo/Image/recognition2d/script/paddle/dataset/label_dict.py --output_dir=$paddle_ocr_data_dir --output_name=brazil_dict.txt --data_dict_name=script.lpr.dataset.dataset_brazil.dataset_dict.dataset_brazil_dict_normal
