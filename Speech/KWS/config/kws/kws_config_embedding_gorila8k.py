@@ -14,27 +14,31 @@ __C.general.data_dir = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experiment
 __C.general.sub_data_dir = ["/mnt/huanyuan2/data/speech/kws/xiaoyu_dataset/experimental_dataset/XiaoYuDataset/",
                             "/mnt/huanyuan2/data/speech/kws/xiaorui_dataset/experimental_dataset/XiaoRuiDataset/",
                             "/mnt/huanyuan2/data/speech/kws/xiaoan_dataset/experimental_dataset/XiaoAnDataset/",
-                            "/mnt/huanyuan/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/",]
+                            "/mnt/huanyuan2/data/speech/kws/english_kws_dataset/experimental_dataset/KwsEnglishDataset/",]
 
 # data version
 # __C.general.version = "1.2"     # 唤醒词(成都+深圳+客户+数据清洗) + 负样本 
 # __C.general.version = "1.3"     # 唤醒词(成都+深圳+客户+数据清洗+小声样本剔除) + 负样本 
 __C.general.version = "1.4"     # 唤醒词(成都+深圳+客户+数据清洗+小声样本剔除) + 负样本(平台误报数据+gorila一遍音频)
+# __C.general.version = "1.5"     # 唤醒词(成都+深圳+客户+数据清洗+小声样本剔除) + 负样本(平台误报数据+gorila一遍音频)
 
 # data date
 # __C.general.date = "06262023"
 # __C.general.date = "07042023"
 __C.general.date = "08292023"
+# __C.general.date = "08312023"
 
 # data path
 # __C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_2_0s_1_2_06262023/total_data_files.csv"
 # __C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_2_0s_1_3_07042023/total_data_files.csv"
 __C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_2_0s_1_4_08292023/total_data_files.csv"
+# __C.general.data_csv_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_2_0s_1_5_08312023/total_data_files.csv"
 
 # background noise path
 # __C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_2_0s_1_2_06262023/background_noise_files.csv"
 # __C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_2_0s_1_3_07042023/background_noise_files.csv"
 __C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_2_0s_1_4_08292023/background_noise_files.csv"
+# __C.general.background_data_path = "/mnt/huanyuan2/data/speech/kws/gorila_dataset/experimental_dataset/dataset_gorila_2_0s_1_5_08312023/background_noise_files.csv"
 
 # test after save pytorch model
 __C.general.is_test = True
@@ -47,7 +51,8 @@ __C.general.is_test = True
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_res15_fbankcpu_novad_06252029/"
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_2_2s_tc_resnet14_fbankcpu_novad_06252029/"
 # __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_3_2s_res15_fbankcpu_novad_07042023/"
-__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_3_2s_tc_resnet14_fbankcpu_novad_07042023/"
+# __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_3_2s_tc_resnet14_fbankcpu_novad_07042023/"
+__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_4_2s_tc_resnet14_fbankcpu_novad_08302023/"
 
 # finetune model
 __C.general.finetune_on = False

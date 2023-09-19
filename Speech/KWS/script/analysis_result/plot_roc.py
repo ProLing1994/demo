@@ -197,10 +197,10 @@ def main():
     # show_roc(csv_list, color_list, linestyle_list, name_list, label_num, ignore_num)
 
     # gorila: 2 label 
-    csv_list = ["/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_3_2s_tc_resnet14_fbankcpu_novad_07042023/infer_longterm_validation_augmentation_False_mean.csv",]
+    csv_list = ["/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_4_2s_tc_resnet14_fbankcpu_novad_08302023/infer_longterm_validation_augmentation_False_mean.csv",]
     color_list = ["r", "r", "b", "b"]
     linestyle_list = ["-", "--", "-", "--"]
-    name_list = ["gorila8k-res15(1.3)--dataset2s(1.3)", "gorila8k-tcresnet14(1.2)--dataset2s(1.2)", "gorila8k-tcresnet14(1.2)--dataset2s(1.2)-novad"]
+    name_list = ["gorila8k-tcresnet14(1.4)--dataset2s(1.4)"]
     label_num = 2
     ignore_num= 1
     show_roc(csv_list, color_list, linestyle_list, name_list, label_num, ignore_num)

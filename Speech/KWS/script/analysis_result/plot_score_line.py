@@ -400,7 +400,7 @@ if __name__ == "__main__":
     #                 ["heybodycam"], positive_label_idx=positive_label_idx)
 
     # gorila8k
-    model_name = "kws_gorila8k_1_3_2s_tc_resnet14_fbankcpu_novad_07042023"
+    model_name = "kws_gorila8k_1_4_2s_tc_resnet14_fbankcpu_novad_08302023"
     threshold = "0.8"
     positive_label_idx = "1"
     show_score_line("/mnt/huanyuan/model_final/test_straming_wav/gorila8k_1_2_06262023_training_60.csv",
@@ -409,11 +409,11 @@ if __name__ == "__main__":
     show_score_line("/mnt/huanyuan/model_final/test_straming_wav/gorila8k_1_2_06262023_training_60.csv",
                     "/mnt/huanyuan/model/kws/kws_gorila/{}/test_straming_wav/gorila8k_1_2_06262023_training_60_threshold_{}/original_scores.csv".format(model_name, "_".join(threshold.split('.'))),
                     ["gorila_gorila"], positive_label_idx=positive_label_idx)
-    show_score_line("/mnt/huanyuan/model_final/test_straming_wav/gorila8k_1_2_06262023_validation_60.csv",
-                    "/mnt/huanyuan/model/kws/kws_gorila/{}/test_straming_wav/gorila8k_1_2_06262023_validation_60_threshold_{}/final_scores.csv".format(model_name, "_".join(threshold.split('.'))),
+    show_score_line("/mnt/huanyuan/model_final/test_straming_wav/gorila8k_1_4_08292023_validation_60.csv",
+                    "/mnt/huanyuan/model/kws/kws_gorila/{}/test_straming_wav/gorila8k_1_4_08292023_validation_60_threshold_{}/final_scores.csv".format(model_name, "_".join(threshold.split('.'))),
                     ["gorila_gorila"], positive_label_idx=positive_label_idx)
-    show_score_line("/mnt/huanyuan/model_final/test_straming_wav/gorila8k_1_2_06262023_validation_60.csv",
-                    "/mnt/huanyuan/model/kws/kws_gorila/{}/test_straming_wav/gorila8k_1_2_06262023_validation_60_threshold_{}/original_scores.csv".format(model_name, "_".join(threshold.split('.'))),
+    show_score_line("/mnt/huanyuan/model_final/test_straming_wav/gorila8k_1_4_08292023_validation_60.csv",
+                    "/mnt/huanyuan/model/kws/kws_gorila/{}/test_straming_wav/gorila8k_1_4_08292023_validation_60_threshold_{}/original_scores.csv".format(model_name, "_".join(threshold.split('.'))),
                     ["gorila_gorila"], positive_label_idx=positive_label_idx)
     
     # show find words

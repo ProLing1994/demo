@@ -194,13 +194,13 @@ def main():
     # 1: from folder 
     # 2: from unused csv 
     # 3: from config file, not shuffle
-    default_mode = 1    # [0, 1, 2, 3]
+    default_mode = 0    # [0, 1, 2, 3]
 
     default_add_noise_on = False    # [True, False]
 
     # only for mode==0/3, support for ['training','validation','testing']
     default_audio_mode = 'validation'
-    default_output_path_list = ['/mnt/huanyuan/model_final/test_straming_wav/gorila8k_1_3_07042023_validation_60.wav']
+    default_output_path_list = ['/mnt/huanyuan/model_final/test_straming_wav/gorila8k_1_4_08292023_validation_60.wav']
 
     # only for mode==1, from folder
     # default_input_dir = '/mnt/huanyuan/data/speech/kws/weiboyulu/dataset'

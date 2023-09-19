@@ -2,8 +2,8 @@ import glob
 import os
 
 if __name__ == '__main__':
-    input_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Platformalarm/Gorila/ADPLUS2_0_8k/2023-2024/0808-0830/0823/"
-    new_file_format = 'RM_KWS_GORLIA_platform_alarm_20230823T'
+    input_dir = "/mnt/huanyuan2/data/speech/original/Recording/MTA_Truck_Platformalarm/Gorila/ADPLUS2_0_8k/2023-2024/0808-0831/0903/"
+    new_file_format = 'RM_KWS_GORLIA_platform_alarm_20230903T'
     file_type = ".wav"
 
     file_list = glob.glob(os.path.join(input_dir, '*' + file_type))

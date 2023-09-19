@@ -278,7 +278,7 @@ if __name__ == "__main__":
 
     # gorila8k
     cal_fpr_tpr("/mnt/huanyuan/model_final/test_straming_wav/gorila8k_1_3_07042023_validation.csv",
-                "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_3_2s_tc_resnet14_fbankcpu_novad_07042023/test_straming_wav/gorila8k_1_3_07042023_validation_threshold_0_8/found_words.csv",
+                "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_3_2s_tc_resnet14_fbankcpu_novad_07042023/test_straming_wav/gorila8k_1_3_07042023_validation_threshold_0_9/found_words.csv",
                 ["gorila_gorila"],
                 bool_write_audio)
     # cal_fpr_tpr("/mnt/huanyuan/model_final/test_straming_wav/weiboyulu_test_3600_001.csv",
