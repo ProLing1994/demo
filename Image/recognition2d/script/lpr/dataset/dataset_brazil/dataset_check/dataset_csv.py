@@ -126,12 +126,12 @@ def dataset_csv(args):
                 continue  
             
             # 普通车牌：第五位可以为数字和字母
-            # 当前阶段，如果是 1、0、I、O 进行检修
-            bool_error_plate_num = np.array([True if str_num in ['1', '0', 'I', 'O'] else False for str_num in plate_num[4]]).sum()
-            if bool_error_plate_num:
-                error_list.append({"img_path": img_path, "json_path": json_path, "type": "plate_num", "value": plate_num})
-                print('"img_path": {}, "json_path": {},"type": "plate_num", "value": {}'.format(img_path, json_path, plate_num))
-                continue  
+            # # 当前阶段，如果是 1、0、I、O 进行检修
+            # bool_error_plate_num = np.array([True if str_num in ['1', '0', 'I', 'O'] else False for str_num in plate_num[4]]).sum()
+            # if bool_error_plate_num:
+            #     error_list.append({"img_path": img_path, "json_path": json_path, "type": "plate_num", "value": plate_num})
+            #     print('"img_path": {}, "json_path": {},"type": "plate_num", "value": {}'.format(img_path, json_path, plate_num))
+            #     continue  
 
             plate_name = args.data_format.format(img_name, plate_id, plate_color, plate_column, plate_num)
             plate_id += 1
@@ -215,8 +215,6 @@ def write_error_data(args):
 
         # img
         try:
-            img = cv2.imread(img_path)
-
             to_img_path = os.path.join(args.output_error_data_img_dir, img_name)
             shutil.copy(img_path, to_img_path)
         except:
@@ -267,7 +265,7 @@ def write_error_data(args):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--date_name', type=str, default="Brazil_new_style") 
+    parser.add_argument('--date_name', type=str, default="brazil_02210_202301") 
     parser.add_argument('--input_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/Brazil/Brazil/") 
     parser.add_argument('--output_csv_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/Brazil/Brazil_csv/") 
     parser.add_argument('--output_crop_data_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/Brazil/Brazil_crop/") 
@@ -276,8 +274,7 @@ if __name__ == "__main__":
     parser.add_argument('--bool_write_error_data', action='store_true', default=False) 
     parser.add_argument('--bool_check_img', action='store_true', default=False) 
     parser.add_argument('--img_folder', type=str, default="JPEGImages") 
-    # parser.add_argument('--json_folder', type=str, default="Json") 
-    parser.add_argument('--json_folder', type=str, default="Json_refine") 
+    parser.add_argument('--json_folder', type=str, default="Json") 
     args = parser.parse_args()
 
     args.data_format = "{}-{:0>2d}_{}_{}_{}"        # name-id_颜色_单双行_车牌号

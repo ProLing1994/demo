@@ -143,7 +143,7 @@ def dataset_refine(args):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--date_name', type=str, default="Brazil_new_style") 
+    parser.add_argument('--date_name', type=str, default="brazil_02210_202301") 
     parser.add_argument('--input_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/Brazil/Brazil/") 
     parser.add_argument('--refine_dir', type=str, default="/yuanhuan/data/image/RM_ANPR/original/Brazil/refine") 
     parser.add_argument('--img_folder', type=str, default="JPEGImages") 

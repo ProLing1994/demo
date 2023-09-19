@@ -37,7 +37,9 @@ __C.general.is_test = True
 # __C.general.is_test = False
 
 # the output of training models and logging files
-__C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/test"
+__C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/test"
+__C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/kws_gorila8k_2_4_3s_res15_fbankcpu_novad_08292023/"
+# __C.general.save_dir = "/yuanhuan/model/kws/kws_gorila/kws_gorila8k_2_4_3s_tc_resnet14_fbankcpu_novad_08292023/"
 
 # finetune model
 __C.general.finetune_on = False
@@ -380,8 +382,8 @@ __C.loss.ema_alpha = 0.995
 __C.net = {}
 
 # the network name
-# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/res15.py"
-__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-296.py"
+__C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/res15.py"
+# __C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-296.py"
 __C.net.class_name = "SpeechResModel"
 
 ######################################

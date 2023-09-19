@@ -172,6 +172,6 @@ if __name__ == '__main__':
     model_test(args, bool_caffe=True)
 
     # # from_jpg_dir
-    # args.input_jpg_path = "/yuanhuan/data/image/RM_ANPR/original/Brazil/Brazil_crop/Brazil_new_style/Images"
+    # args.input_jpg_path = "/yuanhuan/data/image/RM_ANPR/original/Brazil/Brazil_crop/brazil_02210_202301/Images"
     # args.output_csv_path = os.path.join(args.output_dir, 'test_caffe/data_brazil_original_result.csv')
     # model_test(args, from_jpg_dir=True, bool_caffe=True)

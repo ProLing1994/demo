@@ -18,8 +18,17 @@ def split(args):
     img_list = img_list[[os.path.basename(img).endswith(args.img_suffix) for img in img_list]]
     img_list = img_list[[os.path.exists(os.path.join(args.mask_dir, os.path.basename(img).replace(args.img_suffix, args.mask_suffix))) for img in img_list]]
 
-    trainval_list, test_list = train_test_split(img_list, test_size=args.test_size, random_state=0)
-    train_list, val_list = train_test_split(trainval_list, test_size=args.val_size, random_state=0)
+    if args.test_size !=0:
+        trainval_list, test_list = train_test_split(img_list, test_size=args.test_size, random_state=0)
+    else:
+        trainval_list = img_list
+        test_list = []
+
+    if args.val_size != 0:
+        train_list, val_list = train_test_split(trainval_list, test_size=args.val_size, random_state=0)
+    else:
+        train_list = img_list
+        val_list = []
 
     print("length: trainval: {}, train: {}, val: {}, test: {}, all: {}".format(len(trainval_list), len(train_list), len(val_list), len(test_list), (len(train_list) + len(val_list) + len(test_list))))
     with open(args.trainval_file, "w") as f:
@@ -93,5 +102,8 @@ if __name__ == "__main__":
 
     args.test_size = 0.05
     args.val_size = 0.05
+
+    # args.test_size = 0.0
+    # args.val_size = 0.0
 
     split(args)

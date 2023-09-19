@@ -55,14 +55,14 @@ __C.general.is_test = True
 __C.general.save_dir = "/mnt/huanyuan/model/kws/kws_gorila/kws_gorila8k_1_4_2s_tc_resnet14_fbankcpu_novad_08302023/"
 
 # finetune model
-__C.general.finetune_on = False
+__C.general.finetune_on = True
 
 # 模型加载方式，[0: 根据文件目录查找, 1: 模型加载，指定文件路径]
 __C.general.load_mode_type = 0
 
 # 方式一：模型加载，根据文件目录查找
-__C.general.finetune_model_dir = ""
-__C.general.finetune_epoch_num = 0
+__C.general.finetune_model_dir = "/yuanhuan/model/kws/kws_gorila/kws_gorila8k_1_4_2s_res15_fbankcpu_novad_08302023/"
+__C.general.finetune_epoch_num = 499
 __C.general.finetune_sub_folder_name = 'checkpoints'
 # 方式二：模型加载，指定文件路径
 __C.general.finetune_model_path = ""
@@ -219,18 +219,18 @@ __C.dataset.label.negative_label_together = True
 __C.dataset.label.negative_label_together_label = ["negative"]
 __C.dataset.label.negative_label_silence = __C.dataset.label.negative_label[0]
 __C.dataset.label.negative_label_unknown = __C.dataset.label.negative_label[1]
-__C.dataset.label.ignore_label = ["activatebwc", "activate", "bwc", "heybodycam", "tts",
-                                  "nihaoxiaoan_8k", "nihaoxiaoan_16k", 
-                                  "xiaoanxiaoan_8k", "xiaoanxiaoan_8k_once", "xiaoanxiaoan_8k_small_voice", "xiaoanxiaoan_8k_difficult_sample_mining",
-                                  "xiaoanxiaoan_16k", "xiaoanxiaoan_16k_once", "xiaoanxiaoan_16k_small_voice",
-                                  "xiaorui_8k", "xiaorui_16k", "xiaorui_16k_once",
-                                  "kaldi_type", "kaldi_cut_keyword", "ruoqi", "tianmaojingling", "xiaoaitongxue", "xiaodu", "xiaoya", "xiaoyu"]
+__C.dataset.label.ignore_label = ["kaldi_type", "kaldi_cut_keyword", 
+                                  "xiaorui_16k_once", "xiaorui_16k_difficult_sample_mining",
+                                  "xiaoanxiaoan_8k_once", "xiaoanxiaoan_8k_small_voice", "xiaoanxiaoan_8k_difficult_sample_mining",
+                                  "xiaoanxiaoan_16k_once", "xiaoanxiaoan_16k_small_voice",
+                                  "activatebwc", "activate", "bwc", "tts",
+                                  "gorila"]
 __C.dataset.label.label_list = __C.dataset.label.negative_label + __C.dataset.label.positive_label
 __C.dataset.label.num_classes = 2
 
 # label percentage
 __C.dataset.label.silence_percentage = 25.0        # 25%
-__C.dataset.label.unknown_percentage = 1000.0       # 1000%
+__C.dataset.label.unknown_percentage = 200.0       # 200%
 
 # trian/validation/test percentage
 __C.dataset.label.validation_percentage = 10.0  # 10%
@@ -395,9 +395,9 @@ __C.loss.ema_alpha = 0.995
 __C.net = {}
 
 # the network name
-# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/res15.py"
-# __C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-296.py"
-__C.net.model_name = "/home/huanyuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-196.py"
+__C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/res15.py"
+# __C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-296.py"
+# __C.net.model_name = "/yuanhuan/code/demo/Speech/KWS/network/tc-resnet14-amba-novt-196.py"
 __C.net.class_name = "SpeechResModel"
 
 ######################################
@@ -407,9 +407,9 @@ __C.net.class_name = "SpeechResModel"
 __C.train = {}
 
 # the number of training epochs
-__C.train.num_epochs = 2000
+# __C.train.num_epochs = 2000
 # __C.train.num_epochs = 1000
-# __C.train.num_epochs = 500
+__C.train.num_epochs = 500
 # __C.train.num_epochs = 1
 
 # the number of samples in a batch
