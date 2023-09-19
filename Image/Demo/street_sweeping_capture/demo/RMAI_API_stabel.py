@@ -19,8 +19,8 @@ from Image.recognition2d.lpr.infer.lpr_seg_ocr import LPRSegOcrcffe
 
 from Image.Demo.street_sweeping_capture.sort.mot_sort import Sort
 
-# from Image.Demo.street_sweeping_capture.info.options_lpr_brazil import options
-from Image.Demo.street_sweeping_capture.info.options_lpr_china_zg import options
+from Image.Demo.street_sweeping_capture.info.options_lpr_brazil import options
+# from Image.Demo.street_sweeping_capture.info.options_lpr_china_zg import options
 # from Image.Demo.street_sweeping_capture.info.options_lpr_zd_police import options
 # from Image.Demo.street_sweeping_capture.info.options_face import options
 from Image.Demo.street_sweeping_capture.info.param import *
@@ -203,17 +203,11 @@ class CaptureApi():
         self.update_capture_state()
         capture_res_container = self.params_dict['capture_res_container']
 
-        ## capture_line
-        if not options.roi_lane_line_bool:
-            capture_line_points = [(0, options.Up_threshold), (options.image_width, options.Up_threshold), 
-                                    (0, options.Down_threshold), (options.image_width, options.Down_threshold),
-                                    (options.Left_threshold, 0), (options.Left_threshold, options.image_height),
-                                    (options.Right_threshold, 0), (options.Right_threshold, options.image_height)]
-        else:
-            capture_line_points = [options.roi_lane_line_points[0], options.roi_lane_line_points[1],
-                                    options.roi_lane_line_points[1], options.roi_lane_line_points[2],
-                                    options.roi_lane_line_points[2], options.roi_lane_line_points[3],
-                                    options.roi_lane_line_points[3], options.roi_lane_line_points[0]]
+        # capture_line
+        capture_line_points = [(0, int(options.Up_threshold)), (int(options.image_width), int(options.Up_threshold)), 
+                                (0, int(options.Down_threshold)), (int(options.image_width), int(options.Down_threshold)),
+                                (int(options.Left_threshold), 0), (int(options.Left_threshold), int(options.image_height)),
+                                (int(options.Right_threshold), 0), (int(options.Right_threshold), int(options.image_height))]
 
         return tracker_bboxes, bbox_info_list, bbox_state_container, capture_line_points, capture_container, capture_res_container
     
@@ -620,20 +614,10 @@ class CaptureApi():
                         bool_add_lpr = False
                         bool_roi_lpr = False
 
-                        if not options.roi_lane_line_bool:
-                            if bbox_info_idx['plate_info']['num'] != '' and \
-                                bbox_state_idy['plate_info']['roi'][1] > options.ROI_Up_threshold and bbox_state_idy['plate_info']['roi'][3] < options.ROI_Down_threshold and \
-                                bbox_state_idy['plate_info']['roi'][0] > options.ROI_Left_threshold and bbox_state_idy['plate_info']['roi'][2] < options.ROI_Right_threshold:
-                                bool_roi_lpr = True
-                        else:
-                            if bbox_info_idx['plate_info']['num'] != '':
-                                bbox_info_idx['plate_info']['dist_left_lane_line'] = ((bbox_state_idy['plate_info']['roi'][3] - options.Left_line_b) / (options.Left_line_k + 1e-5) - bbox_state_idy['plate_info']['roi'][2])
-                                bbox_info_idx['plate_info']['dist_left_lane_line'] = bbox_info_idx['plate_info']['dist_left_lane_line'] * (-1) if (options.Left_line_k < 0) else bbox_info_idx['plate_info']['dist_left_lane_line']
-                                bbox_info_idx['plate_info']['dist_right_lane_line'] = ((bbox_state_idy['plate_info']['roi'][3] - options.Right_line_b) / (options.Right_line_k + 1e-5) - bbox_state_idy['plate_info']['roi'][0])
-                                bbox_info_idx['plate_info']['dist_right_lane_line'] = bbox_info_idx['plate_info']['dist_right_lane_line'] * (-1) if (options.Right_line_k > 0) else bbox_info_idx['plate_info']['dist_right_lane_line']
-                                if bbox_state_idy['plate_info']['roi'][3] > options.ROI_Up_threshold and bbox_state_idy['plate_info']['roi'][1] < options.ROI_Down_threshold and \
-                                    bbox_info_idx['plate_info']['dist_left_lane_line'] > 0 and bbox_info_idx['plate_info']['dist_right_lane_line'] < 0:
-                                    bool_roi_lpr = True
+                        if bbox_info_idx['plate_info']['num'] != '' and \
+                            bbox_state_idy['plate_info']['roi'][1] > options.ROI_Up_threshold and bbox_state_idy['plate_info']['roi'][3] < options.ROI_Down_threshold and \
+                            bbox_state_idy['plate_info']['roi'][0] > options.ROI_Left_threshold and bbox_state_idy['plate_info']['roi'][2] < options.ROI_Right_threshold:
+                            bool_roi_lpr = True
                             
                         if bool_roi_lpr:
 
@@ -770,20 +754,10 @@ class CaptureApi():
                     bool_add_lpr = False
                     bool_roi_lpr = False
 
-                    if not options.roi_lane_line_bool:
-                        if bbox_info_idx['plate_info']['num'] != '' and \
-                            bbox_state_idy['plate_info']['roi'][1] > options.ROI_Up_threshold and bbox_state_idy['plate_info']['roi'][3] < options.ROI_Down_threshold and \
-                            bbox_state_idy['plate_info']['roi'][0] > options.ROI_Left_threshold and bbox_state_idy['plate_info']['roi'][2] < options.ROI_Right_threshold:
-                            bool_roi_lpr = True
-                    else:
-                        if bbox_info_idx['plate_info']['num'] != '':
-                            bbox_info_idx['plate_info']['dist_left_lane_line'] = ((bbox_state_idy['plate_info']['roi'][3] - options.Left_line_b) / (options.Left_line_k + 1e-5) - bbox_state_idy['plate_info']['roi'][2])
-                            bbox_info_idx['plate_info']['dist_left_lane_line'] = bbox_info_idx['plate_info']['dist_left_lane_line'] * (-1) if (options.Left_line_k < 0) else bbox_info_idx['plate_info']['dist_left_lane_line']
-                            bbox_info_idx['plate_info']['dist_right_lane_line'] = ((bbox_state_idy['plate_info']['roi'][3] - options.Right_line_b) / (options.Right_line_k + 1e-5) - bbox_state_idy['plate_info']['roi'][0])
-                            bbox_info_idx['plate_info']['dist_right_lane_line'] = bbox_info_idx['plate_info']['dist_right_lane_line'] * (-1) if (options.Right_line_k > 0) else bbox_info_idx['plate_info']['dist_right_lane_line']
-                            if bbox_state_idy['plate_info']['roi'][3] > options.ROI_Up_threshold and bbox_state_idy['plate_info']['roi'][1] < options.ROI_Down_threshold and \
-                                bbox_info_idx['plate_info']['dist_left_lane_line'] > 0 and bbox_info_idx['plate_info']['dist_right_lane_line'] < 0:
-                                bool_roi_lpr = True
+                    if bbox_info_idx['plate_info']['num'] != '' and \
+                        bbox_state_idy['plate_info']['roi'][1] > options.ROI_Up_threshold and bbox_state_idy['plate_info']['roi'][3] < options.ROI_Down_threshold and \
+                        bbox_state_idy['plate_info']['roi'][0] > options.ROI_Left_threshold and bbox_state_idy['plate_info']['roi'][2] < options.ROI_Right_threshold:
+                        bool_roi_lpr = True
                         
                     if bool_roi_lpr:
                         # 更新车牌识别有效帧数
@@ -950,41 +924,21 @@ class CaptureApi():
 
                 # 如果车辆向左边行驶
                 if bbox_state_idy['state']['left_right_state'] == 'Left' and bbox_state_idy['state']['left_right_state_frame_num'] >= 3:
-                    if not options.roi_lane_line_bool:
-                        if (( loc_center_x - options.Left_threshold > 0 and \
-                            loc_center_x - options.Left_threshold < options.capture_left_right_distance_near_boundary_threshold ) or \
-                            ( options.Left_threshold - loc_center_x > 0 and \
-                            options.Left_threshold - loc_center_x < options.capture_left_right_distance_far_boundary_threshold )) and \
-                            bbox_state_idy['state']['obj_num'] > options.capture_info_frame_threshold:
-                            left_flage = True
-                    else:
-                        dist_left_lane_line = ((loc_center_y - options.Left_line_b) / (options.Left_line_k + 1e-5) - loc_center_x)
-                        dist_left_lane_line = (-1) * dist_left_lane_line if (options.Left_line_k < 0) else dist_left_lane_line
-                        if (( dist_left_lane_line > 0 and \
-                            dist_left_lane_line < options.capture_left_right_distance_near_boundary_threshold ) or \
-                            ( dist_left_lane_line < 0 and \
-                            (-1) * dist_left_lane_line < options.capture_left_right_distance_far_boundary_threshold )) and \
-                            bbox_state_idy['state']['obj_num'] > options.capture_info_frame_threshold:
-                            left_flage = True
+                    if (( loc_center_x - options.Left_threshold > 0 and \
+                        loc_center_x - options.Left_threshold < options.capture_left_right_distance_near_boundary_threshold ) or \
+                        ( options.Left_threshold - loc_center_x > 0 and \
+                        options.Left_threshold - loc_center_x < options.capture_left_right_distance_far_boundary_threshold )) and \
+                        bbox_state_idy['state']['obj_num'] > options.capture_info_frame_threshold:
+                        left_flage = True
 
                 # 如果车辆向右边行驶
                 if bbox_state_idy['state']['left_right_state'] == 'Right' and bbox_state_idy['state']['left_right_state_frame_num'] >= 3:
-                    if not options.roi_lane_line_bool:
-                        if (( loc_center_x - options.Right_threshold > 0 and \
-                            loc_center_x - options.Right_threshold < options.capture_left_right_distance_far_boundary_threshold ) or \
-                            ( options.Right_threshold - loc_center_x > 0 and \
-                            options.Right_threshold - loc_center_x < options.capture_left_right_distance_near_boundary_threshold )) and \
-                            bbox_state_idy['state']['obj_num'] > options.capture_info_frame_threshold:
-                            right_flage = True
-                    else:
-                        dist_right_lane_line = ((loc_center_y - options.Right_line_b) / (options.Right_line_k + 1e-5) - loc_center_x)
-                        dist_right_lane_line = (-1) * dist_right_lane_line if (options.Right_line_k > 0) else dist_right_lane_line
-                        if (( dist_right_lane_line > 0 and \
-                            dist_right_lane_line < options.capture_left_right_distance_far_boundary_threshold ) or \
-                            ( dist_right_lane_line < 0 and \
-                            (-1) * dist_right_lane_line < options.capture_left_right_distance_near_boundary_threshold )) and \
-                            bbox_state_idy['state']['obj_num'] > options.capture_info_frame_threshold:
-                            right_flage = True
+                    if (( loc_center_x - options.Right_threshold > 0 and \
+                        loc_center_x - options.Right_threshold < options.capture_left_right_distance_far_boundary_threshold ) or \
+                        ( options.Right_threshold - loc_center_x > 0 and \
+                        options.Right_threshold - loc_center_x < options.capture_left_right_distance_near_boundary_threshold )) and \
+                        bbox_state_idy['state']['obj_num'] > options.capture_info_frame_threshold:
+                        right_flage = True
 
                 # 如果车辆在视野内，超过 25 帧
                 if bbox_state_idy['state']['obj_num'] > options.capture_outtime_frame_threshold_01:

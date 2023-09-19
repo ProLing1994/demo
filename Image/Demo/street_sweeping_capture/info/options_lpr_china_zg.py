@@ -248,39 +248,20 @@ options.capture_lpr_color_frame_threshold = 3
 ###########################################
 
 # 是否通过 roi 区域屏蔽部分检测结果
-# options.roi_bool = False
-options.roi_bool = True
-
-# 是否为车道线 roi
-# options.roi_lane_line_bool = False
-options.roi_lane_line_bool = True
-
+options.roi_bool = False
+# options.roi_bool = True
 options.roi_area = [0, 0, options.image_width, options.image_height]
-# options.roi_lane_line_points = [(807, 153), (1250, 153), (1778, 880), (337, 880)]     # 2.7mm
-# options.roi_lane_line_points = [(890, 553), (1384, 553), (1840, 1044), (538, 1038)]     # 8mm
-options.roi_lane_line_points = [(804, 572), (1465, 572), (1887, 980), (442, 980)]     # 16mm
-
 
 # 上下限阈值 & 左右限阈值
 if options.roi_bool:
-    if not options.roi_lane_line_bool:
-        options.ROI_Up_threshold = options.roi_area[1] + ( options.roi_area[3] - options.roi_area[1] ) * options.capture_line_up_down_ratio[0]
-        options.ROI_Down_threshold = options.roi_area[1] + ( options.roi_area[3] - options.roi_area[1] ) * options.capture_line_up_down_ratio[3]
-        options.Up_threshold = options.roi_area[1] + ( options.roi_area[3] - options.roi_area[1] ) * options.capture_line_up_down_ratio[1]
-        options.Down_threshold = options.roi_area[1] + ( options.roi_area[3] - options.roi_area[1] ) * options.capture_line_up_down_ratio[2]
-        options.ROI_Left_threshold = options.roi_area[0] + ( options.roi_area[2] - options.roi_area[0] ) * options.capture_line_left_right_ratio[0]
-        options.ROI_Right_threshold = options.roi_area[0] + ( options.roi_area[2] - options.roi_area[0] ) * options.capture_line_left_right_ratio[3]
-        options.Left_threshold = options.roi_area[0] + ( options.roi_area[2] - options.roi_area[0] ) * options.capture_line_left_right_ratio[1]
-        options.Right_threshold = options.roi_area[0] + ( options.roi_area[2] - options.roi_area[0] ) * options.capture_line_left_right_ratio[2]
-    else:
-        options.ROI_Up_threshold = (options.roi_lane_line_points[0][1] + options.roi_lane_line_points[1][1]) / 2
-        options.ROI_Down_threshold = (options.roi_lane_line_points[2][1] + options.roi_lane_line_points[3][1]) / 2
-        options.Up_threshold = options.ROI_Up_threshold
-        options.Down_threshold = options.ROI_Down_threshold
-        options.Left_line_k = float(options.roi_lane_line_points[0][1] - options.roi_lane_line_points[3][1]) / float(options.roi_lane_line_points[0][0] - options.roi_lane_line_points[3][0] + 1e-5);
-        options.Left_line_b = float(options.roi_lane_line_points[0][1] - options.roi_lane_line_points[0][0] * options.Left_line_k);
-        options.Right_line_k = float(options.roi_lane_line_points[1][1] - options.roi_lane_line_points[2][1]) / float(options.roi_lane_line_points[1][0] - options.roi_lane_line_points[2][0] + 1e-5);
-        options.Right_line_b = float(options.roi_lane_line_points[1][1] - options.roi_lane_line_points[1][0] * options.Right_line_k);
+    options.ROI_Up_threshold = options.roi_area[1] + ( options.roi_area[3] - options.roi_area[1] ) * options.capture_line_up_down_ratio[0]
+    options.ROI_Down_threshold = options.roi_area[1] + ( options.roi_area[3] - options.roi_area[1] ) * options.capture_line_up_down_ratio[3]
+    options.Up_threshold = options.roi_area[1] + ( options.roi_area[3] - options.roi_area[1] ) * options.capture_line_up_down_ratio[1]
+    options.Down_threshold = options.roi_area[1] + ( options.roi_area[3] - options.roi_area[1] ) * options.capture_line_up_down_ratio[2]
+    options.ROI_Left_threshold = options.roi_area[0] + ( options.roi_area[2] - options.roi_area[0] ) * options.capture_line_left_right_ratio[0]
+    options.ROI_Right_threshold = options.roi_area[0] + ( options.roi_area[2] - options.roi_area[0] ) * options.capture_line_left_right_ratio[3]
+    options.Left_threshold = options.roi_area[0] + ( options.roi_area[2] - options.roi_area[0] ) * options.capture_line_left_right_ratio[1]
+    options.Right_threshold = options.roi_area[0] + ( options.roi_area[2] - options.roi_area[0] ) * options.capture_line_left_right_ratio[2]
 else:
     options.ROI_Up_threshold = options.image_height * options.capture_line_up_down_ratio[0]
     options.ROI_Down_threshold = options.image_height * options.capture_line_up_down_ratio[3]
