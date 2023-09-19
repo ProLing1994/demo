@@ -9,7 +9,6 @@ import sys
 from tqdm import tqdm
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
-# sys.path.insert(0, 'E:\\project\\demo')
 from Image.Basic.utils.folder_tools import *
 from Image.Demo.Capture.video_capture_license_plate_zd.demo.VideoCapture_API import *
 
@@ -24,7 +23,6 @@ def video_capture_csv(in_params):
 
     # video capture api
     video_capture_api = VideoCaptureApi()
-    # video_capture_api = VideoCaptureApi(args.model_prototxt, args.model_path, args.GPU)
 
     # pd init
     video_capture_list = []
@@ -41,6 +39,10 @@ def video_capture_csv(in_params):
     print(cap.get(cv2.CAP_PROP_FRAME_WIDTH))           # 得到视频的宽
     print(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))          # 得到视频的高
     print(cap.get(cv2.CAP_PROP_FRAME_COUNT))           # 得到视频的总帧
+    if int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)) != video_capture_api.image_width:
+        return
+    if int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)) != video_capture_api.image_height:
+        return
 
     frame_idx = 0
 
@@ -183,16 +185,54 @@ def vidio_capture_crop_merge(in_params):
     return 
 
 
+def mp4_to_jpg(in_params):
+    args = in_params[0]
+    video_name = in_params[1]
+    
+    input_video_dir = os.path.join(args.output_video_dir, 'merge', video_name.replace(args.suffix, ''))
+    oupput_jpg_dir = os.path.join(args.output_video_dir, 'merge_jpg', video_name.replace(args.suffix, ''))
+
+    if not os.path.exists(input_video_dir):
+        return 
+
+    # video init 
+    video_list = np.array(os.listdir(input_video_dir))
+    video_list = video_list[[video.endswith(".mp4") for video in video_list]]
+    video_list.sort()
+
+    for idx in tqdm(range(len(video_list))):
+        video_path = os.path.join(input_video_dir, video_list[idx])
+
+        cap = cv2.VideoCapture(video_path) 
+        print(int(cap.get(cv2.CAP_PROP_FPS)))              # 得到视频的帧率
+        print(cap.get(cv2.CAP_PROP_FRAME_WIDTH))           # 得到视频的宽
+        print(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))          # 得到视频的高
+        print(cap.get(cv2.CAP_PROP_FRAME_COUNT))           # 得到视频的总帧
+
+        frame_idx = 0
+        while True:
+
+            ret, img = cap.read()
+
+            if not ret: # if the camera over return false
+                break         
+
+            if frame_idx % args.frame_strp == 0:
+                output_img_path = os.path.join(oupput_jpg_dir, video_list[idx].replace(".mp4", '_{:0>5d}.jpg'.format(frame_idx)))
+                create_folder(os.path.dirname(output_img_path))
+                cv2.imwrite(output_img_path, img)
+
+            frame_idx +=1
+
+
 def main():
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--video_dir', type=str, default="/mnt/huanyuan/temp/pc_demo/test_zd/avi/") 
-    parser.add_argument('--output_video_dir', type=str, default="/mnt/huanyuan/temp/pc_demo/test_zd/avi_video_capture") 
-    parser.add_argument('--suffix', type=str, default='.avi') 
+    parser.add_argument('--video_dir', type=str, default="/mnt/huanyuan/temp/C37_欧洲车牌/20230907/avi/") 
+    parser.add_argument('--output_video_dir', type=str, default="/mnt/huanyuan/temp/C37_欧洲车牌/20230907/avi_video_capture") 
+    parser.add_argument('--suffix', type=str, default='.mp4') 
     parser.add_argument('--steps', type=str, default='1,2')
-    parser.add_argument('--model_prototxt', type=str, default=None) 
-    parser.add_argument('--model_path', type=str, default="E:\\project\\model\\image\\ssd_rfb\\SSD_VGG_FPN_RFB_VOC_car_bus_truck_licenseplate_softmax_zg_2022-04-25-18.xml") 
-    parser.add_argument('--GPU', action='store_true', default=True) 
+    parser.add_argument('--frame_strp', type=int, default=10) 
 
     # args = parser.parse_args()
     args, unparsed = parser.parse_known_args() 
@@ -225,20 +265,20 @@ def main():
     if '1' in step_list:
         # step 1: 
         # 车辆抓取
-        # import torch
-        # ctx = torch.multiprocessing.get_context("spawn")
-        # p = ctx.Pool(2)
-        # out = p.map(video_capture_csv, in_params)
-        # p.close()
-        # p.join()
+        import torch
+        ctx = torch.multiprocessing.get_context("spawn")
+        p = ctx.Pool(2)
+        out = p.map(video_capture_csv, in_params)
+        p.close()
+        p.join()
 
         # p = multiprocessing.Pool(2)
         # out = p.map(video_capture_csv, in_params)
         # p.close()
         # p.join()
 
-        for idx in range(len(in_params)):
-            video_capture_csv(in_params[idx])
+        # for idx in range(len(in_params)):
+        #     video_capture_csv(in_params[idx])
 
     if '2' in step_list:
         # step 2: 
@@ -252,6 +292,12 @@ def main():
         p.close()
         p.join()
 
+        # 视频跑图
+        p = multiprocessing.Pool(2)
+        out = p.map(mp4_to_jpg, in_params)
+        p.close()
+        p.join()
+        
 if __name__ == '__main__':
     multiprocessing.freeze_support()
     main()

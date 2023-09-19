@@ -4,10 +4,8 @@ import sys
 import random
 
 sys.path.insert(0, '/home/huanyuan/code/demo')
-from Image.Demo.license_plate_capture_zd_police.model.LPR_detect import LPRDetectCaffe, LPRDetectOpenVINO
-# from Image.detection2d.mmdetection.demo.detector.yolov6_detector import YOLOV6Detector
-from Image.Demo.license_plate_capture_zd_police.sort.mot_sort import Sort
-
+from Image.detection2d.mmdetection.demo.detector.yolov6_detector import YOLOV6Detector
+from Image.Demo.street_sweeping_capture.sort.mot_sort import Sort
 
 class VideoCaptureApi():
     """
@@ -28,31 +26,43 @@ class VideoCaptureApi():
 
     def option_init(self):
 
-        self.image_width = 2592
-        self.image_height = 1920
+        # 5M
+        # self.image_width = 2592
+        # self.image_height = 1920
+        # 2M
+        self.image_width = 1920
+        self.image_height = 1080
 
         # detector
         # ssd
-        self.ssd_bool = True
+        self.ssd_bool = False
         # # pytorch 
         # self.ssd_plate_prototxt = None
         # self.ssd_plate_model_path = ""
         # # caffe
         # self.ssd_plate_prototxt = "/mnt/huanyuan/model_final/image_model/schoolbus/zd_ssd_rfb_wmr/ssd_mbv2_2class/caffe_model/ssd_mobilenetv2_fpn.prototxt"
         # self.ssd_plate_model_path = "/mnt/huanyuan/model_final/image_model/schoolbus/zd_ssd_rfb_wmr/ssd_mbv2_2class/caffe_model/ssd_mobilenetv2_0421.caffemodel"
-        # openvino
-        self.ssd_plate_model_path = "/mnt/huanyuan/model_final/image_model/schoolbus/zd_ssd_rfb_wmr/ssd_mbv2_2class/openvino_model/ssd_mobilenetv2_fpn.xml"
-        self.ssd_caffe_bool = False
-        self.ssd_openvino_bool = True
+        # # openvino
+        # self.ssd_plate_model_path = "/mnt/huanyuan/model_final/image_model/schoolbus/zd_ssd_rfb_wmr/ssd_mbv2_2class/openvino_model/ssd_mobilenetv2_fpn.xml"
+        # self.ssd_caffe_bool = False
+        # self.ssd_openvino_bool = True
 
         # yolov6
         self.yolov6_bool = False
-        # pytorch
-        self.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_zd_plate_wmr/yolov6_licenseplate_deploy.py"
-        self.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_zd_plate_wmr/epoch_95_deploy.pth"
+        # # pytorch
+        # self.yolov6_config = "/mnt/huanyuan/model/image/yolov6/yolov6_zd_plate_wmr/yolov6_licenseplate_deploy.py"
+        # self.yolov6_checkpoint = "/mnt/huanyuan/model/image/yolov6/yolov6_zd_plate_wmr/epoch_95_deploy.pth"
+        # self.yolov6_class_name = ['license_plate']
+        # self.yolov6_threshold_list = [0.4]
         
+        # yolox
+        self.yolox_bool = True
+        self.yolox_config = "/mnt/huanyuan/model/image/yolox/yolovx_l_license_0601/yolox_l_license.py"
+        self.yolox_checkpoint =  "/mnt/huanyuan/model/image/yolox/yolovx_l_license_0601/epoch_140.pth"
+        self.yolox_class_name = ['license_plate']
+        self.yolox_threshold_list = [0.4]
+
         self.detect_class_name = ['license_plate']
-        self.detect_class_threshold_list = [0.4]
 
         # sort
         self.max_age = 10
@@ -176,8 +186,10 @@ class VideoCaptureApi():
                 self.detector = LPRDetectOpenVINO(self.ssd_plate_model_path)
 
         elif self.yolov6_bool:
-            self.detector = YOLOV6Detector(self.yolov6_config, self.yolov6_checkpoint, class_name=self.detect_class_name, threshold_list=self.detect_class_threshold_list)
-
+            self.detector = YOLOV6Detector(self.yolov6_config, self.yolov6_checkpoint, class_name=self.yolov6_class_name, threshold_list=self.yolov6_threshold_list)
+        
+        elif self.yolox_bool:
+            self.detector = YOLOV6Detector(self.yolox_config, self.yolox_checkpoint, class_name=self.yolox_class_name, threshold_list=self.yolox_threshold_list, device='cuda:0')
         # tracker
         self.mot_tracker = Sort(max_age=self.max_age, min_hits=self.min_hits, iou_threshold=self.iou_threshold)
 
