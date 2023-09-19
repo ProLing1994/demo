@@ -50,13 +50,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    args.video_dir = "/mnt/huanyuan2/data/image/HY_Tanker/test_video/算法误报_20230805_0817/avi/"
-    args.output_video_dir = "/mnt/huanyuan2/data/image/HY_Tanker/test_video/算法误报_20230805_0817/jpg/"
+    args.video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_ZD_DUBAI_C27/5M_白天_侧向_0615/test_avi/"
+    args.output_video_dir = "/mnt/huanyuan2/data/image/RM_SchBus_Police_Capture_Raw_Video/POLICE_ZD_DUBAI_C27/5M_白天_侧向_0615/test_jpg/"
     # args.suffix = '.mp4'
     args.suffix = '.avi'
     # args.frame_strp = 25
-    args.frame_strp = 10
+    # args.frame_strp = 10
     # args.frame_strp = 5
-    # args.frame_strp = 1
+    args.frame_strp = 1
 
     avi_to_jpg(args)
